@@ -177,6 +177,13 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
+            <!-- SpringCache的依赖配置   --> <!--用于将redis替换为本地的ehcache-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-cache</artifactId>
+                <version>2.5.15</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

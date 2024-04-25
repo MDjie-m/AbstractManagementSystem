@@ -1,8 +1,10 @@
 package com.ruoyi.framework.aspectj;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
+import com.ruoyi.common.annotation.RateLimiter;
+import com.ruoyi.common.enums.LimitType;
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.ip.IpUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -10,14 +12,13 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
-import com.ruoyi.common.annotation.RateLimiter;
-import com.ruoyi.common.enums.LimitType;
-import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.ip.IpUtils;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 限流处理
@@ -26,6 +27,7 @@ import com.ruoyi.common.utils.ip.IpUtils;
  */
 @Aspect
 @Component
+@ConditionalOnProperty(prefix = "spring.cache", name = { "type" }, havingValue = "redis", matchIfMissing = false)
 public class RateLimiterAspect
 {
     private static final Logger log = LoggerFactory.getLogger(RateLimiterAspect.class);
@@ -51,7 +53,6 @@ public class RateLimiterAspect
     {
         int time = rateLimiter.time();
         int count = rateLimiter.count();
-
         String combineKey = getCombineKey(rateLimiter, point);
         List<Object> keys = Collections.singletonList(combineKey);
         try

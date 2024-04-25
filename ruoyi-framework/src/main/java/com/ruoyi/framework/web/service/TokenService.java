@@ -1,18 +1,9 @@
 package com.ruoyi.framework.web.service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import javax.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.utils.CacheUtils;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.ip.AddressUtils;
@@ -22,6 +13,12 @@ import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * token验证处理
@@ -31,8 +28,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class TokenService
 {
-    private static final Logger log = LoggerFactory.getLogger(TokenService.class);
-
     // 令牌自定义标识
     @Value("${token.header}")
     private String header;
@@ -51,9 +46,6 @@ public class TokenService
 
     private static final Long MILLIS_MINUTE_TEN = 20 * 60 * 1000L;
 
-    @Autowired
-    private RedisCache redisCache;
-
     /**
      * 获取用户身份信息
      *
@@ -70,13 +62,11 @@ public class TokenService
                 Claims claims = parseToken(token);
                 // 解析对应的权限以及用户信息
                 String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
-                String userKey = getTokenKey(uuid);
-                LoginUser user = redisCache.getCacheObject(userKey);
+                LoginUser user = CacheUtils.get(CacheConstants.LOGIN_TOKEN_KEY, uuid, LoginUser.class);
                 return user;
             }
             catch (Exception e)
             {
-                log.error("获取用户信息异常'{}'", e.getMessage());
             }
         }
         return null;
@@ -100,8 +90,7 @@ public class TokenService
     {
         if (StringUtils.isNotEmpty(token))
         {
-            String userKey = getTokenKey(token);
-            redisCache.deleteObject(userKey);
+            CacheUtils.removeIfPresent(CacheConstants.LOGIN_TOKEN_KEY, token);
         }
     }
 
@@ -117,7 +106,6 @@ public class TokenService
         loginUser.setToken(token);
         setUserAgent(loginUser);
         refreshToken(loginUser);
-
         Map<String, Object> claims = new HashMap<>();
         claims.put(Constants.LOGIN_USER_KEY, token);
         return createToken(claims);
@@ -149,8 +137,7 @@ public class TokenService
         loginUser.setLoginTime(System.currentTimeMillis());
         loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * MILLIS_MINUTE);
         // 根据uuid将loginUser缓存
-        String userKey = getTokenKey(loginUser.getToken());
-        redisCache.setCacheObject(userKey, loginUser, expireTime, TimeUnit.MINUTES);
+        CacheUtils.put(CacheConstants.LOGIN_TOKEN_KEY, loginUser.getToken(), loginUser, expireTime, TimeUnit.MINUTES);
     }
 
     /**
@@ -222,10 +209,5 @@ public class TokenService
             token = token.replace(Constants.TOKEN_PREFIX, "");
         }
         return token;
-    }
-
-    private String getTokenKey(String uuid)
-    {
-        return CacheConstants.LOGIN_TOKEN_KEY + uuid;
     }
 }

@@ -126,6 +126,19 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
 
+
+        <!-- SpringCache的依赖配置 --><!--用于将redis替换为本地的ehcache-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <!-- Ehcache缓存管理器 --><!--用于将redis替换为本地的ehcache-->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
