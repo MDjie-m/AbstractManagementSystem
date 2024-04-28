@@ -48,8 +48,13 @@ public class SysLoginController
         // 生成令牌
 //        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
 //                loginBody.getUuid());
+        //密码加密
+//        String token = loginService.login(loginBody.getUsername(),
+//                RsaUtils.decryptByPrivateKey(loginBody.getPassword()), loginBody.getCode(), loginBody.getUuid());
+        //滑块验证
         String token = loginService.login(loginBody.getUsername(),
-                RsaUtils.decryptByPrivateKey(loginBody.getPassword()), loginBody.getCode(), loginBody.getUuid());
+                RsaUtils.decryptByPrivateKey(loginBody.getPassword()), loginBody.getCode());
+
         ajax.put(Constants.TOKEN, token);
 
         return ajax;

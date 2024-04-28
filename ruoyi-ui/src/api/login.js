@@ -4,9 +4,7 @@ import { encrypt } from '@/utils/jsencrypt'
 
 // 登录方法
 export function login(username, password, code, uuid) {
-  console.log('password'+password)
   password = encrypt(password);
-  console.log('password'+password)
   const data = {
     username,
     password,
@@ -16,8 +14,7 @@ export function login(username, password, code, uuid) {
   return request({
     url: '/login',
     headers: {
-      isToken: false,
-      repeatSubmit: false
+      isToken: false
     },
     method: 'post',
     data: data
@@ -49,17 +46,5 @@ export function logout() {
   return request({
     url: '/logout',
     method: 'post'
-  })
-}
-
-// 获取验证码
-export function getCodeImg() {
-  return request({
-    url: '/captchaImage',
-    headers: {
-      isToken: false
-    },
-    method: 'get',
-    timeout: 20000
   })
 }

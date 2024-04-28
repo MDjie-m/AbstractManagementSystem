@@ -1,5 +1,8 @@
 package com.ruoyi.framework.web.service;
 
+import com.anji.captcha.model.common.ResponseModel;
+import com.anji.captcha.model.vo.CaptchaVO;
+import com.anji.captcha.service.CaptchaService;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
@@ -18,6 +21,7 @@ import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,21 +49,35 @@ public class SysLoginService
     @Autowired
     private ISysConfigService configService;
 
+    @Autowired
+    @Lazy
+    private CaptchaService captchaService;
+
     /**
      * 登录验证
      * 
      * @param username 用户名
      * @param password 密码
      * @param code 验证码
-     * @param uuid 唯一标识
      * @return 结果
      */
-    public String login(String username, String password, String code, String uuid)
+    public String login(String username, String password, String code)
     {
         // 验证码校验
-        validateCaptcha(username, code, uuid);
+//        validateCaptcha(username, code, uuid);
         // 登录前置校验
-        loginPreCheck(username, password);
+//        loginPreCheck(username, password);
+
+        CaptchaVO captchaVO = new CaptchaVO();
+        captchaVO.setCaptchaVerification(code);
+        ResponseModel response = captchaService.verification(captchaVO);
+        if (!response.isSuccess())
+        {
+            AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.error")));
+            throw new CaptchaException();
+        }
+
+
         // 用户验证
         Authentication authentication = null;
         try

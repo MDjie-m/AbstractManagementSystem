@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import { parseStrEmpty } from "@/utils/ruoyi";
+import { encrypt } from '@/utils/jsencrypt'
 
 // 查询用户列表
 export function listUser(query) {
@@ -46,6 +47,7 @@ export function delUser(userId) {
 
 // 用户密码重置
 export function resetUserPwd(userId, password) {
+  password=encrypt(password)
   const data = {
     userId,
     password
