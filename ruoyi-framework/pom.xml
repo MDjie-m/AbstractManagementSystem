@@ -43,7 +43,7 @@
         </dependency>
 
         <!-- 原有的验证码kaptcha依赖不需要可以删除  -->
-        <!-- 验证码 -->
+        <!-- 验证码
         <dependency>
             <groupId>pro.fessional</groupId>
             <artifactId>kaptcha</artifactId>
@@ -54,7 +54,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        -->
         <!-- 获取系统信息 -->
         <dependency>
             <groupId>com.github.oshi</groupId>
