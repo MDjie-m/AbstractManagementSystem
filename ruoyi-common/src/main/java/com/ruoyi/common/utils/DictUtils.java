@@ -54,6 +54,10 @@ public class DictUtils
      */
     public static String getDictLabel(String dictType, String dictValue)
     {
+        if (StringUtils.isEmpty(dictValue))
+        {
+            return StringUtils.EMPTY;
+        }
         return getDictLabel(dictType, dictValue, SEPARATOR);
     }
 
@@ -66,6 +70,10 @@ public class DictUtils
      */
     public static String getDictValue(String dictType, String dictLabel)
     {
+        if (StringUtils.isEmpty(dictLabel))
+        {
+            return StringUtils.EMPTY;
+        }
         return getDictValue(dictType, dictLabel, SEPARATOR);
     }
 
@@ -83,28 +91,29 @@ public class DictUtils
         List<SysDictData> datas = getDictCache(dictType);
         if (StringUtils.isNotNull(datas))
         {
-            if (StringUtils.containsAny(separator, dictValue))
+            return StringUtils.EMPTY;
+        }
+        if (StringUtils.containsAny(separator, dictValue))
+        {
+            for (SysDictData dict : datas)
             {
-                for (SysDictData dict : datas)
+                for (String value : dictValue.split(separator))
                 {
-                    for (String value : dictValue.split(separator))
+                    if (value.equals(dict.getDictValue()))
                     {
-                        if (value.equals(dict.getDictValue()))
-                        {
-                            propertyString.append(dict.getDictLabel()).append(separator);
-                            break;
-                        }
+                        propertyString.append(dict.getDictLabel()).append(separator);
+                        break;
                     }
                 }
             }
-            else
+        }
+        else
+        {
+            for (SysDictData dict : datas)
             {
-                for (SysDictData dict : datas)
+                if (dictValue.equals(dict.getDictValue()))
                 {
-                    if (dictValue.equals(dict.getDictValue()))
-                    {
-                        return dict.getDictLabel();
-                    }
+                    return dict.getDictLabel();
                 }
             }
         }
@@ -148,6 +157,48 @@ public class DictUtils
             }
         }
         return StringUtils.stripEnd(propertyString.toString(), separator);
+    }
+
+    /**
+     * 根据字典类型获取字典所有值
+     *
+     * @param dictType 字典类型
+     * @return 字典值
+     */
+    public static String getDictValues(String dictType)
+    {
+        StringBuilder propertyString = new StringBuilder();
+        List<SysDictData> datas = getDictCache(dictType);
+        if (StringUtils.isNull(datas))
+        {
+            return StringUtils.EMPTY;
+        }
+        for (SysDictData dict : datas)
+        {
+            propertyString.append(dict.getDictValue()).append(SEPARATOR);
+        }
+        return StringUtils.stripEnd(propertyString.toString(), SEPARATOR);
+    }
+
+    /**
+     * 根据字典类型获取字典所有标签
+     *
+     * @param dictType 字典类型
+     * @return 字典值
+     */
+    public static String getDictLabels(String dictType)
+    {
+        StringBuilder propertyString = new StringBuilder();
+        List<SysDictData> datas = getDictCache(dictType);
+        if (StringUtils.isNull(datas))
+        {
+            return StringUtils.EMPTY;
+        }
+        for (SysDictData dict : datas)
+        {
+            propertyString.append(dict.getDictLabel()).append(SEPARATOR);
+        }
+        return StringUtils.stripEnd(propertyString.toString(), SEPARATOR);
     }
 
     /**

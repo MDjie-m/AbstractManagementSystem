@@ -8,7 +8,7 @@ export default {
   data() {
     return {
       // 版本号
-      version: "3.8.7"
+      version: "3.8.8"
     };
   },
   methods: {
