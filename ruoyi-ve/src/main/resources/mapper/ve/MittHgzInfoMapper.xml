@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ve.mapper.MittHgzInfoMapper">
+
+	<resultMap type="MittHgzinfo" id="MittHgzinfoResult">
+		<id     property="id"       column="id"      />
+		<result property="hgzxh"        column="hgzxh"        />
+		<result property="hgzbh"       column="hgzbh"       />
+		<result property="flag"   column="flag"   />
+		<result property="hgzinfo"     column="hgzinfo"     />
+	</resultMap>
+	
+	<sql id="selectMittHgzInfoVo">
+        select id, hgzxh, hgzbh, flag, hgzinfo
+		from t_hgz_bu_mitt_hgzinfo
+    </sql>
+
+    <select id="selectMittHgzInfoList" parameterType="MittHgzinfo" resultMap="MittHgzinfoResult">
+		<include refid="selectMittHgzInfoVo"/>
+		<where>
+			<if test="id != null and id != ''">
+				AND id = #{id}
+			</if>
+			<if test="hgzxh != null and hgzxh != ''">
+				AND hgzxh like concat('%', #{hgzxh}, '%')
+			</if>
+			<if test="hgzbh != null and hgzbh != ''">
+				AND hgzbh like concat('%', #{hgzbh}, '%')
+			</if>
+			<if test="flag != null and flag != ''">
+				AND flag = #{flag}
+			</if>
+			<if test="hgzinfo != null and hgzinfo != ''">
+				AND hgzinfo like concat('%', #{hgzinfo}, '%')
+			</if>
+		</where>
+	</select>
+
+	<update id="updateMittHgzInfo"  parameterType="MittHgzinfo" >
+		update t_hgz_bu_mitt_hgzinfo
+		<set>
+			<if test="hgzxh != null and hgzxh != ''">hgzxh = #{hgzxh},</if>
+			<if test="hgzbh != null and hgzbh != ''">hgzbh = #{hgzbh},</if>
+			<if test="flag != null and flag != ''">flag = #{flag},</if>
+			<if test="hgzinfo != null and hgzinfo != ''">hgzinfo = #{hgzinfo}</if>
+		</set>
+		where id = #{id}
+	</update>
+
+
+	<update id="updateJob" parameterType="SysJob">
+		update sys_job
+		<set>
+			<if test="jobName != null and jobName != ''">job_name = #{jobName},</if>
+			<if test="jobGroup != null and jobGroup != ''">job_group = #{jobGroup},</if>
+			<if test="invokeTarget != null and invokeTarget != ''">invoke_target = #{invokeTarget},</if>
+			<if test="cronExpression != null and cronExpression != ''">cron_expression = #{cronExpression},</if>
+			<if test="misfirePolicy != null and misfirePolicy != ''">misfire_policy = #{misfirePolicy},</if>
+			<if test="concurrent != null and concurrent != ''">concurrent = #{concurrent},</if>
+			<if test="status !=null">status = #{status},</if>
+			<if test="remark != null and remark != ''">remark = #{remark},</if>
+			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			update_time = sysdate()
+		</set>
+		where job_id = #{jobId}
+	</update>
+
+</mapper> 

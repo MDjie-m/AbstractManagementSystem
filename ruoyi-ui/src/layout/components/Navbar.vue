@@ -9,13 +9,19 @@
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
 
-        <el-tooltip content="源码地址" effect="dark" placement="bottom">
+        <el-tooltip :content="noticeContent" effect="dark" placement="bottom">
+          <el-badge :value="noticeCount" class="right-menu-item hover-effect" :hidden="noticeCount==0" :class="{'badge-custom':noticeCount>0}" >
+            <i class="el-icon-message-solid" @click="toNoticePage"></i>
+          </el-badge>
+        </el-tooltip>
+
+        <!-- <el-tooltip content="源码地址" effect="dark" placement="bottom">
           <ruo-yi-git id="ruoyi-git" class="right-menu-item hover-effect" />
         </el-tooltip>
 
         <el-tooltip content="文档地址" effect="dark" placement="bottom">
           <ruo-yi-doc id="ruoyi-doc" class="right-menu-item hover-effect" />
-        </el-tooltip>
+        </el-tooltip> -->
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
@@ -56,6 +62,7 @@ import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import RuoYiGit from '@/components/RuoYi/Git'
 import RuoYiDoc from '@/components/RuoYi/Doc'
+import {listNotice} from '@/api/system/notice'
 
 export default {
   components: {
@@ -91,6 +98,26 @@ export default {
       }
     }
   },
+
+  data(){
+    return{
+      noticeContent:'',//通知内容
+      noticeCount:0,//通知数量
+      intervalId: null
+    }
+  },
+  created(){
+    this.poll();
+  },
+  mounted() {
+    // 启动轮询
+    this.startPolling();
+  },
+  beforeDestroy() {
+    // 在组件销毁之前清除定时器，防止内存泄漏
+    this.stopPolling();
+  },
+
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
@@ -105,7 +132,30 @@ export default {
           location.href = '/index';
         })
       }).catch(() => {});
+    },
+
+    toNoticePage(){
+      //前往通知公告管理页面
+      this.$router.push("/system/notice");
+    },
+    startPolling() {
+      // 每隔一定时间执行轮询任务
+      this.intervalId = setInterval(() => {
+        this.poll();
+      }, 120000); // 120秒钟轮询一次，根据需要调整间隔时间
+    },
+    stopPolling() {
+      // 清除定时器，停止轮询任务    ！！！！重要，防止内存泄露
+      clearInterval(this.intervalId);
+    },
+    poll() {
+      // 在这里执行轮询的任务，可以是发送请求或执行其他操作
+      listNotice().then(response => {
+        this.noticeCount=response.total;//获取信息条数
+        this.noticeContent="您有"+this.noticeCount+"条未读的信息";//定制内容
+      });
     }
+
   }
 }
 </script>
@@ -195,6 +245,22 @@ export default {
         }
       }
     }
+  
+
+  ::v-deep .el-badge__content {
+      margin-top: 9px;/* 调整一下上下左右你喜欢的位置 */
+      margin-right: 7px;
+    }
+ 
+    .badge-custom {
+      animation: blink-animation 0.5s infinite alternate; /* 设置闪烁动画 */
+    }
+ 
+    @keyframes blink-animation {
+      0% { opacity: 1; } /* 定义动画起始状态 */
+      100% { opacity: 0.1; } /* 定义动画结束状态 */
+    }
   }
+
 }
 </style>

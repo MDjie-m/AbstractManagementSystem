@@ -35,7 +35,15 @@
             <artifactId>druid-spring-boot-starter</artifactId>
         </dependency>
 
-        <!-- 验证码 -->
+        <!-- 滑块验证码  -->
+        <dependency>
+            <groupId>com.github.anji-plus</groupId>
+            <artifactId>captcha-spring-boot-starter</artifactId>
+            <version>1.2.7</version>
+        </dependency>
+
+        <!-- 原有的验证码kaptcha依赖不需要可以删除  -->
+        <!-- 验证码
         <dependency>
             <groupId>pro.fessional</groupId>
             <artifactId>kaptcha</artifactId>
@@ -46,7 +54,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        -->
         <!-- 获取系统信息 -->
         <dependency>
             <groupId>com.github.oshi</groupId>

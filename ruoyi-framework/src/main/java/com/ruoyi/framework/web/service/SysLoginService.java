@@ -1,24 +1,16 @@
 package com.ruoyi.framework.web.service;
 
-import javax.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
+import com.anji.captcha.model.common.ResponseModel;
+import com.anji.captcha.model.vo.CaptchaVO;
+import com.anji.captcha.service.CaptchaService;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
-import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.exception.user.BlackListException;
-import com.ruoyi.common.exception.user.CaptchaException;
-import com.ruoyi.common.exception.user.CaptchaExpireException;
-import com.ruoyi.common.exception.user.UserNotExistsException;
-import com.ruoyi.common.exception.user.UserPasswordNotMatchException;
+import com.ruoyi.common.exception.user.*;
+import com.ruoyi.common.utils.CacheUtils;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -28,6 +20,14 @@ import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+import javax.annotation.Resource;
 
 /**
  * 登录校验方法
@@ -44,13 +44,14 @@ public class SysLoginService
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private RedisCache redisCache;
-    
-    @Autowired
     private ISysUserService userService;
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    @Lazy
+    private CaptchaService captchaService;
 
     /**
      * 登录验证
@@ -58,15 +59,25 @@ public class SysLoginService
      * @param username 用户名
      * @param password 密码
      * @param code 验证码
-     * @param uuid 唯一标识
      * @return 结果
      */
-    public String login(String username, String password, String code, String uuid)
+    public String login(String username, String password, String code)
     {
         // 验证码校验
-        validateCaptcha(username, code, uuid);
+//        validateCaptcha(username, code, uuid);
         // 登录前置校验
-        loginPreCheck(username, password);
+//        loginPreCheck(username, password);
+
+        CaptchaVO captchaVO = new CaptchaVO();
+        captchaVO.setCaptchaVerification(code);
+        ResponseModel response = captchaService.verification(captchaVO);
+        if (!response.isSuccess())
+        {
+            AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.error")));
+            throw new CaptchaException();
+        }
+
+
         // 用户验证
         Authentication authentication = null;
         try
@@ -113,8 +124,8 @@ public class SysLoginService
         boolean captchaEnabled = configService.selectCaptchaEnabled();
         if (captchaEnabled)
         {
-            String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + StringUtils.nvl(uuid, "");
-            String captcha = redisCache.getCacheObject(verifyKey);
+            String captcha = CacheUtils.get(CacheConstants.CAPTCHA_CODE_KEY, StringUtils.nvl(uuid, ""), String.class);
+            CacheUtils.removeIfPresent(CacheConstants.CAPTCHA_CODE_KEY, StringUtils.nvl(uuid, ""));
             if (captcha == null)
             {
                 AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire")));
@@ -146,7 +157,7 @@ public class SysLoginService
         if (password.length() < UserConstants.PASSWORD_MIN_LENGTH
                 || password.length() > UserConstants.PASSWORD_MAX_LENGTH)
         {
-            AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.password.not.match")));
+            AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL,MessageUtils.message("user.password.not.match")));
             throw new UserPasswordNotMatchException();
         }
         // 用户名不在指定范围内 错误

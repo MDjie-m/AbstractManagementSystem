@@ -111,21 +111,23 @@ public class SecurityConfig
             .authorizeHttpRequests((requests) -> {
                 permitAllUrl.getUrls().forEach(url -> requests.antMatchers(url).permitAll());
                 // 对于登录login 注册register 验证码captchaImage 允许匿名访问
-                requests.antMatchers("/login", "/register", "/captchaImage").permitAll()
-                    // 静态资源，可匿名访问
-                    .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
-                    .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
-                    // 除上面外的所有请求全部需要鉴权认证
-                    .anyRequest().authenticated();
-            })
-            // 添加Logout filter
-            .logout(logout -> logout.logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler))
-            // 添加JWT filter
-            .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-            // 添加CORS filter
-            .addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class)
-            .addFilterBefore(corsFilter, LogoutFilter.class)
-            .build();
+                .antMatchers("/login", "/register", "/captchaImage").permitAll()
+                //滑块验证
+                .antMatchers("/login", "/captcha/get", "/captcha/check").permitAll()
+                // 静态资源，可匿名访问
+                .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
+                .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
+                // 除上面外的所有请求全部需要鉴权认证
+                .anyRequest().authenticated()
+                .and()
+                .headers().frameOptions().disable();
+        // 添加Logout filter
+        httpSecurity.logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler);
+        // 添加JWT filter
+        httpSecurity.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        // 添加CORS filter
+        httpSecurity.addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class);
+        httpSecurity.addFilterBefore(corsFilter, LogoutFilter.class);
     }
 
     /**

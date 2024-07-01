@@ -175,11 +175,25 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
+            <!-- ve模块-->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-ve</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
             <!-- 通用工具-->
             <dependency>
                 <groupId>com.ruoyi</groupId>
                 <artifactId>ruoyi-common</artifactId>
                 <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- SpringCache的依赖配置   --> <!--用于将redis替换为本地的ehcache-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-cache</artifactId>
+                <version>2.5.15</version>
             </dependency>
 
         </dependencies>
@@ -192,6 +206,7 @@
         <module>ruoyi-quartz</module>
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
+        <module>ruoyi-ve</module>
     </modules>
     <packaging>pom</packaging>
 

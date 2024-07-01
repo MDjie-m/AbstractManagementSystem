@@ -1,15 +1,13 @@
 package com.ruoyi.framework.web.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.RegisterBody;
-import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.user.CaptchaException;
 import com.ruoyi.common.exception.user.CaptchaExpireException;
+import com.ruoyi.common.utils.CacheUtils;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -17,6 +15,8 @@ import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * 注册校验方法
@@ -32,9 +32,6 @@ public class SysRegisterService
     @Autowired
     private ISysConfigService configService;
 
-    @Autowired
-    private RedisCache redisCache;
-
     /**
      * 注册
      */
@@ -43,14 +40,12 @@ public class SysRegisterService
         String msg = "", username = registerBody.getUsername(), password = registerBody.getPassword();
         SysUser sysUser = new SysUser();
         sysUser.setUserName(username);
-
         // 验证码开关
         boolean captchaEnabled = configService.selectCaptchaEnabled();
         if (captchaEnabled)
         {
             validateCaptcha(username, registerBody.getCode(), registerBody.getUuid());
         }
-
         if (StringUtils.isEmpty(username))
         {
             msg = "用户名不能为空";
@@ -100,9 +95,8 @@ public class SysRegisterService
      */
     public void validateCaptcha(String username, String code, String uuid)
     {
-        String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + StringUtils.nvl(uuid, "");
-        String captcha = redisCache.getCacheObject(verifyKey);
-        redisCache.deleteObject(verifyKey);
+        String captcha = CacheUtils.get(CacheConstants.CAPTCHA_CODE_KEY, StringUtils.nvl(uuid, ""), String.class);
+        CacheUtils.removeIfPresent(CacheConstants.CAPTCHA_CODE_KEY, StringUtils.nvl(uuid, ""));
         if (captcha == null)
         {
             throw new CaptchaExpireException();

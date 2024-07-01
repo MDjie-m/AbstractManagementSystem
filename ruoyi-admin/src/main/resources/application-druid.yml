@@ -6,9 +6,13 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://localhost:3306/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-                username: root
-                password: password
+#                url: jdbc:mysql://120.79.56.168:13306/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+#                username: root
+#                password: cherigo88!
+
+                url: jdbc:mysql://gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/ry-vue?sslMode=VERIFY_IDENTITY&serverTimezone=GMT%2B8
+                username: 2MYjwatZcERx8jv.root
+                password: RrfocvQQ1AvTS7m7
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
@@ -17,11 +21,11 @@ spring:
                 username: 
                 password: 
             # 初始连接数
-            initialSize: 5
+            initialSize: 2
             # 最小连接池数量
-            minIdle: 10
+            minIdle: 2
             # 最大连接池数量
-            maxActive: 20
+            maxActive: 10
             # 配置获取连接等待超时的时间
             maxWait: 60000
             # 配置连接超时时间
@@ -47,7 +51,7 @@ spring:
                 allow:
                 url-pattern: /druid/*
                 # 控制台管理用户名和密码
-                login-username: ruoyi
+                login-username: admin
                 login-password: 123456
             filter:
                 stat:
