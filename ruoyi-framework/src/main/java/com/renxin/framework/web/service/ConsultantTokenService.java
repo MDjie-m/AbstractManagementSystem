@@ -38,12 +38,15 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ConsultantTokenService {
     // 令牌自定义标识
+    @Value("${consultant.token.header}")
     private String header;
 
     // 令牌秘钥
+    @Value("${consultant.token.secret}")
     private String secret;
 
     // 令牌有效期（默认30分钟）单位为s
+    @Value("${consultant.token.expireTime}")
     private int expireTime;
 
     protected static final long MILLIS_SECOND = 1000;
@@ -68,7 +71,7 @@ public class ConsultantTokenService {
     private static final String DICT_CONSULTANT_EXPIRETIME = "consultant.token.expireTime";
 
 
-    @PostConstruct
+   /* @PostConstruct
     public String initData() {
 
         SysDictData dictData = new SysDictData();
@@ -90,7 +93,7 @@ public class ConsultantTokenService {
         }
         return header;
     }
-
+*/
     /**
      *
      * @return 用户id

@@ -130,6 +130,14 @@ token:
   # 令牌有效期（默认30分钟）
   expireTime: 120
 
+consultant:
+  token:
+  # 令牌自定义标识
+    header: Authorization-consultant
+  # 令牌密钥
+    secret: abcdefghijklmnopqrstuvwxyz
+  # 令牌有效期（默认30分钟）
+    expireTime: 120
   # token配置
 app:
   token:

@@ -31,6 +31,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
     @Value("${token.header}")
     private String appHeader;
 
+    @Value("${consultant.token.header}")
     private String consultantHeader;
 
     @Autowired
@@ -60,7 +61,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
             }
         }
 
-        this.consultantHeader = consultantTokenService.initData();
+        //this.consultantHeader = consultantTokenService.initData();
         if(StringUtils.isNotEmpty(consultantHeader)){
             // 检查是否为咨询用户，并进行身份验证
             String consultantHeaderName = request.getHeader(consultantHeader);

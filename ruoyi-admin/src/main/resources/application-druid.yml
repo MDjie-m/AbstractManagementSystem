@@ -6,15 +6,15 @@ spring:
     druid:
       # 开发
       # 主库数据源
-      #master:
-      #  url: jdbc:mysql://101.42.12.252:3306/psy-test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-      #  username: root
-      #  password: 123456qwerQWER=
+#      master:
+#        url: jdbc:mysql://101.42.12.252:3306/psy-test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+#        username: root
+#        password: 123456qwerQWER=
       # 本地
       master:
-        url: jdbc:mysql://127.0.0.1:3306/pocket?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: root
-        password: root
+        url: jdbc:mysql://10.137.142.232:3306/v9_pamp_release?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: sunzhengfeng
+        password: J2ynV26HfdsWeD548
       # 从库数据源
       slave:
         # 从数据源开关/默认关闭
