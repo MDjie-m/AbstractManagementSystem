@@ -12,7 +12,7 @@ import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 
 /**
- * 咨询师团督订单对象 psy_consultant_order
+ * 团队督导(组织)订单对象 psy_consultant_order
  * 
  * @author renxin
  * @date 2024-06-26

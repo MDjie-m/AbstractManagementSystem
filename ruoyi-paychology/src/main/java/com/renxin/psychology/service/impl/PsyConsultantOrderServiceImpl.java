@@ -9,7 +9,7 @@ import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.service.IPsyConsultantOrderService;
 
 /**
- * 咨询师团督订单Service业务层处理
+ * 团队督导(组织)订单Service业务层处理
  * 
  * @author renxin
  * @date 2024-06-26
@@ -21,10 +21,10 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     private PsyConsultantOrderMapper psyConsultantOrderMapper;
 
     /**
-     * 查询咨询师团督订单
+     * 查询团队督导(组织)订单
      * 
-     * @param orderNo 咨询师团督订单主键
-     * @return 咨询师团督订单
+     * @param orderNo 团队督导(组织)订单主键
+     * @return 团队督导(组织)订单
      */
     @Override
     public PsyConsultantOrder selectPsyConsultantOrderByOrderNo(String orderNo)
@@ -33,10 +33,10 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     }
 
     /**
-     * 查询咨询师团督订单列表
+     * 查询团队督导(组织)订单列表
      * 
-     * @param psyConsultantOrder 咨询师团督订单
-     * @return 咨询师团督订单
+     * @param psyConsultantOrder 团队督导(组织)订单
+     * @return 团队督导(组织)订单
      */
     @Override
     public List<PsyConsultantOrder> selectPsyConsultantOrderList(PsyConsultantOrder psyConsultantOrder)
@@ -45,9 +45,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     }
 
     /**
-     * 新增咨询师团督订单
+     * 新增团队督导(组织)订单
      * 
-     * @param psyConsultantOrder 咨询师团督订单
+     * @param psyConsultantOrder 团队督导(组织)订单
      * @return 结果
      */
     @Override
@@ -58,9 +58,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     }
 
     /**
-     * 修改咨询师团督订单
+     * 修改团队督导(组织)订单
      * 
-     * @param psyConsultantOrder 咨询师团督订单
+     * @param psyConsultantOrder 团队督导(组织)订单
      * @return 结果
      */
     @Override
@@ -71,9 +71,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     }
 
     /**
-     * 批量删除咨询师团督订单
+     * 批量删除团队督导(组织)订单
      * 
-     * @param orderNos 需要删除的咨询师团督订单主键
+     * @param orderNos 需要删除的团队督导(组织)订单主键
      * @return 结果
      */
     @Override
@@ -83,9 +83,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     }
 
     /**
-     * 删除咨询师团督订单信息
+     * 删除团队督导(组织)订单信息
      * 
-     * @param orderNo 咨询师团督订单主键
+     * @param orderNo 团队督导(组织)订单主键
      * @return 结果
      */
     @Override

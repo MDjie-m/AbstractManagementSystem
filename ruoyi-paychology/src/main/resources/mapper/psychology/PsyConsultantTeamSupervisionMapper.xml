@@ -104,7 +104,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deletePsyConsultantTeamSupervisionByIds" parameterType="String">
-        delete from psy_consultant_team_supervision where id in 
+        update psy_consultant_team_supervision
+        set del_flag = 1
+        where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

@@ -11,7 +11,7 @@ import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 
 /**
- * 咨询师团督任务对象 psy_consultant_supervision_task
+ * 团队督导(组织)任务对象 psy_consultant_supervision_task
  * 
  * @author renxin
  * @date 2024-06-26

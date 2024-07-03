@@ -1,6 +1,7 @@
 package com.renxin.psychology.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -8,13 +9,14 @@ import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 
 /**
- * 咨询师团体对象 psy_consultant_team_supervision
+ * 团队督导(组织)对象 psy_consultant_team_supervision
  * 
  * @author renxin
  * @date 2024-06-26
  */
 @NoArgsConstructor
 @TableName("psy_consultant_team_supervision")
+@Data
 public class PsyConsultantTeamSupervision extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -52,88 +54,10 @@ public class PsyConsultantTeamSupervision extends BaseEntity
 
     /** 删除标志（0代表存在 1代表删除） */
     private String delFlag;
-
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
-
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setTitle(String title) 
-    {
-        this.title = title;
-    }
-
-    public String getTitle() 
-    {
-        return title;
-    }
-    public void setLogoPicUrl(String logoPicUrl) 
-    {
-        this.logoPicUrl = logoPicUrl;
-    }
-
-    public String getLogoPicUrl() 
-    {
-        return logoPicUrl;
-    }
-    public void setDetailPicUrl(String detailPicUrl) 
-    {
-        this.detailPicUrl = detailPicUrl;
-    }
-
-    public String getDetailPicUrl() 
-    {
-        return detailPicUrl;
-    }
-    public void setCycle(String cycle) 
-    {
-        this.cycle = cycle;
-    }
-
-    public String getCycle() 
-    {
-        return cycle;
-    }
-    public void setCycleNumber(Long cycleNumber) 
-    {
-        this.cycleNumber = cycleNumber;
-    }
-
-    public Long getCycleNumber() 
-    {
-        return cycleNumber;
-    }
-    public void setConsultantId(String consultantId) 
-    {
-        this.consultantId = consultantId;
-    }
-
-    public String getConsultantId() 
-    {
-        return consultantId;
-    }
-    public void setStatus(String status) 
-    {
-        this.status = status;
-    }
-
-    public String getStatus() 
-    {
-        return status;
-    }
-    public void setDelFlag(String delFlag) 
-    {
-        this.delFlag = delFlag;
-    }
-
-    public String getDelFlag() 
-    {
-        return delFlag;
-    }
+    
+    private Integer pageNum;
+    private Integer pageSize;
+    
 
     @Override
     public String toString() {

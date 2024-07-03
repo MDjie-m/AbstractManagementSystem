@@ -1,28 +1,22 @@
-package com.renxin.app.controller.psychology;
+package com.renxin.web.controller.supervision;
 
-import java.util.List;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.renxin.common.annotation.Log;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.common.enums.BusinessType;
+import com.renxin.common.utils.poi.ExcelUtil;
 import com.renxin.psychology.domain.PsyConsultantSupervisionTask;
 import com.renxin.psychology.service.IPsyConsultantSupervisionTaskService;
-import com.renxin.common.utils.poi.ExcelUtil;
-import com.renxin.common.core.page.TableDataInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
- * 咨询师团督任务Controller
+ * 团队督导(组织)任务Controller
  * 
  * @author renxin
  * @date 2024-06-26
@@ -35,7 +29,7 @@ public class PsyConsultantSupervisionTaskController extends BaseController
     private IPsyConsultantSupervisionTaskService psyConsultantSupervisionTaskService;
 
     /**
-     * 查询咨询师团督任务列表
+     * 查询团队督导(组织)任务列表
      */
     @PreAuthorize("@ss.hasPermi('system:task:list')")
     @GetMapping("/list")
@@ -47,20 +41,20 @@ public class PsyConsultantSupervisionTaskController extends BaseController
     }
 
     /**
-     * 导出咨询师团督任务列表
+     * 导出团队督导(组织)任务列表
      */
     @PreAuthorize("@ss.hasPermi('system:task:export')")
-    @Log(title = "咨询师团督任务", businessType = BusinessType.EXPORT)
+    @Log(title = "团队督导(组织)任务", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, PsyConsultantSupervisionTask psyConsultantSupervisionTask)
     {
         List<PsyConsultantSupervisionTask> list = psyConsultantSupervisionTaskService.selectPsyConsultantSupervisionTaskList(psyConsultantSupervisionTask);
         ExcelUtil<PsyConsultantSupervisionTask> util = new ExcelUtil<PsyConsultantSupervisionTask>(PsyConsultantSupervisionTask.class);
-        util.exportExcel(response, list, "咨询师团督任务数据");
+        util.exportExcel(response, list, "团队督导(组织)任务数据");
     }
 
     /**
-     * 获取咨询师团督任务详细信息
+     * 获取团队督导(组织)任务详细信息
      */
     @PreAuthorize("@ss.hasPermi('system:task:query')")
     @GetMapping(value = "/{taskId}")
@@ -70,10 +64,10 @@ public class PsyConsultantSupervisionTaskController extends BaseController
     }
 
     /**
-     * 新增咨询师团督任务
+     * 新增团队督导(组织)任务
      */
     @PreAuthorize("@ss.hasPermi('system:task:add')")
-    @Log(title = "咨询师团督任务", businessType = BusinessType.INSERT)
+    @Log(title = "团队督导(组织)任务", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody PsyConsultantSupervisionTask psyConsultantSupervisionTask)
     {
@@ -81,10 +75,10 @@ public class PsyConsultantSupervisionTaskController extends BaseController
     }
 
     /**
-     * 修改咨询师团督任务
+     * 修改团队督导(组织)任务
      */
     @PreAuthorize("@ss.hasPermi('system:task:edit')")
-    @Log(title = "咨询师团督任务", businessType = BusinessType.UPDATE)
+    @Log(title = "团队督导(组织)任务", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody PsyConsultantSupervisionTask psyConsultantSupervisionTask)
     {
@@ -92,10 +86,10 @@ public class PsyConsultantSupervisionTaskController extends BaseController
     }
 
     /**
-     * 删除咨询师团督任务
+     * 删除团队督导(组织)任务
      */
     @PreAuthorize("@ss.hasPermi('system:task:remove')")
-    @Log(title = "咨询师团督任务", businessType = BusinessType.DELETE)
+    @Log(title = "团队督导(组织)任务", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{taskIds}")
     public AjaxResult remove(@PathVariable Long[] taskIds)
     {

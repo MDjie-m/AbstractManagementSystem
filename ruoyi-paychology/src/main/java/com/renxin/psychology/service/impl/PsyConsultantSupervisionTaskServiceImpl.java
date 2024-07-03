@@ -9,7 +9,7 @@ import com.renxin.psychology.domain.PsyConsultantSupervisionTask;
 import com.renxin.psychology.service.IPsyConsultantSupervisionTaskService;
 
 /**
- * 咨询师团督任务Service业务层处理
+ * 团队督导(组织)任务Service业务层处理
  * 
  * @author renxin
  * @date 2024-06-26
@@ -21,10 +21,10 @@ public class PsyConsultantSupervisionTaskServiceImpl implements IPsyConsultantSu
     private PsyConsultantSupervisionTaskMapper psyConsultantSupervisionTaskMapper;
 
     /**
-     * 查询咨询师团督任务
+     * 查询团队督导(组织)任务
      * 
-     * @param taskId 咨询师团督任务主键
-     * @return 咨询师团督任务
+     * @param taskId 团队督导(组织)任务主键
+     * @return 团队督导(组织)任务
      */
     @Override
     public PsyConsultantSupervisionTask selectPsyConsultantSupervisionTaskByTaskId(Long taskId)
@@ -33,10 +33,10 @@ public class PsyConsultantSupervisionTaskServiceImpl implements IPsyConsultantSu
     }
 
     /**
-     * 查询咨询师团督任务列表
+     * 查询团队督导(组织)任务列表
      * 
-     * @param psyConsultantSupervisionTask 咨询师团督任务
-     * @return 咨询师团督任务
+     * @param psyConsultantSupervisionTask 团队督导(组织)任务
+     * @return 团队督导(组织)任务
      */
     @Override
     public List<PsyConsultantSupervisionTask> selectPsyConsultantSupervisionTaskList(PsyConsultantSupervisionTask psyConsultantSupervisionTask)
@@ -45,9 +45,9 @@ public class PsyConsultantSupervisionTaskServiceImpl implements IPsyConsultantSu
     }
 
     /**
-     * 新增咨询师团督任务
+     * 新增团队督导(组织)任务
      * 
-     * @param psyConsultantSupervisionTask 咨询师团督任务
+     * @param psyConsultantSupervisionTask 团队督导(组织)任务
      * @return 结果
      */
     @Override
@@ -58,9 +58,9 @@ public class PsyConsultantSupervisionTaskServiceImpl implements IPsyConsultantSu
     }
 
     /**
-     * 修改咨询师团督任务
+     * 修改团队督导(组织)任务
      * 
-     * @param psyConsultantSupervisionTask 咨询师团督任务
+     * @param psyConsultantSupervisionTask 团队督导(组织)任务
      * @return 结果
      */
     @Override
@@ -71,9 +71,9 @@ public class PsyConsultantSupervisionTaskServiceImpl implements IPsyConsultantSu
     }
 
     /**
-     * 批量删除咨询师团督任务
+     * 批量删除团队督导(组织)任务
      * 
-     * @param taskIds 需要删除的咨询师团督任务主键
+     * @param taskIds 需要删除的团队督导(组织)任务主键
      * @return 结果
      */
     @Override
@@ -83,9 +83,9 @@ public class PsyConsultantSupervisionTaskServiceImpl implements IPsyConsultantSu
     }
 
     /**
-     * 删除咨询师团督任务信息
+     * 删除团队督导(组织)任务信息
      * 
-     * @param taskId 咨询师团督任务主键
+     * @param taskId 团队督导(组织)任务主键
      * @return 结果
      */
     @Override
