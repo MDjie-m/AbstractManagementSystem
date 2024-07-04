@@ -4,16 +4,21 @@ import com.github.pagehelper.PageHelper;
 import com.renxin.common.annotation.Log;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.core.domain.dto.ConsultDTO;
 import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.common.enums.BusinessType;
 import com.renxin.common.utils.poi.ExcelUtil;
+import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -25,12 +30,15 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/system/supervision")
-@Api(value = "PsyConsultantTeamSupervisionController" ,tags = {"团队督导(组织)Api"})
+@Api(value = "PsyConsultantTeamSupervisionController" ,tags = {"管理端-团队督导(组织)Api"})
 public class PsyConsultantTeamSupervisionController extends BaseController
 {
     @Autowired
     private IPsyConsultantTeamSupervisionService psyConsultantTeamSupervisionService;
 
+    @Resource
+    private ConsultantTokenService consultantTokenService;
+    
     /**
      * 查询团队督导(组织)列表
      */
@@ -39,7 +47,7 @@ public class PsyConsultantTeamSupervisionController extends BaseController
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody PsyConsultantTeamSupervision req)
     {
-        PageHelper.startPage(req.getPageNum(), req.getPageSize(), "");
+        startPage();
         List<PsyConsultantTeamSupervision> list = psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionList(req);
         return getDataTable(list);
     }

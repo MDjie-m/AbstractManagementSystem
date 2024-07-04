@@ -1,6 +1,7 @@
 package com.renxin.psychology.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -15,6 +16,7 @@ import com.renxin.common.core.domain.BaseEntity;
  */
 @NoArgsConstructor
 @TableName("psy_consultant_supervision_member")
+@Data
 public class PsyConsultantSupervisionMember extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -25,6 +27,10 @@ public class PsyConsultantSupervisionMember extends BaseEntity
     /** 督导团员ID、个体督导ID、个体体验ID */
     @Excel(name = "督导团员ID、个体督导ID、个体体验ID")
     private Long supervisionId;
+
+    /** 团队id */
+    @Excel(name = "团队id")
+    private Long teamSupervisionId;
 
     /** 1:团督  2.个体督导  3个体体验 */
     @Excel(name = "1:团督  2.个体督导  3个体体验")
@@ -38,63 +44,12 @@ public class PsyConsultantSupervisionMember extends BaseEntity
     @Excel(name = "成员ID(咨询师ID）")
     private String memberId;
 
+    /** 备注 */
+    @Excel(name = "备注")
+    private String remark;
+    
     /** 删除标志（0代表存在 1代表删除） */
     private String delFlag;
-
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
-
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setSupervisionId(Long supervisionId) 
-    {
-        this.supervisionId = supervisionId;
-    }
-
-    public Long getSupervisionId() 
-    {
-        return supervisionId;
-    }
-    public void setSupervisionType(String supervisionType) 
-    {
-        this.supervisionType = supervisionType;
-    }
-
-    public String getSupervisionType() 
-    {
-        return supervisionType;
-    }
-    public void setOrderNo(Long orderNo) 
-    {
-        this.orderNo = orderNo;
-    }
-
-    public Long getOrderNo() 
-    {
-        return orderNo;
-    }
-    public void setMemberId(String memberId) 
-    {
-        this.memberId = memberId;
-    }
-
-    public String getMemberId() 
-    {
-        return memberId;
-    }
-    public void setDelFlag(String delFlag) 
-    {
-        this.delFlag = delFlag;
-    }
-
-    public String getDelFlag() 
-    {
-        return delFlag;
-    }
 
     @Override
     public String toString() {

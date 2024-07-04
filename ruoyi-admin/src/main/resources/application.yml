@@ -128,7 +128,7 @@ token:
   # 令牌密钥
   secret: abcdefghijklmnopqrstuvwxyz
   # 令牌有效期（默认30分钟）
-  expireTime: 120
+  expireTime: 2592000
 
 consultant:
   token:
@@ -142,7 +142,7 @@ consultant:
 app:
   token:
     # 令牌自定义标识
-    header: Authorization
+    header: Authorization-app
     # 令牌密钥
     secret: appabcdefghijklmnopqrstuvwxyz
     # 令牌有效期（默认7天 60*60*24*7）单位s

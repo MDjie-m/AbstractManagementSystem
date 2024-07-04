@@ -58,4 +58,10 @@ public interface PsyConsultantSupervisionMemberMapper
      * @return 结果
      */
     public int deletePsyConsultantSupervisionMemberByIds(Long[] ids);
+
+    /**
+     * 查询指定团队的成员人数
+     */
+    
+    int queryMemberCount(String teamId);
 }

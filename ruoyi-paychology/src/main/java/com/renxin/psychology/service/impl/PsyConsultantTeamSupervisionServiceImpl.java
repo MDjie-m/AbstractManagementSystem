@@ -5,6 +5,8 @@ import java.util.List;
 import com.renxin.common.core.domain.model.LoginUser;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
+import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantTeamSupervisionMapper;
@@ -23,6 +25,9 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
 {
     @Autowired
     private PsyConsultantTeamSupervisionMapper psyConsultantTeamSupervisionMapper;
+
+    @Autowired
+    private PsyConsultantSupervisionMemberMapper memberMapper;
 
     /**
      * 查询团队督导(组织)
@@ -45,7 +50,19 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     @Override
     public List<PsyConsultantTeamSupervision> selectPsyConsultantTeamSupervisionList(PsyConsultantTeamSupervision psyConsultantTeamSupervision)
     {
-        return psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionList(psyConsultantTeamSupervision);
+        List<PsyConsultantTeamSupervision> teamList = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionList(psyConsultantTeamSupervision);
+
+        for (PsyConsultantTeamSupervision team : teamList) {
+            //最大团队人数
+            Integer maxNumPeople = team.getMaxNumPeople();
+            if (ObjectUtils.isNotEmpty(maxNumPeople)){
+                //当前登记人数
+                int memberNum = memberMapper.queryMemberCount(team.getId() + "");
+                //剩余名额数
+                team.setSurplusNum(maxNumPeople - memberNum);
+            }
+        }
+        return teamList;
     }
 
     /**
@@ -58,7 +75,9 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     @Transactional(rollbackFor = Exception.class)
     public int insertPsyConsultantTeamSupervision(PsyConsultantTeamSupervision psyConsultantTeamSupervision)
     {
-        //LoginUser loginUser = SecurityUtils.getLoginUser();
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        psyConsultantTeamSupervision.setCreateBy(loginUser.getUserId()+"");
+        psyConsultantTeamSupervision.setUpdateBy(loginUser.getUserId()+"");
         psyConsultantTeamSupervision.setCreateTime(DateUtils.getNowDate());
         psyConsultantTeamSupervision.setUpdateTime(DateUtils.getNowDate());
         return psyConsultantTeamSupervisionMapper.insertPsyConsultantTeamSupervision(psyConsultantTeamSupervision);

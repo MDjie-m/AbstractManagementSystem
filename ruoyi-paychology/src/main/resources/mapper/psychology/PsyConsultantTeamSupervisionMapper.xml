@@ -19,28 +19,82 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        
+        <result property="periodNo" column="period_no" />
+        <result property="weekDay" column="week_day" />
+        <result property="lectureStartTime" column="lecture_start_time" />
+        <result property="lectureEndTime" column="lecture_end_time" />
+        <result property="firstLectureDate" column="first_lecture_date" />
+        <result property="maxNumPeople" column="max_num_people" />
+        <result property="price" column="price" />
+        <result property="teamType" column="team_type" />
     </resultMap>
 
     <sql id="selectPsyConsultantTeamSupervisionVo">
-        select id, title, logo_pic_url, detail_pic_url, cycle, cycle_number, consultant_id, status, remark, del_flag, create_by, create_time, update_by, update_time from psy_consultant_team_supervision
+        team.id, team.title, team.logo_pic_url, team.detail_pic_url, team.cycle, team.cycle_number, team.consultant_id, team.status, team.remark, team.del_flag,
+        team.create_by, team.create_time, team.update_by, team.update_time,
+        team.period_no,team.week_day,team.lecture_start_time, team.lecture_end_time,team.first_lecture_date,team.max_num_people,team.price,team.team_type            
+        
     </sql>
 
     <select id="selectPsyConsultantTeamSupervisionList" parameterType="PsyConsultantTeamSupervision" resultMap="PsyConsultantTeamSupervisionResult">
-        <include refid="selectPsyConsultantTeamSupervisionVo"/>
-        <where>  
-            <if test="title != null  and title != ''"> and title = #{title}</if>
-            <if test="logoPicUrl != null  and logoPicUrl != ''"> and logo_pic_url = #{logoPicUrl}</if>
-            <if test="detailPicUrl != null  and detailPicUrl != ''"> and detail_pic_url = #{detailPicUrl}</if>
-            <if test="cycle != null  and cycle != ''"> and cycle = #{cycle}</if>
-            <if test="cycleNumber != null "> and cycle_number = #{cycleNumber}</if>
-            <if test="consultantId != null  and consultantId != ''"> and consultant_id = #{consultantId}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
+        select 
+            <include refid="selectPsyConsultantTeamSupervisionVo"/>
+            ,
+            con.user_name as consultUserName,
+            con.avatar as consultAvatar,
+            con.tabs as consultTabs,
+            con.info as consultInfo,
+            con.detail as consultDetail,
+            con.experience as consultExperience,
+            con.genre as consultGenre,
+               
+            con.mode as consultMode,
+            con.qualification as consultQualification,
+            con.way_str as consultWayStr
+        from psy_consultant_team_supervision team
+        left join psy_consult con on team.consultant_id = con.id
+        left join psy_consult_work wk on team.consultant_id = wk.consult_id and wk.status = 0 and wk.live != "[]"
+        <where>
+            team.del_flag = 0
+            <if test="title != null  and title != ''"> and team.title = #{title}</if>
+            <if test="logoPicUrl != null  and logoPicUrl != ''"> and team.logo_pic_url = #{logoPicUrl}</if>
+            <if test="detailPicUrl != null  and detailPicUrl != ''"> and team.detail_pic_url = #{detailPicUrl}</if>
+            <if test="cycle != null  and cycle != ''"> and team.cycle = #{cycle}</if>
+            <if test="cycleNumber != null "> and team.cycle_number = #{cycleNumber}</if>
+            <if test="consultantId != null  and consultantId != ''"> and team.consultant_id = #{consultantId}</if>
+            <if test="status != null  and status != ''"> and team.status = #{status}</if>
+            <if test="teamType != null  and teamType != ''"> and team.team_type = #{teamType}</if>
+            
+            <if test="weekDay != null  and weekDay != ''"> and team.week_day = #{weekDay}</if>
+            <if test="lectureStartTimeBegin != null  and lectureStartTimeBegin != ''"> and team.lecture_start_time &gt;= #{lectureStartTimeBegin}</if>
+            <if test="lectureEndTimeFinish != null  and lectureEndTimeFinish != ''"> and team.lecture_start_time &lt;= #{lectureEndTimeFinish}</if>
+            <if test="minPrice != null  and minPrice != ''"> and team.price &gt;= #{minPrice}</if>
+            <if test="maxPrice != null  and maxPrice != ''"> and team.price &lt;= #{maxPrice}</if>
+            
+            <if test="consultTabs != null  and consultTabs != ''"> and con.tabs like concat('%',#{consultTabs},'%')</if>
+            <if test="consultGenre != null  and consultGenre != ''"> and con.genre like concat('%',#{consultGenre},'%')</if>
+            
+            <if test="waitDays != null  and waitDays != ''"> and wk.day >= CURDATE() AND day &lt; CURDATE() + INTERVAL #{waitDays} DAY</if>
+
         </where>
+        group by team.id
     </select>
     
     <select id="selectPsyConsultantTeamSupervisionById" parameterType="Long" resultMap="PsyConsultantTeamSupervisionResult">
+        select
         <include refid="selectPsyConsultantTeamSupervisionVo"/>
-        where id = #{id}
+        ,
+        con.user_name as consultUserName,
+        con.avatar as consultAvatar,
+        con.tabs as consultTabs,
+        con.info as consultInfo,
+        con.detail as consultDetail,
+        con.experience as consultExperience,
+        con.genre as consultGenre
+        from psy_consultant_team_supervision team
+        left join psy_consult con on team.consultant_id = con.id
+        where team.id = #{id}
     </select>
         
     <insert id="insertPsyConsultantTeamSupervision" parameterType="PsyConsultantTeamSupervision">
@@ -60,6 +114,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <!-- 新增字段 -->
+            <if test="periodNo != null">period_no,</if>
+            <if test="weekDay != null">week_day,</if>
+            <if test="lectureStartTime != null">lecture_start_time,</if>
+            <if test="lectureEndTime != null">lecture_end_time,</if>
+            <if test="firstLectureDate != null">first_lecture_date,</if>
+            <if test="maxNumPeople != null">max_num_people,</if>
+            <if test="price != null">price,</if>
+            <if test="teamType != null">team_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -76,6 +139,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <!-- 新增字段 -->
+            <if test="periodNo != null">#{periodNo},</if>
+            <if test="weekDay != null">#{weekDay},</if>
+            <if test="lectureStartTime != null">#{lectureStartTime},</if>
+            <if test="lectureEndTime != null">#{lectureEndTime},</if>
+            <if test="firstLectureDate != null">#{firstLectureDate},</if>
+            <if test="maxNumPeople != null">#{maxNumPeople},</if>
+            <if test="price != null">#{price},</if>
+            <if test="teamType != null">#{teamType},</if>
          </trim>
     </insert>
 
@@ -95,6 +167,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <!-- 新增字段 -->
+            <if test="periodNo != null">period_no = #{periodNo},</if>
+            <if test="weekDay != null">week_day = #{weekDay},</if>
+            <if test="lectureStartTime != null">lecture_start_time = #{lectureStartTime},</if>
+            <if test="lectureEndTime != null">lecture_end_time = #{lectureEndTime},</if>
+            <if test="firstLectureDate != null">first_lecture_date = #{firstLectureDate},</if>
+            <if test="maxNumPeople != null">max_num_people = #{maxNumPeople},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="teamType != null">team_type = #{teamType},</if>
         </trim>
         where id = #{id}
     </update>

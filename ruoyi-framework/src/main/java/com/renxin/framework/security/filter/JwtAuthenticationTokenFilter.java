@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.renxin.common.core.domain.dto.ConsultDTO;
+import com.renxin.framework.web.service.AppTokenService;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,10 +30,13 @@ import com.renxin.framework.web.service.TokenService;
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
 {
     @Value("${token.header}")
-    private String appHeader;
+    private String adminHeader;
 
     @Value("${consultant.token.header}")
     private String consultantHeader;
+
+    @Value("${app.token.header}")
+    private String appHeader;
 
     @Autowired
     private TokenService tokenService;
@@ -40,14 +44,17 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
     @Autowired
     private ConsultantTokenService consultantTokenService;
 
+    @Autowired
+    private AppTokenService appTokenService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException
     {
-        // 检查是否为普通用户，并进行身份验证
-        String appHeaderName = request.getHeader(appHeader);
-        if(StringUtils.isNotEmpty(appHeaderName)){
-            // 获取当前登录的普通用户
+        // 检查是否为管理用户，并进行身份验证
+        String adminHeaderData = request.getHeader(adminHeader);
+        if(StringUtils.isNotEmpty(adminHeaderData)){
+            // 获取当前登录的管理用户
             LoginUser loginUser = tokenService.getLoginUser(request);
             // 当普通用户存在且当前认证为空时，进行身份验证
             if (StringUtils.isNotNull(loginUser) && StringUtils.isNull(SecurityUtils.getAuthentication()))
@@ -60,10 +67,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
-
-        //this.consultantHeader = consultantTokenService.initData();
-        if(StringUtils.isNotEmpty(consultantHeader)){
-            // 检查是否为咨询用户，并进行身份验证
+        
+        String consultantHeaderData = request.getHeader(consultantHeader);
+        if(StringUtils.isNotEmpty(consultantHeaderData)){
+            // 检查是否为咨询师用户，并进行身份验证
             String consultantHeaderName = request.getHeader(consultantHeader);
             if(StringUtils.isNotEmpty(consultantHeaderName)){
                 // 获取当前登录的咨询用户
@@ -80,6 +87,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
                 }
             }
         }
+        
+        
 
         chain.doFilter(request, response);
     }

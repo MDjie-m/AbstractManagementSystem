@@ -1,8 +1,6 @@
 package com.renxin.common.utils;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.renxin.common.constant.HttpStatus;
@@ -82,13 +80,7 @@ public class SecurityUtils
      */
     public static Authentication getAuthentication()
     {
-        SecurityContext context = SecurityContextHolder.getContext();
-        Authentication authentication = context.getAuthentication();
-        if (ObjectUtils.isNotEmpty(authentication)){
-            Object principal = authentication.getPrincipal();
-            LoginUser loginUser = (LoginUser)authentication.getPrincipal();
-        }
-        return authentication;
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 
     /**

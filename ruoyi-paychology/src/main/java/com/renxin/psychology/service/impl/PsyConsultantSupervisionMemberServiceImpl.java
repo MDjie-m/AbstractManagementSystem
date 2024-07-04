@@ -1,7 +1,12 @@
 package com.renxin.psychology.service.impl;
 
 import java.util.List;
+
+import com.renxin.common.core.domain.model.LoginUser;
 import com.renxin.common.utils.DateUtils;
+import com.renxin.common.utils.SecurityUtils;
+import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.mapper.PsyConsultantTeamSupervisionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
@@ -19,6 +24,9 @@ public class PsyConsultantSupervisionMemberServiceImpl implements IPsyConsultant
 {
     @Autowired
     private PsyConsultantSupervisionMemberMapper psyConsultantSupervisionMemberMapper;
+
+    @Autowired
+    private PsyConsultantTeamSupervisionMapper psyConsultantTeamSupervisionMapper;
 
     /**
      * 查询督导成员
@@ -51,10 +59,19 @@ public class PsyConsultantSupervisionMemberServiceImpl implements IPsyConsultant
      * @return 结果
      */
     @Override
-    public int insertPsyConsultantSupervisionMember(PsyConsultantSupervisionMember psyConsultantSupervisionMember)
+    public int insertPsyConsultantSupervisionMember(PsyConsultantSupervisionMember req)
     {
-        psyConsultantSupervisionMember.setCreateTime(DateUtils.getNowDate());
-        return psyConsultantSupervisionMemberMapper.insertPsyConsultantSupervisionMember(psyConsultantSupervisionMember);
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        req.setCreateBy(loginUser.getUserId()+"");
+        req.setUpdateBy(loginUser.getUserId()+"");
+        req.setCreateTime(DateUtils.getNowDate());
+        req.setUpdateTime(DateUtils.getNowDate());
+
+        PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(req.getTeamSupervisionId());
+        req.setSupervisionId(Long.valueOf(team.getConsultantId()));
+        req.setSupervisionType("1");
+        
+        return psyConsultantSupervisionMemberMapper.insertPsyConsultantSupervisionMember(req);
     }
 
     /**

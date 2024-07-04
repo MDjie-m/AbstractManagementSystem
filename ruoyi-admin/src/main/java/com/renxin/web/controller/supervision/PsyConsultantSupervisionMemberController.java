@@ -8,6 +8,7 @@ import com.renxin.common.enums.BusinessType;
 import com.renxin.common.utils.poi.ExcelUtil;
 import com.renxin.psychology.domain.PsyConsultantSupervisionMember;
 import com.renxin.psychology.service.IPsyConsultantSupervisionMemberService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/system/member")
+@Api(value = "PsyConsultantSupervisionMemberController" ,tags = {"管理端-督导成员Api"})
 public class PsyConsultantSupervisionMemberController extends BaseController
 {
     @Autowired
@@ -31,7 +33,7 @@ public class PsyConsultantSupervisionMemberController extends BaseController
     /**
      * 查询督导成员列表
      */
-    @PreAuthorize("@ss.hasPermi('system:member:list')")
+    //@PreAuthorize("@ss.hasPermi('system:member:list')")
     @GetMapping("/list")
     public TableDataInfo list(PsyConsultantSupervisionMember psyConsultantSupervisionMember)
     {
@@ -43,7 +45,7 @@ public class PsyConsultantSupervisionMemberController extends BaseController
     /**
      * 导出督导成员列表
      */
-    @PreAuthorize("@ss.hasPermi('system:member:export')")
+    //@PreAuthorize("@ss.hasPermi('system:member:export')")
     @Log(title = "督导成员", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, PsyConsultantSupervisionMember psyConsultantSupervisionMember)
@@ -56,7 +58,7 @@ public class PsyConsultantSupervisionMemberController extends BaseController
     /**
      * 获取督导成员详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:member:query')")
+    //@PreAuthorize("@ss.hasPermi('system:member:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -66,9 +68,9 @@ public class PsyConsultantSupervisionMemberController extends BaseController
     /**
      * 新增督导成员
      */
-    @PreAuthorize("@ss.hasPermi('system:member:add')")
+    //@PreAuthorize("@ss.hasPermi('system:member:add')")
     @Log(title = "督导成员", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody PsyConsultantSupervisionMember psyConsultantSupervisionMember)
     {
         return toAjax(psyConsultantSupervisionMemberService.insertPsyConsultantSupervisionMember(psyConsultantSupervisionMember));
@@ -77,9 +79,9 @@ public class PsyConsultantSupervisionMemberController extends BaseController
     /**
      * 修改督导成员
      */
-    @PreAuthorize("@ss.hasPermi('system:member:edit')")
+    //@PreAuthorize("@ss.hasPermi('system:member:edit')")
     @Log(title = "督导成员", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PutMapping("/edit")
     public AjaxResult edit(@RequestBody PsyConsultantSupervisionMember psyConsultantSupervisionMember)
     {
         return toAjax(psyConsultantSupervisionMemberService.updatePsyConsultantSupervisionMember(psyConsultantSupervisionMember));
@@ -88,9 +90,9 @@ public class PsyConsultantSupervisionMemberController extends BaseController
     /**
      * 删除督导成员
      */
-    @PreAuthorize("@ss.hasPermi('system:member:remove')")
+    //@PreAuthorize("@ss.hasPermi('system:member:remove')")
     @Log(title = "督导成员", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+	@DeleteMapping("/deleteById/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(psyConsultantSupervisionMemberService.deletePsyConsultantSupervisionMemberByIds(ids));

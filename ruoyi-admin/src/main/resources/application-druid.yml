@@ -86,22 +86,22 @@ spring:
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: -1ms
 # token配置
-token:
-  # 令牌自定义标识
-  header: Authorization
-  # 令牌密钥
-  secret: abcdefghijklmnopqrstuvwxyz
-  # 令牌有效期（默认30分钟）
-  expireTime: 120
-
-  # token配置
-app:
-  token:
-    # 令牌自定义标识
-    header: Authorization
-    # 令牌密钥
-    secret: appabcdefghijklmnopqrstuvwxyz
-    # 令牌有效期（默认7天 60*60*24*7）单位s
-    expireTime: 2592000
-  filter:
-    urls: /app/user/bindPhone,app/api/wechatPay/v3/wechatPay,/app/wxPay/**,/app/*/order/**,/app/gauge/result,/app/gauge/result/commit,/app/gauge/questions/list,/app/home/gauge/getInfo,/app/course/detail,/app/course/userSection/saveUserSectionInfo,/app/course/getCourseListByUserId*
+#token:
+#  # 令牌自定义标识
+#  header: Authorization
+#  # 令牌密钥
+#  secret: abcdefghijklmnopqrstuvwxyz
+#  # 令牌有效期（默认30分钟）
+#  expireTime: 120
+#
+#  # token配置
+#app:
+#  token:
+#    # 令牌自定义标识
+#    header: Authorization
+#    # 令牌密钥
+#    secret: appabcdefghijklmnopqrstuvwxyz
+#    # 令牌有效期（默认7天 60*60*24*7）单位s
+#    expireTime: 2592000
+#  filter:
+#    urls: /app/user/bindPhone,app/api/wechatPay/v3/wechatPay,/app/wxPay/**,/app/*/order/**,/app/gauge/result,/app/gauge/result/commit,/app/gauge/questions/list,/app/home/gauge/getInfo,/app/course/detail,/app/course/userSection/saveUserSectionInfo,/app/course/getCourseListByUserId*
