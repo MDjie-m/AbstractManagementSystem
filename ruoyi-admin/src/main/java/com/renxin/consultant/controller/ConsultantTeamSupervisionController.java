@@ -23,7 +23,7 @@ import java.util.List;
  * @date 2024-06-26
  */
 @RestController
-@RequestMapping("/consultant/supervision")
+@RequestMapping("/consultant/supervision-team")
 @Api(value = "ConsultantTeamSupervisionController" ,tags = {"咨询师端-团队督导(组织)Api"})
 public class ConsultantTeamSupervisionController extends BaseController
 {

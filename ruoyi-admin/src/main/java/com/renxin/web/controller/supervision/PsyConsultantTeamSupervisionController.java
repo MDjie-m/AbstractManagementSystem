@@ -29,7 +29,7 @@ import java.util.List;
  * @date 2024-06-26
  */
 @RestController
-@RequestMapping("/system/supervision")
+@RequestMapping("/system/supervision-team")
 @Api(value = "PsyConsultantTeamSupervisionController" ,tags = {"管理端-团队督导(组织)Api"})
 public class PsyConsultantTeamSupervisionController extends BaseController
 {
@@ -74,14 +74,15 @@ public class PsyConsultantTeamSupervisionController extends BaseController
     @GetMapping(value = "/queryById/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
-        return AjaxResult.success(psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionById(id));
+        PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionById(id);
+        return AjaxResult.success(team);
     }
 
     /**
      * 新增团队督导(组织)
      */
     @ApiOperation("新增团队督导(组织)")
-    //@PreAuthorize("@ss.hasPermi('system:supervision:add')")
+    //@PreAuthorize("@ss.hasPermi('system:supervision-team:add')")
     @Log(title = "团队督导(组织)", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     public AjaxResult add(@RequestBody PsyConsultantTeamSupervision psyConsultantTeamSupervision)
@@ -95,7 +96,7 @@ public class PsyConsultantTeamSupervisionController extends BaseController
     @ApiOperation("修改团队督导(组织)")
     //@PreAuthorize("@ss.hasPermi('system:supervision:edit')")
     @Log(title = "团队督导(组织)", businessType = BusinessType.UPDATE)
-    @PutMapping("/edit")
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody PsyConsultantTeamSupervision psyConsultantTeamSupervision)
     {
         return toAjax(psyConsultantTeamSupervisionService.updatePsyConsultantTeamSupervision(psyConsultantTeamSupervision));

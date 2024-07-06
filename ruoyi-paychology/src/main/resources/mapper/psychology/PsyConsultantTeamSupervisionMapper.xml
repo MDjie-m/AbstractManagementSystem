@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join psy_consult_work wk on team.consultant_id = wk.consult_id and wk.status = 0 and wk.live != "[]"
         <where>
             team.del_flag = 0
-            <if test="title != null  and title != ''"> and team.title = #{title}</if>
+            <if test="title != null  and title != ''"> and team.title like concat('%',#{title},'%') </if>
             <if test="logoPicUrl != null  and logoPicUrl != ''"> and team.logo_pic_url = #{logoPicUrl}</if>
             <if test="detailPicUrl != null  and detailPicUrl != ''"> and team.detail_pic_url = #{detailPicUrl}</if>
             <if test="cycle != null  and cycle != ''"> and team.cycle = #{cycle}</if>

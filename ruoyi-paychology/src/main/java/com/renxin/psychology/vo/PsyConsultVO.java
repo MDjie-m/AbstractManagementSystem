@@ -111,4 +111,7 @@ public class PsyConsultVO extends BaseValObj implements Serializable
 
     private String lang;
     
+    /** 级别  1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师*/
+    private Integer level;
+    
 }

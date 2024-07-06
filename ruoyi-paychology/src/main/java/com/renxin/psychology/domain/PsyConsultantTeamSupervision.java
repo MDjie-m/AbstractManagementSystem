@@ -10,6 +10,8 @@ import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 import org.apache.poi.hpsf.Decimal;
 
+import java.util.List;
+
 /**
  * 团队督导(组织)对象 psy_consultant_team_supervision
  * 
@@ -116,7 +118,9 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     private Integer waitDays;
     /** 剩余名额数*/
     private Integer surplusNum;
-    
+
+    /** 成员清单*/
+    private List<PsyConsultantSupervisionMember> memberList;
     
 
     @Override

@@ -5,6 +5,7 @@ import java.util.List;
 import com.renxin.common.core.domain.model.LoginUser;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
+import com.renxin.psychology.domain.PsyConsultantSupervisionMember;
 import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,18 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     @Override
     public PsyConsultantTeamSupervision selectPsyConsultantTeamSupervisionById(Long id)
     {
-        return psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(id);
+        PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(id);
+        
+        //若为[团队督导], 则查询成员信息
+        if (team.getTeamType() == 1){
+            PsyConsultantSupervisionMember memberReq = new PsyConsultantSupervisionMember();
+            memberReq.setTeamSupervisionId(team.getId());
+            List<PsyConsultantSupervisionMember> memberList = memberMapper.selectPsyConsultantSupervisionMemberList(memberReq);
+            team.setMemberList(memberList);
+        }
+        
+        
+        return team;
     }
 
     /**
@@ -80,6 +92,8 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
         psyConsultantTeamSupervision.setUpdateBy(loginUser.getUserId()+"");
         psyConsultantTeamSupervision.setCreateTime(DateUtils.getNowDate());
         psyConsultantTeamSupervision.setUpdateTime(DateUtils.getNowDate());
+        
+        clearColumn(psyConsultantTeamSupervision);
         return psyConsultantTeamSupervisionMapper.insertPsyConsultantTeamSupervision(psyConsultantTeamSupervision);
     }
 
@@ -93,8 +107,31 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     public int updatePsyConsultantTeamSupervision(PsyConsultantTeamSupervision psyConsultantTeamSupervision)
     {
         psyConsultantTeamSupervision.setUpdateTime(DateUtils.getNowDate());
+        clearColumn(psyConsultantTeamSupervision);
         return psyConsultantTeamSupervisionMapper.updatePsyConsultantTeamSupervision(psyConsultantTeamSupervision);
     }
+    
+    //当类型不为"团队督导"时, 清除冗余字段
+    private void clearColumn(PsyConsultantTeamSupervision team){
+        if (team.getTeamType() != 1){
+            //team.setConsultantId(null);
+            //team.setStatus(null);
+            //team.setPrice(null);
+            //team.setTeamType(null);
+            team.setTitle(null);
+            team.setCycleNumber(null);
+            team.setPeriodNo(null);
+            team.setWeekDay(null);
+            team.setLectureStartTime(null);
+            team.setLectureEndTime(null);
+            team.setFirstLectureDate(null);
+            team.setMaxNumPeople(null);
+            team.setSurplusNum(null);
+            team.setMemberList(null);
+
+        }
+    }
+    
 
     /**
      * 批量删除团队督导(组织)

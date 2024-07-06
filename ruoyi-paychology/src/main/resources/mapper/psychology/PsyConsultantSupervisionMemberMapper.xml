@@ -24,7 +24,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectPsyConsultantSupervisionMemberList" parameterType="PsyConsultantSupervisionMember" resultMap="PsyConsultantSupervisionMemberResult">
-        <include refid="selectPsyConsultantSupervisionMemberVo"/>
+        select
+            mem.id, mem.supervision_id, mem.supervision_type, mem.order_no, mem.member_id, mem.remark, mem.del_flag,
+            mem.create_by, mem.create_time, mem.update_by, mem.update_time ,
+            con.user_name as memberName,
+            con.avatar as memberAvatar,
+            con.email as memberEmail,
+            con.phonenumber as memberPhonenumber,
+            con.sex as memberSex,
+            con.level as memberLevel
+        from psy_consultant_supervision_member mem
+        left join psy_consult con on mem.member_id = con.id 
+                                        
         <where>  
             <if test="supervisionId != null "> and supervision_id = #{supervisionId}</if>
             <if test="supervisionType != null  and supervisionType != ''"> and supervision_type = #{supervisionType}</if>

@@ -24,8 +24,8 @@ public class PsyConsultantSupervisionMember extends BaseEntity
     /** 团体成员主键 */
     private Long id;
 
-    /** 督导团员ID、个体督导ID、个体体验ID */
-    @Excel(name = "督导团员ID、个体督导ID、个体体验ID")
+    /** 督导师id */
+    @Excel(name = "督导师id")
     private Long supervisionId;
 
     /** 团队id */
@@ -50,6 +50,19 @@ public class PsyConsultantSupervisionMember extends BaseEntity
     
     /** 删除标志（0代表存在 1代表删除） */
     private String delFlag;
+
+    /** 成员姓名 */
+    private String memberName;
+    /** 成员级别 */
+    private Integer memberLevel;
+    /** 成员头像 */
+    private String memberAvatar;
+    /** 成员邮箱 */
+    private String memberEmail;
+    /** 成员手机号 */
+    private String memberPhonenumber;
+    /** 成员性别 */
+    private String memberSex;
 
     @Override
     public String toString() {

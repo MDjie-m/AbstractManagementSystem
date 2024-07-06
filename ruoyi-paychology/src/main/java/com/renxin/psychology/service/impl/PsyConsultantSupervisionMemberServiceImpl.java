@@ -68,7 +68,7 @@ public class PsyConsultantSupervisionMemberServiceImpl implements IPsyConsultant
         req.setUpdateTime(DateUtils.getNowDate());
 
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(req.getTeamSupervisionId());
-        req.setSupervisionId(Long.valueOf(team.getConsultantId()));
+        req.setSupervisionId(Long.valueOf(team.getConsultantId()));//督导师id
         req.setSupervisionType("1");
         
         return psyConsultantSupervisionMemberMapper.insertPsyConsultantSupervisionMember(req);
