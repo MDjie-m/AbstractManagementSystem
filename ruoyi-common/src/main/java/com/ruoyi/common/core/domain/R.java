@@ -24,42 +24,42 @@ public class R<T> implements Serializable
 
     private T data;
 
-    public static <T> R<T> ok()
+    public static <T> R<T> success()
     {
         return restResult(null, SUCCESS, "操作成功");
     }
 
-    public static <T> R<T> ok(T data)
+    public static <T> R<T> success(T data)
     {
         return restResult(data, SUCCESS, "操作成功");
     }
 
-    public static <T> R<T> ok(T data, String msg)
+    public static <T> R<T> success(T data, String msg)
     {
         return restResult(data, SUCCESS, msg);
     }
 
-    public static <T> R<T> fail()
+    public static <T> R<T> error()
     {
         return restResult(null, FAIL, "操作失败");
     }
 
-    public static <T> R<T> fail(String msg)
+    public static <T> R<T> error(String msg)
     {
         return restResult(null, FAIL, msg);
     }
 
-    public static <T> R<T> fail(T data)
+    public static <T> R<T> error(T data)
     {
         return restResult(data, FAIL, "操作失败");
     }
 
-    public static <T> R<T> fail(T data, String msg)
+    public static <T> R<T> error(T data, String msg)
     {
         return restResult(data, FAIL, msg);
     }
 
-    public static <T> R<T> fail(int code, String msg)
+    public static <T> R<T> error(int code, String msg)
     {
         return restResult(null, code, msg);
     }

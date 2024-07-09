@@ -43,7 +43,7 @@ public class TestController extends BaseController
     public R<List<UserEntity>> userList()
     {
         List<UserEntity> userList = new ArrayList<UserEntity>(users.values());
-        return R.ok(userList);
+        return R.success(userList);
     }
 
     @ApiOperation("获取用户详细")
@@ -53,11 +53,11 @@ public class TestController extends BaseController
     {
         if (!users.isEmpty() && users.containsKey(userId))
         {
-            return R.ok(users.get(userId));
+            return R.success(users.get(userId));
         }
         else
         {
-            return R.fail("用户不存在");
+            return R.error("用户不存在");
         }
     }
 
@@ -73,10 +73,10 @@ public class TestController extends BaseController
     {
         if (StringUtils.isNull(user) || StringUtils.isNull(user.getUserId()))
         {
-            return R.fail("用户ID不能为空");
+            return R.error("用户ID不能为空");
         }
         users.put(user.getUserId(), user);
-        return R.ok();
+        return R.success();
     }
 
     @ApiOperation("更新用户")
@@ -85,15 +85,15 @@ public class TestController extends BaseController
     {
         if (StringUtils.isNull(user) || StringUtils.isNull(user.getUserId()))
         {
-            return R.fail("用户ID不能为空");
+            return R.error("用户ID不能为空");
         }
         if (users.isEmpty() || !users.containsKey(user.getUserId()))
         {
-            return R.fail("用户不存在");
+            return R.error("用户不存在");
         }
         users.remove(user.getUserId());
         users.put(user.getUserId(), user);
-        return R.ok();
+        return R.success();
     }
 
     @ApiOperation("删除用户信息")
@@ -104,11 +104,11 @@ public class TestController extends BaseController
         if (!users.isEmpty() && users.containsKey(userId))
         {
             users.remove(userId);
-            return R.ok();
+            return R.success();
         }
         else
         {
-            return R.fail("用户不存在");
+            return R.error("用户不存在");
         }
     }
 }

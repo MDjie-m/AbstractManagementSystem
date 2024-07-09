@@ -1,18 +1,21 @@
 package com.ruoyi.common.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Entity基类
  * 
  * @author ruoyi
  */
+@Data
 public class BaseEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -41,6 +44,12 @@ public class BaseEntity implements Serializable
     /** 请求参数 */
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, Object> params;
+
+    private int pageNum=1;
+    private int pageSize=20;
+
+
+
 
     public String getSearchValue()
     {
