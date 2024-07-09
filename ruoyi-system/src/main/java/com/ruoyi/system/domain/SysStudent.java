@@ -1,32 +1,36 @@
 package com.ruoyi.system.domain;
 
-import java.util.Date;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.ToString;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
-import lombok.Getter;
-import lombok.Setter;
+import com.ruoyi.common.core.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.Date;
 
 /**
  * test学生信息对象 sys_student
  * 
  * @author ruoyi
- * @date 2024-07-08
+ * @date 2024-07-09
  */
 @Setter
 @Getter
 @ToString
 @ApiModel
+@TableName("sys_student")
 public class SysStudent extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "编号")
+    @TableId(value = "student_id",type = IdType.AUTO)
     private Long studentId;
 
     @ApiModelProperty(value = "学生名称")
@@ -54,24 +58,13 @@ public class SysStudent extends BaseEntity
     @Excel(name = "生日", width = 30, dateFormat = "yyyy-MM-dd")
     private Date studentBirthday;
 
-    
-    
-    
-    
-    
-    
-    
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("studentId", getStudentId())
-            .append("studentName", getStudentName())
-            .append("studentAge", getStudentAge())
-            .append("studentHobby", getStudentHobby())
-            .append("studentSex", getStudentSex())
-            .append("studentStatus", getStudentStatus())
-            .append("studentBirthday", getStudentBirthday())
-            .toString();
-    }
+
+
+
+
+
+
+
+
 }

@@ -1,0 +1,1 @@
+代码生成是使用velocity确定模版: http://www.51gjie.com/javaweb/896.html

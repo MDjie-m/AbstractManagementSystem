@@ -1,20 +1,22 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.List;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.system.domain.SysStudent;
+import com.ruoyi.system.mapper.SysStudentMapper;
+import com.ruoyi.system.service.ISysStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ruoyi.system.mapper.SysStudentMapper;
-import com.ruoyi.system.domain.SysStudent;
-import com.ruoyi.system.service.ISysStudentService;
+
+import java.util.List;
 
 /**
  * test学生信息Service业务层处理
  * 
  * @author ruoyi
- * @date 2024-07-05
+ * @date 2024-07-09
  */
 @Service
-public class SysStudentServiceImpl implements ISysStudentService 
+public class SysStudentServiceImpl extends ServiceImpl<SysStudentMapper, SysStudent> implements ISysStudentService
 {
     @Autowired
     private SysStudentMapper sysStudentMapper;

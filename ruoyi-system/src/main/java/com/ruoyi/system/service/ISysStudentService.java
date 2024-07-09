@@ -1,15 +1,17 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.system.domain.SysStudent;
+
+import java.util.List;
 
 /**
  * test学生信息Service接口
  * 
  * @author ruoyi
- * @date 2024-07-05
+ * @date 2024-07-09
  */
-public interface ISysStudentService 
+public interface ISysStudentService extends IService<SysStudent>
 {
     /**
      * 查询test学生信息

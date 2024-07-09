@@ -50,8 +50,10 @@ public class SysStudentController extends BaseController
     @GetMapping("/list2")
     public R<PageVo<List<SysStudent>>> userList(SysStudent sysStudent)
     {
+
         startPage();
-        List<SysStudent> list = sysStudentService.selectSysStudentList(sysStudent);
+        List<SysStudent> list = sysStudentService.list();
+//        List<SysStudent> list = sysStudentService.selectSysStudentList(sysStudent);
         PageVo pageVo = new PageVo(list);
         return R.success(pageVo);
     }

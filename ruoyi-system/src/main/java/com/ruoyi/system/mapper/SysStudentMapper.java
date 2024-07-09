@@ -1,15 +1,17 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.system.domain.SysStudent;
+
+import java.util.List;
 
 /**
  * test学生信息Mapper接口
  * 
  * @author ruoyi
- * @date 2024-07-05
+ * @date 2024-07-09
  */
-public interface SysStudentMapper 
+public interface SysStudentMapper extends BaseMapper<SysStudent>
 {
     /**
      * 查询test学生信息
