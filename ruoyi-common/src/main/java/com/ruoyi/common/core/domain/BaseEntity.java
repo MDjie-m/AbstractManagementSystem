@@ -1,25 +1,29 @@
 package com.ruoyi.common.core.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Entity基类
  * 
  * @author ruoyi
  */
+@Data
 public class BaseEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    /** 搜索值 */
-    @JsonIgnore
-    private String searchValue;
+    //创建表必备字段#####################
 
     /** 创建者 */
     private String createBy;
@@ -35,72 +39,32 @@ public class BaseEntity implements Serializable
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    //#####################
+
+    /** 搜索值 */
+    @JsonIgnore
+    @TableField(exist = false)
+    private String searchValue;
+
     /** 备注 */
+    @TableField(exist = false)
     private String remark;
 
     /** 请求参数 */
+    @TableField(exist = false)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, Object> params;
 
-    public String getSearchValue()
-    {
-        return searchValue;
-    }
+    //分页插件的原理，请求中带了pageSize参数就会自动分页
+    @TableField(exist = false)
+    private Integer pageNum;
+    @TableField(exist = false)
+    private Integer pageSize;
 
-    public void setSearchValue(String searchValue)
-    {
-        this.searchValue = searchValue;
-    }
+    @TableField(exist = false)
+    @ApiModelProperty(value = "排序：属性/字段,asc/desc  例：user_name,desc 、userName,desc")
+    private String sortStr = "id,desc";
 
-    public String getCreateBy()
-    {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy)
-    {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime()
-    {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime)
-    {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateBy()
-    {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy)
-    {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime()
-    {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime)
-    {
-        this.updateTime = updateTime;
-    }
-
-    public String getRemark()
-    {
-        return remark;
-    }
-
-    public void setRemark(String remark)
-    {
-        this.remark = remark;
-    }
 
     public Map<String, Object> getParams()
     {
@@ -111,8 +75,11 @@ public class BaseEntity implements Serializable
         return params;
     }
 
-    public void setParams(Map<String, Object> params)
-    {
-        this.params = params;
+    public void setSortStr(String sortStr) {
+        if (StringUtils.isEmpty(sortStr)) {
+            this.sortStr = "id,desc";
+        } else {
+            this.sortStr = sortStr;
+        }
     }
 }

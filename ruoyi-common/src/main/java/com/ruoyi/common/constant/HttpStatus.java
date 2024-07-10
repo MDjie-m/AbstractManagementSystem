@@ -68,6 +68,11 @@ public class HttpStatus
     public static final int BAD_METHOD = 405;
 
     /**
+     * 登录过期
+     */
+    public static final int LOGIN_EXPIRATION = 406;
+
+    /**
      * 资源冲突，或者资源被锁
      */
     public static final int CONFLICT = 409;

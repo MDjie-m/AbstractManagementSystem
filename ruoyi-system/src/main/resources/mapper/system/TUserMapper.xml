@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.TUserMapper">
+    
+    <resultMap type="TUser" id="TUserResult">
+        <result property="id"    column="id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userXm"    column="user_xm"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="mobileCode"    column="mobile_code"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="gender"    column="gender"    />
+        <result property="openid"    column="openid"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="unionid"    column="unionid"    />
+        <result property="age"    column="age"    />
+        <result property="district"    column="district"    />
+        <result property="userLoginPassword"    column="user_login_password"    />
+    </resultMap>
+
+    <sql id="selectTUserVo">
+        select id, user_name, user_xm, mobile, mobile_code, nick_name, avatar, gender, openid, status, create_time, update_time, unionid, age, district, user_login_password from t_user
+    </sql>
+
+    <select id="selectTUserList" parameterType="TUser" resultMap="TUserResult">
+        <include refid="selectTUserVo"/>
+        <where>  
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userXm != null  and userXm != ''"> and user_xm like concat('%', #{userXm}, '%')</if>
+            <if test="mobile != null  and mobile != ''"> and mobile = #{mobile}</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="openid != null  and openid != ''"> and openid = #{openid}</if>
+        </where>
+    </select>
+    
+    <select id="selectTUserById" parameterType="String" resultMap="TUserResult">
+        <include refid="selectTUserVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTUser" parameterType="TUser">
+        insert into t_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="userXm != null">user_xm,</if>
+            <if test="mobile != null">mobile,</if>
+            <if test="mobileCode != null">mobile_code,</if>
+            <if test="nickName != null">nick_name,</if>
+            <if test="avatar != null">avatar,</if>
+            <if test="gender != null">gender,</if>
+            <if test="openid != null">openid,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="unionid != null">unionid,</if>
+            <if test="age != null">age,</if>
+            <if test="district != null">district,</if>
+            <if test="userLoginPassword != null">user_login_password,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="userXm != null">#{userXm},</if>
+            <if test="mobile != null">#{mobile},</if>
+            <if test="mobileCode != null">#{mobileCode},</if>
+            <if test="nickName != null">#{nickName},</if>
+            <if test="avatar != null">#{avatar},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="openid != null">#{openid},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="unionid != null">#{unionid},</if>
+            <if test="age != null">#{age},</if>
+            <if test="district != null">#{district},</if>
+            <if test="userLoginPassword != null">#{userLoginPassword},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTUser" parameterType="TUser">
+        update t_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="userXm != null">user_xm = #{userXm},</if>
+            <if test="mobile != null">mobile = #{mobile},</if>
+            <if test="mobileCode != null">mobile_code = #{mobileCode},</if>
+            <if test="nickName != null">nick_name = #{nickName},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="openid != null">openid = #{openid},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="unionid != null">unionid = #{unionid},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="district != null">district = #{district},</if>
+            <if test="userLoginPassword != null">user_login_password = #{userLoginPassword},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTUserById" parameterType="String">
+        delete from t_user where id = #{id}
+    </delete>
+
+    <delete id="deleteTUserByIds" parameterType="String">
+        delete from t_user where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
