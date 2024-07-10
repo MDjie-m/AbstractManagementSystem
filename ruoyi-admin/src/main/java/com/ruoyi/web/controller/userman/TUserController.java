@@ -49,6 +49,7 @@ public class TUserController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, TUser tUser)
     {
+        tUser.setPageSize(99999);
         List<TUser> list = tUserService.selectTUserList(tUser);
         ExcelUtil<TUser> util = new ExcelUtil<TUser>(TUser.class);
         util.exportExcel(response, list, "用户数据");

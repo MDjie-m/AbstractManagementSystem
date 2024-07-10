@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.annotation.Excel;
+import com.ruoyi.common.annotation.Query;
 import com.ruoyi.common.core.domain.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.Date;
 
 /**
  * 用户对象 t_user
@@ -30,6 +33,7 @@ public class TUser extends BaseEntity
     @TableId(value = "id",type = IdType.ASSIGN_ID)
     private String id;
 
+    @Query
     @ApiModelProperty(value = "用户名")
     @Excel(name = "用户名")
     private String userName;
@@ -76,7 +80,8 @@ public class TUser extends BaseEntity
     @ApiModelProperty(value = "用户登录密码")
     private String userLoginPassword;
 
-
+    @Excel(name = "创建时间",dateFormat="yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 
 
 

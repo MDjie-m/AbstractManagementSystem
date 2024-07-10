@@ -1,6 +1,8 @@
 package com.ruoyi.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.aspectj.QueryAspect;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.TUser;
 import com.ruoyi.system.mapper.TUserMapper;
@@ -8,13 +10,14 @@ import com.ruoyi.system.service.ITUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * 用户Service业务层处理
  * 
  * @author tz
- * @date 2024-07-09
+ * @date 2024-07-10
  */
 @Service
 public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements ITUserService
@@ -31,7 +34,7 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
     @Override
     public TUser selectTUserById(String id)
     {
-        return tUserMapper.selectTUserById(id);
+        return tUserMapper.selectById(id);
     }
 
     /**
@@ -43,7 +46,9 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
     @Override
     public List<TUser> selectTUserList(TUser tUser)
     {
-        return tUserMapper.selectTUserList(tUser);
+        QueryWrapper queryWrapper = new QueryWrapper<>(new TUser());
+        QueryAspect.wrapper(queryWrapper, tUser);
+        return  tUserMapper.selectList(queryWrapper);
     }
 
     /**
@@ -57,7 +62,6 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
     {
         tUser.setCreateTime(DateUtils.getNowDate());
         return tUserMapper.insert(tUser);
-//        return tUserMapper.insertTUser(tUser);
     }
 
     /**
@@ -70,7 +74,7 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
     public int updateTUser(TUser tUser)
     {
         tUser.setUpdateTime(DateUtils.getNowDate());
-        return tUserMapper.updateTUser(tUser);
+        return tUserMapper.updateById(tUser);
     }
 
     /**
@@ -82,7 +86,7 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
     @Override
     public int deleteTUserByIds(String[] ids)
     {
-        return tUserMapper.deleteTUserByIds(ids);
+        return tUserMapper.deleteBatchIds(Arrays.asList(ids));
     }
 
     /**
@@ -94,6 +98,6 @@ public class TUserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements
     @Override
     public int deleteTUserById(String id)
     {
-        return tUserMapper.deleteTUserById(id);
+        return tUserMapper.deleteById(id);
     }
 }

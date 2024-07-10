@@ -42,7 +42,7 @@ spring:
             webStatFilter: 
                 enabled: true
             statViewServlet:
-                enabled: true
+                enabled: false
                 # 设置白名单，不填则允许所有访问
                 allow:
                 url-pattern: /druid/*
@@ -51,7 +51,7 @@ spring:
                 login-password: 123456
             filter:
                 stat:
-                    enabled: true
+                    enabled: false
                     # 慢SQL记录
                     log-slow-sql: true
                     slow-sql-millis: 1000
