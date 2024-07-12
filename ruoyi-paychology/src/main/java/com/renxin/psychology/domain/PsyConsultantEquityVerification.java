@@ -38,8 +38,8 @@ public class PsyConsultantEquityVerification extends BaseEntity
     @Excel(name = "核销次数")
     private Long cycleNumber;
 
-    /** 0:失效 1:有效 */
-    @Excel(name = "0:失效 1:有效")
+    /** 0:有效 1:失效 */
+    @Excel(name = "0:有效 1:失效")
     private String status;
 
     /** 删除标志（0代表存在 1代表删除） */

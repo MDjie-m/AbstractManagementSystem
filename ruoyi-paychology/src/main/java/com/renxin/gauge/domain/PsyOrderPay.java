@@ -32,6 +32,8 @@ public class PsyOrderPay extends BaseEntity
     @Excel(name = "订单号")
     private Integer orderId;
 
+    private Integer consultantOrderId;
+
     /** 支付状态(1-待支付,2-已支付，3-取消支付) */
     @Excel(name = "支付状态(1-待支付,2-已支付，3-取消支付)")
     private Integer payStatus;

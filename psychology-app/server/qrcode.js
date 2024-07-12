@@ -3,7 +3,7 @@ import httprequest from "./httpRequest";
 export default {
 	getQrcode: async (qrCodeParam) => {
     let res = await httprequest.post(
-      "/app/gauge/qr/getBase64Code",
+      "/consulted/gauge/qr/getBase64Code",
 	  {
 		qrCodeParam
 	  }

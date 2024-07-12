@@ -2,7 +2,7 @@ import httprequest from "../httpRequest";
 export default {
   //获取测评详情
   getProductInfo: async (id) => {
-    let res = await httprequest.post("/app/home/gauge/getInfo?id=" + id);
+    let res = await httprequest.post("/consulted/home/gauge/getInfo?id=" + id);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -13,7 +13,7 @@ export default {
     }
   },
   orderPay: async (gaugeId, amount) => {
-    let res = await httprequest.post("/app/wxPay/pay", { amount, gaugeId });
+    let res = await httprequest.post("/consulted/wxPay/pay", { amount, gaugeId });
     if (res.code == 200) {
       return res;
     } else {

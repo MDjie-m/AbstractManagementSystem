@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.renxin.psychology.mapper.PsyConsultantPackageEquityMapper">
+    
+    <resultMap type="PsyConsultantPackageEquity" id="PsyConsultantPackageEquityResult">
+        <result property="consultantId"    column="consultant_id"    />
+        <result property="teamSupNum"    column="team_sup_num"    />
+        <result property="personSupNum"    column="person_sup_num"    />
+        <result property="personExpNum"    column="person_exp_num"    />
+        <result property="courseNum"    column="course_num"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPsyConsultantPackageEquityVo">
+        select consultant_id, team_sup_num, person_sup_num, person_exp_num, course_num, del_flag, create_by, create_time, update_by, update_time from psy_consultant_package_equity
+    </sql>
+
+    <select id="selectPsyConsultantPackageEquityList" parameterType="PsyConsultantPackageEquity" resultMap="PsyConsultantPackageEquityResult">
+        <include refid="selectPsyConsultantPackageEquityVo"/>
+        <where>  
+            <if test="teamSupNum != null "> and team_sup_num = #{teamSupNum}</if>
+            <if test="personSupNum != null "> and person_sup_num = #{personSupNum}</if>
+            <if test="personExpNum != null "> and person_exp_num = #{personExpNum}</if>
+            <if test="courseNum != null "> and course_num = #{courseNum}</if>
+        </where>
+    </select>
+    
+    <select id="selectPsyConsultantPackageEquityByConsultantId" parameterType="Long" resultMap="PsyConsultantPackageEquityResult">
+        <include refid="selectPsyConsultantPackageEquityVo"/>
+        where consultant_id = #{consultantId}
+    </select>
+        
+    <insert id="insertPsyConsultantPackageEquity" parameterType="PsyConsultantPackageEquity">
+        insert into psy_consultant_package_equity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id,</if>
+            <if test="teamSupNum != null">team_sup_num,</if>
+            <if test="personSupNum != null">person_sup_num,</if>
+            <if test="personExpNum != null">person_exp_num,</if>
+            <if test="courseNum != null">course_num,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="consultantId != null">#{consultantId},</if>
+            <if test="teamSupNum != null">#{teamSupNum},</if>
+            <if test="personSupNum != null">#{personSupNum},</if>
+            <if test="personExpNum != null">#{personExpNum},</if>
+            <if test="courseNum != null">#{courseNum},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePsyConsultantPackageEquity" parameterType="PsyConsultantPackageEquity">
+        update psy_consultant_package_equity
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="teamSupNum != null">team_sup_num = #{teamSupNum},</if>
+            <if test="personSupNum != null">person_sup_num = #{personSupNum},</if>
+            <if test="personExpNum != null">person_exp_num = #{personExpNum},</if>
+            <if test="courseNum != null">course_num = #{courseNum},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where consultant_id = #{consultantId}
+    </update>
+
+    <delete id="deletePsyConsultantPackageEquityByConsultantId" parameterType="Long">
+        delete from psy_consultant_package_equity where consultant_id = #{consultantId}
+    </delete>
+
+    <delete id="deletePsyConsultantPackageEquityByConsultantIds" parameterType="String">
+        delete from psy_consultant_package_equity where consultant_id in 
+        <foreach item="consultantId" collection="array" open="(" separator="," close=")">
+            #{consultantId}
+        </foreach>
+    </delete>
+</mapper>

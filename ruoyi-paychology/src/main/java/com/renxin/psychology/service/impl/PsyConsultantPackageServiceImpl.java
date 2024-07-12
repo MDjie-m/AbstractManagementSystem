@@ -2,6 +2,7 @@ package com.renxin.psychology.service.impl;
 
 import java.util.List;
 import com.renxin.common.utils.DateUtils;
+import com.renxin.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantPackageMapper;
@@ -53,7 +54,11 @@ public class PsyConsultantPackageServiceImpl implements IPsyConsultantPackageSer
     @Override
     public int insertPsyConsultantPackage(PsyConsultantPackage psyConsultantPackage)
     {
+        Long userId = SecurityUtils.getLoginUser().getUserId();
+        psyConsultantPackage.setCreateBy(userId+"");
+        psyConsultantPackage.setUpdateBy(userId+"");
         psyConsultantPackage.setCreateTime(DateUtils.getNowDate());
+        psyConsultantPackage.setUpdateTime(DateUtils.getNowDate());
         return psyConsultantPackageMapper.insertPsyConsultantPackage(psyConsultantPackage);
     }
 

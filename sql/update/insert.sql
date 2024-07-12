@@ -132,7 +132,7 @@ CREATE TABLE `psy_consultant_equity`  (
   `supervision_number3` int NULL DEFAULT NULL COMMENT '体验套餐次数',
   `course_supervision` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '课程套餐',
   `supervision_number4` int NULL DEFAULT NULL COMMENT '课程套餐次数',
-  `status` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '0:失效 1:有效',
+  `status` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '0:有效 1:失效',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
@@ -152,7 +152,7 @@ CREATE TABLE `psy_consultant_equity_verification`  (
   `order_id` bigint NULL DEFAULT NULL COMMENT '订单ID',
   `cycle_type` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '1团督 2 个督 3体验  4课程',
   `cycle_number` int NULL DEFAULT NULL COMMENT '核销次数',
-  `status` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '0:失效 1:有效',
+  `status` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '0:有效 1:失效',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
@@ -165,24 +165,34 @@ CREATE TABLE `psy_consultant_equity_verification`  (
 -- Table structure for psy_consultant_order
 -- ----------------------------
 DROP TABLE IF EXISTS `psy_consultant_order`;
-CREATE TABLE `psy_consultant_order`  (
-  `order_no` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '流水编号',
-  `server_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '服务ID :体验ID、个督ID、课程ID 套餐ID',
-  `server_type` int NOT NULL COMMENT '服务类型  1：体验 2:个督、3:团督、4:课程 5:个人套餐',
-  `server_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务名称',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '订单状态0-待付款 1-进行中 2-已完成 3-已取消',
-  `pay_customer_id` int NOT NULL COMMENT '支付咨询者id',
-  `pay_customer_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '支付咨询者名称',
-  `pay_amount` decimal(10, 2) NULL DEFAULT NULL COMMENT '实际支付费用',
-  `pay_datetime` datetime NULL DEFAULT NULL COMMENT '付款时间',
-  `pay_status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '支付状态 0 未支付 1 支持成功  2抵扣成功 3 失败',
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
-  `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
-  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
-  `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新者',
-  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '咨询师订单' ROW_FORMAT = Dynamic;
+CREATE TABLE `psy_consultant_order` (
+                                        `id` BIGINT(19) NOT NULL AUTO_INCREMENT,
+                                        `order_no` VARCHAR(80) NOT NULL COMMENT '流水编号' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `server_id` VARCHAR(64) NOT NULL COMMENT '服务ID :团督ID、 体验ID、个督ID、课程ID,  套餐ID' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `server_type` INT(10) NOT NULL COMMENT '服务类型  1:团督   2:个督  3:体验  4:课程   5:咨询师成长套餐',
+                                        `server_name` VARCHAR(255) NULL DEFAULT NULL COMMENT '服务名称' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `status` CHAR(1) NULL DEFAULT '0' COMMENT '订单状态0-待付款 1-进行中 2-已完成 3-已取消' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `pay_type` CHAR(1) NULL DEFAULT '0' COMMENT '支付方式 1.现款支付   2.权益支付' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `pay_consultant_id` BIGINT(19) NOT NULL DEFAULT '0' COMMENT '支付咨询师id',
+                                        `pay_consultant_name` VARCHAR(100) NULL DEFAULT NULL COMMENT '支付咨询师名称' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `pay_amount` DECIMAL(10,2) NULL DEFAULT NULL COMMENT '实际支付费用',
+                                        `pay_datetime` DATETIME NULL DEFAULT NULL COMMENT '付款时间',
+                                        `pay_status` CHAR(1) NULL DEFAULT '0' COMMENT '支付状态 0 未支付 1 支持成功  2抵扣成功 3 失败' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `remark` VARCHAR(255) NULL DEFAULT NULL COMMENT '备注' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `del_flag` CHAR(1) NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `create_by` VARCHAR(64) NULL DEFAULT NULL COMMENT '创建人' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `create_time` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+                                        `update_by` VARCHAR(64) NULL DEFAULT NULL COMMENT '更新者' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `update_time` DATETIME NULL DEFAULT NULL COMMENT '更新时间',
+                                        PRIMARY KEY (`id`) USING BTREE
+)
+    COMMENT='咨询师订单'
+    COLLATE='utf8mb4_0900_ai_ci'
+    ENGINE=InnoDB
+    ROW_FORMAT=DYNAMIC
+;
+
+
 
 
 DROP TABLE IF EXISTS `psy_consultant_package`;
@@ -193,7 +203,7 @@ CREATE TABLE `psy_consultant_package`  (
   `detail_pic_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '详情图片地址',
   `cycle_type` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '1团督 2 个督 3体验  4课程',
   `cycle_number` int NULL DEFAULT NULL COMMENT '套餐次数',
-  `status` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '0:失效 1:有效',
+  `status` char(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '0:有效 1:失效',
   `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
   `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',

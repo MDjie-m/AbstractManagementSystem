@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -19,10 +20,13 @@ import com.renxin.common.core.domain.BaseEntity;
  */
 @NoArgsConstructor
 @TableName("psy_consultant_order")
+@Data
 public class PsyConsultantOrder extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    private String id;
+    
     /** 流水编号 */
     @Excel(name = "流水编号")
     private String orderNo;
@@ -33,7 +37,7 @@ public class PsyConsultantOrder extends BaseEntity
 
     /** 服务类型  1：体验 2:个督、3:团督、4:课程 5:个人套餐 */
     @Excel(name = "服务类型  1：体验 2:个督、3:团督、4:课程 5:个人套餐")
-    private Long serverType;
+    private String serverType;
 
     /** 服务名称 */
     @Excel(name = "服务名称")
@@ -44,12 +48,12 @@ public class PsyConsultantOrder extends BaseEntity
     private String status;
 
     /** 支付咨询者id */
-    @Excel(name = "支付咨询者id")
-    private Long payCustomerId;
+    @Excel(name = "支付咨询师id")
+    private String payConsultantId;
 
     /** 支付咨询者名称 */
-    @Excel(name = "支付咨询者名称")
-    private String payCustomerName;
+    @Excel(name = "支付咨询师名称")
+    private String payConsultantName;
 
     /** 实际支付费用 */
     @Excel(name = "实际支付费用")
@@ -67,105 +71,12 @@ public class PsyConsultantOrder extends BaseEntity
     /** 删除标志（0代表存在 1代表删除） */
     private String delFlag;
 
-    public void setOrderNo(String orderNo) 
-    {
-        this.orderNo = orderNo;
-    }
+    private String payId;
+    // 咨询服务
+    private Long workId;
+    private Integer time;
 
-    public String getOrderNo() 
-    {
-        return orderNo;
-    }
-    public void setServerId(String serverId) 
-    {
-        this.serverId = serverId;
-    }
-
-    public String getServerId() 
-    {
-        return serverId;
-    }
-    public void setServerType(Long serverType) 
-    {
-        this.serverType = serverType;
-    }
-
-    public Long getServerType() 
-    {
-        return serverType;
-    }
-    public void setServerName(String serverName) 
-    {
-        this.serverName = serverName;
-    }
-
-    public String getServerName() 
-    {
-        return serverName;
-    }
-    public void setStatus(String status) 
-    {
-        this.status = status;
-    }
-
-    public String getStatus() 
-    {
-        return status;
-    }
-    public void setPayCustomerId(Long payCustomerId) 
-    {
-        this.payCustomerId = payCustomerId;
-    }
-
-    public Long getPayCustomerId() 
-    {
-        return payCustomerId;
-    }
-    public void setPayCustomerName(String payCustomerName) 
-    {
-        this.payCustomerName = payCustomerName;
-    }
-
-    public String getPayCustomerName() 
-    {
-        return payCustomerName;
-    }
-    public void setPayAmount(BigDecimal payAmount) 
-    {
-        this.payAmount = payAmount;
-    }
-
-    public BigDecimal getPayAmount() 
-    {
-        return payAmount;
-    }
-    public void setPayDatetime(Date payDatetime) 
-    {
-        this.payDatetime = payDatetime;
-    }
-
-    public Date getPayDatetime() 
-    {
-        return payDatetime;
-    }
-    public void setPayStatus(String payStatus) 
-    {
-        this.payStatus = payStatus;
-    }
-
-    public String getPayStatus() 
-    {
-        return payStatus;
-    }
-    public void setDelFlag(String delFlag) 
-    {
-        this.delFlag = delFlag;
-    }
-
-    public String getDelFlag() 
-    {
-        return delFlag;
-    }
+    
 
     @Override
     public String toString() {
@@ -175,8 +86,8 @@ public class PsyConsultantOrder extends BaseEntity
             .append("serverType", getServerType())
             .append("serverName", getServerName())
             .append("status", getStatus())
-            .append("payCustomerId", getPayCustomerId())
-            .append("payCustomerName", getPayCustomerName())
+            .append("payConsultantId", getPayConsultantId())
+            .append("payConsultantName", getPayConsultantName())
             .append("payAmount", getPayAmount())
             .append("payDatetime", getPayDatetime())
             .append("payStatus", getPayStatus())

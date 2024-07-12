@@ -61,9 +61,9 @@ public class PsyConsultantSupervisionMemberServiceImpl implements IPsyConsultant
     @Override
     public int insertPsyConsultantSupervisionMember(PsyConsultantSupervisionMember req)
     {
-        LoginUser loginUser = SecurityUtils.getLoginUser();
-        req.setCreateBy(loginUser.getUserId()+"");
-        req.setUpdateBy(loginUser.getUserId()+"");
+        //LoginUser loginUser = SecurityUtils.getLoginUser();
+        req.setCreateBy(req.getMemberId());
+        req.setUpdateBy(req.getMemberId());
         req.setCreateTime(DateUtils.getNowDate());
         req.setUpdateTime(DateUtils.getNowDate());
 

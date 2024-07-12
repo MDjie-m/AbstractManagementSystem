@@ -64,8 +64,8 @@ public class PsyConsultantEquity extends BaseEntity
     @Excel(name = "课程套餐次数")
     private Long supervisionNumber4;
 
-    /** 0:失效 1:有效 */
-    @Excel(name = "0:失效 1:有效")
+    /** 0:有效 1:失效 */
+    @Excel(name = "0:有效 1:失效")
     private String status;
 
     /** 删除标志（0代表存在 1代表删除） */

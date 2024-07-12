@@ -19,6 +19,7 @@ import com.renxin.psychology.service.IPsyConsultWorkService;
 import com.renxin.psychology.vo.PsyConsultOrderItemVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -221,8 +222,8 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
 
     private LambdaQueryWrapper<PsyConsultWork> getWorkWrapper(Long id, Long consultId, Integer time) {
         LambdaQueryWrapper<PsyConsultWork> wp = new LambdaQueryWrapper<>();
-        wp.eq(PsyConsultWork::getConsultId, consultId);
-        wp.eq(PsyConsultWork::getId, id);
+        wp.eq(ObjectUtils.isNotEmpty(consultId),PsyConsultWork::getConsultId, consultId);
+        wp.eq(ObjectUtils.isNotEmpty(id),PsyConsultWork::getId, id);
         wp.eq(PsyConsultWork::getStatus, "0");
         return wp;
     }

@@ -7,6 +7,20 @@ public class PsyConstants {
     public static final String ORDER_GAUGE = "CP"; //测评
     public static final String ORDER_CONSULT = "ZX"; //咨询
     public static final String ORDER_REFUND = "TK"; //咨询
+    
+    //咨询师订单类型
+    public static final String CONSULTANT_ORDER_TEAM_SUP = "TDDD"; //团队督导
+    public static final String CONSULTANT_ORDER_PERSON_SUP = "GRDD"; //个人督导
+    public static final String CONSULTANT_ORDER_PERSON_EXP = "GRTY"; //个人体验
+    public static final String CONSULTANT_ORDER_COURSE = "ZXSKC"; //课程
+    public static final String CONSULTANT_ORDER_PACKAGE = "TC"; //套餐
+
+    public static final String CONSULTANT_ORDER_TEAM_SUP_NUM = "1"; //团队督导
+    public static final String CONSULTANT_ORDER_PERSON_SUP_NUM = "2"; //个人督导
+    public static final String CONSULTANT_ORDER_PERSON_EXP_NUM = "3"; //个人体验
+    public static final String CONSULTANT_ORDER_COURSE_NUM = "4"; //课程
+    public static final String CONSULTANT_ORDER_PACKAGE_NUM = "5"; //套餐
+    
 
     //积分
     public static final String INTEGRAL_RATE = "0.1"; //积分抵用比例(1积分抵多少金额

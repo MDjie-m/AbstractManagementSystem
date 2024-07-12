@@ -9,6 +9,7 @@ import com.renxin.psychology.request.PsyAdminOrderReq;
 import com.renxin.psychology.request.PsyHxOrderReq;
 import com.renxin.psychology.request.PsyRefOrderReq;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
+import com.renxin.wechat.vo.WechatPayVO;
 
 /**
  * 咨询订单Service接口

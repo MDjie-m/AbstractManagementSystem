@@ -124,7 +124,7 @@ import httprequest from "@/server/httpRequest";
 		},
 		data() {
 			return {
-        serverUrl: httprequest.config("APIHOST") + '/app/image/upload',
+        serverUrl: httprequest.config("APIHOST") + '/consulted/image/upload',
         header: {
           Authorization: uni.getStorageSync("token"),
           module: this.module,

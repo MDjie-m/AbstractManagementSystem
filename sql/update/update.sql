@@ -99,3 +99,42 @@ INSERT INTO `sys_dict_data` (`dict_code`, `dict_sort`, `dict_label`, `dict_value
 INSERT INTO `sys_dict_data` (`dict_code`, `dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (933, 3, '中级咨询师', '3', 'consult_level', NULL, 'default', 'N', '0', 'admin', '2024-03-06 18:02:17', '', NULL, NULL);
 INSERT INTO `sys_dict_data` (`dict_code`, `dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (934, 4, '高级咨询师', '4', 'consult_level', NULL, 'default', 'N', '0', 'admin', '2024-03-06 18:02:17', '', NULL, NULL);
 INSERT INTO `sys_dict_data` (`dict_code`, `dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (935, 5, '督导师', '5', 'consult_level', NULL, 'default', 'N', '0', 'admin', '2024-03-06 18:02:17', '', NULL, NULL);
+
+
+ALTER TABLE `psy_consultant_order`
+    CHANGE COLUMN `pay_consultant_id` `pay_consultant_id` INT(10) NOT NULL COMMENT '支付咨询师id' AFTER `pay_type`,
+    CHANGE COLUMN `pay_consultant_name` `pay_consultant_name` VARCHAR(100) NULL DEFAULT NULL COMMENT '支付咨询师名称' COLLATE 'utf8mb4_0900_ai_ci' AFTER `pay_consultant_id`;
+
+
+ALTER TABLE `psy_consultant_order`
+    ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT FIRST,
+    ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `psy_consult`
+    ADD COLUMN `server_to` VARCHAR(255) NULL DEFAULT NULL COMMENT '服务对象   user:访客   consultSup:咨询师(督导)   consultExp:咨询师(体验)' AFTER `level`;
+
+ALTER TABLE `psy_order_pay`
+    CHANGE COLUMN `order_id` `order_id` INT(10) NULL COMMENT '订单号' AFTER `id`,
+    ADD COLUMN `consultant_order_id` INT NULL COMMENT '咨询师订单号' AFTER `order_id`;
+
+ALTER TABLE `psy_consultant_package`
+    ADD COLUMN `team_sup_num` INT NULL COMMENT '团队督导次数' AFTER `detail_pic_url`,
+    ADD COLUMN `person_sup_num` INT NULL COMMENT '个人督导次数' AFTER `team_sup_num`,
+    ADD COLUMN `person_exp_num` INT NULL COMMENT '个人体验次数' AFTER `person_sup_num`,
+    ADD COLUMN `course_num` INT NULL COMMENT '课程次数' AFTER `person_exp_num`,
+    DROP COLUMN `cycle_type`,
+    DROP COLUMN `cycle_number`;
+
+ALTER TABLE `psy_consultant_order`
+    ADD COLUMN `work_id` VARCHAR(50) NULL DEFAULT NULL COMMENT '排班id (server_type =2 or 3时需要)' AFTER `pay_status`,
+    ADD COLUMN `time` VARCHAR(50) NULL DEFAULT NULL COMMENT '预约时间 (server_type =2 or 3时需要)' AFTER `work_id`;
+
+ALTER TABLE `cour_user_course_section`
+    ADD COLUMN `consultant_id` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '咨询师ID' AFTER `user_id`;
+
+ALTER TABLE `psy_consultant_package`
+    ADD COLUMN `price` DECIMAL(20,6) NULL DEFAULT NULL COMMENT '套餐价格' AFTER `course_num`;
+
+ALTER TABLE `psy_consultant_package`
+    CHANGE COLUMN `package_id` `package_id` BIGINT(19) NOT NULL AUTO_INCREMENT COMMENT '套餐主键' FIRST;
+

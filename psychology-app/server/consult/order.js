@@ -1,7 +1,7 @@
 import httprequest from "../httpRequest";
 export default {
   getNotice: async (id) => {
-    let res = await httprequest.get(`/app/system/notice/` + id);
+    let res = await httprequest.get(`/consulted/system/notice/` + id);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -10,7 +10,7 @@ export default {
   },
   //获取订单列表
   getOrderList: async (data) => {
-    let res = await httprequest.post(`/app/consult/order/getOrderList`, data);
+    let res = await httprequest.post(`/consulted/consult/order/getOrderList`, data);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -18,7 +18,7 @@ export default {
     }
   },
   getOrderDetail: async (id) => {
-    let res = await httprequest.get(`/app/consult/order/getOrderDetail/` + id);
+    let res = await httprequest.get(`/consulted/consult/order/getOrderDetail/` + id);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -26,7 +26,7 @@ export default {
     }
   },
   getOrderDetailByNo: async (id) => {
-    let res = await httprequest.get(`/app/consult/order/getOrderDetailByNo/` + id);
+    let res = await httprequest.get(`/consulted/consult/order/getOrderDetailByNo/` + id);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -34,7 +34,7 @@ export default {
     }
   },
   getOrderInfo: async (id) => {
-    let res = await httprequest.get(`/app/consult/order/getOrderInfo/` + id);
+    let res = await httprequest.get(`/consulted/consult/order/getOrderInfo/` + id);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -42,7 +42,7 @@ export default {
     }
   },
   getConsultInfoByServe: async (cId, sId) => {
-    let res = await httprequest.get(`/app/consult/getConsultInfoByServe/` + cId + '/' + sId);
+    let res = await httprequest.get(`/consulted/consult/getConsultInfoByServe/` + cId + '/' + sId);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -53,7 +53,7 @@ export default {
     }
   },
   doConsult: async (id, workId, time) => {
-    let res = await httprequest.post(`/app/consult/order/doConsult/` + id + '/' + workId + '/' + time);
+    let res = await httprequest.post(`/consulted/consult/order/doConsult/` + id + '/' + workId + '/' + time);
     if (res.code == 200 && res.data !== -1) {
       return 1;
     } else {
@@ -64,7 +64,7 @@ export default {
     }
   },
   cancel: async (id) => {
-    let res = await httprequest.get(`/app/consult/order/cancel/` + id);
+    let res = await httprequest.get(`/consulted/consult/order/cancel/` + id);
     if (res.code == 200) {
       return 1;
     } else {

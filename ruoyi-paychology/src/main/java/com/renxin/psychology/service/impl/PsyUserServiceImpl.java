@@ -12,6 +12,7 @@ import com.renxin.psychology.mapper.PsyUserMapper;
 import com.renxin.psychology.service.IPsyUserService;
 import com.renxin.user.domain.PsyUserIntegralRecord;
 import com.renxin.user.service.IPsyUserIntegralRecordService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +45,17 @@ public class PsyUserServiceImpl implements IPsyUserService {
      */
     @Override
     public PsyUser selectPsyUserById(Integer id) {
-        return psyUserMapper.selectPsyUserById(id);
+        PsyUser psyUser = psyUserMapper.selectPsyUserById(id);
+        if (ObjectUtils.isEmpty(psyUser.getName())){
+            psyUser.setName("");
+        }
+        if (ObjectUtils.isEmpty(psyUser.getAvatar())){
+            psyUser.setAvatar("");
+        }
+        if (ObjectUtils.isEmpty(psyUser.getPhone())){
+            psyUser.setPhone("");
+        }
+        return psyUser;
     }
 
     /**

@@ -2,11 +2,14 @@ package com.renxin.psychology.service.impl;
 
 import java.util.List;
 
+import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.core.domain.model.LoginUser;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
+import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantSupervisionMember;
 import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
+import com.renxin.psychology.service.IPsyConsultantSupervisionMemberService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +29,10 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
 {
     @Autowired
     private PsyConsultantTeamSupervisionMapper psyConsultantTeamSupervisionMapper;
-
+    
+    @Autowired
+    private IPsyConsultantSupervisionMemberService memberService;
+    
     @Autowired
     private PsyConsultantSupervisionMemberMapper memberMapper;
 
@@ -47,6 +53,15 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
             memberReq.setTeamSupervisionId(team.getId());
             List<PsyConsultantSupervisionMember> memberList = memberMapper.selectPsyConsultantSupervisionMemberList(memberReq);
             team.setMemberList(memberList);
+
+            //最大团队人数
+            Integer maxNumPeople = team.getMaxNumPeople();
+            if (ObjectUtils.isNotEmpty(maxNumPeople)){
+                //当前登记人数
+                int memberNum = memberList.size();
+                //剩余名额数
+                team.setSurplusNum(maxNumPeople - memberNum);
+            }
         }
         
         
@@ -132,7 +147,6 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
         }
     }
     
-
     /**
      * 批量删除团队督导(组织)
      * 
@@ -156,4 +170,24 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     {
         return psyConsultantTeamSupervisionMapper.deletePsyConsultantTeamSupervisionById(id);
     }
+
+    /**
+     * 付款完成后, 处理订单
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void handleOrder(PsyConsultantOrder consultantOrder){
+        //购买团督服务
+        if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(consultantOrder.getServerType())){
+            PsyConsultantSupervisionMember member = new PsyConsultantSupervisionMember();
+                member.setTeamSupervisionId(Long.valueOf(consultantOrder.getServerId()));
+                member.setMemberId(consultantOrder.getPayConsultantId()+"");
+                member.setSupervisionType(PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM);
+                member.setOrderNo(consultantOrder.getOrderNo());
+            memberService.insertPsyConsultantSupervisionMember(member);
+        }
+        
+    }
+    
+    
 }

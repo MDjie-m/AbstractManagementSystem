@@ -3,7 +3,7 @@ import httprequest from "../httpRequest";
 export default {
     //获取课程详情
     getConsultInfo: async (consultId) => {
-        let res = await httprequest.get(`/app/consult/` + consultId);
+        let res = await httprequest.get(`/consulted/consult/` + consultId);
         if (res.code == 200) {
             return res.data;
         } else {
@@ -14,7 +14,7 @@ export default {
         }
     },
     getConsultWorksById: async (id) => {
-        let res = await httprequest.get(`/app/consult/getConsultWorksById/` + id);
+        let res = await httprequest.get(`/consulted/consult/getConsultWorksById/` + id);
         if (res.code == 200) {
             return res.data;
         } else {
@@ -25,7 +25,7 @@ export default {
         }
     },
     getConsultCourseByName: async (name) => {
-        let res = await httprequest.post("/app/course/list", {userName: name});
+        let res = await httprequest.post("/consulted/course/list", {userName: name});
         if (res.code == 200) {
             return res.rows;
         } else {
@@ -33,7 +33,7 @@ export default {
         }
     },
     getConsultServe: async (consultId) => {
-        let res = await httprequest.get(`/app/consult/serve/` + consultId);
+        let res = await httprequest.get(`/consulted/consult/serve/` + consultId);
         if (res.code == 200) {
             return res.data;
         } else {
@@ -44,7 +44,7 @@ export default {
         }
     },
     getConsultColumn: async (cat, consultId, data) => {
-        let res = await httprequest.get(`/app/consult/getConsultColumn/${cat}/${consultId}`, data);
+        let res = await httprequest.get(`/consulted/consult/getConsultColumn/${cat}/${consultId}`, data);
         if (res.code == 200) {
             return res.rows;
         } else {

@@ -31,9 +31,9 @@ public class PsyConsultantPackageController extends BaseController
     /**
      * 查询咨询师成长套餐列表
      */
-    @PreAuthorize("@ss.hasPermi('system:package:list')")
-    @GetMapping("/list")
-    public TableDataInfo list(PsyConsultantPackage psyConsultantPackage)
+    //@PreAuthorize("@ss.hasPermi('system:package:list')")
+    @PostMapping("/list")
+    public TableDataInfo list(@RequestBody PsyConsultantPackage psyConsultantPackage)
     {
         startPage();
         List<PsyConsultantPackage> list = psyConsultantPackageService.selectPsyConsultantPackageList(psyConsultantPackage);
@@ -43,7 +43,7 @@ public class PsyConsultantPackageController extends BaseController
     /**
      * 导出咨询师成长套餐列表
      */
-    @PreAuthorize("@ss.hasPermi('system:package:export')")
+    //@PreAuthorize("@ss.hasPermi('system:package:export')")
     @Log(title = "咨询师成长套餐", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, PsyConsultantPackage psyConsultantPackage)
@@ -56,8 +56,8 @@ public class PsyConsultantPackageController extends BaseController
     /**
      * 获取咨询师成长套餐详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:package:query')")
-    @GetMapping(value = "/{packageId}")
+    //@PreAuthorize("@ss.hasPermi('system:package:query')")
+    @GetMapping(value = "/queryById/{packageId}")
     public AjaxResult getInfo(@PathVariable("packageId") Long packageId)
     {
         return AjaxResult.success(psyConsultantPackageService.selectPsyConsultantPackageByPackageId(packageId));
@@ -66,9 +66,9 @@ public class PsyConsultantPackageController extends BaseController
     /**
      * 新增咨询师成长套餐
      */
-    @PreAuthorize("@ss.hasPermi('system:package:add')")
+    //@PreAuthorize("@ss.hasPermi('system:package:add')")
     @Log(title = "咨询师成长套餐", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody PsyConsultantPackage psyConsultantPackage)
     {
         return toAjax(psyConsultantPackageService.insertPsyConsultantPackage(psyConsultantPackage));
@@ -77,9 +77,9 @@ public class PsyConsultantPackageController extends BaseController
     /**
      * 修改咨询师成长套餐
      */
-    @PreAuthorize("@ss.hasPermi('system:package:edit')")
+    //@PreAuthorize("@ss.hasPermi('system:package:edit')")
     @Log(title = "咨询师成长套餐", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PutMapping("/edit")
     public AjaxResult edit(@RequestBody PsyConsultantPackage psyConsultantPackage)
     {
         return toAjax(psyConsultantPackageService.updatePsyConsultantPackage(psyConsultantPackage));
@@ -88,9 +88,9 @@ public class PsyConsultantPackageController extends BaseController
     /**
      * 删除咨询师成长套餐
      */
-    @PreAuthorize("@ss.hasPermi('system:package:remove')")
+    //@PreAuthorize("@ss.hasPermi('system:package:remove')")
     @Log(title = "咨询师成长套餐", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{packageIds}")
+	@DeleteMapping("/deleteByIds/{packageIds}")
     public AjaxResult remove(@PathVariable Long[] packageIds)
     {
         return toAjax(psyConsultantPackageService.deletePsyConsultantPackageByPackageIds(packageIds));

@@ -1,6 +1,8 @@
 package com.renxin.psychology.service;
 
 import java.util.List;
+
+import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 
 /**
@@ -58,4 +60,9 @@ public interface IPsyConsultantTeamSupervisionService
      * @return 结果
      */
     public int deletePsyConsultantTeamSupervisionById(Long id);
+
+    /**
+     * 付款完成后, 处理订单
+     */
+    public void handleOrder(PsyConsultantOrder consultantOrder);
 }

@@ -1,7 +1,7 @@
 import httprequest from "../httpRequest";
 export default {
   getCode: async (account) => {
-    let res = await httprequest.post("/app/login/code/get", { account });
+    let res = await httprequest.post("/consulted/login/code/get", { account });
 
     if (res.code == 200) {
       //   uni.showToast({
@@ -15,7 +15,7 @@ export default {
     }
   },
   loginByPhone: async (account, validStr) => {
-    let res = await httprequest.post("/app/login/code/verify", {
+    let res = await httprequest.post("/consulted/login/code/verify", {
       account,
       validStr,
     });

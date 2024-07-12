@@ -17,7 +17,7 @@ import java.io.InputStream;
  * @author renxin
  */
 @RestController
-@RequestMapping("/app/cos")
+@RequestMapping("/consulted/cos")
 public class CommonCosController
 {
     private static final Logger log = LoggerFactory.getLogger(CommonCosController.class);

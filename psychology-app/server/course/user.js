@@ -2,7 +2,7 @@ import httprequest from "../httpRequest";
 export default {
    //根据用户编号查询课程列表
    getCourseList: async (userId) => {
-    let res = await httprequest.post(`/app/course/getCourseListByUserId?userId=${userId}`);
+    let res = await httprequest.post(`/consulted/course/getCourseListByUserId?userId=${userId}`);
     if (res.code == 200) {
       return res.rows;
     } else {
@@ -10,7 +10,7 @@ export default {
     }
   },
   getOrderListNum: async () => {
-    let res = await httprequest.post("/app/gauge/order/getMyReportNum");
+    let res = await httprequest.post("/consulted/gauge/order/getMyReportNum");
     if (res.code == 200) {
       return res.data;
     } else {

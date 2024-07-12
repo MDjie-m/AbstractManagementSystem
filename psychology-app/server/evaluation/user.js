@@ -2,7 +2,7 @@ import httprequest from "../httpRequest";
 export default {
   getOrderList: async (data) => {
     let res = await httprequest.post(
-      "/app/gauge/order/list?pageNum=1&pageSize=100&orderByColumn=po.createTime&isAsc=descending",
+      "/consulted/gauge/order/list?pageNum=1&pageSize=100&orderByColumn=po.createTime&isAsc=descending",
 	  data || {}
     );
     if (res.code == 200) {
@@ -15,7 +15,7 @@ export default {
     }
   },
   getOrderListNum: async () => {
-    let res = await httprequest.post("/app/gauge/order/getMyReportNum");
+    let res = await httprequest.post("/consulted/gauge/order/getMyReportNum");
     if (res.code == 200) {
       return res.data;
     } else {

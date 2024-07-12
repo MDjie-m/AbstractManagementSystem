@@ -2,7 +2,7 @@ import httprequest from "../httpRequest";
 export default {
   //根据课程信息生成订单
   orderAdd: async (userId, courseId, amount) => {
-    let res = await httprequest.put("/app/course/order/add", {
+    let res = await httprequest.put("/consulted/course/order/add", {
       userId,
       courseId,
       amount,
@@ -18,7 +18,7 @@ export default {
   },
   //根据用户ID获取订单
   getOrderList: async (userId) => {
-    let res = await httprequest.post("/app/course/order/list", {
+    let res = await httprequest.post("/consulted/course/order/list", {
         userId,
     });
     if (res.code == 200) {
@@ -29,7 +29,7 @@ export default {
   },
   // 根据用户ID和订单状态获取订单
   getOrderListByStatus: async (userId, status) => {
-    let res = await httprequest.post("/app/course/order/list", {
+    let res = await httprequest.post("/consulted/course/order/list", {
         userId,
 		status
     });
@@ -41,7 +41,7 @@ export default {
   },
   //根据订单获取订单详情
   getOrderDetail: async (orderId) => {
-    let res = await httprequest.post(`/app/course/order/detail?orderId=${orderId}`);
+    let res = await httprequest.post(`/consulted/course/order/detail?orderId=${orderId}`);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -53,7 +53,7 @@ export default {
     }
   },
   cancelOrder:async (orderId)=>{
-    let res = await httprequest.post(`/app/course/order/cancel?orderId=${orderId}`);
+    let res = await httprequest.post(`/consulted/course/order/cancel?orderId=${orderId}`);
     if (res.code == 200) {
       return res.data;
     } else {

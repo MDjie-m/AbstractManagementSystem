@@ -30,6 +30,7 @@ import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.wechat.service.WechatService;
 import com.renxin.wechat.vo.TemplateMessageItemVo;
 import com.renxin.wechat.vo.TemplateMessageVo;
+import com.renxin.wechat.vo.WechatPayVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 import httprequest from "../httpRequest";
 export default {
     getIntegral: async (data) => {
-        let res = await httprequest.get(`/app/user/integral/list`, data);
+        let res = await httprequest.get(`/consulted/user/integral/list`, data);
         if (res.code == 200) {
             return res;
         } else {
@@ -10,7 +10,7 @@ export default {
     },
 
     getUserIntegral: async () => {
-        let res = await httprequest.get(`/app/user/integral/getUserIntegral`);
+        let res = await httprequest.get(`/consulted/user/integral/getUserIntegral`);
         if (res.code == 200) {
             return res;
         } else {
@@ -19,16 +19,16 @@ export default {
     },
 
     getLikes: async (data) => {
-        return await httprequest.get(`/app/user/liked/consult/getLikes`, data);
+        return await httprequest.get(`/consulted/user/liked/consult/getLikes`, data);
     },
     getLiked: async (data) => {
-        let res = await httprequest.post(`/app/user/liked/consult/getLiked`, data);
+        let res = await httprequest.post(`/consulted/user/liked/consult/getLiked`, data);
         if (res.code == 200) {
             return res.data;
         }
     },
     doLike: async (data) => {
-        let res = await httprequest.post(`/app/user/liked/consult`, data);
+        let res = await httprequest.post(`/consulted/user/liked/consult`, data);
         if (res.code == 200) {
             return res.data;
         } else {
@@ -39,7 +39,7 @@ export default {
         }
     },
     cancelLike: async (data) => {
-        let res = await httprequest.post(`/app/user/liked/consult/del`, data);
+        let res = await httprequest.post(`/consulted/user/liked/consult/del`, data);
         if (res.code == 200) {
             return res.data;
         } else {

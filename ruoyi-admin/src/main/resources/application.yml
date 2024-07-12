@@ -120,6 +120,12 @@ spring:
 #        max-wait: -1ms
 
 
+wechat:
+  appid: wxff96ed0f6fbd6933
+  secret: d8e628314926cc5e1563c6a39f95573d
+  grant_type: authorization_code
+  jsCodeLoginUrl: https://api.weixin.qq.com/sns/jscode2session
+
 
 # token配置
 token:
@@ -142,13 +148,13 @@ consultant:
 app:
   token:
     # 令牌自定义标识
-    header: Authorization-app
+    header: Authorization-consulted
     # 令牌密钥
     secret: appabcdefghijklmnopqrstuvwxyz
     # 令牌有效期（默认7天 60*60*24*7）单位s
     expireTime: 2592000
   filter:
-    urls: /app/user/bindPhone,app/api/wechatPay/v3/wechatPay,/app/wxPay/**,/app/*/order/**,/app/gauge/result,/app/gauge/result/commit,/app/gauge/questions/list,/app/home/gauge/getInfo,/app/course/detail,/app/course/userSection/saveUserSectionInfo,/app/course/getCourseListByUserId*
+    urls: /consulted/user/bindPhone,app/api/wechatPay/v3/wechatPay,/consulted/wxPay/**,/consulted/*/order/**,/consulted/gauge/result,/consulted/gauge/result/commit,/consulted/gauge/questions/list,/consulted/home/gauge/getInfo,/consulted/course/detail,/consulted/course/userSection/saveUserSectionInfo,/consulted/course/getCourseListByUserId*
 
 # MyBatis配置
 #mybatis:

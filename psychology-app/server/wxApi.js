@@ -6,7 +6,7 @@ const APPSECRET = "98dca366602a0806da390ed138e4a7ea";
 export const checkUserLogin = () => {
     return new Promise((resolve, reject) => {
         httprequest
-            .post(`/app/login/check`)
+            .post(`/consulted/login/check`)
             .then((res) => {
                 resolve(res);
             })
@@ -33,7 +33,7 @@ function updateToken() {
 export const wxLogin = (data) => {
   return new Promise((resolve, reject) => {
     httprequest
-      .post(`/app/user/wxLogin`, data)
+      .post(`/consulted/user/wxLogin`, data)
       .then((res) => {
         resolve(res);
       })
@@ -45,7 +45,7 @@ export const wxLogin = (data) => {
 export const wxLoginCallBack = (code) => {
   return new Promise((resolve, reject) => {
     httprequest
-      .get(`/app/user/callBack?code=` + code)
+      .get(`/consulted/user/callBack?code=` + code)
       .then((res) => {
         resolve(res);
       })
@@ -103,7 +103,7 @@ export function getPaySign(userId, produteId, amount, extra) {
       }
 	  httprequest
 		.post(
-		  `/app/api/wechatPay/v3/wechatPay`, params
+		  `/consulted/api/wechatPay/v3/wechatPay`, params
 		)
 		.then((res) => {
 		  resolve(res);
@@ -157,7 +157,7 @@ export function wxJSConfig(url) {
   return new Promise((resolve, reject) => {
     httprequest
     .post(
-      `/app/wxJS/config`, params
+      `/consulted/wxJS/config`, params
     )
     .then((res) => {
       resolve(res);

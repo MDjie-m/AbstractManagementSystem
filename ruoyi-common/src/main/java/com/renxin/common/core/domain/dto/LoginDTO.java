@@ -91,6 +91,8 @@ public class LoginDTO implements UserDetails {
      * 终端类型
      */
     private String clientType;
+    
+    
 
     @JSONField(serialize = false)
     @Override

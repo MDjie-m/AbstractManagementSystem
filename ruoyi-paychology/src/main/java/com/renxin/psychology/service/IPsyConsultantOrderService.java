@@ -2,6 +2,7 @@ package com.renxin.psychology.service;
 
 import java.util.List;
 import com.renxin.psychology.domain.PsyConsultantOrder;
+import com.renxin.wechat.vo.WechatPayVO;
 
 /**
  * 团队督导(组织)订单Service接口
@@ -58,4 +59,25 @@ public interface IPsyConsultantOrderService
      * @return 结果
      */
     public int deletePsyConsultantOrderByOrderNo(String orderNo);
+
+
+    /**
+     * 创建订单
+     * @param wechatPay
+     */
+    void createConsultantOrder(PsyConsultantOrder wechatPay);
+    
+    
+    /**
+     * 生成团队督导(组织)订单
+     *
+     * @param psyConsultantOrder 团队督导(组织)订单
+     * @return 结果
+     */
+    public PsyConsultantOrder generatePsyConsultantOrder(PsyConsultantOrder psyConsultantOrder);
+
+    /** 支付成功回调 */
+    void paySuccessCallback(String outTradeNo, String payId);
+    
+    
 }

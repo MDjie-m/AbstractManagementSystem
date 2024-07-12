@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="com.renxin.gauge.domain.PsyOrderPay" id="PsyOrderPayResult">
         <result property="id"    column="id"    />
         <result property="orderId"    column="order_id"    />
+        <result property="consultantOrderId"    column="consultant_order_id"    />
         <result property="payStatus"    column="pay_status"    />
         <result property="amount"    column="amount"    />
         <result property="payId"    column="pay_id"    />
@@ -16,7 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPsyOrderPayVo">
-        select id, order_id, pay_status, amount, pay_id, pay_type, create_time, create_by from psy_order_pay
+        select id, order_id,consultant_order_id, pay_status, amount, pay_id, pay_type, create_time, create_by from psy_order_pay
     </sql>
 
     <select id="selectPsyOrderPayList" parameterType="com.renxin.gauge.domain.PsyOrderPay" resultMap="PsyOrderPayResult">
@@ -40,6 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
             <if test="orderId != null">order_id,</if>
+            <if test="consultantOrderId != null">consultant_order_id,</if>
             <if test="payStatus != null">pay_status,</if>
             <if test="amount != null">amount,</if>
             <if test="payId != null">pay_id,</if>
@@ -50,6 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="orderId != null">#{orderId},</if>
+            <if test="consultantOrderId != null">#{consultantOrderId},</if>
             <if test="payStatus != null">#{payStatus},</if>
             <if test="amount != null">#{amount},</if>
             <if test="payId != null">#{payId},</if>

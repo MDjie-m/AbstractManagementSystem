@@ -9,8 +9,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="productName"    column="product_name"    />
         <result property="productPicUrl"    column="product_pic_url"    />
         <result property="detailPicUrl"    column="detail_pic_url"    />
-        <result property="cycleType"    column="cycle_type"    />
-        <result property="cycleNumber"    column="cycle_number"    />
+        <result property="teamSupNum"    column="team_sup_num"    />
+        <result property="personSupNum"    column="person_sup_num"    />
+        <result property="personExpNum"    column="person_exp_num"    />
+        <result property="courseNum"    column="course_num"    />
+        <result property="price"    column="price"    />
         <result property="status"    column="status"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createBy"    column="create_by"    />
@@ -20,17 +23,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPsyConsultantPackageVo">
-        select package_id, product_name, product_pic_url, detail_pic_url, cycle_type, cycle_number, status, del_flag, create_by, create_time, update_by, update_time from psy_consultant_package
+        select package_id, product_name, product_pic_url, detail_pic_url,  status, del_flag, create_by, create_time,
+               update_by, update_time,
+               team_sup_num , person_sup_num, person_exp_num, course_num,price
+           from psy_consultant_package
     </sql>
 
     <select id="selectPsyConsultantPackageList" parameterType="PsyConsultantPackage" resultMap="PsyConsultantPackageResult">
         <include refid="selectPsyConsultantPackageVo"/>
         <where>  
+            and del_flag = 0
             <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
             <if test="productPicUrl != null  and productPicUrl != ''"> and product_pic_url = #{productPicUrl}</if>
             <if test="detailPicUrl != null  and detailPicUrl != ''"> and detail_pic_url = #{detailPicUrl}</if>
-            <if test="cycleType != null  and cycleType != ''"> and cycle_type = #{cycleType}</if>
-            <if test="cycleNumber != null "> and cycle_number = #{cycleNumber}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
     </select>
@@ -47,28 +52,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productName != null">product_name,</if>
             <if test="productPicUrl != null">product_pic_url,</if>
             <if test="detailPicUrl != null">detail_pic_url,</if>
-            <if test="cycleType != null">cycle_type,</if>
-            <if test="cycleNumber != null">cycle_number,</if>
             <if test="status != null">status,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="teamSupNum != null">team_sup_num,</if>
+            <if test="personSupNum != null">person_sup_num,</if>
+            <if test="personExpNum != null">person_exp_num,</if>
+            <if test="courseNum != null">course_num,</if>
+            <if test="price != null">price,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="packageId != null">#{packageId},</if>
             <if test="productName != null">#{productName},</if>
             <if test="productPicUrl != null">#{productPicUrl},</if>
             <if test="detailPicUrl != null">#{detailPicUrl},</if>
-            <if test="cycleType != null">#{cycleType},</if>
-            <if test="cycleNumber != null">#{cycleNumber},</if>
             <if test="status != null">#{status},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="teamSupNum != null">#{teamSupNum},</if>
+            <if test="personSupNum != null">#{personSupNum},</if>
+            <if test="personExpNum != null">#{personExpNum},</if>
+            <if test="courseNum != null">#{courseNum},</if>
+            <if test="price != null">#{price},</if>
          </trim>
     </insert>
 
@@ -78,14 +89,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productName != null">product_name = #{productName},</if>
             <if test="productPicUrl != null">product_pic_url = #{productPicUrl},</if>
             <if test="detailPicUrl != null">detail_pic_url = #{detailPicUrl},</if>
-            <if test="cycleType != null">cycle_type = #{cycleType},</if>
-            <if test="cycleNumber != null">cycle_number = #{cycleNumber},</if>
             <if test="status != null">status = #{status},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="teamSupNum != null">team_sup_num = #{teamSupNum},</if>
+            <if test="personSupNum != null">person_sup_num = #{personSupNum},</if>
+            <if test="personExpNum != null">person_exp_num = #{personExpNum},</if>
+            <if test="courseNum != null">course_num = #{courseNum},</if>
+            <if test="price != null">price = #{price},</if>
         </trim>
         where package_id = #{packageId}
     </update>
@@ -95,7 +109,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deletePsyConsultantPackageByPackageIds" parameterType="String">
-        delete from psy_consultant_package where package_id in 
+        update psy_consultant_package 
+            set del_flag = 1
+        where package_id in 
         <foreach item="packageId" collection="array" open="(" separator="," close=")">
             #{packageId}
         </foreach>

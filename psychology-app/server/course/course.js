@@ -2,7 +2,7 @@ import httprequest from "../httpRequest";
 export default {
 	//根据搜素条件查询课程列表
 	getCourseList: async (searchValue) => {
-	  let res = await httprequest.post(`/app/course/search?searchValue=${searchValue}`);
+	  let res = await httprequest.post(`/consulted/course/search?searchValue=${searchValue}`);
 	  if (res.code == 200) {
 	    return res.data;
 	  } else {
@@ -11,7 +11,7 @@ export default {
 	},
   //获取与用户无法的课程基本信息
   getCourseBaseInfo: async (courseId) => {
-    let res = await httprequest.post(`/app/course/getInfo?id=${courseId}`);
+    let res = await httprequest.post(`/consulted/course/getInfo?id=${courseId}`);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -23,7 +23,7 @@ export default {
   },
     //获取课程详情
     getCourseInfo: async (userId, courseId) => {
-      let res = await httprequest.post(`/app/course/detail/${userId}/${courseId}`);
+      let res = await httprequest.post(`/consulted/course/detail/${userId}/${courseId}`);
       if (res.code == 200) {
         return res.data;
       } else {
@@ -34,7 +34,7 @@ export default {
       }
     },
     getSectionList: async (courseId) => {
-      let res = await httprequest.post("/app/course/section/list",{courseId});
+      let res = await httprequest.post("/consulted/course/section/list",{courseId});
       if (res.code == 200) {
         console.log(res);
         return res.rows;
@@ -47,7 +47,7 @@ export default {
     },
     
     orderPay: async (gaugeId, amount) => {
-      let res = await httprequest.post("/app/wxPay/pay", { amount, gaugeId });
+      let res = await httprequest.post("/consulted/wxPay/pay", { amount, gaugeId });
       if (res.code == 200) {
         return res;
       } else {
@@ -61,7 +61,7 @@ export default {
 	
 	// 记录用户学习课程章节的时间点
 	recordEndTime: async (data) => {
-      let res = await httprequest.post("/app/course/userSection/saveUserSectionInfo", data);
+      let res = await httprequest.post("/consulted/course/userSection/saveUserSectionInfo", data);
       if (res.code == 200) {
         return res.data;
       } else {

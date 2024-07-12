@@ -2,7 +2,7 @@ import httprequest from "../httpRequest";
 export default {
   //获取测评问题
   getQuestionList: async (gaugeId, orderId) => {
-    let res = await httprequest.get("/app/gauge/questions/list", {
+    let res = await httprequest.get("/consulted/gauge/questions/list", {
       gaugeId,
       orderId,
     });
@@ -17,7 +17,7 @@ export default {
   },
   //获取测评问题
   getWrongList: async (gaugeId, orderId) => {
-    let res = await httprequest.get(`/app/gauge/questions/wrongs/${orderId}/${gaugeId}`);
+    let res = await httprequest.get(`/consulted/gauge/questions/wrongs/${orderId}/${gaugeId}`);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -29,7 +29,7 @@ export default {
   },
   //获取测评问题
   getLats: async (gaugeId) => {
-    let res = await httprequest.get("/app/gauge/questions/lats", {
+    let res = await httprequest.get("/consulted/gauge/questions/lats", {
       gaugeId
     });
     if (res.code == 200) {
@@ -43,7 +43,7 @@ export default {
   },
   //提交答案
   setAnswer: async (data) => {
-    let res = await httprequest.post("/app/gauge/result", data);
+    let res = await httprequest.post("/consulted/gauge/result", data);
     if (res.code == 200) {
       return res;
     } else {
@@ -54,7 +54,7 @@ export default {
     }
   },
   setResult: async (data) => {
-    let res = await httprequest.post("/app/gauge/result/commit", data);
+    let res = await httprequest.post("/consulted/gauge/result/commit", data);
     if (res.code == 200) {
       return res;
     } else {
@@ -66,7 +66,7 @@ export default {
   },
   //获取测评报告
   getReport: async (orderId) => {
-    let res = await httprequest.get("/app/gauge/result/getReport/" + orderId);
+    let res = await httprequest.get("/consulted/gauge/result/getReport/" + orderId);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -77,7 +77,7 @@ export default {
     }
   },
   getOrder: async (orderId) => {
-    let res = await httprequest.get("/app/gauge/order/" + orderId);
+    let res = await httprequest.get("/consulted/gauge/order/" + orderId);
     if (res.code == 200) {
       return res.data;
     } else {

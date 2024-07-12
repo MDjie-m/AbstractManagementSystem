@@ -38,7 +38,7 @@ public class PsyConsultantSupervisionMember extends BaseEntity
 
     /** 订单ID */
     @Excel(name = "订单ID")
-    private Long orderNo;
+    private String orderNo;
 
     /** 成员ID(咨询师ID） */
     @Excel(name = "成员ID(咨询师ID）")

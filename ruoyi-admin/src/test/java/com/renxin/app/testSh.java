@@ -20,7 +20,7 @@ public class testSh {
 
     @Test
     public void executeScript() {
-        String command = ClassUtils.getDefaultClassLoader().getResource("com/renxin/app/backup_mysql.sh").getPath();
+        String command = ClassUtils.getDefaultClassLoader().getResource("com/renxin/consulted/backup_mysql.sh").getPath();
 
         try {
             Process process = Runtime.getRuntime().exec(command);

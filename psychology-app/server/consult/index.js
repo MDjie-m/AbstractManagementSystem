@@ -2,7 +2,7 @@ import httprequest from "../httpRequest";
 export default {
   //根据字典类型获取banner图
   getBannerList: async (type) => {
-    let res = await httprequest.get("/app/consult/banner/list", {
+    let res = await httprequest.get("/consulted/consult/banner/list", {
       type,
     });
     if (res.code == 200) {
@@ -13,12 +13,12 @@ export default {
   },
   //获取咨询师
   getConsult: async (data, pageNum, pageSize) => {
-    let res = await httprequest.post(`/app/consult/search?pageNum=${pageNum}&pageSize=${pageSize}`, data);
+    let res = await httprequest.post(`/consulted/consult/search?pageNum=${pageNum}&pageSize=${pageSize}`, data);
     return res
   },
   //获取配置
   getConfigByType: async (dictType) => {
-    let res = await httprequest.get("/app/consult/config/getConfigByType/" + dictType);
+    let res = await httprequest.get("/consulted/consult/config/getConfigByType/" + dictType);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -26,7 +26,7 @@ export default {
     }
   },
   getTypes: async () => {
-    let res = await httprequest.get("/app/consult/config/getTrees");
+    let res = await httprequest.get("/consulted/consult/config/getTrees");
     if (res.code == 200) {
       return res.data;
     } else {
@@ -34,7 +34,7 @@ export default {
     }
   },
   getAttrs: async (dictTypes) => {
-    let res = await httprequest.get("/app/consult/config/getConfigByTypes/" + dictTypes);
+    let res = await httprequest.get("/consulted/consult/config/getConfigByTypes/" + dictTypes);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -42,7 +42,7 @@ export default {
     }
   },
   getDates: async (num) => {
-    let res = await httprequest.get("/app/consult/config/getDateNum/" + num);
+    let res = await httprequest.get("/consulted/consult/config/getDateNum/" + num);
     if (res.code == 200) {
       return res.data;
     } else {
@@ -50,7 +50,7 @@ export default {
     }
   },
   getNotices: async () => {
-    let res = await httprequest.get("/app/consult/config/getNotices");
+    let res = await httprequest.get("/consulted/consult/config/getNotices");
     if (res.code == 200) {
       return res.data;
     } else {
