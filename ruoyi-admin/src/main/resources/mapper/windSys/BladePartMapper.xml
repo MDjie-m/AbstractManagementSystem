@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.windSys.mapper.BladePartMapper">
+    
+    <resultMap type="BladePart" id="BladePartResult">
+        <result property="bpId"    column="bp_id"    />
+        <result property="bladePartCode"    column="blade_part_code"    />
+        <result property="turbineCode"    column="turbine_code"    />
+        <result property="bladeCode"    column="blade_code"    />
+        <result property="bladePartName"    column="blade_part_name"    />
+        <result property="bladePartPhotoUrl"    column="blade_part_photo_url"    />
+        <result property="bladePartInspectionResult"    column="blade_part_inspection_result"    />
+        <result property="constructionArea"    column="construction_area"    />
+        <result property="constructionContent"    column="construction_content"    />
+        <result property="bladeInsideOutside"    column="blade_inside_outside"    />
+        <result property="uploadTime"    column="upload_time"    />
+        <result property="bpReserve1"    column="bp_reserve1"    />
+        <result property="bpReserve2"    column="bp_reserve2"    />
+        <result property="bpReserve3"    column="bp_reserve3"    />
+        <result property="bpReserve4"    column="bp_reserve4"    />
+    </resultMap>
+
+    <sql id="selectBladePartVo">
+        select bp_id, blade_part_code, turbine_code, blade_code, blade_part_name, blade_part_photo_url, blade_part_inspection_result, construction_area, construction_content, blade_inside_outside, upload_time, bp_reserve1, bp_reserve2, bp_reserve3, bp_reserve4 from blade_part
+    </sql>
+
+    <select id="selectBladePartList" parameterType="BladePart" resultMap="BladePartResult">
+        <include refid="selectBladePartVo"/>
+        <where>  
+            <if test="turbineCode != null "> and turbine_code = #{turbineCode}</if>
+            <if test="bladeCode != null  and bladeCode != ''"> and blade_code = #{bladeCode}</if>
+            <if test="bladePartName != null  and bladePartName != ''"> and blade_part_name like concat('%', #{bladePartName}, '%')</if>
+            <if test="constructionArea != null  and constructionArea != ''"> and construction_area = #{constructionArea}</if>
+            <if test="bladeInsideOutside != null  and bladeInsideOutside != ''"> and blade_inside_outside = #{bladeInsideOutside}</if>
+            <if test="uploadTime != null "> and upload_time &lt;= #{uploadTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectBladePartByBpId" parameterType="Long" resultMap="BladePartResult">
+        <include refid="selectBladePartVo"/>
+        where bp_id = #{bpId}
+    </select>
+
+    <insert id="insertBladePart" parameterType="BladePart" useGeneratedKeys="true" keyProperty="bpId">
+        insert into blade_part
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bladePartCode != null">blade_part_code,</if>
+            <if test="turbineCode != null">turbine_code,</if>
+            <if test="bladeCode != null">blade_code,</if>
+            <if test="bladePartName != null">blade_part_name,</if>
+            <if test="bladePartPhotoUrl != null">blade_part_photo_url,</if>
+            <if test="bladePartInspectionResult != null">blade_part_inspection_result,</if>
+            <if test="constructionArea != null">construction_area,</if>
+            <if test="constructionContent != null">construction_content,</if>
+            <if test="bladeInsideOutside != null">blade_inside_outside,</if>
+            <if test="uploadTime != null">upload_time,</if>
+            <if test="bpReserve1 != null">bp_reserve1,</if>
+            <if test="bpReserve2 != null">bp_reserve2,</if>
+            <if test="bpReserve3 != null">bp_reserve3,</if>
+            <if test="bpReserve4 != null">bp_reserve4,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bladePartCode != null">#{bladePartCode},</if>
+            <if test="turbineCode != null">#{turbineCode},</if>
+            <if test="bladeCode != null">#{bladeCode},</if>
+            <if test="bladePartName != null">#{bladePartName},</if>
+            <if test="bladePartPhotoUrl != null">#{bladePartPhotoUrl},</if>
+            <if test="bladePartInspectionResult != null">#{bladePartInspectionResult},</if>
+            <if test="constructionArea != null">#{constructionArea},</if>
+            <if test="constructionContent != null">#{constructionContent},</if>
+            <if test="bladeInsideOutside != null">#{bladeInsideOutside},</if>
+            <if test="uploadTime != null">#{uploadTime},</if>
+            <if test="bpReserve1 != null">#{bpReserve1},</if>
+            <if test="bpReserve2 != null">#{bpReserve2},</if>
+            <if test="bpReserve3 != null">#{bpReserve3},</if>
+            <if test="bpReserve4 != null">#{bpReserve4},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBladePart" parameterType="BladePart">
+        update blade_part
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bladePartCode != null">blade_part_code = #{bladePartCode},</if>
+            <if test="turbineCode != null">turbine_code = #{turbineCode},</if>
+            <if test="bladeCode != null">blade_code = #{bladeCode},</if>
+            <if test="bladePartName != null">blade_part_name = #{bladePartName},</if>
+            <if test="bladePartPhotoUrl != null">blade_part_photo_url = #{bladePartPhotoUrl},</if>
+            <if test="bladePartInspectionResult != null">blade_part_inspection_result = #{bladePartInspectionResult},</if>
+            <if test="constructionArea != null">construction_area = #{constructionArea},</if>
+            <if test="constructionContent != null">construction_content = #{constructionContent},</if>
+            <if test="bladeInsideOutside != null">blade_inside_outside = #{bladeInsideOutside},</if>
+            <if test="uploadTime != null">upload_time = #{uploadTime},</if>
+            <if test="bpReserve1 != null">bp_reserve1 = #{bpReserve1},</if>
+            <if test="bpReserve2 != null">bp_reserve2 = #{bpReserve2},</if>
+            <if test="bpReserve3 != null">bp_reserve3 = #{bpReserve3},</if>
+            <if test="bpReserve4 != null">bp_reserve4 = #{bpReserve4},</if>
+        </trim>
+        where bp_id = #{bpId}
+    </update>
+
+    <delete id="deleteBladePartByBpId" parameterType="Long">
+        delete from blade_part where bp_id = #{bpId}
+    </delete>
+
+    <delete id="deleteBladePartByBpIds" parameterType="String">
+        delete from blade_part where bp_id in 
+        <foreach item="bpId" collection="array" open="(" separator="," close=")">
+            #{bpId}
+        </foreach>
+    </delete>
+</mapper>

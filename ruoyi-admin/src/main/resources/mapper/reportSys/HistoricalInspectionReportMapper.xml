@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.reportSys.mapper.HistoricalInspectionReportMapper">
+    
+    <resultMap type="HistoricalInspectionReport" id="HistoricalInspectionReportResult">
+        <result property="hId"    column="h_id"    />
+        <result property="turbineCode"    column="turbine_code"    />
+        <result property="inspectionPosition"    column="inspection_position"    />
+        <result property="inspectionMethod"    column="inspection_method"    />
+        <result property="inspectionDate"    column="inspection_date"    />
+        <result property="reportDate"    column="report_date"    />
+        <result property="inspectorId"    column="inspector_id"    />
+        <result property="reporterId"    column="reporter_id"    />
+        <result property="defectSummary"    column="defect_summary"    />
+        <result property="inspectionSummary"    column="inspection_summary"    />
+        <result property="hReserve1"    column="h_reserve1"    />
+        <result property="hReserve2"    column="h_reserve2"    />
+        <result property="hReserve3"    column="h_reserve3"    />
+        <result property="hReserve4"    column="h_reserve4"    />
+    </resultMap>
+
+    <sql id="selectHistoricalInspectionReportVo">
+        select h_id, turbine_code, inspection_position, inspection_method, inspection_date, report_date, inspector_id, reporter_id, defect_summary, inspection_summary, h_reserve1, h_reserve2, h_reserve3, h_reserve4 from historical_inspection_report
+    </sql>
+
+    <select id="selectHistoricalInspectionReportList" parameterType="HistoricalInspectionReport" resultMap="HistoricalInspectionReportResult">
+        <include refid="selectHistoricalInspectionReportVo"/>
+        <where>  
+            <if test="turbineCode != null  and turbineCode != ''"> and turbine_code = #{turbineCode}</if>
+            <if test="inspectionPosition != null  and inspectionPosition != ''"> and inspection_position = #{inspectionPosition}</if>
+            <if test="inspectionMethod != null  and inspectionMethod != ''"> and inspection_method = #{inspectionMethod}</if>
+            <if test="reportDate != null "> and report_date = #{reportDate}</if>
+            <if test="reporterId != null  and reporterId != ''"> and reporter_id = #{reporterId}</if>
+        </where>
+    </select>
+    
+    <select id="selectHistoricalInspectionReportByHId" parameterType="Long" resultMap="HistoricalInspectionReportResult">
+        <include refid="selectHistoricalInspectionReportVo"/>
+        where h_id = #{hId}
+    </select>
+
+    <insert id="insertHistoricalInspectionReport" parameterType="HistoricalInspectionReport" useGeneratedKeys="true" keyProperty="hId">
+        insert into historical_inspection_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="turbineCode != null">turbine_code,</if>
+            <if test="inspectionPosition != null">inspection_position,</if>
+            <if test="inspectionMethod != null">inspection_method,</if>
+            <if test="inspectionDate != null">inspection_date,</if>
+            <if test="reportDate != null">report_date,</if>
+            <if test="inspectorId != null">inspector_id,</if>
+            <if test="reporterId != null">reporter_id,</if>
+            <if test="defectSummary != null">defect_summary,</if>
+            <if test="inspectionSummary != null">inspection_summary,</if>
+            <if test="hReserve1 != null">h_reserve1,</if>
+            <if test="hReserve2 != null">h_reserve2,</if>
+            <if test="hReserve3 != null">h_reserve3,</if>
+            <if test="hReserve4 != null">h_reserve4,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="turbineCode != null">#{turbineCode},</if>
+            <if test="inspectionPosition != null">#{inspectionPosition},</if>
+            <if test="inspectionMethod != null">#{inspectionMethod},</if>
+            <if test="inspectionDate != null">#{inspectionDate},</if>
+            <if test="reportDate != null">#{reportDate},</if>
+            <if test="inspectorId != null">#{inspectorId},</if>
+            <if test="reporterId != null">#{reporterId},</if>
+            <if test="defectSummary != null">#{defectSummary},</if>
+            <if test="inspectionSummary != null">#{inspectionSummary},</if>
+            <if test="hReserve1 != null">#{hReserve1},</if>
+            <if test="hReserve2 != null">#{hReserve2},</if>
+            <if test="hReserve3 != null">#{hReserve3},</if>
+            <if test="hReserve4 != null">#{hReserve4},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHistoricalInspectionReport" parameterType="HistoricalInspectionReport">
+        update historical_inspection_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="turbineCode != null">turbine_code = #{turbineCode},</if>
+            <if test="inspectionPosition != null">inspection_position = #{inspectionPosition},</if>
+            <if test="inspectionMethod != null">inspection_method = #{inspectionMethod},</if>
+            <if test="inspectionDate != null">inspection_date = #{inspectionDate},</if>
+            <if test="reportDate != null">report_date = #{reportDate},</if>
+            <if test="inspectorId != null">inspector_id = #{inspectorId},</if>
+            <if test="reporterId != null">reporter_id = #{reporterId},</if>
+            <if test="defectSummary != null">defect_summary = #{defectSummary},</if>
+            <if test="inspectionSummary != null">inspection_summary = #{inspectionSummary},</if>
+            <if test="hReserve1 != null">h_reserve1 = #{hReserve1},</if>
+            <if test="hReserve2 != null">h_reserve2 = #{hReserve2},</if>
+            <if test="hReserve3 != null">h_reserve3 = #{hReserve3},</if>
+            <if test="hReserve4 != null">h_reserve4 = #{hReserve4},</if>
+        </trim>
+        where h_id = #{hId}
+    </update>
+
+    <delete id="deleteHistoricalInspectionReportByHId" parameterType="Long">
+        delete from historical_inspection_report where h_id = #{hId}
+    </delete>
+
+    <delete id="deleteHistoricalInspectionReportByHIds" parameterType="String">
+        delete from historical_inspection_report where h_id in 
+        <foreach item="hId" collection="array" open="(" separator="," close=")">
+            #{hId}
+        </foreach>
+    </delete>
+</mapper>
