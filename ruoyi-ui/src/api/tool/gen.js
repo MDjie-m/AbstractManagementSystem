@@ -39,7 +39,7 @@ export function importTable(data) {
   return request({
     url: '/tool/gen/importTable',
     method: 'post',
-    params: data
+    data: data
   })
 }
 
@@ -48,7 +48,7 @@ export function createTable(data) {
   return request({
     url: '/tool/gen/createTable',
     method: 'post',
-    params: data
+    data: data
   })
 }
 
