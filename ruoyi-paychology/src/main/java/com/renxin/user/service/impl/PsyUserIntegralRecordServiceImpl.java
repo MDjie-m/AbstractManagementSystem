@@ -7,7 +7,7 @@ import com.renxin.common.constant.NewConstants;
 import com.renxin.common.exception.UtilException;
 import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.vo.DateLimitUtilVO;
-import com.renxin.framework.web.service.ConsultedTokenService;
+import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.psychology.domain.PsyUser;
 import com.renxin.psychology.service.IPsyUserService;
 import com.renxin.system.service.ISysConfigService;
@@ -36,7 +36,7 @@ public class PsyUserIntegralRecordServiceImpl extends ServiceImpl<PsyUserIntegra
 {
 
     @Resource
-    private ConsultedTokenService consultedTokenService;
+    private PocketTokenService pocketTokenService;
 
     @Resource
     private ISysConfigService configService;
@@ -66,7 +66,7 @@ public class PsyUserIntegralRecordServiceImpl extends ServiceImpl<PsyUserIntegra
 
     @Override
     public Integer getUserIntegral(HttpServletRequest request) {
-        Integer id = consultedTokenService.getUserId(request);
+        Integer id = pocketTokenService.getUserId(request);
         if (id == -1) {
             return 0;
         }

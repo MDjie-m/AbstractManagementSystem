@@ -8,7 +8,7 @@ import com.renxin.common.core.domain.vo.LoginVO;
 import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.StringUtils;
-import com.renxin.framework.web.service.ConsultedTokenService;
+import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.gauge.sms.CodeUtil;
 import com.renxin.login.service.ILoginService;
 import com.renxin.psychology.domain.PsyUser;
@@ -45,7 +45,7 @@ public class LoginServiceImpl implements ILoginService {
     private PsyUserMapper psyUserMapper;
 
     @Autowired
-    private ConsultedTokenService consultedTokenService;
+    private PocketTokenService pocketTokenService;
 
     @Override
     public AjaxResult getSmsCode(LoginDTO loginDTO) {
@@ -88,7 +88,7 @@ public class LoginServiceImpl implements ILoginService {
 
         loginDTO.setPhone(loginDTO.getAccount());
         loginDTO.setUserId(user.getId());
-        String token = consultedTokenService.createToken(loginDTO ,null);
+        String token = pocketTokenService.createToken(loginDTO ,null);
 
         return AjaxResult.success(LoginVO.builder().token(token)
                 .phone(loginDTO.getAccount())

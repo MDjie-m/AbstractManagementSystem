@@ -2,7 +2,7 @@ package com.renxin.app;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.renxin.RuoYiApplication;
-import com.renxin.consulted.controller.wechat.dto.WechatPayDTO;
+import com.renxin.pocket.controller.wechat.dto.WechatPayDTO;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourCourse;

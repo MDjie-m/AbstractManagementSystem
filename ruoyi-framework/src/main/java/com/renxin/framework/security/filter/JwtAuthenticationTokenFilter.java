@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.renxin.common.core.domain.dto.ConsultDTO;
 import com.renxin.common.core.domain.dto.LoginDTO;
-import com.renxin.framework.web.service.ConsultedTokenService;
+import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +46,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
     private ConsultantTokenService consultantTokenService;
 
     @Autowired
-    private ConsultedTokenService consultedTokenService;
+    private PocketTokenService pocketTokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -96,12 +96,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
             String appHeaderName = request.getHeader(appHeader);
             if(StringUtils.isNotEmpty(appHeaderName)){
                 // 获取当前登录的咨询用户
-                LoginDTO appUser = consultedTokenService.getLoginUser(request);
+                LoginDTO appUser = pocketTokenService.getLoginUser(request);
                 // 当咨询用户存在且当前认证为空时，进行身份验证
                 if (StringUtils.isNotNull(appUser) && StringUtils.isNull(SecurityUtils.getAuthentication()))
                 {
                     // 验证用户令牌
-                    consultedTokenService.verifyToken(appUser);
+                    pocketTokenService.verifyToken(appUser);
                     // 创建并设置认证令牌
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(appUser, null, appUser.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

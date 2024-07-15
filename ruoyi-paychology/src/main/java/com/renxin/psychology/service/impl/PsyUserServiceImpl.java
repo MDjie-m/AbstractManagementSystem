@@ -158,7 +158,7 @@ public class PsyUserServiceImpl implements IPsyUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void bindPhone(LoginDTO loginDTO) {
-        PsyUser user = psyUserMapper.queryUserByAccount(loginDTO.getWxOpenId());
+        PsyUser user = psyUserMapper.selectPsyUserById(loginDTO.getUserId());
         PsyUser phoneUser = psyUserMapper.queryUserByAccount(loginDTO.getPhone());
         //若该手机号已经存在用户，直接将微信信息更新至该用户,并删除此微信用户
         if (phoneUser != null) {

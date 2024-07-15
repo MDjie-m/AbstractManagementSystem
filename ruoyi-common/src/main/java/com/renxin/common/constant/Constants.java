@@ -95,6 +95,12 @@ public class Constants
      */
     public static final String CONSULT_LOGIN_USER_KEY = "consult_login_user_key";
 
+     /**
+     * 令牌前缀
+     */
+    public static final String WECHAT_PROGRAM_ACCESS_TOKEN_KEY = "wechat_program_access_token";
+
+
     /**
      * 用户ID
      */
