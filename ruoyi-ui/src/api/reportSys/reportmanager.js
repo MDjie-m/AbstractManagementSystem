@@ -1,44 +1,44 @@
 import request from '@/utils/request'
 
-// 查询历史检测报告列表
-export function listreportmanager(query) {
+// 查询风机管理列表
+export function listWind(query) {
   return request({
-    url: '/reportSys/reportmanager/list',
+    url: '/windSys/wind/list',
     method: 'get',
     params: query
   })
 }
 
-// 查询历史检测报告详细
-export function getreportmanager(hId) {
+// 查询风机管理详细
+export function getWind(wId) {
   return request({
-    url: '/reportSys/reportmanager/' + hId,
+    url: '/windSys/wind/' + wId,
     method: 'get'
   })
 }
 
-// 新增历史检测报告
-export function addreportmanager(data) {
+// 新增风机管理
+export function addWind(data) {
   return request({
-    url: '/reportSys/reportmanager',
+    url: '/windSys/wind',
     method: 'post',
     data: data
   })
 }
 
-// 修改历史检测报告
-export function updatereportmanager(data) {
+// 修改风机管理
+export function updateWind(data) {
   return request({
-    url: '/reportSys/reportmanager',
+    url: '/windSys/wind',
     method: 'put',
     data: data
   })
 }
 
-// 删除历史检测报告
-export function delreportmanager(hId) {
+// 删除风机管理
+export function delWind(wId) {
   return request({
-    url: '/reportSys/reportmanager/' + hId,
+    url: '/windSys/wind/' + wId,
     method: 'delete'
   })
 }
