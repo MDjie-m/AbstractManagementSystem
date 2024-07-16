@@ -138,3 +138,12 @@ ALTER TABLE `psy_consultant_package`
 ALTER TABLE `psy_consultant_package`
     CHANGE COLUMN `package_id` `package_id` BIGINT(19) NOT NULL AUTO_INCREMENT COMMENT '套餐主键' FIRST;
 
+
+ALTER TABLE `cour_user_course_section`
+    CHANGE COLUMN `consultant_id` `user_type` INT NOT NULL DEFAULT (3) COMMENT '用户类型  1管理端  2咨询者  3来访者' COLLATE 'utf8mb4_general_ci' AFTER `user_id`;
+ALTER TABLE `cour_user_course_section`
+    CHANGE COLUMN `user_id` `user_id` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '用户ID' AFTER `id`;
+UPDATE cour_user_course_section SET user_type = 3
+
+ALTER TABLE `psy_consultant_supervision_member`
+    CHANGE COLUMN `order_no` `order_no` VARCHAR(50) NULL DEFAULT NULL COMMENT '订单ID' AFTER `supervision_type`;

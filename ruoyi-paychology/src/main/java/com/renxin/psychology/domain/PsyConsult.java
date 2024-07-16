@@ -158,5 +158,17 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     @TableField(exist = false)
     private BigDecimal newPrice;
 
+    /** 团队督导次数 */
+    private Integer teamSupNum;
+
+    /** 个人督导次数 */
+    private Integer personSupNum;
+
+    /** 个人体验次数 */
+    private Integer personExpNum;
+
+    /** 课程次数 */
+    private Integer courseNum;
+
     
 }

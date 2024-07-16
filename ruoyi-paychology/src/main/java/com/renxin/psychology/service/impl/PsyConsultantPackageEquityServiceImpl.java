@@ -141,6 +141,7 @@ public class PsyConsultantPackageEquityServiceImpl implements IPsyConsultantPack
             equity.setPersonExpNum(equity.getPersonExpNum() + consultantPackage.getPersonExpNum());
             equity.setCourseNum(equity.getCourseNum() + consultantPackage.getCourseNum());
             equity.setUpdateTime(new Date());
+            packageEquityMapper.updatePsyConsultantPackageEquity(equity);
         }
 
     }

@@ -106,7 +106,7 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
      * @param courseId 课程ID
      */
     @Override
-    public void initCourUserCourseSection(Integer userId, Integer courseId) {
+    public void initCourUserCourseSection(Integer userId, Integer courseId, Integer userType) {
 
         // 根据课程ID查询课程章节列表
         CourSection courSection = new CourSection();
@@ -115,6 +115,7 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
 
         CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
         courUserCourseSection.setUserId(userId);
+        courUserCourseSection.setUserType(userType);
         courUserCourseSection.setCourseId(courseId);
         courUserCourseSection.setEndTime(0);
         courUserCourseSection.setFinishStatus(CourConstant.SECTION_UNFINISHED);

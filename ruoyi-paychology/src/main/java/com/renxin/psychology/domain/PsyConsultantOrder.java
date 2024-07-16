@@ -64,9 +64,12 @@ public class PsyConsultantOrder extends BaseEntity
     @Excel(name = "付款时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date payDatetime;
 
-    /** 支付状态 0 未支付 1 支持成功  2抵扣成功 3 失败 */
-    @Excel(name = "支付状态 0 未支付 1 支持成功  2抵扣成功 3 失败")
+    /** 支付状态 1,未支付 2,支付成功 3,退款中 4,部分退 5,全单退 6,退款失败 */
+    @Excel(name = "支付状态 1,未支付 2,支付成功 3,退款中 4,部分退 5,全单退 6,退款失败")
     private String payStatus;
+
+    //支付方式  1.现款支付   2.权益支付
+    private Integer payType;
 
     /** 删除标志（0代表存在 1代表删除） */
     private String delFlag;

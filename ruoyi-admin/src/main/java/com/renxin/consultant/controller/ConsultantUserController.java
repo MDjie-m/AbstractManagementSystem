@@ -10,6 +10,7 @@ import com.renxin.consultant.common.dcloud.CloudFunctions;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.service.IPsyConsultService;
+import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.web.controller.common.CommonCosController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/consultant")
-public class ConsultantLoginController extends BaseController {
+@RequestMapping("/consultant/user")
+public class ConsultantUserController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(CommonCosController.class);
 
     @Resource
@@ -43,6 +45,19 @@ public class ConsultantLoginController extends BaseController {
             consultDTO.setPhone( psyConsult.getPhonenumber());
             String token= consultantTokenService.createToken(consultDTO,360000);
             return AjaxResult.success(token);
+        } catch (Exception e) {
+            log.error("login error",e);
+            return AjaxResult.error("login error");
+        }
+    }
+
+    @GetMapping("/getUserInfo")
+    public AjaxResult getUserInfo(HttpServletRequest request)
+    {
+        try {
+            Long consultId = consultantTokenService.getConsultId(request);
+            PsyConsultVO one = psyConsultService.getOne(consultId);
+            return AjaxResult.success(one);
         } catch (Exception e) {
             log.error("login error",e);
             return AjaxResult.error("login error");

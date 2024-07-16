@@ -21,6 +21,15 @@ public class PsyConstants {
     public static final String CONSULTANT_ORDER_COURSE_NUM = "4"; //课程
     public static final String CONSULTANT_ORDER_PACKAGE_NUM = "5"; //套餐
     
+    //用户类型
+    public static final Integer USER_ADMIN_ = 1; //管理员
+    public static final Integer USER_CONSULTANT = 2; //咨询师
+    public static final Integer USER_CONSULTED = 3; //来访者
+    
+    //支付方式  1.现款支付   2.权益支付
+    public static final Integer PAY_TYPE_CASH = 1; //现款支付
+    public static final Integer PAY_TYPE_EQUITY = 2; //权益支付
+    
 
     //积分
     public static final String INTEGRAL_RATE = "0.1"; //积分抵用比例(1积分抵多少金额

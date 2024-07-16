@@ -9,6 +9,8 @@ import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 import org.apache.poi.hpsf.Decimal;
 
+import java.math.BigDecimal;
+
 /**
  * 咨询师成长套餐对象 psy_consultant_package
  * 
@@ -46,7 +48,7 @@ public class PsyConsultantPackage extends BaseEntity
     /** 课程次数 */
     private Integer courseNum;
     /** 套餐价格*/
-    private Double price;
+    private BigDecimal price;
 
     /** 0:有效 1:失效 */
     @Excel(name = "0:有效 1:失效")

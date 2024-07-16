@@ -315,7 +315,7 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
 
                 // TODO: 将用户-课程-章节关系初始化
 
-                userCourseSectionService.initCourUserCourseSection(courOrder.getUserId(), courOrder.getCourseId());
+                userCourseSectionService.initCourUserCourseSection(courOrder.getUserId(), courOrder.getCourseId(),PsyConstants.USER_CONSULTED);
 
                 // TODO: 修改支付对象状态为已支付
                 PsyOrderPay orderPay = new PsyOrderPay();
@@ -424,7 +424,7 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
                 courOrderService.updateCourOrder(courOrder);
 
                 // TODO: 将用户-课程-章节关系初始化
-                userCourseSectionService.initCourUserCourseSection(courOrder.getUserId(), courOrder.getCourseId());
+                userCourseSectionService.initCourUserCourseSection(courOrder.getUserId(), courOrder.getCourseId(),PsyConstants.USER_CONSULTED);
 
                 // TODO: 修改支付对象状态为已支付
                 PsyOrderPay orderPay = new PsyOrderPay();

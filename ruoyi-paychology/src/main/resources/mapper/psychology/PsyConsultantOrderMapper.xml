@@ -25,12 +25,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="payId"    column="pay_id"    />
         <result property="workId"    column="work_id"    />
         <result property="time"    column="time"    />
+        <result property="payType"    column="pay_type"    />
     </resultMap>
 
     <sql id="selectPsyConsultantOrderVo">
         select id, order_no, server_id, server_type, server_name, status, pay_consultant_id, pay_consultant_name, pay_amount, pay_datetime, pay_status, 
                remark, del_flag, create_by, create_time, update_by, update_time,
-               pay_id, work_id, time
+               pay_id, work_id, time, pay_type
         from psy_consultant_order
     </sql>
 
@@ -47,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payAmount != null "> and pay_amount = #{payAmount}</if>
             <if test="payDatetime != null "> and pay_datetime = #{payDatetime}</if>
             <if test="payStatus != null  and payStatus != ''"> and pay_status = #{payStatus}</if>
+            <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
         </where>
     </select>
     
@@ -77,6 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payId != null">pay_id,</if>
             <if test="workId != null">work_id,</if>
             <if test="time != null">time,</if>
+            <if test="payType != null">pay_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
@@ -98,6 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payId != null">#{payId},</if>
             <if test="workId != null">#{workId},</if>
             <if test="time != null">#{time},</if>
+            <if test="payType != null">#{payType},</if>
          </trim>
     </insert>
 
@@ -119,6 +123,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="payType != null">pay_type = #{payType},</if>
         </trim>
         where order_no = #{orderNo}
     </update>

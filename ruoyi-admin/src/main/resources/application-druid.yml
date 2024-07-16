@@ -10,11 +10,17 @@ spring:
 #        url: jdbc:mysql://101.42.12.252:3306/psy-test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #        username: root
 #        password: 123456qwerQWER=
-      # 本地
+
       master:
-        url: jdbc:mysql://localhost:3306/pocket?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: root
-        password: root
+        url: jdbc:mysql://10.137.142.232:3306/v9_pamp_release?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: sunzhengfeng
+        password: J2ynV26HfdsWeD548
+        
+      # 本地
+#      master:
+#        url: jdbc:mysql://localhost:3306/pocket?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+#        username: root
+#        password: root
       # 从库数据源
       slave:
         # 从数据源开关/默认关闭
@@ -66,13 +72,22 @@ spring:
   redis:
     # 地址
     #host: 10.0.24.3
-    host: 127.0.0.1
+#    host: 127.0.0.1
+#    # 端口，默认为6379
+#    port: 6379
+#    # 数据库索引
+#    database: 10
+#    # 密码
+#    password: 1
+    
+    host: 10.137.142.154
     # 端口，默认为6379
     port: 6379
     # 数据库索引
-    database: 10
+    database: 26
     # 密码
-    password: 1
+    password: dK2FNsDZ4mxmnkN
+    
     # 连接超时时间
     timeout: 10s
     lettuce:

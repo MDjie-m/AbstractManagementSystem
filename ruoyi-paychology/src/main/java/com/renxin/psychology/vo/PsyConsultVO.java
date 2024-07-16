@@ -113,5 +113,17 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     
     /** 级别  1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师*/
     private Integer level;
+
+    /** 团队督导次数 */
+    private Integer teamSupNum;
+
+    /** 个人督导次数 */
+    private Integer personSupNum;
+
+    /** 个人体验次数 */
+    private Integer personExpNum;
+
+    /** 课程次数 */
+    private Integer courseNum;
     
 }

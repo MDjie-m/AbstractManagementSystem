@@ -1,5 +1,6 @@
 package com.renxin.psychology.service;
 
+import java.rmi.ServerException;
 import java.util.List;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.wechat.vo.WechatPayVO;

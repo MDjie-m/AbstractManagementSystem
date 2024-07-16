@@ -1,6 +1,7 @@
 package com.renxin.psychology.service.impl;
 
 import java.math.BigDecimal;
+import java.rmi.ServerException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import com.renxin.common.enums.GaugeStatus;
 import com.renxin.common.enums.OrderPayStatus;
 import com.renxin.common.enums.OrderStatus;
 import com.renxin.common.event.publish.IntegralPublisher;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.IDhelper;
 import com.renxin.course.constant.CourConstant;
@@ -24,17 +26,15 @@ import com.renxin.gauge.domain.PsyOrderPay;
 import com.renxin.gauge.service.IPsyOrderPayService;
 import com.renxin.gauge.service.IPsyOrderService;
 import com.renxin.psychology.constant.ConsultConstant;
-import com.renxin.psychology.domain.PsyConsultOrderItem;
-import com.renxin.psychology.domain.PsyConsultPay;
-import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.domain.*;
 import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.user.domain.PsyUserIntegralRecord;
 import com.renxin.user.service.IPsyUserIntegralRecordService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantOrderMapper;
-import com.renxin.psychology.domain.PsyConsultantOrder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -97,6 +97,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     
     @Resource
     private IPsyConsultantPackageEquityService packageEquityService;
+    
+    @Resource
+    private IPsyConsultantPackageEquityService consultantPackageEquityService;
     
     /**
      * 查询团队督导(组织)订单
@@ -212,131 +215,125 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createConsultantOrder(PsyConsultantOrder consultantOrder) {
+    public void createConsultantOrder(PsyConsultantOrder consultantOrder)  {
         String nickName = consultService.getOne(Long.valueOf(consultantOrder.getPayConsultantId())).getNickName();
         consultantOrder.setCreateBy(consultantOrder.getPayConsultantId());
         consultantOrder.setUpdateBy(consultantOrder.getPayConsultantId());
-
+        consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_CREATED);
         String payId = UUID.randomUUID().toString();// 当前使用随机生成的支付ID，后续使用第三方支付平台返回的
-        if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(consultantOrder.getServerType())) {
+        consultantOrder.setPayId(payId);
+        consultantOrder.setPayConsultantName(nickName);
+        
+        String serverType = consultantOrder.getServerType();
+        PsyConsultantPackageEquity consultantPackageEquity = new PsyConsultantPackageEquity();
+        //若[支付类型]为"权益支付", 则直接校验并扣减
+        Integer payType = consultantOrder.getPayType();
+        if(PsyConstants.PAY_TYPE_EQUITY == payType){
+            //查询当前咨询师的权益清单
+            consultantPackageEquity = consultantPackageEquityService.selectPsyConsultantPackageEquityByConsultantId(Long.valueOf(consultantOrder.getPayConsultantId()));
+            if (ObjectUtils.isEmpty(consultantPackageEquity)){
+                throw new ServiceException("当前用户的权益不足, 请先购买套餐或直接现款支付");
+            }
+        }
+        
+        boolean isPayed = false;
+        if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)) {
             //生成团督订单
-            consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_CREATED);
-            consultantOrder.setPayId(payId);
-            consultantOrder.setPayConsultantName(nickName);
             PsyConsultantTeamSupervision team = teamSupervisionService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
-            consultantOrder.setServerName(team.getTitle()+"-第"+team.getPeriodNo()+"期");
+            //consultantOrder.setServerName(team.getTitle()+"-第"+team.getPeriodNo()+"期");
             PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
-
+            
+            if(PsyConstants.PAY_TYPE_EQUITY == payType) {
+                Integer teamSupNum = consultantPackageEquity.getTeamSupNum();
+                if (teamSupNum <= 0){
+                    throw new ServiceException("团队督导权益不足, 无法使用权益购买. 请先购买套餐或直接现款支付");
+                }else{
+                    //权益次数-1
+                    consultantPackageEquity.setTeamSupNum(teamSupNum-1);
+                    consultantPackageEquityService.updatePsyConsultantPackageEquity(consultantPackageEquity);
+                    //支付已完成
+                    isPayed = true;
+                }
+            }
+            
             //内部生成支付对象
-            PsyOrderPay orderPay = new PsyOrderPay();
+            /*PsyOrderPay orderPay = new PsyOrderPay();
             orderPay.setConsultantOrderId(Integer.valueOf(newOrder.getId()));
             orderPay.setPayType(CourConstant.PAY_WAY_WEIXIN); // 微信 支付方式一定是微信
             orderPay.setPayStatus(CourConstant.PAY_STATUE_PENDING);
             orderPay.setAmount(consultantOrder.getPayAmount());
             orderPay.setPayId(payId); // 当前使用随机生成的支付ID，后续使用第三方支付平台返回的
-            orderPayService.insertPsyOrderPay(orderPay);
+            orderPayService.insertPsyOrderPay(orderPay);*/
 
-        } else if (PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM.equals(consultantOrder.getServerType())) {
+        } else if (PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM.equals(serverType)) {
             // 个人督导服务
             //Long id = consultantOrder.getOrderId() != null ? consultantOrder.getOrderId() : IDhelper.getNextId();
-            consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_CREATED);
-            consultantOrder.setPayId(payId);
-            consultantOrder.setPayConsultantName(nickName);
-            consultantOrder.setServerName("个人督导服务");
+            //consultantOrder.setServerName("个人督导服务");
             PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
-            
-            //内部生成支付对象
-            PsyOrderPay orderPay = new PsyOrderPay();
-            orderPay.setConsultantOrderId(Integer.valueOf(newOrder.getId()));
-            orderPay.setPayType(CourConstant.PAY_WAY_WEIXIN); // 微信 支付方式一定是微信
-            orderPay.setPayStatus(CourConstant.PAY_STATUE_PENDING);
-            orderPay.setAmount(consultantOrder.getPayAmount());
-            orderPay.setPayId(payId); // 当前使用随机生成的支付ID，后续使用第三方支付平台返回的
-            orderPayService.insertPsyOrderPay(orderPay);
-            
-        } else if (PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(consultantOrder.getServerType())) {
+
+            if(PsyConstants.PAY_TYPE_EQUITY == payType) {
+                Integer personSupNum = consultantPackageEquity.getPersonSupNum();
+                if (personSupNum <= 0){
+                    throw new ServiceException("个人督导权益不足, 无法使用权益购买. 请先购买套餐或直接现款支付");
+                }else{
+                    //权益次数-1
+                    consultantPackageEquity.setPersonExpNum(personSupNum-1);
+                    consultantPackageEquityService.updatePsyConsultantPackageEquity(consultantPackageEquity);
+                    //支付已完成
+                    isPayed = true;
+                }
+            }
+        } else if (PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)) {
             // 个人体验服务
             //Long id = consultantOrder.getOrderId() != null ? consultantOrder.getOrderId() : IDhelper.getNextId();
-            consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_CREATED);
-            consultantOrder.setPayId(payId);
-            consultantOrder.setPayConsultantName(nickName);
-            consultantOrder.setServerName("个人体验服务");
+            //consultantOrder.setServerName("个人体验服务");
             PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
 
-            //内部生成支付对象
-            PsyOrderPay orderPay = new PsyOrderPay();
-            orderPay.setConsultantOrderId(Integer.valueOf(newOrder.getId()));
-            orderPay.setPayType(CourConstant.PAY_WAY_WEIXIN); // 微信 支付方式一定是微信
-            orderPay.setPayStatus(CourConstant.PAY_STATUE_PENDING);
-            orderPay.setAmount(consultantOrder.getPayAmount());
-            orderPay.setPayId(payId); // 当前使用随机生成的支付ID，后续使用第三方支付平台返回的
-            orderPayService.insertPsyOrderPay(orderPay);
-
-        } else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(consultantOrder.getServerType())) {
+            if(PsyConstants.PAY_TYPE_EQUITY == payType) {
+                Integer personExpNum = consultantPackageEquity.getPersonExpNum();
+                if (personExpNum <= 0){
+                    throw new ServiceException("个人体验权益不足, 无法使用权益购买. 请先购买套餐或直接现款支付");
+                }else{
+                    //权益次数-1
+                    consultantPackageEquity.setPersonExpNum(personExpNum-1);
+                    consultantPackageEquityService.updatePsyConsultantPackageEquity(consultantPackageEquity);
+                    //支付已完成
+                    isPayed = true;
+                }
+            }
+        } else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)) {
             // 购买课程
-            consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_CREATED);
-            consultantOrder.setPayId(payId);
-            consultantOrder.setPayConsultantName(nickName);
-            consultantOrder.setServerName("购买课程");
+            //consultantOrder.setServerName("购买课程");
             PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
 
-            //内部生成支付对象
-            PsyOrderPay orderPay = new PsyOrderPay();
-            orderPay.setConsultantOrderId(Integer.valueOf(newOrder.getId()));
-            orderPay.setPayType(CourConstant.PAY_WAY_WEIXIN); // 微信 支付方式一定是微信
-            orderPay.setPayStatus(CourConstant.PAY_STATUE_PENDING);
-            orderPay.setAmount(consultantOrder.getPayAmount());
-            orderPay.setPayId(payId); // 当前使用随机生成的支付ID，后续使用第三方支付平台返回的
-            orderPayService.insertPsyOrderPay(orderPay);
-
-        } else if (PsyConstants.CONSULTANT_ORDER_PACKAGE_NUM.equals(consultantOrder.getServerType())) {
+            if(PsyConstants.PAY_TYPE_EQUITY == payType) {
+                Integer courseNum = consultantPackageEquity.getCourseNum();
+                if (courseNum <= 0){
+                    throw new ServiceException("课程权益不足, 无法使用权益购买. 请先购买套餐或直接现款支付");
+                }else{
+                    //权益次数-1
+                    consultantPackageEquity.setCourseNum(courseNum-1);
+                    consultantPackageEquityService.updatePsyConsultantPackageEquity(consultantPackageEquity);
+                    //支付已完成
+                    isPayed = true;
+                }
+            }
+        } else if (PsyConstants.CONSULTANT_ORDER_PACKAGE_NUM.equals(serverType)) {
             // 套餐权益
-            consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_CREATED);
-            consultantOrder.setPayId(payId);
-            consultantOrder.setPayConsultantName(nickName);
-            consultantOrder.setServerName("套餐权益");
+            //consultantOrder.setServerName("套餐权益");
             PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
-
-            //内部生成支付对象
-            PsyOrderPay orderPay = new PsyOrderPay();
-            orderPay.setConsultantOrderId(Integer.valueOf(newOrder.getId()));
-            orderPay.setPayType(CourConstant.PAY_WAY_WEIXIN); // 微信 支付方式一定是微信
-            orderPay.setPayStatus(CourConstant.PAY_STATUE_PENDING);
-            orderPay.setAmount(consultantOrder.getPayAmount());
-            orderPay.setPayId(payId); // 当前使用随机生成的支付ID，后续使用第三方支付平台返回的
-            orderPayService.insertPsyOrderPay(orderPay);
-
-        }/*else if (GaugeConstant.MODULE_GAUGE.equals(consultantOrder.getModule())) {
-            // TODO: 内部生成订单
-            PsyOrder psyOrder = PsyOrder.builder()
-                    .orderId(consultantOrder.getOutTradeNo())
-                    .amount(consultantOrder.getAmount())
-                    .orderStatus(OrderStatus.CREATE.getValue())
-                    .gaugeStatus(GaugeStatus.UNFINISHED.getValue())
-                    .gaugeId(consultantOrder.getGaugeId())
-                    .userId(consultantOrder.getUserId())
-                    .build();
-            psyOrder.setCreateBy(nickName);
-
-            PsyOrder newPsyOrder = psyOrderService.generatePsyOrder(psyOrder);
-
-            // TODO: 定时将未支付的订单取消任务
-//            orderCancelTask.setOrderId(newPsyOrder.getId());
-//            orderCancelTask.setModule(consultantOrder.getModule());
-
-            // TODO: 内部生成支付对象
-            PsyOrderPay psyOrderPay = PsyOrderPay.builder()
-                    .orderId(newPsyOrder.getId())
-                    .amount(consultantOrder.getAmount())
-                    .payStatus(OrderPayStatus.NEED_PAY.getValue())
-                    .payId(UUID.randomUUID().toString())
-                    .build();
-            psyOrderPay.setCreateBy(psyUserService.selectPsyUserById(consultantOrder.getUserId()).getName());
-            psyOrderPayService.insertPsyOrderPay(psyOrderPay);
-
-//            Timer timer = new Timer();
-//            timer.schedule(orderCancelTask, ORDER_CANCEL_TIME);
-        }*/
+            if(PsyConstants.PAY_TYPE_EQUITY == payType) {
+                throw new ServiceException("套餐不可使用权益购买, 请选择现款支付");
+            }
+        } else {
+            throw new ServiceException("不存在的服务类型, 请确认serverType的值为1~5的整数");
+        }
+        
+        //若支付已完成, 则直接回调
+        if (isPayed){
+            paySuccessCallback(consultantOrder.getOrderNo(),consultantOrder.getPayId());
+        }
+        
     }
 
     /**
@@ -355,15 +352,16 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
             if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
                 consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);
+                consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
                 consultantOrderService.updatePsyConsultantOrder(consultantOrder);
 
                 //修改支付对象状态为已支付
-                PsyOrderPay orderPay = new PsyOrderPay();
+                /*PsyOrderPay orderPay = new PsyOrderPay();
                 orderPay.setConsultantOrderId(Integer.valueOf(consultantOrder.getId())); // 订单ID
                 orderPay.setPayType(CourConstant.PAY_WAY_WEIXIN);
                 orderPay.setPayStatus(CourConstant.PAY_STATUE_PAID);
                 orderPay.setPayId(payId);
-                orderPayService.updatePsyOrderPayByOrderId(orderPay);
+                orderPayService.updatePsyOrderPayByOrderId(orderPay);*/
 
                 //将付款咨询师加入团队内
                 teamSupervisionService.handleOrder(consultantOrder);
@@ -373,15 +371,8 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
             if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
                 consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);
+                consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
                 consultantOrderService.updatePsyConsultantOrder(consultantOrder);
-
-                //修改支付对象状态为已支付
-                PsyOrderPay orderPay = new PsyOrderPay();
-                orderPay.setConsultantOrderId(Integer.valueOf(consultantOrder.getId())); // 订单ID
-                orderPay.setPayType(CourConstant.PAY_WAY_WEIXIN);
-                orderPay.setPayStatus(CourConstant.PAY_STATUE_PAID);
-                orderPay.setPayId(payId);
-                orderPayService.updatePsyOrderPayByOrderId(orderPay);
 
                 //占用相应时段
                 psyConsultWorkService.handleWork(consultantOrder.getWorkId(), null , consultantOrder.getTime(), 1);
@@ -392,15 +383,8 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
             if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
                 consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);
+                consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
                 consultantOrderService.updatePsyConsultantOrder(consultantOrder);
-
-                //修改支付对象状态为已支付
-                PsyOrderPay orderPay = new PsyOrderPay();
-                orderPay.setConsultantOrderId(Integer.valueOf(consultantOrder.getId())); // 订单ID
-                orderPay.setPayType(CourConstant.PAY_WAY_WEIXIN);
-                orderPay.setPayStatus(CourConstant.PAY_STATUE_PAID);
-                orderPay.setPayId(payId);
-                orderPayService.updatePsyOrderPayByOrderId(orderPay);
 
                 //占用相应时段
                 psyConsultWorkService.handleWork(consultantOrder.getWorkId(), null , consultantOrder.getTime(), 1);
@@ -408,21 +392,14 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             }
         } else if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_COURSE)) {
             // 课程 , 更新订单状态
-            CourOrder courOrder = courOrderService.selectCourOrderByOrderId(outTradeNo);
-            if (CourConstant.COUR_ORDER_STATUE_CREATED == courOrder.getStatus()) {
-                courOrder.setStatus(CourConstant.COUR_ORDER_STATUE_FINISHED);
-                courOrderService.updateCourOrder(courOrder);
-                
-                // 修改支付对象状态为已支付
-                PsyOrderPay orderPay = new PsyOrderPay();
-                orderPay.setOrderId(courOrder.getId()); // 订单ID
-                orderPay.setPayType(CourConstant.PAY_WAY_WEIXIN); // 这里标记为课程
-                orderPay.setPayStatus(CourConstant.PAY_STATUE_PAID);
-                orderPay.setPayId(payId);
-                orderPayService.updatePsyOrderPayByOrderId(orderPay);
+            PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
+            if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
+                consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);
+                consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
+                consultantOrderService.updatePsyConsultantOrder(consultantOrder);
                 
                 // todo 将用户-课程-章节关系初始化
-                userCourseSectionService.initCourUserCourseSection(courOrder.getUserId(), courOrder.getCourseId());
+                userCourseSectionService.initCourUserCourseSection(Integer.parseInt(consultantOrder.getPayConsultantId()), Integer.parseInt(consultantOrder.getServerId()),PsyConstants.USER_CONSULTANT);
             }
         }else if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_PACKAGE)) {
             //套餐权益 , 更新订单状态
@@ -430,40 +407,12 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
                 //修改订单状态为已完成
                 consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);
+                consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
+                consultantOrder.setPayDatetime(new Date());
                 consultantOrderService.updatePsyConsultantOrder(consultantOrder);
-
-                //修改支付对象状态为已支付
-                PsyOrderPay orderPay = new PsyOrderPay();
-                orderPay.setConsultantOrderId(Integer.valueOf(consultantOrder.getId())); // 订单ID
-                orderPay.setPayType(CourConstant.PAY_WAY_WEIXIN);
-                orderPay.setPayStatus(CourConstant.PAY_STATUE_PAID);
-                orderPay.setPayId(payId);
-                orderPayService.updatePsyOrderPayByOrderId(orderPay);
 
                 //分配套餐权益
                 packageEquityService.handleConsultantOrder(consultantOrder.getOrderNo());
-            }
-        } else if (outTradeNo.startsWith(PsyConstants.ORDER_GAUGE)) {
-            // TODO: 修改订单状态为已完成
-            PsyOrder psyOrder = psyOrderService.selectPsyOrderByOrderId(outTradeNo);
-            if (OrderStatus.CREATE.getValue() == psyOrder.getOrderStatus()) {
-                psyOrder.setOrderStatus(OrderStatus.FINISHED.getValue());
-                psyOrderService.updatePsyOrder(psyOrder);
-
-                // TODO: 修改支付对象状态为已支付
-                PsyOrderPay orderPay = new PsyOrderPay();
-                orderPay.setOrderId(psyOrder.getId()); // 订单ID
-                orderPay.setPayType(0); // 这里标记为测评
-                orderPay.setPayStatus(CourConstant.PAY_STATUE_PAID);
-                orderPay.setPayId(payId);
-                orderPayService.updatePsyOrderPayByOrderId(orderPay);
-
-                if (psyOrder.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-                    record.setLinkId(String.valueOf(psyOrder.getId()));
-                    record.setLinkType(IntegralRecordConstants.INTEGRAL_RECORD_LINK_TYPE_COURSE);
-                    record.setUid(psyOrder.getUserId());
-                    record.setIntegral(psyUserIntegralRecordService.getIntegral(psyOrder.getAmount(), IntegralRecordConstants.INTEGRAL_RECORD_LINK_TYPE_COURSE));
-                }
             }
         }
         

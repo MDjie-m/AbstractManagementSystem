@@ -177,7 +177,7 @@ CREATE TABLE `psy_consultant_order` (
                                         `pay_consultant_name` VARCHAR(100) NULL DEFAULT NULL COMMENT '支付咨询师名称' COLLATE 'utf8mb4_0900_ai_ci',
                                         `pay_amount` DECIMAL(10,2) NULL DEFAULT NULL COMMENT '实际支付费用',
                                         `pay_datetime` DATETIME NULL DEFAULT NULL COMMENT '付款时间',
-                                        `pay_status` CHAR(1) NULL DEFAULT '0' COMMENT '支付状态 0 未支付 1 支持成功  2抵扣成功 3 失败' COLLATE 'utf8mb4_0900_ai_ci',
+                                        `pay_status` CHAR(1) NULL DEFAULT '1' COMMENT '支付状态 1,未支付 2,支付成功 3,退款中 4,部分退 5,全单退 6,退款失败' COLLATE 'utf8mb4_0900_ai_ci',
                                         `remark` VARCHAR(255) NULL DEFAULT NULL COMMENT '备注' COLLATE 'utf8mb4_0900_ai_ci',
                                         `del_flag` CHAR(1) NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）' COLLATE 'utf8mb4_0900_ai_ci',
                                         `create_by` VARCHAR(64) NULL DEFAULT NULL COMMENT '创建人' COLLATE 'utf8mb4_0900_ai_ci',

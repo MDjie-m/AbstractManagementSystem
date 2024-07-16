@@ -22,5 +22,7 @@ public interface PsyConsultMapper extends BaseMapper<PsyConsult>
 
     int tombstonedByIds(Long[] ids);
 
+    PsyConsult queryById(Long id);
+
 
 }

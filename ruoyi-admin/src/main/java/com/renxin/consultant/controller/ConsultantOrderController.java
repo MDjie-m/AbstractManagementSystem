@@ -5,9 +5,14 @@ import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.enums.LimitType;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.OrderIdUtils;
+import com.renxin.course.domain.CourCourse;
+import com.renxin.course.service.ICourCourseService;
+import com.renxin.course.service.impl.CourCourseServiceImpl;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantOrder;
+import com.renxin.psychology.domain.PsyConsultantPackage;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.service.*;
 import com.renxin.wechat.service.WechatPayV3ApiService;
@@ -49,6 +54,12 @@ public class ConsultantOrderController extends BaseController
 
     @Resource
     private ConsultantTokenService consultantTokenService;
+    
+    @Resource
+    private ICourCourseService courCourseService;
+    
+    @Resource
+    private IPsyConsultantPackageService consultantPackageService;
 
    /* @ApiOperation(value = "查询订单信息")
     @GetMapping(value = "/getOrderInfo/{id}")
@@ -109,7 +120,6 @@ public class ConsultantOrderController extends BaseController
     @PostMapping("/create")
     @RateLimiter(limitType = LimitType.IP)
     public AjaxResult create(@RequestBody PsyConsultantOrder consultantOrder, HttpServletRequest request) {
-        //@TODO demo中先写死的一些参数
         Long consultId = consultantTokenService.getConsultId(request);
         String payConsultId = consultId+""; //付费咨询师id
         if (consultId == -1) {
@@ -117,17 +127,20 @@ public class ConsultantOrderController extends BaseController
         }
 
         consultantOrder.setPayConsultantId(consultId+"");
-        String out_trade_no = null;
+        String out_trade_no = "";
 
-        BigDecimal amount = consultantOrder.getPayAmount(); //单位：元
-        String content = "支付demo-content"; //先写死一个商品描述
+        //BigDecimal amount = consultantOrder.getPayAmount(); //单位：元
+        String serverName = ""; //服务描述
+        BigDecimal payAmount = new BigDecimal(0); //价格
 
         //根据不同类型生成订单
         switch (consultantOrder.getServerType()) {
+            //团队督导
             case PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_TEAM_SUP, null);
                 PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
-                content = team.getTitle() + "-第" + team.getPeriodNo() +"期";
+                payAmount = team.getPrice();
+                serverName = team.getTitle() + "-第" + team.getPeriodNo() +"期";
                 //TODO 超卖问题.
                 if (team.getSurplusNum() <= 0){
                     return error("该团队已满额");
@@ -136,7 +149,9 @@ public class ConsultantOrderController extends BaseController
 
             case PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_SUP, null);
-                content = "预约个人督导服务";
+                PsyConsultantTeamSupervision consultantSup = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
+                payAmount = consultantSup.getPrice();
+                serverName = "预约个人督导服务-"+consultantSup.getConsultUserName();
 
                 // 支付单时需要校验服务库存
                 if (consultantOrder.getWorkId() > 0) {
@@ -148,7 +163,9 @@ public class ConsultantOrderController extends BaseController
 
             case PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_EXP, null);
-                content = "预约个人体验服务";
+                PsyConsultantTeamSupervision consultantExp = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
+                payAmount = consultantExp.getPrice();
+                serverName = "预约个人体验服务-"+consultantExp.getConsultUserName();
 
                 // 支付单时需要校验服务库存
                 if (consultantOrder.getWorkId() > 0) {
@@ -160,21 +177,30 @@ public class ConsultantOrderController extends BaseController
                 
             case PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_COURSE, null);
-                content = "购买课程";
+                CourCourse courCourse = courCourseService.selectCourCourseById(Integer.parseInt(consultantOrder.getServerId()));
+                payAmount = courCourse.getPrice();
+                serverName = "购买课程-"+courCourse.getName();
                 break;
                 
             case PsyConstants.CONSULTANT_ORDER_PACKAGE_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PACKAGE, null);
-                content = "购买套餐权益";
+                PsyConsultantPackage psyConsultantPackage = consultantPackageService.selectPsyConsultantPackageByPackageId(Long.parseLong(consultantOrder.getServerId()));
+                payAmount = psyConsultantPackage.getPrice();
+                serverName = "购买套餐权益-"+psyConsultantPackage.getProductName();
                 break;
+                
+            default:
+                throw new ServiceException("没有相应的服务类型, 请检查ServerType为1~5之间的整数");
         }
 
         // 将订单、支付单放入事务中
         String attach = "订单号: " + out_trade_no; //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
-        consultantOrder.setOrderNo(out_trade_no);
+            consultantOrder.setOrderNo(out_trade_no);
+            consultantOrder.setServerName(serverName);
+            consultantOrder.setPayAmount(payAmount);
         psyConsultantOrderService.createConsultantOrder(consultantOrder);
         
-        return null;
+        return AjaxResult.success();
 
        /* Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);// 1天
@@ -246,7 +272,7 @@ public class ConsultantOrderController extends BaseController
         //@TODO 处理支付成功后的业务 例如 将订单状态修改为已支付 具体参数键值可参考文档 注意！！！ 微信可能会多次发送重复的通知 因此要判断业务是否已经处理过了 避免重复处理
 
         //psyConsultantOrderService.wechatConsultantPayNotify(res.getString("out_trade_no"), res.getString("transaction_id"));
-        psyConsultantOrderService.paySuccessCallback("GRDD202407101450284802", "457a6f4e-9c1d-4ffa-87c4-de618bc7c4fc");
+        psyConsultantOrderService.paySuccessCallback("TC202407161412237372", "b814b763-3ae9-4343-ab79-91d9dec89aca");
         result.put("code", "SUCCESS");
         result.put("message", "OK");
         return result;

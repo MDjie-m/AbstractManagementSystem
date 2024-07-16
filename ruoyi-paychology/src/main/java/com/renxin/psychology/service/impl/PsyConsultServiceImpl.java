@@ -165,7 +165,7 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
 
     @Override
     public PsyConsultVO getOne(Long id) {
-        return BeanUtil.toBean(psyConsultMapper.selectById(id), PsyConsultVO.class);
+        return BeanUtil.toBean(psyConsultMapper.queryById(id), PsyConsultVO.class);
     }
 
     @Override

@@ -60,7 +60,7 @@ public interface ICourUserCourseSectionService
      */
     public int deleteCourUserCourseSectionById(Integer id);
 
-    void initCourUserCourseSection(Integer userId, Integer courseId);
+    void initCourUserCourseSection(Integer userId, Integer courseId, Integer userType);
 
 
     /**

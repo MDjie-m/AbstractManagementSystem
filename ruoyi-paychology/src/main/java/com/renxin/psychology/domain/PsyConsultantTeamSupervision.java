@@ -10,6 +10,7 @@ import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 import org.apache.poi.hpsf.Decimal;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -78,7 +79,7 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     private Integer maxNumPeople;
 
     /** 入会价格 */
-    private Double price;
+    private BigDecimal price;
 
     /** 督导类型  1.团体督导  2.个体督导  3.个人体验 */
     private Integer teamType;
