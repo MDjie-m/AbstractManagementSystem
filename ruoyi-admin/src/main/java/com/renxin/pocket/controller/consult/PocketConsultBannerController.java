@@ -7,6 +7,7 @@ import com.renxin.psychology.domain.PsyConsultBannerConfig;
 import com.renxin.psychology.service.IPsyConsultBannerConfigService;
 import com.renxin.psychology.vo.PsyConsultBannerConfigVO;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +30,7 @@ public class PocketConsultBannerController extends BaseController
     /**
      * 查询banner列表
      */
-    @GetMapping("/list") 
+    @PostMapping("/list")
     @RateLimiter
     public TableDataInfo list(PsyConsultBannerConfigVO req)
     {

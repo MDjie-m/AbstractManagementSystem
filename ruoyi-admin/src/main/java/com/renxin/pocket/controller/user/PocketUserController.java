@@ -1,4 +1,4 @@
-package com.renxin.pocket.controller.wechat;
+package com.renxin.pocket.controller.user;
 
 import com.renxin.common.constant.RespMessageConstants;
 import com.renxin.common.core.controller.BaseController;
@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/pocket/user")
-@Api(value = "PocketUserController" ,tags = {"微信用户信息操作api"})
+@Api(value = "PocketUserController" ,tags = {"用户信息操作api"})
 public class PocketUserController extends BaseController
 {
     @Autowired

@@ -2,7 +2,7 @@ package com.renxin.pocket.controller.wechat.utils;
 
 
 import com.alibaba.fastjson2.JSONObject;
-import com.renxin.pocket.controller.wechat.constant.WechatConstants;
+import com.renxin.pocket.controller.wechat.constant.WechatMCHConstants;
 
 
 import com.wechat.pay.contrib.apache.httpclient.WechatPayHttpClientBuilder;
@@ -73,13 +73,13 @@ public class WechatPayV3Utils {
         // 获取证书管理器实例
         CertificatesManager certificatesManager = CertificatesManager.getInstance();
         // 向证书管理器增加需要自动更新平台证书的商户信息
-        certificatesManager.putMerchant(WechatConstants.WECHAT_MCH_ID,
-                new WechatPay2Credentials(WechatConstants.WECHAT_MCH_ID, new PrivateKeySigner(WechatConstants.WECHAT_MCH_SERIAL_NUM, merchantPrivateKey)),
-                WechatConstants.WECHAT_MCH_SECRET_V3.getBytes(StandardCharsets.UTF_8));
+        certificatesManager.putMerchant(WechatMCHConstants.WECHAT_MCH_ID,
+                new WechatPay2Credentials(WechatMCHConstants.WECHAT_MCH_ID, new PrivateKeySigner(WechatMCHConstants.WECHAT_MCH_SERIAL_NUM, merchantPrivateKey)),
+                WechatMCHConstants.WECHAT_MCH_SECRET_V3.getBytes(StandardCharsets.UTF_8));
         // ... 若有多个商户号，可继续调用putMerchant添加商户信息
 
         // 从证书管理器中获取verifier
-        verifier = certificatesManager.getVerifier(WechatConstants.WECHAT_MCH_ID);
+        verifier = certificatesManager.getVerifier(WechatMCHConstants.WECHAT_MCH_ID);
     }
 
     /**
@@ -92,7 +92,7 @@ public class WechatPayV3Utils {
             setVerifier();
         }
         WechatPayHttpClientBuilder builder = WechatPayHttpClientBuilder.create()
-                .withMerchant(WechatConstants.WECHAT_MCH_ID, WechatConstants.WECHAT_MCH_SERIAL_NUM, merchantPrivateKey)
+                .withMerchant(WechatMCHConstants.WECHAT_MCH_ID, WechatMCHConstants.WECHAT_MCH_SERIAL_NUM, merchantPrivateKey)
                 .withValidator(new WechatPay2Validator(verifier));
         // ... 接下来，你仍然可以通过builder设置各种参数，来配置你的HttpClient
 
@@ -188,7 +188,7 @@ public class WechatPayV3Utils {
                     .withSignature(signature)
                     .withBody(body)
                     .build();
-            NotificationHandler handler = new NotificationHandler(verifier, WechatConstants.WECHAT_MCH_SECRET_V3.getBytes(StandardCharsets.UTF_8));
+            NotificationHandler handler = new NotificationHandler(verifier, WechatMCHConstants.WECHAT_MCH_SECRET_V3.getBytes(StandardCharsets.UTF_8));
             // 验签和解析请求体
             Notification notification = handler.parse(res);
             logger.info("回调通知数据：" + notification.toString());
@@ -217,7 +217,7 @@ public class WechatPayV3Utils {
             if (merchantPrivateKey == null) {
                 setMerchantPrivateKey();
             }
-            Signer signer = new PrivateKeySigner(WechatConstants.WECHAT_MCH_SERIAL_NUM, merchantPrivateKey);
+            Signer signer = new PrivateKeySigner(WechatMCHConstants.WECHAT_MCH_SERIAL_NUM, merchantPrivateKey);
             Signer.SignatureResult signature = signer.sign(message.getBytes(StandardCharsets.UTF_8));
             return signature.getSign();
         } catch (Exception e) {

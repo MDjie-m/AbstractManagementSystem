@@ -48,7 +48,7 @@ public class PocketConsultantController extends BaseController
         return getDataTable(list);
     }
 
-    @GetMapping(value = "/getConsultWorksById/{id}")
+    @PostMapping(value = "/getConsultWorksById/{id}")
     @RateLimiter
     public AjaxResult getConsultWorksById(@PathVariable("id") Long id)
     {
@@ -59,14 +59,14 @@ public class PocketConsultantController extends BaseController
     /**
      * 获取心理咨询师详细信息
      */
-    @GetMapping(value = "/{id}")
+    @PostMapping(value = "/{id}")
     @RateLimiter
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
         return AjaxResult.success(psyConsultService.getOne(id));
     }
 
-    @GetMapping(value = "/serve/{id}")
+    @PostMapping(value = "/serve/{id}")
     @RateLimiter
     public AjaxResult getServe(@PathVariable("id") Long id)
     {
@@ -79,14 +79,14 @@ public class PocketConsultantController extends BaseController
     /**
      * 获取心理咨询师详细信息
      */
-    @GetMapping(value = "/getConsultInfoByServe/{cId}/{sId}")
+    @PostMapping(value = "/getConsultInfoByServe/{cId}/{sId}")
     @RateLimiter
     public AjaxResult getConsultInfoByServe(@PathVariable("cId") Long cId, @PathVariable("sId") Long sId)
     {
         return AjaxResult.success(psyConsultService.getConsultInfoByServe(cId, sId));
     }
 
-    @GetMapping(value = "/getConsultColumn/{cat}/{id}")
+    @PostMapping(value = "/getConsultColumn/{cat}/{id}")
     @RateLimiter
     public TableDataInfo getConsultColumn(@PathVariable("cat") String cat, @PathVariable("id") Long id)
     {

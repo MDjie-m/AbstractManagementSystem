@@ -24,21 +24,21 @@ public class PocketConsultOrderController extends BaseController
     @Resource
     private IPsyConsultOrderService psyConsultOrderService;
 
-    @GetMapping(value = "/getOrderInfo/{id}")
+    @PostMapping(value = "/getOrderInfo/{id}")
     @RateLimiter
     public AjaxResult getOrderInfo(@PathVariable("id") Long id)
     {
         return AjaxResult.success(psyConsultOrderService.getOne(id));
     }
 
-    @GetMapping(value = "/getOrderDetail/{id}")
+    @PostMapping(value = "/getOrderDetail/{id}")
     @RateLimiter
     public AjaxResult getOrderDetail(@PathVariable("id") Long id)
     {
         return AjaxResult.success(psyConsultOrderService.getOrderDetail(id));
     }
 
-    @GetMapping(value = "/getOrderDetailByNo/{orderNo}")
+    @PostMapping(value = "/getOrderDetailByNo/{orderNo}")
     @RateLimiter
     public AjaxResult getOrderDetailByNo(@PathVariable("orderNo") String orderNo)
     {
@@ -68,7 +68,7 @@ public class PocketConsultOrderController extends BaseController
     /**
      * 取消
      */
-    @GetMapping(value = "/cancel/{id}")
+    @PostMapping(value = "/cancel/{id}")
     @RateLimiter
     public AjaxResult cancel(@PathVariable("id") Long id)
     {

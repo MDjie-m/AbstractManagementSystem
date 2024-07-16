@@ -31,7 +31,7 @@ public class PocketConsultAppointmentController extends BaseController
      * 查询咨询师预约列表
      */
     // @PreAuthorize("@ss.hasPermi('psychology:appointment:list')")
-    @GetMapping("/list")
+    @PostMapping("/list")
     public TableDataInfo list(PsyAppointment psyAppointment)
     {
         startPage();
@@ -56,7 +56,7 @@ public class PocketConsultAppointmentController extends BaseController
      * 获取咨询师预约详细信息
      */
     // @PreAuthorize("@ss.hasPermi('psychology:appointment:query')")
-    @GetMapping(value = "/{id}")
+    @PostMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Integer id)
     {
         return AjaxResult.success(psyAppointmentService.selectPsyAppointmentById(id));
@@ -78,7 +78,7 @@ public class PocketConsultAppointmentController extends BaseController
      */
     // @PreAuthorize("@ss.hasPermi('psychology:appointment:edit')")
     @Log(title = "咨询师预约", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping
     public AjaxResult edit(@RequestBody PsyAppointment psyAppointment)
     {
         return toAjax(psyAppointmentService.updatePsyAppointment(psyAppointment));
@@ -89,7 +89,7 @@ public class PocketConsultAppointmentController extends BaseController
      */
     // @PreAuthorize("@ss.hasPermi('psychology:appointment:remove')")
     @Log(title = "咨询师预约", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+	@PostMapping("/{ids}")
     public AjaxResult remove(@PathVariable Integer[] ids)
     {
         return toAjax(psyAppointmentService.deletePsyAppointmentByIds(ids));

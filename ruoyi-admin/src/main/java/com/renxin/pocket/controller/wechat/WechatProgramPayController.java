@@ -2,16 +2,12 @@ package com.renxin.pocket.controller.wechat;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSONObject;
-import com.renxin.common.core.domain.dto.LoginDTO;
-import com.renxin.pocket.controller.wechat.constant.WechatMCHConstants;
-import com.renxin.pocket.controller.wechat.constant.WechatUrlConstants;
-import com.renxin.pocket.controller.wechat.dto.WechatPayDTO;
-import com.renxin.pocket.controller.wechat.utils.WechatPayV3Utils;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.constant.RespMessageConstants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.enums.LimitType;
 import com.renxin.common.utils.OrderIdUtils;
 import com.renxin.course.constant.CourConstant;
@@ -21,6 +17,10 @@ import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.gauge.constant.GaugeConstant;
 import com.renxin.gauge.domain.PsyGauge;
 import com.renxin.gauge.service.IPsyGaugeService;
+import com.renxin.pocket.controller.wechat.constant.WechatMCHConstants;
+import com.renxin.pocket.controller.wechat.constant.WechatUrlConstants;
+import com.renxin.pocket.controller.wechat.dto.WechatPayDTO;
+import com.renxin.pocket.controller.wechat.utils.WechatPayV3Utils;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyUser;
 import com.renxin.psychology.service.IPsyConsultOrderService;
@@ -33,6 +33,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,8 +54,8 @@ import java.util.Map;
  * 文档地址 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_1.shtml
  */
 @RestController
-@RequestMapping("/pocket/api/wechatPay/v3")
-public class WechatPayV3ApiController extends BaseController {
+@RequestMapping("/pocket/wechatProgram")
+public class WechatProgramPayController extends BaseController {
  
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
  
@@ -81,6 +82,13 @@ public class WechatPayV3ApiController extends BaseController {
 
     @Resource
     private IPsyGaugeService iPsyGaugeService;
+
+    @Value("${wechat.appid}")
+    private String WECHAT_MP_APPID;
+
+    @Value("${wechat.secret}")
+    private String secret;
+
  
     /**
      * 发起微信小程序支付
@@ -142,6 +150,7 @@ public class WechatPayV3ApiController extends BaseController {
         String attach = "订单号: " + out_trade_no; //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
         WechatPayVO vo = BeanUtil.toBean(wechatPayDTO, WechatPayVO.class);
         vo.setOutTradeNo(out_trade_no);
+        vo.setUserId(userId);
         wechatPayV3ApiService.wechatPay(vo);
 
         // 根据用户ID从用户表中查询openid
@@ -153,7 +162,7 @@ public class WechatPayV3ApiController extends BaseController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
  
         JSONObject params = new JSONObject();
-        params.put("appid", WechatMCHConstants.WECHAT_MP_APPID); //小程序appid
+        params.put("appid", WECHAT_MP_APPID); //小程序appid
         params.put("mchid", WechatMCHConstants.WECHAT_MCH_ID); //商户号
         params.put("description", content); //商品描述
         params.put("out_trade_no", out_trade_no); //商户订单号
@@ -174,7 +183,7 @@ public class WechatPayV3ApiController extends BaseController {
         StringBuilder sb = new StringBuilder();
         //返回给小程序拉起微信支付的参数
         Map<String, String> result = new HashMap<>();
-        result.put("appId", WechatMCHConstants.WECHAT_MP_APPID); //小程序appid
+        result.put("appId", WECHAT_MP_APPID); //小程序appid
         sb.append(result.get("appId")).append("\n");
         result.put("timeStamp", (new Date().getTime() / 1000) + ""); //时间戳
         sb.append(result.get("timeStamp")).append("\n");

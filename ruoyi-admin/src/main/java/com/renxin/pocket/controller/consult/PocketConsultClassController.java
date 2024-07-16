@@ -7,6 +7,7 @@ import com.renxin.psychology.domain.PsyConsultClass;
 import com.renxin.psychology.service.IPsyConsultClassService;
 import com.renxin.psychology.vo.PsyConsultClassVO;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +30,7 @@ public class PocketConsultClassController extends BaseController
     /**
      * 查询class列表
      */
-    @GetMapping("/list")
+    @PostMapping("/list")
     @RateLimiter
     public TableDataInfo list(PsyConsultClassVO req)
     {

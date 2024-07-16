@@ -2,7 +2,7 @@ package com.renxin.consultant.controller.wechat;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSONObject;
-import com.renxin.pocket.controller.wechat.constant.WechatConstants;
+import com.renxin.pocket.controller.wechat.constant.WechatMCHConstants;
 import com.renxin.pocket.controller.wechat.constant.WechatUrlConstants;
 import com.renxin.pocket.controller.wechat.dto.WechatPayDTO;
 import com.renxin.pocket.controller.wechat.utils.WechatPayV3Utils;
@@ -160,8 +160,8 @@ public class WechatConsultantPayV3ApiController extends BaseController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
  
         JSONObject params = new JSONObject();
-        params.put("appid", WechatConstants.WECHAT_MP_APPID); //小程序appid
-        params.put("mchid", WechatConstants.WECHAT_MCH_ID); //商户号
+        params.put("appid", WechatMCHConstants.WECHAT_MP_APPID); //小程序appid
+        params.put("mchid", WechatMCHConstants.WECHAT_MCH_ID); //商户号
         params.put("description", content); //商品描述
         params.put("out_trade_no", out_trade_no); //商户订单号
         params.put("time_expire", sdf.format(calendar.getTime())); //交易结束时间 选填 时间到了之后将不能再支付 遵循rfc3339标准格式
@@ -181,7 +181,7 @@ public class WechatConsultantPayV3ApiController extends BaseController {
         StringBuilder sb = new StringBuilder();
         //返回给小程序拉起微信支付的参数
         Map<String, String> result = new HashMap<>();
-        result.put("appId", WechatConstants.WECHAT_MP_APPID); //小程序appid
+        result.put("appId", WechatMCHConstants.WECHAT_MP_APPID); //小程序appid
         sb.append(result.get("appId")).append("\n");
         result.put("timeStamp", (new Date().getTime() / 1000) + ""); //时间戳
         sb.append(result.get("timeStamp")).append("\n");
@@ -304,7 +304,7 @@ public class WechatConsultantPayV3ApiController extends BaseController {
      * @return null代表查询失败 SUCCESS-成功 USERPAYING和ACCEPT为中间态 其他为支付失败
      */
     public String orderQueryByOutTradeNo(String out_trade_no) {
-        JSONObject res = wechatPayV3Utils.sendGet(String.format(WechatUrlConstants.PAY_V3_QUERY_OUT, out_trade_no, WechatConstants.WECHAT_MCH_ID));
+        JSONObject res = wechatPayV3Utils.sendGet(String.format(WechatUrlConstants.PAY_V3_QUERY_OUT, out_trade_no, WechatMCHConstants.WECHAT_MCH_ID));
         return res == null ? null : res.getString("trade_state");
     }
  

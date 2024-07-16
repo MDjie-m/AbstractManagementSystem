@@ -1,6 +1,6 @@
 package com.renxin.pocket.controller.wechat.constant;
 
-public class WechatConstants {
+public class WechatMCHConstants {
     //微信支付商户号
     public static final String WECHAT_MCH_ID = "1634006526";
  
