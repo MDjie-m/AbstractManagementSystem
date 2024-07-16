@@ -32,15 +32,15 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ConsultedTokenService {
     // 令牌自定义标识
-    @Value("${app.token.header}")
+    @Value("${consulted.token.header}")
     private String header;
 
     // 令牌秘钥
-    @Value("${app.token.secret}")
+    @Value("${consulted.token.secret}")
     private String secret;
 
     // 令牌有效期（默认30分钟）单位为s
-    @Value("${app.token.expireTime}")
+    @Value("${consulted.token.expireTime}")
     private int expireTime;
 
     protected static final long MILLIS_SECOND = 1000;

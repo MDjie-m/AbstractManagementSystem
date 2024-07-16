@@ -43,6 +43,12 @@ public class TokenController extends BaseController {
     @Resource
     private IPsyUserService psyUserService;
 
+    /**
+     * 获取临时token
+     * @param type
+     * @param id
+     * @return
+     */
     @GetMapping("/getToken")
     public AjaxResult getToken(@RequestParam("type") Integer type, @RequestParam("id") Long id){
         String token = "";
@@ -50,7 +56,7 @@ public class TokenController extends BaseController {
         if (type == 1){//管理员
             SysUser sysUser = sysUserService.selectUserById(id);
             LoginUser loginUser = new LoginUser();
-            loginUser.setUserId(sysUser.getUserId());
+            loginUser.setUserId(sysUser.getUserId());//sys_user表
             // loginUser.setp(psyConsult.getPhonenumber());
             loginUser.setUser(sysUser);
              token = tokenService.createToken(loginUser);
@@ -58,44 +64,21 @@ public class TokenController extends BaseController {
         if (type == 2){//咨询师
             PsyConsultVO psyConsult= psyConsultService.getOne(id);
             ConsultDTO consultDTO=new ConsultDTO();
-            consultDTO.setConsultId(psyConsult.getId());
+            consultDTO.setConsultId(psyConsult.getId());//psy_consult表, id
             consultDTO.setPhone(psyConsult.getPhonenumber());
              token = consultantTokenService.createToken(consultDTO,3600000);
         }
         if (type == 3){//来访者
             PsyUser psyUser = psyUserService.selectPsyUserById(id.intValue());
             LoginDTO loginDTO=new LoginDTO();
-            loginDTO.setUserId(psyUser.getId());
+            loginDTO.setUserId(psyUser.getId());//psy_user表
             loginDTO.setPhone(psyUser.getPhone());
             token = consultedTokenService.createToken(loginDTO,3600000);
         }
-        
         
         log.info("token:{}",token);
         return AjaxResult.successData(Constants.TOKEN_PREFIX+ token);
       
     }
     
-    @GetMapping("/consultant/uuid/{id}")
-    public AjaxResult getConsultantToken(@PathVariable("id") Long id){
-        PsyConsultVO psyConsult= psyConsultService.getOne(id);
-        ConsultDTO consultDTO=new ConsultDTO();
-        consultDTO.setConsultId(psyConsult.getId());
-        consultDTO.setPhone(psyConsult.getPhonenumber());
-        String token = consultantTokenService.createToken(consultDTO,3600000);
-        log.info("token:{}",token);
-        return AjaxResult.successData(Constants.TOKEN_PREFIX+ token);
-    }
-
-    @GetMapping("/admin/uuid/{id}")
-    public AjaxResult getAdminToken(@PathVariable("id") Long id){
-        SysUser sysUser = sysUserService.selectUserById(id);
-        LoginUser loginUser = new LoginUser();
-        loginUser.setUserId(sysUser.getUserId());
-       // loginUser.setp(psyConsult.getPhonenumber());
-        loginUser.setUser(sysUser);
-        String token = tokenService.createToken(loginUser);
-        log.info("token:{}",token);
-        return AjaxResult.successData(Constants.TOKEN_PREFIX+ token);
-    }
 }
