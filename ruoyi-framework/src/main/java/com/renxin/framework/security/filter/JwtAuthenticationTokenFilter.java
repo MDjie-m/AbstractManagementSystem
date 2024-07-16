@@ -96,17 +96,17 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
         
         
         //检查是否为"来访者"用户
-        String appHeaderData = request.getHeader(consultedHeader);
-        if(StringUtils.isNotEmpty(appHeaderData)){
+        String consultedHeaderData = request.getHeader(consultedHeader);
+        if(StringUtils.isNotEmpty(consultedHeaderData)){
             // 获取当前登录的咨询用户
-            LoginDTO appUser = pocketTokenService.getLoginUser(request);
+            LoginDTO consultedUser = pocketTokenService.getLoginUser(request);
             // 当咨询用户存在且当前认证为空时，进行身份验证
-            if (StringUtils.isNotNull(appUser) && StringUtils.isNull(SecurityUtils.getAuthentication()))
+            if (StringUtils.isNotNull(consultedUser) && StringUtils.isNull(SecurityUtils.getAuthentication()))
             {
                 // 验证用户令牌
-                pocketTokenService.verifyToken(appUser);
+                pocketTokenService.verifyToken(consultedUser);
                 // 创建并设置认证令牌
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(appUser, null, appUser.getAuthorities());
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(consultedUser, null, consultedUser.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
