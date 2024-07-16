@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.renxin.common.core.domain.dto.ConsultDTO;
 import com.renxin.common.core.domain.dto.LoginDTO;
+import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.common.exception.GlobalException;
 import com.renxin.framework.web.service.ConsultedTokenService;
 import com.renxin.framework.web.service.ConsultantTokenService;
@@ -47,7 +48,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
     private ConsultantTokenService consultantTokenService;
 
     @Autowired
-    private ConsultedTokenService consultedTokenService;
+    private PocketTokenService pocketTokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

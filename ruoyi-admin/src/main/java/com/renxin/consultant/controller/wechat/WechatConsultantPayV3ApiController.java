@@ -2,10 +2,10 @@ package com.renxin.consultant.controller.wechat;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSONObject;
-import com.renxin.consulted.controller.wechat.constant.WechatConstants;
-import com.renxin.consulted.controller.wechat.constant.WechatUrlConstants;
-import com.renxin.consulted.controller.wechat.dto.WechatPayDTO;
-import com.renxin.consulted.controller.wechat.utils.WechatPayV3Utils;
+import com.renxin.pocket.controller.wechat.constant.WechatConstants;
+import com.renxin.pocket.controller.wechat.constant.WechatUrlConstants;
+import com.renxin.pocket.controller.wechat.dto.WechatPayDTO;
+import com.renxin.pocket.controller.wechat.utils.WechatPayV3Utils;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.constant.RespMessageConstants;
@@ -15,7 +15,7 @@ import com.renxin.common.core.domain.dto.ConsultDTO;
 import com.renxin.common.enums.LimitType;
 import com.renxin.common.utils.OrderIdUtils;
 import com.renxin.course.service.ICourCourseService;
-import com.renxin.framework.web.service.ConsultedTokenService;
+import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.gauge.service.IPsyGaugeService;
 import com.renxin.psychology.constant.ConsultConstant;
@@ -60,7 +60,7 @@ public class WechatConsultantPayV3ApiController extends BaseController {
     public WechatPayV3Utils wechatPayV3Utils;
 
     @Resource
-    private ConsultedTokenService consultedTokenService;
+    private PocketTokenService pocketTokenService;
 
     @Resource
     private IPsyUserService psyUserService;

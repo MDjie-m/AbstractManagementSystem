@@ -1,6 +1,5 @@
 package com.renxin.consultant.controller;
 
-import com.renxin.consulted.controller.wechat.utils.WechatPayV3Utils;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.core.controller.BaseController;
@@ -37,8 +36,7 @@ public class ConsultantOrderController extends BaseController
     @Resource
     private IPsyConsultantOrderService psyConsultantOrderService;
 
-    @Resource
-    public WechatPayV3Utils wechatPayV3Utils;
+
 
     @Resource
     private IPsyConsultWorkService workService;

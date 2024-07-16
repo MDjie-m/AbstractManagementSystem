@@ -5,7 +5,7 @@ import com.renxin.RuoYiApplication;
 import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.core.domain.vo.LoginVO;
 import com.renxin.common.enums.LoginType;
-import com.renxin.framework.web.service.ConsultedTokenService;
+import com.renxin.framework.web.service.PocketTokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class WxAuthorizeControllerTest {
 
     @Autowired
-    private ConsultedTokenService consultedTokenService;
+    private PocketTokenService pocketTokenService;
 
     @Test
     public void deGet() {
@@ -36,7 +36,7 @@ public class WxAuthorizeControllerTest {
         loginUser.setUserId(55);
 
 //        LoginVO loginVO = LoginVO.builder().userId(84).token(appTokenService.createToken(loginUser, null)).name("进").avatar("https://thirdwx.qlogo.cn/mmopen/vi_32/3SMCDnLMChqt0Flb0icHvwPQmxnrMEtM7jxV6VMLRibY5oA8BhicqCR3RSwvjdZia2ERA2broS7XLOqSmNfpXolbPw/132").build();
-        LoginVO loginVO = LoginVO.builder().userId(55).token(consultedTokenService.createToken(loginUser, null)).name("姗姗").avatar("https://thirdwx.qlogo.cn/mmopen/vi_32/ibkVKJebFcicyZAibpxzLy3uwu5icYZrWWrvPJBOJz7ld1mQuCpXyjCy0EiaibDbjAVibOmOg5VCSHyjmAbpVhPf6DrEw/132").build();
+        LoginVO loginVO = LoginVO.builder().userId(55).token(pocketTokenService.createToken(loginUser, null)).name("姗姗").avatar("https://thirdwx.qlogo.cn/mmopen/vi_32/ibkVKJebFcicyZAibpxzLy3uwu5icYZrWWrvPJBOJz7ld1mQuCpXyjCy0EiaibDbjAVibOmOg5VCSHyjmAbpVhPf6DrEw/132").build();
         log.info("用户登录模拟::::::userInfo::" + JSONObject.toJSONString(loginVO));
         log.info("token::::::" + JSONObject.toJSONString(loginVO.getToken()));
 //        return AjaxResult.success(RespMessageConstants.APP_LOGIN_SUCCESS, loginVO);
