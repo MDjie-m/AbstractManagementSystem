@@ -37,8 +37,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
     @Value("${consultant.token.header}")
     private String consultantHeader;
 
-    @Value("${consulted.token.header}")
-    private String consultedHeader;
+    @Value("${pocket.token.header}")
+    private String pocketHeader;
 
     @Autowired
     private TokenService tokenService;
@@ -96,21 +96,21 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
         
         
         //检查是否为"来访者"用户
-        String consultedHeaderData = request.getHeader(consultedHeader);
-        if(StringUtils.isNotEmpty(consultedHeaderData)){
+        String pocketHeaderData = request.getHeader(pocketHeader);
+        if(StringUtils.isNotEmpty(pocketHeaderData)){
             // 获取当前登录的咨询用户
-            LoginDTO consultedUser = pocketTokenService.getLoginUser(request);
+            LoginDTO pocketUser = pocketTokenService.getLoginUser(request);
             // 当咨询用户存在且当前认证为空时，进行身份验证
-            if (StringUtils.isNotNull(consultedUser) && StringUtils.isNull(SecurityUtils.getAuthentication()))
+            if (StringUtils.isNotNull(pocketUser) && StringUtils.isNull(SecurityUtils.getAuthentication()))
             {
                 // 验证用户令牌
-                pocketTokenService.verifyToken(consultedUser);
+                pocketTokenService.verifyToken(pocketUser);
                 // 创建并设置认证令牌
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(consultedUser, null, consultedUser.getAuthorities());
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(pocketUser, null, pocketUser.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
-            if (!requestURI.startsWith("/consulted/")) {
+            if (!requestURI.startsWith("/pocket/")) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
                 throw new GlobalException("来访者用户, 不可访问其他服务端的接口");
             }

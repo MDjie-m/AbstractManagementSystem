@@ -29,7 +29,7 @@ public class PocketCourseOrderPayController extends BaseController {
     /**
      * 根据支付信息生成支付对象
      */
-    @PutMapping("/add")
+    @PostMapping("/add")
     @ApiOperation("根据支付信息生成支付对象")
     @RateLimiter
     public AjaxResult generateOrderPay(@RequestBody PsyOrderPay orderPay)

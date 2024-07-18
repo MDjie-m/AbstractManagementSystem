@@ -79,7 +79,7 @@ public class PocketCourseOrderController extends BaseController
     /**
      * 根据订单信息生成课程订单
      */
-    @PutMapping("/add")
+    @PostMapping("/add")
     @ApiOperation("根据订单信息生成课程订单")
     @RateLimiter
     public AjaxResult generateOrder(@RequestBody CourOrder courOrder)

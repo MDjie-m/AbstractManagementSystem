@@ -66,7 +66,7 @@ public interface IPsyGaugeQuestionsService
      * @param psyGaugeQuestions
      * @return
      */
-    List<PsyQuestionVO> appQueryQuesList(PsyGaugeQuestions psyGaugeQuestions , Integer userId);
+    List<PsyQuestionVO> appQueryQuesList(PsyGaugeQuestions psyGaugeQuestions);
 
     /**
      * 查询问题

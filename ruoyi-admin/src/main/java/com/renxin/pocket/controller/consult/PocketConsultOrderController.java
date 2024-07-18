@@ -3,12 +3,16 @@ package com.renxin.pocket.controller.consult;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.core.domain.dto.LoginDTO;
+import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.psychology.domain.PsyConsultOrder;
 import com.renxin.psychology.service.IPsyConsultOrderService;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 心理咨询师Controller
@@ -23,6 +27,10 @@ public class PocketConsultOrderController extends BaseController
 
     @Resource
     private IPsyConsultOrderService psyConsultOrderService;
+
+    @Autowired
+    private PocketTokenService pocketTokenService;
+
 
     @PostMapping(value = "/getOrderInfo/{id}")
     @RateLimiter
@@ -50,8 +58,12 @@ public class PocketConsultOrderController extends BaseController
      */
     @PostMapping(value = "/getOrderList")
     @RateLimiter
-    public AjaxResult getOrderList(@RequestBody PsyConsultOrderVO req)
+    public AjaxResult getOrderList(@RequestBody PsyConsultOrderVO req, HttpServletRequest request)
     {
+
+        LoginDTO loginUser = pocketTokenService.getLoginUser(request);
+        Integer userId = loginUser.getUserId();
+        req.setUserId(userId);
         return AjaxResult.success(psyConsultOrderService.getOrderList(req));
     }
 

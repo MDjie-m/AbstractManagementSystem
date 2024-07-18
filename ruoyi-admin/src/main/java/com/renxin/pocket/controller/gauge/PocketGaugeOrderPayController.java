@@ -35,7 +35,7 @@ public class PocketGaugeOrderPayController extends BaseController {
      * 查询心理咨询订单支付信息列表
      */
 //    @PreAuthorize("@ss.hasPermi('system:pay:list')")
-    @GetMapping("/list")
+    @PostMapping("/list")
     @ApiIgnore
     @RateLimiter
     public TableDataInfo list(PsyOrderPay psyOrderPay) {
@@ -62,7 +62,7 @@ public class PocketGaugeOrderPayController extends BaseController {
      * 获取心理咨询订单支付信息详细信息
      */
 //    @PreAuthorize("@ss.hasPermi('system:pay:query')")
-    @GetMapping(value = "/{id}")
+    @PostMapping(value = "/{id}")
     @ApiOperation("获取支付信息")
     @RateLimiter
     public AjaxResult getInfo(@PathVariable("id") Integer id) {

@@ -13,10 +13,7 @@ import com.renxin.gauge.vo.PsyQuestionVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -44,26 +41,27 @@ public class PocketGaugeQuestionsController extends BaseController
     /**
      * 查询心理测评问题列表
      */
-    @GetMapping("/list")
+    @PostMapping("/list")
     @ApiOperation("查询测评问题列表")
     @RateLimiter
-    public AjaxResult list(PsyGaugeQuestions psyGaugeQuestions ,HttpServletRequest request)
+    public AjaxResult list(@RequestBody PsyGaugeQuestions psyGaugeQuestions ,HttpServletRequest request)
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
         Integer userId = loginUser.getUserId();
-        List<PsyQuestionVO> list = psyGaugeQuestionsService.appQueryQuesList(psyGaugeQuestions ,userId);
+        psyGaugeQuestions.setUserId(userId);
+        List<PsyQuestionVO> list = psyGaugeQuestionsService.appQueryQuesList(psyGaugeQuestions);
         return AjaxResult.success(list);
     }
 
-    @GetMapping("/lats")
+    @PostMapping("/lats")
     @ApiOperation("查询测评问题列表") // Integer gaugeId
     @RateLimiter
-    public AjaxResult lats(PsyGaugeMultiSetting psyGaugeMultiSetting)
+    public AjaxResult lats(@RequestBody PsyGaugeMultiSetting psyGaugeMultiSetting)
     {
         return AjaxResult.success(psyGaugeMultiSettingService.selectPsyGaugeMultiSettingList(psyGaugeMultiSetting));
     }
 
-    @GetMapping("/wrongs/{orderId}/{gaugeId}")
+    @PostMapping("/wrongs/{orderId}/{gaugeId}")
     @ApiOperation("查询测评问题列表")
     @RateLimiter
     public AjaxResult wrongs(@PathVariable("orderId") Integer orderId, @PathVariable("gaugeId") Integer gaugeId)

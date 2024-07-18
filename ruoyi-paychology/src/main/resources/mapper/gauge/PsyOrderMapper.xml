@@ -65,7 +65,7 @@
 
     <select id="selectPsyOrderByOrderId" parameterType="String" resultType="com.renxin.gauge.domain.PsyOrder">
         <include refid="selectPsyOrder"/>
-        where po.order_id = #{orderId}
+        where po.id = #{orderId}
     </select>
 
     <insert id="insertPsyOrder" parameterType="com.renxin.gauge.domain.PsyOrder" useGeneratedKeys="true"

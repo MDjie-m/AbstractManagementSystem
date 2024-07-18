@@ -89,7 +89,7 @@ public class PocketConsultAppointmentController extends BaseController
      */
     // @PreAuthorize("@ss.hasPermi('psychology:appointment:remove')")
     @Log(title = "咨询师预约", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+    @PostMapping("/remove/{ids}")
     public AjaxResult remove(@PathVariable Integer[] ids)
     {
         return toAjax(psyAppointmentService.deletePsyAppointmentByIds(ids));

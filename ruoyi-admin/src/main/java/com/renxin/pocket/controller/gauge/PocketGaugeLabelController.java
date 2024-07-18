@@ -26,7 +26,7 @@ public class PocketGaugeLabelController extends BaseController {
     @Autowired
     private IPsyGaugeLabelService psyGaugeLabelService;
 
-    @GetMapping("/list")
+    @PostMapping("/list")
     @ApiOperation("查询测评标签列表")
     @RateLimiter
     public TableDataInfo list(GaugeLabelQueryDTO gaugeLabelQueryDTO)
