@@ -7,8 +7,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="PsyConsultantTeamSupervision" id="PsyConsultantTeamSupervisionResult">
         <result property="id"    column="id"    />
         <result property="title"    column="title"    />
-        <result property="logoPicUrl"    column="logo_pic_url"    />
-        <result property="detailPicUrl"    column="detail_pic_url"    />
+        <result property="headPicUrl"    column="head_pic_url"    />
+        <result property="specialPicUrl"    column="special_pic_url"    />
+        <result property="registerNoticePicUrl"    column="register_notice_pic_url"    />
         <result property="cycle"    column="cycle"    />
         <result property="cycleNumber"    column="cycle_number"    />
         <result property="consultantId"    column="consultant_id"    />
@@ -31,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPsyConsultantTeamSupervisionVo">
-        team.id, team.title, team.logo_pic_url, team.detail_pic_url, team.cycle, team.cycle_number, team.consultant_id, team.status, team.remark, team.del_flag,
+        team.id, team.title, team.head_pic_url, team.special_pic_url, team.register_notice_pic_url, team.cycle, team.cycle_number, team.consultant_id, team.status, team.remark, team.del_flag,
         team.create_by, team.create_time, team.update_by, team.update_time,
         team.period_no,team.week_day,team.lecture_start_time, team.lecture_end_time,team.first_lecture_date,team.max_num_people,team.price,team.team_type            
         
@@ -58,8 +59,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             team.del_flag = 0
             <if test="title != null  and title != ''"> and team.title like concat('%',#{title},'%') </if>
-            <if test="logoPicUrl != null  and logoPicUrl != ''"> and team.logo_pic_url = #{logoPicUrl}</if>
-            <if test="detailPicUrl != null  and detailPicUrl != ''"> and team.detail_pic_url = #{detailPicUrl}</if>
+            <if test="headPicUrl != null  and headPicUrl != ''"> and team.head_pic_url = #{headPicUrl}</if>
+            <if test="specialPicUrl != null  and specialPicUrl != ''"> and team.special_pic_url = #{specialPicUrl}</if>
+            <if test="registerNoticePicUrl != null  and registerNoticePicUrl != ''"> and team.register_notice_pic_url = #{registerNoticePicUrl}</if>
             <if test="cycle != null  and cycle != ''"> and team.cycle = #{cycle}</if>
             <if test="cycleNumber != null "> and team.cycle_number = #{cycleNumber}</if>
             <if test="consultantId != null  and consultantId != ''"> and team.consultant_id = #{consultantId}</if>
@@ -102,8 +104,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
             <if test="title != null">title,</if>
-            <if test="logoPicUrl != null">logo_pic_url,</if>
-            <if test="detailPicUrl != null">detail_pic_url,</if>
+            <if test="headPicUrl != null">head_pic_url,</if>
+            <if test="specialPicUrl != null">special_pic_url,</if>
+            <if test="registerNoticePicUrl != null">register_notice_pic_url,</if>
             <if test="cycle != null">cycle,</if>
             <if test="cycleNumber != null">cycle_number,</if>
             <if test="consultantId != null">consultant_id,</if>
@@ -127,8 +130,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="title != null">#{title},</if>
-            <if test="logoPicUrl != null">#{logoPicUrl},</if>
-            <if test="detailPicUrl != null">#{detailPicUrl},</if>
+            <if test="headPicUrl != null">#{headPicUrl},</if>
+            <if test="specialPicUrl != null">#{specialPicUrl},</if>
+            <if test="registerNoticePicUrl != null">#{registerNoticePicUrl},</if>
             <if test="cycle != null">#{cycle},</if>
             <if test="cycleNumber != null">#{cycleNumber},</if>
             <if test="consultantId != null">#{consultantId},</if>
@@ -155,8 +159,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update psy_consultant_team_supervision
         <trim prefix="SET" suffixOverrides=",">
             <if test="title != null">title = #{title},</if>
-            <if test="logoPicUrl != null">logo_pic_url = #{logoPicUrl},</if>
-            <if test="detailPicUrl != null">detail_pic_url = #{detailPicUrl},</if>
+            <if test="headPicUrl != null">head_pic_url = #{headPicUrl},</if>
+            <if test="specialPicUrl != null">special_pic_url = #{specialPicUrl},</if>
+            <if test="registerNoticePicUrl != null">register_notice_pic_url = #{registerNoticePicUrl},</if>
             <if test="cycle != null">cycle = #{cycle},</if>
             <if test="cycleNumber != null">cycle_number = #{cycleNumber},</if>
             <if test="consultantId != null">consultant_id = #{consultantId},</if>

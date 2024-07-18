@@ -33,13 +33,15 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     @Excel(name = "团督标题")
     private String title;
 
-    /** 团督logo */
-    @Excel(name = "团督logo")
-    private String logoPicUrl;
+    /** head图片 */
+    @Excel(name = "head图片")
+    private String headPicUrl;
+    
+    /** 小组特色(图片) */
+    private String specialPicUrl;
 
-    /** 团督明细地址 */
-    @Excel(name = "团督明细地址")
-    private String detailPicUrl;
+    /** 报名须知(图片) */
+    private String registerNoticePicUrl;
 
     /** 周期 */
     @Excel(name = "周期")
@@ -71,6 +73,9 @@ public class PsyConsultantTeamSupervision extends BaseEntity
 
     /** 开课日结束时间 */
     private String lectureEndTime;
+
+    //课堂时长(小时)
+    private Double lectureHour;
 
     /** 初次开课日期 */
     private String firstLectureDate;
@@ -123,14 +128,15 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     /** 成员清单*/
     private List<PsyConsultantSupervisionMember> memberList;
     
+    /** 督导师详情*/
+    private PsyConsult consultantDetail;
+    
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("title", getTitle())
-            .append("logoPicUrl", getLogoPicUrl())
-            .append("detailPicUrl", getDetailPicUrl())
             .append("cycle", getCycle())
             .append("cycleNumber", getCycleNumber())
             .append("consultantId", getConsultantId())

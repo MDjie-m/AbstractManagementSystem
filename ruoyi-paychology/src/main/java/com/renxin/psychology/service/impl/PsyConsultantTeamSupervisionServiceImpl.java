@@ -1,14 +1,21 @@
 package com.renxin.psychology.service.impl;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.core.domain.model.LoginUser;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
+import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantSupervisionMember;
+import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
+import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.service.IPsyConsultantSupervisionMemberService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +42,9 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     
     @Autowired
     private PsyConsultantSupervisionMemberMapper memberMapper;
+    
+    @Autowired
+    private PsyConsultMapper psyConsultMapper;
 
     /**
      * 查询团队督导(组织)
@@ -47,8 +57,10 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     {
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(id);
         
-        //若为[团队督导], 则查询成员信息
+
+        //若为[团队督导]
         if (team.getTeamType() == 1){
+            //查询成员信息
             PsyConsultantSupervisionMember memberReq = new PsyConsultantSupervisionMember();
             memberReq.setTeamSupervisionId(team.getId());
             List<PsyConsultantSupervisionMember> memberList = memberMapper.selectPsyConsultantSupervisionMemberList(memberReq);
@@ -62,6 +74,18 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
                 //剩余名额数
                 team.setSurplusNum(maxNumPeople - memberNum);
             }
+            
+            //计算课程时长
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalTime startTime = LocalTime.parse(team.getLectureStartTime(), formatter);
+            LocalTime endTime = LocalTime.parse(team.getLectureEndTime(), formatter);
+            Duration duration = Duration.between(startTime, endTime);
+            double hours = duration.get(ChronoUnit.SECONDS) / 3600.0;
+            team.setLectureHour(hours);
+
+            //督导师详情
+            PsyConsult psyConsult = psyConsultMapper.selectById(team.getConsultantId());
+            team.setConsultantDetail(psyConsult);
         }
         
         

@@ -147,3 +147,13 @@ UPDATE cour_user_course_section SET user_type = 3;
 
 ALTER TABLE `psy_consultant_supervision_member`
     CHANGE COLUMN `order_no` `order_no` VARCHAR(50) NULL DEFAULT NULL COMMENT '订单ID' AFTER `supervision_type`;
+
+ALTER TABLE `psy_consultant_team_supervision`
+    CHANGE COLUMN `logo_pic_url` `logo_pic_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '团督head图片' COLLATE 'utf8mb4_0900_ai_ci' AFTER `period_no`,
+    CHANGE COLUMN `detail_pic_url` `detail_pic_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '小组特色/团督详情  (逗号分隔多个url)' COLLATE 'utf8mb4_0900_ai_ci' AFTER `logo_pic_url`;
+
+ALTER TABLE `psy_consultant_team_supervision`
+    CHANGE COLUMN `logo_pic_url` `head_pic_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '团督head图片' COLLATE 'utf8mb4_0900_ai_ci' AFTER `period_no`,
+    CHANGE COLUMN `detail_pic_url` `special_pic_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '小组特色' COLLATE 'utf8mb4_0900_ai_ci' AFTER `head_pic_url`,
+    ADD COLUMN `register_notice_pic_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '报名须知(图片url)' AFTER `special_pic_url`;
+

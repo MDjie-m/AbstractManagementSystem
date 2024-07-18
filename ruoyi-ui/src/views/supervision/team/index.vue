@@ -85,6 +85,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
+    <!--  督导清单  -->
     <el-table v-loading="loading" :data="teamList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
