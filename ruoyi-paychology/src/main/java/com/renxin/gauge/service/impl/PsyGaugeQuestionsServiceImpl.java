@@ -98,8 +98,8 @@ public class PsyGaugeQuestionsServiceImpl implements IPsyGaugeQuestionsService {
     }
 
     @Override
-    public List<PsyQuestionVO> appQueryQuesList(PsyGaugeQuestions psyGaugeQuestions, Integer userId) {
-        psyGaugeQuestions.setUserId(userId);
+    public List<PsyQuestionVO> appQueryQuesList(PsyGaugeQuestions psyGaugeQuestions) {
+
         List<PsyQuestionVO> psyQuestionVOS = psyGaugeQuestionsMapper.appQueryQuesList(psyGaugeQuestions);
         psyQuestionVOS.forEach(item ->
             item.setAnswers(

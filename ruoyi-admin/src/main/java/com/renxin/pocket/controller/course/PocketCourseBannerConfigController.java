@@ -8,6 +8,7 @@ import com.renxin.course.service.ICourCourseBannerConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,8 +32,7 @@ public class PocketCourseBannerConfigController extends BaseController
     /**
      * 查询测评banner配置列表
      */
-//    @PreAuthorize("@ss.hasPermi('banner:config:list')")
-    @GetMapping("/list")
+    @PostMapping("/list")
     @ApiOperation("查询课程banner配置列表")
     @RateLimiter
     public TableDataInfo list(CourCourseBannerConfig courCourseBannerConfig)

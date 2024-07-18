@@ -8,6 +8,7 @@ import com.renxin.gauge.service.IPsyGaugeBannerConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +32,7 @@ public class PocketGaugeBannerConfigController extends BaseController
     /**
      * 查询测评banner配置列表
      */
-    @GetMapping("/list")
+    @PostMapping("/list")
     @ApiOperation("查询测评banner配置列表")
     @RateLimiter
     public TableDataInfo list(PsyGaugeBannerConfig psyGaugeBannerConfig)

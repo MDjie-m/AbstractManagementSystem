@@ -74,7 +74,7 @@ public class PocketGaugeOrderController extends BaseController {
     /**
      * 获取心理测评订单信息详细信息
      */
-    @GetMapping(value = "/{id}")
+    @PostMapping(value = "/{id}")
     @ApiOperation("获取订单详细信息")
     @RateLimiter
     public AjaxResult getInfo(@PathVariable("id") Integer id) {

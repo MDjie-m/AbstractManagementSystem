@@ -60,7 +60,60 @@ public class PocketGaugeController extends BaseController
         List<PsyGauge> list = psyGaugeService.selectPsyGaugeList(psyGauge);
         return getDataTable(list);
     }
+    /**
+     * 获取心理测评支付信息
+     */
+    @PostMapping(value = "/getPayInfo")
+    @ApiOperation("查询量表支付信息")
+    @RateLimiter
+    public AjaxResult getPayInfo(@RequestParam(value = "id") Integer id, HttpServletRequest request)
+    {
+        LoginDTO loginUser = pocketTokenService.getLoginUser(request);
+        Integer userId = loginUser.getUserId();
 
+        GaugeVO gaugeVO = new GaugeVO();
+
+        List<PsyOrder> psyOrder = psyOrderService.getPsyOrder(userId, id);
+
+        // 未完成测试，待测试 orderId 优先级最高
+        // 全部测试完成，查看报告 orderId
+        // 再次购买
+        if (psyOrder.size() > 0) {
+            Optional<PsyOrder> first = psyOrder.stream().filter(order -> order.getGaugeStatus() == GaugeStatus.UNFINISHED.getValue()).findFirst();
+            if (first.isPresent()) {
+                gaugeVO.setOrderId(first.get().getId());
+                gaugeVO.setOrderNo(first.get().getOrderId());
+                gaugeVO.setIsCompleted(GaugeStatus.UNFINISHED.getValue());
+            } else {
+                gaugeVO.setOrderId(psyOrder.get(0).getId());
+                gaugeVO.setOrderNo(psyOrder.get(0).getOrderId());
+                gaugeVO.setIsCompleted(psyOrder.get(0).getGaugeStatus());
+            }
+
+            gaugeVO.setIsBuy(GaugeConstant.GAUGE_IS_BUY);
+        } else {
+            gaugeVO.setIsBuy(GaugeConstant.GAUGE_NOT_BUY);
+            gaugeVO.setIsCompleted(GaugeStatus.UNFINISHED.getValue());
+        }
+
+        gaugeVO.setSize(psyOrder.size());
+        PsyGaugeQuestionsResult psyGaugeQuestionsResult = new PsyGaugeQuestionsResult();
+        psyGaugeQuestionsResult.setUserId(userId);
+        psyGaugeQuestionsResult.setGaugeId(id);
+        if (gaugeVO.getOrderId() != null) {
+            psyGaugeQuestionsResult.setOrderId(gaugeVO.getOrderId());
+        }
+        List<PsyGaugeQuestionsResult> psyGaugeQuestionsResultList = psyGaugeQuestionsResultService.selectPsyGaugeQuestionsResultList(psyGaugeQuestionsResult);
+        // 将多选题的答案选项分组归并
+//        Map<Integer, Long> result  = psyGaugeQuestionsResultList.stream().collect(Collectors.groupingBy(PsyGaugeQuestionsResult::getQuestionsId, Collectors.counting()));
+        gaugeVO.setFinishedNum(psyGaugeQuestionsResultList.size());
+        if (gaugeVO.getNum() != null) {
+            int num = psyOrderService.getOrderNumByGaugeId(id);
+            gaugeVO.setNum(gaugeVO.getNum() + num);
+        }
+
+        return AjaxResult.success(gaugeVO);
+    }
     /**
      * 获取心理测评详细信息
      */

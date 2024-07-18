@@ -79,7 +79,7 @@ public class PocketGaugeQuestionsResultController extends BaseController
     }
 
 
-    @GetMapping(value = "/getReport/{orderId}")
+    @PostMapping(value = "/getReport/{orderId}")
     @RateLimiter
     public AjaxResult getReport(@PathVariable("orderId") String orderId) {
         return AjaxResult.success(psyGaugeQuestionsResultService.getReport(orderId));
