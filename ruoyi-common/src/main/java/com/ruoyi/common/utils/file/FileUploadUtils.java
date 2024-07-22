@@ -132,7 +132,7 @@ public class FileUploadUtils
 
         String pathFileName = getPathFileName(baseDir, fileName);
         saveFileAndMd5(pathFileName, md5);
-        return getPathFileName(baseDir, fileName);
+        return pathFileName;
     }
 
     /**

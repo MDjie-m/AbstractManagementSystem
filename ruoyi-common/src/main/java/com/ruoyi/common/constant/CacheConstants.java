@@ -42,6 +42,9 @@ public class CacheConstants
      */
     public static final String PWD_ERR_CNT_KEY = "pwd_err_cnt:";
 
+    /**
+     * 登录ip错误次数 redis key
+     */
     public static final String IP_ERR_CNT_KEY = "ip_err_cnt_key:";
 
     /**
