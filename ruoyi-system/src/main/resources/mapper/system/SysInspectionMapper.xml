@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysInspectionMapper">
+    
+    <resultMap type="SysInspection" id="SysInspectionResult">
+        <result property="inspectionId"    column="inspection_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="inspectorId"    column="inspector_id"    />
+        <result property="inspectorName"    column="inspector_name"    />
+        <result property="imageAddress"    column="image_address"    />
+        <result property="videoAddress"    column="video_address"    />
+        <result property="investigationDetails"    column="investigation_details"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="futureField1"    column="future_field1"    />
+        <result property="futureField2"    column="future_field2"    />
+        <result property="futureField3"    column="future_field3"    />
+        <result property="futureField4"    column="future_field4"    />
+        <result property="futureField5"    column="future_field5"    />
+    </resultMap>
+
+    <sql id="selectSysInspectionVo">
+        select inspection_id, supplier_id, supplier_name, inspector_id, inspector_name, image_address, video_address, investigation_details, delete_flag, future_field1, future_field2, future_field3, future_field4, future_field5 from sys_inspection
+    </sql>
+
+    <select id="selectSysInspectionList" parameterType="SysInspection" resultMap="SysInspectionResult">
+        <include refid="selectSysInspectionVo"/>
+        <where>  
+            <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
+            <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
+            <if test="inspectorId != null  and inspectorId != ''"> and inspector_id = #{inspectorId}</if>
+            <if test="inspectorName != null  and inspectorName != ''"> and inspector_name like concat('%', #{inspectorName}, '%')</if>
+            <if test="imageAddress != null  and imageAddress != ''"> and image_address = #{imageAddress}</if>
+            <if test="videoAddress != null  and videoAddress != ''"> and video_address = #{videoAddress}</if>
+            <if test="investigationDetails != null  and investigationDetails != ''"> and investigation_details = #{investigationDetails}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            <if test="futureField1 != null  and futureField1 != ''"> and future_field1 = #{futureField1}</if>
+            <if test="futureField2 != null  and futureField2 != ''"> and future_field2 = #{futureField2}</if>
+            <if test="futureField3 != null  and futureField3 != ''"> and future_field3 = #{futureField3}</if>
+            <if test="futureField4 != null  and futureField4 != ''"> and future_field4 = #{futureField4}</if>
+            <if test="futureField5 != null  and futureField5 != ''"> and future_field5 = #{futureField5}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysInspectionByInspectionId" parameterType="String" resultMap="SysInspectionResult">
+        <include refid="selectSysInspectionVo"/>
+        where inspection_id = #{inspectionId}
+    </select>
+
+    <insert id="insertSysInspection" parameterType="SysInspection">
+        insert into sys_inspection
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="inspectionId != null">inspection_id,</if>
+            <if test="supplierId != null and supplierId != ''">supplier_id,</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name,</if>
+            <if test="inspectorId != null and inspectorId != ''">inspector_id,</if>
+            <if test="inspectorName != null and inspectorName != ''">inspector_name,</if>
+            <if test="imageAddress != null and imageAddress != ''">image_address,</if>
+            <if test="videoAddress != null and videoAddress != ''">video_address,</if>
+            <if test="investigationDetails != null and investigationDetails != ''">investigation_details,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="futureField1 != null">future_field1,</if>
+            <if test="futureField2 != null">future_field2,</if>
+            <if test="futureField3 != null">future_field3,</if>
+            <if test="futureField4 != null">future_field4,</if>
+            <if test="futureField5 != null">future_field5,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="inspectionId != null">#{inspectionId},</if>
+            <if test="supplierId != null and supplierId != ''">#{supplierId},</if>
+            <if test="supplierName != null and supplierName != ''">#{supplierName},</if>
+            <if test="inspectorId != null and inspectorId != ''">#{inspectorId},</if>
+            <if test="inspectorName != null and inspectorName != ''">#{inspectorName},</if>
+            <if test="imageAddress != null and imageAddress != ''">#{imageAddress},</if>
+            <if test="videoAddress != null and videoAddress != ''">#{videoAddress},</if>
+            <if test="investigationDetails != null and investigationDetails != ''">#{investigationDetails},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="futureField1 != null">#{futureField1},</if>
+            <if test="futureField2 != null">#{futureField2},</if>
+            <if test="futureField3 != null">#{futureField3},</if>
+            <if test="futureField4 != null">#{futureField4},</if>
+            <if test="futureField5 != null">#{futureField5},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysInspection" parameterType="SysInspection">
+        update sys_inspection
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supplierId != null and supplierId != ''">supplier_id = #{supplierId},</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name = #{supplierName},</if>
+            <if test="inspectorId != null and inspectorId != ''">inspector_id = #{inspectorId},</if>
+            <if test="inspectorName != null and inspectorName != ''">inspector_name = #{inspectorName},</if>
+            <if test="imageAddress != null and imageAddress != ''">image_address = #{imageAddress},</if>
+            <if test="videoAddress != null and videoAddress != ''">video_address = #{videoAddress},</if>
+            <if test="investigationDetails != null and investigationDetails != ''">investigation_details = #{investigationDetails},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="futureField1 != null">future_field1 = #{futureField1},</if>
+            <if test="futureField2 != null">future_field2 = #{futureField2},</if>
+            <if test="futureField3 != null">future_field3 = #{futureField3},</if>
+            <if test="futureField4 != null">future_field4 = #{futureField4},</if>
+            <if test="futureField5 != null">future_field5 = #{futureField5},</if>
+        </trim>
+        where inspection_id = #{inspectionId}
+    </update>
+
+    <delete id="deleteSysInspectionByInspectionId" parameterType="String">
+        delete from sys_inspection where inspection_id = #{inspectionId}
+    </delete>
+
+    <delete id="deleteSysInspectionByInspectionIds" parameterType="String">
+        delete from sys_inspection where inspection_id in 
+        <foreach item="inspectionId" collection="array" open="(" separator="," close=")">
+            #{inspectionId}
+        </foreach>
+    </delete>
+</mapper>
