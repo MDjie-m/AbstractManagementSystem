@@ -23,7 +23,7 @@ public class SysSupplier extends BaseEntity
 
     /** 标签：0：供应商、商家，1：供应商，2.商家 */
     @Excel(name = "标签：0：供应商、商家，1：供应商，2.商家")
-    private Long label;
+    private Integer label;
 
     /** 国家 */
     @Excel(name = "国家")
@@ -151,12 +151,12 @@ public class SysSupplier extends BaseEntity
     {
         return supplierId;
     }
-    public void setLabel(Long label) 
+    public void setLabel(Integer label)
     {
         this.label = label;
     }
 
-    public Long getLabel() 
+    public Integer getLabel()
     {
         return label;
     }
