@@ -20,6 +20,14 @@ public interface BladePartMapper
     public BladePart selectBladePartByBpId(Long bpId);
 
     /**
+     * 查询叶片管理
+     *
+     * @param bcId 叶片管理叶片编码
+     * @return 叶片管理
+     */
+    public List<BladePart> selectBladePartByBcId(Long bcId);
+
+    /**
      * 查询叶片管理列表
      * 
      * @param bladePart 叶片管理

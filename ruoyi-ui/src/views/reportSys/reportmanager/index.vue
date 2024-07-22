@@ -94,7 +94,7 @@
           plain
           icon="el-icon-download"
           size="mini"
-          @click="handleExport"
+          @click="handleExport2"
           v-hasPermi="['windSys:wind:export']"
         >导出Word</el-button>
       </el-col>
@@ -282,8 +282,9 @@
 </template>
 
 <script>
-import { listWind, getWind, delWind, addWind, updateWind } from "@/api/reportSys/reportmanager";
-
+import {listWind, selectReport, delWind, addWind, updateWind, getReportManager} from "@/api/reportSys/reportmanager";
+import {getList} from "@/api/windSys/part"
+import part from "@/views/windSys/part/index.vue";
 export default {
   name: "Wind",
   data() {
@@ -322,6 +323,17 @@ export default {
         company: null,
         windFarm: null,
       },
+      // 查询参数
+      queryParams2: {
+        pageNum: 1,
+        pageSize: 10,
+        turbineCode: null,
+        bladeCode: null,
+        bladePartName: null,
+        constructionArea: null,
+        bladeInsideOutside: null,
+        uploadTime: null,
+      },
       // 表单参数
       form: {},
       // 表单校验
@@ -337,9 +349,14 @@ export default {
     getList() {
       this.loading = true;
       listWind(this.queryParams).then(response => {
+        console.log(this.$data);
+        console.log("=================================");
+        console.log(response);
+        console.log("=================================");
         this.windList = response.rows;
         this.total = response.total;
         this.loading = false;
+        console.log(response)
       });
     },
     // 取消按钮
@@ -392,7 +409,15 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.wId)
+      //this.windList = selection.map(item => item.windList)
       this.single = selection.length!==1
+      console.log("======================")
+      //console.log("selection.length: "+selection.length)
+      //console.log("this.single: "+this.single)
+      //console.log("this.multiple: "+this.multiple)
+      //console.log("======================")
+      console.log("this.windList: "+this.windList)
+      console.log("======================")
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -476,13 +501,37 @@ export default {
     /** 复选框选中数据 */
     handleBladePartSelectionChange(selection) {
       this.checkedBladePart = selection.map(item => item.index)
+      console.log("=======================")
+      console.log("this.checkedBladePart: "+this.checkedBladePart)
+      console.log("=======================")
     },
     /** 导出按钮操作 */
     handleExport() {
       this.download('windSys/wind/export', {
         ...this.queryParams
       }, `wind_${new Date().getTime()}.xlsx`)
+    },
+    /** 导出按钮操作 */
+    handleExport2(row) {
+      const wIds = row.wId || this.ids;
+      //this.getList();
+      getReportManager(wIds).then(response => {
+        console.log(response.data())
+      })
+      //console.log(this.ids)
+
+    },
+    /** 删除按钮操作 */
+    handleExQuery(row) {
+      const wIds = row.wId || this.ids;
+      this.$modal.confirm('是否确认导出风机管理编号为"' + wIds + '"的数据项？').then(function() {
+        return delWind(wIds);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("删除成功");
+      }).catch(() => {});
     }
+
   }
 };
 </script>

@@ -10,10 +10,12 @@ export function listWind(query) {
 }
 
 // 查询风机管理详细
-export function getWind(wId) {
+export function getReportManager(wIds) {
+  //axios.post('http://localhost:81/reportSys/reportmanager/queryBlade', wIds)
   return request({
-    url: '/windSys/wind/' + wId,
+    url: '/reportSys/reportmanager/queryBlade/'+wIds,
     method: 'get'
+
   })
 }
 
@@ -32,6 +34,13 @@ export function updateWind(data) {
     url: '/windSys/wind',
     method: 'put',
     data: data
+  })
+}
+// 检测报告
+export function selectReport(wId) {
+  return request({
+    url: '/reportSys/reportmanager/' + wId,
+    method: 'get'
   })
 }
 

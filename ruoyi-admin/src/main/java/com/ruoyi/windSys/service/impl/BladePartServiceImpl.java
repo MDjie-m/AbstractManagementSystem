@@ -31,6 +31,9 @@ public class BladePartServiceImpl implements IBladePartService
         return bladePartMapper.selectBladePartByBpId(bpId);
     }
 
+    @Override
+    public List<BladePart> selectBladePartByBcId(Long bcId) {return bladePartMapper.selectBladePartByBcId(bcId);}
+
     /**
      * 查询叶片管理列表
      * 

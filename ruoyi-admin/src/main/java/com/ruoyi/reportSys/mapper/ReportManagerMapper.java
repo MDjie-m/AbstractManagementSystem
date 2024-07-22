@@ -1,6 +1,7 @@
 package com.ruoyi.reportSys.mapper;
 
 import com.ruoyi.reportSys.domain.HistoricalInspectionReport;
+import com.ruoyi.windSys.domain.WindTurbineInfo;
 
 import java.util.List;
 
@@ -11,5 +12,5 @@ import java.util.List;
  */
 public interface ReportManagerMapper
 {
-
+    public WindTurbineInfo selectReportManagerByHId(Long wid);
 }

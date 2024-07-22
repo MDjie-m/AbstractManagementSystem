@@ -43,6 +43,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where bp_id = #{bpId}
     </select>
 
+    <select id="selectBladePartByBcId" parameterType="Long" resultMap="BladePartResult">
+        <include refid="selectBladePartVo"/>
+        where blade_code = #{bcId}
+    </select>
     <insert id="insertBladePart" parameterType="BladePart" useGeneratedKeys="true" keyProperty="bpId">
         insert into blade_part
         <trim prefix="(" suffix=")" suffixOverrides=",">
