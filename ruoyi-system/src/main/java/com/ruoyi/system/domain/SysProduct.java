@@ -49,7 +49,7 @@ public class SysProduct extends BaseEntity
 
     /** 0-国产 1-进口 */
     @Excel(name = "0-国产 1-进口")
-    private Long domesticImportedType;
+    private Integer domesticImportedType;
 
     /** 产品型号 */
     @Excel(name = "产品型号")
@@ -57,7 +57,7 @@ public class SysProduct extends BaseEntity
 
     /** 是否可报价：0：不可报价，1：可报价 */
     @Excel(name = "是否可报价：0：不可报价，1：可报价")
-    private Long quotationFlag;
+    private Integer quotationFlag;
 
     /** 预留字段1 */
     @Excel(name = "预留字段1")
@@ -145,12 +145,12 @@ public class SysProduct extends BaseEntity
     {
         return productName;
     }
-    public void setDomesticImportedType(Long domesticImportedType) 
+    public void setDomesticImportedType(Integer domesticImportedType)
     {
         this.domesticImportedType = domesticImportedType;
     }
 
-    public Long getDomesticImportedType() 
+    public Integer getDomesticImportedType()
     {
         return domesticImportedType;
     }
@@ -163,12 +163,12 @@ public class SysProduct extends BaseEntity
     {
         return productModel;
     }
-    public void setQuotationFlag(Long quotationFlag) 
+    public void setQuotationFlag(Integer quotationFlag)
     {
         this.quotationFlag = quotationFlag;
     }
 
-    public Long getQuotationFlag() 
+    public Integer getQuotationFlag()
     {
         return quotationFlag;
     }

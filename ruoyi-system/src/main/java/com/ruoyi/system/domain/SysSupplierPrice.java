@@ -63,7 +63,7 @@ public class SysSupplierPrice extends BaseEntity
     private String remarks;
 
     /** 是否删除 0:未删除 1:已删除 */
-    private Long delFlag;
+    private Integer delFlag;
 
     /** 预留字段1 */
     @Excel(name = "预留字段1")
@@ -172,12 +172,12 @@ public class SysSupplierPrice extends BaseEntity
     {
         return remarks;
     }
-    public void setDelFlag(Long delFlag) 
+    public void setDelFlag(Integer delFlag)
     {
         this.delFlag = delFlag;
     }
 
-    public Long getDelFlag() 
+    public Integer getDelFlag()
     {
         return delFlag;
     }

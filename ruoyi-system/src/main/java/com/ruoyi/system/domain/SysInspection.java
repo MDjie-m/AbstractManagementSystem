@@ -48,7 +48,7 @@ public class SysInspection extends BaseEntity
 
     /** 删除标志（0:未删除，1:已删除） */
     @Excel(name = "删除标志", readConverterExp = "0=:未删除，1:已删除")
-    private Long deleteFlag;
+    private Integer deleteFlag;
 
     /** 预留字段1 */
     @Excel(name = "预留字段1")
@@ -142,12 +142,12 @@ public class SysInspection extends BaseEntity
     {
         return investigationDetails;
     }
-    public void setDeleteFlag(Long deleteFlag) 
+    public void setDeleteFlag(Integer deleteFlag)
     {
         this.deleteFlag = deleteFlag;
     }
 
-    public Long getDeleteFlag() 
+    public Integer getDeleteFlag()
     {
         return deleteFlag;
     }
