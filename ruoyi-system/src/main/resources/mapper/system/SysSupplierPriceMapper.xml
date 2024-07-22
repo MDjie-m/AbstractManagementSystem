@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysSupplierPriceMapper">
+    
+    <resultMap type="SysSupplierPrice" id="SysSupplierPriceResult">
+        <result property="supplierPriceId"    column="supplier_price_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="supplierNameCn"    column="supplier_name_cn"    />
+        <result property="supplierNameEn"    column="supplier_name_en"    />
+        <result property="productName"    column="product_name"    />
+        <result property="priceRmb"    column="price_RMB"    />
+        <result property="priceUsd"    column="price_USD"    />
+        <result property="time"    column="time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="futureField1"    column="future_field1"    />
+        <result property="futureField2"    column="future_field2"    />
+    </resultMap>
+
+    <sql id="selectSysSupplierPriceVo">
+        select supplier_price_id, supplier_id, product_id, supplier_name_cn, supplier_name_en, product_name, price_RMB, price_USD, time, user_id, remarks, del_flag, future_field1, future_field2 from sys_supplier_price
+    </sql>
+
+    <select id="selectSysSupplierPriceList" parameterType="SysSupplierPrice" resultMap="SysSupplierPriceResult">
+        <include refid="selectSysSupplierPriceVo"/>
+        <where>  
+            <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="supplierNameCn != null  and supplierNameCn != ''"> and supplier_name_cn = #{supplierNameCn}</if>
+            <if test="supplierNameEn != null  and supplierNameEn != ''"> and supplier_name_en = #{supplierNameEn}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="priceRmb != null "> and price_RMB = #{priceRmb}</if>
+            <if test="priceUsd != null "> and price_USD = #{priceUsd}</if>
+            <if test="time != null "> and time = #{time}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="futureField1 != null  and futureField1 != ''"> and future_field1 = #{futureField1}</if>
+            <if test="futureField2 != null  and futureField2 != ''"> and future_field2 = #{futureField2}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysSupplierPriceBySupplierPriceId" parameterType="String" resultMap="SysSupplierPriceResult">
+        <include refid="selectSysSupplierPriceVo"/>
+        where supplier_price_id = #{supplierPriceId}
+    </select>
+
+    <insert id="insertSysSupplierPrice" parameterType="SysSupplierPrice">
+        insert into sys_supplier_price
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="supplierPriceId != null">supplier_price_id,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="supplierNameCn != null">supplier_name_cn,</if>
+            <if test="supplierNameEn != null">supplier_name_en,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="priceRmb != null">price_RMB,</if>
+            <if test="priceUsd != null">price_USD,</if>
+            <if test="time != null">time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="futureField1 != null">future_field1,</if>
+            <if test="futureField2 != null">future_field2,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="supplierPriceId != null">#{supplierPriceId},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="supplierNameCn != null">#{supplierNameCn},</if>
+            <if test="supplierNameEn != null">#{supplierNameEn},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="priceRmb != null">#{priceRmb},</if>
+            <if test="priceUsd != null">#{priceUsd},</if>
+            <if test="time != null">#{time},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="futureField1 != null">#{futureField1},</if>
+            <if test="futureField2 != null">#{futureField2},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysSupplierPrice" parameterType="SysSupplierPrice">
+        update sys_supplier_price
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="supplierNameCn != null">supplier_name_cn = #{supplierNameCn},</if>
+            <if test="supplierNameEn != null">supplier_name_en = #{supplierNameEn},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="priceRmb != null">price_RMB = #{priceRmb},</if>
+            <if test="priceUsd != null">price_USD = #{priceUsd},</if>
+            <if test="time != null">time = #{time},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="futureField1 != null">future_field1 = #{futureField1},</if>
+            <if test="futureField2 != null">future_field2 = #{futureField2},</if>
+        </trim>
+        where supplier_price_id = #{supplierPriceId}
+    </update>
+
+    <delete id="deleteSysSupplierPriceBySupplierPriceId" parameterType="String">
+        delete from sys_supplier_price where supplier_price_id = #{supplierPriceId}
+    </delete>
+
+    <delete id="deleteSysSupplierPriceBySupplierPriceIds" parameterType="String">
+        delete from sys_supplier_price where supplier_price_id in 
+        <foreach item="supplierPriceId" collection="array" open="(" separator="," close=")">
+            #{supplierPriceId}
+        </foreach>
+    </delete>
+</mapper>
