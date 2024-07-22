@@ -23,7 +23,7 @@ public class SysSupplier extends BaseEntity
 
     /** 标签：0：供应商、商家，1：供应商，2.商家 */
     @Excel(name = "标签：0：供应商、商家，1：供应商，2.商家")
-    private Long label;
+    private Integer label;
 
     /** 国家 */
     @Excel(name = "国家")
@@ -81,7 +81,7 @@ public class SysSupplier extends BaseEntity
 
     /** 是否删除：0：未删除，1：已删除 */
     @Excel(name = "是否删除：0：未删除，1：已删除")
-    private Long deleteFlag;
+    private Integer deleteFlag;
 
     /** 考察情况id */
     @Excel(name = "考察情况id")
@@ -101,23 +101,23 @@ public class SysSupplier extends BaseEntity
 
     /** 分类：0：国产，1：进口 */
     @Excel(name = "分类：0：国产，1：进口")
-    private Long classification;
+    private Integer classification;
 
     /** 审核状态:0：待审核:1：已通过:2：未通过 */
     @Excel(name = "审核状态:0：待审核:1：已通过:2：未通过")
-    private Long auditStatus;
+    private Integer auditStatus;
 
     /** 考察状态：0候选，1：待考察，2：已考察 */
     @Excel(name = "考察状态：0候选，1：待考察，2：已考察")
-    private Long inspectionStatus;
+    private Integer inspectionStatus;
 
     /** 考察审核状态：0：待审核:1：已通过:2：未通过 */
     @Excel(name = "考察审核状态：0：待审核:1：已通过:2：未通过")
-    private Long inspectionAuditStatus;
+    private Integer inspectionAuditStatus;
 
     /** 数据来源：0：供应商入驻，1：系统新增，2：批量导入 */
     @Excel(name = "数据来源：0：供应商入驻，1：系统新增，2：批量导入")
-    private Long dataSources;
+    private Integer dataSources;
 
     /** 预留字段1 */
     @Excel(name = "预留字段1")
@@ -151,12 +151,12 @@ public class SysSupplier extends BaseEntity
     {
         return supplierId;
     }
-    public void setLabel(Long label) 
+    public void setLabel(Integer label)
     {
         this.label = label;
     }
 
-    public Long getLabel() 
+    public Integer getLabel()
     {
         return label;
     }
@@ -277,12 +277,12 @@ public class SysSupplier extends BaseEntity
     {
         return reviewRating;
     }
-    public void setDeleteFlag(Long deleteFlag) 
+    public void setDeleteFlag(Integer deleteFlag)
     {
         this.deleteFlag = deleteFlag;
     }
 
-    public Long getDeleteFlag() 
+    public Integer getDeleteFlag()
     {
         return deleteFlag;
     }
@@ -322,48 +322,48 @@ public class SysSupplier extends BaseEntity
     {
         return email;
     }
-    public void setClassification(Long classification) 
+    public void setClassification(Integer classification)
     {
         this.classification = classification;
     }
 
-    public Long getClassification() 
+    public Integer getClassification()
     {
         return classification;
     }
-    public void setAuditStatus(Long auditStatus) 
+    public void setAuditStatus(Integer auditStatus)
     {
         this.auditStatus = auditStatus;
     }
 
-    public Long getAuditStatus() 
+    public Integer getAuditStatus()
     {
         return auditStatus;
     }
-    public void setInspectionStatus(Long inspectionStatus) 
+    public void setInspectionStatus(Integer inspectionStatus)
     {
         this.inspectionStatus = inspectionStatus;
     }
 
-    public Long getInspectionStatus() 
+    public Integer getInspectionStatus()
     {
         return inspectionStatus;
     }
-    public void setInspectionAuditStatus(Long inspectionAuditStatus) 
+    public void setInspectionAuditStatus(Integer inspectionAuditStatus)
     {
         this.inspectionAuditStatus = inspectionAuditStatus;
     }
 
-    public Long getInspectionAuditStatus() 
+    public Integer getInspectionAuditStatus()
     {
         return inspectionAuditStatus;
     }
-    public void setDataSources(Long dataSources) 
+    public void setDataSources(Integer dataSources)
     {
         this.dataSources = dataSources;
     }
 
-    public Long getDataSources() 
+    public Integer getDataSources()
     {
         return dataSources;
     }

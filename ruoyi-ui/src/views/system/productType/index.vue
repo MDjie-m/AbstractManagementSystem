@@ -260,21 +260,7 @@ export default {
       });
     },
     /** 提交按钮新增 */
-    submitAddForm() {
-      this.$refs["form"].validate(valid => {
-        if (valid) {
-            addProductType(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
-          }.catch)(err=>{
-            console.log(err)
-          })
-      });
-    },
-     /** 提交按钮新增 */
-    submitEditForm() {
+    submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.productCode != null) {
@@ -293,6 +279,7 @@ export default {
         }
       });
     },
+
     /** 删除按钮操作 */
     handleDelete(row) {
       this.$modal.confirm('是否确认删除产品分类编号为"' + row.productCode + '"的数据项？').then(function() {
