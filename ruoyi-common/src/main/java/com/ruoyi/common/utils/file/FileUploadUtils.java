@@ -3,7 +3,13 @@ package com.ruoyi.common.utils.file;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Objects;
+
+import com.ruoyi.common.constant.CacheConstants;
+import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.utils.sign.Md5Utils;
+import com.ruoyi.common.utils.spring.SpringUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.config.RuoYiConfig;
@@ -32,10 +38,13 @@ public class FileUploadUtils
      */
     public static final int DEFAULT_FILE_NAME_LENGTH = 100;
 
+
     /**
      * 默认上传的地址
      */
     private static String defaultBaseDir = RuoYiConfig.getProfile();
+
+    private static final RedisCache redisCache = SpringUtils.getBean(RedisCache.class);
 
     public static void setDefaultBaseDir(String defaultBaseDir)
     {
@@ -102,6 +111,12 @@ public class FileUploadUtils
             throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException,
             InvalidExtensionException
     {
+        String md5 = Md5Utils.getMd5(file);
+        String pathForMd5 = getFilePathForMd5(md5);
+        if (StringUtils.isNotEmpty(pathForMd5)) {
+            return pathForMd5;
+        }
+
         int fileNamelength = Objects.requireNonNull(file.getOriginalFilename()).length();
         if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
         {
@@ -114,7 +129,10 @@ public class FileUploadUtils
 
         String absPath = getAbsoluteFile(baseDir, fileName).getAbsolutePath();
         file.transferTo(Paths.get(absPath));
-        return getPathFileName(baseDir, fileName);
+
+        String pathFileName = getPathFileName(baseDir, fileName);
+        saveFileAndMd5(pathFileName, md5);
+        return pathFileName;
     }
 
     /**
@@ -228,5 +246,25 @@ public class FileUploadUtils
             extension = MimeTypeUtils.getExtension(Objects.requireNonNull(file.getContentType()));
         }
         return extension;
+    }
+
+    /**
+     * 根据md5获取文件的路径
+     *
+     * @param md5 文件的md5
+     * @return
+     */
+    public static String getFilePathForMd5(String md5){
+        return redisCache.getCacheObject(CacheConstants.FILE_MD5_KEY + md5);
+    }
+
+    /**
+     * 保存文件的md5
+     *
+     * @param path 文件的路径
+     * @param md5 文件的md5
+     */
+    public static void saveFileAndMd5(String path, String md5) {
+        redisCache.setCacheObject(CacheConstants.FILE_MD5_KEY + md5, path);
     }
 }
