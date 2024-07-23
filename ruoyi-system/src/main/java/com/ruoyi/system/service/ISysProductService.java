@@ -6,8 +6,8 @@ import com.ruoyi.system.domain.SysProduct;
 /**
  * 产品Service接口
  * 
- * @author lyj
- * @date 2024-07-21
+ * @author xgg
+ * @date 2024-07-23
  */
 public interface ISysProductService 
 {

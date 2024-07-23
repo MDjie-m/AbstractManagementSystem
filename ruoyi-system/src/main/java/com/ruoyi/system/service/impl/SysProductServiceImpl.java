@@ -1,8 +1,6 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
-
-import com.ruoyi.common.utils.uuid.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysProductMapper;
@@ -12,8 +10,8 @@ import com.ruoyi.system.service.ISysProductService;
 /**
  * 产品Service业务层处理
  * 
- * @author lyj
- * @date 2024-07-21
+ * @author xgg
+ * @date 2024-07-23
  */
 @Service
 public class SysProductServiceImpl implements ISysProductService 
@@ -54,7 +52,6 @@ public class SysProductServiceImpl implements ISysProductService
     @Override
     public int insertSysProduct(SysProduct sysProduct)
     {
-        sysProduct.setProductId(UUID.randomUUID().toString());
         return sysProductMapper.insertSysProduct(sysProduct);
     }
 

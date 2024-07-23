@@ -24,8 +24,8 @@ import com.ruoyi.common.core.page.TableDataInfo;
 /**
  * 产品Controller
  * 
- * @author lyj
- * @date 2024-07-21
+ * @author xgg
+ * @date 2024-07-23
  */
 @RestController
 @RequestMapping("/system/product")
