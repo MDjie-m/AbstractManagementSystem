@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysSupplierMapper">
-    
+
     <resultMap type="SysSupplier" id="SysSupplierResult">
         <result property="supplierId"    column="supplier_id"    />
         <result property="label"    column="label"    />
@@ -31,70 +31,60 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="inspectionAuditStatus"    column="inspection_audit_status"    />
         <result property="dataSources"    column="data_sources"    />
         <result property="remark"    column="remark"    />
-        <result property="futureField1"    column="future_field1"    />
-        <result property="futureField2"    column="future_field2"    />
-        <result property="futureField3"    column="future_field3"    />
-        <result property="futureField4"    column="future_field4"    />
-        <result property="futureField5"    column="future_field5"    />
     </resultMap>
 
-    <resultMap id="SysSupplierSysProductResult" type="SysSupplier" extends="SysSupplierResult">
-        <collection property="sysProductList" ofType="SysProduct" column="supplier_id" select="selectSysProductList" />
-    </resultMap>
+<!--    <resultMap id="SysSupplierSysProductResult" type="SysSupplier" extends="SysSupplierResult">-->
+<!--        <collection property="sysProductList" ofType="SysProduct" column="supplier_id" select="selectSysProductList" />-->
+<!--    </resultMap>-->
 
-    <resultMap type="SysProduct" id="SysProductResult">
-        <result property="productId"    column="product_id"    />
-        <result property="supplierId"    column="supplier_id"    />
-        <result property="primaryCategory"    column="primary_category"    />
-        <result property="secondaryCategory"    column="secondary_category"    />
-        <result property="tertiaryCategory"    column="tertiary_category"    />
-        <result property="quaternaryCategory"    column="quaternary_category"    />
-        <result property="fifthCategory"    column="fifth_category"    />
-        <result property="productName"    column="product_name"    />
-        <result property="domesticImportedType"    column="domestic_imported_type"    />
-        <result property="productModel"    column="product_model"    />
-        <result property="quotationFlag"    column="quotation_flag"    />
-        <result property="futureField1"    column="future_field1"    />
-        <result property="futureField2"    column="future_field2"    />
-        <result property="futureField3"    column="future_field3"    />
-    </resultMap>
+<!--    <resultMap type="SysProduct" id="SysProductResult">-->
+<!--        <result property="productId"    column="product_id"    />-->
+<!--        <result property="supplierId"    column="supplier_id"    />-->
+<!--        <result property="primaryCategory"    column="primary_category"    />-->
+<!--        <result property="secondaryCategory"    column="secondary_category"    />-->
+<!--        <result property="tertiaryCategory"    column="tertiary_category"    />-->
+<!--        <result property="quaternaryCategory"    column="quaternary_category"    />-->
+<!--        <result property="fifthCategory"    column="fifth_category"    />-->
+<!--        <result property="productName"    column="product_name"    />-->
+<!--        <result property="domesticImportedType"    column="domestic_imported_type"    />-->
+<!--        <result property="productModel"    column="product_model"    />-->
+<!--        <result property="quotationFlag"    column="quotation_flag"    />-->
+<!--        <result property="futureField1"    column="future_field1"    />-->
+<!--        <result property="futureField2"    column="future_field2"    />-->
+<!--        <result property="futureField3"    column="future_field3"    />-->
+<!--    </resultMap>-->
 
     <sql id="selectSysSupplierVo">
-        select supplier_id, label, country, province, city, area, product_type, registration_no, registration_no_in_china, supplier_name_cn, supplier_name_en, registration_time, registration_time_validity_period, rate, review_rating, delete_flag, inspection_id, contacts, telephone, email, classification, audit_status, inspection_status, inspection_audit_status, data_sources, remark, future_field1, future_field2, future_field3, future_field4, future_field5 from sys_supplier
+        select supplier_id, label, country, province, city, area, product_type, registration_no, registration_no_in_china, supplier_name_cn, supplier_name_en, registration_time, registration_time_validity_period, rate, review_rating, delete_flag, inspection_id, contacts, telephone, email, classification, audit_status, inspection_status, inspection_audit_status, data_sources, remark from sys_supplier
     </sql>
 
     <select id="selectSysSupplierList" parameterType="SysSupplier" resultMap="SysSupplierResult">
         <include refid="selectSysSupplierVo"/>
-        <where>  
+        <where>
             <if test="label != null "> and label = #{label}</if>
             <if test="country != null  and country != ''"> and country = #{country}</if>
-            <if test="province != null  and province != ''"> and province = #{province}</if>
-            <if test="city != null  and city != ''"> and city = #{city}</if>
-            <if test="area != null  and area != ''"> and area = #{area}</if>
-            <if test="productType != null  and productType != ''"> and product_type = #{productType}</if>
-            <if test="registrationNo != null  and registrationNo != ''"> and registration_no = #{registrationNo}</if>
-            <if test="registrationNoInChina != null  and registrationNoInChina != ''"> and registration_no_in_china = #{registrationNoInChina}</if>
-            <if test="supplierNameCn != null  and supplierNameCn != ''"> and supplier_name_cn = #{supplierNameCn}</if>
-            <if test="supplierNameEn != null  and supplierNameEn != ''"> and supplier_name_en = #{supplierNameEn}</if>
+            <if test="province != null  and province != ''"> and province like concat('%',#{province},'%')</if>
+            <if test="city != null  and city != ''"> and city like concat('%',#{city},'%') </if>
+            <if test="area != null  and area != ''"> and area like concat('%',#{area},'%') </if>
+            <if test="productType != null  and productType != ''"> and product_type like concat('%',#{productType},'%') </if>
+            <if test="registrationNo != null  and registrationNo != ''"> and registration_no like concat('%',#{registrationNo},'%') </if>
+            <if test="registrationNoInChina != null  and registrationNoInChina != ''"> and registration_no_in_china like concat('%',#{registrationNoInChina},'%')</if>
+            <if test="supplierNameCn != null  and supplierNameCn != ''"> and supplier_name_cn like concat('%',#{supplierNameCn},'%') </if>
+            <if test="supplierNameEn != null  and supplierNameEn != ''"> and supplier_name_en like concat('%',#{supplierNameEn},'%') </if>
             <if test="registrationTime != null "> and registration_time = #{registrationTime}</if>
             <if test="registrationTimeValidityPeriod != null "> and registration_time_validity_period = #{registrationTimeValidityPeriod}</if>
             <if test="rate != null  and rate != ''"> and rate = #{rate}</if>
             <if test="reviewRating != null  and reviewRating != ''"> and review_rating = #{reviewRating}</if>
-            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
             <if test="inspectionId != null  and inspectionId != ''"> and inspection_id = #{inspectionId}</if>
-            <if test="contacts != null  and contacts != ''"> and contacts = #{contacts}</if>
-            <if test="telephone != null  and telephone != ''"> and telephone = #{telephone}</if>
-            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <!--            <if test="contacts != null  and contacts != ''"> and contacts like concat('%',#{contacts},'%') </if>-->
+            <!--            <if test="telephone != null  and telephone != ''"> and telephone  </if>-->
+            <!--            <if test="email != null  and email != ''"> and email like concat('%',#{email},'%') </if>-->
             <if test="classification != null "> and classification = #{classification}</if>
             <if test="auditStatus != null "> and audit_status = #{auditStatus}</if>
             <if test="inspectionStatus != null "> and inspection_status = #{inspectionStatus}</if>
             <if test="inspectionAuditStatus != null "> and inspection_audit_status = #{inspectionAuditStatus}</if>
             <if test="dataSources != null "> and data_sources = #{dataSources}</if>
-            <if test="futureField1 != null  and futureField1 != ''"> and future_field1 = #{futureField1}</if>
-            <if test="futureField2 != null  and futureField2 != ''"> and future_field2 = #{futureField2}</if>
-            <if test="futureField3 != null  and futureField3 != ''"> and future_field3 = #{futureField3}</if>
-            <if test="futureField4 != null  and futureField4 != ''"> and future_field4 = #{futureField4}</if>
-            <if test="futureField5 != null  and futureField5 != ''"> and future_field5 = #{futureField5}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
         </where>
     </select>
     
@@ -104,11 +94,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where supplier_id = #{supplierId}
     </select>
 
-    <select id="selectSysProductList" resultMap="SysProductResult">
-        select product_id, supplier_id, primary_category, secondary_category, tertiary_category, quaternary_category, fifth_category, product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3
-        from sys_product
-        where supplier_id = #{supplier_id}
-    </select>
+<!--    <select id="selectSysProductList" resultMap="SysProductResult">-->
+<!--        select product_id, supplier_id, primary_category, secondary_category, tertiary_category, quaternary_category, fifth_category, product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3-->
+<!--        from sys_product-->
+<!--        where supplier_id = #{supplier_id}-->
+<!--    </select>-->
 
     <insert id="insertSysSupplier" parameterType="SysSupplier">
         insert into sys_supplier
@@ -139,11 +129,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionAuditStatus != null">inspection_audit_status,</if>
             <if test="dataSources != null">data_sources,</if>
             <if test="remark != null">remark,</if>
-            <if test="futureField1 != null">future_field1,</if>
-            <if test="futureField2 != null">future_field2,</if>
-            <if test="futureField3 != null">future_field3,</if>
-            <if test="futureField4 != null">future_field4,</if>
-            <if test="futureField5 != null">future_field5,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="supplierId != null">#{supplierId},</if>
@@ -172,11 +157,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionAuditStatus != null">#{inspectionAuditStatus},</if>
             <if test="dataSources != null">#{dataSources},</if>
             <if test="remark != null">#{remark},</if>
-            <if test="futureField1 != null">#{futureField1},</if>
-            <if test="futureField2 != null">#{futureField2},</if>
-            <if test="futureField3 != null">#{futureField3},</if>
-            <if test="futureField4 != null">#{futureField4},</if>
-            <if test="futureField5 != null">#{futureField5},</if>
          </trim>
     </insert>
 
@@ -197,7 +177,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="registrationTimeValidityPeriod != null">registration_time_validity_period = #{registrationTimeValidityPeriod},</if>
             <if test="rate != null">rate = #{rate},</if>
             <if test="reviewRating != null">review_rating = #{reviewRating},</if>
-            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
             <if test="inspectionId != null">inspection_id = #{inspectionId},</if>
             <if test="contacts != null">contacts = #{contacts},</if>
             <if test="telephone != null">telephone = #{telephone},</if>
@@ -208,41 +187,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionAuditStatus != null">inspection_audit_status = #{inspectionAuditStatus},</if>
             <if test="dataSources != null">data_sources = #{dataSources},</if>
             <if test="remark != null">remark = #{remark},</if>
-            <if test="futureField1 != null">future_field1 = #{futureField1},</if>
-            <if test="futureField2 != null">future_field2 = #{futureField2},</if>
-            <if test="futureField3 != null">future_field3 = #{futureField3},</if>
-            <if test="futureField4 != null">future_field4 = #{futureField4},</if>
-            <if test="futureField5 != null">future_field5 = #{futureField5},</if>
         </trim>
         where supplier_id = #{supplierId}
     </update>
 
-    <delete id="deleteSysSupplierBySupplierId" parameterType="String">
-        delete from sys_supplier where supplier_id = #{supplierId}
-    </delete>
+    <update id="deleteSysSupplierBySupplierId" parameterType="String">
+        update  sys_supplier set delete_flag=1 where supplier_id = #{supplierId}
+    </update>
 
-    <delete id="deleteSysSupplierBySupplierIds" parameterType="String">
-        delete from sys_supplier where supplier_id in 
+    <update id="deleteSysSupplierBySupplierIds" parameterType="String">
+        update  sys_supplier set delete_flag=1 where supplier_id in
         <foreach item="supplierId" collection="array" open="(" separator="," close=")">
             #{supplierId}
         </foreach>
-    </delete>
+    </update>
     
-    <delete id="deleteSysProductBySupplierIds" parameterType="String">
-        delete from sys_product where supplier_id in 
-        <foreach item="supplierId" collection="array" open="(" separator="," close=")">
-            #{supplierId}
-        </foreach>
-    </delete>
+<!--    <delete id="deleteSysProductBySupplierIds" parameterType="String">-->
+<!--        delete from sys_product where supplier_id in -->
+<!--        <foreach item="supplierId" collection="array" open="(" separator="," close=")">-->
+<!--            #{supplierId}-->
+<!--        </foreach>-->
+<!--    </delete>-->
 
-    <delete id="deleteSysProductBySupplierId" parameterType="String">
-        delete from sys_product where supplier_id = #{supplierId}
-    </delete>
+<!--    <delete id="deleteSysProductBySupplierId" parameterType="String">-->
+<!--        delete from sys_product where supplier_id = #{supplierId}-->
+<!--    </delete>-->
 
-    <insert id="batchSysProduct">
-        insert into sys_product( product_id, supplier_id, primary_category, secondary_category, tertiary_category, quaternary_category, fifth_category, product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3) values
-        <foreach item="item" index="index" collection="list" separator=",">
-            ( #{item.productId}, #{item.supplierId}, #{item.primaryCategory}, #{item.secondaryCategory}, #{item.tertiaryCategory}, #{item.quaternaryCategory}, #{item.fifthCategory}, #{item.productName}, #{item.domesticImportedType}, #{item.productModel}, #{item.quotationFlag}, #{item.futureField1}, #{item.futureField2}, #{item.futureField3})
-        </foreach>
-    </insert>
+<!--    <insert id="batchSysProduct">-->
+<!--        insert into sys_product( product_id, supplier_id, primary_category, secondary_category, tertiary_category, quaternary_category, fifth_category, product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3) values-->
+<!--        <foreach item="item" index="index" collection="list" separator=",">-->
+<!--            ( #{item.productId}, #{item.supplierId}, #{item.primaryCategory}, #{item.secondaryCategory}, #{item.tertiaryCategory}, #{item.quaternaryCategory}, #{item.fifthCategory}, #{item.productName}, #{item.domesticImportedType}, #{item.productModel}, #{item.quotationFlag}, #{item.futureField1}, #{item.futureField2}, #{item.futureField3})-->
+<!--        </foreach>-->
+<!--    </insert>-->
 </mapper>
