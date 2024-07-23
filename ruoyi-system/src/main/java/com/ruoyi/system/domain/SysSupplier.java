@@ -94,14 +94,14 @@ public class SysSupplier extends BaseEntity {
      * 注册时间
      */
     @ExcelProperty("注册时间")
-    @DateTimeFormat
+    @DateTimeFormat("yyyy-mm-dd")
     private Date registrationTime;
 
     /**
      * 注册时间有效期
      */
     @ExcelProperty("注册时间有效期")
-    @DateTimeFormat
+    @DateTimeFormat("yyyy-mm-dd")
     private Date registrationTimeValidityPeriod;
 
     /**

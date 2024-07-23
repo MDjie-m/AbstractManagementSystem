@@ -60,7 +60,7 @@ public class SupplierListener implements ReadListener<SysSupplier> {
         // 数据库中不能为空的字段
         if (data.getLabel() == null || data.getCountry() == null || data.getRegistrationNo() == null) {
             Integer row = context.readRowHolder().getRowIndex();
-            rowList.add(row);
+            rowList.add(row + 1);
         } else {
             data.setSupplierId(UUID.randomUUID().toString());
             cachedDataList.add(data);
@@ -79,14 +79,14 @@ public class SupplierListener implements ReadListener<SysSupplier> {
      * @param context
      */
     @Override
-    public void doAfterAllAnalysed(AnalysisContext context){
+    public void doAfterAllAnalysed(AnalysisContext context) {
 
         // 这里也要保存数据，确保最后遗留的数据也存储到数据库
         saveData();
         log.info("所有数据解析完成！");
         // 存在异常数据,抛出
         if (!rowList.isEmpty()) {
-            rowList.forEach(row -> log.error("错误行数：{}行",row));
+            rowList.forEach(row -> log.error("错误行数：{}行", row));
             throw new ExcelNullException(rowList);
         }
 

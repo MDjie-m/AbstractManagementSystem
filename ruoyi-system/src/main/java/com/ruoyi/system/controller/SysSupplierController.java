@@ -77,7 +77,7 @@ public class SysSupplierController extends BaseController
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
         // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
-        String fileName = URLEncoder.encode("供应商列表", "UTF-8").replaceAll("\\+", "%20");
+        String fileName = URLEncoder.encode("供应商数据", "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
         // 查询
         List<SysSupplier> list = sysSupplierService.selectSysSupplierList(supplier);
