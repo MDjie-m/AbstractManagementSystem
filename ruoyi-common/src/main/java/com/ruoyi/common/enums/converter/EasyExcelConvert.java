@@ -69,7 +69,6 @@ public class EasyExcelConvert implements Converter<Object> {
         String enumStr = enumFiledConvert.enumMap();
         // 解析枚举映射关系
         getEnumMap(enumStr, true);
-        System.out.println(enumStr);
         // 是否为单选
         boolean single = enumFiledConvert.single();
         // 如果是单选，默认Java属性为integer
