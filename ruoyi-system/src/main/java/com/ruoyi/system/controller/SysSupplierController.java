@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.ruoyi.system.easyexcel.SupplierListener;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -77,15 +78,18 @@ public class SysSupplierController extends BaseController
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
         // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
-        String fileName = URLEncoder.encode("供应商数据", "UTF-8").replaceAll("\\+", "%20");
+        String fileName = URLEncoder.encode("供应商列表", "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+        WriteFont contentWriteFont = new WriteFont();
+        // 字体大小
+        contentWriteFont.setFontHeightInPoints((short)12);
         // 查询
         List<SysSupplier> list = sysSupplierService.selectSysSupplierList(supplier);
         // 导出excel
         EasyExcel
                 .write(response.getOutputStream(), SysSupplier.class)
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()) // 设置自动调整列宽
-                .sheet("供应商列表")
+                .sheet("供应商数据")
                 .doWrite(list);
     }
 
