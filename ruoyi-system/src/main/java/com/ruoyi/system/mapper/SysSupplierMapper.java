@@ -3,6 +3,7 @@ package com.ruoyi.system.mapper;
 import java.util.List;
 import com.ruoyi.system.domain.SysSupplier;
 import com.ruoyi.system.domain.SysProduct;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 供应商Mapper接口
@@ -84,4 +85,6 @@ public interface SysSupplierMapper
      * @return 结果
      */
     public int deleteSysProductBySupplierId(String supplierId);
+
+    public int saveSysSupplier(@Param("list") List<SysSupplier> sysSupplier);
 }
