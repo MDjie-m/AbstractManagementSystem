@@ -33,9 +33,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
     </resultMap>
 
-<!--    <resultMap id="SysSupplierSysProductResult" type="SysSupplier" extends="SysSupplierResult">-->
-<!--        <collection property="sysProductList" ofType="SysProduct" column="supplier_id" select="selectSysProductList" />-->
-<!--    </resultMap>-->
+    <resultMap id="SysSupplierSysProductResult" type="SysSupplier" extends="SysSupplierResult">
+        <collection property="sysProductList" ofType="SysProduct" column="supplier_id" select="selectSysProductList" />
+    </resultMap>
 
 <!--    <resultMap type="SysProduct" id="SysProductResult">-->
 <!--        <result property="productId"    column="product_id"    />-->
