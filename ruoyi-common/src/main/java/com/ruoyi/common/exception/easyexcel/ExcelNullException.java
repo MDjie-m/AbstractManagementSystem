@@ -2,7 +2,7 @@ package com.ruoyi.common.exception.easyexcel;
 
 import lombok.Getter;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Excel导入包含异常数据
@@ -10,10 +10,10 @@ import java.util.List;
 @Getter
 public class ExcelNullException extends RuntimeException {
 
-    protected List<Integer> nullList;
+    protected Map<Integer,String> cellData;
 
-    public ExcelNullException(List<Integer> nullList) {
-        this.nullList = nullList;
+    public ExcelNullException(Map<Integer,String> cellData) {
+        this.cellData = cellData;
     }
 
 }

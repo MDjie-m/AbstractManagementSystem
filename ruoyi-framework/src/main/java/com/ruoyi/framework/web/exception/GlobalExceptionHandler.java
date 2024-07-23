@@ -149,5 +149,5 @@ public class GlobalExceptionHandler
      * Excel导入数据在数据库中不能为空异常
      */
     @ExceptionHandler(ExcelNullException.class)
-    public AjaxResult handleExcelNullException(ExcelNullException e) { return AjaxResult.warn("Excel中存在异常数据", e.getNullList());}
+    public AjaxResult handleExcelNullException(ExcelNullException e) { return AjaxResult.warn("Excel中存在异常数据", e.getCellData());}
 }

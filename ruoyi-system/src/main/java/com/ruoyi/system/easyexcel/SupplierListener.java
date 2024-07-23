@@ -2,6 +2,7 @@ package com.ruoyi.system.easyexcel;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelDataConvertException;
+import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
@@ -13,6 +14,7 @@ import com.ruoyi.system.service.ISysSupplierService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +29,9 @@ public class SupplierListener implements ReadListener<SysSupplier> {
      */
     private static final int BATCH_COUNT = 100000;
     /**
-     * 记录数据库中不能为空的数据的行号
+     * 记录数据库中不能为空的数据的行号和列信息
      */
-    private static final List<Integer> rowList = new ArrayList<>();
+    private final Map<Integer, String> cellData = new HashMap<>();
     /**
      * 缓存的数据
      */
@@ -58,10 +60,17 @@ public class SupplierListener implements ReadListener<SysSupplier> {
     public void invoke(SysSupplier data, AnalysisContext context) {
         log.info("解析到一条数据:{}", JSON.toJSONString(data));
         // 数据库中不能为空的字段
-        if (data.getLabel() == null || data.getCountry() == null || data.getRegistrationNo() == null) {
+        if (data.getLabel() == null) {
             Integer row = context.readRowHolder().getRowIndex();
-            rowList.add(row + 1);
+            cellData.put(row + 1, "标签列异常");
+        } else if (data.getCountry() == null) {
+            Integer row = context.readRowHolder().getRowIndex();
+            cellData.put(row + 1, "国家列异常");
+        } else if (data.getRegistrationNo() == null) {
+            Integer row = context.readRowHolder().getRowIndex();
+            cellData.put(row + 1, "注册编号列异常");
         } else {
+            // 设置供应商UUID
             data.setSupplierId(UUID.randomUUID().toString());
             cachedDataList.add(data);
             // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
@@ -82,12 +91,16 @@ public class SupplierListener implements ReadListener<SysSupplier> {
     public void doAfterAllAnalysed(AnalysisContext context) {
 
         // 这里也要保存数据，确保最后遗留的数据也存储到数据库
-        saveData();
+        if (!cachedDataList.isEmpty()) {
+            saveData();
+        }
         log.info("所有数据解析完成！");
         // 存在异常数据,抛出
-        if (!rowList.isEmpty()) {
-            rowList.forEach(row -> log.error("错误行数：{}行", row));
-            throw new ExcelNullException(rowList);
+        if (!cellData.isEmpty()) {
+            cellData.forEach((k, v) -> {
+                log.error("异常数据在第{}行，{}", k, v);
+            });
+            throw new ExcelNullException(cellData);
         }
 
     }
@@ -133,7 +146,7 @@ public class SupplierListener implements ReadListener<SysSupplier> {
         try {
             iSysSupplierService.saveSysSupplier(cachedDataList);
         } catch (Exception e) {
-            log.error("数据异常:{}", e.getMessage() + "存储数据库失败");
+            log.error("存储数据库失败:{}", e.getMessage());
         }
         log.info("存储数据库成功！");
     }
