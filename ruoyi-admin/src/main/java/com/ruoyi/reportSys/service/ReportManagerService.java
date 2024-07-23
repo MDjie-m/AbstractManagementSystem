@@ -13,4 +13,5 @@ import java.util.List;
 public interface ReportManagerService
 {
     public WindTurbineInfo selectReportManagerById(Long wid);
+
 }

@@ -35,6 +35,25 @@
       </el-form-item>
       <el-form-item label="检修单位" prop="maintenanceUnit">
         <el-input
+      </el-form-item>
+      <el-form-item label="叶片厂家" prop="bladeManufacturer">
+        <el-input
+          v-model="queryParams.bladeManufacturer"
+          placeholder="请输入叶片厂家"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="叶片型号" prop="bladeModel">
+        <el-input
+          v-model="queryParams.bladeModel"
+          placeholder="请输入叶片型号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="检修单位" prop="maintenanceUnit">
+        <el-input
           v-model="queryParams.maintenanceUnit"
           placeholder="请输入检修单位"
           clearable
@@ -95,6 +114,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport2"
+          @click="handleExport"
           v-hasPermi="['windSys:wind:export']"
         >导出Word</el-button>
       </el-col>
@@ -125,6 +145,13 @@
       <el-table-column label="风场" align="center" prop="windFarm" />
       <el-table-column label="叶片1_编号" align="center" prop="blade1Code" />
       <el-table-column label="叶片1_图片url" align="center" prop="blade1PhotoUrl" width="100">
+        <template slot-scope="scope">
+          <image-preview :src="scope.row.blade1PhotoUrl" :width="50" :height="50"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="叶片2_编号" align="center" prop="blade2Code" />
+      <el-table-column label="叶片2_图片url" align="center" prop="blade2PhotoUrl" width="100">
+        <template slot-scope="scope">
         <template slot-scope="scope">
           <image-preview :src="scope.row.blade1PhotoUrl" :width="50" :height="50"/>
         </template>
@@ -177,6 +204,13 @@
         </el-form-item>
         <el-form-item label="风机编号照片" prop="turbineCodePhoto">
           <image-upload v-model="form.turbineCodePhoto"/>
+        </el-form-item>
+        <el-form-item label="整机厂家" prop="manufacturer">
+          <el-input v-model="form.manufacturer" placeholder="请输入整机厂家" />
+        </el-form-item>
+        <el-form-item label="叶片厂家" prop="bladeManufacturer">
+          <el-input v-model="form.bladeManufacturer" placeholder="请输入叶片厂家" />
+        </el-form-item>
         </el-form-item>
         <el-form-item label="整机厂家" prop="manufacturer">
           <el-input v-model="form.manufacturer" placeholder="请输入整机厂家" />
@@ -285,6 +319,8 @@
 import {listWind, selectReport, delWind, addWind, updateWind, getReportManager} from "@/api/reportSys/reportmanager";
 import {getList} from "@/api/windSys/part"
 import part from "@/views/windSys/part/index.vue";
+import { listWind, getWind, delWind, addWind, updateWind } from "@/api/reportSys/reportmanager";
+
 export default {
   name: "Wind",
   data() {

@@ -14,6 +14,9 @@ export function getReportManager(wIds) {
   //axios.post('http://localhost:81/reportSys/reportmanager/queryBlade', wIds)
   return request({
     url: '/reportSys/reportmanager/queryBlade/'+wIds,
+export function getWind(wId) {
+  return request({
+    url: '/windSys/wind/' + wId,
     method: 'get'
 
   })

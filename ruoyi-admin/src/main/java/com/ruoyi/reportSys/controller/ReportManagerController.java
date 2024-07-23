@@ -21,6 +21,12 @@ import java.util.stream.Collectors;
 
 
 /**
+import org.springframework.web.bind.annotation.*;
+
+
+
+/**
+ * 
  * @author GG
  * @date 2024-07-15
  */
@@ -175,4 +181,7 @@ public class ReportManagerController extends BaseController {
         return encoder.encodeToString(data);
 
     }
+public class ReportManagerController extends BaseController
+{
+
 }

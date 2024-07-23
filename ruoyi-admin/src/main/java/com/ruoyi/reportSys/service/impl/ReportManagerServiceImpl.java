@@ -6,6 +6,8 @@ import com.ruoyi.reportSys.mapper.ReportManagerMapper;
 import com.ruoyi.reportSys.service.IHistoricalInspectionReportService;
 import com.ruoyi.reportSys.service.ReportManagerService;
 import com.ruoyi.windSys.domain.WindTurbineInfo;
+import com.ruoyi.reportSys.service.IHistoricalInspectionReportService;
+import com.ruoyi.reportSys.service.ReportManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
