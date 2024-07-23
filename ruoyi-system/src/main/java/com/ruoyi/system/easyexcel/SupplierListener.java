@@ -2,7 +2,6 @@ package com.ruoyi.system.easyexcel;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.exception.ExcelDataConvertException;
-import com.alibaba.excel.metadata.data.CellData;
 import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
@@ -14,7 +13,6 @@ import com.ruoyi.system.service.ISysSupplierService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +29,7 @@ public class SupplierListener implements ReadListener<SysSupplier> {
     /**
      * 记录数据库中不能为空的数据的行号和列信息
      */
-    private final Map<Integer, String> cellData = new HashMap<>();
+    private final List<String> arrayList = new ArrayList<>();
     /**
      * 缓存的数据
      */
@@ -61,14 +59,14 @@ public class SupplierListener implements ReadListener<SysSupplier> {
         log.info("解析到一条数据:{}", JSON.toJSONString(data));
         // 数据库中不能为空的字段
         if (data.getLabel() == null) {
-            Integer row = context.readRowHolder().getRowIndex();
-            cellData.put(row + 1, "标签列异常");
+            int row = context.readRowHolder().getRowIndex() + 1;
+            arrayList.add("第" + row + "行" + "标签列异常");
         } else if (data.getCountry() == null) {
-            Integer row = context.readRowHolder().getRowIndex();
-            cellData.put(row + 1, "国家列异常");
+            int row = context.readRowHolder().getRowIndex() + 1;
+            arrayList.add("第" + row + "行" + "国家列异常");
         } else if (data.getRegistrationNo() == null) {
-            Integer row = context.readRowHolder().getRowIndex();
-            cellData.put(row + 1, "注册编号列异常");
+            int row = context.readRowHolder().getRowIndex() + 1;
+            arrayList.add("第" + row + "行" + "注册编号列异常");
         } else {
             // 设置供应商UUID
             data.setSupplierId(UUID.randomUUID().toString());
@@ -96,11 +94,11 @@ public class SupplierListener implements ReadListener<SysSupplier> {
         }
         log.info("所有数据解析完成！");
         // 存在异常数据,抛出
-        if (!cellData.isEmpty()) {
-            cellData.forEach((k, v) -> {
-                log.error("异常数据在第{}行，{}", k, v);
+        if (!arrayList.isEmpty()) {
+            arrayList.forEach((list) -> {
+                log.error("{}",list);
             });
-            throw new ExcelNullException(cellData);
+            throw new ExcelNullException(arrayList);
         }
 
     }
