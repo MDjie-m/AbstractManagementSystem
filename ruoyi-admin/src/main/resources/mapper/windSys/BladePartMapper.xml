@@ -43,7 +43,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where bp_id = #{bpId}
     </select>
 
-    <select id="selectBladePartByBcId" parameterType="Long" resultMap="BladePartResult">
+    <!--<select id="selectBladePartByBcId" parameterType="Long" resultMap="BladePartResult">
+        <include refid="selectBladePartVo"/>
+        where blade_code = #{bcId}
+    </select>-->
+    <select id="selectBladePartByBcId" parameterType="String" resultMap="BladePartResult">
         <include refid="selectBladePartVo"/>
         where blade_code = #{bcId}
     </select>

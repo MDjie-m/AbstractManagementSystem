@@ -32,7 +32,7 @@ public class BladePartServiceImpl implements IBladePartService
     }
 
     @Override
-    public List<BladePart> selectBladePartByBcId(Long bcId) {return bladePartMapper.selectBladePartByBcId(bcId);}
+    public List<BladePart> selectBladePartByBcId(String bcId) {return bladePartMapper.selectBladePartByBcId(bcId);}
 
     /**
      * 查询叶片管理列表

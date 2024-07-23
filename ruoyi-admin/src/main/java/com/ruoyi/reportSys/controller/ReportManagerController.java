@@ -53,7 +53,7 @@ public class ReportManagerController extends BaseController {
 
         for (int j = 0; j < wid.length; j++) {
             WindTurbineInfo wind = windTurbineInfoService.selectWindTurbineInfoByWId(wid[j]);
-            List<BladePart> list1 = bladePartService.selectBladePartByBcId(Long.parseLong(wind.getBlade1Code()));
+            List<BladePart> list1 = bladePartService.selectBladePartByBcId(wind.getBlade1Code());
 
             ReportManagerController controller = new ReportManagerController();
             Map<String, Object> dataMap = new HashMap<String, Object>();
@@ -78,7 +78,7 @@ public class ReportManagerController extends BaseController {
             }
 
 
-            List<BladePart> list2 = bladePartService.selectBladePartByBcId(Long.parseLong(wind.getBlade2Code()));
+            List<BladePart> list2 = bladePartService.selectBladePartByBcId(wind.getBlade2Code());
 
             for (int i = 0; i < list2.size(); i++) {
                 dataMap.put("blPartImg2_" + (i + 1), controller.getImageStr(list2.get(i).getBladePartPhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
@@ -86,7 +86,7 @@ public class ReportManagerController extends BaseController {
             }
 
 
-            List<BladePart> list3 = bladePartService.selectBladePartByBcId(Long.parseLong(wind.getBlade3Code()));
+            List<BladePart> list3 = bladePartService.selectBladePartByBcId(wind.getBlade3Code());
 
             for (int i = 0; i < list3.size(); i++) {
                 dataMap.put("blPartImg3_" + (i + 1), controller.getImageStr(list3.get(i).getBladePartPhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
