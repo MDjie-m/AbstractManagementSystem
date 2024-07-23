@@ -109,6 +109,16 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     }
 
     /**
+     * 批量保存
+     * @param sysSupplier
+     * @return
+     */
+    @Override
+    public int saveSysSupplier(List<SysSupplier> sysSupplier) {
+        return sysSupplierMapper.saveSysSupplier(sysSupplier);
+    }
+
+    /**
      * 新增产品信息
      * 
      * @param sysSupplier 供应商对象
