@@ -64,7 +64,7 @@ public class ReportManagerController extends BaseController {
 
             ReportManagerController controller = new ReportManagerController();
             Map<String, Object> dataMap = new HashMap<String, Object>();
-            String realTurbineCodePhoto = wind.getTurbineCodePhoto();
+            String realTurbineCodePhoto = wind.getTurbineCodePhoto().replace("profile", "D:\\ruoyi\\uploadPath");
             dataMap.put("tb_code_img", controller.getImageStr(realTurbineCodePhoto));
             dataMap.put("FJBH",windTurbineCode);
             dataMap.put("YPXH", wind.getBladeModel());
@@ -74,15 +74,15 @@ public class ReportManagerController extends BaseController {
             String normativeDate = dateFormat.format(date);
             //.replace("profile", "D:\\ruoyi\\uploadPath")
             dataMap.put("XJSJ", normativeDate);
-            dataMap.put("bl1_code_img", controller.getImageStr(wind.getBlade1PhotoUrl()));
-            dataMap.put("bl2_code_img", controller.getImageStr(wind.getBlade2PhotoUrl()));
-            dataMap.put("bl3_code_img", controller.getImageStr(wind.getBlade3PhotoUrl()));
+            dataMap.put("bl1_code_img", controller.getImageStr(wind.getBlade1PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
+            dataMap.put("bl2_code_img", controller.getImageStr(wind.getBlade2PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
+            dataMap.put("bl3_code_img", controller.getImageStr(wind.getBlade3PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
             dataMap.put("L1", wind.getBlade1Code());
             dataMap.put("L2", wind.getBlade2Code());
             dataMap.put("L3", wind.getBlade3Code());
             for (int i = 0; i < list1.size(); i++) {
                 String[] picUrl = list1.get(i).getBladePartPhotoUrl().split(",");
-                dataMap.put("blPartImg1_" + (i + 1), controller.getImageStr(picUrl[0]));
+                dataMap.put("blPartImg1_" + (i + 1), controller.getImageStr(picUrl[0].replace("profile", "D:\\ruoyi\\uploadPath")));
                 dataMap.put("msg1_" + (i + 1), list1.get(i).getBladePartInspectionResult());
             }
 
@@ -91,7 +91,7 @@ public class ReportManagerController extends BaseController {
 
             for (int i = 0; i < list2.size(); i++) {
                 String[] picUrl = list1.get(i).getBladePartPhotoUrl().split(",");
-                dataMap.put("blPartImg2_" + (i + 1), controller.getImageStr(picUrl[0]));
+                dataMap.put("blPartImg2_" + (i + 1), controller.getImageStr(picUrl[0].replace("profile", "D:\\ruoyi\\uploadPath")));
                 dataMap.put("msg2_" + (i + 1), list2.get(i).getBladePartInspectionResult());
             }
 
@@ -100,7 +100,7 @@ public class ReportManagerController extends BaseController {
 
             for (int i = 0; i < list3.size(); i++) {
                 String[] picUrl = list1.get(i).getBladePartPhotoUrl().split(",");
-                dataMap.put("blPartImg3_" + (i + 1), controller.getImageStr(picUrl[0]));
+                dataMap.put("blPartImg3_" + (i + 1), controller.getImageStr(picUrl[0].replace("profile", "D:\\ruoyi\\uploadPath")));
                 dataMap.put("msg3_" + (i + 1), list3.get(i).getBladePartInspectionResult());
             }
             String filePath = "E:/乌宁巴图风电场"+windTurbineCode+"号风机检查报告.docx";
