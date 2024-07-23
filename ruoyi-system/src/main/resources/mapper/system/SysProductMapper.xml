@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysProductMapper">
+    
+    <resultMap type="SysProduct" id="SysProductResult">
+        <result property="productId"    column="product_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="supplierName"    column="supplier_name"    />
+        <result property="primaryCategory"    column="primary_category"    />
+        <result property="primaryCategoryName"    column="primary_category_name"    />
+        <result property="secondaryCategory"    column="secondary_category"    />
+        <result property="secondaryCategoryName"    column="secondary_category_name"    />
+        <result property="tertiaryCategory"    column="tertiary_category"    />
+        <result property="tertiaryCategoryName"    column="tertiary_category_name"    />
+        <result property="quaternaryCategory"    column="quaternary_category"    />
+        <result property="quaternaryCategoryName"    column="quaternary_category_name"    />
+        <result property="fifthCategory"    column="fifth_category"    />
+        <result property="fifthCategoryName"    column="fifth_category_name"    />
+        <result property="productName"    column="product_name"    />
+        <result property="domesticImportedType"    column="domestic_imported_type"    />
+        <result property="productModel"    column="product_model"    />
+        <result property="quotationFlag"    column="quotation_flag"    />
+        <result property="futureField1"    column="future_field1"    />
+        <result property="futureField2"    column="future_field2"    />
+        <result property="futureField3"    column="future_field3"    />
+    </resultMap>
+
+    <sql id="selectSysProductVo">
+        select product_id, supplier_id, supplier_name, primary_category, primary_category_name, secondary_category, secondary_category_name, tertiary_category, tertiary_category_name, quaternary_category, quaternary_category_name, fifth_category, fifth_category_name, product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3 from sys_product
+    </sql>
+
+    <select id="selectSysProductList" parameterType="SysProduct" resultMap="SysProductResult">
+        <include refid="selectSysProductVo"/>
+        <where>  
+            <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
+            <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
+            <if test="primaryCategory != null  and primaryCategory != ''"> and primary_category = #{primaryCategory}</if>
+            <if test="primaryCategoryName != null  and primaryCategoryName != ''"> and primary_category_name like concat('%', #{primaryCategoryName}, '%')</if>
+            <if test="secondaryCategory != null  and secondaryCategory != ''"> and secondary_category = #{secondaryCategory}</if>
+            <if test="secondaryCategoryName != null  and secondaryCategoryName != ''"> and secondary_category_name like concat('%', #{secondaryCategoryName}, '%')</if>
+            <if test="tertiaryCategory != null  and tertiaryCategory != ''"> and tertiary_category = #{tertiaryCategory}</if>
+            <if test="tertiaryCategoryName != null  and tertiaryCategoryName != ''"> and tertiary_category_name like concat('%', #{tertiaryCategoryName}, '%')</if>
+            <if test="quaternaryCategory != null  and quaternaryCategory != ''"> and quaternary_category = #{quaternaryCategory}</if>
+            <if test="quaternaryCategoryName != null  and quaternaryCategoryName != ''"> and quaternary_category_name like concat('%', #{quaternaryCategoryName}, '%')</if>
+            <if test="fifthCategory != null  and fifthCategory != ''"> and fifth_category = #{fifthCategory}</if>
+            <if test="fifthCategoryName != null  and fifthCategoryName != ''"> and fifth_category_name like concat('%', #{fifthCategoryName}, '%')</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="domesticImportedType != null "> and domestic_imported_type = #{domesticImportedType}</if>
+            <if test="productModel != null  and productModel != ''"> and product_model = #{productModel}</if>
+            <if test="quotationFlag != null "> and quotation_flag = #{quotationFlag}</if>
+            <if test="futureField1 != null  and futureField1 != ''"> and future_field1 = #{futureField1}</if>
+            <if test="futureField2 != null  and futureField2 != ''"> and future_field2 = #{futureField2}</if>
+            <if test="futureField3 != null  and futureField3 != ''"> and future_field3 = #{futureField3}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysProductByProductId" parameterType="String" resultMap="SysProductResult">
+        <include refid="selectSysProductVo"/>
+        where product_id = #{productId}
+    </select>
+
+    <insert id="insertSysProduct" parameterType="SysProduct">
+        insert into sys_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">product_id,</if>
+            <if test="supplierId != null">supplier_id,</if>
+            <if test="supplierName != null">supplier_name,</if>
+            <if test="primaryCategory != null">primary_category,</if>
+            <if test="primaryCategoryName != null">primary_category_name,</if>
+            <if test="secondaryCategory != null">secondary_category,</if>
+            <if test="secondaryCategoryName != null">secondary_category_name,</if>
+            <if test="tertiaryCategory != null">tertiary_category,</if>
+            <if test="tertiaryCategoryName != null">tertiary_category_name,</if>
+            <if test="quaternaryCategory != null">quaternary_category,</if>
+            <if test="quaternaryCategoryName != null">quaternary_category_name,</if>
+            <if test="fifthCategory != null">fifth_category,</if>
+            <if test="fifthCategoryName != null">fifth_category_name,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="domesticImportedType != null">domestic_imported_type,</if>
+            <if test="productModel != null">product_model,</if>
+            <if test="quotationFlag != null">quotation_flag,</if>
+            <if test="futureField1 != null">future_field1,</if>
+            <if test="futureField2 != null">future_field2,</if>
+            <if test="futureField3 != null">future_field3,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productId != null">#{productId},</if>
+            <if test="supplierId != null">#{supplierId},</if>
+            <if test="supplierName != null">#{supplierName},</if>
+            <if test="primaryCategory != null">#{primaryCategory},</if>
+            <if test="primaryCategoryName != null">#{primaryCategoryName},</if>
+            <if test="secondaryCategory != null">#{secondaryCategory},</if>
+            <if test="secondaryCategoryName != null">#{secondaryCategoryName},</if>
+            <if test="tertiaryCategory != null">#{tertiaryCategory},</if>
+            <if test="tertiaryCategoryName != null">#{tertiaryCategoryName},</if>
+            <if test="quaternaryCategory != null">#{quaternaryCategory},</if>
+            <if test="quaternaryCategoryName != null">#{quaternaryCategoryName},</if>
+            <if test="fifthCategory != null">#{fifthCategory},</if>
+            <if test="fifthCategoryName != null">#{fifthCategoryName},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="domesticImportedType != null">#{domesticImportedType},</if>
+            <if test="productModel != null">#{productModel},</if>
+            <if test="quotationFlag != null">#{quotationFlag},</if>
+            <if test="futureField1 != null">#{futureField1},</if>
+            <if test="futureField2 != null">#{futureField2},</if>
+            <if test="futureField3 != null">#{futureField3},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysProduct" parameterType="SysProduct">
+        update sys_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supplierId != null">supplier_id = #{supplierId},</if>
+            <if test="supplierName != null">supplier_name = #{supplierName},</if>
+            <if test="primaryCategory != null">primary_category = #{primaryCategory},</if>
+            <if test="primaryCategoryName != null">primary_category_name = #{primaryCategoryName},</if>
+            <if test="secondaryCategory != null">secondary_category = #{secondaryCategory},</if>
+            <if test="secondaryCategoryName != null">secondary_category_name = #{secondaryCategoryName},</if>
+            <if test="tertiaryCategory != null">tertiary_category = #{tertiaryCategory},</if>
+            <if test="tertiaryCategoryName != null">tertiary_category_name = #{tertiaryCategoryName},</if>
+            <if test="quaternaryCategory != null">quaternary_category = #{quaternaryCategory},</if>
+            <if test="quaternaryCategoryName != null">quaternary_category_name = #{quaternaryCategoryName},</if>
+            <if test="fifthCategory != null">fifth_category = #{fifthCategory},</if>
+            <if test="fifthCategoryName != null">fifth_category_name = #{fifthCategoryName},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="domesticImportedType != null">domestic_imported_type = #{domesticImportedType},</if>
+            <if test="productModel != null">product_model = #{productModel},</if>
+            <if test="quotationFlag != null">quotation_flag = #{quotationFlag},</if>
+            <if test="futureField1 != null">future_field1 = #{futureField1},</if>
+            <if test="futureField2 != null">future_field2 = #{futureField2},</if>
+            <if test="futureField3 != null">future_field3 = #{futureField3},</if>
+        </trim>
+        where product_id = #{productId}
+    </update>
+
+    <delete id="deleteSysProductByProductId" parameterType="String">
+        delete from sys_product where product_id = #{productId}
+    </delete>
+
+    <delete id="deleteSysProductByProductIds" parameterType="String">
+        delete from sys_product where product_id in 
+        <foreach item="productId" collection="array" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </delete>
+</mapper>
