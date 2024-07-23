@@ -59,27 +59,30 @@ public class ReportManagerController extends BaseController {
 
         for (int j = 0; j < wid.length; j++) {
             WindTurbineInfo wind = windTurbineInfoService.selectWindTurbineInfoByWId(wid[j]);
+            String windTurbineCode = wind.getTurbineCode();
             List<BladePart> list1 = bladePartService.selectBladePartByBcId(wind.getBlade1Code());
 
             ReportManagerController controller = new ReportManagerController();
             Map<String, Object> dataMap = new HashMap<String, Object>();
-            String realTurbineCodePhoto = wind.getTurbineCodePhoto().replace("profile", "D:\\ruoyi\\uploadPath");
+            String realTurbineCodePhoto = wind.getTurbineCodePhoto();
             dataMap.put("tb_code_img", controller.getImageStr(realTurbineCodePhoto));
+            dataMap.put("FJBH",windTurbineCode);
             dataMap.put("YPXH", wind.getBladeModel());
             dataMap.put("JCDW", wind.getEntryStaff());
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = wind.getInspectionDate();
             String normativeDate = dateFormat.format(date);
-
+            //.replace("profile", "D:\\ruoyi\\uploadPath")
             dataMap.put("XJSJ", normativeDate);
-            dataMap.put("bl1_code_img", controller.getImageStr(wind.getBlade1PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
-            dataMap.put("bl2_code_img", controller.getImageStr(wind.getBlade2PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
-            dataMap.put("bl3_code_img", controller.getImageStr(wind.getBlade3PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
+            dataMap.put("bl1_code_img", controller.getImageStr(wind.getBlade1PhotoUrl()));
+            dataMap.put("bl2_code_img", controller.getImageStr(wind.getBlade2PhotoUrl()));
+            dataMap.put("bl3_code_img", controller.getImageStr(wind.getBlade3PhotoUrl()));
             dataMap.put("L1", wind.getBlade1Code());
             dataMap.put("L2", wind.getBlade2Code());
             dataMap.put("L3", wind.getBlade3Code());
             for (int i = 0; i < list1.size(); i++) {
-                dataMap.put("blPartImg1_" + (i + 1), controller.getImageStr(list1.get(i).getBladePartPhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
+                String[] picUrl = list1.get(i).getBladePartPhotoUrl().split(",");
+                dataMap.put("blPartImg1_" + (i + 1), controller.getImageStr(picUrl[0]));
                 dataMap.put("msg1_" + (i + 1), list1.get(i).getBladePartInspectionResult());
             }
 
@@ -87,7 +90,8 @@ public class ReportManagerController extends BaseController {
             List<BladePart> list2 = bladePartService.selectBladePartByBcId(wind.getBlade2Code());
 
             for (int i = 0; i < list2.size(); i++) {
-                dataMap.put("blPartImg2_" + (i + 1), controller.getImageStr(list2.get(i).getBladePartPhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
+                String[] picUrl = list1.get(i).getBladePartPhotoUrl().split(",");
+                dataMap.put("blPartImg2_" + (i + 1), controller.getImageStr(picUrl[0]));
                 dataMap.put("msg2_" + (i + 1), list2.get(i).getBladePartInspectionResult());
             }
 
@@ -95,10 +99,12 @@ public class ReportManagerController extends BaseController {
             List<BladePart> list3 = bladePartService.selectBladePartByBcId(wind.getBlade3Code());
 
             for (int i = 0; i < list3.size(); i++) {
-                dataMap.put("blPartImg3_" + (i + 1), controller.getImageStr(list3.get(i).getBladePartPhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
+                String[] picUrl = list1.get(i).getBladePartPhotoUrl().split(",");
+                dataMap.put("blPartImg3_" + (i + 1), controller.getImageStr(picUrl[0]));
                 dataMap.put("msg3_" + (i + 1), list3.get(i).getBladePartInspectionResult());
             }
-            controller.createWord(dataMap, "A-001.ftl", "E:/风机信息test.docx");
+            String filePath = "E:/乌宁巴图风电场"+windTurbineCode+"号风机检查报告.docx";
+            controller.createWord(dataMap, "A-001.ftl", filePath);
         }
     }
 
@@ -180,8 +186,5 @@ public class ReportManagerController extends BaseController {
         Base64.Encoder encoder = Base64.getEncoder();
         return encoder.encodeToString(data);
 
-    }
-public class ReportManagerController extends BaseController
-{
+    }}
 
-}
