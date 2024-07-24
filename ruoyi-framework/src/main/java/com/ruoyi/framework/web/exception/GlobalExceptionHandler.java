@@ -2,7 +2,7 @@ package com.ruoyi.framework.web.exception;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ruoyi.common.exception.easyexcel.ExcelException;
+import com.ruoyi.common.exception.easyexcel.ExcelNullException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -146,8 +146,8 @@ public class GlobalExceptionHandler
     }
 
     /**
-     * Excel异常
+     * Excel导入数据在数据库中不能为空异常
      */
-    @ExceptionHandler(ExcelException.class)
-    public AjaxResult handleExcelNullException(ExcelException e) { return AjaxResult.warn(e.getString());}
+    @ExceptionHandler(ExcelNullException.class)
+    public AjaxResult handleExcelNullException(ExcelNullException e) { return AjaxResult.warn("Excel中存在异常数据", e.getList());}
 }

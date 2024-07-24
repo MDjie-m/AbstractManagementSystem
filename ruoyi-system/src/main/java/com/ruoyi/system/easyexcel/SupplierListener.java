@@ -6,10 +6,10 @@ import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.fastjson2.JSON;
-import com.ruoyi.common.exception.easyexcel.ExcelException;
+import com.ruoyi.common.exception.easyexcel.ExcelNullException;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.system.domain.SysSupplier;
-import com.ruoyi.system.mapper.SysSupplierMapper;
+import com.ruoyi.system.service.ISysSupplierService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -27,38 +27,7 @@ public class SupplierListener implements ReadListener<SysSupplier> {
      */
     private static final int BATCH_COUNT = 100000;
     /**
-     * 表头数据
-     */
-    private final String[] HEAD_LIST = {
-            "标签",
-            "国家",
-            "省份",
-            "市",
-            "地区",
-            "产品分类",
-            "注册编号",
-            "在华注册编号",
-            "企业名称",
-            "企业名称（英文）",
-            "注册时间",
-            "注册时间有效期",
-            "是否删除",
-            "联系人",
-            "联系电话",
-            "电子邮件",
-            "分类",
-            "数据来源"
-    };
-    /**
-     * 表头异常信息提示
-     */
-    private final String HEAD_INFO = "您上传的文件格式与模板格式不一致，请检查后重新上传";
-    /**
-     * 表头异常标识，true表示无异常，false表示出现异常
-     */
-    private Boolean flag = true;
-    /**
-     * 记录异常信息
+     * 记录数据库中不能为空的数据的行号和列信息
      */
     private final List<String> arrayList = new ArrayList<>();
     /**
@@ -66,17 +35,17 @@ public class SupplierListener implements ReadListener<SysSupplier> {
      */
     private List<SysSupplier> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
     /**
-     * 供应商mapper层
+     * 假设这个是一个DAO，当然有业务逻辑这个也可以是一个service。当然如果不用存储这个对象没用。
      */
-    private SysSupplierMapper sysSupplierMapper;
+    private ISysSupplierService iSysSupplierService;
 
     /**
-     * 个构造方法。每次创建Listener的时候需要把spring管理的类传进来
+     * 如果使用了spring,请使用这个构造方法。每次创建Listener的时候需要把spring管理的类传进来
      *
-     * @param sysSupplierMapper
+     * @param iSysSupplierService
      */
-    public SupplierListener(SysSupplierMapper sysSupplierMapper) {
-        this.sysSupplierMapper = sysSupplierMapper;
+    public SupplierListener(ISysSupplierService iSysSupplierService) {
+        this.iSysSupplierService = iSysSupplierService;
     }
 
     /**
@@ -87,29 +56,26 @@ public class SupplierListener implements ReadListener<SysSupplier> {
      */
     @Override
     public void invoke(SysSupplier data, AnalysisContext context) {
-        // 当表头数据无误才会解析数据
-        if (flag) {
-            log.info("解析到一条数据:{}", JSON.toJSONString(data));
-            // 数据库中不能为空的字段
-            if (data.getLabel() == null) {
-                int row = context.readRowHolder().getRowIndex() + 1;
-                arrayList.add("第" + row + "行" + "标签列数据异常");
-            } else if (data.getCountry() == null) {
-                int row = context.readRowHolder().getRowIndex() + 1;
-                arrayList.add("第" + row + "行" + "国家列数据异常");
-            } else if (data.getRegistrationNo() == null) {
-                int row = context.readRowHolder().getRowIndex() + 1;
-                arrayList.add("第" + row + "行" + "注册编号列数据异常");
-            } else {
-                // 设置供应商UUID
-                data.setSupplierId(UUID.randomUUID().toString());
-                cachedDataList.add(data);
-                // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
-                if (cachedDataList.size() >= BATCH_COUNT) {
-                    saveData();
-                    // 存储完成清理 list
-                    cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
-                }
+        log.info("解析到一条数据:{}", JSON.toJSONString(data));
+        // 数据库中不能为空的字段
+        if (data.getLabel() == null) {
+            int row = context.readRowHolder().getRowIndex() + 1;
+            arrayList.add("第" + row + "行" + "标签列异常");
+        } else if (data.getCountry() == null) {
+            int row = context.readRowHolder().getRowIndex() + 1;
+            arrayList.add("第" + row + "行" + "国家列异常");
+        } else if (data.getRegistrationNo() == null) {
+            int row = context.readRowHolder().getRowIndex() + 1;
+            arrayList.add("第" + row + "行" + "注册编号列异常");
+        } else {
+            // 设置供应商UUID
+            data.setSupplierId(UUID.randomUUID().toString());
+            cachedDataList.add(data);
+            // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
+            if (cachedDataList.size() >= BATCH_COUNT) {
+                saveData();
+                // 存储完成清理 list
+                cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
             }
         }
     }
@@ -121,6 +87,7 @@ public class SupplierListener implements ReadListener<SysSupplier> {
      */
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
+
         // 这里也要保存数据，确保最后遗留的数据也存储到数据库
         if (!cachedDataList.isEmpty()) {
             saveData();
@@ -129,13 +96,9 @@ public class SupplierListener implements ReadListener<SysSupplier> {
         // 存在异常数据,抛出
         if (!arrayList.isEmpty()) {
             arrayList.forEach((list) -> {
-                log.error("{}", list);
+                log.error("{}",list);
             });
-            throw new ExcelException(arrayList +"其余数据成功导入");
-        }
-        // 存在表头异常
-        if (!flag) {
-            throw new ExcelException(HEAD_INFO);
+            throw new ExcelNullException(arrayList);
         }
 
     }
@@ -149,20 +112,9 @@ public class SupplierListener implements ReadListener<SysSupplier> {
     @Override
     public void invokeHead(Map<Integer, ReadCellData<?>> headMap, AnalysisContext context) {
         log.info("解析到一条头数据:{}", JSON.toJSONString(headMap));
-        if (headMap.size() != HEAD_LIST.length) {
-            log.info("表头长度异常，模板表头长度：{}，上传表头长度：{}", HEAD_LIST.length, headMap.size());
-            // 设置标识，后续抛出对应异常
-            flag = false;
-            return;
-        }
-        for (int i = 0; i < HEAD_LIST.length; i++) {
-            if (!headMap.get(i).getStringValue().equals(HEAD_LIST[i])) {
-                log.info("上传表头字段：“{}”与模板表头字段：“{}”不一致", headMap.get(i).getStringValue(), HEAD_LIST[i]);
-                // 设置标识，后续抛出异常
-                flag = false;
-                return;
-            }
-        }
+        // 如果想转成成 Map<Integer,String>
+        // 方案1： 不要implements ReadListener 而是 extends AnalysisEventListener
+        // 方案2： 调用 ConverterUtils.convertToStringMap(headMap, context) 自动会转换
     }
 
     /**
@@ -190,7 +142,7 @@ public class SupplierListener implements ReadListener<SysSupplier> {
     private void saveData() {
         log.info("{}条数据，开始存储数据库！", cachedDataList.size());
         try {
-            sysSupplierMapper.saveSysSupplier(cachedDataList);
+            iSysSupplierService.saveSysSupplier(cachedDataList);
         } catch (Exception e) {
             log.error("存储数据库失败:{}", e.getMessage());
         }

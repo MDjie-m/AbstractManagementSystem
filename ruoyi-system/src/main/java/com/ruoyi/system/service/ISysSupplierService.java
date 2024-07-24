@@ -1,12 +1,7 @@
 package com.ruoyi.system.service;
 
-import java.io.IOException;
 import java.util.List;
 import com.ruoyi.system.domain.SysSupplier;
-import com.ruoyi.system.domain.vo.AuditVo;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 供应商Service接口
@@ -64,25 +59,5 @@ public interface ISysSupplierService
      */
     public int deleteSysSupplierBySupplierId(String supplierId);
 
-    /**
-     * 导入供应商列表
-     * @param file 上传的excel文件
-     * @throws IOException
-     */
-    public void saveSysSupplier(MultipartFile file) throws IOException;
-
-    /**
-     * 导出供应商数据
-     * @param response
-     * @param supplier 查询条件
-     * @throws IOException
-     */
-    public void exportSysSupplier(HttpServletResponse response, SysSupplier supplier) throws IOException;
-
-    /**
-     * 编辑供应商审核状态
-     * @param list
-     * @return
-     */
-    public int auditSysSupplier(List<AuditVo> list);
+    public int saveSysSupplier(List<SysSupplier> sysSupplier);
 }

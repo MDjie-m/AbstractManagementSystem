@@ -3,7 +3,6 @@ package com.ruoyi.system.mapper;
 import java.util.List;
 import com.ruoyi.system.domain.SysSupplier;
 import com.ruoyi.system.domain.SysProduct;
-import com.ruoyi.system.domain.vo.AuditVo;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -87,23 +86,5 @@ public interface SysSupplierMapper
      */
     public int deleteSysProductBySupplierId(String supplierId);
 
-    /**
-     * 批量保存供应商信息
-     * @param sysSupplier 供应商信息
-     * @return 结构
-     */
     public int saveSysSupplier(@Param("list") List<SysSupplier> sysSupplier);
-
-    /**
-     * 审核供应商
-     * @param list 供应商id列表
-     * @param auditStatus 审核状态
-     * @param inspectionStatus 考察状态
-     * @param remark 备注
-     * @return
-     */
-    public  int editSysSupplierAudit(@Param("list") List<AuditVo> list,
-                                     @Param("auditStatus")Integer auditStatus,
-                                     @Param("inspectionStatus")Integer inspectionStatus,
-                                     @Param("remark")String remark);
 }
