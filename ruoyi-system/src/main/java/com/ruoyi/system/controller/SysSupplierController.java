@@ -95,6 +95,16 @@ public class SysSupplierController extends BaseController
     }
 
     /**
+     * 下载模板地址返回
+     * @return
+     */
+    @PostMapping("/getUrl")
+    public  AjaxResult getUrl(){
+        // todo 对应文件名称
+        String url = rootPath+"/template/"+"supplierExport.xlsx";
+        return success().put("data",url);
+    }
+    /**
      * 修改供应商
      */
     @PreAuthorize("@ss.hasPermi('system:supplier:edit')")
