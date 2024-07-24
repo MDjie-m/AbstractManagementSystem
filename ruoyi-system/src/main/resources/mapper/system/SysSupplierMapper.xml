@@ -221,6 +221,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
     
+<!--    <delete id="deleteSysProductBySupplierIds" parameterType="String">-->
+<!--        delete from sys_product where supplier_id in -->
+<!--        <foreach item="supplierId" collection="array" open="(" separator="," close=")">-->
+<!--            #{supplierId}-->
+<!--        </foreach>-->
+<!--    </delete>-->
+
     <delete id="deleteSysProductBySupplierIds" parameterType="String">
         delete from sys_product where supplier_id in
         <foreach item="supplierId" collection="array" open="(" separator="," close=")">

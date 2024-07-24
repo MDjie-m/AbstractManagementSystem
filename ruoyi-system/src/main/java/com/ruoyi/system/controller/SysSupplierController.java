@@ -11,7 +11,6 @@ import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.ruoyi.system.easyexcel.SupplierListener;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +36,6 @@ public class SysSupplierController extends BaseController
     @Autowired
     private ISysSupplierService sysSupplierService;
 
-    @Value("${staticFile.rootPath}")
-    private  String rootPath;
     /**
      * 查询供应商列表
      */
@@ -127,12 +124,6 @@ public class SysSupplierController extends BaseController
         return toAjax(sysSupplierService.insertSysSupplier(sysSupplier));
     }
 
-    @PostMapping("/getUrl")
-    public  AjaxResult getUrl(){
-        // todo 对应文件名称
-        String url = rootPath+"/template/"+"supplierExport.xlsx";
-        return success().put("data",url);
-    }
     /**
      * 修改供应商
      */
@@ -153,15 +144,5 @@ public class SysSupplierController extends BaseController
     public AjaxResult remove(@PathVariable String[] supplierIds)
     {
         return toAjax(sysSupplierService.deleteSysSupplierBySupplierIds(supplierIds));
-    }
-
-    /**
-     * 新增供应商
-     */
-    @Log(title = "供应商", businessType = BusinessType.INSERT)
-    @PostMapping("/add")
-    public AjaxResult noPermissionsadd(@RequestBody SysSupplier sysSupplier)
-    {
-        return toAjax(sysSupplierService.insertSysSupplier(sysSupplier));
     }
 }
