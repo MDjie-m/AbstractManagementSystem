@@ -862,7 +862,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2030 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2076 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -953,11 +953,16 @@ INSERT INTO `sys_menu` VALUES (1059, '预览代码', 116, 5, '#', '', '', '', 1,
 INSERT INTO `sys_menu` VALUES (1060, '生成代码', 116, 6, '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:code', '#', 'admin', '2024-07-22 09:19:22', '', NULL, '');
 INSERT INTO `sys_menu` VALUES (2062, '供应商管理', 0, 2, 'supplier', NULL, NULL, '', 1, 0, 'M', '0', '0', '', 'user', 'admin', '2024-07-22 10:04:06', 'admin', '2024-07-22 11:25:53', '');
 INSERT INTO `sys_menu` VALUES (2063, '产品管理', 0, 3, 'product', NULL, NULL, '', 1, 0, 'M', '0', '0', '', 'shopping', 'admin', '2024-07-22 10:06:26', 'admin', '2024-07-22 11:27:09', '');
-INSERT INTO `sys_menu` VALUES (2064, '供应商列表', 2062, 1, 'supplierList', 'supplier/supplierList/index', NULL, '', 1, 0, 'C', '0', '0', '', 'list', 'admin', '2024-07-22 10:19:20', 'admin', '2024-07-22 11:27:27', '');
+INSERT INTO `sys_menu` VALUES (2064, '合格供应商', 2062, 1, 'supplierList', 'supplier/supplierList/index', NULL, '', 1, 0, 'C', '0', '0', '', 'list', 'admin', '2024-07-22 10:19:20', 'admin', '2024-07-23 11:23:59', '');
 INSERT INTO `sys_menu` VALUES (2065, '考察列表', 2062, 3, 'inspection', 'supplier/inspection/index', NULL, '', 1, 0, 'C', '0', '0', '', 'star', 'admin', '2024-07-22 10:19:57', 'admin', '2024-07-22 13:36:15', '');
 INSERT INTO `sys_menu` VALUES (2066, '报价列表', 2062, 4, 'price', 'supplier/price/index', NULL, '', 1, 0, 'C', '0', '0', '', 'clipboard', 'admin', '2024-07-22 10:20:23', 'admin', '2024-07-22 13:36:21', '');
-INSERT INTO `sys_menu` VALUES (2067, '产品列表', 2063, 1, 'productList', 'product/productList/index', NULL, '', 1, 0, 'C', '0', '0', '', 'list', 'admin', '2024-07-22 10:26:01', 'admin', '2024-07-22 11:27:17', '');
 INSERT INTO `sys_menu` VALUES (2068, '产品分类', 2063, 2, 'productType', 'product/productType/index', NULL, '', 1, 0, 'C', '0', '0', '', 'nested', 'admin', '2024-07-22 10:29:45', 'admin', '2024-07-22 11:27:40', '');
 INSERT INTO `sys_menu` VALUES (2069, '入驻申请列表', 2062, 2, 'application', 'supplier/application/index', NULL, '', 1, 0, 'C', '0', '0', NULL, 'form', 'admin', '2024-07-22 13:37:40', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2070, '产品列表', 2063, 1, 'productList', 'product/productList/index', NULL, '', 1, 0, 'C', '0', '0', 'system:product:list', 'form', 'admin', '2024-07-23 09:21:18', 'admin', '2024-07-23 09:39:08', '产品菜单');
+INSERT INTO `sys_menu` VALUES (2071, '产品查询', 2070, 1, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:product:query', '#', 'admin', '2024-07-23 09:21:18', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2072, '产品新增', 2070, 2, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:product:add', '#', 'admin', '2024-07-23 09:21:18', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2073, '产品修改', 2070, 3, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:product:edit', '#', 'admin', '2024-07-23 09:21:18', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2074, '产品删除', 2070, 4, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:product:remove', '#', 'admin', '2024-07-23 09:21:18', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2075, '产品导出', 2070, 5, '#', '', NULL, '', 1, 0, 'F', '0', '0', 'system:product:export', '#', 'admin', '2024-07-23 09:21:18', '', NULL, '');
 
 SET FOREIGN_KEY_CHECKS = 1;
