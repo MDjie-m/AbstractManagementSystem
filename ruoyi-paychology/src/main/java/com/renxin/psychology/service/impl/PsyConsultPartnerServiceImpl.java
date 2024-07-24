@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.IDhelper;
 import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.vo.DateLimitUtilVO;
@@ -14,11 +15,13 @@ import com.renxin.psychology.domain.PsyConsultPartnerItem;
 import com.renxin.psychology.domain.PsyUser;
 import com.renxin.psychology.dto.ExperienceDTO;
 import com.renxin.psychology.dto.PartnerDTO;
+import com.renxin.psychology.mapper.PsyConsultPartnerItemMapper;
 import com.renxin.psychology.mapper.PsyConsultPartnerMapper;
 import com.renxin.psychology.request.PsyAdminPartnerReq;
 import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.system.service.ISysConfigService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +57,9 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     private PsyConsultPartnerMapper psyConsultPartnerMapper;
 
     @Resource
+    private PsyConsultPartnerItemMapper partnerItemMapper;
+
+    @Resource
     private IPsyConsultPartnerItemService partnerItemService;
 
     @Override
@@ -61,6 +67,16 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         return partnerItemService.add(item);
     }
 
+    @Override
+    public int saveItem(PsyConsultPartnerItem item) {
+        if (ObjectUtils.isNotEmpty(item.getId())){
+            partnerItemService.edit(item);
+        }else{
+            partnerItemService.add(item);
+        }
+        return 1;
+    }
+    
     @Override
     public int editItem(PsyConsultPartnerItem item) {
         return partnerItemService.edit(item);
@@ -88,12 +104,86 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         }
     }
 
+    /**
+     * 申请单草稿生成
+     * @param consultantId
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long consultantDraft(Long consultantId)
+    {
+        PartnerDTO one = getInfoByConsultId(consultantId);
+        if (one == null) {
+            Long  id = IDhelper.getNextId();
+            PsyConsultPartner partner = new PsyConsultPartner();
+            partner.setId(id);
+            partner.setCreateBy("system");
+            partner.setUpdateBy("system");
+            partner.setCreateTime(new Date());
+            partner.setUpdateTime(new Date());
+            partner.setConsultId(consultantId);
+            //PsyConsultVO consultant = consultService.getOne(consultantId);
+            //partner.setPhone(consultant.getPhonenumber());
+            psyConsultPartnerMapper.insert(partner);
+            return id;
+        }else{
+            return one.getId();
+        }
+    }
+    
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int save(PsyConsultPartner entity) {
         return psyConsultPartnerMapper.updateById(entity);
     }
 
+    /**
+     * 修改申请单主体信息
+     * @param entity
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int saveByConsultId(PsyConsultPartner entity) {
+        //获取申请单id
+        Long id = getInfoByConsultId(entity.getConsultId()).getId();
+        entity.setId(id);
+        
+        //若要将状态修改为"审核中"
+        if (ConsultConstant.PARTNER_STATUS_1.equals(entity.getStatus())){
+            PsyConsultPartner oldPartner = psyConsultPartnerMapper.selectById(id);
+            if (!ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(oldPartner.getStatus())){
+                throw new ServiceException("入驻申请已在审核中或已审核结束");
+            }
+        }
+        
+        return psyConsultPartnerMapper.updateById(entity);
+    }
+
+    /**
+     * 保存申请单子信息
+     * @param req
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveItemList(PsyConsultPartner req){
+        
+        //若为步骤2, 则更新类型为1/2/3的子信息
+        if (req.getStep() == 2){
+            partnerItemMapper.delete(new LambdaQueryWrapper<PsyConsultPartnerItem>()
+                    .in(PsyConsultPartnerItem::getType, Arrays.asList("1", "2", "3")));
+
+            List<PsyConsultPartnerItem> itemList = req.getItemList();
+            for (PsyConsultPartnerItem item : itemList) {
+                item.setId(IDhelper.getNextId());
+                item.setPId(req.getId());
+                item.setCreateBy("system");
+                item.setCreateTime(new Date());
+                partnerItemMapper.insert(item);
+            }
+        }
+    }
+    
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult createUser(Long id) {
@@ -207,6 +297,26 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         PsyAdminPartnerReq req = new PsyAdminPartnerReq();
         req.setId(id);
         return getPartnerDTO(req);
+    }
+
+    @Override
+    public PartnerDTO getInfoByConsultId(Long consultId)
+    {
+        PsyAdminPartnerReq req = new PsyAdminPartnerReq();
+            req.setConsultId(consultId);
+        return getPartnerDTO(req);
+    }
+
+    @Override
+    public PartnerDTO getDetailByConsultId(Long consultId)
+    {
+        PsyAdminPartnerReq req = new PsyAdminPartnerReq();
+        req.setConsultId(consultId);
+        PartnerDTO partnerDTO = getPartnerDTO(req);
+        List<PsyConsultPartnerItem> itemList = partnerItemMapper.selectList(new LambdaQueryWrapper<PsyConsultPartnerItem>()
+                .eq(PsyConsultPartnerItem::getPId, partnerDTO.getId()));
+        partnerDTO.setItems(itemList);
+        return partnerDTO;
     }
 
 

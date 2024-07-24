@@ -118,7 +118,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers( "/register", "/captchaImage").anonymous()
                 .antMatchers("/token/**").anonymous()
                 // 支付完成回调
-                .antMatchers("**/callback").anonymous()
+                .antMatchers("/**/callback").anonymous()
                 //.antMatchers("/consult/**").anonymous()
                 // 静态资源，可匿名访问
                 .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()

@@ -6,6 +6,7 @@ import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsultPartner;
 import com.renxin.psychology.domain.PsyConsultPartnerItem;
+import com.renxin.psychology.dto.PartnerDTO;
 import com.renxin.psychology.service.IPsyConsultPartnerService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -33,13 +34,31 @@ public class ConsultantPartnerController {
         return AjaxResult.success(partnerService.addItem(item));
     }
 
-    @PostMapping(value = "/editItem")
+    /**
+     * 保存子信息
+     * @param item
+     * @return
+     */
+    @PostMapping(value = "/saveItem")
     @RateLimiter
-    public AjaxResult editItem(@RequestBody PsyConsultPartnerItem item)
+    public AjaxResult saveItem(@RequestBody PsyConsultPartnerItem item)
     {
-        return AjaxResult.success(partnerService.editItem(item));
+        return AjaxResult.success(partnerService.saveItem(item));
     }
 
+    /**
+     * 批量保存子信息
+     * @param entity
+     * @return
+     */
+    @PostMapping(value = "/saveItemList")
+    @RateLimiter
+    public AjaxResult saveItemList(@RequestBody PsyConsultPartner entity)
+    {
+        partnerService.saveItemList(entity);
+        return AjaxResult.success();
+    }
+    
     @PostMapping(value = "/delItem/{id}")
     @RateLimiter
     public AjaxResult delItem(@PathVariable("id") Long id)
@@ -47,31 +66,41 @@ public class ConsultantPartnerController {
         return AjaxResult.success(partnerService.delItem(id));
     }
 
+    //生成申请单草稿
     @PostMapping(value = "/draft")
     @RateLimiter
     public AjaxResult draft(HttpServletRequest request)
     {
-        Integer userId = consultantTokenService.getUserId(request);
-        partnerService.draft(userId);
-        return AjaxResult.success();
+        Long consultId = consultantTokenService.getConsultId(request);
+        Long pid = partnerService.consultantDraft(consultId);
+        return AjaxResult.success(pid);
     }
 
+    //修改申请单主体信息
     @PostMapping(value = "/save")
     @RateLimiter
     public AjaxResult save(@RequestBody PsyConsultPartner entity, HttpServletRequest request)
     {
-        Integer userId = consultantTokenService.getUserId(request);
-        entity.setUserId(userId);
-        entity.setStatus(ConsultConstant.PARTNER_STATUS_5);
-        return AjaxResult.success(partnerService.save(entity));
+        Long consultId = consultantTokenService.getConsultId(request);
+        entity.setConsultId(consultId);
+        return AjaxResult.success(partnerService.saveByConsultId(entity));
     }
 
-    @PostMapping(value = "/getInfo")
+    @GetMapping(value = "/getInfo")
     @RateLimiter
     public AjaxResult getInfo(HttpServletRequest request)
     {
-        Integer userId = consultantTokenService.getUserId(request);
-        return AjaxResult.success(partnerService.getInfoByUserId(userId));
+        Long consultId = consultantTokenService.getConsultId(request);
+        PartnerDTO partnerDTO = partnerService.getInfoByConsultId(consultId);
+        return AjaxResult.success(partnerDTO);
+    }
+
+    @GetMapping(value = "/getDetail")
+    @RateLimiter
+    public AjaxResult getDetail(HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        return AjaxResult.success(partnerService.getDetailByConsultId(consultId));
     }
 
     /**
@@ -82,13 +111,13 @@ public class ConsultantPartnerController {
      * @param request
      * @return
      */
-    @PostMapping(value = "/facialAuth")
+  /*  @PostMapping(value = "/facialAuth")
     @RateLimiter
     public AjaxResult facialAuth(PsyConsultPartner entity,HttpServletRequest request)
     {
-        Integer userId = consultantTokenService.getUserId(request);
+        Long consultId = consultantTokenService.getConsultId(request);
         entity.setUserId(userId);
         entity.setStatus(ConsultConstant.PARTNER_STATUS_1);
         return AjaxResult.success(partnerService.save(entity));
-    }
+    }*/
 }

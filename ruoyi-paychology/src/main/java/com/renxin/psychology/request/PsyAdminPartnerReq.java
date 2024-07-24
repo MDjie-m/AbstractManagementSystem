@@ -20,6 +20,8 @@ public class PsyAdminPartnerReq implements Serializable
     private Integer userId;
 
     private Long id;
+    
+    private Long consultId;
 
     @ApiModelProperty(value = "添加时间")
     private String dateLimit;

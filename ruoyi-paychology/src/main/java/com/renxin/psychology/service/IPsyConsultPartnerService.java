@@ -23,21 +23,33 @@ public interface IPsyConsultPartnerService {
     // 确认并提交资料
 
     void draft(Integer userId);
+    
+    Long consultantDraft(Long consultId);
 
     int addItem(PsyConsultPartnerItem item);
+
+    int saveItem(PsyConsultPartnerItem item);
 
     int editItem(PsyConsultPartnerItem item);
 
     int delItem(Long id);
 
     int save(PsyConsultPartner entity);
+    
+    int saveByConsultId(PsyConsultPartner entity);
 
     AjaxResult createUser(Long id);
 
     PartnerDTO getInfoByUserId(Integer userId);
 
     PartnerDTO getInfoById(Long userId);
+    
+    PartnerDTO getInfoByConsultId(Long userId);
+    
+    PartnerDTO getDetailByConsultId(Long userId);
 
     List<PsyConsultPartner> getList(PsyAdminPartnerReq psyConsultPartner);
+
+    void saveItemList(PsyConsultPartner req);
 
 }

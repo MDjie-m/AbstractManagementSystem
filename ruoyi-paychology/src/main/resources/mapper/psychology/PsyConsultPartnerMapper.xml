@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="userId != null "> and user_id = #{userId}</if>
             <if test="id != null "> and id = #{id}</if>
+            <if test="consultId != null "> and consult_id = #{consultId}</if>
         </where>
     </select>
 

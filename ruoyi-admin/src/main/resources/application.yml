@@ -145,7 +145,7 @@ consultant:
   # 令牌有效期（默认30分钟）
     expireTime: 2592000
   # token配置
-consulted:
+pocket:
   token:
     # 令牌自定义标识
     header: Authorization-consulted

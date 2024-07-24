@@ -77,7 +77,7 @@ public class TokenController extends BaseController {
         }
         
         log.info("token:{}",token);
-        return AjaxResult.successData(Constants.TOKEN_PREFIX+ token);
+        return AjaxResult.successData(Constants.TOKEN_PREFIX + token);
       
     }
     

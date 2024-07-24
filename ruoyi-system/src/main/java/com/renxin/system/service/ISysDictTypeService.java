@@ -27,6 +27,13 @@ public interface ISysDictTypeService
     public List<SysDictType> selectDictTypeAll();
 
     /**
+     * 获取字典类型清单(含字典数据)
+     *
+     * @return 字典类型集合信息
+     */
+    public List<SysDictType> selectDictTypeDataList(List<String> list);
+
+    /**
      * 根据字典类型查询字典数据
      * 
      * @param dictType 字典类型
@@ -95,4 +102,6 @@ public interface ISysDictTypeService
      * @return 结果
      */
     public String checkDictTypeUnique(SysDictType dictType);
+    
+    
 }

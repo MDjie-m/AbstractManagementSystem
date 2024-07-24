@@ -21,6 +21,8 @@ public interface IPsyConsultService {
     PsyConsultVO getOne(Long id);
 
     PsyConsult getByPhone(String phone);
+    
+    PsyConsult getByPhoneOrInsert(String phone);
 
     List<PsyConsult> search(PsyConsultReq req);
 

@@ -29,6 +29,7 @@ import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import com.renxin.system.service.ISysConfigService;
 import com.renxin.system.service.ISysUserService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -175,6 +176,29 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
         wp.eq(PsyConsult::getPhonenumber, phone);
 
         return psyConsultMapper.selectOne(wp);
+    }
+
+    /**
+     * 根据phone获取咨询师, 若无则insert
+     * @param phone
+     * @return
+     */
+    @Override
+    public PsyConsult getByPhoneOrInsert(String phone) {
+
+        LambdaQueryWrapper<PsyConsult> wp = Wrappers.lambdaQuery();
+        wp.eq(PsyConsult::getPhonenumber, phone);
+        PsyConsult psyConsult = psyConsultMapper.selectOne(wp);
+        if (ObjectUtils.isNotEmpty(psyConsult)){
+            return psyConsult;
+        }
+
+        PsyConsult newConsultant = new PsyConsult();
+            newConsultant.setId(IDhelper.getNextId());
+            newConsultant.setPhonenumber(phone);
+        psyConsultMapper.insert(newConsultant);
+        return newConsultant;
+
     }
 
     @Override

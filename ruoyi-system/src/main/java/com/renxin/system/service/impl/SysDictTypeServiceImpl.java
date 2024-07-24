@@ -1,5 +1,7 @@
 package com.renxin.system.service.impl;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,26 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService
     public List<SysDictType> selectDictTypeList(SysDictType dictType)
     {
         return dictTypeMapper.selectDictTypeList(dictType);
+    }
+
+    /**
+     * 获取字典类型清单(含字典数据)
+     *
+     * @return 字典类型集合信息
+     */
+    public List<SysDictType> selectDictTypeDataList(List<String> typeList){
+        typeList = Arrays.asList("consult_genre","consult_way","supervision_type","supervision_status");
+
+        SysDictType req = new SysDictType();
+        req.setDictTypeList(typeList);
+        List<SysDictType> sysDictTypeList = dictTypeMapper.selectDictTypeList(req);
+
+        for (SysDictType sysDictType : sysDictTypeList) {
+            List<SysDictData> sysDictData = selectDictDataByType(sysDictType.getDictType());
+            sysDictType.setDictDataList(sysDictData);
+        }
+        
+        return sysDictTypeList;
     }
 
     /**

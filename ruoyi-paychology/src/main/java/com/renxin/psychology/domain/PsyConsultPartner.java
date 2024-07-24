@@ -12,6 +12,7 @@ import com.renxin.common.annotation.Excel;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 咨询师入驻申请对象 psy_consult_partner
@@ -124,5 +125,8 @@ public class PsyConsultPartner extends BasePlusEntity implements Serializable
     @Excel(name = "通过时间")
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Date passTime;
+    
+    @TableField(exist = false)
+    private List<PsyConsultPartnerItem> itemList;
 
 }

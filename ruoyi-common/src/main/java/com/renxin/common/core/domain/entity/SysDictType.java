@@ -3,17 +3,22 @@ package com.renxin.common.core.domain.entity;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.annotation.Excel.ColumnType;
 import com.renxin.common.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 字典类型表 sys_dict_type
  * 
  * @author renxin
  */
+@Data
 public class SysDictType extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -33,6 +38,10 @@ public class SysDictType extends BaseEntity
     /** 状态（0正常 1停用） */
     @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
+    
+    private List<String> dictTypeList;
+    
+    private List<SysDictData> dictDataList;
 
     public Long getDictId()
     {

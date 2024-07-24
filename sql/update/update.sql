@@ -157,3 +157,31 @@ ALTER TABLE `psy_consultant_team_supervision`
     CHANGE COLUMN `detail_pic_url` `special_pic_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '小组特色' COLLATE 'utf8mb4_0900_ai_ci' AFTER `head_pic_url`,
     ADD COLUMN `register_notice_pic_url` VARCHAR(255) NULL DEFAULT NULL COMMENT '报名须知(图片url)' AFTER `special_pic_url`;
 
+ALTER TABLE `psy_consult`
+    CHANGE COLUMN `user_id` `user_id` BIGINT(19) NULL COMMENT '登录名' AFTER `id`,
+    CHANGE COLUMN `team_type` `team_type` CHAR(4) NULL DEFAULT '' COMMENT '团督类型: 1 个督 2团督 ' COLLATE 'utf8mb4_0900_ai_ci' AFTER `user_id`,
+    CHANGE COLUMN `user_name` `user_name` VARCHAR(255) NULL COMMENT '登录名' COLLATE 'utf8mb4_general_ci' AFTER `team_type`,
+    CHANGE COLUMN `nick_name` `nick_name` VARCHAR(100) NULL COMMENT '姓名' COLLATE 'utf8mb4_0900_ai_ci' AFTER `experience`;
+
+
+ALTER TABLE `psy_consult_partner`
+    CHANGE COLUMN `user_id` `user_id` INT(10) NULL COMMENT '登录名' AFTER `id`;
+
+ALTER TABLE `psy_consult_partner`
+    CHANGE COLUMN `sex` `sex` TINYINT(3) UNSIGNED NULL DEFAULT NULL COMMENT '用户性别（1男 2女 ）' AFTER `remark`;
+
+ALTER TABLE `psy_consult_partner_item`
+    CHANGE COLUMN `p_id` `p_id` BIGINT(19) NOT NULL COMMENT '申请单id' AFTER `id`,
+    CHANGE COLUMN `type` `type` TINYINT(3) UNSIGNED NULL DEFAULT '0' COMMENT '申请类型1-7  1学校名称,2资质类型,3证书名称,4培训名称,5咨询类型,6督导类型,7其他经历' AFTER `p_id`;
+
+ALTER TABLE `psy_consult_partner_item`
+    CHANGE COLUMN `param1` `param1` VARCHAR(10240) NULL DEFAULT '' COMMENT '1学校名称,2资质类型,3证书名称,4培训名称,5咨询类型,6督导类型,7其他经历' COLLATE 'utf8mb4_general_ci' AFTER `num`;
+
+
+ALTER TABLE `psy_consult_serve_config`
+    ADD COLUMN `level` INT NULL COMMENT '咨询师级别 1~5' AFTER `end`,
+    ADD COLUMN `service_object` INT NULL COMMENT '服务对象  1来访者  2咨询师' AFTER `level`;
+
+
+ALTER TABLE `psy_consult_server_config`
+    CHANGE COLUMN `level` `level` INT(10) NULL DEFAULT NULL COMMENT '咨询师级别 1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师' AFTER `end`;
