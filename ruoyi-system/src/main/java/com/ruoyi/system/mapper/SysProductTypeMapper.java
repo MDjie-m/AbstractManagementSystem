@@ -2,6 +2,8 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.SysProductType;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 产品分类Mapper接口
@@ -9,6 +11,7 @@ import com.ruoyi.system.domain.SysProductType;
  * @author xgg
  * @date 2024-07-22
  */
+//@Mapper
 public interface SysProductTypeMapper 
 {
     /**
@@ -58,4 +61,6 @@ public interface SysProductTypeMapper
      * @return 结果
      */
     public int deleteSysProductTypeByProductCodes(String[] productCodes);
+
+    List<SysProductType> selectChildren(@Param("parentCode") String parentCode);
 }
