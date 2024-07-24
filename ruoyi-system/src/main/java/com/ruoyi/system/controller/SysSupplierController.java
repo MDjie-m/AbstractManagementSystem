@@ -1,16 +1,11 @@
 package com.ruoyi.system.controller;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.write.metadata.style.WriteCellStyle;
-import com.alibaba.excel.write.metadata.style.WriteFont;
-import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
-import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.ruoyi.system.easyexcel.SupplierListener;
+import com.ruoyi.system.domain.vo.AuditVo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +30,8 @@ public class SysSupplierController extends BaseController
 {
     @Autowired
     private ISysSupplierService sysSupplierService;
+    @Value("staticFile.rootPath")
+    private String rootPath;
 
     /**
      * 查询供应商列表
@@ -59,11 +56,7 @@ public class SysSupplierController extends BaseController
     @PostMapping("/importData")
     public AjaxResult importData(@RequestParam("file") MultipartFile file) throws Exception
     {
-        // 可以加一个boolean判断要不要覆盖现在是默认重复就覆盖
-        EasyExcel
-                .read(file.getInputStream(), SysSupplier.class, new SupplierListener(sysSupplierService))
-                .sheet()
-                .doRead();
+        sysSupplierService.saveSysSupplier(file);
         return success();
     }
 
@@ -77,30 +70,7 @@ public class SysSupplierController extends BaseController
     @Log(title = "供应商", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysSupplier supplier) throws IOException {
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
-        String fileName = URLEncoder.encode("供应商列表", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-        // 头的策略
-        WriteCellStyle headWriteCellStyle = new WriteCellStyle();
-        // 表头大小
-        WriteFont headWriteFont = new WriteFont();
-        headWriteFont.setFontHeightInPoints((short)12);
-        headWriteCellStyle.setWriteFont(headWriteFont);
-        // 内容的策略
-        WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
-        HorizontalCellStyleStrategy horizontalCellStyleStrategy =
-                new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
-        // 查询
-        List<SysSupplier> list = sysSupplierService.selectSysSupplierList(supplier);
-        // 导出excel
-        EasyExcel
-                .write(response.getOutputStream(), SysSupplier.class)
-                .registerWriteHandler(horizontalCellStyleStrategy)
-                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()) // 设置自动调整列宽
-                .sheet("供应商数据")
-                .doWrite(list);
+        sysSupplierService.exportSysSupplier(response, supplier);
     }
 
     /**
@@ -144,5 +114,25 @@ public class SysSupplierController extends BaseController
     public AjaxResult remove(@PathVariable String[] supplierIds)
     {
         return toAjax(sysSupplierService.deleteSysSupplierBySupplierIds(supplierIds));
+    }
+
+    /**
+     * 新增供应商
+     */
+    @Log(title = "供应商", businessType = BusinessType.INSERT)
+    @PostMapping("/add")
+    public AjaxResult noPermissionsadd(@RequestBody SysSupplier sysSupplier)
+    {
+        return toAjax(sysSupplierService.insertSysSupplier(sysSupplier));
+    }
+
+    /**
+     * 审核供应商
+     */
+    @PreAuthorize("@ss.hasPermi('system:supplier:audit')")
+    @Log(title = "供应商", businessType = BusinessType.UPDATE)
+    @PostMapping("/audit")
+    public AjaxResult audit(@RequestBody List<AuditVo> list){
+        return toAjax(sysSupplierService.auditSysSupplier(list));
     }
 }
