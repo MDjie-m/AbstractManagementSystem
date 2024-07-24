@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.SysProductType;
 
 /**
@@ -58,4 +60,10 @@ public interface ISysProductTypeService
      * @return 结果
      */
     public int deleteSysProductTypeByProductCode(String productCode);
+
+    /**
+     * 按照层级组装成一个TreeList
+     * @return
+     */
+    List<Map<String,Object>> selectSysProductTypeTreeList(Integer depth);
 }

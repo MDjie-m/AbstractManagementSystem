@@ -1,6 +1,7 @@
 package com.ruoyi.system.controller;
 
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,18 @@ public class SysProductTypeController extends BaseController
     public AjaxResult list(SysProductType sysProductType)
     {
         List<SysProductType> list = sysProductTypeService.selectSysProductTypeList(sysProductType);
+        return success(list);
+    }
+
+    /**
+     * @param depth 产品分类树的深度
+     * 查询产品分类列表，按照层级组装成树。
+     */
+    @PreAuthorize("@ss.hasPermi('system:productType:list')")
+    @GetMapping("/treeList")
+    public AjaxResult treeList(Integer depth)
+    {
+        List<Map<String,Object>> list = sysProductTypeService.selectSysProductTypeTreeList(depth);
         return success(list);
     }
 

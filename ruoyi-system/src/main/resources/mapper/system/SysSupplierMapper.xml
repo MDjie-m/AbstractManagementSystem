@@ -37,22 +37,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <collection property="sysProductList" ofType="SysProduct" column="supplier_id" select="selectSysProductList" />
     </resultMap>
 
-<!--    <resultMap type="SysProduct" id="SysProductResult">-->
-<!--        <result property="productId"    column="product_id"    />-->
-<!--        <result property="supplierId"    column="supplier_id"    />-->
-<!--        <result property="primaryCategory"    column="primary_category"    />-->
-<!--        <result property="secondaryCategory"    column="secondary_category"    />-->
-<!--        <result property="tertiaryCategory"    column="tertiary_category"    />-->
-<!--        <result property="quaternaryCategory"    column="quaternary_category"    />-->
-<!--        <result property="fifthCategory"    column="fifth_category"    />-->
-<!--        <result property="productName"    column="product_name"    />-->
-<!--        <result property="domesticImportedType"    column="domestic_imported_type"    />-->
-<!--        <result property="productModel"    column="product_model"    />-->
-<!--        <result property="quotationFlag"    column="quotation_flag"    />-->
-<!--        <result property="futureField1"    column="future_field1"    />-->
-<!--        <result property="futureField2"    column="future_field2"    />-->
-<!--        <result property="futureField3"    column="future_field3"    />-->
-<!--    </resultMap>-->
+    <resultMap type="SysProduct" id="SysProductResult">
+        <result property="productId"    column="product_id"    />
+        <result property="supplierId"    column="supplier_id"    />
+        <result property="primaryCategory"    column="primary_category"    />
+        <result property="secondaryCategory"    column="secondary_category"    />
+        <result property="tertiaryCategory"    column="tertiary_category"    />
+        <result property="quaternaryCategory"    column="quaternary_category"    />
+        <result property="fifthCategory"    column="fifth_category"    />
+        <result property="productName"    column="product_name"    />
+        <result property="domesticImportedType"    column="domestic_imported_type"    />
+        <result property="productModel"    column="product_model"    />
+        <result property="quotationFlag"    column="quotation_flag"    />
+        <result property="futureField1"    column="future_field1"    />
+        <result property="futureField2"    column="future_field2"    />
+        <result property="futureField3"    column="future_field3"    />
+    </resultMap>
 
     <sql id="selectSysSupplierVo">
         select supplier_id, label, country, province, city, area, product_type, registration_no, registration_no_in_china, supplier_name_cn, supplier_name_en, registration_time, registration_time_validity_period, rate, review_rating, delete_flag, inspection_id, contacts, telephone, email, classification, audit_status, inspection_status, inspection_audit_status, data_sources, remark from sys_supplier
@@ -94,11 +94,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where supplier_id = #{supplierId}
     </select>
 
-<!--    <select id="selectSysProductList" resultMap="SysProductResult">-->
-<!--        select product_id, supplier_id, primary_category, secondary_category, tertiary_category, quaternary_category, fifth_category, product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3-->
-<!--        from sys_product-->
-<!--        where supplier_id = #{supplier_id}-->
-<!--    </select>-->
+    <select id="selectSysProductList" resultMap="SysProductResult">
+        select product_id, supplier_id, primary_category, secondary_category, tertiary_category, quaternary_category, fifth_category, product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3
+        from sys_product
+        where supplier_id = #{supplier_id}
+    </select>
 
     <insert id="insertSysSupplier" parameterType="SysSupplier">
         insert into sys_supplier
@@ -237,9 +237,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <!--        </foreach>-->
 <!--    </delete>-->
 
-<!--    <delete id="deleteSysProductBySupplierId" parameterType="String">-->
-<!--        delete from sys_product where supplier_id = #{supplierId}-->
-<!--    </delete>-->
+    <delete id="deleteSysProductBySupplierIds" parameterType="String">
+        delete from sys_product where supplier_id in
+        <foreach item="supplierId" collection="array" open="(" separator="," close=")">
+            #{supplierId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSysProductBySupplierId" parameterType="String">
+        delete from sys_product where supplier_id = #{supplierId}
+    </delete>
 
 <!--    <insert id="batchSysProduct">-->
 <!--        insert into sys_product( product_id, supplier_id, primary_category, secondary_category, tertiary_category, quaternary_category, fifth_category, product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3) values-->
