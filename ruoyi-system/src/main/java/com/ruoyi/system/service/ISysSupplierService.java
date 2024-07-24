@@ -58,4 +58,6 @@ public interface ISysSupplierService
      * @return 结果
      */
     public int deleteSysSupplierBySupplierId(String supplierId);
+
+    public int saveSysSupplier(List<SysSupplier> sysSupplier);
 }

@@ -1,6 +1,5 @@
 package com.ruoyi.system.domain;
 
-import com.ruoyi.common.utils.uuid.UUID;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -9,8 +8,8 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 产品对象 sys_product
  * 
- * @author lyj
- * @date 2024-07-21
+ * @author xgg
+ * @date 2024-07-23
  */
 public class SysProduct extends BaseEntity
 {
@@ -19,29 +18,53 @@ public class SysProduct extends BaseEntity
     /** 产品编号 */
     private String productId;
 
+    /** 供应商id */
+    @Excel(name = "供应商id")
+    private String supplierId;
+
     /** 供应商名称 */
     @Excel(name = "供应商名称")
-    private String supplierId;
+    private String supplierName;
 
     /** 一级分类 */
     @Excel(name = "一级分类")
     private String primaryCategory;
 
+    /** 一级分类名称 */
+    @Excel(name = "一级分类名称")
+    private String primaryCategoryName;
+
     /** 二级分类 */
     @Excel(name = "二级分类")
     private String secondaryCategory;
+
+    /** 二级分类名称 */
+    @Excel(name = "二级分类名称")
+    private String secondaryCategoryName;
 
     /** 三级分类 */
     @Excel(name = "三级分类")
     private String tertiaryCategory;
 
+    /** 三级分类名称 */
+    @Excel(name = "三级分类名称")
+    private String tertiaryCategoryName;
+
     /** 四级分类 */
     @Excel(name = "四级分类")
     private String quaternaryCategory;
 
+    /** 四级分类名称 */
+    @Excel(name = "四级分类名称")
+    private String quaternaryCategoryName;
+
     /** 五级分类 */
     @Excel(name = "五级分类")
     private String fifthCategory;
+
+    /** 五级分类名称 */
+    @Excel(name = "五级分类名称")
+    private String fifthCategoryName;
 
     /** 产品名称 */
     @Excel(name = "产品名称")
@@ -70,10 +93,8 @@ public class SysProduct extends BaseEntity
     /** 预留字段3 */
     @Excel(name = "预留字段3")
     private String futureField3;
-    public SysProduct() {
-        this.productId = UUID.randomUUID().toString();
-    }
-    public void setProductId(String productId)
+
+    public void setProductId(String productId) 
     {
         this.productId = productId;
     }
@@ -91,6 +112,15 @@ public class SysProduct extends BaseEntity
     {
         return supplierId;
     }
+    public void setSupplierName(String supplierName) 
+    {
+        this.supplierName = supplierName;
+    }
+
+    public String getSupplierName() 
+    {
+        return supplierName;
+    }
     public void setPrimaryCategory(String primaryCategory) 
     {
         this.primaryCategory = primaryCategory;
@@ -99,6 +129,15 @@ public class SysProduct extends BaseEntity
     public String getPrimaryCategory() 
     {
         return primaryCategory;
+    }
+    public void setPrimaryCategoryName(String primaryCategoryName) 
+    {
+        this.primaryCategoryName = primaryCategoryName;
+    }
+
+    public String getPrimaryCategoryName() 
+    {
+        return primaryCategoryName;
     }
     public void setSecondaryCategory(String secondaryCategory) 
     {
@@ -109,6 +148,15 @@ public class SysProduct extends BaseEntity
     {
         return secondaryCategory;
     }
+    public void setSecondaryCategoryName(String secondaryCategoryName) 
+    {
+        this.secondaryCategoryName = secondaryCategoryName;
+    }
+
+    public String getSecondaryCategoryName() 
+    {
+        return secondaryCategoryName;
+    }
     public void setTertiaryCategory(String tertiaryCategory) 
     {
         this.tertiaryCategory = tertiaryCategory;
@@ -117,6 +165,15 @@ public class SysProduct extends BaseEntity
     public String getTertiaryCategory() 
     {
         return tertiaryCategory;
+    }
+    public void setTertiaryCategoryName(String tertiaryCategoryName) 
+    {
+        this.tertiaryCategoryName = tertiaryCategoryName;
+    }
+
+    public String getTertiaryCategoryName() 
+    {
+        return tertiaryCategoryName;
     }
     public void setQuaternaryCategory(String quaternaryCategory) 
     {
@@ -127,6 +184,15 @@ public class SysProduct extends BaseEntity
     {
         return quaternaryCategory;
     }
+    public void setQuaternaryCategoryName(String quaternaryCategoryName) 
+    {
+        this.quaternaryCategoryName = quaternaryCategoryName;
+    }
+
+    public String getQuaternaryCategoryName() 
+    {
+        return quaternaryCategoryName;
+    }
     public void setFifthCategory(String fifthCategory) 
     {
         this.fifthCategory = fifthCategory;
@@ -135,6 +201,15 @@ public class SysProduct extends BaseEntity
     public String getFifthCategory() 
     {
         return fifthCategory;
+    }
+    public void setFifthCategoryName(String fifthCategoryName) 
+    {
+        this.fifthCategoryName = fifthCategoryName;
+    }
+
+    public String getFifthCategoryName() 
+    {
+        return fifthCategoryName;
     }
     public void setProductName(String productName) 
     {
@@ -145,12 +220,12 @@ public class SysProduct extends BaseEntity
     {
         return productName;
     }
-    public void setDomesticImportedType(Integer domesticImportedType)
+    public void setDomesticImportedType(Integer domesticImportedType) 
     {
         this.domesticImportedType = domesticImportedType;
     }
 
-    public Integer getDomesticImportedType()
+    public Integer getDomesticImportedType() 
     {
         return domesticImportedType;
     }
@@ -163,12 +238,12 @@ public class SysProduct extends BaseEntity
     {
         return productModel;
     }
-    public void setQuotationFlag(Integer quotationFlag)
+    public void setQuotationFlag(Integer quotationFlag) 
     {
         this.quotationFlag = quotationFlag;
     }
 
-    public Integer getQuotationFlag()
+    public Integer getQuotationFlag() 
     {
         return quotationFlag;
     }
@@ -205,11 +280,17 @@ public class SysProduct extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("productId", getProductId())
             .append("supplierId", getSupplierId())
+            .append("supplierName", getSupplierName())
             .append("primaryCategory", getPrimaryCategory())
+            .append("primaryCategoryName", getPrimaryCategoryName())
             .append("secondaryCategory", getSecondaryCategory())
+            .append("secondaryCategoryName", getSecondaryCategoryName())
             .append("tertiaryCategory", getTertiaryCategory())
+            .append("tertiaryCategoryName", getTertiaryCategoryName())
             .append("quaternaryCategory", getQuaternaryCategory())
+            .append("quaternaryCategoryName", getQuaternaryCategoryName())
             .append("fifthCategory", getFifthCategory())
+            .append("fifthCategoryName", getFifthCategoryName())
             .append("productName", getProductName())
             .append("domesticImportedType", getDomesticImportedType())
             .append("productModel", getProductModel())
