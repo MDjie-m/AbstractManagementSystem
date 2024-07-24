@@ -49,7 +49,7 @@ public class SysProductTypeController extends BaseController
      * @param depth 产品分类树的深度
      * 查询产品分类列表，按照层级组装成树。
      */
-    @PreAuthorize("@ss.hasPermi('system:productType:list')")
+//    @PreAuthorize("@ss.hasPermi('system:productType:list')")
     @GetMapping("/treeList")
     public AjaxResult treeList(Integer depth)
     {
