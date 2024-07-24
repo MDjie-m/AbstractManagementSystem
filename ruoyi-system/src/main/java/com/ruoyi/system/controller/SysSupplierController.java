@@ -145,4 +145,14 @@ public class SysSupplierController extends BaseController
     {
         return toAjax(sysSupplierService.deleteSysSupplierBySupplierIds(supplierIds));
     }
+
+    /**
+     * 新增供应商
+     */
+    @Log(title = "供应商", businessType = BusinessType.INSERT)
+    @PostMapping("/add")
+    public AjaxResult noPermissionsadd(@RequestBody SysSupplier sysSupplier)
+    {
+        return toAjax(sysSupplierService.insertSysSupplier(sysSupplier));
+    }
 }
