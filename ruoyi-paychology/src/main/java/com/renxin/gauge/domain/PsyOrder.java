@@ -69,6 +69,12 @@ public class PsyOrder extends BaseEntity
     @Excel(name = "量表标题")
     private String gaugeTitle;
 
+
+    @Excel(name = "量表副标题")
+    private String gaugeSubtitle;
+
+
+
     /**
      * 量表简介
      */
