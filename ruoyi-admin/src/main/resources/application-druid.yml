@@ -12,9 +12,9 @@ spring:
 #        password: 123456qwerQWER=
 
       master:
-        url: jdbc:mysql://10.137.142.232:3306/v9_pamp_release?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: sunzhengfeng
-        password: J2ynV26HfdsWeD548
+        url: jdbc:mysql://127.0.0.1:3306/pocket?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: root
         
       # 本地
 #      master:
@@ -80,11 +80,11 @@ spring:
 #    # 密码
 #    password: 1
     
-    host: 10.137.142.154
+    host: 127.0.0.1
     # 端口，默认为6379
     port: 6379
     # 数据库索引
-    database: 26
+    database: 15
     # 密码
     password: dK2FNsDZ4mxmnkN
     

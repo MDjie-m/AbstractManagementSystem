@@ -105,4 +105,6 @@ public class OrderListDTO extends BaseValObj implements Serializable
 
     private String channel;
 
+    private String nextTime;
+
 }

@@ -69,17 +69,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getOrderList" resultType="com.renxin.psychology.dto.OrderListDTO">
         select a.id, a.order_no, a.consult_id, a.consult_name, a.ref_consult_id, a.ref_consult_name, a.serve_id, a.serve_name, a.user_id,a.remark,a.memo1,a.reason,
-               a.nick_name, a.amount, a.num, a.buy_num, a.del_flag, a.status, a.create_by, a.order_time,a.pay_status,
-               a.create_time, a.update_by, a.update_time, a.pay, a.source, a.channel, a.pay_time, b.avatar,
-               s.mode, s.mode_name, s.num serve_num ,s.type, s.type_name, s.info, s.price, s.time, s.bound, s.bound_name, s.end,
+        a.nick_name, a.amount, a.num, a.buy_num, a.del_flag, a.status, a.create_by, a.order_time,a.pay_status,
+        a.create_time, a.update_by, a.update_time, a.pay, a.source, a.channel, a.pay_time, b.avatar,
+        s.mode, s.mode_name, s.num serve_num ,s.type, s.type_name, s.info, s.price, s.time, s.bound, s.bound_name, s.end,
         CASE
-            WHEN a.STATUS = '0' THEN '待付款'
-            WHEN a.STATUS = '1' THEN '进行中'
-            WHEN a.STATUS = '2' THEN '已完成' ELSE '已关闭' END as status_name
+        WHEN a.STATUS = '0' THEN '待付款'
+        WHEN a.STATUS = '1' THEN '进行中'
+        WHEN a.STATUS = '2' THEN '已完成' ELSE '已关闭' END as status_name,
+        (SELECT CONCAT(oi.day, ' ', oi.time_start)
+        FROM psy_consult_order_item oi   WHERE oi.order_id = a.id and oi.status=0  order by oi.day asc,oi.time_start asc LIMIT 1) AS next_time
+
         FROM psy_consult_order a
-            INNER JOIN psy_consult b on a.consult_id = b.id
-            INNER JOIN psy_consult_order_serve s on a.id = s.order_id and a.serve_id= s.serve_id
-        <where>
+        INNER JOIN psy_consult b on a.consult_id = b.id
+        INNER JOIN psy_consult_order_serve s on a.id = s.order_id and a.serve_id= s.serve_id
+            <where>
             and a.status != '3'
             <if test="orderNo != null  and orderNo != ''"> and a.order_no = #{orderNo}</if>
             <if test="userId != null "> and a.user_id = #{userId}</if>

@@ -134,7 +134,7 @@
     <select id="queryOrderPage" resultType="com.renxin.gauge.domain.PsyOrder">
         select po.id, po.order_id as orderId, po.gauge_id as gaugeId, gauge.title as gaugeTitle,po.mobile,po.sex,po.age,
                po.order_status as orderStatus, po.amount, po.gauge_status as gaugeStatus, po.create_time as createTime, po.create_by as createBy,
-               gauge.gauge_des as gaugeDes, gauge.type as gaugeType, gauge.gauge_num,
+               gauge.gauge_des as gaugeDes, gauge.type as gaugeType, gauge.gauge_num,gauge.head_picture as headPicture, gauge.subtitle as gaugeSubtitle,
                (select count(id) from psy_gauge_questions_result where order_id = po.id) as finishedNum
         from psy_order po left join psy_gauge gauge ON po.gauge_id = gauge.id
         <where>
@@ -146,6 +146,7 @@
             <if test="createBy != null ">and po.create_by = #{createBy}</if>
             <if test="userId != null ">and po.user_id = #{userId}</if>
         </where>
+         order by po.create_time DESC
     </select>
 
     <select id="getMyReportNum" resultType="java.lang.Integer">
