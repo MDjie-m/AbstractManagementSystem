@@ -3,6 +3,7 @@ package com.ruoyi.system.service.impl;
 import java.util.List;
 
 import com.ruoyi.common.utils.uuid.UUID;
+import com.ruoyi.system.mapper.SysSupplierMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysInspectionMapper;
@@ -20,6 +21,8 @@ public class SysInspectionServiceImpl implements ISysInspectionService
 {
     @Autowired
     private SysInspectionMapper sysInspectionMapper;
+    @Autowired
+    private SysSupplierMapper sysSupplierMapper;
 
     /**
      * 查询考察情况
@@ -49,13 +52,20 @@ public class SysInspectionServiceImpl implements ISysInspectionService
      * 新增考察情况
      * 
      * @param sysInspection 考察情况
+     * @param rate 评级
      * @return 结果
      */
     @Override
-    public int insertSysInspection(SysInspection sysInspection)
+    public int insertSysInspection(SysInspection sysInspection,String rate)
     {
-        sysInspection.setInspectionId(UUID.randomUUID().toString());
-        return sysInspectionMapper.insertSysInspection(sysInspection);
+        //获取uuid
+        String inspectionId = UUID.randomUUID().toString();
+        //给考察对象的id赋值
+        sysInspection.setInspectionId(inspectionId);
+        //先调用考察表的添加方法把这个考察信息存到考察表里面
+        sysInspectionMapper.insertSysInspection(sysInspection);
+        //再调用供应商mapper里面的更新考察评级的方法把上面新增的供应商的考察信息的id和评级存到供应商表中以供关联
+        return sysSupplierMapper.updateInspectRate(sysInspection.getSupplierId(),inspectionId,rate);
     }
 
     /**
