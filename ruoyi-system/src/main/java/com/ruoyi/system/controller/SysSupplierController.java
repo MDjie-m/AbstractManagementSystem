@@ -30,7 +30,7 @@ public class SysSupplierController extends BaseController
 {
     @Autowired
     private ISysSupplierService sysSupplierService;
-    @Value("staticFile.rootPath")
+    @Value("${staticFile.rootPath}")
     private String rootPath;
 
     /**

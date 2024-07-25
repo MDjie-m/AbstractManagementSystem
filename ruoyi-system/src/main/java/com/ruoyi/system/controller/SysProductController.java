@@ -36,7 +36,7 @@ public class SysProductController extends BaseController
 {
     @Autowired
     private ISysProductService sysProductService;
-    @Value("staticFile.rootPath")
+    @Value("${staticFile.rootPath}")
     private String rootPath;
     /**
      * 查询产品列表
