@@ -331,49 +331,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-13"/>
                                         </w:rPr>
-                                        <w:t>整</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="15"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-13"/>
-                                        </w:rPr>
-                                        <w:t>机</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="15"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-13"/>
-                                        </w:rPr>
-                                        <w:t>厂</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="13"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-13"/>
-                                        </w:rPr>
-                                        <w:t>家：</w:t>
+                                        <w:t>整 机 厂 家：</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -392,9 +350,10 @@
                                         <w:rPr>
                                             <w:b/>
                                             <w:bCs/>
+                                            <w:jc w:val="center"/>
                                             <w:spacing w:val="-9"/>
                                         </w:rPr>
-                                        <w:t>华电</w:t>
+                                        <w:t>${ZJCJ}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -436,49 +395,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-17"/>
                                         </w:rPr>
-                                        <w:t>叶</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="19"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-17"/>
-                                        </w:rPr>
-                                        <w:t>片</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="15"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-17"/>
-                                        </w:rPr>
-                                        <w:t>厂</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="12"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-17"/>
-                                        </w:rPr>
-                                        <w:t>家：</w:t>
+                                        <w:t>叶 片 厂 家：</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -491,6 +408,7 @@
                                     <w:pPr>
                                         <w:pStyle w:val="8"/>
                                         <w:spacing w:before="167" w:line="221" w:lineRule="auto"/>
+                                        <w:jc w:val="center"/>
                                         <w:ind w:left="193"/>
                                     </w:pPr>
                                     <w:r>
@@ -499,7 +417,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-4"/>
                                         </w:rPr>
-                                        <w:t>中船重工(重庆)海装风电设备有限公司</w:t>
+                                        <w:t>${YPCJ}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -541,49 +459,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-19"/>
                                         </w:rPr>
-                                        <w:t>叶</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="19"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-19"/>
-                                        </w:rPr>
-                                        <w:t>片</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="21"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-19"/>
-                                        </w:rPr>
-                                        <w:t>型</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="16"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-19"/>
-                                        </w:rPr>
-                                        <w:t>号：</w:t>
+                                        <w:t>叶 片 型 号：</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -608,6 +484,7 @@
                                             <w:b/>
                                             <w:bCs/>
                                             <w:spacing w:val="-2"/>
+                                            <w:jc w:val="center"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
                                         <w:t>${YPXH}</w:t>
@@ -652,49 +529,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-13"/>
                                         </w:rPr>
-                                        <w:t>机</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="13"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-13"/>
-                                        </w:rPr>
-                                        <w:t>位</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="15"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-13"/>
-                                        </w:rPr>
-                                        <w:t>编</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="17"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-13"/>
-                                        </w:rPr>
-                                        <w:t>号：</w:t>
+                                        <w:t>机 位 编 号：</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -763,49 +598,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-8"/>
                                         </w:rPr>
-                                        <w:t>检</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="14"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-8"/>
-                                        </w:rPr>
-                                        <w:t>测</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="13"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-8"/>
-                                        </w:rPr>
-                                        <w:t>位</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="-8"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-8"/>
-                                        </w:rPr>
-                                        <w:t>置：</w:t>
+                                        <w:t>检 测 位 置：</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -840,7 +633,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-20"/>
                                         </w:rPr>
-                                        <w:t>■</w:t>
+                                        <w:t> ■ </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -868,7 +661,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-20"/>
                                         </w:rPr>
-                                        <w:t>■</w:t>
+                                        <w:t> ■ </w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -910,49 +703,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-13"/>
                                         </w:rPr>
-                                        <w:t>检</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="15"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-13"/>
-                                        </w:rPr>
-                                        <w:t>测</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="13"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-13"/>
-                                        </w:rPr>
-                                        <w:t>方</w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:spacing w:val="16"/>
-                                        </w:rPr>
-                                        <w:t xml:space="preserve"></w:t>
-                                    </w:r>
-                                    <w:r>
-                                        <w:rPr>
-                                            <w:b/>
-                                            <w:bCs/>
-                                            <w:spacing w:val="-13"/>
-                                        </w:rPr>
-                                        <w:t>式：</w:t>
+                                        <w:t>检 测 方 式：</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -973,7 +724,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-13"/>
                                         </w:rPr>
-                                        <w:t>近距</w:t>
+                                        <w:t>近距 </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -987,7 +738,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-13"/>
                                         </w:rPr>
-                                        <w:t>■</w:t>
+                                        <w:t> ■ </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1001,7 +752,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-13"/>
                                         </w:rPr>
-                                        <w:t>远距</w:t>
+                                        <w:t> 远距 </w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -1015,7 +766,7 @@
                                             <w:bCs/>
                                             <w:spacing w:val="-13"/>
                                         </w:rPr>
-                                        <w:t>□</w:t>
+                                        <w:t> □ </w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -1054,7 +805,7 @@
                     <w:p w14:paraId="12D4C66B">
                         <w:pPr>
                             <w:spacing w:before="91" w:line="221" w:lineRule="auto"/>
-                            <w:ind w:left="2684"/>
+                            <w:ind w:left="3284"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体" w:cs="宋体"/>
                                 <w:sz w:val="28"/>
@@ -1116,7 +867,7 @@
                     <w:p w14:paraId="1FFD1B01">
                         <w:pPr>
                             <w:spacing w:before="289" w:line="221" w:lineRule="auto"/>
-                            <w:ind w:left="2700"/>
+                            <w:ind w:left="3284"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体" w:cs="宋体"/>
                                 <w:sz w:val="28"/>
@@ -1178,7 +929,7 @@
                     <w:p w14:paraId="62C7002E">
                         <w:pPr>
                             <w:spacing w:before="288" w:line="222" w:lineRule="auto"/>
-                            <w:ind w:left="2685"/>
+                            <w:ind w:left="3284"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体" w:cs="宋体"/>
                                 <w:sz w:val="28"/>
@@ -1301,7 +1052,8 @@
                     <w:p w14:paraId="0C653B80">
                         <w:pPr>
                             <w:spacing w:before="101" w:line="357" w:lineRule="auto"/>
-                            <w:ind w:left="2320" w:right="1096" w:hanging="831"/>
+                            <#--<w:ind w:left="2320" w:right="1096" w:hanging="831"/>-->
+                            <w:ind w:left="2120" w:right="1076" w:hanging="831"/>
                             <w:rPr>
                                 <w:rFonts w:ascii="黑体" w:hAnsi="黑体" w:eastAsia="黑体" w:cs="黑体"/>
                                 <w:sz w:val="31"/>
@@ -1313,11 +1065,12 @@
                                 <w:rFonts w:ascii="黑体" w:hAnsi="黑体" w:eastAsia="黑体" w:cs="黑体"/>
                                 <w:b/>
                                 <w:bCs/>
-                                <w:spacing w:val="7"/>
+                                <w:spacing w:val="6"/>
                                 <w:sz w:val="31"/>
                                 <w:szCs w:val="31"/>
+                                <w:jc w:val="center"/>
                             </w:rPr>
-                            <w:t>检修单位：河北清风新能源技术有限公司</w:t>
+                            <w:t>检修单位：${JXDW}</w:t>
                         </w:r>
                         <w:r>
                             <w:rPr>
@@ -3551,7 +3304,7 @@
                                             <w:szCs w:val="24"/>
                                             <w:lang w:val="en-US" w:eastAsia="zh-CN"/>
                                         </w:rPr>
-                                        <w:t>${JCDW}</w:t>
+                                        <w:t>${JXDW}</w:t>
                                     </w:r>
                                 </w:p>
                             </w:tc>
@@ -4196,7 +3949,7 @@
                                 <w:sz w:val="31"/>
                                 <w:szCs w:val="31"/>
                             </w:rPr>
-                            <w:t>安全措施</w:t>
+                            <w:t>二、安全措施</w:t>
                         </w:r>
                     </w:p>
                     <w:p w14:paraId="540AD6D8">
@@ -17613,7 +17366,7 @@
                                             <w:sz w:val="24"/>
                                             <w:szCs w:val="24"/>
                                         </w:rPr>
-                                        <w:t>河北清风新能源技术有限公司</w:t>
+                                        <w:t>${JXDW}</w:t>
                                     </w:r>
                                     <w:r>
                                         <w:rPr>
@@ -19244,7 +18997,8 @@
                             <w:bottom w:val="none" w:color="auto" w:sz="0" w:space="0"/>
                         </w:pBdr>
                         <w:spacing w:before="78" w:line="195" w:lineRule="auto"/>
-                        <w:ind w:left="5793"/>
+                        <#--<w:ind w:right="200"/>-->
+                        <w:jc w:val="right"/>
                         <w:rPr>
                             <w:rFonts w:ascii="宋体" w:hAnsi="宋体" w:eastAsia="宋体" w:cs="宋体"/>
                             <w:sz w:val="24"/>
@@ -19259,7 +19013,7 @@
                             <w:sz w:val="24"/>
                             <w:szCs w:val="24"/>
                         </w:rPr>
-                        <w:t>河北清风新能源技术有限公司</w:t>
+                        <w:t>${JXDW}</w:t>
                     </w:r>
                 </w:p>
                 <w:p w14:paraId="6092BAFF">

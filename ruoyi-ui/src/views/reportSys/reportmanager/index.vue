@@ -35,6 +35,11 @@
       </el-form-item>
       <el-form-item label="检修单位" prop="maintenanceUnit">
         <el-input
+          v-model="queryParams.bladeManufacturer"
+          placeholder="请输入检修单位"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
       </el-form-item>
       <el-form-item label="叶片厂家" prop="bladeManufacturer">
         <el-input
@@ -114,7 +119,6 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport2"
-          @click="handleExport"
           v-hasPermi="['windSys:wind:export']"
         >导出Word</el-button>
       </el-col>
@@ -151,7 +155,6 @@
       </el-table-column>
       <el-table-column label="叶片2_编号" align="center" prop="blade2Code" />
       <el-table-column label="叶片2_图片url" align="center" prop="blade2PhotoUrl" width="100">
-        <template slot-scope="scope">
         <template slot-scope="scope">
           <image-preview :src="scope.row.blade1PhotoUrl" :width="50" :height="50"/>
         </template>
@@ -210,7 +213,6 @@
         </el-form-item>
         <el-form-item label="叶片厂家" prop="bladeManufacturer">
           <el-input v-model="form.bladeManufacturer" placeholder="请输入叶片厂家" />
-        </el-form-item>
         </el-form-item>
         <el-form-item label="整机厂家" prop="manufacturer">
           <el-input v-model="form.manufacturer" placeholder="请输入整机厂家" />
@@ -316,11 +318,8 @@
 </template>
 
 <script>
-import {listWind, selectReport, delWind, addWind, updateWind, getReportManager} from "@/api/reportSys/reportmanager";
-import {getList} from "@/api/windSys/part"
-import part from "@/views/windSys/part/index.vue";
-import { listWind, getWind, delWind, addWind, updateWind } from "@/api/reportSys/reportmanager";
-
+import {listWind, delWind, addWind, updateWind, getReportManager} from "@/api/reportSys/reportmanager";
+import {getWind} from "@/api/windSys/wind";
 export default {
   name: "Wind",
   data() {
@@ -385,14 +384,9 @@ export default {
     getList() {
       this.loading = true;
       listWind(this.queryParams).then(response => {
-        console.log(this.$data);
-        console.log("=================================");
-        console.log(response);
-        console.log("=================================");
         this.windList = response.rows;
         this.total = response.total;
         this.loading = false;
-        console.log(response)
       });
     },
     // 取消按钮
@@ -445,15 +439,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.wId)
-      //this.windList = selection.map(item => item.windList)
       this.single = selection.length!==1
-      console.log("======================")
-      //console.log("selection.length: "+selection.length)
-      //console.log("this.single: "+this.single)
-      //console.log("this.multiple: "+this.multiple)
-      //console.log("======================")
-      console.log("this.windList: "+this.windList)
-      console.log("======================")
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -537,9 +523,6 @@ export default {
     /** 复选框选中数据 */
     handleBladePartSelectionChange(selection) {
       this.checkedBladePart = selection.map(item => item.index)
-      console.log("=======================")
-      console.log("this.checkedBladePart: "+this.checkedBladePart)
-      console.log("=======================")
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -550,12 +533,9 @@ export default {
     /** 导出按钮操作 */
     handleExport2(row) {
       const wIds = row.wId || this.ids;
-      //this.getList();
       getReportManager(wIds).then(response => {
-        console.log(response.data())
+        console.log(response.code)
       })
-      //console.log(this.ids)
-
     },
     /** 删除按钮操作 */
     handleExQuery(row) {

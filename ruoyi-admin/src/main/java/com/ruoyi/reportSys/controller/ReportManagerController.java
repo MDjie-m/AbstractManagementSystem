@@ -64,19 +64,25 @@ public class ReportManagerController extends BaseController {
 
             ReportManagerController controller = new ReportManagerController();
             Map<String, Object> dataMap = new HashMap<String, Object>();
-            String realTurbineCodePhoto = wind.getTurbineCodePhoto().replace("profile", "D:\\ruoyi\\uploadPath");
+            String[] tbPicList = wind.getTurbineCodePhoto().replace("profile", "D:\\ruoyi\\uploadPath").split(",");
+            String realTurbineCodePhoto = tbPicList[0];
+            dataMap.put("ZJCJ",wind.getManufacturer());
+            dataMap.put("YPCJ",wind.getBladeManufacturer());
             dataMap.put("tb_code_img", controller.getImageStr(realTurbineCodePhoto));
             dataMap.put("FJBH",windTurbineCode);
             dataMap.put("YPXH", wind.getBladeModel());
-            dataMap.put("JCDW", wind.getEntryStaff());
+            dataMap.put("JXDW", wind.getMaintenanceUnit());
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = wind.getInspectionDate();
             String normativeDate = dateFormat.format(date);
             //.replace("profile", "D:\\ruoyi\\uploadPath")
             dataMap.put("XJSJ", normativeDate);
-            dataMap.put("bl1_code_img", controller.getImageStr(wind.getBlade1PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
-            dataMap.put("bl2_code_img", controller.getImageStr(wind.getBlade2PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
-            dataMap.put("bl3_code_img", controller.getImageStr(wind.getBlade3PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath")));
+            String[] bliPic1List = wind.getBlade1PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath").split(",");
+            dataMap.put("bl1_code_img", controller.getImageStr(bliPic1List[0]));
+            String[] bliPic2List = wind.getBlade1PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath").split(",");
+            dataMap.put("bl2_code_img", controller.getImageStr(bliPic2List[0]));
+            String[] bliPic3List = wind.getBlade1PhotoUrl().replace("profile", "D:\\ruoyi\\uploadPath").split(",");
+            dataMap.put("bl3_code_img", controller.getImageStr(bliPic3List[0]));
             dataMap.put("L1", wind.getBlade1Code());
             dataMap.put("L2", wind.getBlade2Code());
             dataMap.put("L3", wind.getBlade3Code());
