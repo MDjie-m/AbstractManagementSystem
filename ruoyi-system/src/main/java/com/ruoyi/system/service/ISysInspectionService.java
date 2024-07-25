@@ -29,11 +29,12 @@ public interface ISysInspectionService
 
     /**
      * 新增考察情况
-     * 
+     *
      * @param sysInspection 考察情况
+     * @param rate 评级
      * @return 结果
      */
-    public int insertSysInspection(SysInspection sysInspection);
+    public int insertSysInspection(SysInspection sysInspection,String rate);
 
     /**
      * 修改考察情况

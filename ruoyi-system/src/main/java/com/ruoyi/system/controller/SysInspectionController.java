@@ -81,13 +81,16 @@ public class SysInspectionController extends BaseController
 
     /**
      * 新增考察情况
+     * @param sysInspection 考察情况
+     * @param rate 评级
+     * @return 结果
      */
     @PreAuthorize("@ss.hasPermi('system:inspection:add')")
     @Log(title = "考察情况", businessType = BusinessType.INSERT)
-    @PostMapping
-    public AjaxResult add(@RequestBody SysInspection sysInspection)
+    @PostMapping("/add")
+    public AjaxResult add(@RequestBody SysInspection sysInspection,@RequestParam String rate)
     {
-        return toAjax(sysInspectionService.insertSysInspection(sysInspection));
+        return toAjax(sysInspectionService.insertSysInspection(sysInspection,rate));
     }
 
     /**

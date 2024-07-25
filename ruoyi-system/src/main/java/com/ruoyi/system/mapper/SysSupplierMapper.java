@@ -113,4 +113,14 @@ public interface SysSupplierMapper
      * @return
      */
     int inspectSysSupplier(List<String> supplierIds);
+
+    /**
+     * 执行里面的sql语句更新供应商表中该供应商的考察评级以及对应的考察id
+     * @param supplierId 供应商id
+     * @param inspectionId 考察Id
+     * @param rate 评级
+     * @return
+     */
+    int updateInspectRate(@Param("supplierId") String supplierId,
+                          @Param("inspectionId") String inspectionId, @Param("rate") String rate);
 }
