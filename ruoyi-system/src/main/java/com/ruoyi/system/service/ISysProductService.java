@@ -58,4 +58,12 @@ public interface ISysProductService
      * @return 结果
      */
     public int deleteSysProductByProductId(String productId);
+
+    /**
+     * 导入产品
+     * @param productList 产品数据列表
+     * @param isUpdateSupport 是否更新支持，如果已存在，则进行更新数据
+     * @return
+     */
+    public String importProduct(List<SysProduct> productList, Boolean isUpdateSupport);
 }

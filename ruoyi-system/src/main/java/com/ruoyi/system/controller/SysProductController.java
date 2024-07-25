@@ -20,6 +20,7 @@ import com.ruoyi.system.domain.SysProduct;
 import com.ruoyi.system.service.ISysProductService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 产品Controller
@@ -44,6 +45,20 @@ public class SysProductController extends BaseController
         startPage();
         List<SysProduct> list = sysProductService.selectSysProductList(sysProduct);
         return getDataTable(list);
+    }
+
+    /**
+     * 导入产品
+     */
+    @Log(title = "产品", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('system:product:import')")
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<SysProduct> util = new ExcelUtil<SysProduct>(SysProduct.class);
+        List<SysProduct> userList = util.importExcel(file.getInputStream());
+        String message = sysProductService.importProduct(userList, updateSupport);
+        return success(message);
     }
 
     /**

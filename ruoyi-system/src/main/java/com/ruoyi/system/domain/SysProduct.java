@@ -19,7 +19,6 @@ public class SysProduct extends BaseEntity
     private String productId;
 
     /** 供应商id */
-    @Excel(name = "供应商id")
     private String supplierId;
 
     /** 供应商名称 */
@@ -27,7 +26,6 @@ public class SysProduct extends BaseEntity
     private String supplierName;
 
     /** 一级分类 */
-    @Excel(name = "一级分类")
     private String primaryCategory;
 
     /** 一级分类名称 */
@@ -35,7 +33,6 @@ public class SysProduct extends BaseEntity
     private String primaryCategoryName;
 
     /** 二级分类 */
-    @Excel(name = "二级分类")
     private String secondaryCategory;
 
     /** 二级分类名称 */
@@ -43,7 +40,6 @@ public class SysProduct extends BaseEntity
     private String secondaryCategoryName;
 
     /** 三级分类 */
-    @Excel(name = "三级分类")
     private String tertiaryCategory;
 
     /** 三级分类名称 */
@@ -51,7 +47,6 @@ public class SysProduct extends BaseEntity
     private String tertiaryCategoryName;
 
     /** 四级分类 */
-    @Excel(name = "四级分类")
     private String quaternaryCategory;
 
     /** 四级分类名称 */
@@ -59,7 +54,6 @@ public class SysProduct extends BaseEntity
     private String quaternaryCategoryName;
 
     /** 五级分类 */
-    @Excel(name = "五级分类")
     private String fifthCategory;
 
     /** 五级分类名称 */
@@ -71,7 +65,7 @@ public class SysProduct extends BaseEntity
     private String productName;
 
     /** 0-国产 1-进口 */
-    @Excel(name = "0-国产 1-进口")
+    @Excel(name = "进口/国产", readConverterExp = "0=国产,1=进口")
     private Integer domesticImportedType;
 
     /** 产品型号 */
@@ -79,19 +73,16 @@ public class SysProduct extends BaseEntity
     private String productModel;
 
     /** 是否可报价：0：不可报价，1：可报价 */
-    @Excel(name = "是否可报价：0：不可报价，1：可报价")
+    @Excel(name = "是否可报价", readConverterExp = "0=不可报价,1=可报价")
     private Integer quotationFlag;
 
     /** 预留字段1 */
-    @Excel(name = "预留字段1")
     private String futureField1;
 
     /** 预留字段2 */
-    @Excel(name = "预留字段2")
     private String futureField2;
 
     /** 预留字段3 */
-    @Excel(name = "预留字段3")
     private String futureField3;
 
     public void setProductId(String productId) 
