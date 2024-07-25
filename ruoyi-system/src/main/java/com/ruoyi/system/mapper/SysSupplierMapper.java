@@ -102,7 +102,7 @@ public interface SysSupplierMapper
      * @param remark 备注
      * @return
      */
-    public  int editSysSupplierAudit(@Param("list") List<AuditVo> list,
+    public  int editSysSupplierAudit(@Param("list") List<String> list,
                                      @Param("auditStatus")Integer auditStatus,
                                      @Param("inspectionStatus")Integer inspectionStatus,
                                      @Param("remark")String remark);

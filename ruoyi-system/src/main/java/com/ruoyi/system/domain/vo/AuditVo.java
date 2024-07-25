@@ -1,16 +1,18 @@
 package com.ruoyi.system.domain.vo;
 
+import java.util.List;
+
 public class AuditVo {
-    private String supplierId;
+    private List<String> supplierList;
     private Integer auditStatus;
     private String remark ;
 
-    public String getSupplierId() {
-        return supplierId;
+    public List<String> getSupplierList() {
+        return supplierList;
     }
 
-    public void setSupplierId(String supplierId) {
-        this.supplierId = supplierId;
+    public void setSupplierList(List<String> supplierList) {
+        this.supplierList = supplierList;
     }
 
     public Integer getAuditStatus() {

@@ -169,25 +169,25 @@ public class SysSupplierServiceImpl implements ISysSupplierService
 
     /**
      * 编辑供应商审核状态
-     * @param list
+     * @param vo
      * @return
      */
     @Override
-    public int auditSysSupplier(List<AuditVo> list) {
+    public int auditSysSupplier(AuditVo vo) {
         int count = 0;
         // auditStatus = 1 通过审核
-        if (list.get(0).getAuditStatus() == 1) {
+        if (vo.getAuditStatus() == 1) {
             count = sysSupplierMapper
-                    .editSysSupplierAudit(list,
-                            list.get(0).getAuditStatus(),
+                    .editSysSupplierAudit(vo.getSupplierList(),
+                            vo.getAuditStatus(),
                             0, // 修改考察状态为候选
-                            list.get(0).getRemark());
+                            vo.getRemark());
         }else{
             count = sysSupplierMapper
-                    .editSysSupplierAudit(list,
-                            list.get(0).getAuditStatus(),
+                    .editSysSupplierAudit(vo.getSupplierList(),
+                            vo.getAuditStatus(),
                             null, // 考察状态为空
-                            list.get(0).getRemark());
+                            vo.getRemark());
         }
         return count;
     }
