@@ -2,6 +2,7 @@ package com.renxin.psychology.service;
 
 import com.renxin.psychology.domain.PsyConsultOrderItem;
 import com.renxin.psychology.dto.OrderItemDTO;
+import com.renxin.psychology.request.PsyWorkReq;
 
 import java.util.List;
 
@@ -29,5 +30,9 @@ public interface IPsyConsultOrderItemService
     PsyConsultOrderItem getOneByOrderId(Long orderId);
 
     List<OrderItemDTO> getOrderItemList(Long consultantId,String day);    
+    
+    List<OrderItemDTO> getTodoList(PsyWorkReq req);    
+    
+    Integer getTimeNumForConsulted(PsyWorkReq req);    
 
 }

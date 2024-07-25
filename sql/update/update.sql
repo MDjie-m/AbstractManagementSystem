@@ -178,10 +178,17 @@ ALTER TABLE `psy_consult_partner_item`
     CHANGE COLUMN `param1` `param1` VARCHAR(10240) NULL DEFAULT '' COMMENT '1学校名称,2资质类型,3证书名称,4培训名称,5咨询类型,6督导类型,7其他经历' COLLATE 'utf8mb4_general_ci' AFTER `num`;
 
 
-ALTER TABLE `psy_consult_serve_config`
-    ADD COLUMN `level` INT NULL COMMENT '咨询师级别 1~5' AFTER `end`,
+ALTER TABLE `psy_consult_server_config`
+    ADD COLUMN `level` INT NULL COMMENT '咨询师级别 1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师' AFTER `end`,
     ADD COLUMN `service_object` INT NULL COMMENT '服务对象  1来访者  2咨询师' AFTER `level`;
 
 
-ALTER TABLE `psy_consult_server_config`
-    CHANGE COLUMN `level` `level` INT(10) NULL DEFAULT NULL COMMENT '咨询师级别 1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师' AFTER `end`;
+ALTER TABLE `psy_consult`
+    DROP COLUMN `user_id`;
+
+ALTER TABLE `psy_consult_partner`
+    DROP COLUMN `user_id`;
+
+ALTER TABLE `psy_consultant_schedule`
+    ADD COLUMN `schedule_type` INT NOT NULL DEFAULT 0 COMMENT '任务类型  1.咨询服务   2.团督开课' AFTER `team_id`;
+

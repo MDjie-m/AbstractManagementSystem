@@ -29,14 +29,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectPsyConsultServeConfigVo">
         select id, mode, type, name, info, price, time, num,
                (SELECT COUNT(id) from psy_consult_order WHERE
-                    serve_id = psy_consult_serve_config.id and pay_status = '2'
+                    serve_id = psy_consult_server_config.id and pay_status = '2'
                     <if test="cId != null  and cId != ''">
                         and consult_id = #{cId}
                     </if>
                 ) sales,
-               (SELECT COUNT(consult_id) from psy_consult_serve WHERE serve_id = psy_consult_serve_config.id) ref,
+               (SELECT COUNT(consult_id) from psy_consult_serve WHERE serve_id = psy_consult_server_config.id) ref,
                z_index, bound, end, del_flag, status, create_by, create_time, update_by, update_time
-        from psy_consult_serve_config
+        from psy_consult_server_config
     </sql>
 
     <select id="getList" parameterType="PsyConsultServe" resultMap="PsyConsultServeConfigResult">
@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <update id="tombstonedByIds">
-        update psy_consult_serve_config set del_flag = 1 where id in
+        update psy_consult_server_config set del_flag = 1 where id in
         <foreach collection="array" item="item" open="(" separator="," close=")">
             #{item,jdbcType=BIGINT}
         </foreach>

@@ -11,11 +11,15 @@ import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.utils.StringUtils;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsultWork;
+import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.dto.HeaderDTO;
+import com.renxin.psychology.dto.OrderItemDTO;
 import com.renxin.psychology.mapper.PsyConsultWorkMapper;
 import com.renxin.psychology.request.PsyConsultWorkReq;
 import com.renxin.psychology.request.PsyWorkReq;
+import com.renxin.psychology.service.IPsyConsultOrderItemService;
 import com.renxin.psychology.service.IPsyConsultWorkService;
+import com.renxin.psychology.service.IPsyConsultantScheduleService;
 import com.renxin.psychology.vo.PsyConsultOrderItemVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import org.apache.commons.collections4.CollectionUtils;
@@ -25,6 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -32,6 +39,12 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
     
     @Resource
     private PsyConsultWorkMapper psyConsultWorkMapper;
+
+    @Resource
+    private IPsyConsultOrderItemService orderItemService;
+
+    @Resource
+    private IPsyConsultantScheduleService consultantScheduleService;
 
     @Override
     public List<PsyConsultWorkVO> getConsultWorks(PsyWorkReq req) {
@@ -289,6 +302,37 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
         List<Long> ids = getConsultIds(req);
         List<HashMap<String, String>> list = getWorks(req, ids);
         return list;
+    }
+    
+    @Override
+    public List<OrderItemDTO> getTodoList(PsyWorkReq req){
+        //Long consultId = req.getConsultId();//本咨询师id
+        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        req.setDay(today);
+        //查询面向[来访者]的服务待办清单
+        List<OrderItemDTO> orderItemList = orderItemService.getTodoList(req);
+        //查询每一条任务, 是该[来访者-咨询师]之间的第几次
+        for (OrderItemDTO item : orderItemList) {
+            req.setUserId(item.getUserId());
+            req.setRealTime(item.getRealTime());
+            Integer timeNum = orderItemService.getTimeNumForConsulted(req);
+            item.setTimeNum(timeNum);
+        }
+        
+        //查询面向[咨询师]的服务待办清单
+        PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
+            scheduleReq.setConsultId(req.getConsultId());
+            scheduleReq.setDay(today);
+        List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(scheduleReq);
+        List<OrderItemDTO> scheduleToItemList = BeanUtil.copyToList(scheduleList, OrderItemDTO.class);
+        
+        //清单合并
+        List<OrderItemDTO> mergedList = new ArrayList<>(orderItemList);
+        mergedList.addAll(scheduleToItemList);
+        // 按timeStart字段（字符串格式为"HH:mm"）进行正序排序
+        mergedList.sort(Comparator.comparing(dto -> LocalTime.parse(dto.getTimeStart())));
+
+        return mergedList;
     }
 
     @Override

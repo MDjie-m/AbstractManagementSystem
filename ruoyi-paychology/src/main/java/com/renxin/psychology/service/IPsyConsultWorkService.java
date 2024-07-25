@@ -1,7 +1,9 @@
 package com.renxin.psychology.service;
 
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.renxin.psychology.domain.PsyConsultWork;
 import com.renxin.psychology.dto.HeaderDTO;
+import com.renxin.psychology.dto.OrderItemDTO;
 import com.renxin.psychology.request.PsyConsultWorkReq;
 import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
@@ -14,6 +16,8 @@ public interface IPsyConsultWorkService {
     HashMap<String, String> getWorkDetail(PsyWorkReq req);
 
     List<HashMap<String, String>> getWorks(PsyWorkReq req);
+    
+    List<OrderItemDTO> getTodoList(PsyWorkReq req);
 
     List<PsyConsultWork> getList(PsyConsultWorkVO req);
 

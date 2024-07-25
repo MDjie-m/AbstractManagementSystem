@@ -25,8 +25,6 @@ public class PsyConsult extends BasePlusEntity implements Serializable
 {
     private static final long serialVersionUID = 5172540262606370812L;
 
-    /** 登录名 */
-    private Long userId;
 
     /** 登录名 */
     @Excel(name = "登录名")

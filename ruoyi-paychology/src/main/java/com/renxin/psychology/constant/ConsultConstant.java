@@ -74,4 +74,10 @@ public class ConsultConstant {
     public static final String CONSULT_TYPE_2 = "2";
     public static final String CONSULT_TYPE_3 = "3";
 
+    /**  团队督导状态  0:招募中 1:已开始 2:已结束 3:暂停  */
+    public static final Integer TEAM_STATUS_RECRUITING_0 = 0;
+    public static final Integer TEAM_STATUS_START_1 = 1;
+    public static final Integer TEAM_STATUS_END_2 = 2;
+    public static final Integer TEAM_STATUS_PAUSE_3 = 3;
+
 }

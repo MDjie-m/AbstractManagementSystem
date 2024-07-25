@@ -6,6 +6,7 @@ import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsultOrderItem;
 import com.renxin.psychology.dto.OrderItemDTO;
 import com.renxin.psychology.mapper.PsyConsultOrderItemMapper;
+import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.service.IPsyConsultOrderItemService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -75,6 +76,16 @@ public class PsyConsultOrderItemServiceImpl extends ServiceImpl<PsyConsultOrderI
 
        return  psyConsultOrderItemMapper.getOrderItemList(consultantId, day);
     }
-
     
+    @Override
+    public List<OrderItemDTO> getTodoList(PsyWorkReq req){
+        return psyConsultOrderItemMapper.getTodoList(req);
+    }
+    
+    @Override
+    public Integer getTimeNumForConsulted(PsyWorkReq req){
+        return psyConsultOrderItemMapper.getTimeNumForConsulted(req);
+    }
+
+
 }

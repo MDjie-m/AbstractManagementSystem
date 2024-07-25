@@ -291,3 +291,31 @@ CREATE TABLE `psy_consultant_team_supervision`  (
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '团队督导(组织)' ROW_FORMAT = Dynamic;
+
+
+CREATE TABLE `psy_consultant_schedule` (
+                                           `id` BIGINT(19) NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                           `order_id` BIGINT(19) NULL DEFAULT NULL COMMENT '订单号',
+                                           `team_id` BIGINT(19) NULL DEFAULT NULL COMMENT '团督号',
+                                           `work_id` BIGINT(19) NULL DEFAULT NULL COMMENT '排班',
+                                           `schedule_type` INT(10) NOT NULL DEFAULT '0' COMMENT '任务类型  1.咨询服务   2.团督开课',
+                                           `time_num` INT(10) NOT NULL DEFAULT '0' COMMENT '同一任务的第几次执行',
+                                           `time_start` VARCHAR(10) NULL DEFAULT NULL COMMENT '开始时间' COLLATE 'utf8mb4_0900_ai_ci',
+                                           `time_end` VARCHAR(10) NULL DEFAULT NULL COMMENT '结束时间' COLLATE 'utf8mb4_0900_ai_ci',
+                                           `day` VARCHAR(20) NULL DEFAULT NULL COMMENT '天' COLLATE 'utf8mb4_0900_ai_ci',
+                                           `week` VARCHAR(10) NULL DEFAULT NULL COMMENT '周' COLLATE 'utf8mb4_0900_ai_ci',
+                                           `status` CHAR(1) NULL DEFAULT '0' COMMENT '状态（0待办  1已完成）' COLLATE 'utf8mb4_0900_ai_ci',
+                                           `create_by` VARCHAR(64) NULL DEFAULT NULL COMMENT '创建人' COLLATE 'utf8mb4_0900_ai_ci',
+                                           `create_time` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+                                           `update_by` VARCHAR(64) NULL DEFAULT NULL COMMENT '更新者' COLLATE 'utf8mb4_0900_ai_ci',
+                                           `update_time` DATETIME NULL DEFAULT NULL COMMENT '更新时间',
+                                           `time` TINYINT(3) NULL DEFAULT NULL COMMENT '开始时间(整点)',
+                                           `real_time` VARCHAR(20) NULL DEFAULT NULL COMMENT '实际咨询开始时间' COLLATE 'utf8mb4_0900_ai_ci',
+                                           `consult_id` BIGINT(19) NULL DEFAULT NULL COMMENT '督导师',
+                                           PRIMARY KEY (`id`) USING BTREE
+)
+    COMMENT='咨询师排班任务表'
+    COLLATE='utf8mb4_0900_ai_ci'
+    ENGINE=InnoDB
+    AUTO_INCREMENT=21
+;

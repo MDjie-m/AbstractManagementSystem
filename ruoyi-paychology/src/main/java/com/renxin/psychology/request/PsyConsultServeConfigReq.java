@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 
 /**
- * 咨询服务配置对象 psy_consult_serve_config
+ * 咨询服务配置对象 psy_consult_server_config
  * 
  * @author renxin
  * @date 2023-07-14

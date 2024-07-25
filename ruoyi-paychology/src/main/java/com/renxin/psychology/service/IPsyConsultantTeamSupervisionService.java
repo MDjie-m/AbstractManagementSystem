@@ -65,4 +65,11 @@ public interface IPsyConsultantTeamSupervisionService
      * 付款完成后, 处理订单
      */
     public void handleOrder(PsyConsultantOrder consultantOrder);
+
+
+    /**
+     * 团队满员处理
+     * @param teamId
+     */
+    void handleTeamFull(Long teamId);
 }
