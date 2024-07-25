@@ -85,4 +85,11 @@ public interface ISysSupplierService
      * @return
      */
     public int auditSysSupplier(List<AuditVo> list);
+
+    /**
+     * 将审核已通过的供应商从候选状态变更为待考察状态
+     * @param supplierIds 供应商id列表
+     * @return 操作行数
+     */
+    int inspectSysSupplier(List<String> supplierIds);
 }

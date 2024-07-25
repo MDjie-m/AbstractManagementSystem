@@ -145,4 +145,17 @@ public class SysSupplierController extends BaseController
     public AjaxResult audit(@RequestBody List<AuditVo> list){
         return toAjax(sysSupplierService.auditSysSupplier(list));
     }
+
+    /**
+     * 执行xml里面的sql语句将审核通过的供应商的考察状态变更为待考察
+     * @param supplierIds 供应商id列表
+     * @return
+     * 需要操作这个界面的角色有 system:supplier:inspect 权限
+     */
+    @PreAuthorize("@ss.hasPermi('system:supplier:inspect')")
+    @Log(title = "供应商", businessType = BusinessType.UPDATE)
+    @PostMapping("/inspect")
+    public AjaxResult inspect(@RequestBody List<String> supplierIds){
+        return toAjax(sysSupplierService.inspectSysSupplier(supplierIds));
+    }
 }
