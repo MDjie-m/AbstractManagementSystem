@@ -106,4 +106,11 @@ public interface SysSupplierMapper
                                      @Param("auditStatus")Integer auditStatus,
                                      @Param("inspectionStatus")Integer inspectionStatus,
                                      @Param("remark")String remark);
+
+    /**
+     * 执行xml里面的sql语句将审核通过的供应商的考察状态变更为待考察
+     * @param supplierIds 供应商id列表
+     * @return
+     */
+    int inspectSysSupplier(List<String> supplierIds);
 }

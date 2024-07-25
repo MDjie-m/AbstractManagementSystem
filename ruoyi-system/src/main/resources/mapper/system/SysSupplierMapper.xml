@@ -230,6 +230,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.supplierId}
         </foreach>
     </update>
+    <update id="inspectSysSupplier" parameterType="list">
+        update sys_supplier
+        set inspection_status = 1
+        where supplier_id in
+        <foreach item="supplierId" collection="list" open="(" separator="," close=")">
+            #{supplierId}
+        </foreach>
+    </update>
 
     <delete id="deleteSysProductBySupplierIds" parameterType="String">
         delete from sys_product where supplier_id in

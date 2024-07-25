@@ -215,4 +215,14 @@ public class SysSupplierServiceImpl implements ISysSupplierService
             }
         }
     }
+
+    /**
+     * 执行xml里面的sql语句将审核通过的供应商的考察状态变更为待考察
+     * @param supplierIds 供应商id列表
+     * @return
+     */
+    @Override
+    public int inspectSysSupplier(List<String> supplierIds) {
+        return sysSupplierMapper.inspectSysSupplier(supplierIds);
+    }
 }
