@@ -227,7 +227,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         set audit_status = #{auditStatus}, inspection_status = #{inspectionStatus}, remark = #{remark}
         where supplier_id in
         <foreach item="item" collection="list" open="(" separator="," close=")">
-            #{item.supplierId}
+            #{item}
         </foreach>
     </update>
     <update id="inspectSysSupplier" parameterType="list">
