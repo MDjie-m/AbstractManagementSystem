@@ -117,9 +117,9 @@ public class SysInspectionController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:inspection:upload')")
     @PostMapping("/upload")
-    public AjaxResult uploadFiles(@RequestParam("file") List<MultipartFile> fileList, @RequestParam String supplierId){
+    public AjaxResult uploadFiles(@RequestParam("file") MultipartFile file, @RequestParam String supplierId){
         //准备好一个List
-        List<String> urlList = new ArrayList<>();
+        String url ="";
         //图片视频保存到哪个文件目录下
         File targetFile = new File(actualName+inspectFile+"/"+supplierId);
         try {
@@ -132,7 +132,6 @@ public class SysInspectionController extends BaseController
                 }
             }
             //新建成功就循环遍历传过来的文件数组
-            for(MultipartFile file:fileList){
                 //存放在服务器上的文件前缀统一用uuid
                 String fileName = UUID.randomUUID().toString();
                 //获取这个文件的后缀，Objects.requireNonNull,当不为null才能截取，当然本身应该是有名字的，但是这里idea提示没判断是否为Null所以就用这个吧
@@ -144,15 +143,13 @@ public class SysInspectionController extends BaseController
                 //向这个文件里面写入它的文件内容
                 file.transferTo(targetFileName);
                 //然后拼接访问这个文件资源的url
-                String url = rootPath + "/template/" + inspectFile + "/" + supplierId + "/" + newName;
+                url = rootPath + "/template/" + inspectFile + "/" + supplierId + "/" + newName;
                 //把这个url加到urlList列表里面
-                urlList.add(url);
-            }
+
         }catch (Exception e){
             //捕获的异常这里返回对应的错误信息，这个方法不会返回完整信息，只会返回一句话
             return error(e.getMessage());
         }
-        //最后返回urlList列表
-        return success(urlList);
+        return success(url);
     }
 }

@@ -2,6 +2,8 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +36,8 @@ public class SysProductController extends BaseController
 {
     @Autowired
     private ISysProductService sysProductService;
-
+    @Value("staticFile.rootPath")
+    private String rootPath;
     /**
      * 查询产品列表
      */
@@ -46,7 +49,16 @@ public class SysProductController extends BaseController
         List<SysProduct> list = sysProductService.selectSysProductList(sysProduct);
         return getDataTable(list);
     }
-
+    /**
+     * 下载模板地址返回
+     * @return
+     */
+    @PostMapping("/getUrl")
+    public  AjaxResult getUrl(){
+        // todo 对应文件名称
+        String url = rootPath+"/template/"+"productExport.xlsx";
+        return success().put("data",url);
+    }
     /**
      * 导入产品
      */
