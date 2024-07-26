@@ -27,7 +27,7 @@ public class SysSupplierPrice extends BaseEntity
 
     /** 产品id：外键 */
     @Excel(name = "产品id：外键")
-    private Long productId;
+    private String productId;
 
     /** 企业名称中文 */
     @Excel(name = "企业名称中文")
@@ -91,16 +91,16 @@ public class SysSupplierPrice extends BaseEntity
     {
         return supplierId;
     }
-    public void setProductId(Long productId) 
-    {
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
-    public Long getProductId() 
-    {
-        return productId;
-    }
-    public void setSupplierNameCn(String supplierNameCn) 
+    public void setSupplierNameCn(String supplierNameCn)
     {
         this.supplierNameCn = supplierNameCn;
     }
