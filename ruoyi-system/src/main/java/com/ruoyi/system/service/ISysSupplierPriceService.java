@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.SysSupplierPrice;
 
 /**
@@ -58,4 +60,9 @@ public interface ISysSupplierPriceService
      * @return 结果
      */
     public int deleteSysSupplierPriceBySupplierPriceId(String supplierPriceId);
+
+    public Map<String, List<SysSupplierPrice>> productPriceStatistics(
+            List<String> supplierNames, String productName, String startDate, String endDate);
+
+
 }

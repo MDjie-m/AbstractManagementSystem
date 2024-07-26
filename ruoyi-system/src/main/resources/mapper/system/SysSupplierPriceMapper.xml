@@ -114,4 +114,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{supplierPriceId}
         </foreach>
     </delete>
+
+    <select id="productPriceStatistics" resultMap="SysSupplierPriceResult">
+        SELECT supplier_name_cn, product_name, time , price_RMB,price_USD
+        FROM sys_supplier_price
+        WHERE product_name = #{productName}
+        AND (time BETWEEN #{startDate} AND #{endDate})
+        <if test="supplierNames != null and !supplierNames.isEmpty()">
+            AND supplier_name_cn IN
+            <foreach item="supplier_name_cn" collection="supplierNames" open="(" separator="," close=")">
+                #{supplier_name_cn}
+            </foreach>
+        </if>
+    </select>
 </mapper>
