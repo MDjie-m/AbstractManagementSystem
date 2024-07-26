@@ -1,6 +1,9 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.common.utils.uuid.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,4 +96,21 @@ public class SysSupplierPriceServiceImpl implements ISysSupplierPriceService
     {
         return sysSupplierPriceMapper.deleteSysSupplierPriceBySupplierPriceId(supplierPriceId);
     }
+
+    @Override
+    public Map<String, List<SysSupplierPrice>> productPriceStatistics(
+            List<String> supplierNames, String productName, String startDate, String endDate) {
+
+        // 调用Mapper方法获取所有匹配的报价
+        List<SysSupplierPrice> allQuotes = sysSupplierPriceMapper.productPriceStatistics(supplierNames, productName, startDate, endDate);
+
+        // 使用Stream API或传统循环来构建Map
+        Map<String, List<SysSupplierPrice>> resultMap = new LinkedHashMap<>(); // 使用LinkedHashMap保持插入顺序
+        for (SysSupplierPrice quote : allQuotes) {
+            resultMap.computeIfAbsent(quote.getSupplierNameCn(), k -> new ArrayList<>()).add(quote);
+        }
+
+        return resultMap;
+    }
+
 }

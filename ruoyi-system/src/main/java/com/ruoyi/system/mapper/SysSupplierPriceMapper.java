@@ -1,7 +1,11 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.SysSupplierPrice;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 供应商报价Mapper接口
@@ -9,6 +13,7 @@ import com.ruoyi.system.domain.SysSupplierPrice;
  * @author wzh
  * @date 2024-07-21
  */
+@Mapper
 public interface SysSupplierPriceMapper 
 {
     /**
@@ -58,4 +63,10 @@ public interface SysSupplierPriceMapper
      * @return 结果
      */
     public int deleteSysSupplierPriceBySupplierPriceIds(String[] supplierPriceIds);
+
+    public List<SysSupplierPrice> productPriceStatistics(
+            @Param("supplierNames") List<String> supplierNames,
+            @Param("productName") String productName,
+            @Param("startDate") String startDate,
+            @Param("endDate") String endDate);
 }
