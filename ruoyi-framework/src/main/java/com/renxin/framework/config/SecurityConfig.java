@@ -122,7 +122,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 //.antMatchers("/consult/**").anonymous()
                 // 静态资源，可匿名访问
                 .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
-                .antMatchers("/**/login","/consulted/user/wechatProgram/login","/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
+                .antMatchers("/**/login","/consultant/user/login","/consulted/user/wechatProgram/login","/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
                 //.antMatchers("/system/**","/consultant/**").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()

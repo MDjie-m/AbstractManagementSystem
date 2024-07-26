@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
- * 咨询服务配置对象 psy_consult_serve_config
+ * 咨询服务配置对象 psy_consult_server_config
  * 
  * @author renxin
  * @date 2023-07-14

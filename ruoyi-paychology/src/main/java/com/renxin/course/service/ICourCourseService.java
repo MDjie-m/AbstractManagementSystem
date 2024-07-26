@@ -2,6 +2,7 @@ package com.renxin.course.service;
 
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.dto.CourseQueryDTO;
+import com.renxin.course.vo.CourseListVO;
 
 import java.util.List;
 
@@ -106,4 +107,8 @@ public interface ICourCourseService
      * 根据条件询课程列表
      */
     public List<CourCourse> queryCourCourseList(CourseQueryDTO courseQueryDTO);
+
+
+    public List<CourseListVO> getCourseListByClassId(CourCourse courCourse);
+
 }

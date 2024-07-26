@@ -10,6 +10,7 @@ import com.renxin.course.mapper.CourCourseMapper;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.service.ICourSectionService;
 import com.renxin.course.service.ICourUserCourseSectionService;
+import com.renxin.course.vo.CourseListVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -188,4 +189,9 @@ public class CourCourseServiceImpl implements ICourCourseService
     public List<CourCourse> queryCourCourseList(CourseQueryDTO courseQueryDTO) {
         return courCourseMapper.queryCourCourseList(courseQueryDTO);
     }
+
+    public List<CourseListVO> getCourseListByClassId(CourCourse courCourse){
+        return courCourseMapper.getCourseListByClassId(courCourse);
+    }
+
 }

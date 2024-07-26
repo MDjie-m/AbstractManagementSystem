@@ -5,11 +5,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.renxin.psychology.mapper.PsyConsultMapper">
 
     <select id="search" resultType="com.renxin.psychology.domain.PsyConsult">
-        select id, user_id, user_name, nicK_name, avatar, email, phonenumber, sex, tabs, way, way_str, wx_card, zx_word, zx_style, notice, experience, info, detail, serve, work_num, work_time, work_hours, del_flag, is_show, status, qualification, index_qualification, create_by, create_time, update_by, update_time,
+        select id, user_name, nicK_name, avatar, email, phonenumber, sex, tabs, way, way_str, wx_card, zx_word, zx_style, notice, experience, info, detail, serve, work_num, work_time, work_hours, del_flag, is_show, status, qualification, index_qualification, create_by, create_time, update_by, update_time,
         qualification, index_qualification, mode, city, province, genre, img, share, lang,
         (SELECT count(id) FROM psy_consult_work WHERE `live` != '[]' and `live` != `used` and consult_id = psy_consult.id and `day` = DATE_FORMAT(NOW(),'%Y-%m-%d')) buy,
-        (SELECT b.price FROM psy_consult_serve a INNER JOIN psy_consult_serve_config b ON a.serve_id=b.id AND a.consult_id=psy_consult.id WHERE b.bound = 0 ORDER BY b.price ASC LIMIT 1) price,
-        (SELECT b.price FROM psy_consult_serve a INNER JOIN psy_consult_serve_config b ON a.serve_id=b.id AND a.consult_id=psy_consult.id WHERE b.bound = 1 ORDER BY b.price ASC LIMIT 1) new_price
+        (SELECT b.price FROM psy_consult_serve a INNER JOIN psy_consult_server_config b ON a.serve_id=b.id AND a.consult_id=psy_consult.id WHERE b.bound = 0 ORDER BY b.price ASC LIMIT 1) price,
+        (SELECT b.price FROM psy_consult_serve a INNER JOIN psy_consult_server_config b ON a.serve_id=b.id AND a.consult_id=psy_consult.id WHERE b.bound = 1 ORDER BY b.price ASC LIMIT 1) new_price
         from psy_consult
         <where>
             and status = 0 and del_flag = 0 and is_show = 0
@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                         and (SELECT count(id) FROM psy_consult_work WHERE `live` != '[]' and `live` != `used` and consult_id = psy_consult.id and `day` = DATE_FORMAT(NOW(),'%Y-%m-%d')) <![CDATA[>]]> 0
                     </if>
                     and id in (
-                    SELECT a.consult_id FROM psy_consult_serve a INNER JOIN psy_consult_serve_config b on a.serve_id = b.id WHERE a.consult_id = psy_consult.id
+                    SELECT a.consult_id FROM psy_consult_serve a INNER JOIN psy_consult_server_config b on a.serve_id = b.id WHERE a.consult_id = psy_consult.id
                     <if test="single != null"> and b.type = 1</if>
                     <if test="serveId != null  and serveId != ''"> and b.id = #{serveId}</if>
                     <if test="lowPrice != null and highPrice != null">
@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     and (
                         <if test="(serveId != null  and serveId != '') or lowPrice != null or highPrice != null">
                             id in (
-                            SELECT a.consult_id FROM psy_consult_serve a INNER JOIN psy_consult_serve_config b on a.serve_id = b.id and a.consult_id = psy_consult.id
+                            SELECT a.consult_id FROM psy_consult_serve a INNER JOIN psy_consult_server_config b on a.serve_id = b.id and a.consult_id = psy_consult.id
                             <where>
                                 <if test="single != null"> or b.type = 1</if>
                                 <if test="serveId != null  and serveId != ''"> or b.id = #{serveId}</if>
@@ -61,7 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <otherwise>
                     <if test="(serve != null  and serve != '') or (lowPrice != null and highPrice != null)">
                         and id in (
-                        SELECT a.consult_id FROM psy_consult_serve a INNER JOIN psy_consult_serve_config b on a.serve_id = b.id WHERE a.consult_id = psy_consult.id
+                        SELECT a.consult_id FROM psy_consult_serve a INNER JOIN psy_consult_server_config b on a.serve_id = b.id WHERE a.consult_id = psy_consult.id
                         <if test="serve != null  and serve != ''"> and b.`mode` = #{serve}</if>
                         <if test="lowPrice != null and highPrice != null">
                             and b.price <![CDATA[>=]]> #{lowPrice} and b.price <![CDATA[<=]]> #{highPrice}
@@ -172,7 +172,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="queryById" resultType="com.renxin.psychology.domain.PsyConsult">
         select
-            con.id, con.user_id, con.user_name, con.nick_name, con.mode, con.city, con.province, con.open_id, con.lang, con.genre, con.avatar, con.img, 
+            con.id, con.user_name, con.nick_name, con.mode, con.city, con.province, con.open_id, con.lang, con.genre, con.avatar, con.img,
             con.email, con.phonenumber, con.sex, con.tabs, con.way, con.way_str,con.wx_card, con.zx_word, con.zx_style, con.notice, con.experience, con.info, 
             con.detail, con.serve, con.work_num, con.work_time, con.work_hours, con.del_flag, con.is_show, con.status,
             con.qualification, con.index_qualification, con.create_by, con.create_time, con.update_by, con.update_time,

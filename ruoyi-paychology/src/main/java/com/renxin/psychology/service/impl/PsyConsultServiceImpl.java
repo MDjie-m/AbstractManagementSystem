@@ -214,9 +214,7 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     public List<PsyConsult> getList(PsyAdminConsultReq req) {
         LambdaQueryWrapper<PsyConsult> wp = Wrappers.lambdaQuery();
         wp.eq(PsyConsult::getDelFlag, "0");
-        if (SecurityUtils.getUserIdByNotAdmin() != 0L) {
-            wp.eq(PsyConsult::getUserId, SecurityUtils.getUserIdByNotAdmin());
-        }
+
 
         if (StringUtils.isNotEmpty(req.getUserName())) {
             wp.eq(PsyConsult::getUserName, req.getUserName());
