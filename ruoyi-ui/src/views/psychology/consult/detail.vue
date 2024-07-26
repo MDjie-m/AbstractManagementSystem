@@ -30,6 +30,30 @@
             <el-input size="mini" maxlength="50" show-word-limit v-model="form.lang" placeholder="咨询语种" />
           </el-form-item>
         </el-col>
+        <el-form-item label="咨询师级别" prop="level">
+          <el-select  maxlength="50" v-model="form.level" placeholder="请选择咨询师级别" clearable>
+            <el-option
+              v-for="item in levelList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-row>
+
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="服务对象" prop="serviceObject">
+            <el-checkbox-group v-model="form.serviceObject">
+              <el-checkbox v-for="item in dict.type.service_object" :value="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+            </el-checkbox-group>
+
+<!--            <el-radio-group v-model="form.serviceObject">
+              <el-radio v-for="item in dict.type.service_object" :value="item.value" :label="item.label">{{ item.label }}</el-radio>
+            </el-radio-group>-->
+          </el-form-item>
+        </el-col>
       </el-row>
 
       <el-row>
@@ -248,12 +272,15 @@
 import { getConsult, addConsult, updateConsult } from "@/api/psychology/consult";
 import { getTree } from "@/api/psychology/type";
 import { getCascaderData } from "@/utils/pc-city";
+import {levelList, serviceObjectList} from "@/utils/constants";
 
 export default {
   name: "ConsultDetail",
-  dicts: ['consult_sex', 'consult_type', 'consult_qualification'],
+  dicts: ['consult_sex', 'consult_type', 'consult_qualification' , "service_object"],
   data() {
     return {
+      levelList: this.$constants.levelList,
+      serviceObjectList: this.$constants.serviceObjectList,
       // 上传
       extraData: {
         module: this.$constants['picModules'][2],
@@ -267,6 +294,7 @@ export default {
         way: [],
         city: [],
         mode: [],
+        serviceObject: [],
         qualification: [],
         indexQualification: '',
         experience: []
@@ -357,6 +385,7 @@ export default {
         response.data.qualification = response.data.qualification ? response.data.qualification.split(',') : []
         response.data.way = response.data.way ? JSON.parse(response.data.way) : []
         response.data.mode = response.data.mode ? response.data.mode.split('/') : []
+        response.data.serviceObject = response.data.serviceObject ? response.data.serviceObject.split(',') : []
         response.data.city = response.data.city && response.data.province ? [response.data.province, response.data.city] : []
 
         this.form = response.data
@@ -369,6 +398,8 @@ export default {
         form.way = JSON.stringify(form.way)
         form.experience = JSON.stringify(form.experience)
         form.mode = form.mode.join('/')
+        form.serviceObject.sort((a, b) => a - b);//排序
+        form.serviceObject = form.serviceObject.join(',')//list转string
         const city = form.city
         form.province = city[0]
         form.city = city[1]

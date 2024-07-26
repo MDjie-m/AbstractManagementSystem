@@ -24,6 +24,15 @@ public class PsyConsultServeConfigReq extends BaseValObj implements Serializable
 
     @ApiModelProperty(value = "关联咨询师")
     private Long cId;
+    
+    //咨询师id
+    private Long consultantId;
+
+    /** 级别  1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师*/
+    private Integer level;
+
+    //服务对象   1来访者  2咨询师(督导)   3咨询师(体验)
+    private String serviceObject;
 
     @ApiModelProperty(value = "添加时间")
     private String dateLimit;

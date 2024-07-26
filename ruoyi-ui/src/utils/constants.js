@@ -36,7 +36,22 @@ export const modeList = [
   { label: '全部', value: '' },
   { label: '语音咨询', value: 1 },
   { label: '视频咨询', value: 2 },
-  { label: '当面咨询', value: 3 },
+ // { label: '当面咨询', value: 3 },
+]
+
+//咨询师级别
+export const levelList = [
+  { label: '学员咨询师', value: 1 },
+  { label: '初级咨询师', value: 2 },
+  { label: '中级咨询师', value: 3 },
+  { label: '高级咨询师', value: 4 },
+  { label: '督导师', value: 5 },
+]
+
+export const serviceObjectList = [
+  { label: '来访者', value: "1" },
+  { label: '个人督导', value: "2" },
+  { label: '个人体验', value: "3" },
 ]
 
 export const typeList = [
@@ -231,12 +246,15 @@ export const consultType = [
   { label: '督导', value: '3' },
 ]
 
+
 //督导类型
 export const supervisionType = [
   { label: '团体督导', value: '1' },
   { label: '个体督导', value: '2' },
   { label: '个人体验', value: '3' },
 ]
+
+
 
 // 星期
 export const weekDay = [

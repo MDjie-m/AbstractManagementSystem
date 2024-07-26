@@ -43,6 +43,10 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     /** 用户邮箱 */
     @Excel(name = "用户邮箱")
     private String email;
+    
+    
+    private String level;
+    private String serviceObject;
 
     /** 手机号码 */
     @Excel(name = "手机号码")

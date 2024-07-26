@@ -192,3 +192,21 @@ ALTER TABLE `psy_consult_partner`
 ALTER TABLE `psy_consultant_schedule`
     ADD COLUMN `schedule_type` INT NOT NULL DEFAULT 0 COMMENT '任务类型  1.咨询服务   2.团督开课' AFTER `team_id`;
 
+ALTER TABLE `psy_consult_server_config`
+    CHANGE COLUMN `service_object` `service_object` INT(10) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' AFTER `level`;
+
+
+ALTER TABLE `psy_consult_server_config`
+    CHANGE COLUMN `mode` `mode` TINYINT(3) UNSIGNED NULL DEFAULT NULL COMMENT '咨询形式   1语音咨询    2视频咨询   3面对面咨询' AFTER `id`;
+
+
+ALTER TABLE `psy_consult`
+    CHANGE COLUMN `server_to` `server_to` VARCHAR(255) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' COLLATE 'utf8mb4_0900_ai_ci' AFTER `level`,
+    CHANGE COLUMN `work_num` `work_num` INT(10) NOT NULL DEFAULT '0' COMMENT '咨询人数' AFTER `detail`;
+
+ALTER TABLE `psy_consult_server_config`
+    CHANGE COLUMN `service_object` `service_object` VARCHAR(50) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' AFTER `level`;
+
+
+ALTER TABLE `psy_consult`
+    CHANGE COLUMN `server_to` `service_object` VARCHAR(255) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' COLLATE 'utf8mb4_0900_ai_ci' AFTER `level`;

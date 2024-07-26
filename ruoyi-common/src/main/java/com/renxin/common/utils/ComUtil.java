@@ -16,6 +16,7 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ComUtil {
 
@@ -114,6 +115,14 @@ public class ComUtil {
      */
     public static List<String> stringToArrayStr(String str){
         return stringToArrayStrRegex(str, ",");
+    }
+
+    // 将 List<String> 转换为逗号分隔的字符串
+    public static String listToString(List<String> list) {
+        if (list == null || list.isEmpty()) {
+            return ""; // 返回一个空字符串
+        }
+        return list.stream().collect(Collectors.joining(","));
     }
 
     /**

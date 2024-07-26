@@ -11,12 +11,18 @@ import com.renxin.common.core.domain.entity.SysDictType;
 import com.renxin.consultant.common.dcloud.CloudFunctions;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsult;
+import com.renxin.psychology.domain.PsyConsultServeConfig;
+import com.renxin.psychology.request.PsyConsultServeConfigReq;
 import com.renxin.psychology.service.IPsyConsultConfigService;
+import com.renxin.psychology.service.IPsyConsultServeConfigService;
+import com.renxin.psychology.service.IPsyConsultServeService;
 import com.renxin.psychology.service.IPsyConsultService;
+import com.renxin.psychology.vo.PsyConsultServeConfigVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.system.service.ISysDictDataService;
 import com.renxin.system.service.ISysDictTypeService;
 import com.renxin.web.controller.common.CommonCosController;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +51,9 @@ public class ConsultantUserController extends BaseController {
 
     @Resource
     private IPsyConsultConfigService psyConsultConfigService;
+    
+    @Resource
+    private IPsyConsultServeConfigService serveConfigService;
     
     
     @PostMapping("/login")
@@ -78,6 +87,31 @@ public class ConsultantUserController extends BaseController {
             return AjaxResult.error("login error");
         }
     }
+
+    /**
+     * 查询指定咨询师的服务清单
+     * @param req
+     * @param request
+     * @return
+     */
+    @PostMapping("/getUserServerList")
+    public AjaxResult getUserServerList(@RequestBody PsyConsultServeConfigReq req , HttpServletRequest request)
+    {
+        try {
+            PsyConsultVO one = psyConsultService.getOne(req.getConsultantId());
+            req.setLevel(one.getLevel());
+            if (ObjectUtils.isEmpty(req.getServiceObject())){
+                req.setServiceObject(one.getServiceObject());
+            }
+            List<PsyConsultServeConfig> list = serveConfigService.getList(req);
+            
+            return AjaxResult.success(list);
+        } catch (Exception e) {
+            log.error("login error",e);
+            return AjaxResult.error("login error");
+        }
+    }
+    
     /**
      * 获取字典清单
      */
