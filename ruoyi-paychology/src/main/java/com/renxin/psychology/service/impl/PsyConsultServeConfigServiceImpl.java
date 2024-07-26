@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renxin.common.exception.UtilException;
+import com.renxin.common.utils.ComUtil;
 import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.vo.DateLimitUtilVO;
 import com.renxin.psychology.constant.ConsultConstant;
@@ -15,6 +16,7 @@ import com.renxin.psychology.request.PsyRefConsultServeReq;
 import com.renxin.psychology.service.IPsyConsultServeConfigService;
 import com.renxin.psychology.service.IPsyConsultServeService;
 import com.renxin.psychology.vo.PsyConsultServeConfigVO;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +45,14 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
 
     @Override
     public PsyConsultServeConfigVO getOne(Long id) {
-        return BeanUtil.toBean(psyConsultServeConfigMapper.selectById(id), PsyConsultServeConfigVO.class);
+        PsyConsultServeConfigVO server = BeanUtil.toBean(psyConsultServeConfigMapper.selectById(id), PsyConsultServeConfigVO.class);
+        /*String serviceObjectStr = server.getServiceObject();
+        if (ObjectUtils.isNotEmpty(serviceObjectStr)){
+            server.setServiceObjectList(ComUtil.stringToArrayStr(serviceObjectStr));
+        }else{
+            server.setServiceObjectList(new ArrayList<String>());
+        }*/
+        return server;
     }
 
     @Override
@@ -56,6 +66,14 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
 
         List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getList(req);
         list.forEach(this::setNames);
+       /* for (PsyConsultServeConfig server : list) {
+            String serviceObjectStr = server.getServiceObject();
+            if (ObjectUtils.isNotEmpty(serviceObjectStr)){
+                server.setServiceObjectList(ComUtil.stringToArrayStr(serviceObjectStr));
+            }else{
+                server.setServiceObjectList(new ArrayList<String>());
+            }
+        }*/
         return list;
     }
 
@@ -85,6 +103,9 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean save(List<PsyConsultServeConfig> entities) {
+        /*for (PsyConsultServeConfig entity : entities) {
+            entity.setServiceObject(ComUtil.listToString(entity.getServiceObjectList()));
+        }*/
         return this.saveBatch(entities);
     }
 
@@ -156,6 +177,7 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
         if (checkName(req.getName(), req.getPrice(), req.getId()) > 0) {
             throw new UtilException("服务已存在");
         }
+        //req.setServiceObject(ComUtil.listToString(req.getServiceObjectList()));
         return psyConsultServeConfigMapper.updateById(BeanUtil.toBean(req, PsyConsultServeConfig.class));
     }
 

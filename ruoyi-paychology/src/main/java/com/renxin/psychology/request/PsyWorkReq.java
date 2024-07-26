@@ -19,10 +19,13 @@ public class PsyWorkReq implements Serializable
 
     /** 月份 */
     private String month;
+    private String day;
     private String start;
     private String end;
     private String status;
     private Long consultId;
+    private String userId;
+    private String realTime;
 
     /** 咨询师 */
     private List<Long> ids;

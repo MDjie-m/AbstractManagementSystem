@@ -18,11 +18,17 @@ import lombok.EqualsAndHashCode;
 @Data
 public class OrderItemDTO extends PsyConsultOrderItem {
 
-    /** 客户id */
-    private Integer userAvatar;
     /** 客户 */
+    private String userId;
+    private String userAvatar;
     private String userNickName;
+    
+    private String teamId;
+    private Integer scheduleType;
     private String consultantName;
     private String consultantAvatar;
+    
+    private String serverName;
+    private int timeNum;
 
 }

@@ -19,7 +19,45 @@ INNER JOIN psy_user c ON c.id = d.user_id
 
         where
             a.consult_id =  #{consultId} 
-            a.day= #{day}
+           and a.day= #{day}
         ORDER BY a.day,time_start asc
     </select>
+    
+    
+<select id="getTodoList" parameterType="com.renxin.psychology.request.PsyWorkReq" resultType="com.renxin.psychology.dto.OrderItemDTO">
+    select
+        item.*,
+        con.user_name AS `consultantName`,
+        con.avatar AS `consultantAvatar`,
+        user.id AS `userId`,
+        user.name AS `userNickName`,
+        user.avatar AS `userAvatar`,
+        server.name as serverName
+    from
+        psy_consult_order_item item 
+    left join psy_consult con on con.id = item.consult_id
+    left join psy_consult_order orde on orde.id = item.order_id
+    left join psy_user user on user.id = orde.user_id
+    left join psy_consult_server_config server on server.id = orde.serve_id
+
+    where
+        item.consult_id =  #{consultId}
+      and item.day= #{day}
+    ORDER BY item.day,item.time_start asc
+</select>
+    
+    <select id="getTimeNumForConsulted" parameterType="com.renxin.psychology.request.PsyWorkReq" resultType="java.lang.Integer">
+        select 
+            count(item.id)
+        from
+            psy_consult_order_item item
+        left join psy_consult con on con.id = item.consult_id
+        left join psy_consult_order orde on orde.id = item.order_id
+        left join psy_user user on user.id = orde.user_id
+        where
+            item.consult_id =  #{consultId}
+            and user.id = #{userId}
+            and item.real_time &lt;= #{realTime}
+    </select>
+    
 </mapper>

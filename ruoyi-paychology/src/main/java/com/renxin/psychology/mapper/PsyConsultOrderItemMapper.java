@@ -3,6 +3,8 @@ package com.renxin.psychology.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.renxin.psychology.domain.PsyConsultOrderItem;
 import com.renxin.psychology.dto.OrderItemDTO;
+import com.renxin.psychology.request.PsyWorkReq;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,5 +16,9 @@ import java.util.List;
  */
 public interface PsyConsultOrderItemMapper extends BaseMapper<PsyConsultOrderItem>
 {
-    public List<OrderItemDTO> getOrderItemList(Long consultantId,String day) ;
+    public List<OrderItemDTO> getOrderItemList(@Param("consultId") Long consultId, @Param("day") String day);
+
+    public List<OrderItemDTO> getTodoList(PsyWorkReq req);
+    
+    public Integer getTimeNumForConsulted(PsyWorkReq req);
 }

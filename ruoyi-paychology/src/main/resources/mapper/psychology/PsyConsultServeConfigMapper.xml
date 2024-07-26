@@ -10,6 +10,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="type"    column="type"    />
         <result property="name"    column="name"    />
         <result property="info"    column="info"    />
+        <result property="level"    column="level"    />
+        <result property="serviceObject"    column="service_object"    />
         <result property="price"    column="price"    />
         <result property="time"    column="time"    />
         <result property="num"    column="num"    />
@@ -35,7 +37,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     </if>
                 ) sales,
                (SELECT COUNT(consult_id) from psy_consult_serve WHERE serve_id = psy_consult_server_config.id) ref,
-               z_index, bound, end, del_flag, status, create_by, create_time, update_by, update_time
+               z_index, bound, end, del_flag, status, create_by, create_time, update_by, update_time,
+               level ,service_object
         from psy_consult_server_config
     </sql>
 
@@ -53,6 +56,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
             <if test="nId != null  and nId != ''">
                 and id not in (select distinct serve_id from psy_consult_serve where consult_id = #{nId})
+            </if>
+            <if test="level != null and level != ''">
+                and level = #{level}
+            </if>
+            <if test="serviceObject != null and serviceObject != ''">
+                and  #{serviceObject} like concat('%',service_object,'%')
             </if>
         </where>
         order by z_index desc

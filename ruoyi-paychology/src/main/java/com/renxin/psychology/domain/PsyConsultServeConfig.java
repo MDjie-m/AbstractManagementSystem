@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 咨询服务配置对象 psy_consult_server_config
@@ -85,4 +86,14 @@ public class PsyConsultServeConfig extends BasePlusEntity implements Serializabl
     /** 状态（0正常 1停用） */
     @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
+
+    //咨询师级别 1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师
+    private Integer level;
+    
+    //服务对象   1来访者  2咨询师(督导)   3咨询师(体验)
+    private String serviceObject;
+
+    //@TableField(exist = false)
+    //private List<String> serviceObjectList;
+    
 }

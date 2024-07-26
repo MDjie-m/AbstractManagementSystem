@@ -186,6 +186,23 @@
             <el-radio v-for="item in modeList.filter(i => i.label !== '全部')" :label="item.value">{{ item.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="咨询师级别" prop="level">
+          <el-select v-model="form.level" >
+            <el-option
+              v-for="item in levelList.filter(i => i.label !== '全部')"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+              {{ item.label }}
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="服务对象" prop="serviceObjectList">
+          <el-radio-group v-model="form.serviceObject">
+            <el-radio v-for="item in serviceObjectList" :label="item.value">{{ item.label }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="服务类型" prop="type">
           <el-radio-group v-model="form.type" @input="changeType">
             <el-radio v-for="item in typeList.filter(i => i.label !== '全部')" :label="item.value">{{ item.label }}</el-radio>
@@ -250,6 +267,8 @@ export default {
       limitStatus: this.$constants.limitStatus,
       typeList: this.$constants.typeList,
       modeList: this.$constants.modeList,
+      levelList: this.$constants.levelList,
+      serviceObjectList: this.$constants.serviceObjectList,
       statusList: this.$constants.comListStatus,
       // 选中数组
       ids: [],
@@ -282,7 +301,9 @@ export default {
         status: null,
       },
       // 表单参数
-      form: {},
+      form: {
+       // serviceObjectList:[]
+      },
       // 表单校验
       rules: {
         name: [
@@ -370,7 +391,7 @@ export default {
         createBy: null,
         createTime: null,
         updateBy: null,
-        updateTime: null
+        updateTime: null,
       };
       this.resetForm("form");
     },
@@ -434,6 +455,12 @@ export default {
           if (this.end === 0) {
             this.form.end = 0
           }
+
+          if (this.form.level != 5 && (this.form.serviceObject == 2 || this.form.serviceObject == 3) ){
+            this.$modal.msgWarning("级别为[督导师]才可支持[个人督导][个人体验]服务")
+            return
+          }
+
           if (this.form.id != null) {
             updateServeConfig(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");

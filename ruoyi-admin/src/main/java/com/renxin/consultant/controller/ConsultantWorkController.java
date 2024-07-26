@@ -6,6 +6,7 @@ import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.dto.ConsultDTO;
 import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.framework.web.service.ConsultantTokenService;
+import com.renxin.psychology.dto.OrderItemDTO;
 import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.service.IPsyConsultWorkService;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
@@ -36,7 +37,7 @@ public class ConsultantWorkController extends BaseController {
     private IPsyConsultWorkService psyConsultWorkService;
 
     @ApiOperation(value = "咨询师排版计划表")
-    @PostMapping("/todo")
+    @PostMapping("/liveHour")
     @RateLimiter
     public TableDataInfo list(@RequestBody PsyWorkReq req, HttpServletRequest request)
     {
@@ -48,6 +49,21 @@ public class ConsultantWorkController extends BaseController {
         List<HashMap<String, String>>  list = psyConsultWorkService.getWorks(req);
         return getDataTable(list);
     }
+
+    @ApiOperation(value = "咨询师排班任务")
+    @PostMapping("/todo")
+    @RateLimiter
+    public AjaxResult todo(@RequestBody PsyWorkReq req, HttpServletRequest request)
+    {
+        ConsultDTO loginUser = consultantTokenService.getLoginUser(request);
+        if(loginUser != null){
+            //req.setIds(Collections.singletonList(loginUser.getConsultId()));
+            req.setConsultId(loginUser.getConsultId());
+        }
+        List<OrderItemDTO> todoList = psyConsultWorkService.getTodoList(req);
+        return AjaxResult.success(todoList);
+    }
+    
 
     @ApiOperation(value = "咨询师排班详情")
     @PostMapping("/detail")
@@ -63,7 +79,6 @@ public class ConsultantWorkController extends BaseController {
         }else{
             return AjaxResult.success();
         }
-
     }
 
     @ApiOperation(value = "咨询师排班新增")

@@ -57,7 +57,7 @@ public class PsyConsultantTeamSupervision extends BaseEntity
 
     /** 0:招募中 1:已开始 2:已结束 3:暂停 */
     @Excel(name = "0:招募中 1:已开始 2:已结束 3:暂停")
-    private String status;
+    private Integer status;
 
     /** 删除标志（0代表存在 1代表删除） */
     private String delFlag;

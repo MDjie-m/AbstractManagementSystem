@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.renxin.psychology.mapper.PsyConsultantScheduleMapper">
+    
+    <resultMap type="PsyConsultantSchedule" id="PsyConsultantScheduleResult">
+        <result property="id"    column="id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="teamId"    column="team_id"    />
+        <result property="scheduleType"    column="schedule_type"    />
+        <result property="timeNum"    column="time_num"    />
+        <result property="workId"    column="work_id"    />
+        <result property="timeStart"    column="time_start"    />
+        <result property="timeEnd"    column="time_end"    />
+        <result property="day"    column="day"    />
+        <result property="week"    column="week"    />
+        <result property="status"    column="status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="time"    column="time"    />
+        <result property="realTime"    column="real_time"    />
+        <result property="consultId"    column="consult_id"    />
+    </resultMap>
+
+    <sql id="selectPsyConsultantScheduleVo">
+        select id, order_id,team_id, work_id,time_num,schedule_type, time_start, time_end, day, week, status, create_by, 
+               create_time, update_by, update_time, time, real_time, consult_id from psy_consultant_schedule
+    </sql>
+
+    <select id="selectPsyConsultantScheduleList" parameterType="PsyConsultantSchedule" resultMap="PsyConsultantScheduleResult">
+        select 
+           sc.id, sc.order_id,sc.team_id, sc.work_id,sc.time_num,sc.schedule_type, sc.time_start, sc.time_end, sc.day, sc.week, sc.status, sc.create_by,
+           sc.create_time, sc.update_by, sc.update_time, sc.time, sc.real_time, sc.consult_id ,
+           team.title as serverName
+        from psy_consultant_schedule sc
+            left join psy_consultant_team_supervision team on team.id = sc.team_id
+        <where>  
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="workId != null "> and work_id = #{workId}</if>
+            <if test="scheduleType != null "> and schedule_type = #{scheduleType}</if>
+            <if test="timeStart != null  and timeStart != ''"> and time_start = #{timeStart}</if>
+            <if test="timeEnd != null  and timeEnd != ''"> and time_end = #{timeEnd}</if>
+            <if test="day != null  and day != ''"> and day = #{day}</if>
+            <if test="week != null  and week != ''"> and week = #{week}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="time != null "> and time = #{time}</if>
+            <if test="realTime != null  and realTime != ''"> and real_time = #{realTime}</if>
+            <if test="consultId != null "> and consult_id = #{consultId}</if>
+        </where>
+    </select>
+    
+    <select id="selectPsyConsultantScheduleById" parameterType="Long" resultMap="PsyConsultantScheduleResult">
+        <include refid="selectPsyConsultantScheduleVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPsyConsultantSchedule" parameterType="PsyConsultantSchedule">
+        insert into psy_consultant_schedule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="teamId != null">team_id,</if>
+            <if test="scheduleType != null">schedule_type,</if>
+            <if test="timeNum != null">time_num,</if>
+            <if test="workId != null">work_id,</if>
+            <if test="timeStart != null">time_start,</if>
+            <if test="timeEnd != null">time_end,</if>
+            <if test="day != null">day,</if>
+            <if test="week != null">week,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="time != null">time,</if>
+            <if test="realTime != null">real_time,</if>
+            <if test="consultId != null">consult_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="workId != null">#{workId},</if>
+            <if test="teamId != null">#{teamId},</if>
+            <if test="scheduleType != null">#{scheduleType},</if>
+            <if test="timeNum != null">#{timeNum},</if>
+            <if test="timeStart != null">#{timeStart},</if>
+            <if test="timeEnd != null">#{timeEnd},</if>
+            <if test="day != null">#{day},</if>
+            <if test="week != null">#{week},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="time != null">#{time},</if>
+            <if test="realTime != null">#{realTime},</if>
+            <if test="consultId != null">#{consultId},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePsyConsultantSchedule" parameterType="PsyConsultantSchedule">
+        update psy_consultant_schedule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="workId != null">work_id = #{workId},</if>
+            <if test="teamId != null">team_id = #{teamId},</if>
+            <if test="timeNum != null">time_num = #{timeNum},</if>
+            <if test="scheduleType != null">schedule_type = #{scheduleType},</if>
+            <if test="timeStart != null">time_start = #{timeStart},</if>
+            <if test="timeEnd != null">time_end = #{timeEnd},</if>
+            <if test="day != null">day = #{day},</if>
+            <if test="week != null">week = #{week},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="time != null">time = #{time},</if>
+            <if test="realTime != null">real_time = #{realTime},</if>
+            <if test="consultId != null">consult_id = #{consultId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePsyConsultantScheduleById" parameterType="Long">
+        delete from psy_consultant_schedule where id = #{id}
+    </delete>
+
+    <delete id="deletePsyConsultantScheduleByIds" parameterType="String">
+        delete from psy_consultant_schedule where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
