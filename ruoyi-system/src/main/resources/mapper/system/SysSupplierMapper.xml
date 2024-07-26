@@ -230,6 +230,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item}
         </foreach>
     </update>
+
+<!--  审核考察状态  -->
+    <update id="inspectionAuditSysSupplier" parameterType="list">
+        update sys_supplier
+        set inspection_audit_status = #{inspectionAuditStatus}
+        where supplier_id in
+        <foreach item="supplierId" collection="list" open="(" separator="," close=")">
+            #{supplierId}
+        </foreach>
+    </update>
+
+
     <update id="inspectSysSupplier" parameterType="list">
         update sys_supplier
         set inspection_status = 1

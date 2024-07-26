@@ -115,4 +115,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{inspectionId}
         </foreach>
     </delete>
+
+    <!--  编辑审核状态  -->
+    <update id="updateInspectAudit" parameterType="list">
+        update sys_inspection
+        set future_field2 = #{remark}, future_field3 = #{status}
+        where supplier_id in
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 </mapper>

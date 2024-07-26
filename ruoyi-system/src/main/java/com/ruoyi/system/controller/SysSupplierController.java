@@ -147,6 +147,14 @@ public class SysSupplierController extends BaseController
     }
 
     /**
+     * 审核考察
+     */
+//    @PreAuthorize("@ss.hasPermi('system:supplier:inspectionAudit')")
+//    @Log(title = "供应商", businessType = BusinessType.UPDATE)
+    @PostMapping("/inspectionAudit")
+    public AjaxResult inspectionAudit(@RequestBody AuditVo vo){ return toAjax(sysSupplierService.inspectionAuditSysSupplier(vo)); }
+
+    /**
      * 执行xml里面的sql语句将审核通过的供应商的考察状态变更为待考察
      * @param supplierIds 供应商id列表
      * @return

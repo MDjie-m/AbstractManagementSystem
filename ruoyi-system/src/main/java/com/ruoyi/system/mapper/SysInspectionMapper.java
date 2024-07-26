@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.SysInspection;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 考察情况Mapper接口
@@ -58,4 +59,9 @@ public interface SysInspectionMapper
      * @return 结果
      */
     public int deleteSysInspectionByInspectionIds(String[] inspectionIds);
+
+    /**
+     * 审核考察
+     */
+    public int updateInspectAudit(@Param("list") List<String> list, @Param("remark") String remark, @Param("status") String status);
 }

@@ -12,6 +12,7 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.system.domain.vo.AuditVo;
 import com.ruoyi.system.easyexcel.SupplierListener;
+import com.ruoyi.system.mapper.SysInspectionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -36,6 +37,9 @@ public class SysSupplierServiceImpl implements ISysSupplierService
 {
     @Autowired
     private SysSupplierMapper sysSupplierMapper;
+
+    @Autowired
+    private SysInspectionMapper sysInspectionMapper;
 
     /**
      * 查询供应商
@@ -224,5 +228,16 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     @Override
     public int inspectSysSupplier(List<String> supplierIds) {
         return sysSupplierMapper.inspectSysSupplier(supplierIds);
+    }
+
+    /**
+     * 审核考察
+     * @param vo
+     * @return
+     */
+    @Override
+    public int inspectionAuditSysSupplier(AuditVo vo) {
+        sysSupplierMapper.inspectionAuditSysSupplier(vo.getSupplierList(), vo.getAuditStatus());
+        return sysInspectionMapper.updateInspectAudit(vo.getSupplierList(), vo.getRemark(), vo.getAuditStatus().toString());
     }
 }
