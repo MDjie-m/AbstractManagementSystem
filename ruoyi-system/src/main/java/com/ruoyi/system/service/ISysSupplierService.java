@@ -92,4 +92,11 @@ public interface ISysSupplierService
      * @return 操作行数
      */
     int inspectSysSupplier(List<String> supplierIds);
+
+    /**
+     * 审核考察
+     * @param vo
+     * @return
+     */
+    int inspectionAuditSysSupplier(AuditVo vo);
 }

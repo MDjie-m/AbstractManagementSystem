@@ -23,9 +23,9 @@ import java.util.Map;
 public class SupplierListener implements ReadListener<SysSupplier> {
 
     /**
-     * 每隔100000条存储数据库，然后清理list ，方便内存回收
+     * 每隔10000条存储数据库，然后清理list ，方便内存回收
      */
-    private static final int BATCH_COUNT = 100000;
+    private static final int BATCH_COUNT = 10000;
     /**
      * 表头数据
      */

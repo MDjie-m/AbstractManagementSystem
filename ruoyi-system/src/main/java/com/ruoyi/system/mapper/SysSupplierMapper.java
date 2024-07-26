@@ -123,4 +123,12 @@ public interface SysSupplierMapper
      */
     int updateInspectRate(@Param("supplierId") String supplierId,
                           @Param("inspectionId") String inspectionId, @Param("rate") String rate);
+
+    /**
+     * 修改供应商审核考察状态
+     * @param list
+     * @param inspectionAuditStatus
+     * @return
+     */
+    public int inspectionAuditSysSupplier(@Param("list")List<String> list, @Param("inspectionAuditStatus") int inspectionAuditStatus);
 }
