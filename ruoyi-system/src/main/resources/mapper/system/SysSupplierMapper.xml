@@ -173,8 +173,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             (#{item.supplierId},#{item.label},#{item.country},#{item.province},#{item.city},#{item.area},
             #{item.productType},#{item.registrationNo},#{item.registrationNoInChina},
              #{item.supplierNameCn},#{item.supplierNameEn},#{item.registrationTime},
-             #{item.registrationTimeValidityPeriod},#{delete_flag},#{item.contacts},
-             #{item.telephone},#{item.email},#{item.classification},#{item.dataSources}
+             #{item.registrationTimeValidityPeriod},#{item.deleteFlag},#{item.contacts},
+             #{item.telephone},#{item.email},#{item.classification},#{item.dataSources})
         </foreach>
     </insert>
 
