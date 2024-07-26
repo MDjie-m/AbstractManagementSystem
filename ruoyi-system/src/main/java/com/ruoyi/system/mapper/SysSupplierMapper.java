@@ -130,5 +130,5 @@ public interface SysSupplierMapper
      * @param inspectionAuditStatus
      * @return
      */
-    public int inspectionAuditSysSupplier(@Param("list")List<String> list, @Param("inspectionAuditStatus") int inspectionAuditStatus,@Param("rate") int rate);
+    public int inspectionAuditSysSupplier(@Param("list")List<String> list, @Param("inspectionAuditStatus") int inspectionAuditStatus,@Param("rate") String rate);
 }

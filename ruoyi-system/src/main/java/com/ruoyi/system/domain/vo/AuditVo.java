@@ -6,13 +6,13 @@ public class AuditVo {
     private List<String> supplierList;
     private Integer auditStatus;
     private String remark ;
-    private Integer rate;
+    private String rate;
 
-    public Integer getRate() {
+    public String getRate() {
         return rate;
     }
 
-    public void setRate(Integer rate) {
+    public void setRate(String rate) {
         this.rate = rate;
     }
 
