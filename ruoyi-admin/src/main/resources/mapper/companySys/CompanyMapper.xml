@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.companySys.mapper.CompanyMapper">
+    
+    <resultMap type="Company" id="CompanyResult">
+        <result property="cId"    column="c_id"    />
+        <result property="companyCode"    column="company_code"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="companyAddress"    column="company_address"    />
+        <result property="companyEmail"    column="company_email"    />
+        <result property="cReserve1"    column="c_reserve1"    />
+        <result property="cReserve2"    column="c_reserve2"    />
+        <result property="cReserve3"    column="c_reserve3"    />
+        <result property="cReserve4"    column="c_reserve4"    />
+    </resultMap>
+
+    <resultMap id="CompanyWindFarmResult" type="Company" extends="CompanyResult">
+        <collection property="windFarmList" ofType="WindFarm" column="c_id" select="selectWindFarmList" />
+    </resultMap>
+
+    <resultMap type="WindFarm" id="WindFarmResult">
+        <result property="wId"    column="w_id"    />
+        <result property="windFarmCode"    column="wind_farm_code"    />
+        <result property="windFarmName"    column="wind_farm_name"    />
+        <result property="companyCode"    column="company_code"    />
+        <result property="address"    column="address"    />
+        <result property="wReserve1"    column="w_reserve1"    />
+        <result property="wReserve2"    column="w_reserve2"    />
+        <result property="wReserve3"    column="w_reserve3"    />
+        <result property="wReserve4"    column="w_reserve4"    />
+    </resultMap>
+
+    <sql id="selectCompanyVo">
+        select c_id, company_code, company_name, company_address, company_email, c_reserve1, c_reserve2, c_reserve3, c_reserve4 from company
+    </sql>
+
+    <select id="selectCompanyList" parameterType="Company" resultMap="CompanyResult">
+        <include refid="selectCompanyVo"/>
+        <where>  
+            <if test="companyCode != null  and companyCode != ''"> and company_code = #{companyCode}</if>
+            <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCompanyByCId" parameterType="Long" resultMap="CompanyWindFarmResult">
+        select c_id, company_code, company_name, company_address, company_email, c_reserve1, c_reserve2, c_reserve3, c_reserve4
+        from company
+        where c_id = #{cId}
+    </select>
+
+    <select id="selectWindFarmList" resultMap="WindFarmResult">
+        select w_id, wind_farm_code, wind_farm_name, company_code, address, w_reserve1, w_reserve2, w_reserve3, w_reserve4
+        from wind_farm
+        where company_code = #{company_code}
+    </select>
+
+    <insert id="insertCompany" parameterType="Company" useGeneratedKeys="true" keyProperty="cId">
+        insert into company
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="companyCode != null">company_code,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="companyAddress != null">company_address,</if>
+            <if test="companyEmail != null">company_email,</if>
+            <if test="cReserve1 != null">c_reserve1,</if>
+            <if test="cReserve2 != null">c_reserve2,</if>
+            <if test="cReserve3 != null">c_reserve3,</if>
+            <if test="cReserve4 != null">c_reserve4,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="companyCode != null">#{companyCode},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="companyAddress != null">#{companyAddress},</if>
+            <if test="companyEmail != null">#{companyEmail},</if>
+            <if test="cReserve1 != null">#{cReserve1},</if>
+            <if test="cReserve2 != null">#{cReserve2},</if>
+            <if test="cReserve3 != null">#{cReserve3},</if>
+            <if test="cReserve4 != null">#{cReserve4},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCompany" parameterType="Company">
+        update company
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyCode != null">company_code = #{companyCode},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="companyAddress != null">company_address = #{companyAddress},</if>
+            <if test="companyEmail != null">company_email = #{companyEmail},</if>
+            <if test="cReserve1 != null">c_reserve1 = #{cReserve1},</if>
+            <if test="cReserve2 != null">c_reserve2 = #{cReserve2},</if>
+            <if test="cReserve3 != null">c_reserve3 = #{cReserve3},</if>
+            <if test="cReserve4 != null">c_reserve4 = #{cReserve4},</if>
+        </trim>
+        where c_id = #{cId}
+    </update>
+
+    <delete id="deleteCompanyByCId" parameterType="Long">
+        delete from company where c_id = #{cId}
+    </delete>
+
+    <delete id="deleteCompanyByCIds" parameterType="String">
+        delete from company where c_id in 
+        <foreach item="cId" collection="array" open="(" separator="," close=")">
+            #{cId}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteWindFarmByCompanyCodes" parameterType="String">
+        delete from wind_farm where company_code in 
+        <foreach item="companyCode" collection="array" open="(" separator="," close=")">
+            #{companyCode}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWindFarmByCompanyCode" parameterType="Long">
+        delete from wind_farm where company_code = #{companyCode}
+    </delete>
+
+    <insert id="batchWindFarm">
+        insert into wind_farm( w_id, wind_farm_code, wind_farm_name, company_code, address, w_reserve1, w_reserve2, w_reserve3, w_reserve4) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.wId}, #{item.windFarmCode}, #{item.windFarmName}, #{item.companyCode}, #{item.address}, #{item.wReserve1}, #{item.wReserve2}, #{item.wReserve3}, #{item.wReserve4})
+        </foreach>
+    </insert>
+</mapper>

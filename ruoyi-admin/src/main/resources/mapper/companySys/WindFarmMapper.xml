@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.companySys.mapper.WindFarmMapper">
+    
+    <resultMap type="WindFarm" id="WindFarmResult">
+        <result property="wId"    column="w_id"    />
+        <result property="windFarmCode"    column="wind_farm_code"    />
+        <result property="windFarmName"    column="wind_farm_name"    />
+        <result property="companyCode"    column="company_code"    />
+        <result property="address"    column="address"    />
+        <result property="wReserve1"    column="w_reserve1"    />
+        <result property="wReserve2"    column="w_reserve2"    />
+        <result property="wReserve3"    column="w_reserve3"    />
+        <result property="wReserve4"    column="w_reserve4"    />
+    </resultMap>
+
+    <sql id="selectWindFarmVo">
+        select w_id, wind_farm_code, wind_farm_name, company_code, address, w_reserve1, w_reserve2, w_reserve3, w_reserve4 from wind_farm
+    </sql>
+
+    <select id="selectWindFarmList" parameterType="WindFarm" resultMap="WindFarmResult">
+        <include refid="selectWindFarmVo"/>
+        <where>  
+            <if test="windFarmCode != null  and windFarmCode != ''"> and wind_farm_code = #{windFarmCode}</if>
+            <if test="windFarmName != null  and windFarmName != ''"> and wind_farm_name like concat('%', #{windFarmName}, '%')</if>
+            <if test="companyCode != null "> and company_code = #{companyCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectWindFarmByWId" parameterType="Long" resultMap="WindFarmResult">
+        <include refid="selectWindFarmVo"/>
+        where w_id = #{wId}
+    </select>
+
+    <insert id="insertWindFarm" parameterType="WindFarm" useGeneratedKeys="true" keyProperty="wId">
+        insert into wind_farm
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="windFarmCode != null">wind_farm_code,</if>
+            <if test="windFarmName != null">wind_farm_name,</if>
+            <if test="companyCode != null">company_code,</if>
+            <if test="address != null">address,</if>
+            <if test="wReserve1 != null">w_reserve1,</if>
+            <if test="wReserve2 != null">w_reserve2,</if>
+            <if test="wReserve3 != null">w_reserve3,</if>
+            <if test="wReserve4 != null">w_reserve4,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="windFarmCode != null">#{windFarmCode},</if>
+            <if test="windFarmName != null">#{windFarmName},</if>
+            <if test="companyCode != null">#{companyCode},</if>
+            <if test="address != null">#{address},</if>
+            <if test="wReserve1 != null">#{wReserve1},</if>
+            <if test="wReserve2 != null">#{wReserve2},</if>
+            <if test="wReserve3 != null">#{wReserve3},</if>
+            <if test="wReserve4 != null">#{wReserve4},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWindFarm" parameterType="WindFarm">
+        update wind_farm
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="windFarmCode != null">wind_farm_code = #{windFarmCode},</if>
+            <if test="windFarmName != null">wind_farm_name = #{windFarmName},</if>
+            <if test="companyCode != null">company_code = #{companyCode},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="wReserve1 != null">w_reserve1 = #{wReserve1},</if>
+            <if test="wReserve2 != null">w_reserve2 = #{wReserve2},</if>
+            <if test="wReserve3 != null">w_reserve3 = #{wReserve3},</if>
+            <if test="wReserve4 != null">w_reserve4 = #{wReserve4},</if>
+        </trim>
+        where w_id = #{wId}
+    </update>
+
+    <delete id="deleteWindFarmByWId" parameterType="Long">
+        delete from wind_farm where w_id = #{wId}
+    </delete>
+
+    <delete id="deleteWindFarmByWIds" parameterType="String">
+        delete from wind_farm where w_id in 
+        <foreach item="wId" collection="array" open="(" separator="," close=")">
+            #{wId}
+        </foreach>
+    </delete>
+</mapper>
