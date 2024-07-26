@@ -100,7 +100,7 @@ public class SysSupplierPriceController extends BaseController
     /**
      * 报价列表数据统计
      */
-    @GetMapping("/statistics")
+    @PostMapping("/statistics")
     public Map<String,List<SysSupplierPrice>> productPriceStatistics (@RequestBody PriceVo vo)  {
         return sysSupplierPriceService.productPriceStatistics(vo.getSupplierNames(),vo.getProductName(),vo.getStartDate(),vo.getEndDate());
 
