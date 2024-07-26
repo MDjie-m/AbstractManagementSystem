@@ -149,8 +149,8 @@ public class SysSupplierController extends BaseController
     /**
      * 审核考察
      */
-//    @PreAuthorize("@ss.hasPermi('system:supplier:inspectionAudit')")
-//    @Log(title = "供应商", businessType = BusinessType.UPDATE)
+    @PreAuthorize("@ss.hasPermi('system:supplier:inspectionAudit')")
+    @Log(title = "供应商", businessType = BusinessType.UPDATE)
     @PostMapping("/inspectionAudit")
     public AjaxResult inspectionAudit(@RequestBody AuditVo vo){ return toAjax(sysSupplierService.inspectionAuditSysSupplier(vo)); }
 

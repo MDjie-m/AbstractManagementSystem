@@ -237,7 +237,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
      */
     @Override
     public int inspectionAuditSysSupplier(AuditVo vo) {
-        sysSupplierMapper.inspectionAuditSysSupplier(vo.getSupplierList(), vo.getAuditStatus());
+        sysSupplierMapper.inspectionAuditSysSupplier(vo.getSupplierList(), vo.getAuditStatus(),vo.getRate());
         return sysInspectionMapper.updateInspectAudit(vo.getSupplierList(), vo.getRemark(), vo.getAuditStatus().toString());
     }
 }

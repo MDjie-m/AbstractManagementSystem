@@ -6,6 +6,15 @@ public class AuditVo {
     private List<String> supplierList;
     private Integer auditStatus;
     private String remark ;
+    private Integer rate;
+
+    public Integer getRate() {
+        return rate;
+    }
+
+    public void setRate(Integer rate) {
+        this.rate = rate;
+    }
 
     public List<String> getSupplierList() {
         return supplierList;
