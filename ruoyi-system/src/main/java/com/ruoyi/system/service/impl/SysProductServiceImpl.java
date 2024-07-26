@@ -58,6 +58,7 @@ public class SysProductServiceImpl implements ISysProductService {
     @Override
     public int insertSysProduct(SysProduct sysProduct)
     {
+        sysProduct.setProductId(UUID.randomUUID().toString());
         return sysProductMapper.insertSysProduct(sysProduct);
     }
 
