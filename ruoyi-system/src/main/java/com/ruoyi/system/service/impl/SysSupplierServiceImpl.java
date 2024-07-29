@@ -82,7 +82,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     {
         String supplierNameCn = sysSupplier.getSupplierNameCn();
         SysUser user = new SysUser();
-        user.setNickName(supplierNameCn);
+        user.setUserName(supplierNameCn);
         user.setNickName(supplierNameCn);
         user.setPassword(SecurityUtils.encryptPassword("123456"));
         user.setUserType("5");
