@@ -1,11 +1,15 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.utils.uuid.UUID;
+import com.ruoyi.system.domain.SysSupplier;
+import com.ruoyi.system.domain.vo.AsticVo;
+import com.ruoyi.system.domain.vo.PriceVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysSupplierPriceMapper;
@@ -98,19 +102,32 @@ public class SysSupplierPriceServiceImpl implements ISysSupplierPriceService
     }
 
     @Override
-    public Map<String, List<SysSupplierPrice>> productPriceStatistics(
+    public List<AsticVo> productPriceStatistics(
             List<String> supplierNames, String productName, String startDate, String endDate) {
-
+        List<AsticVo> list = new ArrayList();
         // 调用Mapper方法获取所有匹配的报价
         List<SysSupplierPrice> allQuotes = sysSupplierPriceMapper.productPriceStatistics(supplierNames, productName, startDate, endDate);
-
         // 使用Stream API或传统循环来构建Map
         Map<String, List<SysSupplierPrice>> resultMap = new LinkedHashMap<>(); // 使用LinkedHashMap保持插入顺序
         for (SysSupplierPrice quote : allQuotes) {
             resultMap.computeIfAbsent(quote.getSupplierNameCn(), k -> new ArrayList<>()).add(quote);
         }
 
-        return resultMap;
-    }
-
+        Set<String> strings = resultMap.keySet();
+        for (String string : strings) {
+            AsticVo vo = new AsticVo();
+            vo.setName(string);
+            List<SysSupplierPrice> sysSupplierPrices = resultMap.get(string);
+            List<PriceVo> priceVoList = new ArrayList<>();
+            for (SysSupplierPrice sysSupplierPrice : sysSupplierPrices) {
+                PriceVo priceVo = new PriceVo();
+                priceVo.setPrice(sysSupplierPrice.getPriceRmb());
+                priceVo.setTime(sysSupplierPrice.getTime());
+                priceVoList.add(priceVo);
+            }
+            vo.setQuotes(priceVoList);
+            list.add(vo);
+        }
+        return list;
+        }
 }

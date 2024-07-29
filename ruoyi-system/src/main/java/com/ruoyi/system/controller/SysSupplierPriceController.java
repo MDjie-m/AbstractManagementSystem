@@ -3,6 +3,8 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.system.domain.vo.AsticVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -99,12 +101,11 @@ public class SysSupplierPriceController extends BaseController
      * 报价列表数据统计
      */
     @GetMapping("/statistics")
-    public Map<String,List<SysSupplierPrice>> productPriceStatistics (@RequestParam List<String> supplierNames,
-                                                                      String productName,
-                                                                      String startDate,
-                                                                      String endDate)  {
+    public List<AsticVo> productPriceStatistics (@RequestParam List<String> supplierNames,
+                                                 String productName,
+                                                 String startDate,
+                                                 String endDate)  {
         return sysSupplierPriceService.productPriceStatistics(supplierNames,productName,startDate,endDate);
-
     }
 
 }
