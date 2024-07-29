@@ -69,7 +69,7 @@ public class SysInspectionServiceImpl implements ISysInspectionService
         //先调用考察表的添加方法把这个考察信息存到考察表里面
         sysInspection.setFutureField1(null);
         //不知道什么原因下面这个字段为0,并不为null，因此这里添加的时候设置一下，后续根据情况更改
-        sysInspection.setFutureField3(null);
+//        sysInspection.setFutureField3(null);
         sysInspectionMapper.insertSysInspection(sysInspection);
         //再调用供应商mapper里面的更新考察评级的方法把上面新增的供应商的考察信息的id和评级存到供应商表中以供关联
         return sysSupplierMapper.updateInspectRate(sysInspection.getSupplierId(),inspectionId,rate);
