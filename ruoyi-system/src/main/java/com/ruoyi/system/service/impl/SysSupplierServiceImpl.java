@@ -9,10 +9,7 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.UUID;
-import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.vo.AuditVo;
 import com.ruoyi.system.easyexcel.SupplierListener;
 import com.ruoyi.system.mapper.*;
@@ -42,10 +39,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
 
     @Autowired
     private SysInspectionMapper sysInspectionMapper;
-    @Autowired
-    private SysUserMapper userMapper;
-    @Autowired
-    private SysUserRoleMapper userRoleMapper;
+
 
 
     /**
@@ -82,22 +76,6 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     @Override
     public int insertSysSupplier(SysSupplier sysSupplier)
     {
-        String supplierNameCn = sysSupplier.getSupplierNameCn();
-        SysUser user = new SysUser();
-        user.setUserName(supplierNameCn);
-        user.setNickName(supplierNameCn);
-        user.setPassword(SecurityUtils.encryptPassword("123456"));
-        user.setUserType("5");
-        int i = userMapper.insertUser(user);
-        Long userId = user.getUserId();
-        // 新增用户与角色管理
-        List<SysUserRole> list = new ArrayList<SysUserRole>();
-        SysUserRole ur = new SysUserRole();
-        ur.setUserId(userId);
-        ur.setRoleId(Long.parseLong("5"));
-        list.add(ur);
-        // 用户授权
-        userRoleMapper.batchUserRole(list);
         sysSupplier.setSupplierId(UUID.randomUUID().toString());
         int rows = sysSupplierMapper.insertSysSupplier(sysSupplier);
         insertSysProduct(sysSupplier);
