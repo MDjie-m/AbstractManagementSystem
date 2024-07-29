@@ -64,4 +64,6 @@ public interface SysInspectionMapper
      * 审核考察
      */
     public int updateInspectAudit(@Param("list") List<String> list, @Param("remark") String remark, @Param("status") String status);
+
+    void deleteHistory(String supplierId);
 }
