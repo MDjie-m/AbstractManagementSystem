@@ -1,16 +1,10 @@
 package com.ruoyi.system.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.vo.AuditVo;
-import com.ruoyi.system.service.ISysRoleService;
-import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +32,6 @@ public class SysSupplierController extends BaseController
     private ISysSupplierService sysSupplierService;
     @Value("${staticFile.rootPath}")
     private String rootPath;
-    @Autowired
-    private ISysUserService userService;
-    @Autowired
-    private ISysRoleService roleService;
 
     /**
      * 查询供应商列表
@@ -143,19 +133,6 @@ public class SysSupplierController extends BaseController
     @PostMapping("/add")
     public AjaxResult noPermissionsadd(@RequestBody SysSupplier sysSupplier)
     {
-        String supplierNameCn = sysSupplier.getSupplierNameCn();
-        SysUser user = new SysUser();
-        user.setUserName(supplierNameCn);
-        user.setNickName(supplierNameCn);
-        user.setPassword(SecurityUtils.encryptPassword("123456"));
-        user.setUserType("5");
-        // 创建用户
-        userService.insertUser(user);
-        Long userId = user.getUserId();
-        // 新增用户与角色管理
-        Long[] userIdArray = new Long[]{userId};
-        // 用户授权
-        roleService.insertAuthUsers(Long.parseLong("5"),userIdArray);
         return toAjax(sysSupplierService.insertSysSupplier(sysSupplier));
     }
 
