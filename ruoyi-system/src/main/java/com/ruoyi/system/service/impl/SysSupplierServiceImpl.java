@@ -12,17 +12,16 @@ import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.UUID;
+import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.vo.AuditVo;
 import com.ruoyi.system.easyexcel.SupplierListener;
-import com.ruoyi.system.mapper.SysInspectionMapper;
-import com.ruoyi.system.mapper.SysUserMapper;
+import com.ruoyi.system.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import com.ruoyi.common.utils.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import com.ruoyi.system.domain.SysProduct;
-import com.ruoyi.system.mapper.SysSupplierMapper;
 import com.ruoyi.system.domain.SysSupplier;
 import com.ruoyi.system.service.ISysSupplierService;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +44,9 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     private SysInspectionMapper sysInspectionMapper;
     @Autowired
     private SysUserMapper userMapper;
+    @Autowired
+    private SysUserRoleMapper userRoleMapper;
+
 
     /**
      * 查询供应商
@@ -87,6 +89,15 @@ public class SysSupplierServiceImpl implements ISysSupplierService
         user.setPassword(SecurityUtils.encryptPassword("123456"));
         user.setUserType("5");
         int i = userMapper.insertUser(user);
+        Long userId = user.getUserId();
+        // 新增用户与角色管理
+        List<SysUserRole> list = new ArrayList<SysUserRole>();
+        SysUserRole ur = new SysUserRole();
+        ur.setUserId(userId);
+        ur.setRoleId(Long.parseLong("5"));
+        list.add(ur);
+        // 用户授权
+        userRoleMapper.batchUserRole(list);
         sysSupplier.setSupplierId(UUID.randomUUID().toString());
         int rows = sysSupplierMapper.insertSysSupplier(sysSupplier);
         insertSysProduct(sysSupplier);
