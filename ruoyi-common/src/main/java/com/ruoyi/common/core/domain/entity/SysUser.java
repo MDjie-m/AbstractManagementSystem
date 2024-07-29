@@ -88,6 +88,15 @@ public class SysUser extends BaseEntity
 
     /** 角色ID */
     private Long roleId;
+    private String userType;
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 
     public SysUser()
     {

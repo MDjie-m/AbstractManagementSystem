@@ -9,10 +9,13 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.system.domain.vo.AuditVo;
 import com.ruoyi.system.easyexcel.SupplierListener;
 import com.ruoyi.system.mapper.SysInspectionMapper;
+import com.ruoyi.system.mapper.SysUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -40,6 +43,8 @@ public class SysSupplierServiceImpl implements ISysSupplierService
 
     @Autowired
     private SysInspectionMapper sysInspectionMapper;
+    @Autowired
+    private SysUserMapper userMapper;
 
     /**
      * 查询供应商
@@ -75,6 +80,13 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     @Override
     public int insertSysSupplier(SysSupplier sysSupplier)
     {
+        String supplierNameCn = sysSupplier.getSupplierNameCn();
+        SysUser user = new SysUser();
+        user.setNickName(supplierNameCn);
+        user.setNickName(supplierNameCn);
+        user.setPassword(SecurityUtils.encryptPassword("123456"));
+        user.setUserType("5");
+        int i = userMapper.insertUser(user);
         sysSupplier.setSupplierId(UUID.randomUUID().toString());
         int rows = sysSupplierMapper.insertSysSupplier(sysSupplier);
         insertSysProduct(sysSupplier);
