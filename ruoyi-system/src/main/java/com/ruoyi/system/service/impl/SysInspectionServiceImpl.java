@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysInspectionMapper;
 import com.ruoyi.system.domain.SysInspection;
 import com.ruoyi.system.service.ISysInspectionService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 考察情况Service业务层处理
@@ -55,6 +56,7 @@ public class SysInspectionServiceImpl implements ISysInspectionService
      * @param rate 评级
      * @return 结果
      */
+    @Transactional
     @Override
     public int insertSysInspection(SysInspection sysInspection,String rate)
     {
@@ -62,8 +64,12 @@ public class SysInspectionServiceImpl implements ISysInspectionService
         String inspectionId = UUID.randomUUID().toString();
         //给考察对象的id赋值
         sysInspection.setInspectionId(inspectionId);
+        //把此公司之前的考察记录设置为已删除状态
+        sysInspectionMapper.deleteHistory(sysInspection.getSupplierId());
         //先调用考察表的添加方法把这个考察信息存到考察表里面
         sysInspection.setFutureField1(null);
+        //不知道什么原因下面这个字段为0,并不为null，因此这里添加的时候设置一下，后续根据情况更改
+        sysInspection.setFutureField3(null);
         sysInspectionMapper.insertSysInspection(sysInspection);
         //再调用供应商mapper里面的更新考察评级的方法把上面新增的供应商的考察信息的id和评级存到供应商表中以供关联
         return sysSupplierMapper.updateInspectRate(sysInspection.getSupplierId(),inspectionId,rate);
