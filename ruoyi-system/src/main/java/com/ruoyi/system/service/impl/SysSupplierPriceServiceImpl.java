@@ -9,6 +9,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.system.domain.SysSupplier;
 import com.ruoyi.system.domain.vo.AsticVo;
+import com.ruoyi.system.domain.vo.PriceDetailVo;
 import com.ruoyi.system.domain.vo.PriceVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -118,9 +119,9 @@ public class SysSupplierPriceServiceImpl implements ISysSupplierPriceService
             AsticVo vo = new AsticVo();
             vo.setName(string);
             List<SysSupplierPrice> sysSupplierPrices = resultMap.get(string);
-            List<PriceVo> priceVoList = new ArrayList<>();
+            List<PriceDetailVo> priceVoList = new ArrayList<>();
             for (SysSupplierPrice sysSupplierPrice : sysSupplierPrices) {
-                PriceVo priceVo = new PriceVo();
+                PriceDetailVo priceVo = new PriceDetailVo();
                 priceVo.setPrice(sysSupplierPrice.getPriceRmb());
                 priceVo.setTime(sysSupplierPrice.getTime());
                 priceVoList.add(priceVo);

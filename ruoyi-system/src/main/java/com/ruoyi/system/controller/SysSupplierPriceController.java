@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.system.domain.vo.AsticVo;
+import com.ruoyi.system.domain.vo.PriceVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -92,7 +93,7 @@ public class SysSupplierPriceController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:price:remove')")
     @Log(title = "供应商报价", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{supplierPriceIds}")
+    @DeleteMapping("/{supplierPriceIds}")
     public AjaxResult remove(@PathVariable String[] supplierPriceIds)
     {
         return toAjax(sysSupplierPriceService.deleteSysSupplierPriceBySupplierPriceIds(supplierPriceIds));
@@ -100,12 +101,9 @@ public class SysSupplierPriceController extends BaseController
     /**
      * 报价列表数据统计
      */
-    @GetMapping("/statistics")
-    public List<AsticVo> productPriceStatistics (@RequestParam List<String> supplierNames,
-                                                 String productName,
-                                                 String startDate,
-                                                 String endDate)  {
-        return sysSupplierPriceService.productPriceStatistics(supplierNames,productName,startDate,endDate);
+    @PostMapping("/statistics")
+    public List<AsticVo> productPriceStatistics (@RequestBody PriceVo vo)  {
+        return sysSupplierPriceService.productPriceStatistics(vo.getSupplierNames(),vo.getProductName(),vo.getStartDate(), vo.getEndDate());
     }
 
 }

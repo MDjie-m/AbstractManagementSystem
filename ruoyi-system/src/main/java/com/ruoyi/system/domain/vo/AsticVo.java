@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AsticVo {
     private String name;
-    private List<PriceVo> quotes;
+    private List<PriceDetailVo> quotes;
 
     public String getName() {
         return name;
@@ -15,11 +15,11 @@ public class AsticVo {
         this.name = name;
     }
 
-    public List<PriceVo> getQuotes() {
+    public List<PriceDetailVo> getQuotes() {
         return quotes;
     }
 
-    public void setQuotes(List<PriceVo> quotes) {
+    public void setQuotes(List<PriceDetailVo> quotes) {
         this.quotes = quotes;
     }
 }

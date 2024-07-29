@@ -2,24 +2,43 @@ package com.ruoyi.system.domain.vo;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class PriceVo {
-    private Date time;
-    private BigDecimal price;
+    private List<String> supplierNames;
+    private String productName;
+    private String startDate;
+    private String endDate;
 
-    public Date getTime() {
-        return time;
+    public List<String> getSupplierNames() {
+        return supplierNames;
     }
 
-    public void setTime(Date time) {
-        this.time = time;
+    public void setSupplierNames(List<String> supplierNames) {
+        this.supplierNames = supplierNames;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }
