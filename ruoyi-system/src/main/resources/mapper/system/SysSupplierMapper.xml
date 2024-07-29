@@ -252,7 +252,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
     <update id="updateInspectRate">
         update sys_supplier
-        set rate = #{rate},inspection_id = #{inspectionId}
+        set rate = #{rate},inspection_id = #{inspectionId},inspection_status=2
         where supplier_id = #{supplierId}
     </update>
 
