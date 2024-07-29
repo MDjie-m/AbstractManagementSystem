@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.system.domain.SysSupplierPrice;
+import com.ruoyi.system.domain.vo.AsticVo;
 
 /**
  * 供应商报价Service接口
@@ -61,8 +62,7 @@ public interface ISysSupplierPriceService
      */
     public int deleteSysSupplierPriceBySupplierPriceId(String supplierPriceId);
 
-    public Map<String, List<SysSupplierPrice>> productPriceStatistics(
+    public List<AsticVo> productPriceStatistics(
             List<String> supplierNames, String productName, String startDate, String endDate);
-
 
 }
