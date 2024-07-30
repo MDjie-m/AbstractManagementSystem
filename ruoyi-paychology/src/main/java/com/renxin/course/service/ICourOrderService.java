@@ -2,6 +2,7 @@ package com.renxin.course.service;
 
 import com.renxin.course.domain.CourOrder;
 import com.renxin.course.domain.dto.OrderQueryDTO;
+import com.renxin.course.vo.CourseOrderVO;
 import com.renxin.course.vo.OrderQueryVO;
 import com.renxin.course.vo.OrderVO;
 
@@ -104,4 +105,6 @@ public interface ICourOrderService
      * 根据条件查询课程订单列表
      */
     List<OrderQueryVO> queryOrderList(OrderQueryDTO orderQueryDTO);
+
+    List<CourseOrderVO> getOrderListByUserId(Integer userId,Integer status);
 }

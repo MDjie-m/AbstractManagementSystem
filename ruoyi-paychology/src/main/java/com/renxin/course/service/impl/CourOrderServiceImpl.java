@@ -11,6 +11,7 @@ import com.renxin.course.domain.CourOrder;
 import com.renxin.course.domain.dto.OrderQueryDTO;
 import com.renxin.course.mapper.CourOrderMapper;
 import com.renxin.course.service.ICourOrderService;
+import com.renxin.course.vo.CourseOrderVO;
 import com.renxin.course.vo.OrderQueryVO;
 import com.renxin.course.vo.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,5 +198,10 @@ public class CourOrderServiceImpl implements ICourOrderService
     @Override
     public List<OrderQueryVO> queryOrderList(OrderQueryDTO orderQueryDTO) {
         return courOrderMapper.queryOrderList(orderQueryDTO);
+    }
+
+    @Override
+    public List<CourseOrderVO> getOrderListByUserId(Integer userId,Integer status) {
+        return courOrderMapper.getOrderListByUserId(userId,status);
     }
 }
