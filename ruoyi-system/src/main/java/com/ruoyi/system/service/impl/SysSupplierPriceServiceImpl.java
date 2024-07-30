@@ -11,6 +11,7 @@ import com.ruoyi.system.domain.SysSupplier;
 import com.ruoyi.system.domain.vo.AsticVo;
 import com.ruoyi.system.domain.vo.PriceDetailVo;
 import com.ruoyi.system.domain.vo.PriceVo;
+import com.ruoyi.system.mapper.SysProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysSupplierPriceMapper;
@@ -28,6 +29,8 @@ public class SysSupplierPriceServiceImpl implements ISysSupplierPriceService
 {
     @Autowired
     private SysSupplierPriceMapper sysSupplierPriceMapper;
+    @Autowired
+    private SysProductMapper sysProductMapper;
 
     /**
      * 查询供应商报价
@@ -63,6 +66,7 @@ public class SysSupplierPriceServiceImpl implements ISysSupplierPriceService
     public int insertSysSupplierPrice(SysSupplierPrice sysSupplierPrice)
     {
         sysSupplierPrice.setSupplierPriceId(UUID.randomUUID().toString());
+        sysProductMapper.updateSysProductStatus(sysSupplierPrice.getSupplierPriceId());
         return sysSupplierPriceMapper.insertSysSupplierPrice(sysSupplierPrice);
     }
 
