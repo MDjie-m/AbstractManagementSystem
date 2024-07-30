@@ -3,6 +3,9 @@ package com.renxin.psychology.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.renxin.common.constant.PsyConstants;
+import com.renxin.common.enums.ServiceObjectEnum;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.exception.UtilException;
 import com.renxin.common.utils.ComUtil;
 import com.renxin.common.utils.NewDateUtil;
@@ -26,6 +29,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -121,7 +125,50 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
         if (checkName(req.getName(), req.getPrice(), null) > 0) {
             throw new UtilException("服务已存在");
         }
+        //若为单次[个人督导/个人体验], 查询是否存在该级别的相同服务
+        String serviceObject = req.getServiceObject();
+        Integer type = req.getType();
+        if(type == 1 && (ServiceObjectEnum.PERSON_SUP.getKey().equals(serviceObject) || ServiceObjectEnum.PERSON_EXP.getKey().equals(serviceObject))){
+            PsyConsultServeConfigReq newReq = new PsyConsultServeConfigReq();
+            newReq.setLevel(req.getLevel());
+            newReq.setType(1);
+            newReq.setServiceObject(serviceObject);
+            List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getList(newReq);
+            if (ObjectUtils.isNotEmpty(list)){
+                PsyConsultServeConfig old = list.get(0);
+                throw new ServiceException("该级别已有服务对象为" + ServiceObjectEnum.fromKey(old.getServiceObject()).getValue() + "的单次服务条目, 不可重复添加");
+            }
+        }
+        
         return psyConsultServeConfigMapper.insert(BeanUtil.toBean(req, PsyConsultServeConfig.class));
+    }
+
+    
+    
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int update(PsyConsultServeConfigVO req) {
+        if (checkName(req.getName(), req.getPrice(), req.getId()) > 0) {
+            throw new UtilException("服务已存在");
+        }
+        
+        //若为单次[个人督导/个人体验], 查询是否存在该级别的相同服务
+        String serviceObject = req.getServiceObject();
+        Integer type = req.getType();
+        if(type == 1 && (ServiceObjectEnum.PERSON_SUP.getKey().equals(serviceObject) || ServiceObjectEnum.PERSON_EXP.getKey().equals(serviceObject))){
+            PsyConsultServeConfigReq newReq = new PsyConsultServeConfigReq();
+            newReq.setLevel(req.getLevel());
+            newReq.setType(1);
+            newReq.setServiceObject(serviceObject);
+            List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getList(newReq);
+            if (ObjectUtils.isNotEmpty(list) && !Objects.equals(list.get(0).getId(), req.getId())){
+                PsyConsultServeConfig old = list.get(0);
+                throw new ServiceException("[该级别]已有服务对象为[" + ServiceObjectEnum.fromKey(old.getServiceObject()).getValue() + "]的[单次服务]条目, 不可重复添加");
+            }
+        }
+        
+        //req.setServiceObject(ComUtil.listToString(req.getServiceObjectList()));
+        return psyConsultServeConfigMapper.updateById(BeanUtil.toBean(req, PsyConsultServeConfig.class));
     }
 
     @Override
@@ -171,15 +218,7 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
         psyConsultServeConfigMapper.updateById(one);
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public int update(PsyConsultServeConfigVO req) {
-        if (checkName(req.getName(), req.getPrice(), req.getId()) > 0) {
-            throw new UtilException("服务已存在");
-        }
-        //req.setServiceObject(ComUtil.listToString(req.getServiceObjectList()));
-        return psyConsultServeConfigMapper.updateById(BeanUtil.toBean(req, PsyConsultServeConfig.class));
-    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)

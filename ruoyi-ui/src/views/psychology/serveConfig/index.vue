@@ -205,11 +205,11 @@
         </el-form-item>
         <el-form-item label="服务类型" prop="type">
           <el-radio-group v-model="form.type" @input="changeType">
-            <el-radio v-for="item in typeList.filter(i => i.label !== '全部')" :label="item.value">{{ item.label }}</el-radio>
+            <el-radio v-for="item in typeList.filter(i => i.label !== '全部')" :label="item.value" :disabled="isEditing">{{ item.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="服务次数" prop="num">
-          <el-input-number :disabled="form.type === 1" v-model="form.num" step-strictly	:max="999999"/>
+        <el-form-item label="服务次数" prop="num" >
+          <el-input-number :disabled="form.type === 1 || isEditing" v-model="form.num" step-strictly	:max="999999" />
         </el-form-item>
         <el-form-item label="单次服务时长" prop="time">
           <el-input-number disabled style="margin-right: 10px" v-model="form.time" step-strictly :max="999999"/>分钟
@@ -260,6 +260,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      isEditing: false,
       timeVal: [],
       consults: [],
       consultList: [],
@@ -376,7 +377,7 @@ export default {
       this.end = 0
       this.form = {
         id: null,
-        mode: 1,
+        mode: 2,
         type: 1,
         name: null,
         info: null,
@@ -422,12 +423,14 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
+      this.isEditing = false;
       this.open = true;
       this.title = "添加咨询服务配置";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+      this.isEditing = true;
       const id = row.id || this.ids
       getServeConfig(id).then(response => {
         this.form = response.data;
@@ -456,10 +459,10 @@ export default {
             this.form.end = 0
           }
 
-          if (this.form.level != 5 && (this.form.serviceObject == 2 || this.form.serviceObject == 3) ){
+          /*if (this.form.level != 5 && (this.form.serviceObject == 2 || this.form.serviceObject == 3) ){
             this.$modal.msgWarning("级别为[督导师]才可支持[个人督导][个人体验]服务")
             return
-          }
+          }*/
 
           if (this.form.id != null) {
             updateServeConfig(this.form).then(response => {

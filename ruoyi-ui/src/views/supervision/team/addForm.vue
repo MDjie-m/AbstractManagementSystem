@@ -1,10 +1,10 @@
 <template>
   <el-dialog title="新建督导" :visible.sync="open" width="1000px" append-to-body>
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="督导类型" prop="teamType">
-        <el-select v-model="form.teamType" placeholder="请选择督导类型" clearable>
+      <el-form-item label="督导类型" prop="teamType" v-show="false">
+        <el-select v-model="form.teamType" placeholder="请选择督导类型"  disabled clearable>
           <el-option
-            v-for="dict in dict.type.supervision_type"
+            v-for="dict in supervisionType"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -97,7 +97,10 @@ export default {
       open: false,
       type: 'add',// tryAdd
       types: this.$constants.partnerTypes,
-      form: {},
+      supervisionType: this.$constants.supervisionType,
+      form: {
+        teamType : 1,
+      },
       // 表单校验
       rules: {
         teamType: [
@@ -139,7 +142,7 @@ export default {
     init() {
       this.form = {
         id: null,
-        name: '新增督导'
+        teamType : 1,
       }
       this.open = true
       console.log(2222)

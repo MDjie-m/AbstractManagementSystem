@@ -35,6 +35,9 @@ public interface PsyConsultantScheduleMapper
      * @return 结果
      */
     public int insertPsyConsultantSchedule(PsyConsultantSchedule psyConsultantSchedule);
+    
+    public int insertPsyConsultantScheduleBatch(List<PsyConsultantSchedule> list);
+    
 
     /**
      * 修改咨询师排班任务

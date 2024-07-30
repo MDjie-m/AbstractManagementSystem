@@ -100,6 +100,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consultId != null">#{consultId},</if>
          </trim>
     </insert>
+    
+    <insert id="insertPsyConsultantScheduleBatch">
+        insert into psy_consultant_schedule (
+            id, order_id, team_id, schedule_type, time_num, work_id,
+            time_start, time_end, day, week, status, create_by,
+            create_time, update_by, update_time, time, real_time, consult_id
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.orderId},
+            #{item.teamId},
+            #{item.scheduleType},
+            #{item.timeNum},
+            #{item.workId},
+            #{item.timeStart},
+            #{item.timeEnd},
+            #{item.day},
+            #{item.week},
+            #{item.status},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateBy},
+            #{item.updateTime},
+            #{item.time},
+            #{item.realTime},
+            #{item.consultId}
+            )
+        </foreach>
+    </insert>
 
     <update id="updatePsyConsultantSchedule" parameterType="PsyConsultantSchedule">
         update psy_consultant_schedule

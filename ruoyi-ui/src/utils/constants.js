@@ -34,7 +34,7 @@ export const limitStatus = [
 
 export const modeList = [
   { label: '全部', value: '' },
-  { label: '语音咨询', value: 1 },
+ // { label: '语音咨询', value: 1 },
   { label: '视频咨询', value: 2 },
  // { label: '当面咨询', value: 3 },
 ]

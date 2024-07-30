@@ -63,7 +63,6 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     {
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(id);
         
-
         //若为[团队督导]
         if (team.getTeamType() == 1){
             //查询成员信息
@@ -105,20 +104,30 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      * @return 团队督导(组织)
      */
     @Override
-    public List<PsyConsultantTeamSupervision> selectPsyConsultantTeamSupervisionList(PsyConsultantTeamSupervision psyConsultantTeamSupervision)
+    public List<PsyConsultantTeamSupervision> selectPsyConsultantTeamSupervisionList(PsyConsultantTeamSupervision req)
     {
-        List<PsyConsultantTeamSupervision> teamList = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionList(psyConsultantTeamSupervision);
+        Integer teamType = req.getTeamType();//督导类型
+        List<PsyConsultantTeamSupervision> teamList = new ArrayList<>();
+        //查询"团队督导"时, 从team表获取数据
+        if (ObjectUtils.isEmpty(teamType) || teamType == 1){
+            
+            teamList = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionList(req);
 
-        for (PsyConsultantTeamSupervision team : teamList) {
-            //最大团队人数
-            Integer maxNumPeople = team.getMaxNumPeople();
-            if (ObjectUtils.isNotEmpty(maxNumPeople)){
-                //当前登记人数
-                int memberNum = memberMapper.queryMemberCount(team.getId() + "");
-                //剩余名额数
-                team.setSurplusNum(maxNumPeople - memberNum);
+            for (PsyConsultantTeamSupervision team : teamList) {
+                //最大团队人数
+                Integer maxNumPeople = team.getMaxNumPeople();
+                if (ObjectUtils.isNotEmpty(maxNumPeople)){
+                    //当前登记人数
+                    int memberNum = memberMapper.queryMemberCount(team.getId() + "");
+                    //剩余名额数
+                    team.setSurplusNum(maxNumPeople - memberNum);
+                }
             }
+        }else if (teamType == 2 || teamType ==3){
+        //查询"个人督导"或"个人体验"时, 直接查询咨询师数据
+            teamList = psyConsultantTeamSupervisionMapper.selectPsyConsultantPersonSupervisionList(req);
         }
+        
         return teamList;
     }
 

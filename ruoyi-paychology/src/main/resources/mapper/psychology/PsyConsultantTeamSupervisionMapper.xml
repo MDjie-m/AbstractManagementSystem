@@ -82,6 +82,37 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         group by team.id
     </select>
+
+    <select id="selectPsyConsultantPersonSupervisionList"
+            resultType="com.renxin.psychology.domain.PsyConsultantTeamSupervision">
+        select
+            DISTINCT con.id  as consultantId,
+            ser.price  as price,
+            con.user_name as consultUserName,
+            con.avatar as consultAvatar,
+            con.tabs as consultTabs,
+            con.info as consultInfo,
+            con.detail as consultDetail,
+            con.experience as consultExperience,
+            con.genre as consultGenre,
+            con.level as consultLevel,
+    
+            con.mode as consultMode,
+            con.qualification as consultQualification,
+            con.way_str as consultWayStr
+        from
+            psy_consult con
+            left join psy_consult_work wk on con.id = wk.consult_id and wk.status = 0 and wk.live != "[]"
+            left join psy_consult_server_config ser on con.level = ser.level and con.service_object like concat('%',ser.service_object,'%') and ser.type = 1 
+        where con.del_flag = 0
+        <if test="teamType != null  and teamType != ''"> and ser.service_object = #{teamType} </if>
+        
+        <if test="consultTabs != null  and consultTabs != ''"> and con.tabs like concat('%',#{consultTabs},'%')</if>
+        <if test="consultGenre != null  and consultGenre != ''"> and con.genre like concat('%',#{consultGenre},'%')</if>
+
+        <if test="waitDays != null  and waitDays != ''"> and wk.day >= CURDATE() AND day &lt; CURDATE() + INTERVAL #{waitDays} DAY</if>
+
+    </select>
     
     <select id="selectPsyConsultantTeamSupervisionById" parameterType="Long" resultMap="PsyConsultantTeamSupervisionResult">
         select
@@ -98,7 +129,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join psy_consult con on team.consultant_id = con.id
         where team.id = #{id}
     </select>
-        
+    
+   
+
     <insert id="insertPsyConsultantTeamSupervision" parameterType="PsyConsultantTeamSupervision">
         insert into psy_consultant_team_supervision
         <trim prefix="(" suffix=")" suffixOverrides=",">

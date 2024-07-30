@@ -26,6 +26,8 @@ public interface PsyConsultantTeamSupervisionMapper
      * @return 团队督导(组织)集合
      */
     public List<PsyConsultantTeamSupervision> selectPsyConsultantTeamSupervisionList(PsyConsultantTeamSupervision psyConsultantTeamSupervision);
+    
+    public List<PsyConsultantTeamSupervision> selectPsyConsultantPersonSupervisionList(PsyConsultantTeamSupervision psyConsultantTeamSupervision);
 
     /**
      * 新增团队督导(组织)

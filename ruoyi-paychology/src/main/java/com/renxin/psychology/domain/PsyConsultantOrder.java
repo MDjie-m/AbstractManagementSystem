@@ -3,6 +3,7 @@ package com.renxin.psychology.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -50,6 +51,8 @@ public class PsyConsultantOrder extends BaseEntity
     /** 支付咨询者id */
     @Excel(name = "支付咨询师id")
     private String payConsultantId;
+    
+    private String chargeConsultantId;
 
     /** 支付咨询者名称 */
     @Excel(name = "支付咨询师名称")
@@ -78,6 +81,14 @@ public class PsyConsultantOrder extends BaseEntity
     // 咨询服务
     private Long workId;
     private Integer time;
+    
+    //以下三字段, 仅在类型为 个人督导/个人体验 时, 有值
+    @TableField(exist = false)
+    private Integer totalNum;//总服务次数
+    @TableField(exist = false)
+    private Integer usedNum;//已使用服务次数
+    @TableField(exist = false)
+    private Integer surplusNum;//剩余服务次数
 
     
 

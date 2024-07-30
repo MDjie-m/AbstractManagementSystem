@@ -29,6 +29,7 @@ import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.*;
 import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
+import com.renxin.psychology.vo.PsyConsultServeConfigVO;
 import com.renxin.user.domain.PsyUserIntegralRecord;
 import com.renxin.user.service.IPsyUserIntegralRecordService;
 import org.apache.commons.lang3.ObjectUtils;
@@ -101,6 +102,12 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     @Resource
     private IPsyConsultantPackageEquityService consultantPackageEquityService;
     
+    @Resource
+    private IPsyConsultServeConfigService serveConfigService;
+    
+    @Resource
+    private IPsyConsultantScheduleService consultantScheduleService;
+    
     /**
      * 查询团队督导(组织)订单
      * 
@@ -110,7 +117,26 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     @Override
     public PsyConsultantOrder selectPsyConsultantOrderByOrderNo(String orderNo)
     {
-        return psyConsultantOrderMapper.selectPsyConsultantOrderByOrderNo(orderNo);
+        PsyConsultantOrder order  = psyConsultantOrderMapper.selectPsyConsultantOrderByOrderNo(orderNo);
+        String serverType = order.getServerType();
+        //若类型为[个督/体验] , 则需计算剩余可用次数
+        if (PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM.equals(serverType) || PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)){
+            //指定服务信息
+            PsyConsultServeConfigVO serverConfig = serveConfigService.getOne(Long.valueOf(order.getServerId()));
+            //总服务次数
+            order.setTotalNum(serverConfig.getNum());
+
+            //已使用的次数(排班信息)
+            PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
+            scheduleReq.setOrderId(Long.valueOf(orderNo));
+            List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(scheduleReq);
+            order.setUsedNum(ObjectUtils.isNotEmpty(scheduleList) ? scheduleList.size() : 0);
+
+            //剩余可用次数
+            order.setSurplusNum(order.getTotalNum() - order.getUsedNum());
+        }
+        
+        return order;
     }
 
     /**

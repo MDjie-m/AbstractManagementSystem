@@ -298,7 +298,7 @@ CREATE TABLE `psy_consultant_schedule` (
                                            `order_id` BIGINT(19) NULL DEFAULT NULL COMMENT '订单号',
                                            `team_id` BIGINT(19) NULL DEFAULT NULL COMMENT '团督号',
                                            `work_id` BIGINT(19) NULL DEFAULT NULL COMMENT '排班',
-                                           `schedule_type` INT(10) NOT NULL DEFAULT '0' COMMENT '任务类型  1.咨询服务   2.团督开课',
+                                           `schedule_type` INT(10) NOT NULL DEFAULT '0' COMMENT '任务类型  1.团督开课   2.咨询服务',
                                            `time_num` INT(10) NOT NULL DEFAULT '0' COMMENT '同一任务的第几次执行',
                                            `time_start` VARCHAR(10) NULL DEFAULT NULL COMMENT '开始时间' COLLATE 'utf8mb4_0900_ai_ci',
                                            `time_end` VARCHAR(10) NULL DEFAULT NULL COMMENT '结束时间' COLLATE 'utf8mb4_0900_ai_ci',
