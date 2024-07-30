@@ -2,6 +2,7 @@ package com.renxin.course.mapper;
 
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.dto.CourseQueryDTO;
+import com.renxin.course.vo.CourseListVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -89,4 +90,7 @@ public interface CourCourseMapper
     public List<CourCourse> getCourseListByUserId(Integer userId);
 
     public List<CourCourse> queryCourCourseList(CourseQueryDTO courseQueryDTO);
+
+    public List<CourseListVO> getCourseListByClassId(CourCourse courCourse);
+
 }

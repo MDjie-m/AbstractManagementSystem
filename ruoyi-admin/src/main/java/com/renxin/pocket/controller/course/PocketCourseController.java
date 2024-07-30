@@ -3,6 +3,7 @@ package com.renxin.pocket.controller.course;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourCourse;
@@ -13,14 +14,17 @@ import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.service.ICourOrderService;
 import com.renxin.course.service.ICourSectionService;
 import com.renxin.course.service.ICourUserCourseSectionService;
+import com.renxin.course.vo.CourseListVO;
 import com.renxin.course.vo.CourseVO;
 import com.renxin.course.vo.SectionVO;
+import com.renxin.framework.web.service.PocketTokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -49,6 +53,10 @@ public class PocketCourseController extends BaseController
     @Autowired
     private ICourSectionService courSectionService;
 
+    @Autowired
+    private PocketTokenService pocketTokenService;
+
+
 
 
     /**
@@ -62,7 +70,8 @@ public class PocketCourseController extends BaseController
     {
         startPage();
         courCourse.setOnSale(CourConstant.COUR_COURSE_ON_SALE);
-        List<CourCourse> list = courCourseService.selectCourCourseList(courCourse);
+        courCourse.setServiceTo(1);
+        List<CourseListVO> list = courCourseService.getCourseListByClassId(courCourse);
         return getDataTable(list);
     }
 
@@ -173,11 +182,14 @@ public class PocketCourseController extends BaseController
      * 根据课程主键查询课程详情
      */
 //    @PreAuthorize("@ss.hasPermi('course:course:query')")
-    @PostMapping(value = "/detail/{userId}/{courseId}")
+    @PostMapping(value = "/detail/{courseId}")
     @ApiOperation("查询课程详情")
     @RateLimiter
-    public AjaxResult detail(@PathVariable("userId") Integer userId, @PathVariable("courseId") Integer courseId)
+    public AjaxResult detail(@PathVariable("courseId") Integer courseId, HttpServletRequest request)
     {
+        LoginDTO loginUser = pocketTokenService.getLoginUser(request);
+        Integer userId = loginUser.getUserId();
+
         CourCourse course = courCourseService.selectCourCourseById(courseId);
         if (course == null) {
             return AjaxResult.error("查询课程详情失败");

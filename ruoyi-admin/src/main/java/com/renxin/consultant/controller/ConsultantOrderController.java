@@ -9,7 +9,6 @@ import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.OrderIdUtils;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.service.ICourCourseService;
-import com.renxin.course.service.impl.CourCourseServiceImpl;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantPackage;

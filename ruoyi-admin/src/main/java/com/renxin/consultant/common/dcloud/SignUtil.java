@@ -5,12 +5,22 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class SignUtil {
-    public static String sign(String secret,Map<String, String> params ) throws Exception {
+    public static String signString(String secret,Map<String, Object> params ) throws Exception {
 
+
+        params =sign(secret,params);
+        String signStr = getSignStr(params);
+        return signStr;
+    }
+    public static Map<String, Object> signMap(String secret,Map<String, Object> params ) throws Exception {
+
+        return sign(secret,params);
+    }
+    private static  Map<String, Object> sign(String secret,Map<String, Object> params) throws Exception {
         // 字母顺序排序后拼接签名串
-        Map<String, String> sortedParams = new TreeMap<>(params);
+        Map<String, Object> sortedParams = new TreeMap<>(params);
         StringBuilder signStrBuilder = new StringBuilder();
-        for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
+        for (Map.Entry<String, Object> entry : sortedParams.entrySet()) {
             signStrBuilder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
         String signStr = signStrBuilder.toString();
@@ -24,8 +34,8 @@ public class SignUtil {
         byte[] hash = hmacSHA256.doFinal(signStr.getBytes());
         String sign = bytesToHex(hash);
         params.put("sign", sign);
-        signStr = getSignStr(params);
-        return signStr;
+        return params;
+
     }
 
     private static String bytesToHex(byte[] bytes) {
@@ -38,11 +48,11 @@ public class SignUtil {
         return hexString.toString();
     }
 
-    private static String getSignStr(Map<String, String> params )
+    private static String getSignStr(Map<String, Object> params )
     {
-        Map<String, String> sortedParams = new TreeMap<>(params);
+        Map<String, Object> sortedParams = new TreeMap<>(params);
         StringBuilder signStrBuilder = new StringBuilder();
-        for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
+        for (Map.Entry<String, Object> entry : sortedParams.entrySet()) {
             signStrBuilder.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
         String signStr = signStrBuilder.toString();

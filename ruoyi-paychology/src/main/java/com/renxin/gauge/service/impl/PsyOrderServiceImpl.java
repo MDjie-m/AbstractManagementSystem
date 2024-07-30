@@ -159,7 +159,7 @@ public class PsyOrderServiceImpl implements IPsyOrderService {
         psyOrder.setCreateTime(DateUtils.getNowDate());
         int code = psyOrderMapper.insertPsyOrder(psyOrder);
         if (code == 1) {
-            return selectPsyOrderByOrderId(psyOrder.getOrderId());
+            return selectPsyOrderByOrderId(psyOrder.getId().toString());
         }
         return null;
     }

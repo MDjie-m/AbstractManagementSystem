@@ -161,4 +161,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         on c.id = cucs.course_id
         where cucs.user_id = #{userId} and c.delete_flag = 0
     </select>
+
+    <select id="getCourseListByClassId" parameterType="CourCourse" resultType="com.renxin.course.vo.CourseListVO">
+        select sum(cs.duration) as total_duration ,count(cs.id)as section_num,c.*
+        from cour_course c
+        left join cour_section cs on c.id = cs.course_id
+
+        <where>
+            c.delete_flag = 0
+            <if test="type != null ">  and c.type = #{type}</if>
+            <if test="serviceTo != null "> and c.service_to = #{serviceTo}</if>
+            <if test="onSale != null "> and c.on_sale = #{onSale}</if>
+
+        </where>
+        GROUP BY c.id
+    </select>
 </mapper>

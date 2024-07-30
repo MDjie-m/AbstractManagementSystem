@@ -36,6 +36,11 @@ public class CourCourse extends BaseEntity
     @Excel(name = "课程类型")
     private Integer type;
 
+    /** 服务对象  1.普通用户  2.咨询师 */
+    @Excel(name = "服务对象")
+    private Integer serviceTo;
+
+
     /** 课程付费方式（0-付费，1-免费） */
     @Excel(name = "课程付费方式")
     private Integer payType;
