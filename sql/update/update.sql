@@ -125,9 +125,7 @@ ALTER TABLE `psy_consultant_package`
     DROP COLUMN `cycle_type`,
     DROP COLUMN `cycle_number`;
 
-ALTER TABLE `psy_consultant_order`
-    ADD COLUMN `work_id` VARCHAR(50) NULL DEFAULT NULL COMMENT '排班id (server_type =2 or 3时需要)' AFTER `pay_status`,
-    ADD COLUMN `time` VARCHAR(50) NULL DEFAULT NULL COMMENT '预约时间 (server_type =2 or 3时需要)' AFTER `work_id`;
+
 
 ALTER TABLE `cour_user_course_section`
     ADD COLUMN `consultant_id` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '咨询师ID' AFTER `user_id`;
@@ -190,7 +188,7 @@ ALTER TABLE `psy_consult_partner`
     DROP COLUMN `user_id`;
 
 ALTER TABLE `psy_consultant_schedule`
-    ADD COLUMN `schedule_type` INT NOT NULL DEFAULT 0 COMMENT '任务类型  1.咨询服务   2.团督开课' AFTER `team_id`;
+    ADD COLUMN `schedule_type` INT NOT NULL DEFAULT 0 COMMENT '任务类型  1.团督开课   2.咨询服务' AFTER `team_id`;
 
 ALTER TABLE `psy_consult_server_config`
     CHANGE COLUMN `service_object` `service_object` INT(10) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' AFTER `level`;
@@ -210,3 +208,5 @@ ALTER TABLE `psy_consult_server_config`
 
 ALTER TABLE `psy_consult`
     CHANGE COLUMN `server_to` `service_object` VARCHAR(255) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' COLLATE 'utf8mb4_0900_ai_ci' AFTER `level`;
+
+

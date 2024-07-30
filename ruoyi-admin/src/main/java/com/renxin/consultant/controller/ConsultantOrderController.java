@@ -12,6 +12,7 @@ import com.renxin.course.service.ICourCourseService;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantPackage;
+import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.service.*;
 import com.renxin.wechat.service.WechatPayV3ApiService;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,6 +61,9 @@ public class ConsultantOrderController extends BaseController
     
     @Resource
     private IPsyConsultantPackageService consultantPackageService;
+    
+    @Resource
+    private IPsyConsultantScheduleService consultantScheduleService;
 
    /* @ApiOperation(value = "查询订单信息")
     @GetMapping(value = "/getOrderInfo/{id}")
@@ -275,5 +280,22 @@ public class ConsultantOrderController extends BaseController
         result.put("code", "SUCCESS");
         result.put("message", "OK");
         return result;
+    }
+
+    /**
+     * 批量预约服务 (个督/体验)
+     * @return
+     */
+    @PostMapping("/reservationServerBatch")
+    @RateLimiter(limitType = LimitType.IP)
+    public AjaxResult reservation(@RequestBody List<PsyConsultantSchedule> consultantScheduleList, HttpServletRequest request) {
+        Long consultId = consultantTokenService.getConsultId(request);
+        String payConsultId = consultId + ""; //付费咨询师id
+        consultantScheduleList.forEach(c -> c.setCreateBy(payConsultId));
+        
+        consultantScheduleService.reservationServerBatch(consultantScheduleList);
+        
+        return AjaxResult.success();
+        
     }
 }

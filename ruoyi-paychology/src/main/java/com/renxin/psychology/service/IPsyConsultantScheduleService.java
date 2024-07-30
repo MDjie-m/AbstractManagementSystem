@@ -59,4 +59,10 @@ public interface IPsyConsultantScheduleService
      * @return 结果
      */
     public int deletePsyConsultantScheduleById(Long id);
+
+    /**
+     * 批量预约服务 (个督/体验)
+     * @param consultantScheduleList
+     */
+    public void reservationServerBatch(List<PsyConsultantSchedule> consultantScheduleList);
 }

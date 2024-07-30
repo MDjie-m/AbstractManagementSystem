@@ -110,6 +110,8 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     private String consultQualification;
     /** 督导师 - 咨询方向 */
     private String consultWayStr;
+    /** 督导师 - 级别  1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师 */
+    private String consultLevel;
 
 
     /** 最早讲课时间*/

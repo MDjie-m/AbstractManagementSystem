@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="查看督导" :visible.sync="open" width="1000px" append-to-body>
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="督导类型" prop="teamType" disabled>
+      <el-form-item label="督导类型" prop="teamType" v-show="false" disabled>
         <el-select v-model="form.teamType" placeholder="请选择督导类型" disabled clearable>
           <el-option
             v-for="item in supervisionType"

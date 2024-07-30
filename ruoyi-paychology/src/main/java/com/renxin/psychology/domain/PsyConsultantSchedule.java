@@ -26,7 +26,7 @@ public class PsyConsultantSchedule extends BaseEntity
     /** 团督号 */
     private Long teamId;
     
-    /** 任务类型  1.咨询服务   2.团督开课 */
+    /** 任务类型  1.团督开课   2.咨询服务 */
     private Integer scheduleType;
     
     //同一任务的第几次执行

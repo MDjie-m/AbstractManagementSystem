@@ -29,7 +29,11 @@ public class PsyConstants {
     //支付方式  1.现款支付   2.权益支付
     public static final Integer PAY_TYPE_CASH = 1; //现款支付
     public static final Integer PAY_TYPE_EQUITY = 2; //权益支付
-    
+
+    //服务对象
+    public static final String SERVICE_OBJECT_CONSULTED = "1"; //来访者
+    public static final String SERVICE_OBJECT_PERSON_SUP = "2"; //个人督导
+    public static final String SERVICE_OBJECT_PERSON_EXP = "3"; //个人体验
 
     //积分
     public static final String INTEGRAL_RATE = "0.1"; //积分抵用比例(1积分抵多少金额
