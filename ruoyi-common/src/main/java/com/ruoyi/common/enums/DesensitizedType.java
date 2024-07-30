@@ -28,7 +28,7 @@ public enum DesensitizedType
     /**
      * 手机号，中间4位星号替换
      */
-    PHONE(s -> s.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2")),
+    PHONE(s -> s.replaceAll("(\\d{4})\\d{10}(\\d{3}[Xx]|\\d{4})", "$1****$2")),
 
     /**
      * 电子邮箱，仅显示第一个字母和@后面的地址显示，其他星号替换
