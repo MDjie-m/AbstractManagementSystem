@@ -58,4 +58,12 @@ public interface SysProductMapper
      * @return 结果
      */
     public int deleteSysProductByProductIds(String[] productIds);
+
+    /**
+     * 修改产品状态为1-已报价
+     *
+     * @param productId
+     * @return
+     */
+    public int updateSysProductStatus(String productId);
 }

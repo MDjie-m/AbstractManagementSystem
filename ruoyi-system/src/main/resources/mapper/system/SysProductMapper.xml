@@ -135,6 +135,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where product_id = #{productId}
     </update>
 
+    <!--  修改产品状态为1-已报价  -->
+    <update id="updateSysProductStatus">
+        update sys_product
+        set future_field1 = 1
+        where product_id = #{productId}
+    </update>
+
     <delete id="deleteSysProductByProductId" parameterType="String">
         delete from sys_product where product_id = #{productId}
     </delete>
