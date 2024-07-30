@@ -124,6 +124,26 @@ public class SysUserController extends BaseController
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysUser user)
     {
+        Long[] roleIds = user.getRoleIds();
+        String userType ="";
+        if(roleIds!=null && roleIds.length>0){
+            if(roleIds[0].equals(Long.parseLong("1"))){
+                userType ="1";
+            }else if(roleIds[0].equals(Long.parseLong("2"))){
+                userType ="2";
+            } else if (roleIds[0].equals(Long.parseLong("3"))) {
+                userType ="3";
+            } else if (roleIds[0].equals(Long.parseLong("4"))) {
+                userType ="4";
+            } else if (roleIds[0].equals(Long.parseLong("5"))) {
+                userType ="5";
+            } else if (roleIds[0].equals(Long.parseLong("6"))) {
+                userType ="6";
+            }else {
+                userType ="7";
+            }
+        }
+        user.setUserType(userType);
         deptService.checkDeptDataScope(user.getDeptId());
         roleService.checkRoleDataScope(user.getRoleIds());
         if (!userService.checkUserNameUnique(user))
