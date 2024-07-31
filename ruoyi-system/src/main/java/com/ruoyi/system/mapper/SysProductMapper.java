@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.SysProduct;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 产品Mapper接口
@@ -66,4 +67,12 @@ public interface SysProductMapper
      * @return
      */
     public int updateSysProductStatus(String productId);
+
+    /**
+     * 修改产品状态前端切换状态
+     *
+     * @param productId
+     * @return
+     */
+    public int updateStatus(@Param("productId")String productId,@Param("status")String status);
 }

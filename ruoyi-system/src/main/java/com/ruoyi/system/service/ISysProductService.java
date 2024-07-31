@@ -66,4 +66,11 @@ public interface ISysProductService
      * @return
      */
     public String importProduct(List<SysProduct> productList, Boolean isUpdateSupport);
+    /**
+     * 批量删除产品
+     *
+     * @param productId 产品id
+     * @return 结果
+     */
+    public int updateStatus(String productId,String status);
 }
