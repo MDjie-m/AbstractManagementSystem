@@ -127,4 +127,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </foreach>
         </if>
     </select>
+    <select id="getSuppliersByProductName" resultType="com.ruoyi.system.domain.vo.SupplierProductVo">
+        SELECT ssp.supplier_name_cn AS supplierName , ssp.price_RMB AS rmb , ssp.price_USD AS usd, ss.rate AS inspectionRate , ss.review_rating AS auditRate, ssp.time AS priceDate
+        FROM sys_supplier_price ssp
+        left join sys_supplier ss on ss.supplier_id =  ssp.supplier_id
+        WHERE
+        <if test="productName != null  and productName != ''">product_name like concat('%', #{productName}, '%')</if>
+    </select>
 </mapper>

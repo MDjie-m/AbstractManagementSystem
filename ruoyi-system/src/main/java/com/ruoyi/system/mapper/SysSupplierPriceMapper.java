@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.system.domain.SysSupplierPrice;
+import com.ruoyi.system.domain.vo.SupplierProductVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -69,4 +70,7 @@ public interface SysSupplierPriceMapper
             @Param("productName") String productName,
             @Param("startDate") String startDate,
             @Param("endDate") String endDate);
+
+    List<SupplierProductVo> getSuppliersByProductName(
+            @Param("productName") String productName);
 }

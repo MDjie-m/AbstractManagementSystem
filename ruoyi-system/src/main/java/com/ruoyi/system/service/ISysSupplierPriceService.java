@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.ruoyi.system.domain.SysSupplierPrice;
 import com.ruoyi.system.domain.vo.AsticVo;
+import com.ruoyi.system.domain.vo.SupplierProductVo;
 
 /**
  * 供应商报价Service接口
@@ -65,4 +66,18 @@ public interface ISysSupplierPriceService
     public List<AsticVo> productPriceStatistics(
             List<String> supplierNames, String productName, String startDate, String endDate);
 
+    /**
+     * 查询可报价产品列表
+     *
+     * @param supplierId 供应商id productName 产品名称
+     * @return 结果
+     */
+    public List<String> quoteableProducts(String supplierId ,  String productName);
+
+    /**
+     * 根据产品名称返回对此产品报价的供应商列表
+     * @param productName 产品名称
+     *  @return 结果
+     */
+    public List<SupplierProductVo> quoteSupplier(String productName);
 }

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.system.domain.vo.AsticVo;
 import com.ruoyi.system.domain.vo.PriceVo;
+import com.ruoyi.system.domain.vo.SupplierProductVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -105,5 +106,23 @@ public class SysSupplierPriceController extends BaseController
     public List<AsticVo> productPriceStatistics (@RequestBody PriceVo vo)  {
         return sysSupplierPriceService.productPriceStatistics(vo.getSupplierNames(),vo.getProductName(),vo.getStartDate(), vo.getEndDate());
     }
+
+    /**
+     * 查询所有已报价产品列表
+     */
+    @PostMapping("/quoteableProducts")
+    public List<String>  quoteableProducts (@RequestParam(required = false)String supplierId,
+                                            @RequestParam(required = false)String productName)  {
+        return sysSupplierPriceService.quoteableProducts(supplierId , productName);
+    }
+
+    /**
+     * 根据产品名称返回对此产品报价的供应商列表
+     */
+    @PostMapping("/quoteSupplier")
+    public List<SupplierProductVo>  quoteSupplier (@RequestParam String productName)  {
+        return sysSupplierPriceService.quoteSupplier(productName);
+    }
+
 
 }
