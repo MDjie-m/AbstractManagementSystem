@@ -108,7 +108,6 @@ public class SysProductController extends BaseController
     {
         String[] names = sysProDuctDTO.getNames().split("/");
         String[] codes = sysProDuctDTO.getCodes().split("/");
-        System.out.println(names);
         // 根据数组长度设置相应的分类名称
         for (int i = 0; i < names.length; i++) {
             switch (i) {
