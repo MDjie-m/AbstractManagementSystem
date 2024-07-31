@@ -146,4 +146,19 @@ public class SysProductServiceImpl implements ISysProductService {
         }
         return successMsg.toString();
     }
+    /**
+     * 修改产品状态前端切换状态
+     *
+     * @param productId 产品id
+     * @return 结果
+     */
+    @Override
+    public int updateStatus(String productId,String status) {
+        String res = "0";
+        if("0".equals(status)){
+            res = "1";
+        }
+        return sysProductMapper.updateStatus(productId,res);
+
+    }
 }

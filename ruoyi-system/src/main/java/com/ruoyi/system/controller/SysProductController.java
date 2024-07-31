@@ -128,4 +128,13 @@ public class SysProductController extends BaseController
     {
         return toAjax(sysProductService.deleteSysProductByProductIds(productIds));
     }
+    /**
+     * 修改产品报价状态
+     */
+    @PreAuthorize("@ss.hasPermi('system:product:updateStatus')")
+    @PostMapping("/updateStatus")
+    public AjaxResult updateStatus(String productId,String status)
+    {
+        return toAjax(sysProductService.updateStatus(productId,status));
+    }
 }

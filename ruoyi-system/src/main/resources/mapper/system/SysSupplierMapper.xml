@@ -31,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="inspectionAuditStatus"    column="inspection_audit_status"    />
         <result property="dataSources"    column="data_sources"    />
         <result property="remark"    column="remark"    />
+        <result property="futureField1"    column="future_field1"    />
     </resultMap>
 
     <resultMap id="SysSupplierSysProductResult" type="SysSupplier" extends="SysSupplierResult">
@@ -55,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysSupplierVo">
-        select supplier_id, label, country, province, city, area, product_type, registration_no, registration_no_in_china, supplier_name_cn, supplier_name_en, registration_time, registration_time_validity_period, rate, review_rating, delete_flag, inspection_id, contacts, telephone, email, classification, audit_status, inspection_status, inspection_audit_status, data_sources, remark from sys_supplier
+        select supplier_id, label, country, province, city, area, product_type, registration_no, registration_no_in_china, supplier_name_cn, supplier_name_en, registration_time, registration_time_validity_period, rate, review_rating, delete_flag, inspection_id, contacts, telephone, email, classification, audit_status, inspection_status, inspection_audit_status, data_sources, remark, future_field1 from sys_supplier
     </sql>
 
     <select id="selectSysSupplierList" parameterType="SysSupplier" resultMap="SysSupplierResult">
@@ -129,6 +130,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionAuditStatus != null">inspection_audit_status,</if>
             <if test="dataSources != null">data_sources,</if>
             <if test="remark != null">remark,</if>
+            <if test="futureField1 != null">future_field1,</if>
+            <if test="futureField2 != null">future_field2,</if>
+            <if test="futureField3 != null">future_field3,</if>
+            <if test="futureField4 != null">future_field4</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="supplierId != null">#{supplierId},</if>
@@ -157,6 +162,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionAuditStatus != null">#{inspectionAuditStatus},</if>
             <if test="dataSources != null">#{dataSources},</if>
             <if test="remark != null">#{remark},</if>
+            <if test="futureField1 != null">#{futureField1},</if>
+            <if test="futureField2 != null">#{futureField2},</if>
+            <if test="futureField3 != null">#{futureField3},</if>
+            <if test="futureField4 != null">#{futureField4}</if>
          </trim>
     </insert>
 
