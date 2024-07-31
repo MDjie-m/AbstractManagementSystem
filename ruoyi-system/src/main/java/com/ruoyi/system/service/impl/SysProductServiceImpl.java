@@ -154,8 +154,8 @@ public class SysProductServiceImpl implements ISysProductService {
      */
     @Override
     public int updateStatus(String productId,String status) {
-        String res = null;
-        if(!"1".equals(status)){
+        String res = "0";
+        if("0".equals(status)){
             res = "1";
         }
         return sysProductMapper.updateStatus(productId,res);

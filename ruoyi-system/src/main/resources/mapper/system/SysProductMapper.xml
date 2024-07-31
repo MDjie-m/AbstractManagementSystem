@@ -144,7 +144,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!--  修改产品状态用于前端切换  -->
     <update id="updateStatus">
         update sys_product
-        set quotationFlag = #{status}
+        set quotation_flag = #{status}
         where product_id = #{productId}
     </update>
 
