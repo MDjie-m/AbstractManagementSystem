@@ -2,6 +2,8 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.SysProduct;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 产品Mapper接口
@@ -9,6 +11,7 @@ import com.ruoyi.system.domain.SysProduct;
  * @author xgg
  * @date 2024-07-23
  */
+@Mapper
 public interface SysProductMapper 
 {
     /**
@@ -58,6 +61,9 @@ public interface SysProductMapper
      * @return 结果
      */
     public int deleteSysProductByProductIds(String[] productIds);
+
+    public List<String> selectProductNamesByParam(
+            @Param("supplierId")String supplierId , @Param("productName")String productName);
 
     /**
      * 修改产品状态为1-已报价

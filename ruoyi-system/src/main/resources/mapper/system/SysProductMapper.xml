@@ -152,4 +152,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{productId}
         </foreach>
     </delete>
+
+    <select id="selectProductNamesByParam" resultType="java.lang.String">
+    SELECT product_Name
+    FROM sys_product
+    WHERE future_field1 = '1'
+      <if test="supplierId != null  and supplierId != ''">and supplier_id = #{supplierId}</if>
+        <if test="productName != null  and productName != ''">AND product_Name LIKE CONCAT('%', #{productName}, '%')</if>
+    </select>
 </mapper>
