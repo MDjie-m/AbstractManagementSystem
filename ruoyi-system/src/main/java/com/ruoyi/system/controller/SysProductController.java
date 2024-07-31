@@ -3,6 +3,8 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.system.domain.dto.SysProDuctDTO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,9 +104,38 @@ public class SysProductController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:product:add')")
     @Log(title = "产品", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody SysProduct sysProduct)
+    public AjaxResult add(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
-        return toAjax(sysProductService.insertSysProduct(sysProduct));
+        String[] names = sysProDuctDTO.getNames().split("/");
+        String[] codes = sysProDuctDTO.getCodes().split("/");
+        System.out.println(names);
+        // 根据数组长度设置相应的分类名称
+        for (int i = 0; i < names.length; i++) {
+            switch (i) {
+                case 0:
+                    sysProDuctDTO.setPrimaryCategoryName(names[i]);
+                    sysProDuctDTO.setPrimaryCategory(codes[i]);
+                    break;
+                case 1:
+                    sysProDuctDTO.setSecondaryCategoryName(names[i]);
+                    sysProDuctDTO.setSecondaryCategory(codes[i]);
+                    break;
+                case 2:
+                    sysProDuctDTO.setTertiaryCategoryName(names[i]);
+                    sysProDuctDTO.setTertiaryCategory(codes[i]);
+                    break;
+                case 3:
+                    sysProDuctDTO.setQuaternaryCategoryName(names[i]);
+                    sysProDuctDTO.setQuaternaryCategory(codes[i]);
+                    break;
+                case 4:
+                    sysProDuctDTO.setFifthCategoryName(names[i]);
+                    sysProDuctDTO.setFifthCategory(codes[i]);
+                    break;
+            }
+        }
+
+        return toAjax(sysProductService.insertSysProduct(sysProDuctDTO));
     }
 
     /**
