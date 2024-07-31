@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.system.domain.vo.AsticVo;
 import com.ruoyi.system.domain.vo.PriceVo;
+import com.ruoyi.system.domain.vo.SupplierProductTotalVo;
 import com.ruoyi.system.domain.vo.SupplierProductVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,8 +121,12 @@ public class SysSupplierPriceController extends BaseController
      * 根据产品名称返回对此产品报价的供应商列表
      */
     @PostMapping("/quoteSupplier")
-    public List<SupplierProductVo>  quoteSupplier (@RequestParam String productName)  {
-        return sysSupplierPriceService.quoteSupplier(productName);
+    public AjaxResult  quoteSupplier (@RequestParam String productName)  {
+        SupplierProductTotalVo vo = new SupplierProductTotalVo();
+        List<SupplierProductVo> supplierProductVos = sysSupplierPriceService.quoteSupplier(productName);
+        vo.setList(supplierProductVos);
+        vo.setTotal(supplierProductVos.size());
+        return AjaxResult.success(vo);
     }
 
 
