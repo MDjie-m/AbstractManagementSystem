@@ -1,4 +1,4 @@
-package com.renxin.consultant.controller;
+package com.renxin.consultant.controller.course;
 
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.core.controller.BaseController;
@@ -26,7 +26,7 @@ public class ConsultantCourseController extends BaseController {
     private IPsyConsultClassService PsyConsultClassService;
 
     @ApiOperation(value = "查询class列表")
-    @GetMapping("/list")
+    @GetMapping("/class/list")
     @RateLimiter
     public TableDataInfo list(PsyConsultClassVO req)
     {
