@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getInfo" resultType="com.renxin.psychology.dto.PartnerDTO">
         <include refid="selectPsyConsultPartnerVo"/>
         <where>
-            <if test="userId != null "> and user_id = #{userId}</if>
+            
             <if test="id != null "> and id = #{id}</if>
             <if test="consultId != null "> and consult_id = #{consultId}</if>
         </where>
@@ -16,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <resultMap type="PsyConsultPartner" id="PsyConsultPartnerResult">
         <result property="id"    column="id"    />
-        <result property="userId"    column="user_id"    />
+       
         <result property="consultId"    column="consult_id"    />
         <result property="consultName"    column="consult_name"    />
         <result property="step"    column="step"    />
@@ -46,13 +46,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPsyConsultPartnerVo">
-        select id, user_id, consult_id, consult_name, step, type, name, sex, wechat, qq, phone, email, city, province, lang, work_hours, genre, card, card_img, status, create_by, create_time, update_by, update_time, money, ratio, remark, pass_time from psy_consult_partner
+        select id,  consult_id, consult_name, step, type, name, sex, wechat, qq, phone, email, city, province, lang, work_hours, genre, card, card_img, status, create_by, create_time, update_by, update_time, money, ratio, remark, pass_time from psy_consult_partner
     </sql>
 
     <select id="selectPsyConsultPartnerList" parameterType="PsyConsultPartner" resultMap="PsyConsultPartnerResult">
         <include refid="selectPsyConsultPartnerVo"/>
         <where>
-            <if test="userId != null "> and user_id = #{userId}</if>
+           
             <if test="consultId != null "> and consult_id = #{consultId}</if>
             <if test="consultName != null "> and consult_name = #{consultName}</if>
             <if test="step != null  and step != ''"> and step = #{step}</if>

@@ -34,22 +34,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select 
            sc.id, sc.order_id,sc.team_id, sc.work_id,sc.time_num,sc.schedule_type, sc.time_start, sc.time_end, sc.day, sc.week, sc.status, sc.create_by,
            sc.create_time, sc.update_by, sc.update_time, sc.time, sc.real_time, sc.consult_id ,
-           team.title as serverName , con.nick_name as userNickName
+            COALESCE(team.title, cf.name) AS serverName,  con.nick_name as userNickName 
         from psy_consultant_schedule sc
             left join psy_consultant_team_supervision team on team.id = sc.team_id
-            left join psy_consult con on con.id = sc.create_by                          
+            left join psy_consult con on con.id = sc.create_by   
+            left join psy_consultant_order orde on orde.order_no = sc.order_id
+            left join psy_consult_serve ser on ser.relation_id = orde.server_id 
+            left join psy_consult_server_config cf on ser.serve_id = cf.id
         <where>  
-            <if test="orderId != null "> and order_id = #{orderId}</if>
-            <if test="workId != null "> and work_id = #{workId}</if>
-            <if test="scheduleType != null "> and schedule_type = #{scheduleType}</if>
-            <if test="timeStart != null  and timeStart != ''"> and time_start = #{timeStart}</if>
-            <if test="timeEnd != null  and timeEnd != ''"> and time_end = #{timeEnd}</if>
-            <if test="day != null  and day != ''"> and day = #{day}</if>
-            <if test="week != null  and week != ''"> and week = #{week}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="time != null "> and time = #{time}</if>
-            <if test="realTime != null  and realTime != ''"> and real_time = #{realTime}</if>
-            <if test="consultId != null "> and consult_id = #{consultId}</if>
+            <if test="orderId != null "> and sc.order_id = #{orderId}</if>
+            <if test="workId != null "> and sc.work_id = #{workId}</if>
+            <if test="scheduleType != null "> and sc.schedule_type = #{scheduleType}</if>
+            <if test="timeStart != null  and timeStart != ''"> and sc.time_start = #{timeStart}</if>
+            <if test="timeEnd != null  and timeEnd != ''"> and sc.time_end = #{timeEnd}</if>
+            <if test="day != null  and day != ''"> and sc.day = #{day}</if>
+            <if test="week != null  and week != ''"> and sc.week = #{week}</if>
+            <if test="status != null  and status != ''"> and sc.status = #{status}</if>
+            <if test="time != null "> and sc.time = #{time}</if>
+            <if test="realTime != null  and realTime != ''"> and sc.real_time = #{realTime}</if>
+            <if test="consultId != null "> and sc.consult_id = #{consultId}</if>
         </where>
     </select>
     
