@@ -81,6 +81,7 @@ export default {
       listServeConfig(this.queryParams).then(response => {
         this.list = response.rows;
         this.total = response.total;
+        console.log("====================",this.list)
         this.loading = false;
       });
     },

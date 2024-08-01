@@ -8,18 +8,18 @@ import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.dto.OrderItemDTO;
 import com.renxin.psychology.request.PsyWorkReq;
+import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.service.IPsyConsultWorkService;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +36,9 @@ public class ConsultantWorkController extends BaseController {
     @Resource
     private IPsyConsultWorkService psyConsultWorkService;
 
+    @Resource
+    private IPsyConsultService psyConsultService;
+
     @ApiOperation(value = "咨询师排版计划表")
     @PostMapping("/liveHour")
     @RateLimiter
@@ -49,11 +52,21 @@ public class ConsultantWorkController extends BaseController {
         List<HashMap<String, String>>  list = psyConsultWorkService.getWorks(req);
         return getDataTable(list);
     }
-
-    @ApiOperation(value = "咨询师排班任务")
-    @PostMapping("/todo")
+    
+    /**
+     * 指定咨询师的可约时间(最近七天)
+     */
+    @PostMapping(value = "/getConsultWorksById/{id}")
     @RateLimiter
-    public AjaxResult todo(@RequestBody PsyWorkReq req, HttpServletRequest request)
+    public AjaxResult getConsultWorksById(@PathVariable("id") Long id)
+    {
+        return AjaxResult.success(psyConsultService.getConsultWorksById(id));
+    }
+
+    @ApiOperation(value = "本咨询师今日任务")
+    @PostMapping("/todoList")
+    @RateLimiter
+    public AjaxResult todoList(@RequestBody PsyWorkReq req, HttpServletRequest request)
     {
         ConsultDTO loginUser = consultantTokenService.getLoginUser(request);
         if(loginUser != null){
@@ -83,7 +96,7 @@ public class ConsultantWorkController extends BaseController {
 
     @ApiOperation(value = "咨询师排班新增")
     @PostMapping("/create")
-    public AjaxResult getWorks(@RequestBody PsyConsultWorkVO req,HttpServletRequest request)
+    public AjaxResult create(@RequestBody PsyConsultWorkVO req,HttpServletRequest request)
     {
         ConsultDTO loginUser = consultantTokenService.getLoginUser(request);
         if(loginUser != null){

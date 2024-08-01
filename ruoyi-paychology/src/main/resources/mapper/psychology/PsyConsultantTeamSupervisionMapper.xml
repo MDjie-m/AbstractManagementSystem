@@ -87,7 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             resultType="com.renxin.psychology.domain.PsyConsultantTeamSupervision">
         select
             DISTINCT con.id  as consultantId,
-            ser.price  as price,
+            cf.price  as price,
             con.user_name as consultUserName,
             con.avatar as consultAvatar,
             con.tabs as consultTabs,
@@ -103,9 +103,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from
             psy_consult con
             left join psy_consult_work wk on con.id = wk.consult_id and wk.status = 0 and wk.live != "[]"
-            left join psy_consult_server_config ser on con.level = ser.level and con.service_object like concat('%',ser.service_object,'%') and ser.type = 1 
-        where con.del_flag = 0
-        <if test="teamType != null  and teamType != ''"> and ser.service_object = #{teamType} </if>
+            left join psy_consult_serve ser on ser.consult_id = con.id
+            left join psy_consult_server_config cf on ser.serve_id = cf.id 
+        where con.del_flag = 0 and cf.type = 1
+        <if test="teamType != null  and teamType != ''"> and cf.service_object = #{teamType} </if>
         
         <if test="consultTabs != null  and consultTabs != ''"> and con.tabs like concat('%',#{consultTabs},'%')</if>
         <if test="consultGenre != null  and consultGenre != ''"> and con.genre like concat('%',#{consultGenre},'%')</if>

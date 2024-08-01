@@ -168,4 +168,18 @@ public class PsyConsultController extends BaseController
         }
         return toAjax(psyConsultService.deleteAll(ids));
     }
+
+    /**
+     * 所有咨询师全量关联服务
+     * @return
+     */
+    @PostMapping("/addAllRelation")
+    public AjaxResult addAllRelation()
+    {
+        if (!SecurityUtils.isAdmin(getUserId())) {
+            return error("必须是超级管理员才可以执行");
+        }
+        psyConsultService.addAllRelation();
+        return AjaxResult.success();
+    }
 }

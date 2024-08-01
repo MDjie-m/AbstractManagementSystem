@@ -14,12 +14,10 @@ import com.renxin.common.vo.DateLimitUtilVO;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultServe;
+import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.dto.PsyConsultInfoDTO;
 import com.renxin.psychology.mapper.PsyConsultMapper;
-import com.renxin.psychology.request.PsyAdminConsultReq;
-import com.renxin.psychology.request.PsyConsultReq;
-import com.renxin.psychology.request.PsyRefConsultServeReq;
-import com.renxin.psychology.request.PsyWorkReq;
+import com.renxin.psychology.request.*;
 import com.renxin.psychology.service.IPsyConsultServeConfigService;
 import com.renxin.psychology.service.IPsyConsultServeService;
 import com.renxin.psychology.service.IPsyConsultService;
@@ -68,6 +66,12 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
 
     @Resource
     private ISysConfigService configService;
+    
+    @Resource
+    private IPsyConsultServeConfigService serveConfigService;
+    
+    @Resource
+    private IPsyConsultServeService serveService;
 
     @Override
     public List<PsyConsultWorkVO> getConsultWorksById(Long id) {
@@ -214,7 +218,6 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     public List<PsyConsult> getList(PsyAdminConsultReq req) {
         LambdaQueryWrapper<PsyConsult> wp = Wrappers.lambdaQuery();
         wp.eq(PsyConsult::getDelFlag, "0");
-
 
         if (StringUtils.isNotEmpty(req.getUserName())) {
             wp.eq(PsyConsult::getUserName, req.getUserName());
@@ -410,5 +413,40 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     @Transactional(rollbackFor = Exception.class)
     public int delete(Long id) {
         return psyConsultMapper.deleteById(id);
+    }
+
+    /**
+     * 所有咨询师全量关联服务
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void addAllRelation(){
+        //清空旧的关联关系
+        serveService.deleteAll();
+        
+        //添加新的关联关系(全量)
+        LambdaQueryWrapper<PsyConsult> wp = Wrappers.lambdaQuery();
+            wp.eq(PsyConsult::getDelFlag, "0");
+        List<PsyConsult> consultantList = psyConsultMapper.selectList(wp);//咨询师清单
+        List<PsyConsultServeConfig> serverList = serveConfigService.getList(new PsyConsultServeConfigReq());//服务清单
+
+        for (PsyConsult constant : consultantList) {
+            ArrayList<Long> serverConfigIdList = new ArrayList<>();
+            for (PsyConsultServeConfig serveConfig : serverList) {
+                //判断[级别]与[服务对象]都相符
+                if (constant.getLevel().equals(serveConfig.getLevel()) && constant.getServiceObject().contains(serveConfig.getServiceObject())){
+                    serverConfigIdList.add(serveConfig.getId());
+                }
+            }
+            if (ObjectUtils.isNotEmpty(serverConfigIdList)){
+                //添加关联关系
+                PsyRefConsultServeReq addReq = new PsyRefConsultServeReq();
+                    addReq.setConsultId(constant.getId());
+                    addReq.setIds(serverConfigIdList);
+                serveService.batchServeRef(addReq);
+            }
+        }
+        //更新[咨询师表]中, 各咨询师的"关联服务数量"
+        psyConsultMapper.refreshServerNum();
     }
 }

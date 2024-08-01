@@ -1,6 +1,7 @@
 package com.renxin.psychology.service;
 
 import com.renxin.psychology.domain.PsyConsultServe;
+import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.request.PsyRefConsultServeReq;
 import com.renxin.psychology.vo.PsyConsultServeVO;
 
@@ -20,7 +21,9 @@ public interface IPsyConsultServeService {
 
     List<PsyConsultServeVO> getConsultServeRef(PsyConsultServe req);
 
-    int deleteAll(Long[] ids);
+    int deleteAll();
 
     int delete(PsyConsultServe serve);
+
+    PsyConsultServeConfig getServerDetailByRelationId(String id);
 }

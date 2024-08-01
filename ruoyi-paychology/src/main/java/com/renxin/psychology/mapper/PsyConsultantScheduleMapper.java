@@ -1,6 +1,7 @@
 package com.renxin.psychology.mapper;
 
 import com.renxin.psychology.domain.PsyConsultantSchedule;
+import com.renxin.psychology.request.PsyWorkReq;
 
 import java.util.List;
 
@@ -62,4 +63,11 @@ public interface PsyConsultantScheduleMapper
      * @return 结果
      */
     public int deletePsyConsultantScheduleByIds(Long[] ids);
+
+    /**
+     * 查询本次任务, 是[收费咨询师-付费咨询师]之间的第几次
+     * @param req
+     * @return
+     */
+    public int getTimeNumForConsultant(PsyWorkReq req);
 }

@@ -22,6 +22,7 @@ public class OrderItemDTO extends PsyConsultOrderItem {
     private String userId;
     private String userAvatar;
     private String userNickName;
+    private String payUsername;
     
     private String teamId;
     private Integer scheduleType;

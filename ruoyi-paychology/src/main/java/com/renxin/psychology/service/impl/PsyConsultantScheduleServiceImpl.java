@@ -5,19 +5,26 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
+import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.mapper.PsyConsultantScheduleMapper;
+import com.renxin.psychology.request.PsyWorkReq;
+import com.renxin.psychology.service.IPsyConsultWorkService;
 import com.renxin.psychology.service.IPsyConsultantOrderService;
 import com.renxin.psychology.service.IPsyConsultantScheduleService;
+import com.renxin.psychology.vo.PsyConsultWorkVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 /**
  * 咨询师排班任务Service业务层处理
@@ -33,6 +40,9 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     
     @Autowired
     private IPsyConsultantOrderService consultantOrderService;
+
+    @Resource
+    private IPsyConsultWorkService psyConsultWorkService;
 
     /**
      * 查询咨询师排班任务
@@ -117,23 +127,65 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     public void reservationServerBatch(List<PsyConsultantSchedule> consultantScheduleList){
         //校验剩余可用次数
         PsyConsultantOrder order = consultantOrderService.selectPsyConsultantOrderByOrderNo(consultantScheduleList.get(0).getOrderId() + "");
+        String chargeConsultantId = order.getChargeConsultantId();
         Integer usedNum = order.getUsedNum();//已用次数
         Integer surplusNum = order.getSurplusNum();//剩余次数
         
+        if (!consultantScheduleList.get(0).getCreateBy().equals(order.getPayConsultantId())){
+            throw new ServiceException("该订单不属于当前登录人");
+        }
         if (surplusNum < consultantScheduleList.size()){
             throw new ServiceException("该订单剩余[咨询次数]不足, 当前剩余" + surplusNum +"次");
         }
         
         sortSchedule(consultantScheduleList);//按预约时间排序
         for (PsyConsultantSchedule schedule : consultantScheduleList) {
-            schedule.setWeek(getWeekByDay(schedule.getDay()));
+            PsyConsultWorkVO work = psyConsultWorkService.getOne(schedule.getWorkId());
+            if (!chargeConsultantId.equals(work.getConsultId()+"")){
+                throw new ServiceException("workId与咨询师不相符");
+            }
+            
+            //work校验
+            Integer time = schedule.getTime();//开始时间(整点)
+            if (psyConsultWorkService.checkWork(schedule.getWorkId(),null,time) == false){
+                throw new ServiceException(work.getDay() + " " + addZero(time) + ":00" + "该时刻已被预约, 请刷新后重新选择预约时段");
+            }else{
+                //work占用
+                psyConsultWorkService.handleWork(schedule.getWorkId(), null , time, 1);
+            }
+            
+            
+            schedule.setDay(work.getDay());
+            schedule.setWeek(work.getWeek());
             schedule.setScheduleType(2);//2.咨询服务
-            schedule.setTimeNum(++usedNum);//第几次执行
+            schedule.setTimeStart(addZero(time)+":00");
+            schedule.setTimeEnd(addZero(time)+":50");
+            //schedule.setTimeNum(++usedNum);//第几次执行
+            schedule.setStatus("0");//待办
+            schedule.setRealTime(schedule.getDay() + " " + schedule.getTimeStart());
+            schedule.setConsultId(Long.valueOf(chargeConsultantId));
+            
+            schedule.setCreateTime(new Date());
+            schedule.setUpdateTime(new Date());
         }
+        //添加日程安排
         psyConsultantScheduleMapper.insertPsyConsultantScheduleBatch(consultantScheduleList);
         
-        //work占用
+        //若[剩余次数]被用完, 则修改订单状态
+        if (surplusNum == consultantScheduleList.size()){
+            order.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);//已完成
+            consultantOrderService.updatePsyConsultantOrder(order);
+        }
         
+    }
+    
+    //将8转换为08
+    private String addZero(Integer time){
+        if (time<10){
+            return "0"+time;
+        }
+        return time+"";
+                
     }
     
     //按预约时间排序
@@ -163,7 +215,16 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         String[] weekDays = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
         return weekDays[dayOfWeek.getValue() - 1];  // 注意 DayOfWeek 的值是从1到7，对应周一到周日
     }
-    
+
+    /**
+     * 查询本次任务, 是[收费咨询师-付费咨询师]之间的第几次
+     * @param req
+     * @return
+     */
+    @Override
+    public int getTimeNumForConsultant(PsyWorkReq req){
+        return psyConsultantScheduleMapper.getTimeNumForConsultant(req);
+    }
     
     
 }

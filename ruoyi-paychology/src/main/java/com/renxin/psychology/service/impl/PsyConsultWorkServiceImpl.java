@@ -324,9 +324,20 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
             scheduleReq.setConsultId(req.getConsultId());
             scheduleReq.setDay(today);
         List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(scheduleReq);
-        List<OrderItemDTO> scheduleToItemList = BeanUtil.copyToList(scheduleList, OrderItemDTO.class);
+        //若服务为 [个督/体验], 则需查询是[付费咨询师-收费咨询师]之间的第几次
+        for (PsyConsultantSchedule sc : scheduleList) {
+            if (sc.getScheduleType() == 2){//咨询服务
+                req.setPayConsultId(Long.valueOf(sc.getCreateBy()));
+                req.setChargeConsultId(sc.getConsultId());
+                req.setRealTime(sc.getRealTime());
+                int timeNum = consultantScheduleService.getTimeNumForConsultant(req);
+                sc.setTimeNum(timeNum);
+            }
+        }
+        
         
         //清单合并
+        List<OrderItemDTO> scheduleToItemList = BeanUtil.copyToList(scheduleList, OrderItemDTO.class);
         List<OrderItemDTO> mergedList = new ArrayList<>(orderItemList);
         mergedList.addAll(scheduleToItemList);
         // 按timeStart字段（字符串格式为"HH:mm"）进行正序排序

@@ -26,6 +26,8 @@ public class PsyWorkReq implements Serializable
     private Long consultId;
     private String userId;
     private String realTime;
+    private Long payConsultId;
+    private Long chargeConsultId;
 
     /** 咨询师 */
     private List<Long> ids;

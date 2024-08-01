@@ -27,35 +27,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
-
-    <sql id="selectPsyConsultServeConfigVo">
-        select id, mode, type, name, info, price, time, num,
-               (SELECT COUNT(id) from psy_consult_order WHERE
-                    serve_id = psy_consult_server_config.id and pay_status = '2'
-                    <if test="cId != null  and cId != ''">
-                        and consult_id = #{cId}
-                    </if>
-                ) sales,
-               (SELECT COUNT(consult_id) from psy_consult_serve WHERE serve_id = psy_consult_server_config.id) ref,
-               z_index, bound, end, del_flag, status, create_by, create_time, update_by, update_time,
-               level ,service_object
-        from psy_consult_server_config
-    </sql>
+    
 
     <select id="getList" parameterType="PsyConsultServeConfig" resultMap="PsyConsultServeConfigResult">
-        <include refid="selectPsyConsultServeConfigVo"/>
-        <where>
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="type != null  and type != ''"> and type = #{type}</if>
-            <if test="delFlag != null  and delFlag != ''"> and del_flag = #{delFlag}</if>
-            <if test="startTime != null "> and create_time <![CDATA[ >= ]]> #{startTime}</if>
-            <if test="endTime != null "> and create_time <![CDATA[ <= ]]> #{endTime}</if>
+        select cf.id, cf.mode, cf.type, cf.name, cf.info, cf.price, cf.time, cf.num,
+            (SELECT COUNT(id) from psy_consult_order WHERE
+            serve_id = cf.id and pay_status = '2'
+                <if test="cId != null  and cId != ''">
+                    and consult_id = #{cId}
+                </if>
+            ) sales,
+            (SELECT COUNT(consult_id) from psy_consult_serve WHERE serve_id = cf.id) ref,
+            cf.z_index, cf.bound, cf.end, cf.del_flag, cf.status, cf.create_by, cf.create_time, cf.update_by, cf.update_time,
+
             <if test="cId != null  and cId != ''">
-                and id in (select distinct serve_id from psy_consult_serve where consult_id = #{cId})
+               re.relation_id as relationId,
+            </if>
+            cf.level ,cf.service_object
+        from psy_consult_server_config cf
+            <if test="cId != null  and cId != ''">
+                left join psy_consult_serve re on re.serve_id = cf.id and re.consult_id = #{cId}
+            </if>
+        <where>
+            <if test="name != null  and name != ''"> and cf.name like concat('%', #{name}, '%')</if>
+            <if test="status != null  and status != ''"> and cf.status = #{status}</if>
+            <if test="type != null  and type != ''"> and cf.type = #{type}</if>
+            <if test="delFlag != null  and delFlag != ''"> and cf.del_flag = #{delFlag}</if>
+            <if test="startTime != null "> and cf.create_time <![CDATA[ >= ]]> #{startTime}</if>
+            <if test="endTime != null "> and cf.create_time <![CDATA[ <= ]]> #{endTime}</if>
+            <if test="cId != null  and cId != ''">
+                and cf.id in (select distinct serve_id from psy_consult_serve where consult_id = #{cId})
             </if>
             <if test="nId != null  and nId != ''">
-                and id not in (select distinct serve_id from psy_consult_serve where consult_id = #{nId})
+                and cf.id not in (select distinct serve_id from psy_consult_serve where consult_id = #{nId})
             </if>
             <if test="level != null and level != ''">
                 and level = #{level}
@@ -63,7 +67,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceObject != null and serviceObject != ''">
                 and  #{serviceObject} like concat('%',service_object,'%')
             </if>
-            
         
         </where>
         order by z_index desc

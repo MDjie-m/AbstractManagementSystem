@@ -1,7 +1,9 @@
 package com.renxin.psychology.mapper;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.renxin.psychology.domain.PsyConsultServe;
+import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.vo.PsyConsultServeVO;
 
 import java.util.List;
@@ -17,10 +19,13 @@ public interface PsyConsultServeMapper extends BaseMapper<PsyConsultServe>
 
     int batchServeRef(List<PsyConsultServe> refs);
 
-    int tombstonedByIds(Long[] ids);
+    @InterceptorIgnore(blockAttack = "true")
+    int deleteAll();
 
     List<PsyConsultServeVO> getServeRef(PsyConsultServe req);
 
     List<PsyConsultServeVO> getConsultServeRef(PsyConsultServe req);
+
+    PsyConsultServeConfig getServerDetailByRelationId(String id);
 
 }

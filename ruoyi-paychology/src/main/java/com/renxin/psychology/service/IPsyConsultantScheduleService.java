@@ -1,6 +1,7 @@
 package com.renxin.psychology.service;
 
 import com.renxin.psychology.domain.PsyConsultantSchedule;
+import com.renxin.psychology.request.PsyWorkReq;
 
 import java.util.List;
 
@@ -65,4 +66,11 @@ public interface IPsyConsultantScheduleService
      * @param consultantScheduleList
      */
     public void reservationServerBatch(List<PsyConsultantSchedule> consultantScheduleList);
+
+    /**
+     * 查询本次任务, 是[收费咨询师-付费咨询师]之间的第几次
+     * @param req
+     * @return
+     */
+    public int getTimeNumForConsultant(PsyWorkReq req);
 }

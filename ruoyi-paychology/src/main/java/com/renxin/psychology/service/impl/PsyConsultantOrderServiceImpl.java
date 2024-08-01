@@ -108,6 +108,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     @Resource
     private IPsyConsultantScheduleService consultantScheduleService;
     
+    @Resource
+    private IPsyConsultServeService consultServeService;
+    
     /**
      * 查询团队督导(组织)订单
      * 
@@ -122,13 +125,15 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
         //若类型为[个督/体验] , 则需计算剩余可用次数
         if (PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM.equals(serverType) || PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)){
             //指定服务信息
-            PsyConsultServeConfigVO serverConfig = serveConfigService.getOne(Long.valueOf(order.getServerId()));
+            PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(order.getServerId());
+            order.setChargeConsultantId(serverDetail.getConsultantId());
+            //PsyConsultServeConfigVO serverConfig = serveConfigService.getOne(Long.valueOf(order.getServerId()));
             //总服务次数
-            order.setTotalNum(serverConfig.getNum());
+            order.setTotalNum(serverDetail.getNum());
 
             //已使用的次数(排班信息)
             PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
-            scheduleReq.setOrderId(Long.valueOf(orderNo));
+            scheduleReq.setOrderId(orderNo);
             List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(scheduleReq);
             order.setUsedNum(ObjectUtils.isNotEmpty(scheduleList) ? scheduleList.size() : 0);
 
@@ -370,14 +375,15 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void paySuccessCallback(String outTradeNo, String payId) {
-        PsyUserIntegralRecord record = new PsyUserIntegralRecord();
-        record.setIntegral(0);
+        PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
+        if (!consultantOrder.getPayId().equals(payId)){
+            throw new ServiceException("payId不相符, 请确认已付款成功");
+        }
 
         if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_TEAM_SUP)) {
             //团队督导 , 更新订单状态
-            PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
             if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
-                consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);
+                consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);
                 consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
                 consultantOrderService.updatePsyConsultantOrder(consultantOrder);
 
@@ -394,31 +400,28 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             }
         } else if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_PERSON_SUP)) {
             //个人督导 , 更新订单状态
-            PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
             if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
-                consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);
+                consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);
                 consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
                 consultantOrderService.updatePsyConsultantOrder(consultantOrder);
 
                 //占用相应时段
-                psyConsultWorkService.handleWork(consultantOrder.getWorkId(), null , consultantOrder.getTime(), 1);
+                //psyConsultWorkService.handleWork(consultantOrder.getWorkId(), null , consultantOrder.getTime(), 1);
 
             }
         } else if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_PERSON_EXP)) {
             //个人体验 , 更新订单状态
-            PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
             if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
-                consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);
+                consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);
                 consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
                 consultantOrderService.updatePsyConsultantOrder(consultantOrder);
 
                 //占用相应时段
-                psyConsultWorkService.handleWork(consultantOrder.getWorkId(), null , consultantOrder.getTime(), 1);
+                //psyConsultWorkService.handleWork(consultantOrder.getWorkId(), null , consultantOrder.getTime(), 1);
 
             }
         } else if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_COURSE)) {
             // 课程 , 更新订单状态
-            PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
             if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
                 consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);
                 consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
@@ -429,7 +432,6 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             }
         }else if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_PACKAGE)) {
             //套餐权益 , 更新订单状态
-            PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
             if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
                 //修改订单状态为已完成
                 consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);

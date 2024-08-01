@@ -91,3 +91,12 @@ export function delConsult(id) {
     method: 'delete'
   })
 }
+
+// 初始化服务关联关系
+export function addAllRelation() {
+  return request({
+    url: '/psychology/consult/addAllRelation',
+    method: 'post',
+    data: {}
+  })
+}

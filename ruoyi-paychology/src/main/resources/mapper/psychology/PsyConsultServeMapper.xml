@@ -4,12 +4,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.renxin.psychology.mapper.PsyConsultServeMapper">
 
-    <update id="tombstonedByIds">
-        update psy_consult_serve set del_flag = 1 where id in
-        <foreach collection="array" item="item" open="(" separator="," close=")">
-            #{item,jdbcType=BIGINT}
-        </foreach>
-    </update>
+    <delete id="deleteAll">
+        delete from psy_consult_serve where serve_id is not null;
+    </delete>
 
     <select id="getServeRef" resultType="com.renxin.psychology.vo.PsyConsultServeVO">
         select a.serve_id,a.consult_id, b.nick_name, b.user_name,b.status,
@@ -35,4 +32,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             (#{item.serveId},#{item.consultId})
         </foreach>
     </insert>
+    
+    <select id="getServerDetailByRelationId" resultType="com.renxin.psychology.domain.PsyConsultServeConfig">
+        select 
+            re.relation_id as relationId,
+            cf.id as id,
+            cf.price as price,
+            cf.name as name,
+            cf.num as num,
+            cf.level as level,
+            cf.service_object as serviceObject,
+            con.id as consultantId,
+            con.nick_name as consultantName
+        from
+            psy_consult_serve re 
+        left join psy_consult_server_config cf on re.serve_id = cf.id 
+        left join psy_consult con on re.consult_id = con.id
+        where
+            re.relation_id = #{id}
+        
+    </select>
 </mapper>

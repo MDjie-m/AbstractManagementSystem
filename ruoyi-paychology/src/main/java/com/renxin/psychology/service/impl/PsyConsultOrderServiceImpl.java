@@ -298,7 +298,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
 
                 PsyConsultOrderItem orderItem = new PsyConsultOrderItem();
                 // "2023-07-26 16:09:50"
-                orderItem.setOrderId(req.getId());
+                orderItem.setOrderId(req.getId()+"");
                 orderItem.setConsultId(order.getConsultId());
                 orderItem.setWorkId(0L);
                 orderItem.setTime(hour);
@@ -450,7 +450,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         PsyConsultWork work = psyConsultWorkService.handleWork(req.getWorkId(), req.getConsultId(), req.getTime(), type);
         // 插入子订单
         PsyConsultOrderItem orderItem = new PsyConsultOrderItem();
-        orderItem.setOrderId(req.getId());
+        orderItem.setOrderId(req.getId()+"");
         orderItem.setConsultId(req.getConsultId());
         orderItem.setStatus(ConsultConstant.ONSULT_ORDER_ITEM_CREATED);
         orderItem.setWorkId(req.getWorkId());

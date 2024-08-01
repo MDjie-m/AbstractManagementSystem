@@ -255,7 +255,7 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
         schedule.setTimeStart(team.getLectureStartTime());
         schedule.setTimeEnd(team.getLectureEndTime());
         schedule.setWeek(getWeekday(team.getWeekDay()));
-        schedule.setTime(Long.parseLong(team.getLectureStartTime().substring(0,2)));
+        schedule.setTime(Integer.valueOf(team.getLectureStartTime().substring(0,2)));
         schedule.setConsultId(Long.valueOf(team.getConsultantId()));
         schedule.setScheduleType(2);//2.团督开课
         schedule.setCreateTime(new Date());

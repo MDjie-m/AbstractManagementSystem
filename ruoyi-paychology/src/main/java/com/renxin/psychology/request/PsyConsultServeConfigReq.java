@@ -1,5 +1,6 @@
 package com.renxin.psychology.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.renxin.common.core.domain.BaseValObj;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class PsyConsultServeConfigReq extends BaseValObj implements Serializable
     @ApiModelProperty(value = "关联咨询师")
     private Long nId;
 
+    @JsonProperty("cId")
     @ApiModelProperty(value = "关联咨询师")
     private Long cId;
     
@@ -51,4 +53,12 @@ public class PsyConsultServeConfigReq extends BaseValObj implements Serializable
 
     @ApiModelProperty(value = "状态")
     private String status;
+
+    public Long getCId() {
+        return cId;
+    }
+
+    public void setCId(Long cId) {
+        this.cId = cId;
+    }
 }

@@ -210,3 +210,19 @@ ALTER TABLE `psy_consult`
     CHANGE COLUMN `server_to` `service_object` VARCHAR(255) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' COLLATE 'utf8mb4_0900_ai_ci' AFTER `level`;
 
 
+/*原服务清空*/
+UPDATE psy_consult_server_config SET del_flag = 1 WHERE LEVEL IS null;
+DELETE FROM  psy_consult_serve;
+update psy_consult set SERVE = 0 ;
+
+
+ALTER TABLE `psy_consult_serve`
+    ADD COLUMN `relation_id` BIGINT(19) NOT NULL AUTO_INCREMENT FIRST,
+    ADD INDEX `索引 2` (`relation_id`);
+
+
+ALTER TABLE `psy_consultant_schedule`
+    CHANGE COLUMN `order_id` `order_id` VARCHAR(50) NULL DEFAULT NULL COMMENT '订单号' AFTER `id`;
+
+ALTER TABLE `psy_consultant_schedule`
+    CHANGE COLUMN `time_num` `time_num` INT(10) NULL DEFAULT '0' COMMENT '同一任务的第几次执行' AFTER `schedule_type`;

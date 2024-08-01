@@ -61,6 +61,16 @@
           v-hasPermi="['psychology:consult:export']"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAddAllRelation"
+          v-hasPermi="['psychology:consult:addAllRelation']"
+        >初始化服务关联</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" :columns="columns"></right-toolbar>
     </el-row>
 
@@ -158,12 +168,12 @@
     <el-dialog title="地址" :visible.sync="openAddressRef" width="900px" append-to-body>
       <addressRef v-if="openAddressRef" :id="bingConsultId" />
     </el-dialog>
-    
+
   </div>
 </template>
 
 <script>
-import { refConsultServe, adminListConsult, delConsult, updateConsult,accountListConsult } from "@/api/psychology/consult";
+import { refConsultServe, adminListConsult, delConsult, updateConsult,accountListConsult ,addAllRelation} from "@/api/psychology/consult";
 
 import serve from "./serve";
 import serveRef from "./serveRef";
@@ -401,7 +411,17 @@ export default {
       this.download('psychology/consult/export', {
         ...this.queryParams
       }, `consult_${new Date().getTime()}.xlsx`)
-    }
+    },
+    /** 初始化服务关联关系*/
+    handleAddAllRelation(){
+      this.$modal.confirm('是否确认为所有咨询师 执行初始化服务关联？ \r\n 会清空目前的服务关联, 并为每个咨询师关联与其相符的全部服务.').then(function() {
+        return addAllRelation();
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("关联成功");
+      }).catch(() => {});
+    },
+
   }
 };
 </script>

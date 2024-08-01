@@ -34,9 +34,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select 
            sc.id, sc.order_id,sc.team_id, sc.work_id,sc.time_num,sc.schedule_type, sc.time_start, sc.time_end, sc.day, sc.week, sc.status, sc.create_by,
            sc.create_time, sc.update_by, sc.update_time, sc.time, sc.real_time, sc.consult_id ,
-           team.title as serverName
+           team.title as serverName , con.nick_name as userNickName
         from psy_consultant_schedule sc
             left join psy_consultant_team_supervision team on team.id = sc.team_id
+            left join psy_consult con on con.id = sc.create_by                          
         <where>  
             <if test="orderId != null "> and order_id = #{orderId}</if>
             <if test="workId != null "> and work_id = #{workId}</if>
@@ -166,4 +167,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="getTimeNumForConsultant" parameterType="com.renxin.psychology.request.PsyWorkReq" resultType="java.lang.Integer">
+        select
+            count(sc.id)
+        from
+            psy_consultant_schedule sc
+        where
+            sc.consult_id =  #{chargeConsultId}
+          and sc.create_by = #{payConsultId}
+          and sc.real_time &lt;= #{realTime}
+    </select>
+    
+    
 </mapper>

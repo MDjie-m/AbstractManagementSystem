@@ -47,5 +47,7 @@ public interface IPsyConsultService {
     int deleteAll(Long[] ids);
 
     int delete(Long id);
+    
+    void addAllRelation();
 
 }

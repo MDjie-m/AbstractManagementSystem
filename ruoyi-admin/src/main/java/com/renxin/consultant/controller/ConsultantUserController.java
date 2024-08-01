@@ -98,11 +98,11 @@ public class ConsultantUserController extends BaseController {
     public AjaxResult getUserServerList(@RequestBody PsyConsultServeConfigReq req , HttpServletRequest request)
     {
         try {
-            PsyConsultVO one = psyConsultService.getOne(req.getConsultantId());
+            /*PsyConsultVO one = psyConsultService.getOne(req.getConsultantId());
             req.setLevel(one.getLevel());
             if (ObjectUtils.isEmpty(req.getServiceObject())){
                 req.setServiceObject(one.getServiceObject());
-            }
+            }*/
             List<PsyConsultServeConfig> list = serveConfigService.getList(req);
             
             return AjaxResult.success(list);

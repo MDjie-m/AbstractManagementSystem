@@ -2,6 +2,7 @@ package com.renxin.psychology.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.renxin.psychology.domain.PsyConsultServe;
+import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.mapper.PsyConsultServeMapper;
 import com.renxin.psychology.request.PsyRefConsultServeReq;
 import com.renxin.psychology.service.IPsyConsultServeService;
@@ -77,7 +78,21 @@ public class PsyConsultServeServiceImpl implements IPsyConsultServeService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteAll(Long[] ids) {
-        return psyConsultServeMapper.tombstonedByIds(ids);
+    public int deleteAll() {
+        return psyConsultServeMapper.deleteAll();
     }
+
+
+    /**
+     * 根据relationId查询服务详情
+     * @param id
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public PsyConsultServeConfig getServerDetailByRelationId(String id){
+        return psyConsultServeMapper.getServerDetailByRelationId(id);
+    }
+    
+    
 }

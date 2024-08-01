@@ -22,7 +22,7 @@ public class PsyConsultantSchedule extends BaseEntity
 
     /** 订单号 */
     @Excel(name = "订单号")
-    private Long orderId;
+    private String orderId;
     /** 团督号 */
     private Long teamId;
     
@@ -58,7 +58,7 @@ public class PsyConsultantSchedule extends BaseEntity
 
     /** 开始时间(整点) */
     @Excel(name = "开始时间(整点)")
-    private Long time;
+    private Integer time;
 
     /** 实际咨询开始时间 */
     @Excel(name = "实际咨询开始时间")
@@ -71,6 +71,9 @@ public class PsyConsultantSchedule extends BaseEntity
     /** 督导师 */
     @Excel(name = "督导师")
     private Long consultId;
+    
+    //付款方用户名
+    private String userNickName;
 
     @Override
     public String toString() {

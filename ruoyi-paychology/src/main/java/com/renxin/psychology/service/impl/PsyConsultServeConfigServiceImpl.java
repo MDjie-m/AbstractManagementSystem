@@ -70,14 +70,6 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
 
         List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getList(req);
         list.forEach(this::setNames);
-       /* for (PsyConsultServeConfig server : list) {
-            String serviceObjectStr = server.getServiceObject();
-            if (ObjectUtils.isNotEmpty(serviceObjectStr)){
-                server.setServiceObjectList(ComUtil.stringToArrayStr(serviceObjectStr));
-            }else{
-                server.setServiceObjectList(new ArrayList<String>());
-            }
-        }*/
         return list;
     }
 
