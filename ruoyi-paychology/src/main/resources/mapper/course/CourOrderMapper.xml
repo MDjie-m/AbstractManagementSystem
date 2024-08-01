@@ -120,4 +120,45 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="time != null ">and create_time <![CDATA[<=]]> #{time}</if>
         </where>
     </select>
+
+    <select id="getOrderListByUserId" parameterType="Integer" resultType="com.renxin.course.vo.CourseOrderVO">
+        SELECT
+        co.user_id,
+        c.author,
+        c.name AS course_title,
+        c.price AS course_price,
+        c.icon_url AS course_icon_url,
+        co.status,
+        co.create_time,
+        co.order_id AS orderNo,
+        co.id,
+        co.course_id,
+        SUM(cs.duration) AS total_duration,
+        COUNT(cs.id) AS section_num,
+        finished_sections.finish_num
+        FROM cour_order co
+        LEFT JOIN  cour_section cs ON co.course_id = cs.course_id
+        LEFT JOIN  cour_course c ON co.course_id = c.id
+        LEFT JOIN
+        ( SELECT user_id,  COUNT(id) AS finish_num  FROM  cour_user_course_section
+        WHERE finish_status = 1 GROUP BY user_id ) finished_sections ON co.user_id = finished_sections.user_id
+
+        <where>
+            <if test="userId != null">and co.user_id = #{userId}</if>
+            <if test="status != null ">and co.status = #{status}</if>
+        </where>
+
+        GROUP BY
+        co.user_id,
+        c.author,
+        c.name,
+        c.price,
+        c.icon_url,
+        co.status,
+        co.create_time,
+        co.order_id,
+        co.id,
+        co.course_id;
+
+    </select>
 </mapper>

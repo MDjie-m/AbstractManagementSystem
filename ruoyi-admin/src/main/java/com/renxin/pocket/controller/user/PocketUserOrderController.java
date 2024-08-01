@@ -5,6 +5,13 @@ import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.enums.OrderStatus;
+import com.renxin.course.constant.CourConstant;
+import com.renxin.course.domain.CourCourse;
+import com.renxin.course.domain.CourOrder;
+import com.renxin.course.service.ICourCourseService;
+import com.renxin.course.service.ICourOrderService;
+import com.renxin.course.vo.CourseOrderVO;
+import com.renxin.course.vo.OrderVO;
 import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.gauge.domain.PsyOrder;
 import com.renxin.gauge.service.IPsyOrderService;
@@ -12,11 +19,13 @@ import com.renxin.pocket.controller.user.req.PocketUserOrderReq;
 import com.renxin.psychology.dto.OrderListDTO;
 import com.renxin.psychology.service.IPsyConsultOrderService;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +44,10 @@ public class PocketUserOrderController extends BaseController
     @Resource
     private IPsyOrderService psyOrderService;
 
+    @Autowired
+    private ICourOrderService courOrderService;
+    @Autowired
+    private ICourCourseService courCourseService;
 
 
     @Autowired
@@ -50,13 +63,16 @@ public class PocketUserOrderController extends BaseController
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
         Integer userId = loginUser.getUserId();
-        if(req.getOrderType()==1){
+        if(req.getOrderType()==1) {
 
-            PsyConsultOrderVO psyConsultOrderVO =new PsyConsultOrderVO();
+            PsyConsultOrderVO psyConsultOrderVO = new PsyConsultOrderVO();
             psyConsultOrderVO.setUserId(userId);
-            psyConsultOrderVO.setStatus(req.getOrderStatus()==null?null:req.getOrderStatus().toString());
-            List<OrderListDTO> list =psyConsultOrderService.getOrderList(psyConsultOrderVO);
+            psyConsultOrderVO.setStatus(req.getOrderStatus() == null ? null : req.getOrderStatus().toString());
+            List<OrderListDTO> list = psyConsultOrderService.getOrderList(psyConsultOrderVO);
             return AjaxResult.success(list);
+        } else if(req.getOrderType()==2){
+            List<CourseOrderVO>  courOrderlist= courOrderService.getOrderListByUserId(userId,req.getOrderStatus());
+            return AjaxResult.success(courOrderlist);
         }else if(req.getOrderType()==3){
             PsyOrder psyOrder =new PsyOrder();
             psyOrder.setUserId(loginUser.getUserId());

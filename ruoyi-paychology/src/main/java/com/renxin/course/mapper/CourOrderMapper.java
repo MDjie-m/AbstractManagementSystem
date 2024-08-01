@@ -2,6 +2,7 @@ package com.renxin.course.mapper;
 
 import com.renxin.course.domain.CourOrder;
 import com.renxin.course.domain.dto.OrderQueryDTO;
+import com.renxin.course.vo.CourseOrderVO;
 import com.renxin.course.vo.OrderQueryVO;
 import com.renxin.course.vo.OrderVO;
 import org.apache.ibatis.annotations.Param;
@@ -87,4 +88,8 @@ public interface CourOrderMapper
      * 根据条件查询课程订单列表
      */
     List<OrderQueryVO> queryOrderList(OrderQueryDTO orderQueryDTO);
+
+
+
+    List<CourseOrderVO> getOrderListByUserId(@Param("userId") Integer userId ,  @Param("status") Integer status);
 }
