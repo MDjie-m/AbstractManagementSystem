@@ -70,7 +70,7 @@ public class SysSupplierPriceServiceImpl implements ISysSupplierPriceService
     public int insertSysSupplierPrice(SysSupplierPrice sysSupplierPrice)
     {
         sysSupplierPrice.setSupplierPriceId(UUID.randomUUID().toString());
-        sysProductMapper.updateSysProductStatus(sysSupplierPrice.getSupplierPriceId());
+        sysProductMapper.updateSysProductStatus(sysSupplierPrice.getProductId());
         return sysSupplierPriceMapper.insertSysSupplierPrice(sysSupplierPrice);
     }
 

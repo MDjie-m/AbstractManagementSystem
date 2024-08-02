@@ -119,7 +119,7 @@ public class SysSupplierPriceController extends BaseController
     /**
      * 根据产品名称返回对此产品报价的供应商列表
      */
-    @PostMapping("/quoteSupplier")
+    @GetMapping("/quoteSupplier")
     public TableDataInfo  quoteSupplier (@RequestParam String productName)  {
         startPage();
         List<SupplierProductVo> supplierProductVos = sysSupplierPriceService.quoteSupplier(productName);
