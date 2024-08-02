@@ -7,6 +7,9 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.utils.file.FileUploadUtils;
+import com.ruoyi.common.utils.file.MimeTypeUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +37,7 @@ public class SysInspectionController extends BaseController
     @Autowired
     private ISysInspectionService sysInspectionService;
 
-//    下面三个参数在uploadFiles里面使用
-    //    服务器或本地实际存放照片或视频的目录路径
-    @Value("${staticFile.actualFolder}")
-    private String actualName;
+//    下面两个参数在uploadFiles里面使用
     //    返回目录的根目录，即http://localhost:8080，或者时服务器的域名
     @Value("${staticFile.rootPath}")
     private String rootPath;
@@ -119,39 +119,26 @@ public class SysInspectionController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:inspection:upload')")
     @PostMapping("/upload")
-    public AjaxResult uploadFiles(@RequestParam("file") MultipartFile file, @RequestParam String supplierId){
+    public AjaxResult uploadFiles(@RequestParam("file") MultipartFile file, @RequestParam String supplierId) throws Exception{
         //准备好一个List
         String url ="";
-        //图片视频保存到哪个文件目录下
-        File targetFile = new File(actualName+inspectFile+"/"+supplierId);
-        try {
-            //先判断是否有这个目录
-            if(!targetFile.exists()){
-                //没有就创建一个
-                boolean judge = targetFile.mkdirs();
-                if(!judge){//新建失败就返回错误
-                    return error("上传失败，服务器资源错误");
-                }
+        String filename = file.getOriginalFilename();
+        if (filename != null) {
+            if (filename.endsWith(".jpg") || filename.endsWith(".png") || filename.endsWith(".jpeg")) {
+                // 这是图片
+                url = FileUploadUtils.upload(RuoYiConfig.getProfile()+"/"+inspectFile+"/"+supplierId,
+                        file, MimeTypeUtils.IMAGE_EXTENSION);
+            } else if (filename.endsWith(".mp4") || filename.endsWith(".avi")) {
+                // 这是MP4视频
+                url = FileUploadUtils.upload(RuoYiConfig.getProfile()+"/"+inspectFile+"/"+supplierId,
+                        file, MimeTypeUtils.VIDEO_EXTENSION);
+            }else {
+                throw new RuntimeException("格式不正确请重新上传");
             }
-            //新建成功就循环遍历传过来的文件数组
-                //存放在服务器上的文件前缀统一用uuid
-                String fileName = UUID.randomUUID().toString();
-                //获取这个文件的后缀，Objects.requireNonNull,当不为null才能截取，当然本身应该是有名字的，但是这里idea提示没判断是否为Null所以就用这个吧
-                String suffix = Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
-                //上面的uuid加上后缀就是这个文件在服务器上的文件名
-                String newName = fileName+suffix;
-                //然后在这个目录下创建一个这个文件
-                File targetFileName = new File(targetFile,newName);
-                //向这个文件里面写入它的文件内容
-                file.transferTo(targetFileName);
-                //然后拼接访问这个文件资源的url
-                url = rootPath + "/template/" + inspectFile + "/" + supplierId + "/" + newName;
-                //把这个url加到urlList列表里面
-
-        }catch (Exception e){
-            //捕获的异常这里返回对应的错误信息，这个方法不会返回完整信息，只会返回一句话
-            return error(e.getMessage());
         }
+        //        拼接url
+        url = rootPath + url;
+        //把这个url加到urlList列表里面
         return success(url);
     }
 }

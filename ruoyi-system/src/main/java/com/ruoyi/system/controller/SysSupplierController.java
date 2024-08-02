@@ -101,7 +101,7 @@ public class SysSupplierController extends BaseController
     @PostMapping("/getUrl")
     public  AjaxResult getUrl(){
         // todo 对应文件名称
-        String url = rootPath+"/template/"+"supplierExport.xlsx";
+        String url = rootPath+"/profile/"+"supplierExport.xlsx";
         return success().put("data",url);
     }
     /**
