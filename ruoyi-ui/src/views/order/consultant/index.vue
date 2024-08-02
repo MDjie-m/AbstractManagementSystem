@@ -1,36 +1,29 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="督导类型" prop="teamType">
-        <el-select v-model="queryParams.teamType" placeholder="请选择督导类型" clearable>
-          <el-option
-            v-for="dict in dict.type.supervision_type"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="督导状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择督导状态" clearable>
-          <el-option
-            v-for="dict in dict.type.supervision_status"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="督导标题" prop="title">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
+
+      <el-form-item label="订单编号" prop="orderNo">
         <el-input
-          v-model="queryParams.title"
-          placeholder="请输入督导标题"
+          v-model="queryParams.orderNo"
+          placeholder="请输入订单编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="督导师" prop="consultantId">
-        <el-select v-model="queryParams.consultantId"  clearable filterable>
+
+      <el-form-item label="订单服务类型" prop="serverType">
+        <el-select v-model="queryParams.serverType" placeholder="请选择订单服务类型" clearable>
+          <el-option
+            v-for="dict in dict.type.order_server_type"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="下单人" prop="payConsultantId">
+        <el-select v-model="queryParams.payConsultantId"  clearable filterable>
           <el-option
             v-for="item in consultList"
             :key="item.id"
@@ -38,23 +31,22 @@
             :value="item.id"
           />
         </el-select>
+
+
+      <el-form-item label="订单状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择订单状态" clearable>
+          <el-option
+            v-for="dict in dict.type.order_status"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
 
-<!--      <el-form-item label="应付金额" class="amount">
-        <el-input
-          v-model="queryParams.lowAmount"
-          placeholder="请输入最低应付金额"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-        <div style="margin: 0 10px">~</div>
-        <el-input
-          v-model="queryParams.highAmount"
-          placeholder="请输入最高应付金额"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>-->
+
+      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -62,71 +54,38 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-<!--      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['course:order:export']"
-        >导出</el-button>
-      </el-col>-->
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['system:supervision-team:add']"
-        >新建督导</el-button>
-      </el-col>
+
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <!--  督导清单  -->
-    <el-table v-loading="loading" :data="teamList" @selection-change="handleSelectionChange">
+    <!--  订单清单  -->
+    <el-table v-loading="loading" :data="orderList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <!-- <el-table-column label="ID" align="center" prop="id" /> -->
-      <el-table-column label="督导类型" align="center" prop="teamType" >
+      <el-table-column label="订单编号" align="center" prop="orderNo" width="130"/>
+      <el-table-column label="服务类型" align="center" prop="serverType" >
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.supervision_type" :value="scope.row.teamType"/>
+          <dict-tag :options="dict.type.order_server_type" :value="scope.row.serverType"/>
         </template>
       </el-table-column>
-      <el-table-column label="督导标题" align="center" prop="title"/>
-      <el-table-column label="期数" align="center" prop="periodNo"/>
-      <el-table-column label="督导师" align="center" prop="consultantId">
+      <el-table-column label="服务名称" align="center" prop="serverName"/>
+      <el-table-column label="下单人" align="center" prop="payConsultantName"/>
+      <el-table-column label="订单状态" align="center" prop="status">
         <template slot-scope="scope">
-<!--          <dict-tag :options="consultList" :value="scope.row.consultantId"/>-->
-          <!--            {{ (consultList.find(item => item.id == scope.row.consultantId)).nickName }}-->
-          <span>
-
-             {{
-              (consultList.find(item => item.id == scope.row.consultantId) || { nickName: '未知督导师' }).nickName
-            }}
-          </span>
+          <dict-tag :options="dict.type.order_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="督导状态" align="center" prop="status">
+      <el-table-column label="支付方式" align="center" prop="payType">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.supervision_status" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.pay_type" :value="scope.row.payType"/>
         </template>
       </el-table-column>
-      <el-table-column label="本期开课次数" align="center" prop="cycleNumber" />
-      <el-table-column label="满额人数" align="center" prop="maxNumPeople" />
-      <el-table-column label="剩余名额" align="center" prop="surplusNum" />
-
-      <el-table-column label="服务价格" align="center" prop="price" sortable=""/>
-      <el-table-column label="每周几开课" align="center" prop="weekDay" >
+      <el-table-column label="支付状态" align="center" prop="payStatus" >
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.week_day" :value="scope.row.weekDay"/>
+          <dict-tag :options="dict.type.pay_status" :value="scope.row.payStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="开课时间" align="center" prop="lectureStartTime" />
-      <el-table-column label="下课时间" align="center" prop="lectureEndTime" />
-      <el-table-column label="首次开课日期" align="center" prop="firstLectureDate" />
-      <el-table-column label="创建时间" align="center" prop="createTime" />
+      <el-table-column label="订单原价" align="center" prop="payAmount" sortable=""/>
+      <el-table-column label="付款时间" align="center" prop="payDatetime" />
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -137,19 +96,12 @@
             @click="view(scope.row)"
           >查看详情</el-button>
 
-          <el-button
-            size="mini"
-            type="text"
-            @click="edit(scope.row)"
-            v-hasPermi="['system:supervision-team:edit']"
-          >修改</el-button>
-
-          <el-button
+<!--          <el-button
             size="mini"
             type="text"
             @click="del(scope.row)"
             v-hasPermi="['system:supervision-team:edit']"
-          >删除</el-button>
+          >删除</el-button>-->
 
         </template>
       </el-table-column>
@@ -164,9 +116,6 @@
     />
 
     <!-- 添加-对话框 -->
-    <add-form ref="addForm" :consultList="consultList" @handleOk="getList"/>
-
-    <edit-form ref="editForm" :consultList="consultList" @handleOk="getList"/>
 
     <info-form ref="infoForm" :consultList="consultList" @handleOk="getList"/>
 
@@ -174,20 +123,17 @@
 </template>
 
 <script>
-import {addTeam,editTeam, queryTeamList,deleteTeam} from "@/api/supervision/team";
-import addForm from "./addForm";
-import editForm from "./editForm";
+import {queryConsultantOrderList} from "@/api/order/consultantOrder";
 import infoForm from "./info";
 import {getConsultAll} from "@/api/psychology/consult";
+import {serverType} from "@/utils/constants";
 
 export default {
   components: {
-    addForm,
-    editForm,
     infoForm,
   },
   name: "team",
-  dicts: ['supervision_type','supervision_status','week_day'],
+  dicts: ['order_server_type','order_status','pay_status','order_status','pay_type'],
   data() {
     var validatePrice = (rule, value, callback) => {
       // 保留两位小数
@@ -211,8 +157,9 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 课程订单表格数据
-      teamList: [],
+      // 订单表格数据
+      orderList: [],
+      serverTypeList: this.$constants.serverType,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -246,8 +193,8 @@ export default {
     /** 查询课程订单列表 */
     getList() {
       this.loading = true;
-      queryTeamList(this.queryParams).then(response => {
-        this.teamList = response.rows;
+      queryConsultantOrderList(this.queryParams).then(response => {
+        this.orderList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -293,7 +240,7 @@ export default {
 
     /** 查看督导 */
     view(row) {
-      this.$refs.infoForm.init(row.id)
+      this.$refs.infoForm.init(row.orderNo)
     },
 
     /** 编辑督导 */

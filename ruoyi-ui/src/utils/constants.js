@@ -254,8 +254,6 @@ export const supervisionType = [
   { label: '个人体验', value: '3' },
 ]
 
-
-
 // 星期
 export const weekDay = [
   { label: '星期一', value: '1' },
@@ -265,4 +263,19 @@ export const weekDay = [
   { label: '星期五', value: '5' },
   { label: '星期六', value: '6' },
   { label: '星期日', value: '7' },
+];
+
+// 服务类型
+export const serverType = [
+  { label: '团队督导', value: '1' },
+  { label: '个人督导', value: '2' },
+  { label: '个人体验', value: '3' },
+  { label: '课程', value: '4' },
+  { label: '成长套餐', value: '5' },
+];
+
+// 支付方式
+export const payType = [
+  { label: '现款支付', value: '1' },
+  { label: '权益支付', value: '2' },
 ];

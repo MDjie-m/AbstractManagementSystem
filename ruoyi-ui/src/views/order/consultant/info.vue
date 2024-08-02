@@ -1,94 +1,74 @@
 <template>
   <el-dialog title="查看督导" :visible.sync="open" width="1000px" append-to-body>
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="督导类型" prop="teamType" v-show="false" disabled>
-        <el-select v-model="form.teamType" placeholder="请选择督导类型" disabled clearable>
+
+      <el-form-item label="订单编号" prop="title"  disabled>
+        <el-input v-model="form.orderNo" placeholder="请输入督导标题" disabled />
+      </el-form-item>
+
+      <el-form-item label="订单服务类型" prop="serverType">
+        <el-select v-model="form.serverType" placeholder="请选择订单服务类型" disabled clearable>
           <el-option
-            v-for="item in supervisionType"
+            v-for="item in serverTypeList"
             :key="item.value"
             :label="item.label"
-            :value="parseInt(item.value)"
+            :value="item.value"
           ></el-option>
         </el-select>
       </el-form-item>
 
-      <el-form-item label="督导标题" prop="title" v-if="isTeamType()" disabled>
-        <el-input v-model="form.title" placeholder="请输入督导标题" disabled />
+      <el-form-item label="服务名称" prop="serverName">
+        <el-input v-model="form.serverName" placeholder="请输入服务名称" disabled />
       </el-form-item>
 
-      <el-form-item label="督导师" prop="consultantId">
-        <el-select v-model="form.consultantId" disabled clearable filterable>
-          <el-option
-            v-for="item in consultList"
-            :key="item.id"
-            :label="item.nickName"
-            :value="item.id"
-          />
-        </el-select>
+      <el-form-item label="下单人" prop="payConsultantName">
+        <el-input v-model="form.payConsultantName" placeholder="请输入下单人" disabled />
       </el-form-item>
 
-      <el-form-item label="期数" prop="periodNo" v-if="isTeamType()" disabled>
-        第<el-input-number v-model="form.periodNo" :min="0" :step="1" :precision="0" disabled/> 期
-      </el-form-item>
-      <el-form-item label="满额人数" prop="maxNumPeople" v-if="isTeamType()">
-        <el-input-number v-model="form.maxNumPeople" :min="0" :step="1" :precision="0" disabled/> 人
-      </el-form-item>
-      <el-form-item label="本期开课次数" prop="cycleNumber" v-if="isTeamType()">
-        <el-input-number v-model="form.cycleNumber" :min="0" :step="1" :precision="0" disabled/> 次
-      </el-form-item>
-      <el-form-item label="每周几开课" prop="weekDay" v-if="isTeamType()">
-        <el-select v-model="form.weekDay"  clearable disabled>
+      <el-form-item label="订单状态" prop="status">
+        <el-select v-model="form.status" placeholder="请选择订单状态" disabled clearable>
           <el-option
-            v-for="item in weekDay"
+            v-for="item in orderStatusList"
             :key="item.value"
             :label="item.label"
-            :value="parseInt(item.value)"
+            :value="item.value"
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="开课时间" prop="lectureStartTime" v-if="isTeamType()" >
-        <el-time-picker
-          v-model="form.lectureStartTime"
-          style="width: 140px;"
-          size="small"
-          value-format="HH:mm"
-          format="HH:mm"
-          type="daterange"
-          disabled
-        />
-      </el-form-item>
-      <el-form-item label="下课时间" prop="lectureEndTime" v-if="isTeamType()" >
-        <el-time-picker
-          v-model="form.lectureEndTime"
-          style="width: 140px;"
-          size="small"
-          value-format="HH:mm"
-          format="HH:mm"
-          type="daterange"
-          disabled
-        />
-      </el-form-item>
-      <el-form-item label="服务价格" prop="price">
-        <el-input-number v-model="form.price" :min="0"  disabled/> 元
-      </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.remark" placeholder=""  disabled/>
+
+      <el-form-item label="支付方式" prop="payType">
+        <el-select v-model="form.payType" placeholder="请选择支付方式" disabled clearable>
+          <el-option
+            v-for="item in payTypeList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
 
-      <el-form-item label="当前成员" v-if="isTeamType()">
-        <el-table  :data="form.memberList" >
-          <el-table-column label="姓名" align="center" prop="memberName"/>
-          <el-table-column label="手机号" align="center" prop="memberPhonenumber"/>
-          <el-table-column label="咨询师级别" align="center" prop="memberLevel" >
-            <template slot-scope="scope">
-              <dict-tag :options="dict.type.consult_level" :value="scope.row.memberLevel"/>
-            </template>
-          </el-table-column>
-          <el-table-column label="加入时间" align="center" prop="createTime"/>
+      <el-form-item label="支付状态" prop="payStatus">
+        <el-select v-model="form.payStatus" placeholder="请选择支付状态" disabled clearable>
+          <el-option
+            v-for="item in payStatusList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
+      </el-form-item>
 
-        </el-table>
+      <el-form-item label="订单原价" prop="payAmount">
+        <el-input v-model="form.payAmount" placeholder="请输入订单原价" disabled />
+      </el-form-item>
+
+      <el-form-item label="付款时间" prop="payDatetime">
+        <el-input v-model="form.payDatetime" placeholder="请输入付款时间" disabled />
       </el-form-item>
     </el-form>
+
+
+
 
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">返  回</el-button>
@@ -97,7 +77,7 @@
 </template>
 
 <script>
-import {infoTeam, addTeam, editTeam} from "@/api/supervision/team";
+import {queryConsultantOrderByNo } from "@/api/order/consultantOrder";
 
 export default {
   name: "infoForm",
@@ -112,57 +92,28 @@ export default {
     return {
       open: false,
       type: 'info',// tryAdd
-      supervisionType: this.$constants.supervisionType,
+      serverTypeList: this.$constants.serverType,
+      orderStatusList: this.$constants.orderStatus,
+      payTypeList: this.$constants.payType,
+      payStatusList: this.$constants.payStatus,
       weekDay: this.$constants.weekDay,
       form: {
         memberList:[]
       },
       // 表单校验
       rules: {
-        /*teamType: [
-          { required: true, message: "请选择督导类型", trigger: "change" }
-        ],
-        title: [
-          { required: true, message: "请输入标题", trigger: "blur" }
-        ],
-        consultantId: [
-          { required: true, message: "请选择督导师", trigger: "change" }
-        ],
-        periodNo: [
-          { required: true, message: "请输入期数", trigger: "change" }
-        ],
-        maxNumPeople: [
-          { required: true, message: "请输入满额人数", trigger: "change" }
-        ],
-        cycleNumber: [
-          { required: true, message: "请输入本期开课次数", trigger: "change" }
-        ],
-        weekDay: [
-          { required: true, message: "请选择每周几开课", trigger: "change" }
-        ],
-        lectureStartTime: [
-          { required: true, message: "请输入开课时间", trigger: "blur" }
-        ],
-        lectureEndTime: [
-          { required: true, message: "请输入下课时间", trigger: "blur" }
-        ],
-        price: [
-          { required: true, message: "请输入服务价格", trigger: "change" }
-        ],*/
-
-
       }
     }
   },
   methods: {
     init(id) {
 
-      infoTeam(id).then(response => {
+      queryConsultantOrderByNo(id).then(response => {
         console.log("***********************************************查询结束,data:")
         console.log(response.data)
         if (response.code == 200){
           let data = response.data;
-          this.form.consultantId = data.consultantId;
+          /*this.form.consultantId = data.consultantId;
           this.form.cycleNumber = data.cycleNumber;
           this.form.firstLectureDate = data.firstLectureDate;
           this.form.id = data.id;
@@ -176,8 +127,10 @@ export default {
           this.form.title = data.title;
           this.form.weekDay = data.weekDay;
           this.form.remark = data.remark;
-          this.form.memberList = data.memberList;
+          this.form.memberList = data.memberList;*/
+          this.form = data;
         }
+        this.form.payType = this.form.payType + "";
         console.log("================================form-info")
         console.log(this.form)
         this.open = true

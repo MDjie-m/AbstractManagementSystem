@@ -74,6 +74,7 @@ public class PsyConsultantSchedule extends BaseEntity
     
     //付款方用户名
     private String userNickName;
+    private String userId;
 
     @Override
     public String toString() {

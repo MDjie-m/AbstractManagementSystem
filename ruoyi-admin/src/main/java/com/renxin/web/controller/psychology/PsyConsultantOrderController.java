@@ -1,12 +1,16 @@
-package com.renxin.consultant.controller;
+package com.renxin.web.controller.psychology;
 
+import com.renxin.common.annotation.Log;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.common.enums.BusinessType;
 import com.renxin.common.enums.LimitType;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.OrderIdUtils;
+import com.renxin.common.utils.poi.ExcelUtil;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.framework.web.service.ConsultantTokenService;
@@ -15,10 +19,13 @@ import com.renxin.psychology.service.*;
 import com.renxin.wechat.service.WechatPayV3ApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -32,9 +39,9 @@ import java.util.Map;
  * @date 2022-08-26
  */
 @RestController
-@RequestMapping("/consultant/order")
+@RequestMapping("/system/consultant-order")
 @Api(value = "ConsultantCourseController" ,tags = {"咨询师订单Api"})
-public class ConsultantOrderController extends BaseController
+public class PsyConsultantOrderController extends BaseController
 {
     @Resource
     private IPsyConsultantOrderService psyConsultantOrderService;
@@ -90,11 +97,11 @@ public class ConsultantOrderController extends BaseController
     @ApiOperation(value = "获取订单列表")
     @PostMapping(value = "/getOrderList")
     @RateLimiter
-    public AjaxResult getOrderList(@RequestBody PsyConsultantOrder req)
+    public TableDataInfo getOrderList(@RequestBody PsyConsultantOrder req)
     {
         startPage();
         List<PsyConsultantOrder> orderList = psyConsultantOrderService.selectPsyConsultantOrderList(req);
-        return AjaxResult.success(orderList);
+        return getDataTable(orderList);
     }
 
    /* @ApiOperation(value = "咨询")
@@ -302,5 +309,73 @@ public class ConsultantOrderController extends BaseController
         
         return AjaxResult.success();
         
+    }
+
+    /**
+     * 查询团队督导(组织)订单列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:order:list')")
+    @GetMapping("/list")
+    public TableDataInfo list(PsyConsultantOrder psyConsultantOrder)
+    {
+        startPage();
+        List<PsyConsultantOrder> list = psyConsultantOrderService.selectPsyConsultantOrderList(psyConsultantOrder);
+        return getDataTable(list);
+    }
+
+    /**
+     * 导出团队督导(组织)订单列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:order:export')")
+    @Log(title = "团队督导(组织)订单", businessType = BusinessType.EXPORT)
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, PsyConsultantOrder psyConsultantOrder)
+    {
+        List<PsyConsultantOrder> list = psyConsultantOrderService.selectPsyConsultantOrderList(psyConsultantOrder);
+        ExcelUtil<PsyConsultantOrder> util = new ExcelUtil<PsyConsultantOrder>(PsyConsultantOrder.class);
+        util.exportExcel(response, list, "团队督导(组织)订单数据");
+    }
+
+    /**
+     * 获取团队督导(组织)订单详细信息
+     */
+    @PreAuthorize("@ss.hasPermi('system:order:query')")
+    @GetMapping(value = "/{orderNo}")
+    public AjaxResult getInfo(@PathVariable("orderNo") String orderNo)
+    {
+        return AjaxResult.success(psyConsultantOrderService.selectPsyConsultantOrderByOrderNo(orderNo));
+    }
+
+    /**
+     * 新增团队督导(组织)订单
+     */
+    @PreAuthorize("@ss.hasPermi('system:order:add')")
+    @Log(title = "团队督导(组织)订单", businessType = BusinessType.INSERT)
+    @PostMapping
+    public AjaxResult add(@RequestBody PsyConsultantOrder psyConsultantOrder)
+    {
+        return toAjax(psyConsultantOrderService.insertPsyConsultantOrder(psyConsultantOrder));
+    }
+
+    /**
+     * 修改团队督导(组织)订单
+     */
+    @PreAuthorize("@ss.hasPermi('system:order:edit')")
+    @Log(title = "团队督导(组织)订单", businessType = BusinessType.UPDATE)
+    @PutMapping
+    public AjaxResult edit(@RequestBody PsyConsultantOrder psyConsultantOrder)
+    {
+        return toAjax(psyConsultantOrderService.updatePsyConsultantOrder(psyConsultantOrder));
+    }
+
+    /**
+     * 删除团队督导(组织)订单
+     */
+    @PreAuthorize("@ss.hasPermi('system:order:remove')")
+    @Log(title = "团队督导(组织)订单", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{orderNos}")
+    public AjaxResult remove(@PathVariable String[] orderNos)
+    {
+        return toAjax(psyConsultantOrderService.deletePsyConsultantOrderByOrderNos(orderNos));
     }
 }

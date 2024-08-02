@@ -36,17 +36,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPsyConsultantOrderList" parameterType="PsyConsultantOrder" resultMap="PsyConsultantOrderResult">
         <include refid="selectPsyConsultantOrderVo"/>
         <where>  
-            <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
+            del_flag = 0
+            <if test="orderNo != null  and orderNo != ''"> and order_no like concat('%',#{orderNo},'%') </if>
             <if test="serverId != null  and serverId != ''"> and server_id = #{serverId}</if>
-            <if test="serverType != null "> and server_type = #{serverType}</if>
+            <if test="serverType != null and serverType != ''"> and server_type = #{serverType}</if>
             <if test="serverName != null  and serverName != ''"> and server_name like concat('%', #{serverName}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="payConsultantId != null "> and pay_consultant_id = #{payConsultantId}</if>
+            <if test="payConsultantId != null and payConsultantId != ''"> and pay_consultant_id = #{payConsultantId}</if>
             <if test="payConsultantName != null  and payConsultantName != ''"> and pay_consultant_name like concat('%', #{payConsultantName}, '%')</if>
             <if test="payAmount != null "> and pay_amount = #{payAmount}</if>
             <if test="payDatetime != null "> and pay_datetime = #{payDatetime}</if>
             <if test="payStatus != null  and payStatus != ''"> and pay_status = #{payStatus}</if>
             <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
         </where>
     </select>
     

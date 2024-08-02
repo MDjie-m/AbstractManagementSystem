@@ -61,7 +61,7 @@ public class PsyConsultantOrder extends BaseEntity
     private BigDecimal payAmount;
 
     /** 付款时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "付款时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date payDatetime;
 
