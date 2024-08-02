@@ -1,8 +1,4 @@
 # 服务器配置,使用这个环境请在application中spring下的profiles:active: druid后面加上 ",prod"
 staticFile:
   # 注意服务器是https 不是http ，这里是访问获取导入模板接口时拼接用到的前缀路径
-  rootPath: 'https://这里是域名'
-  # 可更改
-  staticPatternPath: '/template/**'
-#  服务器的存放模板的实际路径，如/user/a/可更改
-  actualFolder: '/user/a/'
+  rootPath: 'http://img.yunxiaoleng.com'

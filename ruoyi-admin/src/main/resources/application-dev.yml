@@ -2,7 +2,4 @@
 staticFile:
   # 注意本机是http 不是https，，这里是访问获取导入模板接口时拼接用到的前缀路径
   rootPath: 'http://localhost:8080'
-  # 可更改
-  staticPatternPath: '/template/**'
-  # 可更改
-  actualFolder: 'D:/tmp/'
+
