@@ -86,7 +86,7 @@ public class ConsultantPartnerController {
         return AjaxResult.success(partnerService.saveByConsultId(entity));
     }
 
-    @GetMapping(value = "/getInfo")
+    @PostMapping(value = "/getInfo")
     @RateLimiter
     public AjaxResult getInfo(HttpServletRequest request)
     {
@@ -95,7 +95,7 @@ public class ConsultantPartnerController {
         return AjaxResult.success(partnerDTO);
     }
 
-    @GetMapping(value = "/getDetail")
+    @PostMapping(value = "/getDetail")
     @RateLimiter
     public AjaxResult getDetail(HttpServletRequest request)
     {
