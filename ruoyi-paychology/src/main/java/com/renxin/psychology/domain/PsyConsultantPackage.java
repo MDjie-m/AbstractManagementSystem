@@ -39,13 +39,13 @@ public class PsyConsultantPackage extends BaseEntity
     @Excel(name = "详情图片地址")
     private String detailPicUrl;
     
-    /** 团队督导次数 */
+    /** 团队督导券张数 */
     private Integer teamSupNum;
-    /** 个人督导次数 */
+    /** 个人督导券张数 */
     private Integer personSupNum;
-    /** 个人体验次数 */
+    /** 个人体验券张数 */
     private Integer personExpNum;
-    /** 课程次数 */
+    /** 课程券张数 */
     private Integer courseNum;
     /** 套餐价格*/
     private BigDecimal price;

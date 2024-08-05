@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新建套餐" :visible.sync="open" width="1000px" append-to-body>
+  <el-dialog title="修改套餐" :visible.sync="open" width="1000px" append-to-body>
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
 
       <el-form-item label="套餐名称" prop="productName">
@@ -18,19 +18,21 @@
         <el-input-number v-model="form.price" :min="0" /> 元
       </el-form-item>
 
-      <el-form-item label="团队督导次数" prop="teamSupNum" >
+      <el-form-item label="团队督导券张数" prop="teamSupNum" >
         <el-input-number v-model="form.teamSupNum" :min="0" :step="1" :precision="0"/> 次
       </el-form-item>
 
-      <el-form-item label="个人督导次数" prop="personSupNum" >
+
+
+      <el-form-item label="个人督导券张数" prop="personSupNum" >
         <el-input-number v-model="form.personSupNum" :min="0" :step="1" :precision="0"/> 次
       </el-form-item>
 
-      <el-form-item label="个人体验次数" prop="personExpNum" >
+      <el-form-item label="个人体验券张数" prop="personExpNum" >
         <el-input-number v-model="form.personExpNum" :min="0" :step="1" :precision="0"/> 次
       </el-form-item>
 
-      <el-form-item label="课程次数" prop="courseNum" >
+      <el-form-item label="课程券张数" prop="courseNum" >
         <el-input-number v-model="form.courseNum" :min="0" :step="1" :precision="0"/> 次
       </el-form-item>
 
@@ -76,16 +78,16 @@ export default {
           { required: true, message: "请输入套餐名称", trigger: "blur" }
         ],
         teamSupNum: [
-          { required: true, message: "请输入团队督导次数", trigger: "blur" }
+          { required: true, message: "请输入团队督导券张数", trigger: "blur" }
         ],
         personSupNum: [
-          { required: true, message: "请输入个人督导次数", trigger: "blur" }
+          { required: true, message: "请输入个人督导券张数", trigger: "blur" }
         ],
         personExpNum: [
-          { required: true, message: "请输入个人体验次数", trigger: "blur" }
+          { required: true, message: "请输入个人体验券张数", trigger: "blur" }
         ],
         courseNum: [
-          { required: true, message: "请输入课程次数", trigger: "blur" }
+          { required: true, message: "请输入课程券张数", trigger: "blur" }
         ],
         price: [
           { required: true, message: "请输入套餐价格", trigger: "change" }

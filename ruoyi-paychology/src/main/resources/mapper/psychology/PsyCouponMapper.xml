@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.renxin.psychology.mapper.PsyCouponMapper">
+    
+    <resultMap type="PsyCoupon" id="PsyCouponResult">
+        <result property="couponNo"    column="coupon_no"    />
+        <result property="templateId"    column="template_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="consultantId"    column="consultant_id"    />
+        <result property="isUsable"    column="is_usable"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="expireDate"    column="expire_date"    />
+    </resultMap>
+
+    <sql id="selectPsyCouponVo">
+        select coupon_no, template_id, user_id, consultant_id, is_usable, create_time, expire_date from psy_coupon
+    </sql>
+
+    <select id="selectPsyCouponList" parameterType="PsyCoupon" resultMap="PsyCouponResult">
+        <include refid="selectPsyCouponVo"/>
+        <where>  
+            <if test="templateId != null "> and template_id = #{templateId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
+            <if test="isUsable != null "> and is_usable = #{isUsable}</if>
+            <if test="expireDate != null  and expireDate != ''"> and expire_date = #{expireDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectPsyCouponByCouponNo" parameterType="Long" resultMap="PsyCouponResult">
+        <include refid="selectPsyCouponVo"/>
+        where coupon_no = #{couponNo}
+    </select>
+        
+    <insert id="insertPsyCoupon" parameterType="PsyCoupon" useGeneratedKeys="true" keyProperty="couponNo">
+        insert into psy_coupon
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="templateId != null">template_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="consultantId != null">consultant_id,</if>
+            <if test="isUsable != null">is_usable,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="expireDate != null">expire_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="templateId != null">#{templateId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="consultantId != null">#{consultantId},</if>
+            <if test="isUsable != null">#{isUsable},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="expireDate != null">#{expireDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePsyCoupon" parameterType="PsyCoupon">
+        update psy_coupon
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="templateId != null">template_id = #{templateId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="consultantId != null">consultant_id = #{consultantId},</if>
+            <if test="isUsable != null">is_usable = #{isUsable},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="expireDate != null">expire_date = #{expireDate},</if>
+        </trim>
+        where coupon_no = #{couponNo}
+    </update>
+
+    <delete id="deletePsyCouponByCouponNo" parameterType="Long">
+        delete from psy_coupon where coupon_no = #{couponNo}
+    </delete>
+
+    <delete id="deletePsyCouponByCouponNos" parameterType="String">
+        delete from psy_coupon where coupon_no in 
+        <foreach item="couponNo" collection="array" open="(" separator="," close=")">
+            #{couponNo}
+        </foreach>
+    </delete>
+</mapper>

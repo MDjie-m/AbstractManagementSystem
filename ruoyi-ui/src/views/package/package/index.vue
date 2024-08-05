@@ -52,11 +52,11 @@
         </template>
       </el-table-column>
       <el-table-column label="套餐价格(元)" align="center" prop="price"/>
-      <el-table-column label="团队套餐次数" align="center" prop="teamSupNum"/>
-      <el-table-column label="个人套餐次数" align="center" prop="personSupNum"/>
-      <el-table-column label="个人体验次数" align="center" prop="personExpNum"/>
-      <el-table-column label="课程次数" align="center" prop="courseNum"/>
-      <el-table-column label="创建时间" align="center" prop="createTime" />
+      <el-table-column label="团队督导券张数" align="center" prop="teamSupNum"/>
+      <el-table-column label="个人督导券张数" align="center" prop="personSupNum"/>
+      <el-table-column label="个人体验券张数" align="center" prop="personExpNum"/>
+      <el-table-column label="课程券张数" align="center" prop="courseNum"/>
+      <el-table-column label="创建时间" align="center" prop="createTime"/>
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">

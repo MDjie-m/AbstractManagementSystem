@@ -71,6 +71,20 @@
       <el-form-item label="服务价格" prop="price">
         <el-input-number v-model="form.price" :min="0"  disabled/> 元
       </el-form-item>
+
+      <el-form-item label="团督head图片" prop="headPicUrl">
+        <my-cropper v-model="form.headPicUrl" sizeTip="宽750px 高394px" :extraData="extraData" :width="750" :height="394" disabled/>
+      </el-form-item>
+
+      <el-form-item label="小组特色图片" prop="specialPicUrl">
+        <my-cropper v-model="form.specialPicUrl" sizeTip="宽750px 高1000px" :extraData="extraData" :width="750" :height="1000" disabled/>
+      </el-form-item>
+
+      <el-form-item label="报名须知图片" prop="registerNoticePicUrl">
+        <my-cropper v-model="form.registerNoticePicUrl" sizeTip="宽750px 高1000px" :extraData="extraData" :width="750" :height="1000" disabled/>
+      </el-form-item>
+
+
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" placeholder=""  disabled/>
       </el-form-item>
@@ -114,6 +128,11 @@ export default {
       type: 'info',// tryAdd
       supervisionType: this.$constants.supervisionType,
       weekDay: this.$constants.weekDay,
+      // 上传
+      extraData: {
+        module: this.$constants['picModules'][2],
+        type: this.$constants['picTypes'][2]
+      },
       form: {
         memberList:[]
       },
@@ -162,7 +181,7 @@ export default {
         console.log(response.data)
         if (response.code == 200){
           let data = response.data;
-          this.form.consultantId = data.consultantId;
+          /*this.form.consultantId = data.consultantId;
           this.form.cycleNumber = data.cycleNumber;
           this.form.firstLectureDate = data.firstLectureDate;
           this.form.id = data.id;
@@ -176,7 +195,11 @@ export default {
           this.form.title = data.title;
           this.form.weekDay = data.weekDay;
           this.form.remark = data.remark;
-          this.form.memberList = data.memberList;
+          this.form.memberList = data.memberList;*/
+          data.consultExperience = '';
+          data.consultAvatar = '';
+          data.consultDetail = '';
+          this.form = data;
         }
         console.log("================================form-info")
         console.log(this.form)

@@ -120,16 +120,16 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     //服务对象   1来访者  2咨询师(督导)   3咨询师(体验)
     private String serviceObject;
 
-    /** 团队督导次数 */
+    /** 团队督导券张数 */
     private Integer teamSupNum;
 
-    /** 个人督导次数 */
+    /** 个人督导券张数 */
     private Integer personSupNum;
 
-    /** 个人体验次数 */
+    /** 个人体验券张数 */
     private Integer personExpNum;
 
-    /** 课程次数 */
+    /** 课程券张数 */
     private Integer courseNum;
     
 }

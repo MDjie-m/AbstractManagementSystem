@@ -24,20 +24,20 @@ public class PsyConsultantPackageEquity extends BaseEntity
     /** 咨询师id */
     private Long consultantId;
 
-    /** 团队督导次数 */
-    @Excel(name = "团队督导次数")
+    /** 团队督导券张数 */
+    @Excel(name = "团队督导券张数")
     private Integer teamSupNum;
 
-    /** 个人督导次数 */
-    @Excel(name = "个人督导次数")
+    /** 个人督导券张数 */
+    @Excel(name = "个人督导券张数")
     private Integer personSupNum;
 
-    /** 个人体验次数 */
-    @Excel(name = "个人体验次数")
+    /** 个人体验券张数 */
+    @Excel(name = "个人体验券张数")
     private Integer personExpNum;
 
-    /** 课程次数 */
-    @Excel(name = "课程次数")
+    /** 课程券张数 */
+    @Excel(name = "课程券张数")
     private Integer courseNum;
 
     /** 删除标志（0代表存在 1代表删除） */

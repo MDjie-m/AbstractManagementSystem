@@ -118,10 +118,10 @@ ALTER TABLE `psy_order_pay`
     ADD COLUMN `consultant_order_id` INT NULL COMMENT '咨询师订单号' AFTER `order_id`;
 
 ALTER TABLE `psy_consultant_package`
-    ADD COLUMN `team_sup_num` INT NULL COMMENT '团队督导次数' AFTER `detail_pic_url`,
-    ADD COLUMN `person_sup_num` INT NULL COMMENT '个人督导次数' AFTER `team_sup_num`,
-    ADD COLUMN `person_exp_num` INT NULL COMMENT '个人体验次数' AFTER `person_sup_num`,
-    ADD COLUMN `course_num` INT NULL COMMENT '课程次数' AFTER `person_exp_num`,
+    ADD COLUMN `team_sup_num` INT NULL COMMENT '团队督导券张数' AFTER `detail_pic_url`,
+    ADD COLUMN `person_sup_num` INT NULL COMMENT '个人督导券张数' AFTER `team_sup_num`,
+    ADD COLUMN `person_exp_num` INT NULL COMMENT '个人体验券张数' AFTER `person_sup_num`,
+    ADD COLUMN `course_num` INT NULL COMMENT '课程券张数' AFTER `person_exp_num`,
     DROP COLUMN `cycle_type`,
     DROP COLUMN `cycle_number`;
 
@@ -226,3 +226,10 @@ ALTER TABLE `psy_consultant_schedule`
 
 ALTER TABLE `psy_consultant_schedule`
     CHANGE COLUMN `time_num` `time_num` INT(10) NULL DEFAULT '0' COMMENT '同一任务的第几次执行' AFTER `schedule_type`;
+
+
+ALTER TABLE `psy_consultant_package`
+    ADD COLUMN `team_sup_coupon_template_id` BIGINT NULL DEFAULT NULL COMMENT '团队督导 抵扣券模版id' AFTER `team_sup_num`,
+    ADD COLUMN `person_sup_coupon_template_id` BIGINT NULL DEFAULT NULL COMMENT '个人督导 抵扣券模版id' AFTER `person_sup_num`,
+    ADD COLUMN `person_exp_coupon_template_id` BIGINT NOT NULL DEFAULT 0 COMMENT '个人体验 抵扣券模版id' AFTER `person_exp_num`,
+    ADD COLUMN `course_coupon_template_id` BIGINT NULL DEFAULT NULL COMMENT '课程 抵扣券模版id' AFTER `course_num`;

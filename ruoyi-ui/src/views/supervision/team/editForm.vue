@@ -69,6 +69,19 @@
       <el-form-item label="服务价格" prop="price">
         <el-input-number v-model="form.price" :min="0" /> 元
       </el-form-item>
+
+      <el-form-item label="团督head图片" prop="headPicUrl">
+        <my-cropper v-model="form.headPicUrl" sizeTip="宽750px 高394px" :extraData="extraData" :width="750" :height="394"/>
+      </el-form-item>
+
+      <el-form-item label="小组特色图片" prop="specialPicUrl">
+        <my-cropper v-model="form.specialPicUrl" sizeTip="宽750px 高1000px" :extraData="extraData" :width="750" :height="1000"/>
+      </el-form-item>
+
+      <el-form-item label="报名须知图片" prop="registerNoticePicUrl">
+        <my-cropper v-model="form.registerNoticePicUrl" sizeTip="宽750px 高1000px" :extraData="extraData" :width="750" :height="1000"/>
+      </el-form-item>
+
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" placeholder="请输入备注" />
       </el-form-item>
@@ -100,6 +113,11 @@ export default {
       supervisionType: this.$constants.supervisionType,
       weekDay: this.$constants.weekDay,
       form: {},
+      // 上传
+      extraData: {
+        module: this.$constants['picModules'][2],
+        type: this.$constants['picTypes'][2]
+      },
       // 表单校验
       rules: {
         teamType: [
