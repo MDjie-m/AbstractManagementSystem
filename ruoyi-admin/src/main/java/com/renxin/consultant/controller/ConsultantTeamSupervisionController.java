@@ -23,7 +23,7 @@ import java.util.List;
  * @date 2024-06-26
  */
 @RestController
-@RequestMapping("/consultant/supervision-team")
+@RequestMapping("/consultant/team/supervision")
 @Api(value = "ConsultantTeamSupervisionController" ,tags = {"咨询师端-团队督导(组织)Api"})
 public class ConsultantTeamSupervisionController extends BaseController
 {
@@ -37,7 +37,6 @@ public class ConsultantTeamSupervisionController extends BaseController
      * 查询团队督导(组织)列表
      */
     @ApiOperation(value = "查询团队督导(组织)列表")
-    //@PreAuthorize("@ss.hasPermi('system:supervision:list')")
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody PsyConsultantTeamSupervision req)
     {
@@ -50,11 +49,10 @@ public class ConsultantTeamSupervisionController extends BaseController
      * 获取团队督导(组织)详细信息
      */
     @ApiOperation("获取团队督导(组织)详细信息")
-    //@PreAuthorize("@ss.hasPermi('system:supervision:query')")
-    @GetMapping(value = "/queryById/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
+    @PostMapping(value = "/detail")
+    public AjaxResult getInfo(@RequestBody PsyConsultantTeamSupervision req)
     {
-        return AjaxResult.success(psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionById(id));
+        return AjaxResult.success(psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionById(req.getId()));
     }
     
 }

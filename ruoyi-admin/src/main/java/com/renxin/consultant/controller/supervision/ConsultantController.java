@@ -38,11 +38,11 @@ public class ConsultantController extends BaseController
 
 
 
-    @PostMapping(value = "/getConsultWorksById/{id}")
+    @PostMapping(value = "/work/list")
     @RateLimiter
-    public AjaxResult getConsultWorksById(@PathVariable("id") Long id)
+    public AjaxResult getConsultWorksById(@RequestBody PsyConsult psyConsuld)
     {
-        return AjaxResult.success(psyConsultService.getConsultWorksById(id));
+        return AjaxResult.success(psyConsultService.getConsultWorksById(psyConsuld.getId()));
     }
 
 
