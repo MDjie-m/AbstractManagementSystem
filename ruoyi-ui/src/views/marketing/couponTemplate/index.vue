@@ -58,7 +58,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:template:add']"
+          v-hasPermi="['marketing:couponTemplate:add']"
         >新增</el-button>
       </el-col>
 
@@ -70,7 +70,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['system:template:remove']"
+          v-hasPermi="['marketing:couponTemplate:remove']"
         >删除</el-button>
       </el-col>
 
@@ -114,15 +114,22 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:template:edit']"
+            v-hasPermi="['marketing:couponTemplate:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
+            icon="el-icon-edit"
+            @click="handleSwitch(scope.row)"
+            v-hasPermi="['marketing:couponTemplate:switchTemplateStatus']"
+          >启停</el-button>
+<!--          <el-button
+            size="mini"
+            type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['system:template:remove']"
-          >删除</el-button>
+            v-hasPermi="['marketing:couponTemplate:remove']"
+          >删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -139,8 +146,8 @@
     <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="150px">
 
-        <el-form-item label="模版状态" prop="templateStatus" >
-          <el-select v-model="form.templateStatus" clearable >
+<!--        <el-form-item label="模版状态" prop="templateStatus" >
+          <el-select v-model="form.templateStatus" clearable  disabled>
             <el-option
               v-for="item in dict.type.sys_normal_disable"
               :key="item.value"
@@ -148,7 +155,7 @@
               :value="item.value"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
 
 
         <el-form-item label="面向用户类型" prop="userType" >
@@ -203,6 +210,16 @@
           <el-input v-model="form.validityDay" placeholder="请输入有效天数" />
         </el-form-item>
 
+        <el-form-item label="使用门槛金额" prop="useThreshold">
+          <el-input v-model="form.useThreshold" :disabled="isEdit"/>
+        </el-form-item>
+
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark"  />
+        </el-form-item>
+
+
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -213,7 +230,7 @@
 </template>
 
 <script>
-import { listTemplate, getTemplate, delTemplate, addTemplate, updateTemplate } from "@/api/marketing/coupon";
+import { listTemplate, getTemplate, delTemplate, addTemplate, updateTemplate , switchTemplateStatus} from "@/api/marketing/coupon";
 
 export default {
   name: "Template",
@@ -253,6 +270,8 @@ export default {
         discountRate: null,
         validityDay: null,
         templateStatus: null,
+        remark: null,
+        useThreshold: null,
       },
       // 表单参数
       form: {},
@@ -306,7 +325,9 @@ export default {
         createBy: null,
         createTime: null,
         updateBy: null,
-        updateTime: null
+        updateTime: null,
+        remark: null,
+        useThreshold: null,
       };
       this.resetForm("form");
     },
@@ -343,6 +364,16 @@ export default {
         this.open = true;
         this.title = "修改优惠券模版";
       });
+    },
+    /* 切换模版状态  */
+    handleSwitch(row){
+      this.$modal.confirm('确认启动 / 停用？').then(function() {
+        return switchTemplateStatus(row.id);
+      }).then(() => {
+        this.$modal.msgSuccess("启停成功");
+        this.open = false;
+        this.getList();
+      }).catch(() => {});
     },
     /** 提交按钮 */
     submitForm() {

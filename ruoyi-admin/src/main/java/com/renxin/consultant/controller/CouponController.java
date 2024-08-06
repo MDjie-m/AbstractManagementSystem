@@ -1,17 +1,19 @@
-package com.renxin.web.controller.coupon;
+package com.renxin.consultant.controller;
 
 
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.page.TableDataInfo;
-import com.renxin.common.enums.BusinessType;
 import com.renxin.common.utils.poi.ExcelUtil;
+import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyCoupon;
 import com.renxin.psychology.service.IPsyCouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -22,19 +24,23 @@ import java.util.List;
  * @date 2024-08-02
  */
 @RestController
-@RequestMapping("/system/coupon")
-public class PsyCouponController extends BaseController
+@RequestMapping("/consultant/coupon")
+public class CouponController extends BaseController
 {
     @Autowired
     private IPsyCouponService psyCouponService;
-
+    
+    @Resource
+    private ConsultantTokenService consultantTokenService;
+    
     /**
      * 查询用户-优惠券发行列表
      */
-    @PreAuthorize("@ss.hasPermi('system:coupon:list')")
+    //@PreAuthorize("@ss.hasPermi('system:coupon:list')")
     @GetMapping("/list")
-    public TableDataInfo list(PsyCoupon psyCoupon)
-    {
+    public TableDataInfo list(PsyCoupon psyCoupon, HttpServletRequest request) {
+        Long consultId = consultantTokenService.getConsultId(request);
+        psyCoupon.setConsultantId(consultId);
         startPage();
         List<PsyCoupon> list = psyCouponService.selectPsyCouponList(psyCoupon);
         return getDataTable(list);
@@ -43,7 +49,7 @@ public class PsyCouponController extends BaseController
     /**
      * 导出用户-优惠券发行列表
      */
-    @PreAuthorize("@ss.hasPermi('system:coupon:export')")
+    //@PreAuthorize("@ss.hasPermi('system:coupon:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, PsyCoupon psyCoupon)
     {
@@ -55,7 +61,7 @@ public class PsyCouponController extends BaseController
     /**
      * 获取用户-优惠券发行详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:coupon:query')")
+    //@PreAuthorize("@ss.hasPermi('system:coupon:query')")
     @GetMapping(value = "/{couponNo}")
     public AjaxResult getInfo(@PathVariable("couponNo") String couponNo)
     {
@@ -65,7 +71,7 @@ public class PsyCouponController extends BaseController
     /**
      * 新增用户-优惠券发行
      */
-    @PreAuthorize("@ss.hasPermi('system:coupon:add')")
+    //@PreAuthorize("@ss.hasPermi('system:coupon:add')")
     @PostMapping
     public AjaxResult add(@RequestBody PsyCoupon psyCoupon)
     {
@@ -75,7 +81,7 @@ public class PsyCouponController extends BaseController
     /**
      * 修改用户-优惠券发行
      */
-    @PreAuthorize("@ss.hasPermi('system:coupon:edit')")
+    //@PreAuthorize("@ss.hasPermi('system:coupon:edit')")
     @PutMapping
     public AjaxResult edit(@RequestBody PsyCoupon psyCoupon)
     {
@@ -85,7 +91,7 @@ public class PsyCouponController extends BaseController
     /**
      * 删除用户-优惠券发行
      */
-    @PreAuthorize("@ss.hasPermi('system:coupon:remove')")
+    //@PreAuthorize("@ss.hasPermi('system:coupon:remove')")
 	@DeleteMapping("/{couponNos}")
     public AjaxResult remove(@PathVariable Long[] couponNos)
     {

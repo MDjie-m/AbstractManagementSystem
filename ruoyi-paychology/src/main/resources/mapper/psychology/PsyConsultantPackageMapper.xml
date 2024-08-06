@@ -20,12 +20,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="teamSupCouponTemplateId"    column="team_sup_coupon_template_id"    />
+        <result property="personSupCouponTemplateId"    column="person_sup_coupon_template_id"    />
+        <result property="personExpCouponTemplateId"    column="person_exp_coupon_template_id"    />
+        <result property="courseCouponTemplateId"    column="course_coupon_template_id"    />
     </resultMap>
 
     <sql id="selectPsyConsultantPackageVo">
         select package_id, product_name, product_pic_url, detail_pic_url,  status, del_flag, create_by, create_time,
                update_by, update_time,
-               team_sup_num , person_sup_num, person_exp_num, course_num,price
+               team_sup_num , person_sup_num, person_exp_num, course_num,price,
+               team_sup_coupon_template_id,person_sup_coupon_template_id,person_exp_coupon_template_id,course_coupon_template_id
            from psy_consultant_package
     </sql>
 
@@ -63,6 +68,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="personExpNum != null">person_exp_num,</if>
             <if test="courseNum != null">course_num,</if>
             <if test="price != null">price,</if>
+            <if test="teamSupCouponTemplateId != null">team_sup_coupon_template_id,</if>
+            <if test="personSupCouponTemplateId != null">person_sup_coupon_template_id,</if>
+            <if test="personExpCouponTemplateId != null">person_exp_coupon_template_id,</if>
+            <if test="courseCouponTemplateId != null">course_coupon_template_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="packageId != null">#{packageId},</if>
@@ -80,6 +89,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="personExpNum != null">#{personExpNum},</if>
             <if test="courseNum != null">#{courseNum},</if>
             <if test="price != null">#{price},</if>
+            <if test="teamSupCouponTemplateId != null">#{teamSupCouponTemplateId},</if>
+            <if test="personSupCouponTemplateId != null">#{personSupCouponTemplateId},</if>
+            <if test="personExpCouponTemplateId != null">#{personExpCouponTemplateId},</if>
+            <if test="courseCouponTemplateId != null">#{courseCouponTemplateId},</if>
          </trim>
     </insert>
 
@@ -100,6 +113,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="personExpNum != null">person_exp_num = #{personExpNum},</if>
             <if test="courseNum != null">course_num = #{courseNum},</if>
             <if test="price != null">price = #{price},</if>
+            <if test="teamSupCouponTemplateId != null">team_sup_coupon_template_id = #{teamSupCouponTemplateId},</if>
+            <if test="personSupCouponTemplateId != null">person_sup_coupon_template_id = #{personSupCouponTemplateId},</if>
+            <if test="personExpCouponTemplateId != null">person_exp_coupon_template_id = #{personExpCouponTemplateId},</if>
+            <if test="courseCouponTemplateId != null">course_coupon_template_id = #{courseCouponTemplateId},</if>
         </trim>
         where package_id = #{packageId}
     </update>

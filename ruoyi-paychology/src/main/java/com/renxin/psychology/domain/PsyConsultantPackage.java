@@ -1,5 +1,6 @@
 package com.renxin.psychology.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,6 +48,21 @@ public class PsyConsultantPackage extends BaseEntity
     private Integer personExpNum;
     /** 课程券张数 */
     private Integer courseNum;
+    //团队督导券id
+    private Long teamSupCouponTemplateId;
+    private Long personSupCouponTemplateId;
+    private Long personExpCouponTemplateId;
+    private Long courseCouponTemplateId;
+    //团队督导券名称
+    @TableField(exist = false)
+    private String teamSupCouponTemplateName;
+    @TableField(exist = false)
+    private String personSupCouponTemplateName;
+    @TableField(exist = false)
+    private String personExpCouponTemplateName;
+    @TableField(exist = false)
+    private String courseCouponTemplateName;
+    
     /** 套餐价格*/
     private BigDecimal price;
 

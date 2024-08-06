@@ -108,17 +108,17 @@ public class PsyConsultantPackageEquityServiceImpl implements IPsyConsultantPack
     }
 
     /**
-     * 处理套餐订单
+     * 处理套餐订单 （购买套餐-获得券)
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void handleConsultantOrder(String orderNo){
+    public void handleConsultantPackageOrder(String orderNo){
         //订单详情
         PsyConsultantOrder order = consultantOrderService.selectPsyConsultantOrderByOrderNo(orderNo);
         //套餐详情
         PsyConsultantPackage consultantPackage = packageService.selectPsyConsultantPackageByPackageId(Long.valueOf(order.getServerId()));
-
-        PsyConsultantPackageEquity req = new PsyConsultantPackageEquity();
+        
+       /* PsyConsultantPackageEquity req = new PsyConsultantPackageEquity();
             req.setConsultantId(Long.valueOf(order.getPayConsultantId()));
         List<PsyConsultantPackageEquity> equityList = packageEquityMapper.selectPsyConsultantPackageEquityList(req);
         
@@ -142,7 +142,7 @@ public class PsyConsultantPackageEquityServiceImpl implements IPsyConsultantPack
             equity.setCourseNum(equity.getCourseNum() + consultantPackage.getCourseNum());
             equity.setUpdateTime(new Date());
             packageEquityMapper.updatePsyConsultantPackageEquity(equity);
-        }
+        }*/
 
     }
     

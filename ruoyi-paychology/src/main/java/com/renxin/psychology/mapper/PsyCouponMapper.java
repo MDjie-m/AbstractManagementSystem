@@ -19,7 +19,7 @@ public interface PsyCouponMapper
      * @param couponNo 用户-优惠券发行主键
      * @return 用户-优惠券发行
      */
-    public PsyCoupon selectPsyCouponByCouponNo(Long couponNo);
+    public PsyCoupon selectPsyCouponByCouponNo(String couponNo);
 
     /**
      * 查询用户-优惠券发行列表
@@ -36,6 +36,8 @@ public interface PsyCouponMapper
      * @return 结果
      */
     public int insertPsyCoupon(PsyCoupon psyCoupon);
+    
+    public int insertPsyCouponList(List<PsyCoupon> psyCoupon);
 
     /**
      * 修改用户-优惠券发行
@@ -51,7 +53,7 @@ public interface PsyCouponMapper
      * @param couponNo 用户-优惠券发行主键
      * @return 结果
      */
-    public int deletePsyCouponByCouponNo(Long couponNo);
+    public int deletePsyCouponByCouponNo(String couponNo);
 
     /**
      * 批量删除用户-优惠券发行

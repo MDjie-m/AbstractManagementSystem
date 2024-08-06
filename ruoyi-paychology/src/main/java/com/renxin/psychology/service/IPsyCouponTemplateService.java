@@ -60,4 +60,7 @@ public interface IPsyCouponTemplateService
      * @return 结果
      */
     public int deletePsyCouponTemplateById(Long id);
+
+    //切换模版状态
+    public void switchTemplateStatus(Long id);
 }

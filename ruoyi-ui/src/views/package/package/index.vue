@@ -53,20 +53,43 @@
       </el-table-column>
       <el-table-column label="套餐价格(元)" align="center" prop="price"/>
       <el-table-column label="团队督导券张数" align="center" prop="teamSupNum"/>
+      <el-table-column label="团队督导券名称" align="center" prop="teamSupCouponTemplateId" >
+        <template slot-scope="scope">
+          <span>{{ (couponTemplateList.find(item => item.id === scope.row.teamSupCouponTemplateId) || {couponName : '-'}).couponName }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="个人督导券张数" align="center" prop="personSupNum"/>
+      <el-table-column label="个人督导券名称" align="center" prop="personSupCouponTemplateId" >
+        <template slot-scope="scope">
+          <span>{{ (couponTemplateList.find(item => item.id === scope.row.personSupCouponTemplateId) || {couponName : '-'}).couponName }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="个人体验券张数" align="center" prop="personExpNum"/>
+      <el-table-column label="个人体验券名称" align="center" prop="personExpCouponTemplateId" >
+        <template slot-scope="scope">
+          <span>{{ (couponTemplateList.find(item => item.id === scope.row.personExpCouponTemplateId) || {couponName : '-'}).couponName }}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column label="课程券张数" align="center" prop="courseNum"/>
+      <el-table-column label="课程券名称" align="center" prop="courseCouponTemplateId" >
+        <template slot-scope="scope">
+          <span>{{ (couponTemplateList.find(item => item.id === scope.row.courseCouponTemplateId) || {couponName : '-'}).couponName }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime"/>
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
 
-          <el-button
+<!--          <el-button
             size="mini"
             type="text"
             @click="view(scope.row)"
             v-hasPermi="['system:package:info']"
-          >详情</el-button>
+          >详情</el-button>-->
 
           <el-button
             size="mini"
@@ -106,6 +129,8 @@
 
 <script>
 import { queryPackageList, deletePackage } from "@/api/package/package";
+import {getConsultAll} from "@/api/psychology/consult";
+import {listTemplate} from "@/api/marketing/coupon";
 import addForm from "./addForm";
 import editForm from "./editForm";
 import infoForm from "./info";
@@ -143,6 +168,7 @@ export default {
       total: 0,
       // 课程订单表格数据
       packageList: [],
+      couponTemplateList:[],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -158,10 +184,15 @@ export default {
     };
   },
   async created() {
+    await this.getCouponList();
     this.getList();
   },
   methods: {
-
+    //获取优惠券模版清单
+    async getCouponList() {
+      const res = await listTemplate({});
+      this.couponTemplateList = res.rows;
+    },
     /** 查询课程订单列表 */
     getList() {
       //this.loading = true;

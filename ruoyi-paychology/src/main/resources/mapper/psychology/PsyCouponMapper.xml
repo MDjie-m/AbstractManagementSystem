@@ -12,6 +12,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="isUsable"    column="is_usable"    />
         <result property="createTime"    column="create_time"    />
         <result property="expireDate"    column="expire_date"    />
+        <result property="couponName"    column="coupon_name"    />
+        <result property="maxDeductionPrice"    column="max_deduction_price"    />
+        <result property="orderServerType"    column="server_type"    />
     </resultMap>
 
     <sql id="selectPsyCouponVo">
@@ -19,17 +22,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectPsyCouponList" parameterType="PsyCoupon" resultMap="PsyCouponResult">
-        <include refid="selectPsyCouponVo"/>
-        <where>  
-            <if test="templateId != null "> and template_id = #{templateId}</if>
-            <if test="userId != null "> and user_id = #{userId}</if>
-            <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
-            <if test="isUsable != null "> and is_usable = #{isUsable}</if>
-            <if test="expireDate != null  and expireDate != ''"> and expire_date = #{expireDate}</if>
+        select
+            cou.coupon_no, cou.template_id, cou.user_id, cou.consultant_id, cou.is_usable, cou.create_time, cou.expire_date ,
+               tem.coupon_name , tem.max_deduction_price , tem.server_type
+        from psy_coupon cou
+        left join
+            psy_coupon_template tem on cou.template_id = tem.id
+        <where>
+            cou.is_usable = 0                               
+            <if test="couponNo != null "> and cou.coupon_no = #{couponNo}</if>
+            <if test="templateId != null "> and cou.template_id = #{templateId}</if>
+            <if test="userId != null "> and cou.user_id = #{userId}</if>
+            <if test="consultantId != null "> and cou.consultant_id = #{consultantId}</if>
+            <if test="isUsable != null "> and cou.is_usable = #{isUsable}</if>
+            <if test="expireDate != null  and expireDate != ''"> and cou.expire_date = #{expireDate}</if>
+            <if test="orderServerType != null  and orderServerType != ''"> and tem.server_type = #{orderServerType}</if>
         </where>
     </select>
     
-    <select id="selectPsyCouponByCouponNo" parameterType="Long" resultMap="PsyCouponResult">
+    <select id="selectPsyCouponByCouponNo" parameterType="String" resultMap="PsyCouponResult">
         <include refid="selectPsyCouponVo"/>
         where coupon_no = #{couponNo}
     </select>
@@ -37,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertPsyCoupon" parameterType="PsyCoupon" useGeneratedKeys="true" keyProperty="couponNo">
         insert into psy_coupon
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="couponNo != null">coupon_no,</if>
             <if test="templateId != null">template_id,</if>
             <if test="userId != null">user_id,</if>
             <if test="consultantId != null">consultant_id,</if>
@@ -45,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="expireDate != null">expire_date,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="couponNo != null">#{couponNo},</if>
             <if test="templateId != null">#{templateId},</if>
             <if test="userId != null">#{userId},</if>
             <if test="consultantId != null">#{consultantId},</if>
@@ -52,6 +65,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="expireDate != null">#{expireDate},</if>
          </trim>
+    </insert>
+    
+    <insert id="insertPsyCouponList">
+        insert into psy_coupon
+        (
+            coupon_no, template_id, user_id, consultant_id, is_usable, create_time, expire_date
+        )
+        values
+        <foreach collection="list" item="coupon" separator=",">
+        (
+            #{coupon.couponNo},
+            #{coupon.templateId},
+            #{coupon.userId},
+            #{coupon.consultantId},
+            1,
+            #{coupon.createTime},
+            #{coupon.expireDate}
+        )
+        </foreach>
     </insert>
 
     <update id="updatePsyCoupon" parameterType="PsyCoupon">

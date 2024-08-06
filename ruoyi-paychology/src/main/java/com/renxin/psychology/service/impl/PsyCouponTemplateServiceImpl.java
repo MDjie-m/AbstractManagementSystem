@@ -95,4 +95,10 @@ public class PsyCouponTemplateServiceImpl implements IPsyCouponTemplateService
     {
         return psyCouponTemplateMapper.deletePsyCouponTemplateById(id);
     }
+
+    @Override
+    public void switchTemplateStatus(Long id) {
+        psyCouponTemplateMapper.switchTemplateStatus(id);
+    }
+
 }

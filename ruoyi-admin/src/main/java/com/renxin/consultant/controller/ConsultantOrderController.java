@@ -193,6 +193,8 @@ public class ConsultantOrderController extends BaseController
                 PsyConsultantPackage psyConsultantPackage = consultantPackageService.selectPsyConsultantPackageByPackageId(Long.parseLong(consultantOrder.getServerId()));
                 payAmount = psyConsultantPackage.getPrice();
                 serverName = "购买套餐权益-"+psyConsultantPackage.getProductName();
+                
+                //todo 校验优惠券发行量是否足够
                 break;
                 
             default:
@@ -278,7 +280,7 @@ public class ConsultantOrderController extends BaseController
         //@TODO 处理支付成功后的业务 例如 将订单状态修改为已支付 具体参数键值可参考文档 注意！！！ 微信可能会多次发送重复的通知 因此要判断业务是否已经处理过了 避免重复处理
 
         //psyConsultantOrderService.wechatConsultantPayNotify(res.getString("out_trade_no"), res.getString("transaction_id"));
-        psyConsultantOrderService.paySuccessCallback("GRDD202407311722265917", "702b09a6-0f5e-4224-9e40-0fd4c5575765");
+        psyConsultantOrderService.paySuccessCallback("TC202408051728127073", "ca3ea4f0-ffcc-4313-a64d-427c5875990d");
         result.put("code", "SUCCESS");
         result.put("message", "OK");
         return result;

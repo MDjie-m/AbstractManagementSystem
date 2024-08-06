@@ -20,6 +20,9 @@ public class PsyConstants {
     public static final String CONSULTANT_ORDER_PERSON_EXP_NUM = "3"; //个人体验
     public static final String CONSULTANT_ORDER_COURSE_NUM = "4"; //课程
     public static final String CONSULTANT_ORDER_PACKAGE_NUM = "5"; //套餐
+
+    //优惠券
+    public static final String COUPON_NO = "YHQ"; //优惠券
     
     //用户类型
     public static final Integer USER_ADMIN_ = 1; //管理员
@@ -28,7 +31,8 @@ public class PsyConstants {
     
     //支付方式  1.现款支付   2.权益支付
     public static final Integer PAY_TYPE_CASH = 1; //现款支付
-    public static final Integer PAY_TYPE_EQUITY = 2; //权益支付
+    public static final Integer PAY_TYPE_COUPON = 2; //抵扣券支付
+    public static final Integer PAY_TYPE_BLEND = 3; //混合支付
 
     //服务对象
     public static final String SERVICE_OBJECT_CONSULTED = "1"; //来访者

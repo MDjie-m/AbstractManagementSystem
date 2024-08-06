@@ -60,4 +60,7 @@ public interface PsyCouponTemplateMapper
      * @return 结果
      */
     public int deletePsyCouponTemplateByIds(Long[] ids);
+    
+    //切换模版状态
+    public void switchTemplateStatus(Long id);
 }

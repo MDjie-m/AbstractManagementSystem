@@ -103,6 +103,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     private IPsyConsultantPackageEquityService consultantPackageEquityService;
     
     @Resource
+    private IPsyCouponService couponService;
+    
+    @Resource
     private IPsyConsultServeConfigService serveConfigService;
     
     @Resource
@@ -256,16 +259,18 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
         consultantOrder.setPayConsultantName(nickName);
         
         String serverType = consultantOrder.getServerType();
-        PsyConsultantPackageEquity consultantPackageEquity = new PsyConsultantPackageEquity();
+        
         //若[支付类型]为"权益支付", 则直接校验并扣减
         Integer payType = consultantOrder.getPayType();
-        if(PsyConstants.PAY_TYPE_EQUITY == payType){
+        /*
+        //PsyConsultantPackageEquity consultantPackageEquity = new PsyConsultantPackageEquity();
+        if(PsyConstants.PAY_TYPE_COUPON == payType){
             //查询当前咨询师的权益清单
             consultantPackageEquity = consultantPackageEquityService.selectPsyConsultantPackageEquityByConsultantId(Long.valueOf(consultantOrder.getPayConsultantId()));
             if (ObjectUtils.isEmpty(consultantPackageEquity)){
                 throw new ServiceException("当前用户的权益不足, 请先购买套餐或直接现款支付");
             }
-        }
+        }*/
         
         boolean isPayed = false;
         if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)) {
@@ -274,17 +279,10 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //consultantOrder.setServerName(team.getTitle()+"-第"+team.getPeriodNo()+"期");
             PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
             
-            if(PsyConstants.PAY_TYPE_EQUITY == payType) {
-                Integer teamSupNum = consultantPackageEquity.getTeamSupNum();
-                if (teamSupNum <= 0){
-                    throw new ServiceException("团队督导权益不足, 无法使用权益购买. 请先购买套餐或直接现款支付");
-                }else{
-                    //权益次数-1
-                    consultantPackageEquity.setTeamSupNum(teamSupNum-1);
-                    consultantPackageEquityService.updatePsyConsultantPackageEquity(consultantPackageEquity);
-                    //支付已完成
-                    isPayed = true;
-                }
+            //抵扣券支付
+            if(PsyConstants.PAY_TYPE_COUPON == payType) {
+                couponService.handleConsultantCouponOrder(consultantOrder);
+                isPayed = true;
             }
             
             //内部生成支付对象
@@ -302,58 +300,40 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //consultantOrder.setServerName("个人督导服务");
             PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
 
-            if(PsyConstants.PAY_TYPE_EQUITY == payType) {
-                Integer personSupNum = consultantPackageEquity.getPersonSupNum();
-                if (personSupNum <= 0){
-                    throw new ServiceException("个人督导权益不足, 无法使用权益购买. 请先购买套餐或直接现款支付");
-                }else{
-                    //权益次数-1
-                    consultantPackageEquity.setPersonExpNum(personSupNum-1);
-                    consultantPackageEquityService.updatePsyConsultantPackageEquity(consultantPackageEquity);
-                    //支付已完成
-                    isPayed = true;
-                }
+            //抵扣券支付
+            if(PsyConstants.PAY_TYPE_COUPON == payType) {
+                couponService.handleConsultantCouponOrder(consultantOrder);
+                isPayed = true;
             }
+            
         } else if (PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)) {
             // 个人体验服务
             //Long id = consultantOrder.getOrderId() != null ? consultantOrder.getOrderId() : IDhelper.getNextId();
             //consultantOrder.setServerName("个人体验服务");
             PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
 
-            if(PsyConstants.PAY_TYPE_EQUITY == payType) {
-                Integer personExpNum = consultantPackageEquity.getPersonExpNum();
-                if (personExpNum <= 0){
-                    throw new ServiceException("个人体验权益不足, 无法使用权益购买. 请先购买套餐或直接现款支付");
-                }else{
-                    //权益次数-1
-                    consultantPackageEquity.setPersonExpNum(personExpNum-1);
-                    consultantPackageEquityService.updatePsyConsultantPackageEquity(consultantPackageEquity);
-                    //支付已完成
-                    isPayed = true;
-                }
+            //抵扣券支付
+            if(PsyConstants.PAY_TYPE_COUPON == payType) {
+                couponService.handleConsultantCouponOrder(consultantOrder);
+                isPayed = true;
             }
+            
         } else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)) {
             // 购买课程
             //consultantOrder.setServerName("购买课程");
             PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
 
-            if(PsyConstants.PAY_TYPE_EQUITY == payType) {
-                Integer courseNum = consultantPackageEquity.getCourseNum();
-                if (courseNum <= 0){
-                    throw new ServiceException("课程权益不足, 无法使用权益购买. 请先购买套餐或直接现款支付");
-                }else{
-                    //权益次数-1
-                    consultantPackageEquity.setCourseNum(courseNum-1);
-                    consultantPackageEquityService.updatePsyConsultantPackageEquity(consultantPackageEquity);
-                    //支付已完成
-                    isPayed = true;
-                }
+            //抵扣券支付
+            if(PsyConstants.PAY_TYPE_COUPON == payType) {
+                couponService.handleConsultantCouponOrder(consultantOrder);
+                isPayed = true;
             }
+            
         } else if (PsyConstants.CONSULTANT_ORDER_PACKAGE_NUM.equals(serverType)) {
             // 套餐权益
             //consultantOrder.setServerName("套餐权益");
             PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
-            if(PsyConstants.PAY_TYPE_EQUITY == payType) {
+            if(PsyConstants.PAY_TYPE_COUPON == payType) {
                 throw new ServiceException("套餐不可使用权益购买, 请选择现款支付");
             }
         } else {
@@ -438,9 +418,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
                 consultantOrder.setPayDatetime(new Date());
                 consultantOrderService.updatePsyConsultantOrder(consultantOrder);
-
-                //分配套餐权益
-                packageEquityService.handleConsultantOrder(consultantOrder.getOrderNo());
+                
+                //分配套餐权益(优惠券)
+                couponService.handleConsultantPackageOrder(consultantOrder.getOrderNo());
             }
         }
         

@@ -1,6 +1,7 @@
 package com.renxin.psychology.service;
 
 
+import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyCoupon;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface IPsyCouponService
      * @param couponNo 用户-优惠券发行主键
      * @return 用户-优惠券发行
      */
-    public PsyCoupon selectPsyCouponByCouponNo(Long couponNo);
+    public PsyCoupon selectPsyCouponByCouponNo(String couponNo);
 
     /**
      * 查询用户-优惠券发行列表
@@ -59,5 +60,16 @@ public interface IPsyCouponService
      * @param couponNo 用户-优惠券发行主键
      * @return 结果
      */
-    public int deletePsyCouponByCouponNo(Long couponNo);
+    public int deletePsyCouponByCouponNo(String couponNo);
+
+    /**
+     * 处理套餐订单 （购买套餐-获得券)
+     */
+    public void handleConsultantPackageOrder(String orderNo);
+    
+    //处理抵扣订单 (消耗抵扣券-完成支付)
+    public void handleConsultantCouponOrder(PsyConsultantOrder consultantOrder);
+    
+    //消耗优惠券
+    public void useCoupon(String no);
 }

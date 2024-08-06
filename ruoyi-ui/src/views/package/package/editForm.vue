@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="修改套餐" :visible.sync="open" width="1000px" append-to-body>
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="150px">
 
       <el-form-item label="套餐名称" prop="productName">
         <el-input v-model="form.productName" placeholder="请输入套餐名称" />
@@ -19,21 +19,63 @@
       </el-form-item>
 
       <el-form-item label="团队督导券张数" prop="teamSupNum" >
-        <el-input-number v-model="form.teamSupNum" :min="0" :step="1" :precision="0"/> 次
+        <el-input-number v-model="form.teamSupNum" :min="0" :step="1" :precision="0" /> 张
       </el-form-item>
 
-
+      <el-form-item label="团队督导券" prop="teamSupCouponTemplateId" v-show="form.teamSupNum != 0">
+        <el-select v-model="form.teamSupCouponTemplateId" clearable filterable>
+          <el-option
+            v-for="item in couponTeamSupTemplateList"
+            :key="item.id"
+            :label="item.couponName"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
 
       <el-form-item label="个人督导券张数" prop="personSupNum" >
-        <el-input-number v-model="form.personSupNum" :min="0" :step="1" :precision="0"/> 次
+        <el-input-number v-model="form.personSupNum" :min="0" :step="1" :precision="0"/> 张
+      </el-form-item>
+
+      <el-form-item label="个人督导券" prop="personSupCouponTemplateId" v-show="form.personSupNum != 0">
+        <el-select v-model="form.personSupCouponTemplateId" clearable filterable>
+          <el-option
+            v-for="item in couponPersonSupTemplateList"
+            :key="item.id"
+            :label="item.couponName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="个人体验券张数" prop="personExpNum" >
-        <el-input-number v-model="form.personExpNum" :min="0" :step="1" :precision="0"/> 次
+        <el-input-number v-model="form.personExpNum" :min="0" :step="1" :precision="0"/> 张
+      </el-form-item>
+
+      <el-form-item label="个人体验券" prop="personExpCouponTemplateId" v-show="form.personExpNum != 0">
+        <el-select v-model="form.personExpCouponTemplateId" clearable filterable>
+          <el-option
+            v-for="item in couponPersonExpTemplateList"
+            :key="item.id"
+            :label="item.couponName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item label="课程券张数" prop="courseNum" >
-        <el-input-number v-model="form.courseNum" :min="0" :step="1" :precision="0"/> 次
+        <el-input-number v-model="form.courseNum" :min="0" :step="1" :precision="0"/> 张
+      </el-form-item>
+
+      <el-form-item label="课程券" prop="courseCouponTemplateId" v-show="form.courseNum != 0">
+        <el-select v-model="form.courseCouponTemplateId" clearable filterable>
+          <el-option
+            v-for="item in couponCourseTemplateList"
+            :key="item.id"
+            :label="item.couponName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
 
     </el-form>
@@ -46,6 +88,8 @@
 
 <script>
 import { addPackage, editPackage } from "@/api/package/package";
+import {getConsultAll} from "@/api/psychology/consult";
+import {listTemplate} from "@/api/marketing/coupon";
 
 export default {
   name: "editForm",
@@ -56,16 +100,29 @@ export default {
       default: () => []
     }
   },
+  created() {
+    this.getCouponList();
+  },
   data() {
     return {
       open: false,
       type: 'add',// tryAdd
       types: this.$constants.partnerTypes,
+      //优惠券模版清单
+      couponTemplateList:[],
+      couponTeamSupTemplateList:[],
+      couponPersonSupTemplateList:[],
+      couponPersonExpTemplateList:[],
+      couponCourseTemplateList:[],
       form: {
         teamSupNum:0,
         personSupNum:0,
         personExpNum:0,
-        courseNum:0
+        courseNum:0,
+        teamSupCouponTemplateId:'',
+        personSupCouponTemplateId:'',
+        personExpCouponTemplateId:'',
+        courseCouponTemplateId:'',
       },
       // 上传
       extraData: {
@@ -107,12 +164,46 @@ export default {
       console.log(this.form)
       this.open = true
     },
+    //获取优惠券模版清单
+    async getCouponList() {
+      const res = await listTemplate({"templateStatus":"0"});
+      console.log("*****************************",res.rows)
+      this.couponTemplateList = res.rows;
+      this.couponTeamSupTemplateList = res.rows.filter(item => item.serverType === 21);
+      this.couponPersonSupTemplateList = res.rows.filter(item => item.serverType === 22);
+      this.couponPersonExpTemplateList = res.rows.filter(item => item.serverType === 23);
+      this.couponCourseTemplateList = res.rows.filter(item => item.serverType === 24);
+      console.log("*****************************",this.couponTeamSupTemplateList)
+    },
 
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(async valid => {
         if (valid) {
-          const that = this
+          const that = this;
+
+          if (this.form.teamSupNum > 0 && !this.form.teamSupCouponTemplateId ){
+            that.$modal.msgWarning("团队督导券张数大于0, 请指定券名称.")
+            return;
+          }
+          if (this.form.personSupNum > 0 && !this.form.personSupCouponTemplateId ){
+            that.$modal.msgWarning("个人督导券张数大于0, 请指定券名称.")
+            return;
+          }
+          if (this.form.personExpNum > 0 && !this.form.personExpCouponTemplateId ){
+            that.$modal.msgWarning("个人体验券张数大于0, 请指定券名称.")
+            return;
+          }
+          if (this.form.courseNum > 0 && !this.form.courseCouponTemplateId ){
+            that.$modal.msgWarning("课程券张数大于0, 请指定券名称.")
+            return;
+          }
+
+          if (this.form.teamSupNum == 0){this.form.teamSupCouponTemplateId = null}
+          if (this.form.personSupNum == 0){this.form.personSupCouponTemplateId = null}
+          if (this.form.personExpNum == 0){this.form.personExpCouponTemplateId = null}
+          if (this.form.courseNum == 0){this.form.courseCouponTemplateId = null}
+
 
           that.$modal.confirm('确认修改套餐吗？').then(function() {
             editPackage(that.form).then(response => {

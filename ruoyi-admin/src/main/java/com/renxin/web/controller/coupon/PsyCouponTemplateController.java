@@ -31,7 +31,7 @@ public class PsyCouponTemplateController extends BaseController
     /**
      * 查询优惠券模版列表
      */
-    @PreAuthorize("@ss.hasPermi('system:template:list')")
+    @PreAuthorize("@ss.hasPermi('marketing:couponTemplate:list')")
     @GetMapping("/list")
     public TableDataInfo list(PsyCouponTemplate psyCouponTemplate)
     {
@@ -43,7 +43,7 @@ public class PsyCouponTemplateController extends BaseController
     /**
      * 导出优惠券模版列表
      */
-    @PreAuthorize("@ss.hasPermi('system:template:export')")
+    @PreAuthorize("@ss.hasPermi('marketing:couponTemplate:export')")
     @PostMapping("/export")
     public void export(HttpServletResponse response, PsyCouponTemplate psyCouponTemplate)
     {
@@ -55,7 +55,7 @@ public class PsyCouponTemplateController extends BaseController
     /**
      * 获取优惠券模版详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:template:query')")
+    @PreAuthorize("@ss.hasPermi('marketing:couponTemplate:query')")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
@@ -65,7 +65,7 @@ public class PsyCouponTemplateController extends BaseController
     /**
      * 新增优惠券模版
      */
-    @PreAuthorize("@ss.hasPermi('system:template:add')")
+    @PreAuthorize("@ss.hasPermi('marketing:couponTemplate:add')")
     @PostMapping
     public AjaxResult add(@RequestBody PsyCouponTemplate psyCouponTemplate)
     {
@@ -75,7 +75,7 @@ public class PsyCouponTemplateController extends BaseController
     /**
      * 修改优惠券模版
      */
-    @PreAuthorize("@ss.hasPermi('system:template:edit')")
+    @PreAuthorize("@ss.hasPermi('marketing:couponTemplate:edit')")
     @PutMapping
     public AjaxResult edit(@RequestBody PsyCouponTemplate psyCouponTemplate)
     {
@@ -85,10 +85,22 @@ public class PsyCouponTemplateController extends BaseController
     /**
      * 删除优惠券模版
      */
-    @PreAuthorize("@ss.hasPermi('system:template:remove')")
+    @PreAuthorize("@ss.hasPermi('marketing:couponTemplate:remove')")
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(psyCouponTemplateService.deletePsyCouponTemplateByIds(ids));
     }
+
+    /**
+     * 获取优惠券模版详细信息
+     */
+    @PreAuthorize("@ss.hasPermi('marketing:couponTemplate:switchTemplateStatus')")
+    @GetMapping(value = "/switchTemplateStatus/{id}")
+    public AjaxResult switchTemplateStatus(@PathVariable("id") Long id)
+    {
+        psyCouponTemplateService.switchTemplateStatus(id);
+        return AjaxResult.success();
+    }
+    
 }

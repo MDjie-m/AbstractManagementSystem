@@ -19,6 +19,14 @@ export function getTemplate(id) {
   })
 }
 
+// 修改模版状态
+export function switchTemplateStatus(id) {
+  return request({
+    url: '/system/couponTemplate/switchTemplateStatus/' + id,
+    method: 'get'
+  })
+}
+
 // 新增优惠券模版
 export function addTemplate(data) {
   return request({

@@ -61,7 +61,7 @@ public interface IPsyConsultantPackageEquityService
     public int deletePsyConsultantPackageEquityByConsultantId(Long consultantId);
 
     /**
-     * 处理套餐订单
+     * 处理套餐订单 （购买套餐-获得券)
      */
-    void handleConsultantOrder(String orderNo);
+    void handleConsultantPackageOrder(String orderNo);
 }
