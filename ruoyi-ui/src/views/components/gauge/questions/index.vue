@@ -36,7 +36,7 @@
                 <el-input disabled :value="'序号:' + option.sort" size="small" style="width: 80px;text-align: center"/>
                 <el-input style="width: 350px;" v-model="option.name" placeholder="选项名" size="small" @blur="updateOption(option)"/>
                 <el-input-number v-if="gaugeType !== 3" v-model="option.value" controls-position="right" size="small"
-                                 :min="0" :max="20" label="描述文字" @change="updateOption(option)"></el-input-number>
+                                 :min="-999" :max="20" label="描述文字" @change="updateOption(option)"></el-input-number>
                 <el-select v-if="gaugeType === 3" @change="updateOption(option)" size="small" style="width: 150px"
                            v-model="option.lat" placeholder="纬度" clearable>
                   <el-option
