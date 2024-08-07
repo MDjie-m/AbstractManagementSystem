@@ -47,13 +47,14 @@ public class SysProductTypeController extends BaseController
 
     /**
      * @param depth 产品分类树的深度
+     * @param flag 进口或国产 0-国产 1-进口
      * 查询产品分类列表，按照层级组装成树。
      */
 //    @PreAuthorize("@ss.hasPermi('system:productType:list')")
     @GetMapping("/treeList")
-    public AjaxResult treeList(Integer depth)
+    public AjaxResult treeList(Integer depth, Integer flag)
     {
-        List<Map<String,Object>> list = sysProductTypeService.selectSysProductTypeTreeList(depth);
+        List<Map<String,Object>> list = sysProductTypeService.selectSysProductTypeTreeList(depth ,flag);
         return success(list);
     }
 
