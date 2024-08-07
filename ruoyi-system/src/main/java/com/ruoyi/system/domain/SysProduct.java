@@ -76,6 +76,40 @@ public class SysProduct extends BaseEntity
     @Excel(name = "是否可报价", readConverterExp = "0=不可报价,1=可报价")
     private Integer quotationFlag;
 
+    /** 内部一级分类，cn_primary_category */
+    private String cnPrimaryCategory;
+
+    /** 内部一级分类名称，cn_primary_category_name */
+    @Excel(name = "国产一级分类名称")
+    private String cnPrimaryCategoryName;
+
+    /** 内部二级分类，cn_secondary_category */
+    private String cnSecondaryCategory;
+
+    /** 内部二级分类名称，cn_secondary_category_name */
+    @Excel(name = "国产二级分类名称")
+    private String cnSecondaryCategoryName;
+
+    /** 内部三级分类，cn_tertiary_category */
+    private String cnTertiaryCategory;
+
+    /** 内部三级分类名称，cn_tertiary_category_name */
+    @Excel(name = "国产三级分类名称")
+    private String cnTertiaryCategoryName;
+
+    /** 内部四级分类，cn_quaternary_category */
+    private String cnQuaternaryCategory;
+
+    /** 内部四级分类名称，cn_quaternary_category_name */
+    @Excel(name = "国产四级分类名称")
+    private String cnQuaternaryCategoryName;
+
+    /** 标签id，以'/'区分，tag_id */
+    private String tagId;
+
+    /** 标签名称，以'/'区分，tag_name */
+    private String tagName;
+
     /** 预留字段1 */
     private String futureField1;
 
@@ -234,7 +268,87 @@ public class SysProduct extends BaseEntity
         this.quotationFlag = quotationFlag;
     }
 
-    public Integer getQuotationFlag() 
+    public String getCnPrimaryCategory() {
+        return cnPrimaryCategory;
+    }
+
+    public void setCnPrimaryCategory(String cnPrimaryCategory) {
+        this.cnPrimaryCategory = cnPrimaryCategory;
+    }
+
+    public String getCnPrimaryCategoryName() {
+        return cnPrimaryCategoryName;
+    }
+
+    public void setCnPrimaryCategoryName(String cnPrimaryCategoryName) {
+        this.cnPrimaryCategoryName = cnPrimaryCategoryName;
+    }
+
+    public String getCnSecondaryCategory() {
+        return cnSecondaryCategory;
+    }
+
+    public void setCnSecondaryCategory(String cnSecondaryCategory) {
+        this.cnSecondaryCategory = cnSecondaryCategory;
+    }
+
+    public String getCnSecondaryCategoryName() {
+        return cnSecondaryCategoryName;
+    }
+
+    public void setCnSecondaryCategoryName(String cnSecondaryCategoryName) {
+        this.cnSecondaryCategoryName = cnSecondaryCategoryName;
+    }
+
+    public String getCnTertiaryCategory() {
+        return cnTertiaryCategory;
+    }
+
+    public void setCnTertiaryCategory(String cnTertiaryCategory) {
+        this.cnTertiaryCategory = cnTertiaryCategory;
+    }
+
+    public String getCnTertiaryCategoryName() {
+        return cnTertiaryCategoryName;
+    }
+
+    public void setCnTertiaryCategoryName(String cnTertiaryCategoryName) {
+        this.cnTertiaryCategoryName = cnTertiaryCategoryName;
+    }
+
+    public String getCnQuaternaryCategory() {
+        return cnQuaternaryCategory;
+    }
+
+    public void setCnQuaternaryCategory(String cnQuaternaryCategory) {
+        this.cnQuaternaryCategory = cnQuaternaryCategory;
+    }
+
+    public String getCnQuaternaryCategoryName() {
+        return cnQuaternaryCategoryName;
+    }
+
+    public void setCnQuaternaryCategoryName(String cnQuaternaryCategoryName) {
+        this.cnQuaternaryCategoryName = cnQuaternaryCategoryName;
+    }
+
+    public String getTagId() {
+        return tagId;
+    }
+
+    public void setTagId(String tagId) {
+        this.tagId = tagId;
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
+    public Integer getQuotationFlag()
     {
         return quotationFlag;
     }
