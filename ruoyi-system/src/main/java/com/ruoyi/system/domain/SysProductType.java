@@ -27,41 +27,149 @@ public class SysProductType extends TreeEntity
     @Excel(name = "父级编码")
     private String parentCode;
 
-    public void setProductCode(String productCode) 
-    {
+    /** 产品标签id（以，分割） */
+    @Excel(name = "产品标签id（以，分割）")
+    private String tagId;
+
+    /** 产品标签名（以，分割） */
+    @Excel(name = "产品标签名（以，分割）")
+    private String tagName;
+
+    /** 是否显示：0：显示，1：不显示
+     * （没有具体产品名称即没有五级编码和名称） */
+    @Excel(name = "是否显示", readConverterExp = "0：显示，1：不显示 ")
+    private Integer showFlag;
+
+    /** 备注 */
+    @Excel(name = "备注")
+    private String remark;
+
+    public SysProductType() {
+    }
+
+    public SysProductType( String productCode, String productName, String parentCode, String tagId, String tagName, Integer showFlag, String remark) {
+        this.productCode = productCode;
+        this.productName = productName;
+        this.parentCode = parentCode;
+        this.tagId = tagId;
+        this.tagName = tagName;
+        this.showFlag = showFlag;
+        this.remark = remark;
+    }
+
+    /**
+     * 获取
+     * @return productCode
+     */
+    public String getProductCode() {
+        return productCode;
+    }
+
+    /**
+     * 设置
+     * @param productCode
+     */
+    public void setProductCode(String productCode) {
         this.productCode = productCode;
     }
 
-    public String getProductCode() 
-    {
-        return productCode;
+    /**
+     * 获取
+     * @return productName
+     */
+    public String getProductName() {
+        return productName;
     }
-    public void setProductName(String productName) 
-    {
+
+    /**
+     * 设置
+     * @param productName
+     */
+    public void setProductName(String productName) {
         this.productName = productName;
     }
 
-    public String getProductName() 
-    {
-        return productName;
-    }
-    public void setParentCode(String parentCode) 
-    {
-        this.parentCode = parentCode;
-    }
-
-    public String getParentCode() 
-    {
+    /**
+     * 获取
+     * @return parentCode
+     */
+    public String getParentCode() {
         return parentCode;
     }
 
-    @Override
+    /**
+     * 设置
+     * @param parentCode
+     */
+    public void setParentCode(String parentCode) {
+        this.parentCode = parentCode;
+    }
+
+    /**
+     * 获取
+     * @return tagId
+     */
+    public String getTagId() {
+        return tagId;
+    }
+
+    /**
+     * 设置
+     * @param tagId
+     */
+    public void setTagId(String tagId) {
+        this.tagId = tagId;
+    }
+
+    /**
+     * 获取
+     * @return tagName
+     */
+    public String getTagName() {
+        return tagName;
+    }
+
+    /**
+     * 设置
+     * @param tagName
+     */
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
+    /**
+     * 获取
+     * @return showFlag
+     */
+    public Integer getShowFlag() {
+        return showFlag;
+    }
+
+    /**
+     * 设置
+     * @param showFlag
+     */
+    public void setShowFlag(Integer showFlag) {
+        this.showFlag = showFlag;
+    }
+
+    /**
+     * 获取
+     * @return remark
+     */
+    public String getRemark() {
+        return remark;
+    }
+
+    /**
+     * 设置
+     * @param remark
+     */
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("productCode", getProductCode())
-            .append("productName", getProductName())
-            .append("parentCode", getParentCode())
-            .append("remark", getRemark())
-            .toString();
+        return "SysProductType{productCode = " + productCode + ", productName = " + productName + ", parentCode = " + parentCode + ", tagId = " + tagId + ", tagName = " + tagName + ", showFlag = " + showFlag + ", remark = " + remark + "}";
     }
 }
