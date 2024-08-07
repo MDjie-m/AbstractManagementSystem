@@ -106,6 +106,11 @@
           <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.templateStatus"/>
         </template>
       </el-table-column>
+      <el-table-column label="是否支持免费领取" align="center" prop="isFreeGet" >
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_yes_no" :value="scope.row.isFreeGet"/>
+        </template>
+      </el-table-column>
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -156,7 +161,6 @@
             ></el-option>
           </el-select>
         </el-form-item>-->
-
 
         <el-form-item label="面向用户类型" prop="userType" >
           <el-select v-model="form.userType" clearable :disabled="isEdit">
@@ -214,11 +218,20 @@
           <el-input v-model="form.useThreshold" :disabled="isEdit"/>
         </el-form-item>
 
+        <el-form-item label="是否支持免费领取" prop="isFreeGet" >
+          <el-select v-model="form.isFreeGet" clearable >
+            <el-option
+              v-for="item in dict.type.sys_yes_no"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark"  />
         </el-form-item>
-
-
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -234,7 +247,7 @@ import { listTemplate, getTemplate, delTemplate, addTemplate, updateTemplate , s
 
 export default {
   name: "Template",
-  dicts: ['coupon_type','server_type','user_type','sys_normal_disable'],
+  dicts: ['coupon_type','server_type','user_type','sys_normal_disable', 'sys_yes_no'],
   data() {
     return {
       // 遮罩层
@@ -328,6 +341,7 @@ export default {
         updateTime: null,
         remark: null,
         useThreshold: null,
+        isFreeGet: 'N',
       };
       this.resetForm("form");
     },

@@ -69,5 +69,7 @@ public class PsyCouponTemplate extends BaseEntity
     private BigDecimal useThreshold;
     //备注
     private String remark;
+    //是否支持免费领取
+    private String isFreeGet;
 
 }

@@ -71,7 +71,7 @@ public class SecurityUtils
         }
         catch (Exception e)
         {
-            throw new ServiceException("获取用户信息异常", HttpStatus.UNAUTHORIZED);
+            throw new ServiceException("获取用户信息异常", HttpStatus.UNAUTHORIZED); //可能由@PreAuthorize接口权限引发
         }
     }
 

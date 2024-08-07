@@ -4,6 +4,7 @@ package com.renxin.psychology.service;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantPackage;
 import com.renxin.psychology.domain.PsyCoupon;
+import com.renxin.psychology.request.ReceiveFreeCouponReq;
 
 import java.util.List;
 
@@ -30,6 +31,11 @@ public interface IPsyCouponService
      * @return 用户-优惠券发行集合
      */
     public List<PsyCoupon> selectPsyCouponList(PsyCoupon psyCoupon);
+    
+    //领取免费优惠券
+    public void receiveFreeCoupon(ReceiveFreeCouponReq req);
+    
+    
 
     /**
      * 新增用户-优惠券发行

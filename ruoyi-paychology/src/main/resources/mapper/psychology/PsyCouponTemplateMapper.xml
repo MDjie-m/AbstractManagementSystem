@@ -23,6 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="useThreshold"    column="use_threshold"    />
         <result property="remark"    column="remark"    />
+        <result property="isFreeGet"    column="is_free_get"    />
     </resultMap>
 
     <sql id="selectPsyCouponTemplateVo">
@@ -33,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPsyCouponTemplateList" parameterType="PsyCouponTemplate" resultMap="PsyCouponTemplateResult">
         select
             tem.id, tem.user_type, tem.coupon_name, tem.total_num,  tem.coupon_type, tem.server_type, tem.max_deduction_price, tem.discount_rate, tem.validity_day,
-            tem.template_status,  tem.create_by, tem.create_time, tem.update_by, tem.update_time, tem.use_threshold, tem.remark,
+            tem.template_status,  tem.create_by, tem.create_time, tem.update_by, tem.update_time, tem.use_threshold, tem.remark, tem.is_free_get,
                count(cou.coupon_no) as used_num
         from psy_coupon_template tem
         left join psy_coupon cou on tem.id = cou.template_id
@@ -52,6 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validityDay != null "> and tem.validity_day = #{validityDay}</if>
             <if test="templateStatus != null "> and tem.template_status = #{templateStatus}</if>
             <if test="useThreshold != null "> and tem.use_threshold = #{useThreshold}</if>
+            <if test="isFreeGet != null "> and tem.is_free_get = #{isFreeGet}</if>
         </where>
 
         group by tem.id
@@ -60,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPsyCouponTemplateById" parameterType="Long" resultMap="PsyCouponTemplateResult">
         select
             tem.id, tem.user_type, tem.coupon_name, tem.total_num,  tem.coupon_type, tem.server_type, tem.max_deduction_price, tem.discount_rate, tem.validity_day,
-            tem.template_status,  tem.create_by, tem.create_time, tem.update_by, tem.update_time, tem.use_threshold, tem.remark,
+            tem.template_status,  tem.create_by, tem.create_time, tem.update_by, tem.update_time, tem.use_threshold, tem.remark,tem.is_free_get,
             count(cou.coupon_no) as used_num
         from psy_coupon_template tem
                  left join psy_coupon cou on tem.id = cou.template_id
@@ -87,6 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time,</if>
             <if test="useThreshold != null">use_threshold,</if>
             <if test="remark != null">remark,</if>
+            <if test="isFreeGet != null">is_free_get,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userType != null">#{userType},</if>
@@ -104,8 +107,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-            <if test="useThreshold != null">#{use_threshold},</if>
+            <if test="useThreshold != null">#{useThreshold},</if>
             <if test="remark != null">#{remark},</if>
+            <if test="isFreeGet != null">#{isFreeGet},</if>
          </trim>
     </insert>
 
@@ -129,6 +133,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="useThreshold != null">use_threshold = #{useThreshold},</if>
             <if test="remark != null">remark = #{remark},</if>
+            <if test="isFreeGet != null">is_free_get = #{isFreeGet},</if>
         </trim>
         where id = #{id}
     </update>

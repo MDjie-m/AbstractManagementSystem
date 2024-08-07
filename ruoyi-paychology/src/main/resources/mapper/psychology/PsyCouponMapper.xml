@@ -79,7 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{coupon.templateId},
             #{coupon.userId},
             #{coupon.consultantId},
-            1,
+            0,
             #{coupon.createTime},
             #{coupon.expireDate}
         )
