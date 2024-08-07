@@ -24,12 +24,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="inspectionId"    column="inspection_id"    />
         <result property="contacts"    column="contacts"    />
         <result property="telephone"    column="telephone"    />
+        <result property="principal_telephone"    column="principal_telephone"    />
         <result property="email"    column="email"    />
         <result property="classification"    column="classification"    />
         <result property="auditStatus"    column="audit_status"    />
         <result property="inspectionStatus"    column="inspection_status"    />
         <result property="inspectionAuditStatus"    column="inspection_audit_status"    />
         <result property="dataSources"    column="data_sources"    />
+        <result property="imageAddress"    column="image_address"    />
+        <result property="videoAddress"    column="video_address"    />
         <result property="remark"    column="remark"    />
         <result property="futureField1"    column="future_field1"    />
     </resultMap>
@@ -56,7 +59,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysSupplierVo">
-        select supplier_id, label, country, province, city, area, product_type, registration_no, registration_no_in_china, supplier_name_cn, supplier_name_en, registration_time, registration_time_validity_period, rate, review_rating, delete_flag, inspection_id, contacts, telephone, email, classification, audit_status, inspection_status, inspection_audit_status, data_sources, remark, future_field1 from sys_supplier
+        select supplier_id, label, country, province, city, area, product_type,
+               registration_no, registration_no_in_china, supplier_name_cn,
+               supplier_name_en, registration_time, registration_time_validity_period,
+               rate, review_rating, delete_flag, inspection_id, contacts, telephone,
+               principal_telephone, email, classification, audit_status, inspection_status,
+               inspection_audit_status, data_sources, image_address, video_address,
+               remark, future_field1 from sys_supplier
     </sql>
 
     <select id="selectSysSupplierList" parameterType="SysSupplier" resultMap="SysSupplierResult">
@@ -77,8 +86,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="rate != null  and rate != ''"> and rate = #{rate}</if>
             <if test="reviewRating != null  and reviewRating != ''"> and review_rating = #{reviewRating}</if>
             <if test="inspectionId != null  and inspectionId != ''"> and inspection_id = #{inspectionId}</if>
-            <!--            <if test="contacts != null  and contacts != ''"> and contacts like concat('%',#{contacts},'%') </if>-->
-            <!--            <if test="telephone != null  and telephone != ''"> and telephone  </if>-->
+            <if test="contacts != null  and contacts != ''"> and contacts like concat('%',#{contacts},'%') </if>
+            <if test="telephone != null  and telephone != ''"> and telephone = #{telephone} </if>
+            <if test="principalTelephone != null  and principalTelephone != ''"> and principal_telephone = #{principalTelephone} </if>
             <!--            <if test="email != null  and email != ''"> and email like concat('%',#{email},'%') </if>-->
             <if test="classification != null "> and classification = #{classification}</if>
             <if test="auditStatus != null "> and audit_status = #{auditStatus}</if>
@@ -90,7 +100,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectSysSupplierBySupplierId" parameterType="String" resultMap="SysSupplierSysProductResult">
-        select supplier_id, label, country, province, city, area, product_type, registration_no, registration_no_in_china, supplier_name_cn, supplier_name_en, registration_time, registration_time_validity_period, rate, review_rating, delete_flag, inspection_id, contacts, telephone, email, classification, audit_status, inspection_status, inspection_audit_status, data_sources, remark, future_field1, future_field2, future_field3, future_field4, future_field5
+        select supplier_id, label, country, province, city, area, product_type, registration_no, registration_no_in_china, supplier_name_cn, supplier_name_en, registration_time, registration_time_validity_period, rate, review_rating, delete_flag, inspection_id, contacts, telephone, principal_telephone, email, classification, audit_status, inspection_status, inspection_audit_status, data_sources, image_address, video_address, remark, future_field1, future_field2, future_field3, future_field4, future_field5
         from sys_supplier
         where supplier_id = #{supplierId}
     </select>
@@ -123,12 +133,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionId != null">inspection_id,</if>
             <if test="contacts != null">contacts,</if>
             <if test="telephone != null">telephone,</if>
+            <if test="principalTelephone != null">principal_telephone,</if>
             <if test="email != null">email,</if>
             <if test="classification != null">classification,</if>
             <if test="auditStatus != null">audit_status,</if>
             <if test="inspectionStatus != null">inspection_status,</if>
             <if test="inspectionAuditStatus != null">inspection_audit_status,</if>
             <if test="dataSources != null">data_sources,</if>
+            <if test="imageAddress != null">image_address,</if>
+            <if test="videoAddress != null">video_address,</if>
             <if test="remark != null">remark,</if>
             <if test="futureField1 != null">future_field1,</if>
             <if test="futureField2 != null">future_field2,</if>
@@ -155,12 +168,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionId != null">#{inspectionId},</if>
             <if test="contacts != null">#{contacts},</if>
             <if test="telephone != null">#{telephone},</if>
+            <if test="principalTelephone != null">#{principalTelephone},</if>
             <if test="email != null">#{email},</if>
             <if test="classification != null">#{classification},</if>
             <if test="auditStatus != null">#{auditStatus},</if>
             <if test="inspectionStatus != null">#{inspectionStatus},</if>
             <if test="inspectionAuditStatus != null">#{inspectionAuditStatus},</if>
             <if test="dataSources != null">#{dataSources},</if>
+            <if test="imageAddress != null">#{imageAddress},</if>
+            <if test="videoAddress != null">#{videoAddress},</if>
             <if test="remark != null">#{remark},</if>
             <if test="futureField1 != null">#{futureField1},</if>
             <if test="futureField2 != null">#{futureField2},</if>
@@ -176,14 +192,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                      product_type,registration_no,registration_no_in_china,
                      supplier_name_cn,supplier_name_en,registration_time,
                      registration_time_validity_period,delete_flag,contacts,
-                     telephone,email,classification,data_sources)
+                     telephone,principal_telephone,email,classification,data_sources)
         VALUES
         <foreach item="item" index="index" collection="list" separator=",">
             (#{item.supplierId},#{item.label},#{item.country},#{item.province},#{item.city},#{item.area},
             #{item.productType},#{item.registrationNo},#{item.registrationNoInChina},
              #{item.supplierNameCn},#{item.supplierNameEn},#{item.registrationTime},
              #{item.registrationTimeValidityPeriod},#{item.deleteFlag},#{item.contacts},
-             #{item.telephone},#{item.email},#{item.classification},#{item.dataSources})
+             #{item.telephone},#{item.principalTelephone},#{item.email},#{item.classification},#{item.dataSources})
         </foreach>
     </insert>
 
@@ -206,14 +222,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="rate != null">rate = #{rate},</if>
             <if test="reviewRating != null">review_rating = #{reviewRating},</if>
             <if test="inspectionId != null">inspection_id = #{inspectionId},</if>
-            <if test="contacts != null">contacts = #{contacts},</if>
-            <if test="telephone != null">telephone = #{telephone},</if>
+<!--            <if test="contacts != null">contacts = #{contacts},</if>-->
+<!--            <if test="telephone != null">telephone = #{telephone},</if>-->
+            <if test="principalTelephone != null">#{principalTelephone},</if>
             <if test="email != null">email = #{email},</if>
             <if test="classification != null">classification = #{classification},</if>
             <if test="auditStatus != null">audit_status = #{auditStatus},</if>
             <if test="inspectionStatus != null">inspection_status = #{inspectionStatus},</if>
             <if test="inspectionAuditStatus != null">inspection_audit_status = #{inspectionAuditStatus},</if>
             <if test="dataSources != null">data_sources = #{dataSources},</if>
+            <if test="imageAddress != null">image_address,</if>
+            <if test="videoAddress != null">video_address,</if>
             <if test="remark != null">remark = #{remark},</if>
         </trim>
         where supplier_id = #{supplierId}

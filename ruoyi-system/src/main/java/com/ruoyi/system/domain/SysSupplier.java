@@ -132,14 +132,20 @@ public class SysSupplier extends BaseEntity {
     /**
      * 联系人
      */
-    @ExcelProperty("联系人")
+    @ExcelProperty("法人")
     private String contacts;
 
     /**
      * 联系电话
      */
-    @ExcelProperty("联系电话")
+    @ExcelProperty("法人电话")
     private String telephone;
+
+    /**
+     * 负责人电话
+     */
+    @ExcelProperty("负责人电话")
+    private String principalTelephone;
 
     /**
      * 电子邮件
@@ -182,8 +188,27 @@ public class SysSupplier extends BaseEntity {
     @EnumFiledConvert(enumMap = "0-供应商入驻,1-系统新增,2-批量导入")
     private Integer dataSources;
 
+
     /**
-     * 预留字段1
+     * 图片地址
+     */
+    @ExcelIgnore
+    private String image_address;
+
+    /**
+     * 视频地址
+     */
+    @ExcelIgnore
+    private String video_address;
+
+    /**
+     * 备注
+     */
+    @ExcelIgnore
+    private String remark;
+
+    /**
+     * 供应商国家语名称
      */
     @ExcelIgnore
     private String futureField1;
@@ -464,6 +489,40 @@ public class SysSupplier extends BaseEntity {
 
     public void setSysProductList(List<SysProduct> sysProductList) {
         this.sysProductList = sysProductList;
+    }
+
+    public String getPrincipalTelephone() {
+        return principalTelephone;
+    }
+
+    public void setPrincipalTelephone(String principalTelephone) {
+        this.principalTelephone = principalTelephone;
+    }
+
+    public String getImage_address() {
+        return image_address;
+    }
+
+    public void setImage_address(String image_address) {
+        this.image_address = image_address;
+    }
+
+    public String getVideo_address() {
+        return video_address;
+    }
+
+    public void setVideo_address(String video_address) {
+        this.video_address = video_address;
+    }
+
+    @Override
+    public String getRemark() {
+        return remark;
+    }
+
+    @Override
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     @Override

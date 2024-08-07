@@ -43,8 +43,9 @@ public class SupplierListener implements ReadListener<SysSupplier> {
             "注册时间",
             "注册时间有效期",
             "是否删除",
-            "联系人",
-            "联系电话",
+            "法人",
+            "法人电话",
+            "负责人电话",
             "电子邮件",
             "分类",
             "数据来源"
@@ -100,6 +101,12 @@ public class SupplierListener implements ReadListener<SysSupplier> {
             } else if (data.getRegistrationNo() == null) {
                 int row = context.readRowHolder().getRowIndex() + 1;
                 arrayList.add("第" + row + "行" + "注册编号列数据异常");
+//            } else if (data.getContacts() == null) {
+//                int row = context.readRowHolder().getRowIndex() + 1;
+//                arrayList.add("第" + row + "行" + "法人列数据异常");
+//            } else if (data.getTelephone() == null) {
+//                int row = context.readRowHolder().getRowIndex() + 1;
+//                arrayList.add("第" + row + "行" + "法人电话列数据异常");
             } else {
                 // 设置供应商UUID
                 data.setSupplierId(UUID.randomUUID().toString());
