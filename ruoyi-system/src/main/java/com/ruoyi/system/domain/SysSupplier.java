@@ -193,13 +193,13 @@ public class SysSupplier extends BaseEntity {
      * 图片地址
      */
     @ExcelIgnore
-    private String image_address;
+    private String imageAddress;
 
     /**
      * 视频地址
      */
     @ExcelIgnore
-    private String video_address;
+    private String videoAddress;
 
     /**
      * 备注
@@ -499,20 +499,20 @@ public class SysSupplier extends BaseEntity {
         this.principalTelephone = principalTelephone;
     }
 
-    public String getImage_address() {
-        return image_address;
+    public String getImageAddress() {
+        return imageAddress;
     }
 
-    public void setImage_address(String image_address) {
-        this.image_address = image_address;
+    public void setImageAddress(String imageAddress) {
+        this.imageAddress = imageAddress;
     }
 
-    public String getVideo_address() {
-        return video_address;
+    public String getVideoAddress() {
+        return videoAddress;
     }
 
-    public void setVideo_address(String video_address) {
-        this.video_address = video_address;
+    public void setVideoAddress(String video_address) {
+        this.videoAddress = videoAddress;
     }
 
     @Override

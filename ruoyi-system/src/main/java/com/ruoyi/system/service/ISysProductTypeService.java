@@ -66,4 +66,8 @@ public interface ISysProductTypeService
      * @return
      */
     List<Map<String,Object>> selectSysProductTypeTreeList(Integer depth);
+
+    List<SysProductType> selectType(String[] newCodes);
+
+    SysProductType selectTag(String code);
 }

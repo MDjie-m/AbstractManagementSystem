@@ -3,7 +3,9 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.system.domain.SysProductType;
 import com.ruoyi.system.domain.dto.SysProDuctDTO;
+import com.ruoyi.system.service.ISysProductTypeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,6 +40,8 @@ public class SysProductController extends BaseController
 {
     @Autowired
     private ISysProductService sysProductService;
+    @Autowired
+    private ISysProductTypeService sysProductTypeService;
     @Value("${staticFile.rootPath}")
     private String rootPath;
     /**
@@ -99,7 +103,7 @@ public class SysProductController extends BaseController
     }
 
     /**
-     * 新增产品
+     * 新增产品，产品分类要同时存进口和国产，进口没有的就不存。
      */
     @PreAuthorize("@ss.hasPermi('system:product:add')")
     @Log(title = "产品", businessType = BusinessType.INSERT)
@@ -108,32 +112,118 @@ public class SysProductController extends BaseController
     {
         String[] names = sysProDuctDTO.getNames().split("/");
         String[] codes = sysProDuctDTO.getCodes().split("/");
-        // 根据数组长度设置相应的分类名称
-        for (int i = 0; i < names.length; i++) {
-            switch (i) {
-                case 0:
-                    sysProDuctDTO.setPrimaryCategoryName(names[i]);
-                    sysProDuctDTO.setPrimaryCategory(codes[i]);
-                    break;
-                case 1:
-                    sysProDuctDTO.setSecondaryCategoryName(names[i]);
-                    sysProDuctDTO.setSecondaryCategory(codes[i]);
-                    break;
-                case 2:
-                    sysProDuctDTO.setTertiaryCategoryName(names[i]);
-                    sysProDuctDTO.setTertiaryCategory(codes[i]);
-                    break;
-                case 3:
-                    sysProDuctDTO.setQuaternaryCategoryName(names[i]);
-                    sysProDuctDTO.setQuaternaryCategory(codes[i]);
-                    break;
-                case 4:
-                    sysProDuctDTO.setFifthCategoryName(names[i]);
-                    sysProDuctDTO.setFifthCategory(codes[i]);
-                    break;
+        String[] newCodes = new String[codes.length];
+        // 根据选的国产还是进口，然后把names和codes赋值到对应的字段，国产有的分类海关没有的话，那就产品表相关字段为空。
+        if(sysProDuctDTO.getDomesticImportedType()==0){
+            //说明新增或修改的产品列表数据传来的是国产的分类，那就去掉cn前缀查找对应进口分类名称。
+            for (int i = 0; i < codes.length; i++) {
+                newCodes[i] = codes[i].substring(2);
             }
+            //去掉了前缀cn就去查询每一级国产的分类名称对应的进口的名称
+            List<SysProductType> sysProductTypeList = sysProductTypeService.selectType(newCodes);
+            //如果传来的类别参数是国产开头，这里赋值
+            for (int i = 0; i < names.length; i++) {
+                switch (i) {
+                    case 0:
+                        sysProDuctDTO.setCnPrimaryCategoryName(names[i]);
+                        sysProDuctDTO.setCnPrimaryCategory(codes[i]);
+                        if(!sysProductTypeList.isEmpty()){
+                            sysProDuctDTO.setPrimaryCategoryName(sysProductTypeList.get(i).getProductName());
+                            sysProDuctDTO.setPrimaryCategory(sysProductTypeList.get(i).getProductCode());
+                        }
+                        break;
+                    case 1:
+                        sysProDuctDTO.setCnSecondaryCategoryName(names[i]);
+                        sysProDuctDTO.setCnSecondaryCategory(codes[i]);
+                        if(!sysProductTypeList.isEmpty()){
+                            sysProDuctDTO.setSecondaryCategoryName(sysProductTypeList.get(i).getProductName());
+                            sysProDuctDTO.setSecondaryCategory(sysProductTypeList.get(i).getProductCode());
+                        }
+                        break;
+                    case 2:
+                        sysProDuctDTO.setCnTertiaryCategoryName(names[i]);
+                        sysProDuctDTO.setCnTertiaryCategory(codes[i]);
+                        if(!sysProductTypeList.isEmpty()){
+                            sysProDuctDTO.setTertiaryCategoryName(sysProductTypeList.get(i).getProductName());
+                            sysProDuctDTO.setTertiaryCategory(sysProductTypeList.get(i).getProductCode());
+                        }
+                        break;
+                    case 3:
+                        sysProDuctDTO.setCnQuaternaryCategoryName(names[i]);
+                        sysProDuctDTO.setCnQuaternaryCategory(codes[i]);
+                        if(!sysProductTypeList.isEmpty()){
+                            sysProDuctDTO.setQuaternaryCategoryName(sysProductTypeList.get(i).getProductName());
+                            sysProDuctDTO.setQuaternaryCategory(sysProductTypeList.get(i).getProductCode());
+                        }
+                        break;
+                    case 4:
+                        sysProDuctDTO.setCnFifthCategoryName(names[i]);
+                        sysProDuctDTO.setCnFifthCategory(codes[i]);
+                        if(!sysProductTypeList.isEmpty()){
+                            sysProDuctDTO.setFifthCategoryName(sysProductTypeList.get(i).getProductName());
+                            sysProDuctDTO.setFifthCategory(sysProductTypeList.get(i).getProductCode());
+                        }
+                        break;
+                }
+            }
+            //这里赋值标签id和name,标签的id和name在list的最后一个数据里才有,因为国产有的进口不一定有，
+            // 所以要判断sysProductTypeList是否有数据
+            if(!sysProductTypeList.isEmpty()){//如果有就直接赋值
+                sysProDuctDTO.setTagId((sysProductTypeList.get(sysProductTypeList.size()-1)).getTagId());
+                sysProDuctDTO.setTagName((sysProductTypeList.get(sysProductTypeList.size()-1)).getTagName());
+            }else {
+                //如果没有要再查一次最后一级code对应的标签
+                SysProductType sysProductType = sysProductTypeService.selectTag(codes[codes.length-1]);
+                //然后赋值给这条新增的数据
+                sysProDuctDTO.setTagId(sysProductType.getTagId());
+                sysProDuctDTO.setTagName(sysProductType.getTagName());
+            }
+        }else{
+            //说明不是国产是进口，就加上cn前缀，去查找对应国产分类名称。
+            for (int i = 0; i < codes.length; i++) {
+                newCodes[i] = "cn" + codes[i];
+            }
+            //去掉了前缀cn就去查询每一级国产的分类名称对应的进口的名称
+            List<SysProductType> sysProductTypeList = sysProductTypeService.selectType(newCodes);
+            //如果传来的类别参数不是是国产开头，这里赋值
+            for (int i = 0; i < names.length; i++) {
+                switch (i) {
+                    case 0:
+                        sysProDuctDTO.setPrimaryCategoryName(names[i]);
+                        sysProDuctDTO.setPrimaryCategory(codes[i]);
+                        sysProDuctDTO.setCnPrimaryCategoryName(sysProductTypeList.get(i).getProductName());
+                        sysProDuctDTO.setCnPrimaryCategory(sysProductTypeList.get(i).getProductCode());
+                        break;
+                    case 1:
+                        sysProDuctDTO.setSecondaryCategoryName(names[i]);
+                        sysProDuctDTO.setSecondaryCategory(codes[i]);
+                        sysProDuctDTO.setCnSecondaryCategoryName(sysProductTypeList.get(i).getProductName());
+                        sysProDuctDTO.setCnSecondaryCategory(sysProductTypeList.get(i).getProductCode());
+                        break;
+                    case 2:
+                        sysProDuctDTO.setTertiaryCategoryName(names[i]);
+                        sysProDuctDTO.setTertiaryCategory(codes[i]);
+                        sysProDuctDTO.setCnTertiaryCategoryName(sysProductTypeList.get(i).getProductName());
+                        sysProDuctDTO.setCnTertiaryCategory(sysProductTypeList.get(i).getProductCode());
+                        break;
+                    case 3:
+                        sysProDuctDTO.setQuaternaryCategoryName(names[i]);
+                        sysProDuctDTO.setQuaternaryCategory(codes[i]);
+                        sysProDuctDTO.setCnQuaternaryCategoryName(sysProductTypeList.get(i).getProductName());
+                        sysProDuctDTO.setCnQuaternaryCategory(sysProductTypeList.get(i).getProductCode());
+                        break;
+                    case 4:
+                        sysProDuctDTO.setFifthCategoryName(names[i]);
+                        sysProDuctDTO.setFifthCategory(codes[i]);
+                        sysProDuctDTO.setCnFifthCategoryName(sysProductTypeList.get(i).getProductName());
+                        sysProDuctDTO.setCnFifthCategory(sysProductTypeList.get(i).getProductCode());
+                        break;
+                }
+            }
+            // 这里赋值标签id和name,标签的id和name在list的最后一个数据里才有
+            sysProDuctDTO.setTagId((sysProductTypeList.get(sysProductTypeList.size()-1)).getTagName());
+            sysProDuctDTO.setTagId((sysProductTypeList.get(sysProductTypeList.size()-1)).getTagName());
         }
-
         return toAjax(sysProductService.insertSysProduct(sysProDuctDTO));
     }
 
