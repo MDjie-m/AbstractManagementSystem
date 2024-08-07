@@ -289,4 +289,6 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         psyCoupon.setIsUsable(1);//已消耗
         psyCouponMapper.updatePsyCoupon(psyCoupon);
     }
+
+    
 }

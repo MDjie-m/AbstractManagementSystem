@@ -1,8 +1,13 @@
 package com.renxin.psychology.service.impl;
 
 import java.util.List;
+
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
+import com.renxin.psychology.domain.PsyCouponTemplate;
+import com.renxin.psychology.service.IPsyCouponTemplateService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantPackageMapper;
@@ -20,6 +25,9 @@ public class PsyConsultantPackageServiceImpl implements IPsyConsultantPackageSer
 {
     @Autowired
     private PsyConsultantPackageMapper psyConsultantPackageMapper;
+    
+    @Autowired
+    private IPsyCouponTemplateService couponTemplateService;
 
     /**
      * 查询咨询师成长套餐
@@ -97,5 +105,48 @@ public class PsyConsultantPackageServiceImpl implements IPsyConsultantPackageSer
     public int deletePsyConsultantPackageByPackageId(Long packageId)
     {
         return psyConsultantPackageMapper.deletePsyConsultantPackageByPackageId(packageId);
+    }
+
+
+    //校验套餐是否支持购买
+    @Override
+    public void checkConsultantPackageOrder(PsyConsultantPackage pack){
+        Integer teamSupNum = pack.getTeamSupNum();//团督券数量
+        Long teamSupCouponTemplateId = pack.getTeamSupCouponTemplateId();//团督券模版id
+        Integer personSupNum = pack.getPersonSupNum();
+        Long personSupCouponTemplateId = pack.getPersonSupCouponTemplateId();
+        Integer personExpNum = pack.getPersonExpNum();
+        Long personExpCouponTemplateId = pack.getPersonExpCouponTemplateId();
+        Integer courseNum = pack.getCourseNum();
+        Long courseCouponTemplateId = pack.getCourseCouponTemplateId();
+
+        if (teamSupNum > 0 && ObjectUtils.isNotEmpty(teamSupCouponTemplateId)){
+            PsyCouponTemplate template = couponTemplateService.selectPsyCouponTemplateById(teamSupCouponTemplateId);
+            if (template.getTotalNum() - template.getUsedNum() < teamSupNum){
+                throw new ServiceException("该套餐包含的团督券已达到发行上限, 无法继续发行.");
+            }
+        }
+
+        if (personSupNum > 0 && ObjectUtils.isNotEmpty(personSupCouponTemplateId)){
+            PsyCouponTemplate template = couponTemplateService.selectPsyCouponTemplateById(personSupCouponTemplateId);
+            if (template.getTotalNum() - template.getUsedNum() < personSupNum){
+                throw new ServiceException("该套餐包含的个督券已达到发行上限, 无法继续发行.");
+            }
+        }
+
+        if (personExpNum > 0 && ObjectUtils.isNotEmpty(personExpCouponTemplateId)){
+            PsyCouponTemplate template = couponTemplateService.selectPsyCouponTemplateById(personExpCouponTemplateId);
+            if (template.getTotalNum() - template.getUsedNum() < personExpNum){
+                throw new ServiceException("该套餐包含的体验券已达到发行上限, 无法继续发行.");
+            }
+        }
+
+        if (courseNum > 0 && ObjectUtils.isNotEmpty(courseCouponTemplateId)){
+            PsyCouponTemplate template = couponTemplateService.selectPsyCouponTemplateById(courseCouponTemplateId);
+            if (template.getTotalNum() - template.getUsedNum() < courseNum){
+                throw new ServiceException("该套餐包含的课程券已达到发行上限, 无法继续发行.");
+            }
+        }
+        
     }
 }

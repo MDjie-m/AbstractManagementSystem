@@ -92,28 +92,7 @@ public class PsyConsultantOrder extends BaseEntity
     
     @TableField(exist = false)
     private String couponNo;//优惠券no
-
+    @TableField(exist = false)
+    private Boolean isConsultantReq = false;//咨询师端请求
     
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("orderNo", getOrderNo())
-            .append("serverId", getServerId())
-            .append("serverType", getServerType())
-            .append("serverName", getServerName())
-            .append("status", getStatus())
-            .append("payConsultantId", getPayConsultantId())
-            .append("payConsultantName", getPayConsultantName())
-            .append("payAmount", getPayAmount())
-            .append("payDatetime", getPayDatetime())
-            .append("payStatus", getPayStatus())
-            .append("remark", getRemark())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
 }

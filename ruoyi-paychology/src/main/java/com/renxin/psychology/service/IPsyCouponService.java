@@ -2,6 +2,7 @@ package com.renxin.psychology.service;
 
 
 import com.renxin.psychology.domain.PsyConsultantOrder;
+import com.renxin.psychology.domain.PsyConsultantPackage;
 import com.renxin.psychology.domain.PsyCoupon;
 
 import java.util.List;
@@ -72,4 +73,6 @@ public interface IPsyCouponService
     
     //消耗优惠券
     public void useCoupon(String no);
+    
+    
 }

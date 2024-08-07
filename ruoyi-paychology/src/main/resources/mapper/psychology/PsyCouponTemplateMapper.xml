@@ -58,8 +58,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectPsyCouponTemplateById" parameterType="Long" resultMap="PsyCouponTemplateResult">
-        <include refid="selectPsyCouponTemplateVo"/>
-        where id = #{id}
+        select
+            tem.id, tem.user_type, tem.coupon_name, tem.total_num,  tem.coupon_type, tem.server_type, tem.max_deduction_price, tem.discount_rate, tem.validity_day,
+            tem.template_status,  tem.create_by, tem.create_time, tem.update_by, tem.update_time, tem.use_threshold, tem.remark,
+            count(cou.coupon_no) as used_num
+        from psy_coupon_template tem
+                 left join psy_coupon cou on tem.id = cou.template_id
+        where tem.id = #{id}
     </select>
         
     <insert id="insertPsyCouponTemplate" parameterType="PsyCouponTemplate" useGeneratedKeys="true" keyProperty="id">

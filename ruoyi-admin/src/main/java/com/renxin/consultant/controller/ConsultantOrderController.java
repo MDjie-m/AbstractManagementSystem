@@ -90,8 +90,10 @@ public class ConsultantOrderController extends BaseController
     @ApiOperation(value = "获取订单列表")
     @PostMapping(value = "/getOrderList")
     @RateLimiter
-    public AjaxResult getOrderList(@RequestBody PsyConsultantOrder req)
-    {
+    public AjaxResult getOrderList(@RequestBody PsyConsultantOrder req,HttpServletRequest request) {
+        Long consultId = consultantTokenService.getConsultId(request);
+        req.setPayConsultantId(consultId+"");
+        req.setIsConsultantReq(true);
         startPage();
         List<PsyConsultantOrder> orderList = psyConsultantOrderService.selectPsyConsultantOrderList(req);
         return AjaxResult.success(orderList);
@@ -116,7 +118,7 @@ public class ConsultantOrderController extends BaseController
     }*/
 
     /**
-     * 生成订单(督导服务)
+     * 生成咨询师订单
      *
      * 用于换取openid 正式使用时openid可以直接从用户信息中获取 不需要在此接口中获取
      * @return 小程序支付所需参数
@@ -194,7 +196,8 @@ public class ConsultantOrderController extends BaseController
                 payAmount = psyConsultantPackage.getPrice();
                 serverName = "购买套餐权益-"+psyConsultantPackage.getProductName();
                 
-                //todo 校验优惠券发行量是否足够
+                //校验优惠券发行量是否足够
+                consultantPackageService.checkConsultantPackageOrder(psyConsultantPackage);
                 break;
                 
             default:

@@ -130,7 +130,6 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //指定服务信息
             PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(order.getServerId());
             order.setChargeConsultantId(serverDetail.getConsultantId());
-            //PsyConsultServeConfigVO serverConfig = serveConfigService.getOne(Long.valueOf(order.getServerId()));
             //总服务次数
             order.setTotalNum(serverDetail.getNum());
 
@@ -154,9 +153,38 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
      * @return 团队督导(组织)订单
      */
     @Override
-    public List<PsyConsultantOrder> selectPsyConsultantOrderList(PsyConsultantOrder psyConsultantOrder)
+    public List<PsyConsultantOrder> selectPsyConsultantOrderList(PsyConsultantOrder req)
     {
-        return psyConsultantOrderMapper.selectPsyConsultantOrderList(psyConsultantOrder);
+        List<PsyConsultantOrder> orderList = psyConsultantOrderMapper.selectPsyConsultantOrderList(req);
+
+        if (req.getIsConsultantReq()){//咨询师端的请求
+            for (PsyConsultantOrder order : orderList) {
+                String serverType = order.getServerType();
+                //若类型为[个督/体验] , 则需计算剩余可用次数
+                if (PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM.equals(serverType) || PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)){
+                    //指定服务信息
+                    PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(order.getServerId());
+                    order.setChargeConsultantId(serverDetail.getConsultantId());
+                    //总服务次数
+                    order.setTotalNum(serverDetail.getNum());
+
+                    //已使用的次数(排班信息)
+                    PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
+                    scheduleReq.setOrderId(order.getOrderNo());
+                    List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(scheduleReq);
+                    order.setUsedNum(ObjectUtils.isNotEmpty(scheduleList) ? scheduleList.size() : 0);
+
+                    //剩余可用次数
+                    order.setSurplusNum(order.getTotalNum() - order.getUsedNum());
+                }
+            }
+            
+            if (ObjectUtils.isNotEmpty(req.getChargeConsultantId())){
+                orderList = orderList.stream().filter(o -> o.getChargeConsultantId().equals(req.getChargeConsultantId()) && o.getSurplusNum() > 0).collect(Collectors.toList());
+            }
+        }
+        
+        return orderList;
     }
 
     /**

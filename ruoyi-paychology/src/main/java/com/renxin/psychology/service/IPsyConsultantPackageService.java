@@ -58,4 +58,7 @@ public interface IPsyConsultantPackageService
      * @return 结果
      */
     public int deletePsyConsultantPackageByPackageId(Long packageId);
+
+    //校验套餐是否支持购买
+    public void checkConsultantPackageOrder(PsyConsultantPackage psyConsultantPackage);
 }
