@@ -18,17 +18,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="quaternaryCategoryName"    column="quaternary_category_name"    />
         <result property="fifthCategory"    column="fifth_category"    />
         <result property="fifthCategoryName"    column="fifth_category_name"    />
+        <result property="cnPrimaryCategory"    column="cn_primary_category"    />
+        <result property="cnPrimaryCategoryName"    column="cn_primary_category_name"    />
+        <result property="cnSecondaryCategory"    column="cn_secondary_category"    />
+        <result property="cnSecondaryCategoryName"    column="cn_secondary_category_name"    />
+        <result property="cnTertiaryCategory"    column="cn_tertiary_category"    />
+        <result property="cnTertiaryCategoryName"    column="cn_tertiary_category_name"    />
+        <result property="cnQuaternaryCategory"    column="cn_quaternary_category"    />
+        <result property="cnQuaternaryCategoryName"    column="cn_quaternary_category_name"    />
         <result property="productName"    column="product_name"    />
         <result property="domesticImportedType"    column="domestic_imported_type"    />
         <result property="productModel"    column="product_model"    />
         <result property="quotationFlag"    column="quotation_flag"    />
+        <result property="tagId"    column="tag_id"    />
+        <result property="tagName"    column="tag_name"    />
         <result property="futureField1"    column="future_field1"    />
         <result property="futureField2"    column="future_field2"    />
         <result property="futureField3"    column="future_field3"    />
     </resultMap>
 
     <sql id="selectSysProductVo">
-        select product_id, supplier_id, supplier_name, primary_category, primary_category_name, secondary_category, secondary_category_name, tertiary_category, tertiary_category_name, quaternary_category, quaternary_category_name, fifth_category, fifth_category_name, product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3 from sys_product
+        select product_id, supplier_id, supplier_name, primary_category, primary_category_name, secondary_category, secondary_category_name,
+               tertiary_category, tertiary_category_name, quaternary_category, quaternary_category_name, fifth_category, fifth_category_name,
+               cn_primary_category,cn_primary_category_name,cn_secondary_category,cn_secondary_category_name,cn_tertiary_category,
+               cn_tertiary_category_name,cn_quaternary_category,cn_quaternary_category_name,tag_id,tag_name
+               , product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3 from sys_product
     </sql>
 
     <select id="selectSysProductList" parameterType="SysProduct" resultMap="SysProductResult">
@@ -47,6 +61,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fifthCategory != null  and fifthCategory != ''"> and fifth_category = #{fifthCategory}</if>
             <if test="fifthCategoryName != null  and fifthCategoryName != ''"> and fifth_category_name like concat('%', #{fifthCategoryName}, '%')</if>
             <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="cnPrimaryCategory != null  and cnPrimaryCategory != ''"> and cn_primary_category = #{cnPrimaryCategory}</if>
+            <if test="cnPrimaryCategoryName != null  and cnPrimaryCategoryName != ''"> and cn_primary_category_name like concat('%', #{cnPrimaryCategoryName}, '%')</if>
+            <if test="cnSecondaryCategory != null  and cnSecondaryCategory != ''"> and cn_secondary_category = #{cnSecondaryCategory}</if>
+            <if test="cnSecondaryCategoryName != null  and cnSecondaryCategoryName != ''"> and cn_secondary_category_name like concat('%', #{cnSecondaryCategoryName}, '%')</if>
+            <if test="cnTertiaryCategory != null  and cnTertiaryCategory != ''"> and cn_tertiary_category = #{cnTertiaryCategory}</if>
+            <if test="cnTertiaryCategoryName != null  and cnTertiaryCategoryName != ''"> and cn_tertiary_category_name like concat('%', #{cnTertiaryCategoryName}, '%')</if>
+            <if test="cnQuaternaryCategory != null  and cnQuaternaryCategory != ''"> and cn_quaternary_category = #{cnQuaternaryCategory}</if>
+            <if test="cnQuaternaryCategoryName != null  and cnQuaternaryCategoryName != ''"> and cn_quaternary_category_name like concat('%', #{cnQuaternaryCategoryName}, '%')</if>
             <if test="domesticImportedType != null "> and domestic_imported_type = #{domesticImportedType}</if>
             <if test="productModel != null  and productModel != ''"> and product_model = #{productModel}</if>
             <if test="quotationFlag != null "> and quotation_flag = #{quotationFlag}</if>
