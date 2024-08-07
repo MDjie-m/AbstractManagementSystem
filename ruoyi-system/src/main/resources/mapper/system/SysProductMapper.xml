@@ -26,6 +26,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="cnTertiaryCategoryName"    column="cn_tertiary_category_name"    />
         <result property="cnQuaternaryCategory"    column="cn_quaternary_category"    />
         <result property="cnQuaternaryCategoryName"    column="cn_quaternary_category_name"    />
+        <result property="cnFifthCategory"    column="cn_fifth_category"    />
+        <result property="cnFifthCategoryName"    column="cn_fifth_category_name"    />
         <result property="productName"    column="product_name"    />
         <result property="domesticImportedType"    column="domestic_imported_type"    />
         <result property="productModel"    column="product_model"    />
@@ -44,8 +46,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                secondary_category_name,tertiary_category, tertiary_category_name, quaternary_category,
                quaternary_category_name, fifth_category, fifth_category_name,cn_primary_category,
                cn_primary_category_name,cn_secondary_category,cn_secondary_category_name,cn_tertiary_category,
-               cn_tertiary_category_name,cn_quaternary_category,cn_quaternary_category_name,tag_id,tag_name,
-               product_image,product_video, product_name, domestic_imported_type, product_model, quotation_flag,
+               cn_tertiary_category_name,cn_quaternary_category,cn_quaternary_category_name,cn_fifth_category,
+               cn_fifth_category_name,tag_id,tag_name,product_image,product_video, product_name,
+               domestic_imported_type, product_model, quotation_flag,
                future_field1, future_field2, future_field3 from sys_product
     </sql>
 
@@ -73,6 +76,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="cnTertiaryCategoryName != null  and cnTertiaryCategoryName != ''"> and cn_tertiary_category_name like concat('%', #{cnTertiaryCategoryName}, '%')</if>
             <if test="cnQuaternaryCategory != null  and cnQuaternaryCategory != ''"> and cn_quaternary_category = #{cnQuaternaryCategory}</if>
             <if test="cnQuaternaryCategoryName != null  and cnQuaternaryCategoryName != ''"> and cn_quaternary_category_name like concat('%', #{cnQuaternaryCategoryName}, '%')</if>
+
+            <if test="cnFifthCategory != null  and cnFifthCategory != ''"> and cn_fifth_category = #{cnFifthCategory}</if>
+            <if test="cnFifthCategoryName != null  and cnFifthCategoryName != ''"> and cn_fifth_category_name like concat('%', #{cnFifthCategoryName}, '%')</if>
+
             <if test="domesticImportedType != null "> and domestic_imported_type = #{domesticImportedType}</if>
             <if test="productModel != null  and productModel != ''"> and product_model = #{productModel}</if>
             <if test="quotationFlag != null "> and quotation_flag = #{quotationFlag}</if>
@@ -103,6 +110,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="quaternaryCategoryName != null">quaternary_category_name,</if>
             <if test="fifthCategory != null">fifth_category,</if>
             <if test="fifthCategoryName != null">fifth_category_name,</if>
+
+            <if test="cnPrimaryCategory != null">cn_primary_category,</if>
+            <if test="cnPrimaryCategoryName != null">cn_primary_category_name,</if>
+            <if test="cnSecondaryCategory != null">cn_secondary_category,</if>
+            <if test="cnSecondaryCategoryName != null">cn_secondary_category_name,</if>
+            <if test="cnTertiaryCategory != null">cn_tertiary_category,</if>
+            <if test="cnTertiaryCategoryName != null">cn_tertiary_category_name,</if>
+            <if test="cnQuaternaryCategory != null">cn_quaternary_category,</if>
+            <if test="cnQuaternaryCategoryName != null">cn_quaternary_category_name,</if>
+            <if test="cnFifthCategory != null">cn_fifth_category,</if>
+            <if test="cnFifthCategoryName != null">cn_fifth_category_name,</if>
+
+            <if test="tagId != null">tag_id,</if>
+            <if test="tagName != null">tag_name,</if>
+            <if test="productImage != null">product_image,</if>
+            <if test="productVideo != null">product_video,</if>
+
             <if test="productName != null">product_name,</if>
             <if test="domesticImportedType != null">domestic_imported_type,</if>
             <if test="productModel != null">product_model,</if>
@@ -125,6 +149,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="quaternaryCategoryName != null">#{quaternaryCategoryName},</if>
             <if test="fifthCategory != null">#{fifthCategory},</if>
             <if test="fifthCategoryName != null">#{fifthCategoryName},</if>
+
+            <if test="cnPrimaryCategory != null">#{cnPrimaryCategory},</if>
+            <if test="cnPrimaryCategoryName != null">#{cnPrimaryCategoryName},</if>
+            <if test="cnSecondaryCategory != null">#{cnSecondaryCategory},</if>
+            <if test="cnSecondaryCategoryName != null">#{cnSecondaryCategoryName},</if>
+            <if test="cnTertiaryCategory != null">#{cnTertiaryCategory},</if>
+            <if test="cnTertiaryCategoryName != null">#{cnTertiaryCategoryName},</if>
+            <if test="cnQuaternaryCategory != null">#{cnQuaternaryCategory},</if>
+            <if test="cnQuaternaryCategoryName != null">#{cnQuaternaryCategoryName},</if>
+            <if test="cnFifthCategory != null">#{cnFifthCategory},</if>
+            <if test="cnFifthCategoryName != null">#{cnFifthCategoryName},</if>
+            <if test="tagId != null">#{tagId},</if>
+            <if test="tagName != null">#{tagName},</if>
+            <if test="productImage != null">#{productImage},</if>
+            <if test="productVideo != null">#{productVideo},</if>
+
             <if test="productName != null">#{productName},</if>
             <if test="domesticImportedType != null">#{domesticImportedType},</if>
             <if test="productModel != null">#{productModel},</if>

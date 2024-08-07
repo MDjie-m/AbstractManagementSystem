@@ -104,6 +104,13 @@ public class SysProduct extends BaseEntity
     @Excel(name = "国产四级分类名称")
     private String cnQuaternaryCategoryName;
 
+    /** 五级分类 */
+    private String cnFifthCategory;
+
+    /** 五级分类名称 */
+    @Excel(name = "国产五级分类名称")
+    private String cnFifthCategoryName;
+
     /** 标签id，以'/'区分，tag_id */
     private String tagId;
 
@@ -306,6 +313,22 @@ public class SysProduct extends BaseEntity
         this.cnSecondaryCategoryName = cnSecondaryCategoryName;
     }
 
+    public String getCnFifthCategory() {
+        return cnFifthCategory;
+    }
+
+    public void setCnFifthCategory(String cnFifthCategory) {
+        this.cnFifthCategory = cnFifthCategory;
+    }
+
+    public String getCnFifthCategoryName() {
+        return cnFifthCategoryName;
+    }
+
+    public void setCnFifthCategoryName(String cnFifthCategoryName) {
+        this.cnFifthCategoryName = cnFifthCategoryName;
+    }
+
     public String getCnTertiaryCategory() {
         return cnTertiaryCategory;
     }
@@ -430,6 +453,8 @@ public class SysProduct extends BaseEntity
                 ", cnTertiaryCategoryName='" + cnTertiaryCategoryName + '\'' +
                 ", cnQuaternaryCategory='" + cnQuaternaryCategory + '\'' +
                 ", cnQuaternaryCategoryName='" + cnQuaternaryCategoryName + '\'' +
+                ", cnFifthCategory='" + cnFifthCategory + '\'' +
+                ", cnFifthCategoryName='" + cnFifthCategoryName + '\'' +
                 ", tagId='" + tagId + '\'' +
                 ", tagName='" + tagName + '\'' +
                 ", productImage='" + productImage + '\'' +

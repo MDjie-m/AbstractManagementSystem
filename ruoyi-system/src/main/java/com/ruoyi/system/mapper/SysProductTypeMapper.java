@@ -63,4 +63,8 @@ public interface SysProductTypeMapper
     public int deleteSysProductTypeByProductCodes(String[] productCodes);
 
     List<SysProductType> selectChildren(@Param("parentCode") String parentCode);
+
+    List<SysProductType> selectType(@Param("productCodes") String[] newCodes);
+
+    SysProductType selectTag(@Param("code") String code);
 }
