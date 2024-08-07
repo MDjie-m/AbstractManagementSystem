@@ -32,17 +32,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="quotationFlag"    column="quotation_flag"    />
         <result property="tagId"    column="tag_id"    />
         <result property="tagName"    column="tag_name"    />
+        <result property="productImage"    column="product_image"    />
+        <result property="productVideo"    column="product_video"    />
         <result property="futureField1"    column="future_field1"    />
         <result property="futureField2"    column="future_field2"    />
         <result property="futureField3"    column="future_field3"    />
     </resultMap>
 
     <sql id="selectSysProductVo">
-        select product_id, supplier_id, supplier_name, primary_category, primary_category_name, secondary_category, secondary_category_name,
-               tertiary_category, tertiary_category_name, quaternary_category, quaternary_category_name, fifth_category, fifth_category_name,
-               cn_primary_category,cn_primary_category_name,cn_secondary_category,cn_secondary_category_name,cn_tertiary_category,
-               cn_tertiary_category_name,cn_quaternary_category,cn_quaternary_category_name,tag_id,tag_name
-               , product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3 from sys_product
+        select product_id, supplier_id, supplier_name, primary_category, primary_category_name, secondary_category,
+               secondary_category_name,tertiary_category, tertiary_category_name, quaternary_category,
+               quaternary_category_name, fifth_category, fifth_category_name,cn_primary_category,
+               cn_primary_category_name,cn_secondary_category,cn_secondary_category_name,cn_tertiary_category,
+               cn_tertiary_category_name,cn_quaternary_category,cn_quaternary_category_name,tag_id,tag_name,
+               product_image,product_video, product_name, domestic_imported_type, product_model, quotation_flag,
+               future_field1, future_field2, future_field3 from sys_product
     </sql>
 
     <select id="selectSysProductList" parameterType="SysProduct" resultMap="SysProductResult">

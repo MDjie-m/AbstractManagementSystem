@@ -110,6 +110,12 @@ public class SysProduct extends BaseEntity
     /** 标签名称，以'/'区分，tag_name */
     private String tagName;
 
+    /** 产品图片，以英文都好分隔 */
+    private String productImage;
+
+    /** 产品视频 */
+    private String productVideo;
+
     /** 预留字段1 */
     private String futureField1;
 
@@ -348,6 +354,22 @@ public class SysProduct extends BaseEntity
         this.tagName = tagName;
     }
 
+    public String getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(String productImage) {
+        this.productImage = productImage;
+    }
+
+    public String getProductVideo() {
+        return productVideo;
+    }
+
+    public void setProductVideo(String productVideo) {
+        this.productVideo = productVideo;
+    }
+
     public Integer getQuotationFlag()
     {
         return quotationFlag;
@@ -382,27 +404,39 @@ public class SysProduct extends BaseEntity
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("productId", getProductId())
-            .append("supplierId", getSupplierId())
-            .append("supplierName", getSupplierName())
-            .append("primaryCategory", getPrimaryCategory())
-            .append("primaryCategoryName", getPrimaryCategoryName())
-            .append("secondaryCategory", getSecondaryCategory())
-            .append("secondaryCategoryName", getSecondaryCategoryName())
-            .append("tertiaryCategory", getTertiaryCategory())
-            .append("tertiaryCategoryName", getTertiaryCategoryName())
-            .append("quaternaryCategory", getQuaternaryCategory())
-            .append("quaternaryCategoryName", getQuaternaryCategoryName())
-            .append("fifthCategory", getFifthCategory())
-            .append("fifthCategoryName", getFifthCategoryName())
-            .append("productName", getProductName())
-            .append("domesticImportedType", getDomesticImportedType())
-            .append("productModel", getProductModel())
-            .append("quotationFlag", getQuotationFlag())
-            .append("futureField1", getFutureField1())
-            .append("futureField2", getFutureField2())
-            .append("futureField3", getFutureField3())
-            .toString();
+        return "SysProduct{" +
+                "productId='" + productId + '\'' +
+                ", supplierId='" + supplierId + '\'' +
+                ", supplierName='" + supplierName + '\'' +
+                ", primaryCategory='" + primaryCategory + '\'' +
+                ", primaryCategoryName='" + primaryCategoryName + '\'' +
+                ", secondaryCategory='" + secondaryCategory + '\'' +
+                ", secondaryCategoryName='" + secondaryCategoryName + '\'' +
+                ", tertiaryCategory='" + tertiaryCategory + '\'' +
+                ", tertiaryCategoryName='" + tertiaryCategoryName + '\'' +
+                ", quaternaryCategory='" + quaternaryCategory + '\'' +
+                ", quaternaryCategoryName='" + quaternaryCategoryName + '\'' +
+                ", fifthCategory='" + fifthCategory + '\'' +
+                ", fifthCategoryName='" + fifthCategoryName + '\'' +
+                ", productName='" + productName + '\'' +
+                ", domesticImportedType=" + domesticImportedType +
+                ", productModel='" + productModel + '\'' +
+                ", quotationFlag=" + quotationFlag +
+                ", cnPrimaryCategory='" + cnPrimaryCategory + '\'' +
+                ", cnPrimaryCategoryName='" + cnPrimaryCategoryName + '\'' +
+                ", cnSecondaryCategory='" + cnSecondaryCategory + '\'' +
+                ", cnSecondaryCategoryName='" + cnSecondaryCategoryName + '\'' +
+                ", cnTertiaryCategory='" + cnTertiaryCategory + '\'' +
+                ", cnTertiaryCategoryName='" + cnTertiaryCategoryName + '\'' +
+                ", cnQuaternaryCategory='" + cnQuaternaryCategory + '\'' +
+                ", cnQuaternaryCategoryName='" + cnQuaternaryCategoryName + '\'' +
+                ", tagId='" + tagId + '\'' +
+                ", tagName='" + tagName + '\'' +
+                ", productImage='" + productImage + '\'' +
+                ", productVideo='" + productVideo + '\'' +
+                ", futureField1='" + futureField1 + '\'' +
+                ", futureField2='" + futureField2 + '\'' +
+                ", futureField3='" + futureField3 + '\'' +
+                '}';
     }
 }
