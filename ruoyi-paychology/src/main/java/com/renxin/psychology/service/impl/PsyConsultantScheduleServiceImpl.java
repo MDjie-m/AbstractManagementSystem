@@ -16,6 +16,7 @@ import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.mapper.PsyConsultantScheduleMapper;
 import com.renxin.psychology.request.PsyWorkReq;
+import com.renxin.psychology.request.PsyWorkTimeRes;
 import com.renxin.psychology.service.IPsyConsultWorkService;
 import com.renxin.psychology.service.IPsyConsultantOrderService;
 import com.renxin.psychology.service.IPsyConsultantScheduleService;
@@ -225,6 +226,31 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     public int getTimeNumForConsultant(PsyWorkReq req){
         return psyConsultantScheduleMapper.getTimeNumForConsultant(req);
     }
-    
+
+
+    /**
+     * 查询咨询师工作时长
+     */
+    @Override
+    public PsyWorkTimeRes querySumTime(Long consultId){
+        PsyConsultantSchedule req = new PsyConsultantSchedule();
+        req.setConsultId(consultId);
+        
+        PsyWorkTimeRes workTimeRes = new PsyWorkTimeRes();
+        workTimeRes.setConsultId(consultId);
+
+        req.setScheduleType(21);//团督
+        workTimeRes.setTeamSupTime(psyConsultantScheduleMapper.querySumTime(req));
+        req.setScheduleType(22);//个督
+        workTimeRes.setPersonSupTime(psyConsultantScheduleMapper.querySumTime(req));
+        req.setScheduleType(23);//体验
+        workTimeRes.setPersonExpTime(psyConsultantScheduleMapper.querySumTime(req));
+        req.setScheduleType(12);//咨询
+        workTimeRes.setConsultTime(psyConsultantScheduleMapper.querySumTime(req));
+        req.setScheduleType(11);//倾听
+        workTimeRes.setListenTime(psyConsultantScheduleMapper.querySumTime(req));
+        
+        return workTimeRes;
+    }
     
 }

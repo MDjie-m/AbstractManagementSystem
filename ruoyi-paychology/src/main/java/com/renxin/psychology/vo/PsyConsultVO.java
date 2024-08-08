@@ -131,5 +131,16 @@ public class PsyConsultVO extends BaseValObj implements Serializable
 
     /** 课程券张数 */
     private Integer courseNum;
+
+    //团督时长
+    private int teamSupTime;
+    //个督时长
+    private int personSupTime;
+    //个人体验时长
+    private int personExpTime;
+    //咨询时长
+    private int consultTime;
+    //倾听时长
+    private int listenTime;
     
 }

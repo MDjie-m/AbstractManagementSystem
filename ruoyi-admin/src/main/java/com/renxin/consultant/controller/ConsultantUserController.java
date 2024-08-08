@@ -81,6 +81,11 @@ public class ConsultantUserController extends BaseController {
         try {
             Long consultId = consultantTokenService.getConsultId(request);
             PsyConsultVO one = psyConsultService.getOne(consultId);
+            one.setId(null);
+            one.setCreateTime(null);
+            one.setCreateBy(null);
+            one.setUpdateTime(null);
+            one.setUpdateBy(null);
             return AjaxResult.success(one);
         } catch (Exception e) {
             log.error("login error",e);

@@ -168,7 +168,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     }
 
     /**
-     * 查询团队督导(组织)订单列表
+     * 查询订单列表
      * 
      * @param psyConsultantOrder 团队督导(组织)订单
      * @return 团队督导(组织)订单
@@ -188,7 +188,6 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     //指定服务信息
                     PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(order.getServerId());
                     order.setChargeConsultantId(serverDetail.getConsultantId());
-                    order.setChargeConsultantName(serverDetail.getConsultantName());
                     //总服务次数
                     order.setTotalNum(serverDetail.getNum());
 
@@ -200,14 +199,23 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
 
                     //剩余可用次数
                     order.setSurplusNum(order.getTotalNum() - order.getUsedNum());
-                } 
-                
+
+                    order.setServerDetail(serverDetail);
+                }
                 //团队督导
                 else if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)){
                     PsyConsultantTeamSupervision team = teamSupervisionService.selectPsyConsultantTeamSupervisionById(Long.valueOf(order.getServerId()));
                     order.setChargeConsultantId(team.getConsultantId());
                     order.setChargeConsultantName(team.getConsultUserName());
                     order.setTotalNum(team.getCycleNumber());
+
+                    team.setMemberList(null);
+                    order.setTeamDetail(team);
+                }
+                //课程
+                else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)){
+                    CourCourse courCourse = courCourseService.selectCourCourseById(Integer.valueOf(order.getServerId()));
+                    order.setCourseDetail(courCourse);
                 }
             }
             

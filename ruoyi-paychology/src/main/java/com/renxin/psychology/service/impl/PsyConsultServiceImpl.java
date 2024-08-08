@@ -18,16 +18,14 @@ import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.dto.PsyConsultInfoDTO;
 import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.request.*;
-import com.renxin.psychology.service.IPsyConsultServeConfigService;
-import com.renxin.psychology.service.IPsyConsultServeService;
-import com.renxin.psychology.service.IPsyConsultService;
-import com.renxin.psychology.service.IPsyConsultWorkService;
+import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultServeConfigVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import com.renxin.system.service.ISysConfigService;
 import com.renxin.system.service.ISysUserService;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -72,6 +70,9 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     
     @Resource
     private IPsyConsultServeService serveService;
+    
+    @Resource
+    private IPsyConsultantScheduleService scheduleService;
 
     @Override
     public List<PsyConsultWorkVO> getConsultWorksById(Long id) {
@@ -170,7 +171,12 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
 
     @Override
     public PsyConsultVO getOne(Long id) {
-        return BeanUtil.toBean(psyConsultMapper.queryById(id), PsyConsultVO.class);
+        PsyConsultVO consultVO = BeanUtil.toBean(psyConsultMapper.queryById(id), PsyConsultVO.class);
+        //查询工作时长
+        PsyWorkTimeRes psyWorkTimeRes = scheduleService.querySumTime(id);
+        BeanUtils.copyProperties(psyWorkTimeRes,consultVO);
+
+        return consultVO;
     }
 
     @Override

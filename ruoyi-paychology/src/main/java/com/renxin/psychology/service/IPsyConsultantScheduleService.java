@@ -2,6 +2,7 @@ package com.renxin.psychology.service;
 
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.request.PsyWorkReq;
+import com.renxin.psychology.request.PsyWorkTimeRes;
 
 import java.util.List;
 
@@ -73,4 +74,9 @@ public interface IPsyConsultantScheduleService
      * @return
      */
     public int getTimeNumForConsultant(PsyWorkReq req);
+
+    /**
+     * 查询咨询师工作时长
+     */
+    public PsyWorkTimeRes querySumTime(Long consultId);
 }

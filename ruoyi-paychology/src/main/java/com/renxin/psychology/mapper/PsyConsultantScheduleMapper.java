@@ -70,4 +70,10 @@ public interface PsyConsultantScheduleMapper
      * @return
      */
     public int getTimeNumForConsultant(PsyWorkReq req);
+
+
+    /**
+     * 查询咨询师工作时长
+     */
+    public int querySumTime(PsyConsultantSchedule psyConsultantSchedule);
 }

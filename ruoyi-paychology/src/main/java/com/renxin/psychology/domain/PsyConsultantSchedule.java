@@ -75,25 +75,5 @@ public class PsyConsultantSchedule extends BaseEntity
     //付款方用户名
     private String userNickName;
     private String userId;
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("orderId", getOrderId())
-            .append("workId", getWorkId())
-            .append("timeStart", getTimeStart())
-            .append("timeEnd", getTimeEnd())
-            .append("day", getDay())
-            .append("week", getWeek())
-            .append("status", getStatus())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("time", getTime())
-            .append("realTime", getRealTime())
-            .append("consultId", getConsultId())
-            .toString();
-    }
+    
 }
