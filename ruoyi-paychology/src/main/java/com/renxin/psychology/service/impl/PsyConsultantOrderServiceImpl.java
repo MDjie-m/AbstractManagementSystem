@@ -142,6 +142,13 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //剩余可用次数
             order.setSurplusNum(order.getTotalNum() - order.getUsedNum());
         }
+        //团队督导
+        else if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)){
+            PsyConsultantTeamSupervision team = teamSupervisionService.selectPsyConsultantTeamSupervisionById(Long.valueOf(order.getServerId()));
+            order.setChargeConsultantId(team.getConsultantId());
+            order.setChargeConsultantName(team.getConsultUserName());
+            order.setTotalNum(team.getCycleNumber());
+        }
         
         return order;
     }
@@ -156,15 +163,18 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     public List<PsyConsultantOrder> selectPsyConsultantOrderList(PsyConsultantOrder req)
     {
         List<PsyConsultantOrder> orderList = psyConsultantOrderMapper.selectPsyConsultantOrderList(req);
-
-        if (req.getIsConsultantReq()){//咨询师端的请求
+        
+        //咨询师端的请求   
+        if (req.getIsConsultantReq()){
             for (PsyConsultantOrder order : orderList) {
                 String serverType = order.getServerType();
+                
                 //若类型为[个督/体验] , 则需计算剩余可用次数
                 if (PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM.equals(serverType) || PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)){
                     //指定服务信息
                     PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(order.getServerId());
                     order.setChargeConsultantId(serverDetail.getConsultantId());
+                    order.setChargeConsultantName(serverDetail.getConsultantName());
                     //总服务次数
                     order.setTotalNum(serverDetail.getNum());
 
@@ -176,9 +186,18 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
 
                     //剩余可用次数
                     order.setSurplusNum(order.getTotalNum() - order.getUsedNum());
+                } 
+                
+                //团队督导
+                else if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)){
+                    PsyConsultantTeamSupervision team = teamSupervisionService.selectPsyConsultantTeamSupervisionById(Long.valueOf(order.getServerId()));
+                    order.setChargeConsultantId(team.getConsultantId());
+                    order.setChargeConsultantName(team.getConsultUserName());
+                    order.setTotalNum(team.getCycleNumber());
                 }
             }
             
+            //筛选收款咨询师及剩余可用次数
             if (ObjectUtils.isNotEmpty(req.getChargeConsultantId())){
                 orderList = orderList.stream().filter(o -> o.getChargeConsultantId().equals(req.getChargeConsultantId()) && o.getSurplusNum() > 0).collect(Collectors.toList());
             }

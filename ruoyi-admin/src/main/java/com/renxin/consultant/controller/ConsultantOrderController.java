@@ -80,11 +80,11 @@ public class ConsultantOrderController extends BaseController
     }*/
 
     @ApiOperation(value = "订单ID查询详情")
-    @GetMapping(value = "/getOrderDetailByNo/{orderNo}")
+    @PostMapping(value = "/getOrderDetailByNo")
     @RateLimiter
-    public AjaxResult getOrderDetailByNo(@PathVariable("orderNo") String orderNo)
+    public AjaxResult getOrderDetailByNo(@RequestBody PsyConsultantOrder req)
     {
-        return AjaxResult.success(psyConsultantOrderService.selectPsyConsultantOrderByOrderNo(orderNo));
+        return AjaxResult.success(psyConsultantOrderService.selectPsyConsultantOrderByOrderNo(req.getOrderNo()));
     }
 
     @ApiOperation(value = "获取订单列表")

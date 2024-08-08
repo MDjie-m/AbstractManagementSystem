@@ -89,6 +89,8 @@ public class PsyConsultantOrder extends BaseEntity
     private Integer surplusNum;//剩余服务次数
     @TableField(exist = false)
     private String chargeConsultantId;//收费咨询师id
+    @TableField(exist = false)
+    private String chargeConsultantName;//收费咨询师name
     
     @TableField(exist = false)
     private String couponNo;//优惠券no

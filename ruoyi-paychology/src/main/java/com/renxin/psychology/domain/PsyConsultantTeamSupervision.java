@@ -49,7 +49,7 @@ public class PsyConsultantTeamSupervision extends BaseEntity
 
     /** 周期次数 */
     @Excel(name = "周期次数")
-    private Long cycleNumber;
+    private Integer cycleNumber;
 
     /** 督导师 */
     @Excel(name = "督导师")
