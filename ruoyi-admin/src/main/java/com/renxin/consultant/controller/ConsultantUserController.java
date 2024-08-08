@@ -75,7 +75,7 @@ public class ConsultantUserController extends BaseController {
         }
     }
 
-    @GetMapping("/info")
+    @PostMapping("/info")
     public AjaxResult getUserInfo(HttpServletRequest request)
     {
         try {
