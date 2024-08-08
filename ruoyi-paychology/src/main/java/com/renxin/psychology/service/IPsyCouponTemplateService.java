@@ -28,6 +28,7 @@ public interface IPsyCouponTemplateService
      * @return 优惠券模版集合
      */
     public List<PsyCouponTemplate> selectPsyCouponTemplateList(PsyCouponTemplate psyCouponTemplate);
+    
 
     /**
      * 新增优惠券模版

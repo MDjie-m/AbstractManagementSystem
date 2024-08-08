@@ -10,7 +10,9 @@ import com.renxin.course.service.ICourCourseService;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.*;
 import com.renxin.psychology.mapper.PsyCouponMapper;
+import com.renxin.psychology.request.ReceiveFreeCouponReq;
 import com.renxin.psychology.service.*;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +23,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户-优惠券发行Service业务层处理
@@ -290,5 +294,52 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         psyCouponMapper.updatePsyCoupon(psyCoupon);
     }
 
+
+    //领取免费优惠券
+    public void receiveFreeCoupon(ReceiveFreeCouponReq req){
+        List<Long> couponTemplateIdList = Arrays.stream(req.getCouponTemplateIdStr().split(","))
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        ArrayList<PsyCoupon> couponList = new ArrayList<>();
+
+        for (Long temId : couponTemplateIdList) {
+            //查询相应模版
+            PsyCouponTemplate couponTemplate = couponTemplateService.selectPsyCouponTemplateById(temId);
+            if (!"Y".equals(couponTemplate.getIsFreeGet())){
+                throw new ServiceException(couponTemplate.getCouponName() + "-该优惠券不支持免费领取");
+            }
+            PsyCoupon coupon = new PsyCoupon();
+            
+            //根据服务类型生成编号
+            Integer serverType = couponTemplate.getServerType();
+            switch (serverType%10 + ""){
+                //团队督导
+                case PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
+                    coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_TEAM_SUP + PsyConstants.COUPON_NO, null));
+                    break;
+                case PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM:
+                    coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_SUP + PsyConstants.COUPON_NO, null));
+                    break;
+                case PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM:
+                    coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_EXP + PsyConstants.COUPON_NO, null));
+                    break;
+                case PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
+                    coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_COURSE + PsyConstants.COUPON_NO, null));
+                    break;
+                default:
+                    throw new ServiceException(temId + "优惠券模版领取异常, 没有相应的服务类型.");
+            }
+            coupon.setTemplateId(temId);
+            coupon.setConsultantId(req.getConsultId());
+            coupon.setIsUsable(0);
+            coupon.setCreateTime(new Date());
+            coupon.setExpireDate(LocalDate.now().plusDays(couponTemplate.getValidityDay()).format(formatter));
+            couponList.add(coupon);
+        }
+        psyCouponMapper.insertPsyCouponList(couponList);
+        
+        
+    }
     
 }
