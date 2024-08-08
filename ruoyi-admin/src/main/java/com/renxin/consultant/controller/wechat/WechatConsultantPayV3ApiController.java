@@ -114,7 +114,7 @@ public class WechatConsultantPayV3ApiController extends BaseController {
                 PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(wechatPayDTO.getSupServerId()));
                 content = team.getTitle() + "-第" + team.getPeriodNo() +"期";
                 //TODO 超卖问题.
-                if (team.getSurplusNum() <= 0){
+                if (team.getSurplusJoinNum() <= 0){
                     return error("该团队已满额");
                 }
                 break;

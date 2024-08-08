@@ -3,6 +3,7 @@ package com.renxin.consultant.controller;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantDebitcard;
 import com.renxin.psychology.service.IPsyConsultantDebitcardService;
 import io.swagger.annotations.Api;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -21,41 +23,65 @@ public class ConsultantDebitcardController extends BaseController {
 
     @Resource
     private IPsyConsultantDebitcardService psyConsultantDebitcardService;
+    
+    @Resource
+    private ConsultantTokenService consultantTokenService;
 
     @ApiOperation(value = "查询客户银行卡列表")
-    @GetMapping("/list")
-    public TableDataInfo list(PsyConsultantDebitcard psyConsultantDebitcard)
+    @PostMapping("/list")
+    public TableDataInfo list(@RequestBody PsyConsultantDebitcard psyConsultantDebitcard, HttpServletRequest request)
     {
+        Long consultId = consultantTokenService.getConsultId(request);
+        psyConsultantDebitcard.setConsultantId(consultId);
         startPage();
         List<PsyConsultantDebitcard> list = psyConsultantDebitcardService.selectPsyConsultantDebitcardList(psyConsultantDebitcard);
         return getDataTable(list);
     }
 
     @ApiOperation(value = "获取客户银行卡详细信息")
-    @GetMapping(value = "/{cardNumber}")
-    public AjaxResult getInfo(@PathVariable("cardNumber") String cardNumber)
+    @GetMapping(value = "/queryByCardNumber")
+    public AjaxResult getInfo(@RequestBody PsyConsultantDebitcard req,HttpServletRequest request)
     {
-        return AjaxResult.success(psyConsultantDebitcardService.selectPsyConsultantDebitcardByCardNumber(cardNumber));
+        Long consultId = consultantTokenService.getConsultId(request);
+        PsyConsultantDebitcard psyConsultantDebitcard = psyConsultantDebitcardService.selectPsyConsultantDebitcardByCardNumber(req.getCardNumber());
+        if (psyConsultantDebitcard.getConsultantId() == consultId){
+            return AjaxResult.success(psyConsultantDebitcard);
+        }
+        return AjaxResult.success();
     }
 
     @ApiOperation(value = "新增客户银行卡")
     @PostMapping(value = "/create")
-    public AjaxResult add(@RequestBody PsyConsultantDebitcard psyConsultantDebitcard)
+    public AjaxResult add(@RequestBody PsyConsultantDebitcard psyConsultantDebitcard,HttpServletRequest request)
     {
+        Long consultId = consultantTokenService.getConsultId(request);
+        psyConsultantDebitcard.setConsultantId(consultId);
         return toAjax(psyConsultantDebitcardService.insertPsyConsultantDebitcard(psyConsultantDebitcard));
     }
 
     @ApiOperation(value = "修改客户银行卡")
     @PostMapping(value = "/edit")
-    public AjaxResult edit(@RequestBody PsyConsultantDebitcard psyConsultantDebitcard)
+    public AjaxResult edit(@RequestBody PsyConsultantDebitcard psyConsultantDebitcard,HttpServletRequest request)
     {
+        Long consultId = consultantTokenService.getConsultId(request);
+        psyConsultantDebitcard.setConsultantId(consultId);
         return toAjax(psyConsultantDebitcardService.updatePsyConsultantDebitcard(psyConsultantDebitcard));
     }
 
     @ApiOperation(value = "删除客户银行卡")
-    @PostMapping("/{cardNumbers}")
-    public AjaxResult remove(@PathVariable String[] cardNumbers)
+    @PostMapping("/delete")
+    public AjaxResult remove(@RequestBody PsyConsultantDebitcard req,HttpServletRequest request)
     {
-        return toAjax(psyConsultantDebitcardService.deletePsyConsultantDebitcardByCardNumbers(cardNumbers));
+        int count = 0;
+        Long consultId = consultantTokenService.getConsultId(request);
+        PsyConsultantDebitcard listReq = new PsyConsultantDebitcard();
+            listReq.setConsultantId(consultId);
+        List<PsyConsultantDebitcard> list = psyConsultantDebitcardService.selectPsyConsultantDebitcardList(listReq);
+        //判断是否属于当前咨询师
+        if (list.stream().anyMatch(card -> req.getCardNumber().equals(card.getCardNumber()))){
+            count = psyConsultantDebitcardService.deletePsyConsultantDebitcardByCardNumbers(new String[]{req.getCardNumber()});
+        }
+
+        return toAjax(count);
     }
 }

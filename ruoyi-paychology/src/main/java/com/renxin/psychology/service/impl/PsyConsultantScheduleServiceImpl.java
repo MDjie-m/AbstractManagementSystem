@@ -252,5 +252,15 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         
         return workTimeRes;
     }
+
+    //查询团督已讲完的课程数
+    @Override
+    public int getTimeNumForTeam(Long teamId){
+        PsyConsultantSchedule req = new PsyConsultantSchedule();
+        req.setTeamId(teamId);
+        req.setStatus("1");//已完成
+        int num = psyConsultantScheduleMapper.getTimeNumForTeam(req);
+        return num;
+    }
     
 }

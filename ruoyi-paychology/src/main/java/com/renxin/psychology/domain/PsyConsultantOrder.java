@@ -60,6 +60,10 @@ public class PsyConsultantOrder extends BaseEntity
     /** 实际支付费用 */
     @Excel(name = "实际支付费用")
     private BigDecimal payAmount;
+    //原价
+    private BigDecimal originalPrice;
+    //优惠券no
+    private String couponNo;
 
     /** 付款时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -81,6 +85,7 @@ public class PsyConsultantOrder extends BaseEntity
     private Long workId;
     private Integer time;
     
+    
     //以下三字段, 仅在类型为 个人督导/个人体验 时, 有值
     @TableField(exist = false)
     private Integer totalNum;//总服务次数
@@ -93,8 +98,7 @@ public class PsyConsultantOrder extends BaseEntity
     @TableField(exist = false)
     private String chargeConsultantName;//收费咨询师name
     
-    @TableField(exist = false)
-    private String couponNo;//优惠券no
+
     @TableField(exist = false)
     private Boolean isConsultantReq = false;//咨询师端请求
 

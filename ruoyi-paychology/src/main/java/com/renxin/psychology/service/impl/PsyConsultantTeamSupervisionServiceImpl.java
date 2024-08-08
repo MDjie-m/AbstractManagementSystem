@@ -77,7 +77,7 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
                 //当前登记人数
                 int memberNum = memberList.size();
                 //剩余名额数
-                team.setSurplusNum(maxNumPeople - memberNum);
+                team.setSurplusJoinNum(maxNumPeople - memberNum);
             }
             
             //计算课程时长
@@ -91,6 +91,14 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
             //督导师详情
             PsyConsult psyConsult = psyConsultMapper.selectById(team.getConsultantId());
             team.setConsultantDetail(psyConsult);
+            
+            //总讲课次数
+            team.setTotalNum(team.getCycleNumber());
+            //已完成讲课数
+            int usedNum = consultantScheduleService.getTimeNumForTeam(id);
+            team.setUsedNum(usedNum);
+            //剩余讲课次数
+            team.setSurplusNum(team.getCycleNumber() - usedNum);
         }
         
         
@@ -120,7 +128,7 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
                     //当前登记人数
                     int memberNum = memberMapper.queryMemberCount(team.getId() + "");
                     //剩余名额数
-                    team.setSurplusNum(maxNumPeople - memberNum);
+                    team.setSurplusJoinNum(maxNumPeople - memberNum);
                 }
             }
         }else if (teamType == 2 || teamType ==3){
@@ -180,7 +188,7 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
             team.setLectureEndTime(null);
             team.setFirstLectureDate(null);
             team.setMaxNumPeople(null);
-            team.setSurplusNum(null);
+            team.setSurplusJoinNum(null);
             team.setMemberList(null);
 
         }
@@ -228,7 +236,7 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
 
             PsyConsultantTeamSupervision team = selectPsyConsultantTeamSupervisionById(Long.valueOf(serverId));
             //若团队已满员
-            if (team.getSurplusNum() <= 0){
+            if (team.getSurplusJoinNum() <= 0){
                 handleTeamFull(serverId);
             }
         }

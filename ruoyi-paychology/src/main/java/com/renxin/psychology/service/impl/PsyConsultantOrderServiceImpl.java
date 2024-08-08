@@ -182,9 +182,19 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
         if (req.getIsConsultantReq()){
             for (PsyConsultantOrder order : orderList) {
                 String serverType = order.getServerType();
-                
-                //若类型为[个督/体验] , 则需计算剩余可用次数
-                if (PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM.equals(serverType) || PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)){
+
+                //团队督导
+                if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)){
+                    PsyConsultantTeamSupervision team = teamSupervisionService.selectPsyConsultantTeamSupervisionById(Long.valueOf(order.getServerId()));
+                    order.setChargeConsultantId(team.getConsultantId());
+                    order.setChargeConsultantName(team.getConsultUserName());
+                    order.setTotalNum(team.getCycleNumber());
+
+                    team.setMemberList(null);
+                    order.setTeamDetail(team);
+                }
+                //个督/体验
+                else if (PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM.equals(serverType) || PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)){
                     //指定服务信息
                     PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(order.getServerId());
                     order.setChargeConsultantId(serverDetail.getConsultantId());
@@ -200,17 +210,10 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     //剩余可用次数
                     order.setSurplusNum(order.getTotalNum() - order.getUsedNum());
 
+                    serverDetail.setTotalNum(order.getTotalNum());
+                    serverDetail.setUsedNum(order.getUsedNum());
+                    serverDetail.setSurplusNum(order.getSurplusNum());
                     order.setServerDetail(serverDetail);
-                }
-                //团队督导
-                else if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)){
-                    PsyConsultantTeamSupervision team = teamSupervisionService.selectPsyConsultantTeamSupervisionById(Long.valueOf(order.getServerId()));
-                    order.setChargeConsultantId(team.getConsultantId());
-                    order.setChargeConsultantName(team.getConsultUserName());
-                    order.setTotalNum(team.getCycleNumber());
-
-                    team.setMemberList(null);
-                    order.setTeamDetail(team);
                 }
                 //课程
                 else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)){

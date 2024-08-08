@@ -101,11 +101,22 @@ public class PsyConsultServeConfig extends BasePlusEntity implements Serializabl
     //咨询师id
     @TableField(exist = false)
     private String consultantId;
-    
-    
     //咨询师name
     @TableField(exist = false)
     private String consultantName;
+    //咨询师头像
+    @TableField(exist = false)
+    private String consultantAvatar;
+    @TableField(exist = false)
+    private String consultantTabs;
+    @TableField(exist = false)
+    private String consultantInfo;
+    @TableField(exist = false)
+    private Integer totalNum;//总服务次数
+    @TableField(exist = false)
+    private Integer usedNum;//已使用服务次数
+    @TableField(exist = false)
+    private Integer surplusNum;//剩余服务次数
 
     //@TableField(exist = false)
     //private List<String> serviceObjectList;

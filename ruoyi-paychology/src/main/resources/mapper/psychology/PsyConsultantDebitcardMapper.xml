@@ -14,10 +14,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="branchName"    column="branch_name"    />
+        <result property="cardUserName"    column="card_user_name"    />
+        <result property="cardUserId"    column="card_user_id"    />
     </resultMap>
 
     <sql id="selectPsyConsultantDebitcardVo">
-        select card_number, consultant_id, card_banck, status, del_flag, create_by, create_time, update_by, update_time from psy_consultant_debitcard
+        select card_number, consultant_id, card_banck, status, del_flag, create_by, create_time, update_by, update_time ,
+               branch_name, card_user_name, card_user_id
+               from psy_consultant_debitcard
     </sql>
 
     <select id="selectPsyConsultantDebitcardList" parameterType="PsyConsultantDebitcard" resultMap="PsyConsultantDebitcardResult">
@@ -46,6 +51,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="branchName != null">branch_name,</if>
+            <if test="cardUserName != null">card_user_name,</if>
+            <if test="cardUserId != null">card_user_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="cardNumber != null">#{cardNumber},</if>
@@ -57,6 +65,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="branchName != null">#{branchName},</if>
+            <if test="cardUserName != null">#{cardUserName},</if>
+            <if test="cardUserId != null">#{cardUserId},</if>
          </trim>
     </insert>
 
@@ -71,6 +82,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="branchName != null">branch_name = #{branchName},</if>
+            <if test="cardUserName != null">card_user_name = #{cardUserName},</if>
+            <if test="cardUserId != null">card_user_id = #{cardUserId},</if>
         </trim>
         where card_number = #{cardNumber}
     </update>

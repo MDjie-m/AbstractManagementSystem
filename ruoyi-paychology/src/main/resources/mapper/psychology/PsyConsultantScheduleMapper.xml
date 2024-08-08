@@ -197,6 +197,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         consult_id = #{consultId}
         and schedule_type = #{scheduleType}
     </select>
+    
+    
+    <select id="getTimeNumForTeam" resultType="java.lang.Integer" parameterType="PsyConsultantSchedule">
+        select 
+            count(id)
+        from
+            psy_consultant_schedule
+        where
+            team_id = #{teamId} 
+            and status = #{status}
+
+    </select>
 
 
 </mapper>

@@ -79,4 +79,7 @@ public interface IPsyConsultantScheduleService
      * 查询咨询师工作时长
      */
     public PsyWorkTimeRes querySumTime(Long consultId);
+    
+    //查询团督已讲完的课程数
+    public int getTimeNumForTeam(Long teamId);
 }

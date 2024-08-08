@@ -42,8 +42,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             cf.num as num,
             cf.level as level,
             cf.service_object as serviceObject,
+            cf.mode,
             con.id as consultantId,
-            con.nick_name as consultantName
+            con.nick_name as consultantName,
+            con.avatar as consultantAvatar,
+            con.tabs as consultantTabs,
+            con.info as consultantInfo
         from
             psy_consult_serve re 
         left join psy_consult_server_config cf on re.serve_id = cf.id 

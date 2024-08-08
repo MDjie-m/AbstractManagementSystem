@@ -1,5 +1,6 @@
 package com.renxin.psychology.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.models.auth.In;
 import lombok.Data;
@@ -125,30 +126,20 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     /** 近期几天内可约*/
     private Integer waitDays;
     /** 剩余名额数*/
-    private Integer surplusNum;
+    private Integer surplusJoinNum;
 
     /** 成员清单*/
     private List<PsyConsultantSupervisionMember> memberList;
     
+    @TableField(exist = false)
+    private Integer totalNum;//总服务次数
+    @TableField(exist = false)
+    private Integer usedNum;//已使用服务次数
+    @TableField(exist = false)
+    private Integer surplusNum;//剩余服务次数
+
     /** 督导师详情*/
     private PsyConsult consultantDetail;
-    
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("title", getTitle())
-            .append("cycle", getCycle())
-            .append("cycleNumber", getCycleNumber())
-            .append("consultantId", getConsultantId())
-            .append("status", getStatus())
-            .append("remark", getRemark())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
+    
 }
