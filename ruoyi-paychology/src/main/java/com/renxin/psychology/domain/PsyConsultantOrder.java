@@ -6,6 +6,7 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.renxin.course.domain.CourCourse;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -96,5 +97,18 @@ public class PsyConsultantOrder extends BaseEntity
     private String couponNo;//优惠券no
     @TableField(exist = false)
     private Boolean isConsultantReq = false;//咨询师端请求
-    
+
+    //团督详情
+    @TableField(exist = false)
+    private PsyConsultantTeamSupervision teamDetail;
+
+    //服务详情 (个督/体验)
+    @TableField(exist = false)
+    private PsyConsultServeConfig serverDetail;
+
+    //课程详情
+    @TableField(exist = false)
+    private CourCourse courseDetail;
+
+
 }

@@ -17,7 +17,9 @@ import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.IDhelper;
 import com.renxin.course.constant.CourConstant;
+import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.CourOrder;
+import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.service.ICourOrderService;
 import com.renxin.course.service.ICourUserCourseSectionService;
 import com.renxin.gauge.constant.GaugeConstant;
@@ -114,6 +116,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     @Resource
     private IPsyConsultServeService consultServeService;
     
+    @Resource
+    private ICourCourseService courCourseService;
+    
     /**
      * 查询团队督导(组织)订单
      * 
@@ -141,6 +146,8 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
 
             //剩余可用次数
             order.setSurplusNum(order.getTotalNum() - order.getUsedNum());
+            
+            order.setServerDetail(serverDetail);
         }
         //团队督导
         else if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)){
@@ -148,6 +155,13 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             order.setChargeConsultantId(team.getConsultantId());
             order.setChargeConsultantName(team.getConsultUserName());
             order.setTotalNum(team.getCycleNumber());
+            
+            order.setTeamDetail(team);
+        }
+        //课程
+        else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)){
+            CourCourse courCourse = courCourseService.selectCourCourseById(Integer.valueOf(order.getServerId()));
+            order.setCourseDetail(courCourse);
         }
         
         return order;
@@ -257,9 +271,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     }
 
     /**
-     * 生成团队督导(组织)订单
+     * 生成咨询师订单
      *
-     * @param psyConsultantOrder 团队督导(组织)订单
+     * @param psyConsultantOrder 
      * @return 结果
      */
     @Override
@@ -454,7 +468,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
                 consultantOrderService.updatePsyConsultantOrder(consultantOrder);
                 
-                // todo 将用户-课程-章节关系初始化
+                // 将用户-课程-章节关系初始化
                 userCourseSectionService.initCourUserCourseSection(Integer.parseInt(consultantOrder.getPayConsultantId()), Integer.parseInt(consultantOrder.getServerId()),PsyConstants.USER_CONSULTANT);
             }
         }else if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_PACKAGE)) {
