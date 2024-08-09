@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询参数列表
+// 查询参数    列表
 export function listConfig(query) {
   return request({
     url: '/system/config/list',
@@ -8,7 +8,13 @@ export function listConfig(query) {
     params: query
   })
 }
-
+export function listConfig22222(query) {
+  return request({
+    url: '/system/config/list',
+    method: 'get',
+    params: query
+  })
+}
 // 查询参数详细
 export function getConfig(configId) {
   return request({
