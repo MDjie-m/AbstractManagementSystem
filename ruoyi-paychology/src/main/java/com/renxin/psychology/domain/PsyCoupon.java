@@ -43,11 +43,7 @@ public class PsyCoupon extends BaseEntity
     /** 到期日期 */
     @Excel(name = "到期日期")
     private String expireDate;
-
-    /** 最大抵扣金额 */
-    @TableField(exist = false)
-    private BigDecimal maxDeductionPrice;
-
+    
     /** 优惠券模版名 */
     @TableField(exist = false)
     private String couponName;
@@ -63,5 +59,26 @@ public class PsyCoupon extends BaseEntity
     /** 是否达标可用 */
     @TableField(exist = false)
     private Boolean isQualify;
-    
+
+    /** 优惠后价格 */
+    @TableField(exist = false)
+    private BigDecimal payAmount;
+
+    /** 最大抵扣金额 */
+    @TableField(exist = false)
+    private BigDecimal maxDeductionPrice;
+
+    /** 折扣比例 */
+    @TableField(exist = false)
+    private BigDecimal discountRate;
+
+    /** 使用门槛金额 */
+    @TableField(exist = false)
+    private BigDecimal useThresholdPrice;
+
+    /** 券类型  1.抵扣券   2.折扣券 */
+    @TableField(exist = false)
+    private Integer couponType;
+
+
 }

@@ -15,6 +15,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="couponName"    column="coupon_name"    />
         <result property="maxDeductionPrice"    column="max_deduction_price"    />
         <result property="orderServerType"    column="server_type"    />
+        <result property="discountRate"    column="discount_rate"    />
+        <result property="useThresholdPrice"    column="use_threshold_price"    />
+        <result property="couponType"    column="coupon_type"    />
     </resultMap>
 
     <sql id="selectPsyCouponVo">
@@ -24,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPsyCouponList" parameterType="PsyCoupon" resultMap="PsyCouponResult">
         select
             cou.coupon_no, cou.template_id, cou.user_id, cou.consultant_id, cou.is_usable, cou.create_time, cou.expire_date ,
-               tem.coupon_name , tem.max_deduction_price , tem.server_type
+               tem.coupon_name , tem.max_deduction_price , tem.server_type, tem.discount_rate, tem.use_threshold_price , tem.coupon_type
         from psy_coupon cou
         left join
             psy_coupon_template tem on cou.template_id = tem.id

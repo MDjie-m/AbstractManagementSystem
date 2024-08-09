@@ -66,7 +66,7 @@ public class PsyCouponTemplate extends BaseEntity
     private String delFlag;
     
     //使用门槛金额
-    private BigDecimal useThreshold;
+    private BigDecimal useThresholdPrice;
     //备注
     private String remark;
     //是否支持免费领取

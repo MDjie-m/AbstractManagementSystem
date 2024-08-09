@@ -137,7 +137,7 @@ public class ConsultantOrderController extends BaseController
 
         //BigDecimal amount = consultantOrder.getPayAmount(); //单位：元
         String serverName = ""; //服务描述
-        BigDecimal payAmount = new BigDecimal(0); //价格
+        BigDecimal originalPrice = new BigDecimal(0); //原价
 
         //根据不同类型生成订单
         switch (consultantOrder.getServerType()) {
@@ -145,7 +145,7 @@ public class ConsultantOrderController extends BaseController
             case PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_TEAM_SUP, null);
                 PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
-                payAmount = team.getPrice();
+                originalPrice = team.getPrice();
                 serverName = team.getTitle() + "-第" + team.getPeriodNo() +"期";
                 //TODO 超卖问题.
                 if (team.getSurplusJoinNum() <= 0){
@@ -157,7 +157,7 @@ public class ConsultantOrderController extends BaseController
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_SUP, null);
                 //PsyConsultantTeamSupervision consultantExp = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
                 PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(consultantOrder.getServerId());
-                payAmount = serverDetail.getPrice();
+                originalPrice = serverDetail.getPrice();
                 serverName = "个人督导服务购买-" + serverDetail.getName() + "-" + serverDetail.getConsultantName();
 
                 // 支付单时需要校验服务库存
@@ -172,7 +172,7 @@ public class ConsultantOrderController extends BaseController
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_EXP, null);
                 //PsyConsultantTeamSupervision consultantExp = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
                 PsyConsultServeConfig serverDetailExp = consultServeService.getServerDetailByRelationId(consultantOrder.getServerId());
-                payAmount = serverDetailExp.getPrice();
+                originalPrice = serverDetailExp.getPrice();
                 serverName = "个人体验服务购买-" + serverDetailExp.getName() + "-" + serverDetailExp.getConsultantName();
 
                 // 支付单时需要校验服务库存
@@ -186,14 +186,14 @@ public class ConsultantOrderController extends BaseController
             case PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_COURSE, null);
                 CourCourse courCourse = courCourseService.selectCourCourseById(Integer.parseInt(consultantOrder.getServerId()));
-                payAmount = courCourse.getPrice();
+                originalPrice = courCourse.getPrice();
                 serverName = "购买课程-"+courCourse.getName();
                 break;
                 
             case PsyConstants.CONSULTANT_ORDER_PACKAGE_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PACKAGE, null);
                 PsyConsultantPackage psyConsultantPackage = consultantPackageService.selectPsyConsultantPackageByPackageId(Long.parseLong(consultantOrder.getServerId()));
-                payAmount = psyConsultantPackage.getPrice();
+                originalPrice = psyConsultantPackage.getPrice();
                 serverName = "购买套餐权益-"+psyConsultantPackage.getProductName();
                 
                 //校验优惠券发行量是否足够
@@ -208,7 +208,7 @@ public class ConsultantOrderController extends BaseController
         String attach = "订单号: " + out_trade_no; //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
             consultantOrder.setOrderNo(out_trade_no);
             consultantOrder.setServerName(serverName);
-            consultantOrder.setPayAmount(payAmount);
+            consultantOrder.setOriginalPrice(originalPrice);
         psyConsultantOrderService.createConsultantOrder(consultantOrder);
         
         return AjaxResult.success();

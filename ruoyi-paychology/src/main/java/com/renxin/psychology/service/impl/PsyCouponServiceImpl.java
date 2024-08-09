@@ -81,7 +81,7 @@ public class PsyCouponServiceImpl implements IPsyCouponService
     }
 
     /**
-     * 查询用户-优惠券发行列表
+     * 查询优惠券发行列表
      * 
      * @param psyCoupon 用户-优惠券发行
      * @return 用户-优惠券发行
@@ -89,46 +89,63 @@ public class PsyCouponServiceImpl implements IPsyCouponService
     @Override
     public List<PsyCoupon> selectPsyCouponList(PsyCoupon psyCoupon)
     {
-        BigDecimal payAmount = new BigDecimal(0); //价格
+        psyCoupon.setOrderServerType(ObjectUtils.isEmpty(psyCoupon.getOrderServerType()) ? null : "2"+psyCoupon.getOrderServerType());
+        //未指定服务id, 直接查询清单返回
+        if (ObjectUtils.isEmpty(psyCoupon.getOrderServerId())){
+            List<PsyCoupon> psyCouponList = psyCouponMapper.selectPsyCouponList(psyCoupon);
+            return psyCouponList;
+        }
+        
+        //指定服务id, 则需校验各个券是否可用, 及使用之后的价格
+        BigDecimal originalPrice = new BigDecimal(0); //价格
         //根据不同[服务类型和id]获取价格
         switch (psyCoupon.getOrderServerType()) {
             //团队督导
-            case PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
+            case "2"+PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
                 PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(psyCoupon.getOrderServerId()));
-                payAmount = team.getPrice();
+                originalPrice = team.getPrice();
                 break;
 
-            case PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM:
+            case "2"+PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM:
                 PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(psyCoupon.getOrderServerId());
-                payAmount = serverDetail.getPrice();
+                originalPrice = serverDetail.getPrice();
                 break;
 
-            case PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM:
+            case "2"+PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM:
                 PsyConsultServeConfig serverDetailExp = consultServeService.getServerDetailByRelationId(psyCoupon.getOrderServerId());
-                payAmount = serverDetailExp.getPrice();
+                originalPrice = serverDetailExp.getPrice();
                 break;
 
-            case PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
+            case "2"+PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
                 CourCourse courCourse = courCourseService.selectCourCourseById(Integer.parseInt(psyCoupon.getOrderServerId()));
-                payAmount = courCourse.getPrice();
+                originalPrice = courCourse.getPrice();
                 break;
 
             default:
                 throw new ServiceException("没有相应的服务类型, 请检查orderServerType为1~4之间的整数");
         }
         
-        //查询本咨询师拥有的  本类型的抵扣券清单
-        psyCoupon.setOrderServerType("2"+psyCoupon.getOrderServerType());
+        //查询本咨询师拥有的  本类型的优惠券清单
         List<PsyCoupon> psyCouponList = psyCouponMapper.selectPsyCouponList(psyCoupon);
 
-        //逐条对比判断 是否可用于本次支付
+        //逐条对比判断 是否可用于本次支付, 并计算优惠后的价格
         for (PsyCoupon coupon : psyCouponList) {
-            if (coupon.getMaxDeductionPrice().compareTo(payAmount)>0){
+            if (originalPrice.compareTo(coupon.getUseThresholdPrice())>0){
                 coupon.setIsQualify(true);
+                if (coupon.getCouponType() == 1){//抵扣券
+                    BigDecimal payAmount = originalPrice.subtract(coupon.getMaxDeductionPrice());
+                    if (payAmount.compareTo(BigDecimal.ZERO) < 0) {
+                        coupon.setPayAmount(BigDecimal.ZERO);
+                    }
+                }
+                else if (coupon.getCouponType() == 2){//折扣券
+                    coupon.setPayAmount(originalPrice.multiply(coupon.getDiscountRate()));
+                }
             }else{
                 coupon.setIsQualify(false);
             }
         }
+        
         return psyCouponList;
     }
 
@@ -261,6 +278,31 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         
     }
 
+
+    //计算券后价格
+    public BigDecimal calcPayAmount(PsyConsultantOrder order){
+        String couponNo = order.getCouponNo();
+        if (ObjectUtils.isEmpty(couponNo)){
+            throw new ServiceException("选择抵扣券支付时, couponNo不能为空");
+        }
+
+        PsyCoupon psyCoupon = new PsyCoupon();
+        psyCoupon.setCouponNo(couponNo);
+        psyCoupon.setConsultantId(Long.valueOf(order.getPayConsultantId()));
+        psyCoupon.setOrderServerType(order.getServerType());
+        psyCoupon.setOrderServerId(order.getServerId());
+        List<PsyCoupon> couponList = selectPsyCouponList(psyCoupon);
+
+        if (ObjectUtils.isEmpty(couponList)){
+            throw new ServiceException("该优惠券不存在或不可用");
+        }
+        if (!couponList.get(0).getIsQualify()){
+            throw new ServiceException("未达到优惠券的使用门槛");
+        }
+        
+        return couponList.get(0).getPayAmount();
+    }
+    
     //处理抵扣订单 (消耗抵扣券-完成支付)
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -278,10 +320,10 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         List<PsyCoupon> couponList = selectPsyCouponList(psyCoupon);
         
         if (ObjectUtils.isEmpty(couponList)){
-            throw new ServiceException("该抵扣券不存在或不可用");
+            throw new ServiceException("该优惠券不存在或不可用");
         }
         if (!couponList.get(0).getIsQualify()){
-            throw new ServiceException("该抵扣券的额度不足");
+            throw new ServiceException("未达到优惠券的使用门槛");
         }
         useCoupon(couponNo);
     }

@@ -214,8 +214,8 @@
           <el-input v-model="form.validityDay" placeholder="请输入有效天数" />
         </el-form-item>
 
-        <el-form-item label="使用门槛金额" prop="useThreshold">
-          <el-input v-model="form.useThreshold" :disabled="isEdit"/>
+        <el-form-item label="使用门槛金额" prop="useThresholdPrice">
+          <el-input v-model="form.useThresholdPrice" :disabled="isEdit"/>
         </el-form-item>
 
         <el-form-item label="是否支持免费领取" prop="isFreeGet" >
@@ -284,7 +284,7 @@ export default {
         validityDay: null,
         templateStatus: null,
         remark: null,
-        useThreshold: null,
+        useThresholdPrice: null,
       },
       // 表单参数
       form: {},
@@ -340,7 +340,7 @@ export default {
         updateBy: null,
         updateTime: null,
         remark: null,
-        useThreshold: null,
+        useThresholdPrice: null,
         isFreeGet: 'N',
       };
       this.resetForm("form");

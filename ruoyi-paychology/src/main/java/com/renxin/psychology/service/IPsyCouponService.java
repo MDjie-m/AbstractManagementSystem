@@ -6,6 +6,7 @@ import com.renxin.psychology.domain.PsyConsultantPackage;
 import com.renxin.psychology.domain.PsyCoupon;
 import com.renxin.psychology.request.ReceiveFreeCouponReq;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -74,7 +75,10 @@ public interface IPsyCouponService
      */
     public void handleConsultantPackageOrder(String orderNo);
     
-    //处理抵扣订单 (消耗抵扣券-完成支付)
+    //计算券后价格
+    public BigDecimal calcPayAmount(PsyConsultantOrder consultantOrder);
+    
+    //处理抵扣订单 (消耗优惠券-完成支付)
     public void handleConsultantCouponOrder(PsyConsultantOrder consultantOrder);
     
     //消耗优惠券

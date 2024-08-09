@@ -38,8 +38,8 @@ public class ConsultantCouponController extends BaseController
      * 查询用户-优惠券发行列表
      */
     //@PreAuthorize("@ss.hasPermi('system:coupon:list')")
-    @GetMapping("/list")
-    public TableDataInfo list(PsyCoupon psyCoupon, HttpServletRequest request) {
+    @PostMapping("/list")
+    public TableDataInfo list(@RequestBody PsyCoupon psyCoupon, HttpServletRequest request) {
         Long consultId = consultantTokenService.getConsultId(request);
         psyCoupon.setConsultantId(consultId);
         startPage();

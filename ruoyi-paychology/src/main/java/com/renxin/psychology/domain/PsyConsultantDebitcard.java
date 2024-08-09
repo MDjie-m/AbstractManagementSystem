@@ -46,7 +46,7 @@ public class PsyConsultantDebitcard extends BaseEntity
     //持卡人姓名
     private String cardUserName;
     //持卡人身份证号
-    private String cardUserId;
+    private String idCard;
 
   
 }
