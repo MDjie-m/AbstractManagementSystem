@@ -54,6 +54,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="templateStatus != null "> and tem.template_status = #{templateStatus}</if>
             <if test="useThresholdPrice != null "> and tem.use_threshold_price = #{useThresholdPrice}</if>
             <if test="isFreeGet != null "> and tem.is_free_get = #{isFreeGet}</if>
+            <if test="idList != null and idList.size > 0">
+                and tem.id in
+                <foreach collection="idList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
         </where>
 
         group by tem.id

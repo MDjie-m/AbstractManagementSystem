@@ -98,7 +98,7 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         
         //指定服务id, 则需校验各个券是否可用, 及使用之后的价格
         BigDecimal originalPrice = new BigDecimal(0); //价格
-        //根据不同[服务类型和id]获取价格
+        //根据不同[服务类型和id]获取服务原价格
         switch (psyCoupon.getOrderServerType()) {
             //团队督导
             case "2"+PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
@@ -125,7 +125,9 @@ public class PsyCouponServiceImpl implements IPsyCouponService
                 throw new ServiceException("没有相应的服务类型, 请检查orderServerType为1~4之间的整数");
         }
         
-        //查询本咨询师拥有的  本类型的优惠券清单
+        //查询本咨询师拥有的  本类型的可用优惠券清单
+        psyCoupon.setIsUsable(0);
+        psyCoupon.setIsExpire(0);
         List<PsyCoupon> psyCouponList = psyCouponMapper.selectPsyCouponList(psyCoupon);
 
         //逐条对比判断 是否可用于本次支付, 并计算优惠后的价格

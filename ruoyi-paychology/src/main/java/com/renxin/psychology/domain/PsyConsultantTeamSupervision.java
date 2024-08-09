@@ -137,6 +137,8 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     private Integer usedNum;//已使用服务次数
     @TableField(exist = false)
     private Integer surplusNum;//剩余服务次数
+    @TableField(exist = false)
+    private String nextBeginTime;//下次服务开始时间
 
     /** 督导师详情*/
     private PsyConsult consultantDetail;

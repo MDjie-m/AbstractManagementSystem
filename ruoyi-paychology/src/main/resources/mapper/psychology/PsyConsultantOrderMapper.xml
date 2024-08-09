@@ -30,8 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <sql id="selectPsyConsultantOrderVo">
         select id, order_no, server_id, server_type, server_name, status, pay_consultant_id, pay_consultant_name, pay_amount, pay_datetime, pay_status, 
-               remark, del_flag, create_by, create_time, update_by, update_time,original_price,coupon_no
-               pay_id, pay_type
+               remark, del_flag, create_by, create_time, update_by, update_time,pay_id, pay_type,original_price,coupon_no
         from psy_consultant_order
     </sql>
 

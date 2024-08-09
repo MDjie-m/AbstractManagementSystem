@@ -31,8 +31,8 @@ public class ConsultantCouponTemplateController extends BaseController
      * 查询优惠券模版列表
      */
     //@PreAuthorize("@ss.hasPermi('marketing:couponTemplate:list')")
-    @GetMapping("/list")
-    public TableDataInfo list(PsyCouponTemplate psyCouponTemplate)
+    @PostMapping("/list")
+    public TableDataInfo list(@RequestBody PsyCouponTemplate psyCouponTemplate)
     {
         startPage();
         List<PsyCouponTemplate> list = psyCouponTemplateService.selectPsyCouponTemplateList(psyCouponTemplate);

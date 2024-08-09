@@ -1,9 +1,6 @@
 package com.renxin.psychology.service.impl;
 
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -62,43 +59,55 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     public PsyConsultantTeamSupervision selectPsyConsultantTeamSupervisionById(Long id)
     {
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(id);
+
+        //查询成员信息
+        PsyConsultantSupervisionMember memberReq = new PsyConsultantSupervisionMember();
+        memberReq.setTeamSupervisionId(team.getId());
+        List<PsyConsultantSupervisionMember> memberList = memberMapper.selectPsyConsultantSupervisionMemberList(memberReq);
+        team.setMemberList(memberList);
+
+        //最大团队人数
+        Integer maxNumPeople = team.getMaxNumPeople();
+        if (ObjectUtils.isNotEmpty(maxNumPeople)){
+            //当前登记人数
+            int memberNum = memberList.size();
+            //剩余名额数
+            team.setSurplusJoinNum(maxNumPeople - memberNum);
+        }
         
-        //若为[团队督导]
-        if (team.getTeamType() == 1){
-            //查询成员信息
-            PsyConsultantSupervisionMember memberReq = new PsyConsultantSupervisionMember();
-            memberReq.setTeamSupervisionId(team.getId());
-            List<PsyConsultantSupervisionMember> memberList = memberMapper.selectPsyConsultantSupervisionMemberList(memberReq);
-            team.setMemberList(memberList);
+        //计算课程时长
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime startTime = LocalTime.parse(team.getLectureStartTime(), formatter);
+        LocalTime endTime = LocalTime.parse(team.getLectureEndTime(), formatter);
+        Duration duration = Duration.between(startTime, endTime);
+        double hours = duration.get(ChronoUnit.SECONDS) / 3600.0;
+        team.setLectureHour(hours);
 
-            //最大团队人数
-            Integer maxNumPeople = team.getMaxNumPeople();
-            if (ObjectUtils.isNotEmpty(maxNumPeople)){
-                //当前登记人数
-                int memberNum = memberList.size();
-                //剩余名额数
-                team.setSurplusJoinNum(maxNumPeople - memberNum);
+        //督导师详情
+        PsyConsult psyConsult = psyConsultMapper.selectById(team.getConsultantId());
+        team.setConsultantDetail(psyConsult);
+        
+        //总讲课次数
+        team.setTotalNum(team.getCycleNumber());
+        //已完成讲课数
+        int usedNum = 0;
+        //招募已完成
+        if (team.getStatus() != 0){
+            usedNum = consultantScheduleService.getTimeNumForTeam(id);
+        }
+        team.setUsedNum(usedNum);
+        //剩余讲课次数
+        team.setSurplusNum(team.getCycleNumber() - usedNum);
+        
+        //团督仍在开课中
+        if (team.getStatus() == 1){
+            PsyConsultantSchedule querySche = new PsyConsultantSchedule();
+            querySche.setTeamId(id);
+            querySche.setRealTimeStart(LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(querySche);
+            if (ObjectUtils.isNotEmpty(scheduleList)){
+                team.setNextBeginTime(scheduleList.get(0).getRealTime());
             }
-            
-            //计算课程时长
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            LocalTime startTime = LocalTime.parse(team.getLectureStartTime(), formatter);
-            LocalTime endTime = LocalTime.parse(team.getLectureEndTime(), formatter);
-            Duration duration = Duration.between(startTime, endTime);
-            double hours = duration.get(ChronoUnit.SECONDS) / 3600.0;
-            team.setLectureHour(hours);
-
-            //督导师详情
-            PsyConsult psyConsult = psyConsultMapper.selectById(team.getConsultantId());
-            team.setConsultantDetail(psyConsult);
-            
-            //总讲课次数
-            team.setTotalNum(team.getCycleNumber());
-            //已完成讲课数
-            int usedNum = consultantScheduleService.getTimeNumForTeam(id);
-            team.setUsedNum(usedNum);
-            //剩余讲课次数
-            team.setSurplusNum(team.getCycleNumber() - usedNum);
         }
         
         

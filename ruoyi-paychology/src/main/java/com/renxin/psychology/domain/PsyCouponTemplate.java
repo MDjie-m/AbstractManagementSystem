@@ -1,7 +1,9 @@
 package com.renxin.psychology.domain;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -71,5 +73,8 @@ public class PsyCouponTemplate extends BaseEntity
     private String remark;
     //是否支持免费领取
     private String isFreeGet;
+    
+    @TableField(exist = false)
+    private List<String> idList;
 
 }

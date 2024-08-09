@@ -27,12 +27,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPsyCouponList" parameterType="PsyCoupon" resultMap="PsyCouponResult">
         select
             cou.coupon_no, cou.template_id, cou.user_id, cou.consultant_id, cou.is_usable, cou.create_time, cou.expire_date ,
-               tem.coupon_name , tem.max_deduction_price , tem.server_type, tem.discount_rate, tem.use_threshold_price , tem.coupon_type
+               tem.coupon_name , tem.max_deduction_price , tem.server_type, tem.discount_rate, tem.use_threshold_price , tem.coupon_type,
+            CASE
+                WHEN cou.expire_date &lt; CURDATE() THEN 1
+                ELSE 0
+            END AS isExpire
         from psy_coupon cou
         left join
             psy_coupon_template tem on cou.template_id = tem.id
         <where>
-            cou.is_usable = 0                               
+                      
             <if test="couponNo != null "> and cou.coupon_no = #{couponNo}</if>
             <if test="templateId != null "> and cou.template_id = #{templateId}</if>
             <if test="userId != null "> and cou.user_id = #{userId}</if>
@@ -40,6 +44,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isUsable != null "> and cou.is_usable = #{isUsable}</if>
             <if test="expireDate != null  and expireDate != ''"> and cou.expire_date = #{expireDate}</if>
             <if test="orderServerType != null  and orderServerType != ''"> and tem.server_type = #{orderServerType}</if>
+            <if test="isUsable != null "> and cou.is_usable = #{isUsable}</if>
+            <if test="isExpire == 0 ">
+                and cou.expire_date >= CURDATE()
+            </if>
+            <if test="isExpire == 1 ">
+                and cou.expire_date &lt; CURDATE()
+            </if>
         </where>
     </select>
     

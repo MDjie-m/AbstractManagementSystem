@@ -2,6 +2,7 @@ package com.renxin.psychology.service.impl;
 
 import java.math.BigDecimal;
 import java.rmi.ServerException;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -189,6 +190,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     order.setChargeConsultantId(team.getConsultantId());
                     order.setChargeConsultantName(team.getConsultUserName());
                     order.setTotalNum(team.getCycleNumber());
+                    order.setNextBeginTime(team.getNextBeginTime());
 
                     team.setMemberList(null);
                     order.setTeamDetail(team);
@@ -200,19 +202,27 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     order.setChargeConsultantId(serverDetail.getConsultantId());
                     //总服务次数
                     order.setTotalNum(serverDetail.getNum());
-
                     //已使用的次数(排班信息)
                     PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
                     scheduleReq.setOrderId(order.getOrderNo());
                     List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(scheduleReq);
                     order.setUsedNum(ObjectUtils.isNotEmpty(scheduleList) ? scheduleList.size() : 0);
-
                     //剩余可用次数
                     order.setSurplusNum(order.getTotalNum() - order.getUsedNum());
 
                     serverDetail.setTotalNum(order.getTotalNum());
                     serverDetail.setUsedNum(order.getUsedNum());
                     serverDetail.setSurplusNum(order.getSurplusNum());
+
+                    //下次个督时间
+                    PsyConsultantSchedule querySche = new PsyConsultantSchedule();
+                        querySche.setOrderId(order.getOrderNo());
+                        querySche.setRealTimeStart(LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                    List<PsyConsultantSchedule> scList = consultantScheduleService.selectPsyConsultantScheduleList(querySche);
+                    if (ObjectUtils.isNotEmpty(scList)){
+                        order.setNextBeginTime(scList.get(0).getRealTime());
+                    }
+                    
                     order.setServerDetail(serverDetail);
                 }
                 //课程
@@ -409,6 +419,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
         //若应付金额为0, 则直接回调处理订单
         if (consultantOrder.getPayAmount().compareTo(BigDecimal.ZERO) >= 0){
             paySuccessCallback(consultantOrder.getOrderNo(),consultantOrder.getPayId());
+            couponService.useCoupon(couponNo);
         }
         
     }

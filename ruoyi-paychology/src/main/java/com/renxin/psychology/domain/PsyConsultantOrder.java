@@ -97,7 +97,8 @@ public class PsyConsultantOrder extends BaseEntity
     private String chargeConsultantId;//收费咨询师id
     @TableField(exist = false)
     private String chargeConsultantName;//收费咨询师name
-    
+    @TableField(exist = false)
+    private String nextBeginTime;//下次服务开始时间
 
     @TableField(exist = false)
     private Boolean isConsultantReq = false;//咨询师端请求

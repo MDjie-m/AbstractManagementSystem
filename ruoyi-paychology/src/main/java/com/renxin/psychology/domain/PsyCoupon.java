@@ -36,9 +36,12 @@ public class PsyCoupon extends BaseEntity
     @Excel(name = "咨询师id")
     private Long consultantId;
 
-    /** 是否可用  0可用   1已消耗 */
-    @Excel(name = "是否可用  0可用   1已消耗")
+    /** 是否已用  0未使用   1已消耗 */
+    @Excel(name = "是否已用  0未使用   1已消耗")
     private Integer isUsable;
+
+    /** 是否过期  0未过期   1已过期 */
+    private Integer isExpire;
 
     /** 到期日期 */
     @Excel(name = "到期日期")

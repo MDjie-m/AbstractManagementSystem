@@ -53,7 +53,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="time != null "> and sc.time = #{time}</if>
             <if test="realTime != null  and realTime != ''"> and sc.real_time = #{realTime}</if>
             <if test="consultId != null "> and sc.consult_id = #{consultId}</if>
+            <if test="realTimeStart != null "> and sc.real_time >= #{realTimeStart}</if>
         </where>
+        order by sc.real_time 
     </select>
     
     <select id="selectPsyConsultantScheduleById" parameterType="Long" resultMap="PsyConsultantScheduleResult">

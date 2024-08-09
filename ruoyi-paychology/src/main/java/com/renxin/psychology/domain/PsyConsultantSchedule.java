@@ -1,5 +1,6 @@
 package com.renxin.psychology.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -75,5 +76,9 @@ public class PsyConsultantSchedule extends BaseEntity
     //付款方用户名
     private String userNickName;
     private String userId;
+    
+    //服务时间起
+    @TableField(exist = false)
+    private String realTimeStart;
     
 }
