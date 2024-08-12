@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.caseinfo.mapper.CaseInfoMapper">
+    
+    <resultMap type="CaseInfo" id="CaseInfoResult">
+        <result property="caseId"    column="case_id"    />
+        <result property="plaintiff"    column="plaintiff"    />
+        <result property="defendant"    column="defendant"    />
+        <result property="defendantPhone"    column="defendant_phone"    />
+        <result property="court"    column="court"    />
+        <result property="caseNo"    column="case_no"    />
+        <result property="cooperativeCompany"    column="cooperative_company"    />
+        <result property="undertakeLawyerA"    column="undertake_lawyer_a"    />
+        <result property="undertakeLawyerB"    column="undertake_lawyer_b"    />
+        <result property="paralegalA"    column="paralegal_a"    />
+        <result property="paralegalB"    column="paralegal_b"    />
+        <result property="mediator"    column="mediator"    />
+        <result property="firstInstanceFileids"    column="first_instance_fileids"    />
+        <result property="secondInstanceFileids"    column="second_instance_fileids"    />
+        <result property="firstExecutionFileids"    column="first_execution_fileids"    />
+        <result property="secondExecutionFileids"    column="second_execution_fileids"    />
+        <result property="claimStatus"    column="claim_status"    />
+        <result property="isReturn"    column="is_return"    />
+        <result property="arrears"    column="arrears"    />
+        <result property="arrearsYes"    column="arrears_yes"    />
+        <result property="arrearsNo"    column="arrears_no"    />
+        <result property="caseStatus"    column="case_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="dataRoleUserids"    column="data_role_userids"    />
+    </resultMap>
+
+    <sql id="selectCaseInfoVo">
+        select case_id, plaintiff, defendant, defendant_phone, court, case_no, cooperative_company, undertake_lawyer_a, undertake_lawyer_b, paralegal_a, paralegal_b, mediator, first_instance_fileids, second_instance_fileids, first_execution_fileids, second_execution_fileids, claim_status, is_return, arrears, arrears_yes, arrears_no, case_status, create_by, create_time, update_by, update_time, remark, data_role_userids from rxh_case_info
+    </sql>
+
+    <select id="selectCaseInfoList" parameterType="CaseInfo" resultMap="CaseInfoResult">
+        <include refid="selectCaseInfoVo"/>
+        <where>  
+            <if test="plaintiff != null  and plaintiff != ''"> and plaintiff = #{plaintiff}</if>
+            <if test="defendant != null  and defendant != ''"> and defendant = #{defendant}</if>
+            <if test="defendantPhone != null  and defendantPhone != ''"> and defendant_phone = #{defendantPhone}</if>
+            <if test="court != null  and court != ''"> and court = #{court}</if>
+            <if test="caseNo != null  and caseNo != ''"> and case_no = #{caseNo}</if>
+            <if test="cooperativeCompany != null  and cooperativeCompany != ''"> and cooperative_company = #{cooperativeCompany}</if>
+            <if test="undertakeLawyerA != null  and undertakeLawyerA != ''"> and undertake_lawyer_a = #{undertakeLawyerA}</if>
+            <if test="undertakeLawyerB != null  and undertakeLawyerB != ''"> and undertake_lawyer_b = #{undertakeLawyerB}</if>
+            <if test="paralegalA != null  and paralegalA != ''"> and paralegal_a = #{paralegalA}</if>
+            <if test="paralegalB != null  and paralegalB != ''"> and paralegal_b = #{paralegalB}</if>
+            <if test="mediator != null  and mediator != ''"> and mediator = #{mediator}</if>
+            <if test="firstInstanceFileids != null  and firstInstanceFileids != ''"> and first_instance_fileids = #{firstInstanceFileids}</if>
+            <if test="secondInstanceFileids != null  and secondInstanceFileids != ''"> and second_instance_fileids = #{secondInstanceFileids}</if>
+            <if test="firstExecutionFileids != null  and firstExecutionFileids != ''"> and first_execution_fileids = #{firstExecutionFileids}</if>
+            <if test="secondExecutionFileids != null  and secondExecutionFileids != ''"> and second_execution_fileids = #{secondExecutionFileids}</if>
+            <if test="claimStatus != null  and claimStatus != ''"> and claim_status = #{claimStatus}</if>
+            <if test="isReturn != null  and isReturn != ''"> and is_return = #{isReturn}</if>
+            <if test="arrears != null "> and arrears = #{arrears}</if>
+            <if test="arrearsYes != null "> and arrears_yes = #{arrearsYes}</if>
+            <if test="arrearsNo != null "> and arrears_no = #{arrearsNo}</if>
+            <if test="caseStatus != null  and caseStatus != ''"> and case_status = #{caseStatus}</if>
+            <if test="dataRoleUserids != null  and dataRoleUserids != ''"> and data_role_userids = #{dataRoleUserids}</if>
+        </where>
+    </select>
+    
+    <select id="selectCaseInfoByCaseId" parameterType="Long" resultMap="CaseInfoResult">
+        <include refid="selectCaseInfoVo"/>
+        where case_id = #{caseId}
+    </select>
+
+    <insert id="insertCaseInfo" parameterType="CaseInfo" useGeneratedKeys="true" keyProperty="caseId">
+        insert into rxh_case_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="plaintiff != null">plaintiff,</if>
+            <if test="defendant != null">defendant,</if>
+            <if test="defendantPhone != null">defendant_phone,</if>
+            <if test="court != null">court,</if>
+            <if test="caseNo != null">case_no,</if>
+            <if test="cooperativeCompany != null">cooperative_company,</if>
+            <if test="undertakeLawyerA != null">undertake_lawyer_a,</if>
+            <if test="undertakeLawyerB != null">undertake_lawyer_b,</if>
+            <if test="paralegalA != null">paralegal_a,</if>
+            <if test="paralegalB != null">paralegal_b,</if>
+            <if test="mediator != null">mediator,</if>
+            <if test="firstInstanceFileids != null">first_instance_fileids,</if>
+            <if test="secondInstanceFileids != null">second_instance_fileids,</if>
+            <if test="firstExecutionFileids != null">first_execution_fileids,</if>
+            <if test="secondExecutionFileids != null">second_execution_fileids,</if>
+            <if test="claimStatus != null">claim_status,</if>
+            <if test="isReturn != null">is_return,</if>
+            <if test="arrears != null">arrears,</if>
+            <if test="arrearsYes != null">arrears_yes,</if>
+            <if test="arrearsNo != null">arrears_no,</if>
+            <if test="caseStatus != null">case_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="dataRoleUserids != null">data_role_userids,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="plaintiff != null">#{plaintiff},</if>
+            <if test="defendant != null">#{defendant},</if>
+            <if test="defendantPhone != null">#{defendantPhone},</if>
+            <if test="court != null">#{court},</if>
+            <if test="caseNo != null">#{caseNo},</if>
+            <if test="cooperativeCompany != null">#{cooperativeCompany},</if>
+            <if test="undertakeLawyerA != null">#{undertakeLawyerA},</if>
+            <if test="undertakeLawyerB != null">#{undertakeLawyerB},</if>
+            <if test="paralegalA != null">#{paralegalA},</if>
+            <if test="paralegalB != null">#{paralegalB},</if>
+            <if test="mediator != null">#{mediator},</if>
+            <if test="firstInstanceFileids != null">#{firstInstanceFileids},</if>
+            <if test="secondInstanceFileids != null">#{secondInstanceFileids},</if>
+            <if test="firstExecutionFileids != null">#{firstExecutionFileids},</if>
+            <if test="secondExecutionFileids != null">#{secondExecutionFileids},</if>
+            <if test="claimStatus != null">#{claimStatus},</if>
+            <if test="isReturn != null">#{isReturn},</if>
+            <if test="arrears != null">#{arrears},</if>
+            <if test="arrearsYes != null">#{arrearsYes},</if>
+            <if test="arrearsNo != null">#{arrearsNo},</if>
+            <if test="caseStatus != null">#{caseStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="dataRoleUserids != null">#{dataRoleUserids},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCaseInfo" parameterType="CaseInfo">
+        update rxh_case_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="plaintiff != null">plaintiff = #{plaintiff},</if>
+            <if test="defendant != null">defendant = #{defendant},</if>
+            <if test="defendantPhone != null">defendant_phone = #{defendantPhone},</if>
+            <if test="court != null">court = #{court},</if>
+            <if test="caseNo != null">case_no = #{caseNo},</if>
+            <if test="cooperativeCompany != null">cooperative_company = #{cooperativeCompany},</if>
+            <if test="undertakeLawyerA != null">undertake_lawyer_a = #{undertakeLawyerA},</if>
+            <if test="undertakeLawyerB != null">undertake_lawyer_b = #{undertakeLawyerB},</if>
+            <if test="paralegalA != null">paralegal_a = #{paralegalA},</if>
+            <if test="paralegalB != null">paralegal_b = #{paralegalB},</if>
+            <if test="mediator != null">mediator = #{mediator},</if>
+            <if test="firstInstanceFileids != null">first_instance_fileids = #{firstInstanceFileids},</if>
+            <if test="secondInstanceFileids != null">second_instance_fileids = #{secondInstanceFileids},</if>
+            <if test="firstExecutionFileids != null">first_execution_fileids = #{firstExecutionFileids},</if>
+            <if test="secondExecutionFileids != null">second_execution_fileids = #{secondExecutionFileids},</if>
+            <if test="claimStatus != null">claim_status = #{claimStatus},</if>
+            <if test="isReturn != null">is_return = #{isReturn},</if>
+            <if test="arrears != null">arrears = #{arrears},</if>
+            <if test="arrearsYes != null">arrears_yes = #{arrearsYes},</if>
+            <if test="arrearsNo != null">arrears_no = #{arrearsNo},</if>
+            <if test="caseStatus != null">case_status = #{caseStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="dataRoleUserids != null">data_role_userids = #{dataRoleUserids},</if>
+        </trim>
+        where case_id = #{caseId}
+    </update>
+
+    <delete id="deleteCaseInfoByCaseId" parameterType="Long">
+        delete from rxh_case_info where case_id = #{caseId}
+    </delete>
+
+    <delete id="deleteCaseInfoByCaseIds" parameterType="String">
+        delete from rxh_case_info where case_id in 
+        <foreach item="caseId" collection="array" open="(" separator="," close=")">
+            #{caseId}
+        </foreach>
+    </delete>
+</mapper>
