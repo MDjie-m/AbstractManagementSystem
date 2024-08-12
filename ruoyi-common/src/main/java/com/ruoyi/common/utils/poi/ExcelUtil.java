@@ -724,6 +724,7 @@ public class ExcelUtil<T>
             Collection<?> subList = null;
             if (isSubList())
             {
+                // 为纵向合并单元格做预处理
                 if (isSubListValue(vo))
                 {
                     subList = getListCellValue(vo);
@@ -736,6 +737,7 @@ public class ExcelUtil<T>
                 }
             }
             int column = 0;
+            // 填充当前遍历出来的一条数据
             for (Object[] os : fields)
             {
                 Field field = (Field) os[0];
@@ -743,6 +745,7 @@ public class ExcelUtil<T>
                 if (Collection.class.isAssignableFrom(field.getType()) && StringUtils.isNotNull(subList))
                 {
                     boolean subFirst = false;
+                    // 遍历子列表数据
                     for (Object obj : subList)
                     {
                         if (subFirst)
@@ -1109,6 +1112,7 @@ public class ExcelUtil<T>
                 }
                 else if (StringUtils.isNotEmpty(dictType) && StringUtils.isNotNull(value))
                 {
+                    // 通过字典类型，将数据中的值转为标签
                     if (!sysDictMap.containsKey(dictType + value))
                     {
                         String lable = convertDictByExp(Convert.toStr(value), dictType, separator);

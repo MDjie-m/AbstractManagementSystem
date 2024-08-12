@@ -90,6 +90,7 @@ public class DictUtils
     public static String getDictLabel(String dictType, String dictValue, String separator)
     {
         StringBuilder propertyString = new StringBuilder();
+        // 从redis缓存中获取字典数据
         List<SysDictData> datas = getDictCache(dictType);
         if (StringUtils.isNull(datas))
         {
