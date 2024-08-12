@@ -67,7 +67,7 @@ DROP TABLE IF EXISTS `psy_consultant_debitcard`;
 CREATE TABLE `psy_consultant_debitcard`  (
   `card_number` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NOT NULL COMMENT '借记卡ID',
   `consultant_id` bigint NOT NULL COMMENT '咨询师ID',
-  `card_banck` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '借记卡所属银行',
+  `bank_name` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '借记卡所属银行',
   `status` char(1) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT '1' COMMENT '1 正常 0 未激活',
   `del_flag` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT '0' COMMENT '0 未删除 1 删除',
   `create_by` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_bin NULL DEFAULT NULL COMMENT '创建人',

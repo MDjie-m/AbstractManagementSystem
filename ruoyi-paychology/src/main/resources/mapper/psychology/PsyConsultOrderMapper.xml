@@ -58,6 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serveName != null  and serveName != ''"> and a.serve_name like concat('%', #{serveName}, '%')</if>
             <if test="nickName != null "> and a.nick_name like concat('%', #{nickName}, '%')</if>
             <if test="pay != null  and pay != ''"> and a.pay_status = #{pay}</if>
+            <if test="userId != null  and userId != ''"> and a.user_id = #{userId}</if>
             <if test="source != null and source != ''"> and a.source = #{source}</if>
             <if test="status != null  and status != ''"> and a.status = #{status}</if>
             <if test="delFlag != null  and delFlag != ''"> and a.del_flag = #{delFlag}</if>
@@ -107,5 +108,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                  LEFT JOIN psy_user c on a.user_id = c.id
         where a.id = #{id}
     </select>
+    
+    
+    <select id="queryUserList" parameterType="PsyConsultOrder" resultType="com.renxin.psychology.vo.PsyConsultOrderVO">
+        SELECT
+            COALESCE(a.order_no, '') AS order_no,
+            COALESCE(a.serve_id, '') AS serve_id,
+            COALESCE(a.serve_name, '') AS serve_name,
+            COALESCE(a.user_id, '') AS user_id,
+            COALESCE(a.nick_name, '') AS nick_name,
+            COALESCE(b.phone, '') AS phone,
+            COALESCE(b.sex, '') AS userSex,
+            COALESCE(cf.mode, '') AS mode,
+            COALESCE(label.user_fill_label, '') AS userFillLabel,
+            COALESCE(label.consultant_fill_label, '') AS consultantFillLabel,
+            COALESCE(label.admin_fill_label, '') AS adminFillLabel
+        FROM
+            (SELECT *
+             FROM psy_consult_order a
+             WHERE a.del_flag = 0
+               AND a.create_time = (
+                 SELECT MAX(a1.create_time)
+                 FROM psy_consult_order a1
+                 WHERE a1.user_id = a.user_id
+                   AND a1.del_flag = 0
+                   and a1.consult_type = 1 
+                   AND (a1.consult_id = #{consultId} OR a1.ref_consult_id = #{consultId})
+             )
+               AND (a.consult_id = #{consultId} OR a.ref_consult_id = #{consultId}) and a.consult_type = 1
+            ) a
+                LEFT JOIN psy_user b ON a.user_id = b.id
+                LEFT JOIN psy_user_label label ON a.user_id = label.user_id
+                LEFT JOIN psy_consult_server_config cf ON a.serve_id = cf.id
+        WHERE 1 = 1
+          AND (a.consult_id = #{consultId} OR a.ref_consult_id = #{consultId}) and a.consult_type = 1
+        GROUP BY a.order_no, a.serve_id, a.serve_name, a.user_id, a.nick_name, b.phone, cf.mode,
+                 label.user_fill_label, label.consultant_fill_label, label.admin_fill_label
+    </select>
+
 
 </mapper>

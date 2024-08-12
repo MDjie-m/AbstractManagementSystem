@@ -9,9 +9,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="借记卡所属银行" prop="cardBanck">
+      <el-form-item label="借记卡所属银行" prop="bankName">
         <el-input
-          v-model="queryParams.cardBanck"
+          v-model="queryParams.bankName"
           placeholder="请输入借记卡所属银行"
           clearable
           @keyup.enter.native="handleQuery"
@@ -73,7 +73,7 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="借记卡ID" align="center" prop="cardNumber" />
       <el-table-column label="咨询师ID" align="center" prop="consultantId" />
-      <el-table-column label="借记卡所属银行" align="center" prop="cardBanck" />
+      <el-table-column label="借记卡所属银行" align="center" prop="bankName" />
       <el-table-column label="1 正常 0 未激活" align="center" prop="status" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -109,8 +109,8 @@
         <el-form-item label="咨询师ID" prop="consultantId">
           <el-input v-model="form.consultantId" placeholder="请输入咨询师ID" />
         </el-form-item>
-        <el-form-item label="借记卡所属银行" prop="cardBanck">
-          <el-input v-model="form.cardBanck" placeholder="请输入借记卡所属银行" />
+        <el-form-item label="借记卡所属银行" prop="bankName">
+          <el-input v-model="form.bankName" placeholder="请输入借记卡所属银行" />
         </el-form-item>
         <el-form-item label="0 未删除 1 删除" prop="delFlag">
           <el-input v-model="form.delFlag" placeholder="请输入0 未删除 1 删除" />
@@ -154,7 +154,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         consultantId: null,
-        cardBanck: null,
+        bankName: null,
         status: null,
       },
       // 表单参数
@@ -190,7 +190,7 @@ export default {
       this.form = {
         cardNumber: null,
         consultantId: null,
-        cardBanck: null,
+        bankName: null,
         status: "0",
         delFlag: null,
         createBy: null,

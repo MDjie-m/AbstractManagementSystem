@@ -7,7 +7,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="PsyConsultantDebitcard" id="PsyConsultantDebitcardResult">
         <result property="cardNumber"    column="card_number"    />
         <result property="consultantId"    column="consultant_id"    />
-        <result property="cardBanck"    column="card_banck"    />
+        <result property="bankName"    column="bank_name"    />
+        <result property="bankCode"    column="bank_code"    />
         <result property="status"    column="status"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createBy"    column="create_by"    />
@@ -20,8 +21,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPsyConsultantDebitcardVo">
-        select card_number, consultant_id, card_banck, status, del_flag, create_by, create_time, update_by, update_time ,
-               branch_name, card_user_name, id_card
+        select card_number, consultant_id, bank_name, status, del_flag, create_by, create_time, update_by, update_time ,
+               branch_name, card_user_name, id_card, bank_code
                from psy_consultant_debitcard
     </sql>
 
@@ -29,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPsyConsultantDebitcardVo"/>
         <where>  
             <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
-            <if test="cardBanck != null  and cardBanck != ''"> and card_banck = #{cardBanck}</if>
+            <if test="bankName != null  and bankName != ''"> and bank_name = #{bankName}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
     </select>
@@ -44,7 +45,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="cardNumber != null">card_number,</if>
             <if test="consultantId != null">consultant_id,</if>
-            <if test="cardBanck != null">card_banck,</if>
+            <if test="bankName != null">bank_name,</if>
+            <if test="bankCode != null">bank_code,</if>
             <if test="status != null">status,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
@@ -58,7 +60,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="cardNumber != null">#{cardNumber},</if>
             <if test="consultantId != null">#{consultantId},</if>
-            <if test="cardBanck != null">#{cardBanck},</if>
+            <if test="bankName != null">#{bankName},</if>
+            <if test="bankCode != null">#{bankCode},</if>
             <if test="status != null">#{status},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -75,7 +78,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update psy_consultant_debitcard
         <trim prefix="SET" suffixOverrides=",">
             <if test="consultantId != null">consultant_id = #{consultantId},</if>
-            <if test="cardBanck != null">card_banck = #{cardBanck},</if>
+            <if test="bankName != null">bank_name = #{bankName},</if>
+            <if test="bankCode != null">bank_code = #{bankCode},</if>
             <if test="status != null">status = #{status},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createBy != null">create_by = #{createBy},</if>

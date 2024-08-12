@@ -80,5 +80,17 @@ public class PsyConsultOrderVO extends BaseValObj implements Serializable
     private String source;
 
     private String channel;
+    
+    //用户自己填写的标签
+    private String userFillLabel;
+    //咨询师为用户填写的标签
+    private String consultantFillLabel;
+    //客服为用户填写的标签
+    private String adminFillLabel;
+    //用户订单次数
+    private Integer userOrderCount;
+    //咨询形式   1语音咨询    2视频咨询   3面对面咨询
+    private String mode;
+    private String userSex;
 
 }

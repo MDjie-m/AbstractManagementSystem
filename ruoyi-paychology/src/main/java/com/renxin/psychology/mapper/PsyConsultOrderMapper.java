@@ -24,4 +24,7 @@ public interface PsyConsultOrderMapper extends BaseMapper<PsyConsultOrder>
     OrderDTO getOrderDetail(Long id);
 
     int tombstonedByIds(Long[] ids);
+
+    //我的顾客清单
+    public List<PsyConsultOrderVO> queryUserList(PsyConsultOrderVO req);
 }

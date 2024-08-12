@@ -69,4 +69,7 @@ public interface IPsyConsultOrderService
     int deleteAll(Long[] ids);
 
     int delete(Long id);
+
+    //我的顾客清单
+    List<PsyConsultOrderVO> queryUserList(PsyConsultOrderVO req);
 }

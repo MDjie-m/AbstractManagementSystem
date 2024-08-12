@@ -19,6 +19,7 @@ import com.renxin.psychology.dto.PsyConsultInfoDTO;
 import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.request.*;
 import com.renxin.psychology.service.*;
+import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultServeConfigVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
@@ -454,5 +455,12 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
         }
         //更新[咨询师表]中, 各咨询师的"关联服务数量"
         psyConsultMapper.refreshServerNum();
+    }
+    
+    //查询指定咨询师的顾客清单
+    @Override
+    public List<PsyConsult> queryConsultantList(PsyConsultOrderVO req){
+        List<PsyConsult> psyConsultList = psyConsultMapper.queryConsultantList(req);
+        return psyConsultList;
     }
 }

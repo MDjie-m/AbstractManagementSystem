@@ -32,7 +32,9 @@ public class PsyConsultantDebitcard extends BaseEntity
 
     /** 借记卡所属银行 */
     @Excel(name = "借记卡所属银行")
-    private String cardBanck;
+    private String bankName;
+    
+    private String bankCode;
 
     /** 1 正常 0 未激活 */
     @Excel(name = "1 正常 0 未激活")

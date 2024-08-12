@@ -32,6 +32,7 @@ import com.renxin.wechat.vo.TemplateMessageItemVo;
 import com.renxin.wechat.vo.TemplateMessageVo;
 import com.renxin.wechat.vo.WechatPayVO;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -617,5 +618,22 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
     @Transactional(rollbackFor = Exception.class)
     public int delete(Long id) {
         return psyConsultOrderMapper.deleteById(id);
+    }
+
+    //我的顾客清单
+    @Override
+    public List<PsyConsultOrderVO> queryUserList(PsyConsultOrderVO req){
+        //有订单记录的用户清单
+        List<PsyConsultOrderVO> userList = psyConsultOrderMapper.queryUserList(req);
+        //统计该用户的所有下单次数
+        for (PsyConsultOrderVO user : userList) {
+            PsyAdminOrderReq queryOrderCountReq = new PsyAdminOrderReq();
+                queryOrderCountReq.setUserId(user.getUserId()+"");
+            List<PsyConsultOrder> orderList = psyConsultOrderMapper.getList(queryOrderCountReq);
+            if (ObjectUtils.isNotEmpty(orderList)){
+                user.setUserOrderCount(orderList.size());
+            }
+        }
+        return userList;
     }
 }

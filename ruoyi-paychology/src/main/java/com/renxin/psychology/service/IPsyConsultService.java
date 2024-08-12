@@ -7,6 +7,7 @@ import com.renxin.psychology.request.PsyAdminConsultReq;
 import com.renxin.psychology.request.PsyConsultReq;
 import com.renxin.psychology.dto.PsyConsultInfoDTO;
 import com.renxin.psychology.request.PsyRefConsultServeReq;
+import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 
@@ -29,6 +30,8 @@ public interface IPsyConsultService {
     List<PsyConsult> getList(PsyConsultVO req);
 
     List<PsyConsult> getList(PsyAdminConsultReq req);
+    
+    List<PsyConsult> queryConsultantList(PsyConsultOrderVO req);
 
     void updateNum(Long id, int num);
 

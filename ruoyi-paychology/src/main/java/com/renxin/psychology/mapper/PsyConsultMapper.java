@@ -3,6 +3,7 @@ package com.renxin.psychology.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.request.PsyConsultReq;
+import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public interface PsyConsultMapper extends BaseMapper<PsyConsult>
     PsyConsult queryById(Long id);
     
     void refreshServerNum();
+
+    List<PsyConsult> queryConsultantList(PsyConsultOrderVO req);
 
 
 }

@@ -178,6 +178,9 @@ public class PsyConsult extends BasePlusEntity implements Serializable
 
     //服务对象   1来访者  2咨询师(督导)   3咨询师(体验)
     private String serviceObject;
+    //服务名
+    private String serverName;
 
+    
     
 }
