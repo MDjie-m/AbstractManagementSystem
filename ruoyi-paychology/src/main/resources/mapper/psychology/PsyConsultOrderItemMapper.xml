@@ -41,8 +41,12 @@ INNER JOIN psy_user c ON c.id = d.user_id
     left join psy_consult_server_config server on server.id = orde.serve_id
 
     where
-        item.consult_id =  #{consultId}
-      and item.day= #{day}
+        1=1
+      <if test="consultId != null and consultId != ''">and item.consult_id = #{consultId}</if>
+      <if test="day != null and day != ''">and item.day = #{day}</if>
+      <if test="start != null and start != ''"> AND item.day >= #{start}</if>
+      <if test="end != null and end != ''"> AND item.day &lt;= #{end}</if>
+      
     ORDER BY item.day,item.time_start asc
 </select>
     

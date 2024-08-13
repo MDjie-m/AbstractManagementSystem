@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.renxin.psychology.mapper.PsyConsultantWorkTemplateMapper">
+
+    <resultMap type="PsyConsultantWorkTemplate" id="PsyConsultantWorkTemplateResult">
+        <result property="id"    column="id"    />
+        <result property="consultantId"    column="consultant_id"    />
+        <result property="consultantName"    column="consultant_name"    />
+        <result property="startDate"    column="start_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="monday"    column="monday"    />
+        <result property="tuesday"    column="tuesday"    />
+        <result property="wednesday"    column="wednesday"    />
+        <result property="thursday"    column="thursday"    />
+        <result property="friday"    column="friday"    />
+        <result property="saturday"    column="saturday"    />
+        <result property="sunday"    column="sunday"    />
+        <result property="isAutoFill"    column="is_auto_fill"    />
+        <result property="remark"    column="remark"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPsyConsultantWorkTemplateVo">
+        select id, consultant_id, consultant_name, start_date, end_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday, is_auto_fill, remark, del_flag, create_by, create_time, update_by, update_time from psy_consultant_work_template
+    </sql>
+
+    <select id="selectPsyConsultantWorkTemplateList" parameterType="PsyConsultantWorkTemplate" resultMap="PsyConsultantWorkTemplateResult">
+        <include refid="selectPsyConsultantWorkTemplateVo"/>
+        <where>
+            <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
+            <if test="consultantName != null  and consultantName != ''"> and consultant_name like concat('%', #{consultantName}, '%')</if>
+            <if test="startDate != null  and startDate != ''"> and start_date = #{startDate}</if>
+            <if test="endDate != null  and endDate != ''"> and end_date = #{endDate}</if>
+            <if test="monday != null  and monday != ''"> and monday = #{monday}</if>
+            <if test="tuesday != null  and tuesday != ''"> and tuesday = #{tuesday}</if>
+            <if test="wednesday != null  and wednesday != ''"> and wednesday = #{wednesday}</if>
+            <if test="thursday != null  and thursday != ''"> and thursday = #{thursday}</if>
+            <if test="friday != null  and friday != ''"> and friday = #{friday}</if>
+            <if test="saturday != null  and saturday != ''"> and saturday = #{saturday}</if>
+            <if test="sunday != null  and sunday != ''"> and sunday = #{sunday}</if>
+            <if test="isAutoFill != null  and isAutoFill != ''"> and is_auto_fill = #{isAutoFill}</if>
+        </where>
+    </select>
+
+    <select id="selectPsyConsultantWorkTemplateById" parameterType="Long" resultMap="PsyConsultantWorkTemplateResult">
+        <include refid="selectPsyConsultantWorkTemplateVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPsyConsultantWorkTemplate" parameterType="PsyConsultantWorkTemplate" useGeneratedKeys="true" keyProperty="id">
+        insert into psy_consultant_work_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id,</if>
+            <if test="consultantName != null and consultantName != ''">consultant_name,</if>
+            <if test="startDate != null and startDate != ''">start_date,</if>
+            <if test="endDate != null and endDate != ''">end_date,</if>
+            <if test="monday != null">monday,</if>
+            <if test="tuesday != null">tuesday,</if>
+            <if test="wednesday != null">wednesday,</if>
+            <if test="thursday != null">thursday,</if>
+            <if test="friday != null">friday,</if>
+            <if test="saturday != null">saturday,</if>
+            <if test="sunday != null">sunday,</if>
+            <if test="isAutoFill != null and isAutoFill != ''">is_auto_fill,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="consultantId != null">#{consultantId},</if>
+            <if test="consultantName != null and consultantName != ''">#{consultantName},</if>
+            <if test="startDate != null and startDate != ''">#{startDate},</if>
+            <if test="endDate != null and endDate != ''">#{endDate},</if>
+            <if test="monday != null">#{monday},</if>
+            <if test="tuesday != null">#{tuesday},</if>
+            <if test="wednesday != null">#{wednesday},</if>
+            <if test="thursday != null">#{thursday},</if>
+            <if test="friday != null">#{friday},</if>
+            <if test="saturday != null">#{saturday},</if>
+            <if test="sunday != null">#{sunday},</if>
+            <if test="isAutoFill != null and isAutoFill != ''">#{isAutoFill},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePsyConsultantWorkTemplate" parameterType="PsyConsultantWorkTemplate">
+        update psy_consultant_work_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id = #{consultantId},</if>
+            <if test="consultantName != null and consultantName != ''">consultant_name = #{consultantName},</if>
+            <if test="startDate != null and startDate != ''">start_date = #{startDate},</if>
+            <if test="endDate != null and endDate != ''">end_date = #{endDate},</if>
+            <if test="monday != null">monday = #{monday},</if>
+            <if test="tuesday != null">tuesday = #{tuesday},</if>
+            <if test="wednesday != null">wednesday = #{wednesday},</if>
+            <if test="thursday != null">thursday = #{thursday},</if>
+            <if test="friday != null">friday = #{friday},</if>
+            <if test="saturday != null">saturday = #{saturday},</if>
+            <if test="sunday != null">sunday = #{sunday},</if>
+            <if test="isAutoFill != null and isAutoFill != ''">is_auto_fill = #{isAutoFill},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePsyConsultantWorkTemplateById" parameterType="Long">
+        delete from psy_consultant_work_template where id = #{id}
+    </delete>
+
+    <delete id="deletePsyConsultantWorkTemplateByIds" parameterType="String">
+        delete from psy_consultant_work_template where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

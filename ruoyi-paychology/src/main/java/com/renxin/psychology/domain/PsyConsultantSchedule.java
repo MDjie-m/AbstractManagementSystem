@@ -85,5 +85,10 @@ public class PsyConsultantSchedule extends BaseEntity
     private Integer rowNum;
     //咨询形式   1语音咨询    2视频咨询   3面对面咨询
     private Integer mode;
+
+    private String orderDir;
+    private String orderBy;
+    private String start;
+    private String end;
     
 }

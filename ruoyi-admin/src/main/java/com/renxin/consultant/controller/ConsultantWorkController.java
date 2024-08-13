@@ -7,6 +7,7 @@ import com.renxin.common.core.domain.dto.ConsultDTO;
 import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.dto.OrderItemDTO;
+import com.renxin.psychology.dto.RecentWorkDTO;
 import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.service.IPsyConsultWorkService;
@@ -14,12 +15,10 @@ import com.renxin.psychology.vo.PsyConsultWorkVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -104,4 +103,17 @@ public class ConsultantWorkController extends BaseController {
         }
         return AjaxResult.success(psyConsultWorkService.add(req));
     }
+
+    @ApiOperation(value = "本咨询师近期安排")
+    @PostMapping("/recentWorkList")
+    @RateLimiter
+    public AjaxResult recentWorkList(@RequestBody PsyWorkReq req, HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        req.setConsultId(consultId);
+        
+        List<RecentWorkDTO> recentWorkList = psyConsultWorkService.recentWorkList(req);
+        return AjaxResult.success(recentWorkList);
+    }
+    
 }

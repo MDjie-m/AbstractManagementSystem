@@ -480,11 +480,14 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
             PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
             scheduleReq.setCreateBy(req.getPayConsultantId()+"");
             scheduleReq.setConsultId(req.getChargeConsultantId());
+            scheduleReq.setOrderBy("sc.real_time");
+            scheduleReq.setOrderDir("desc");
             scheduleList = scheduleService.selectPsyConsultantScheduleList(scheduleReq);
 
             //查询该顾客在本平台的个督预约记录
             scheduleReq.setConsultId(null);
             scheduleReq.setScheduleType(22);//个督
+            scheduleReq.setOrderDir("asc");
             List<PsyConsultantSchedule> personSupList = scheduleService.selectPsyConsultantScheduleList(scheduleReq);
 
             //查询该顾客在本平台的个人体验预约记录

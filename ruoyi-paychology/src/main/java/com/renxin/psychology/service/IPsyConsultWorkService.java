@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.renxin.psychology.domain.PsyConsultWork;
 import com.renxin.psychology.dto.HeaderDTO;
 import com.renxin.psychology.dto.OrderItemDTO;
+import com.renxin.psychology.dto.RecentWorkDTO;
 import com.renxin.psychology.request.PsyConsultWorkReq;
 import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
@@ -46,5 +47,7 @@ public interface IPsyConsultWorkService {
     int update(PsyConsultWorkVO req);
 
     int delete(Long id);
+
+    List<RecentWorkDTO> recentWorkList(PsyWorkReq req);
 
 }

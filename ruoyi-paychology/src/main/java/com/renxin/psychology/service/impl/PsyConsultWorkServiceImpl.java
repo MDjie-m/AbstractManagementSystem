@@ -14,6 +14,7 @@ import com.renxin.psychology.domain.PsyConsultWork;
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.dto.HeaderDTO;
 import com.renxin.psychology.dto.OrderItemDTO;
+import com.renxin.psychology.dto.RecentWorkDTO;
 import com.renxin.psychology.mapper.PsyConsultWorkMapper;
 import com.renxin.psychology.request.PsyConsultWorkReq;
 import com.renxin.psychology.request.PsyWorkReq;
@@ -30,9 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper, PsyConsultWork> implements IPsyConsultWorkService {
@@ -382,5 +385,77 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
     private void converTime(PsyConsultWorkVO req) {
 //        req.setDay(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, req.getTimeStart()));
 //        req.setWeek(getWeekOfDate(req.getTimeStart()));
+    }
+
+    /**
+     * 本咨询师近期任务
+     * @param req
+     * @return
+     */
+    @Override
+    public List<RecentWorkDTO> recentWorkList(PsyWorkReq req){
+        fillStartAndEnd(req);
+
+        //查询面向[来访者]的服务待办清单
+        List<OrderItemDTO> orderItemList = orderItemService.getTodoList(req);
+
+        //查询面向[咨询师]的服务待办清单
+        PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
+        scheduleReq.setConsultId(req.getConsultId());
+        scheduleReq.setStart(req.getStart());
+        scheduleReq.setEnd(req.getEnd());
+        List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(scheduleReq);
+
+        //清单合并
+        List<PsyConsultantSchedule> itemToScheduleList = BeanUtil.copyToList(orderItemList, PsyConsultantSchedule.class);
+        itemToScheduleList.forEach(p -> p.setScheduleType(12));
+        List<PsyConsultantSchedule> mergedList = new ArrayList<>(scheduleList);
+        mergedList.addAll(itemToScheduleList);
+        // 按timeStart字段（字符串格式为"2024-05-05 15:15"）进行正序排序
+       // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        //mergedList.sort(Comparator.comparing(dto -> LocalTime.parse(dto.getRealTime())));
+       // mergedList.sort(Comparator.comparing(dto -> { return LocalDateTime.parse(dto.getTimeStart(), formatter);}));
+
+        // 使用流按day字段分组
+        Map<String, List<PsyConsultantSchedule>> groupedByDay = mergedList.stream()
+                .collect(Collectors.groupingBy(PsyConsultantSchedule::getDay));
+
+        // 将分组结果转换为RecentWorkDTO的列表
+        List<RecentWorkDTO> recentWorkDTOList = groupedByDay.entrySet().stream()
+                .map(entry -> {
+                    RecentWorkDTO dto = new RecentWorkDTO();
+                    dto.setDate(entry.getKey()); // 设置日期
+                    dto.setScheduleList(entry.getValue()); // 设置任务清单
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        
+        return recentWorkDTOList;
+        
+    }
+    
+    //填充起止日期
+    private void fillStartAndEnd(PsyWorkReq req){
+        String start = req.getStart();
+        String end = req.getEnd();
+        if (ObjectUtils.isNotEmpty(start) && ObjectUtils.isNotEmpty(end)){
+            return;
+        }
+        
+        //获取今天的日期
+        LocalDate today = LocalDate.now();
+        // 计算下个月的第一天的日期
+        LocalDate firstDayOfNextMonth = today.plusMonths(1).withDayOfMonth(1);
+        // 计算下个月的最后一天
+        LocalDate lastDayOfNextMonth = firstDayOfNextMonth.plusMonths(1).minusDays(1);
+        // 定义日期格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // 格式化日期
+        String todayStr = today.format(formatter);
+        String endOfNextMonthStr = lastDayOfNextMonth.format(formatter);
+        
+        req.setStart(todayStr);
+        req.setEnd(endOfNextMonthStr);
+        
     }
 }

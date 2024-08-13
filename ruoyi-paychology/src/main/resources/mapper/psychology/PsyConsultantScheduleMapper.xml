@@ -48,6 +48,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="timeStart != null  and timeStart != ''"> and sc.time_start = #{timeStart}</if>
             <if test="timeEnd != null  and timeEnd != ''"> and sc.time_end = #{timeEnd}</if>
             <if test="day != null  and day != ''"> and sc.day = #{day}</if>
+            <if test="start != null and start != ''"> AND sc.day >= #{start}</if>
+            <if test="end != null and end != ''"> AND sc.day &lt;= #{end}</if>
             <if test="week != null  and week != ''"> and sc.week = #{week}</if>
             <if test="status != null  and status != ''"> and sc.status = #{status}</if>
             <if test="time != null "> and sc.time = #{time}</if>
@@ -56,7 +58,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consultId != null "> and sc.consult_id = #{consultId}</if>
             <if test="realTimeStart != null "> and sc.real_time >= #{realTimeStart}</if>
         </where>
-        order by sc.real_time asc
+        <if test="orderBy != null and orderDir != null">
+            order by ${orderBy} ${orderDir}
+        </if>
     </select>
     
     <select id="selectPsyConsultantScheduleById" parameterType="Long" resultMap="PsyConsultantScheduleResult">
