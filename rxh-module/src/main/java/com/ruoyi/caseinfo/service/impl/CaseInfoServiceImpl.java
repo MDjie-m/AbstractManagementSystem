@@ -6,60 +6,57 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.caseinfo.mapper.CaseInfoMapper;
 import com.ruoyi.caseinfo.domain.CaseInfo;
-import com.ruoyi.caseinfo.service.ICaseInfoService;
+import com.ruoyi.caseinfo.service.CaseInfoService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 /**
  * 案件信息Service业务层处理
- * 
+ *
  * @author ysg
- * @date 2024-08-12
+ * @date 2024-08-13
  */
 @Service
-public class CaseInfoServiceImpl implements ICaseInfoService 
-{
+public class CaseInfoServiceImpl extends ServiceImpl<CaseInfoMapper,CaseInfo> implements CaseInfoService{
     @Autowired
     private CaseInfoMapper caseInfoMapper;
 
     /**
      * 查询案件信息
-     * 
-     * @param caseId 案件信息主键
+     *
+     * @param id 案件信息主键
      * @return 案件信息
      */
     @Override
-    public CaseInfo selectCaseInfoByCaseId(Long caseId)
-    {
-        return caseInfoMapper.selectCaseInfoByCaseId(caseId);
+    public CaseInfo selectCaseInfoById(Long id){
+        return caseInfoMapper.selectCaseInfoById(id);
     }
 
     /**
      * 查询案件信息列表
-     * 
+     *
      * @param caseInfo 案件信息
      * @return 案件信息
      */
     @Override
-    public List<CaseInfo> selectCaseInfoList(CaseInfo caseInfo)
-    {
+    public List<CaseInfo> selectCaseInfoList(CaseInfo caseInfo){
         return caseInfoMapper.selectCaseInfoList(caseInfo);
     }
 
     /**
      * 新增案件信息
-     * 
+     *
      * @param caseInfo 案件信息
      * @return 结果
      */
     @Override
-    public int insertCaseInfo(CaseInfo caseInfo)
-    {
+    public int insertCaseInfo(CaseInfo caseInfo){
         caseInfo.setCreateTime(DateUtils.getNowDate());
         return caseInfoMapper.insertCaseInfo(caseInfo);
     }
 
     /**
      * 修改案件信息
-     * 
+     *
      * @param caseInfo 案件信息
      * @return 结果
      */
@@ -72,25 +69,25 @@ public class CaseInfoServiceImpl implements ICaseInfoService
 
     /**
      * 批量删除案件信息
-     * 
-     * @param caseIds 需要删除的案件信息主键
+     *
+     * @param ids 需要删除的案件信息主键
      * @return 结果
      */
     @Override
-    public int deleteCaseInfoByCaseIds(Long[] caseIds)
+    public int deleteCaseInfoByIds(Long[] ids)
     {
-        return caseInfoMapper.deleteCaseInfoByCaseIds(caseIds);
+        return caseInfoMapper.deleteCaseInfoByIds(ids);
     }
 
     /**
      * 删除案件信息信息
-     * 
-     * @param caseId 案件信息主键
+     *
+     * @param id 案件信息主键
      * @return 结果
      */
     @Override
-    public int deleteCaseInfoByCaseId(Long caseId)
+    public int deleteCaseInfoById(Long id)
     {
-        return caseInfoMapper.deleteCaseInfoByCaseId(caseId);
+        return caseInfoMapper.deleteCaseInfoById(id);
     }
 }

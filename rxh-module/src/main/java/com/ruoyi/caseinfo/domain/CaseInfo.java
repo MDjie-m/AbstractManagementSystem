@@ -1,21 +1,22 @@
 package com.ruoyi.caseinfo.domain;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 
 /**
  * 案件信息对象 rxh_case_info
  *
  * @author ysg
- * @date 2024-08-12
+ * @date 2024-08-13
  */
 @Data
-public class CaseInfo extends BaseEntity
-{
+@TableName("rxh_case_info")
+public class CaseInfo extends MyBaseEntity{
     private static final long serialVersionUID = 1L;
-
-    /** 案件ID */
-    private Long caseId;
 
     /** 原告 */
     @Excel(name = "原告")
@@ -101,8 +102,14 @@ public class CaseInfo extends BaseEntity
     @Excel(name = "案件状态", readConverterExp = "0=未结,1=待结,2=已结")
     private String caseStatus;
 
+    /** 备注 */
+    @Excel(name = "备注")
+    private String remark;
+
     /** 数据权限查看人 */
     @Excel(name = "数据权限查看人")
     private String dataRoleUserids;
 
+
 }
+

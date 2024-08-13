@@ -31,6 +31,9 @@
         <poi.version>4.1.2</poi.version>
         <velocity.version>2.3</velocity.version>
         <jwt.version>0.9.1</jwt.version>
+        <lombok.version>1.18.12</lombok.version>
+        <mybatis-plus.version>3.5.3</mybatis-plus.version>
+        <hutool-all.version>5.4.3</hutool-all.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -147,6 +150,25 @@
                 <version>${kaptcha.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <scope>provided</scope>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool-all.version}</version>
+            </dependency>
+
             <!-- 定时任务-->
             <dependency>
                 <groupId>com.ruoyi</groupId>
@@ -179,6 +201,13 @@
             <dependency>
                 <groupId>com.ruoyi</groupId>
                 <artifactId>ruoyi-common</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!--实施项目-->
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>rxh-module</artifactId>
                 <version>${ruoyi.version}</version>
             </dependency>
 

@@ -1,5 +1,6 @@
 package com.ruoyi.caseinfo.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,30 +18,28 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.caseinfo.domain.CaseInfo;
-import com.ruoyi.caseinfo.service.ICaseInfoService;
+import com.ruoyi.caseinfo.service.CaseInfoService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 案件信息Controller
- * 
+ *
  * @author ysg
- * @date 2024-08-12
+ * @date 2024-08-13
  */
 @RestController
 @RequestMapping("/caseinfo/manage")
-public class CaseInfoController extends BaseController
-{
+public class CaseInfoController extends BaseController{
     @Autowired
-    private ICaseInfoService caseInfoService;
+    private CaseInfoService caseInfoService;
 
     /**
      * 查询案件信息列表
      */
     @PreAuthorize("@ss.hasPermi('caseinfo:manage:list')")
     @GetMapping("/list")
-    public TableDataInfo list(CaseInfo caseInfo)
-    {
+    public TableDataInfo list(CaseInfo caseInfo) {
         startPage();
         List<CaseInfo> list = caseInfoService.selectCaseInfoList(caseInfo);
         return getDataTable(list);
@@ -52,8 +51,7 @@ public class CaseInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('caseinfo:manage:export')")
     @Log(title = "案件信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, CaseInfo caseInfo)
-    {
+    public void export(HttpServletResponse response, CaseInfo caseInfo){
         List<CaseInfo> list = caseInfoService.selectCaseInfoList(caseInfo);
         ExcelUtil<CaseInfo> util = new ExcelUtil<CaseInfo>(CaseInfo.class);
         util.exportExcel(response, list, "案件信息数据");
@@ -63,10 +61,9 @@ public class CaseInfoController extends BaseController
      * 获取案件信息详细信息
      */
     @PreAuthorize("@ss.hasPermi('caseinfo:manage:query')")
-    @GetMapping(value = "/{caseId}")
-    public AjaxResult getInfo(@PathVariable("caseId") Long caseId)
-    {
-        return success(caseInfoService.selectCaseInfoByCaseId(caseId));
+    @GetMapping(value = "/{id}")
+    public AjaxResult getInfo(@PathVariable("id") Long id){
+        return success(caseInfoService.getById(id));
     }
 
     /**
@@ -75,9 +72,8 @@ public class CaseInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('caseinfo:manage:add')")
     @Log(title = "案件信息", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody CaseInfo caseInfo)
-    {
-        return toAjax(caseInfoService.insertCaseInfo(caseInfo));
+    public AjaxResult add(@RequestBody CaseInfo caseInfo){
+        return toAjax(caseInfoService.saveOrUpdate(caseInfo));
     }
 
     /**
@@ -86,9 +82,8 @@ public class CaseInfoController extends BaseController
     @PreAuthorize("@ss.hasPermi('caseinfo:manage:edit')")
     @Log(title = "案件信息", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody CaseInfo caseInfo)
-    {
-        return toAjax(caseInfoService.updateCaseInfo(caseInfo));
+    public AjaxResult edit(@RequestBody CaseInfo caseInfo){
+        return toAjax(caseInfoService.saveOrUpdate(caseInfo));
     }
 
     /**
@@ -96,9 +91,8 @@ public class CaseInfoController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('caseinfo:manage:remove')")
     @Log(title = "案件信息", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{caseIds}")
-    public AjaxResult remove(@PathVariable Long[] caseIds)
-    {
-        return toAjax(caseInfoService.deleteCaseInfoByCaseIds(caseIds));
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids){
+        return toAjax(caseInfoService.removeByIds(Arrays.asList(ids)));
     }
 }
