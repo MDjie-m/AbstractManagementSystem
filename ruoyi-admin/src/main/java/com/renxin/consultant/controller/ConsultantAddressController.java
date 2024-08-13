@@ -39,7 +39,7 @@ public class ConsultantAddressController extends BaseController {
     }
 
     @ApiOperation(value = "获取咨询师地址详细信息")
-    @PostMapping(value = "/queryDetail")
+    @PostMapping(value = "/detail")
     public AjaxResult getInfo(PsyConsultantAddress req ,HttpServletRequest request)
     {
         Long consultId = consultantTokenService.getConsultId(request);
