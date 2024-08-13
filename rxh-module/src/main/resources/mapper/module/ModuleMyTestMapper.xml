@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.module.mapper.ModuleMyTestMapper">
+    
+    <resultMap type="ModuleMyTest" id="ModuleMyTestResult">
+        <result property="testId"    column="test_id"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectModuleMyTestVo">
+        select test_id, remark from module_my_test
+    </sql>
+
+    <select id="selectModuleMyTestList" parameterType="ModuleMyTest" resultMap="ModuleMyTestResult">
+        <include refid="selectModuleMyTestVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectModuleMyTestByTestId" parameterType="Integer" resultMap="ModuleMyTestResult">
+        <include refid="selectModuleMyTestVo"/>
+        where test_id = #{testId}
+    </select>
+
+    <insert id="insertModuleMyTest" parameterType="ModuleMyTest" useGeneratedKeys="true" keyProperty="testId">
+        insert into module_my_test
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateModuleMyTest" parameterType="ModuleMyTest">
+        update module_my_test
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where test_id = #{testId}
+    </update>
+
+    <delete id="deleteModuleMyTestByTestId" parameterType="Integer">
+        delete from module_my_test where test_id = #{testId}
+    </delete>
+
+    <delete id="deleteModuleMyTestByTestIds" parameterType="String">
+        delete from module_my_test where test_id in 
+        <foreach item="testId" collection="array" open="(" separator="," close=")">
+            #{testId}
+        </foreach>
+    </delete>
+</mapper>
