@@ -39,12 +39,12 @@ public class ConsultantDebitcardController extends BaseController {
     }
 
     @ApiOperation(value = "获取客户银行卡详细信息")
-    @GetMapping(value = "/queryByCardNumber")
+    @PostMapping(value = "/detail")
     public AjaxResult getInfo(@RequestBody PsyConsultantDebitcard req,HttpServletRequest request)
     {
         Long consultId = consultantTokenService.getConsultId(request);
         PsyConsultantDebitcard psyConsultantDebitcard = psyConsultantDebitcardService.selectPsyConsultantDebitcardByCardNumber(req.getCardNumber());
-        if (psyConsultantDebitcard.getConsultantId() == consultId){
+        if (psyConsultantDebitcard.getConsultantId().equals(consultId) ){
             return AjaxResult.success(psyConsultantDebitcard);
         }
         return AjaxResult.success();
