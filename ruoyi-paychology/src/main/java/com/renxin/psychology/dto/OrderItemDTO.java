@@ -30,6 +30,9 @@ public class OrderItemDTO extends PsyConsultOrderItem {
     private String consultantAvatar;
     
     private String serverName;
+    private String orderDir;
+    private String orderBy;
     private int timeNum;
+    private Integer rowNum;
 
 }

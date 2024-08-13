@@ -12,10 +12,7 @@ import com.renxin.common.event.publish.ConsultServePublisher;
 import com.renxin.common.utils.*;
 import com.renxin.common.vo.DateLimitUtilVO;
 import com.renxin.psychology.constant.ConsultConstant;
-import com.renxin.psychology.domain.PsyConsult;
-import com.renxin.psychology.domain.PsyConsultServe;
-import com.renxin.psychology.domain.PsyConsultServeConfig;
-import com.renxin.psychology.domain.PsyConsultantSchedule;
+import com.renxin.psychology.domain.*;
 import com.renxin.psychology.dto.PsyConsultInfoDTO;
 import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.request.*;
@@ -462,6 +459,9 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     @Override
     public List<PsyConsult> queryConsultantList(PsyConsultOrderVO req){
         List<PsyConsult> psyConsultList = psyConsultMapper.queryConsultantList(req);
+        for (PsyConsult psyConsult : psyConsultList) {
+            psyConsult.setServerName(psyConsult.getServerName().split("-")[1]);
+        }
         return psyConsultList;
     }
 
@@ -495,7 +495,7 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
             for (PsyConsultantSchedule sc : scheduleList) {
                 if (sc.getScheduleType() == 22){//个督
                     for (int i = 1; i <= personSupList.size(); i++) {
-                        if(sc.getId() == personSupList.get(i-1).getId()){
+                        if(Objects.equals(sc.getId(),personSupList.get(i-1).getId())) {
                             sc.setRowNum(i);
                         }
                     }
@@ -505,7 +505,7 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
             for (PsyConsultantSchedule sc : scheduleList) {
                 if (sc.getScheduleType() == 23){//个人体验
                     for (int i = 1; i <= personExpList.size(); i++) {
-                        if(sc.getId() == personExpList.get(i-1).getId()){
+                        if(Objects.equals(sc.getId(),personExpList.get(i-1).getId())) {
                             sc.setRowNum(i);
                         }
                     }

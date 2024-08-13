@@ -46,6 +46,7 @@ public class PsyAdminOrderReq implements Serializable
 
     @ApiModelProperty(value = "支付状态")
     private String pay;
+    private String payStatus;
     
     private String userId;
 

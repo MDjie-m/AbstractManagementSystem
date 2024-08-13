@@ -21,4 +21,6 @@ public interface PsyConsultOrderItemMapper extends BaseMapper<PsyConsultOrderIte
     public List<OrderItemDTO> getTodoList(PsyWorkReq req);
     
     public Integer getTimeNumForConsulted(PsyWorkReq req);
+
+    public List<OrderItemDTO> queryOrderItemList(OrderItemDTO req);
 }

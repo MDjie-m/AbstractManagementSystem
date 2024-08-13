@@ -8,12 +8,14 @@ import com.renxin.common.enums.BusinessType;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultOrder;
+import com.renxin.psychology.domain.PsyUser;
 import com.renxin.psychology.domain.PsyUserLabel;
 import com.renxin.psychology.dto.OrderListDTO;
 import com.renxin.psychology.request.VisitorDetailReq;
 import com.renxin.psychology.service.IPsyConsultOrderService;
 import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.service.IPsyUserLabelService;
+import com.renxin.psychology.service.IPsyUserService;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ public class ConsultantVisitorController extends BaseController
 {
     @Autowired
     private IPsyUserLabelService psyUserLabelService;
+
+    @Autowired
+    private IPsyUserService psyUserService;
     
     @Autowired
     private IPsyConsultOrderService consultOrderService;
@@ -77,17 +82,40 @@ public class ConsultantVisitorController extends BaseController
     }
 
     /**
+     * 来访者顾客详情
+     */
+    //@PreAuthorize("@ss.hasPermi('system:label:query')")
+    @PostMapping(value = "/queryUserDetail")
+    public AjaxResult queryUserDetail(@RequestBody VisitorDetailReq req, HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        req.setChargeConsultantId(consultId);
+        PsyUser psyUser = psyUserService.queryUserDetail(req);
+        return AjaxResult.success(psyUser);
+    }
+    
+    /**
      * 咨询师顾客详情
      */
     //@PreAuthorize("@ss.hasPermi('system:label:query')")
-    @PostMapping(value = "/queryConsultantById")
-    public AjaxResult queryConsultantById(@RequestBody VisitorDetailReq req, HttpServletRequest request)
+    @PostMapping(value = "/queryConsultantDetail")
+    public AjaxResult queryConsultantDetail(@RequestBody VisitorDetailReq req, HttpServletRequest request)
     {
         Long consultId = consultantTokenService.getConsultId(request);
         req.setChargeConsultantId(consultId);
         PsyConsultVO psyConsultVO = consultService.queryConsultantDetail(req);
         return AjaxResult.success(psyConsultVO);
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     /**
      * 获取用户标签详细信息

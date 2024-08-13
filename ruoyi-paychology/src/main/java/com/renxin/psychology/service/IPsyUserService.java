@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.core.domain.vo.LoginVO;
 import com.renxin.psychology.domain.PsyUser;
+import com.renxin.psychology.request.VisitorDetailReq;
 
 /**
  * 用户Service接口
@@ -67,4 +68,9 @@ public interface IPsyUserService {
     LoginVO checkPsyUser(String openId, JSONObject userInfo);
 
     void bindPhone(LoginDTO loginDTO);
+
+    /**
+     * 查询用户详情
+     */
+    public PsyUser queryUserDetail(VisitorDetailReq req);
 }

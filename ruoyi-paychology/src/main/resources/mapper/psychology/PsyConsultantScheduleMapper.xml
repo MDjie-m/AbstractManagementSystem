@@ -187,12 +187,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     
     <select id="querySumTime" resultType="java.lang.Integer" parameterType="PsyConsultantSchedule">
-    select 
+    select
         <if test="scheduleType != 21">
-            count(id)
+            IFNULL(count(id), 0)
         </if>
         <if test="scheduleType == 21">
-            FLOOR(SUM(TIME_TO_SEC(TIMEDIFF(time_end, time_start))) / 3600)
+            IFNULL(FLOOR(SUM(TIME_TO_SEC(TIMEDIFF(time_end, time_start))) / 3600), 0)
         </if>
     from
         psy_consultant_schedule

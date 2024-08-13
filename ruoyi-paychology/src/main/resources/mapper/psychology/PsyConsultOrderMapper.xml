@@ -61,6 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userId != null  and userId != ''"> and a.user_id = #{userId}</if>
             <if test="source != null and source != ''"> and a.source = #{source}</if>
             <if test="status != null  and status != ''"> and a.status = #{status}</if>
+            <if test="payStatus != null  and payStatus != ''"> and a.pay_status = #{payStatus}</if>
             <if test="delFlag != null  and delFlag != ''"> and a.del_flag = #{delFlag}</if>
             <if test="startTime != null "> and a.create_time <![CDATA[ >= ]]> #{startTime}</if>
             <if test="endTime != null "> and a.create_time <![CDATA[ <= ]]> #{endTime}</if>

@@ -2,11 +2,13 @@ package com.renxin.psychology.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.renxin.common.annotation.Excel;
+import com.renxin.psychology.dto.OrderItemDTO;
 import lombok.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -54,19 +56,8 @@ public class PsyUser
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("name", getName())
-            .append("phone", getPhone())
-            .append("avatar", getAvatar())
-            .append("status", getStatus())
-            .append("wxOpenid", getWxOpenid())
-            .append("createTime", getCreateTime())
-            .append("integral", getIntegral())
-            .toString();
-    }
+    //咨询记录
+    private List<OrderItemDTO> orderItemList;
 
 
 }

@@ -7,8 +7,13 @@ import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.core.domain.vo.LoginVO;
 import com.renxin.common.event.publish.IntegralPublisher;
 import com.renxin.common.utils.DateUtils;
+import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.domain.PsyUser;
+import com.renxin.psychology.dto.OrderItemDTO;
 import com.renxin.psychology.mapper.PsyUserMapper;
+import com.renxin.psychology.request.VisitorDetailReq;
+import com.renxin.psychology.service.IPsyConsultOrderItemService;
+import com.renxin.psychology.service.IPsyConsultantScheduleService;
 import com.renxin.psychology.service.IPsyUserService;
 import com.renxin.user.domain.PsyUserIntegralRecord;
 import com.renxin.user.service.IPsyUserIntegralRecordService;
@@ -18,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 用户Service业务层处理
@@ -36,6 +43,12 @@ public class PsyUserServiceImpl implements IPsyUserService {
 
     @Resource
     private IPsyUserIntegralRecordService psyUserIntegralRecordService;
+
+    @Resource
+    private IPsyConsultantScheduleService scheduleService;
+    
+    @Resource
+    private IPsyConsultOrderItemService orderItemService;
 
     /**
      * 查询用户
@@ -169,5 +182,39 @@ public class PsyUserServiceImpl implements IPsyUserService {
             psyUserMapper.updatePsyUser(PsyUser.builder().id(user.getId()).phone(loginDTO.getPhone()).build());
             loginDTO.setUserId(user.getId());
         }
+    }
+
+    /**
+     * 查询用户详情
+     */
+    @Override
+    public PsyUser queryUserDetail(VisitorDetailReq req){
+        PsyUser psyUser = selectPsyUserById(req.getPayUserId().intValue());
+        OrderItemDTO itemReq = new OrderItemDTO();
+        //若指定了收款人, 则查询其与该来访者用户的相关咨询记录
+        if (ObjectUtils.isNotEmpty(req.getChargeConsultantId())){
+            //查询该顾客与收款人之间的 咨询 记录
+            itemReq.setConsultId(req.getChargeConsultantId());
+            itemReq.setUserId(psyUser.getId()+"");
+            itemReq.setOrderDir("desc");
+            itemReq.setOrderBy("item.real_time");
+            List<OrderItemDTO> orderItemChargeList = orderItemService.queryOrderItemList(itemReq);
+            
+            //查询该顾客在本平台的咨询记录
+            itemReq.setConsultId(null);
+            itemReq.setOrderDir("asc");
+            List<OrderItemDTO> orderItemList = orderItemService.queryOrderItemList(itemReq);
+            
+            //标识每次咨询, 是该顾客在本平台的第几次
+            for (OrderItemDTO itemCharge : orderItemChargeList) {
+                for (int i = 1; i <= orderItemList.size(); i++) {
+                    if (Objects.equals(itemCharge.getId(),orderItemList.get(i-1).getId())){
+                        itemCharge.setRowNum(i);
+                    }
+                }
+            }
+            psyUser.setOrderItemList(orderItemChargeList);  
+        }
+        return psyUser;
     }
 }

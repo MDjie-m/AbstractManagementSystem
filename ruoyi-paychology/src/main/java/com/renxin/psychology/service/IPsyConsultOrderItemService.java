@@ -33,6 +33,8 @@ public interface IPsyConsultOrderItemService
     
     List<OrderItemDTO> getTodoList(PsyWorkReq req);    
     
+    List<OrderItemDTO> queryOrderItemList(OrderItemDTO req);    
+    
     Integer getTimeNumForConsulted(PsyWorkReq req);    
 
 }

@@ -86,6 +86,12 @@ public class PsyConsultOrderItemServiceImpl extends ServiceImpl<PsyConsultOrderI
     public Integer getTimeNumForConsulted(PsyWorkReq req){
         return psyConsultOrderItemMapper.getTimeNumForConsulted(req);
     }
+    
+    @Override
+    public List<OrderItemDTO> queryOrderItemList(OrderItemDTO req){
+        List<OrderItemDTO> itemDTOList = psyConsultOrderItemMapper.queryOrderItemList(req);
+        return itemDTOList;
+    }
 
 
 }

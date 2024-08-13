@@ -625,10 +625,11 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
     public List<PsyConsultOrderVO> queryUserList(PsyConsultOrderVO req){
         //有订单记录的用户清单
         List<PsyConsultOrderVO> userList = psyConsultOrderMapper.queryUserList(req);
-        //统计该用户的所有下单次数
+        //统计该用户的已付款下单次数
         for (PsyConsultOrderVO user : userList) {
             PsyAdminOrderReq queryOrderCountReq = new PsyAdminOrderReq();
                 queryOrderCountReq.setUserId(user.getUserId()+"");
+                queryOrderCountReq.setPayStatus("2");//已支付
             List<PsyConsultOrder> orderList = psyConsultOrderMapper.getList(queryOrderCountReq);
             if (ObjectUtils.isNotEmpty(orderList)){
                 user.setUserOrderCount(orderList.size());

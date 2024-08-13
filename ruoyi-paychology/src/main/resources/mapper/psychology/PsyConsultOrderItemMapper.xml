@@ -59,5 +59,50 @@ INNER JOIN psy_user c ON c.id = d.user_id
             and user.id = #{userId}
             and item.real_time &lt;= #{realTime}
     </select>
-    
+
+
+    <select id="queryOrderItemList" parameterType="com.renxin.psychology.dto.OrderItemDTO" resultType="com.renxin.psychology.dto.OrderItemDTO">
+        select
+            item.id,
+            item.order_id as orderId,
+            item.work_id as workId,
+            item.time_start as timeStart,
+            item.time_end as timeEnd,
+            item.day,
+            item.week,
+            item.status,
+            item.create_by as createBy,
+            item.create_time as createTime,
+            item.update_by as updateBy,
+            item.update_time as updateTime,
+            item.time,
+            item.real_time as realTime,
+            item.consult_id as consultId
+        from
+            psy_consult_order_item item
+        left join psy_consult_order od on item.order_id = od.id
+        where
+            1=1
+            <if test="id != null">and item.id = #{id}</if>
+            <if test="orderId != null">and item.order_id = #{orderId}</if>
+            <if test="workId != null">and item.work_id = #{workId}</if>
+            <if test="timeStart != null">and item.time_start = #{timeStart}</if>
+            <if test="timeEnd != null">and item.time_end = #{timeEnd}</if>
+            <if test="day != null">and item.day = #{day}</if>
+            <if test="week != null">and item.week = #{week}</if>
+            <if test="status != null">and item.status = #{status}</if>
+            <if test="createBy != null">and item.create_by = #{createBy}</if>
+            <if test="createTime != null">and item.create_time = #{createTime}</if>
+            <if test="updateBy != null">and item.update_by = #{updateBy}</if>
+            <if test="updateTime != null">and item.update_time = #{updateTime}</if>
+            <if test="time != null">and item.time = #{time}</if>
+            <if test="realTime != null">and item.real_time = #{realTime}</if>
+            <if test="consultId != null">and item.consult_id = #{consultId}</if>
+            <if test="userId != null">and od.user_id = #{userId}</if>
+
+        <if test="orderBy != null and orderDir != null">
+            order by ${orderBy} ${orderDir}
+        </if>
+    </select>
+
 </mapper>
