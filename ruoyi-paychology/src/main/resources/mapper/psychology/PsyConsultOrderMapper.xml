@@ -119,6 +119,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             COALESCE(a.nick_name, '') AS nick_name,
             COALESCE(b.phone, '') AS phone,
             COALESCE(b.sex, '') AS userSex,
+            COALESCE(b.avatar, '') AS userAvatar,
             COALESCE(cf.mode, '') AS mode,
             COALESCE(label.user_fill_label, '') AS userFillLabel,
             COALESCE(label.consultant_fill_label, '') AS consultantFillLabel,

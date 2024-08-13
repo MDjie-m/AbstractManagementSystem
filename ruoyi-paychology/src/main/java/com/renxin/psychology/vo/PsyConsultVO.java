@@ -1,10 +1,12 @@
 package com.renxin.psychology.vo;
 
 import com.renxin.common.core.domain.BaseValObj;
+import com.renxin.psychology.domain.PsyConsultantSchedule;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 咨询服务对象 psy_consult
@@ -142,5 +144,7 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     private int consultTime;
     //倾听时长
     private int listenTime;
+    
+    private List<PsyConsultantSchedule> scheduleList;
     
 }

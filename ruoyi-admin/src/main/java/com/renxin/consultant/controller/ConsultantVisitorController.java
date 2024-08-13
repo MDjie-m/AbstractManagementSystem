@@ -10,10 +10,12 @@ import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultOrder;
 import com.renxin.psychology.domain.PsyUserLabel;
 import com.renxin.psychology.dto.OrderListDTO;
+import com.renxin.psychology.request.VisitorDetailReq;
 import com.renxin.psychology.service.IPsyConsultOrderService;
 import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.service.IPsyUserLabelService;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
+import com.renxin.psychology.vo.PsyConsultVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -74,6 +76,19 @@ public class ConsultantVisitorController extends BaseController
         return getDataTable(psyConsultList);
     }
 
+    /**
+     * 咨询师顾客详情
+     */
+    //@PreAuthorize("@ss.hasPermi('system:label:query')")
+    @PostMapping(value = "/queryConsultantById")
+    public AjaxResult queryConsultantById(@RequestBody VisitorDetailReq req, HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        req.setChargeConsultantId(consultId);
+        PsyConsultVO psyConsultVO = consultService.queryConsultantDetail(req);
+        return AjaxResult.success(psyConsultVO);
+    }
+    
     /**
      * 获取用户标签详细信息
      */

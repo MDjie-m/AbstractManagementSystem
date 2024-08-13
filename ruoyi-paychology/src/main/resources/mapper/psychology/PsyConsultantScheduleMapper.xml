@@ -34,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select 
            sc.id, sc.order_id,sc.team_id, sc.work_id,sc.time_num,sc.schedule_type, sc.time_start, sc.time_end, sc.day, sc.week, sc.status, sc.create_by,
            sc.create_time, sc.update_by, sc.update_time, sc.time, sc.real_time, sc.consult_id ,
-            COALESCE(team.title, cf.name) AS serverName,  con.nick_name as userNickName ,con.id as userId
+            COALESCE(team.title, cf.name) AS serverName,  con.nick_name as userNickName ,con.id as userId, cf.mode
         from psy_consultant_schedule sc
             left join psy_consultant_team_supervision team on team.id = sc.team_id
             left join psy_consult con on con.id = sc.create_by   
@@ -52,10 +52,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''"> and sc.status = #{status}</if>
             <if test="time != null "> and sc.time = #{time}</if>
             <if test="realTime != null  and realTime != ''"> and sc.real_time = #{realTime}</if>
+            <if test="createBy != null  and createBy != ''"> and sc.create_by = #{createBy}</if>
             <if test="consultId != null "> and sc.consult_id = #{consultId}</if>
             <if test="realTimeStart != null "> and sc.real_time >= #{realTimeStart}</if>
         </where>
-        order by sc.real_time 
+        order by sc.real_time asc
     </select>
     
     <select id="selectPsyConsultantScheduleById" parameterType="Long" resultMap="PsyConsultantScheduleResult">

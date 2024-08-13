@@ -15,6 +15,7 @@ import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultServe;
 import com.renxin.psychology.domain.PsyConsultServeConfig;
+import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.dto.PsyConsultInfoDTO;
 import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.request.*;
@@ -462,5 +463,58 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     public List<PsyConsult> queryConsultantList(PsyConsultOrderVO req){
         List<PsyConsult> psyConsultList = psyConsultMapper.queryConsultantList(req);
         return psyConsultList;
+    }
+
+    /**
+     * 查询来访咨询师详情
+     */
+    @Override
+    public PsyConsultVO queryConsultantDetail(VisitorDetailReq req){
+        PsyConsult psyConsult = psyConsultMapper.selectById(req.getPayConsultantId());
+        PsyConsultVO psyConsultVO = new PsyConsultVO();
+        BeanUtils.copyProperties(psyConsult, psyConsultVO);
+        List<PsyConsultantSchedule> scheduleList = new ArrayList<>();
+        //若指定了收款人, 则查询其与该付款咨询师的相关咨询记录
+        if (ObjectUtils.isNotEmpty(req.getChargeConsultantId())){
+            //查询该顾客与我之间的 个督/体验 记录
+            PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
+            scheduleReq.setCreateBy(req.getPayConsultantId()+"");
+            scheduleReq.setConsultId(req.getChargeConsultantId());
+            scheduleList = scheduleService.selectPsyConsultantScheduleList(scheduleReq);
+
+            //查询该顾客在本平台的个督预约记录
+            scheduleReq.setConsultId(null);
+            scheduleReq.setScheduleType(22);//个督
+            List<PsyConsultantSchedule> personSupList = scheduleService.selectPsyConsultantScheduleList(scheduleReq);
+
+            //查询该顾客在本平台的个人体验预约记录
+            scheduleReq.setScheduleType(23);//个人体验
+            List<PsyConsultantSchedule> personExpList = scheduleService.selectPsyConsultantScheduleList(scheduleReq);
+
+            //标注每一次服务, 分别是该用户在本平台的第几次 个督/体验
+            for (PsyConsultantSchedule sc : scheduleList) {
+                if (sc.getScheduleType() == 22){//个督
+                    for (int i = 1; i <= personSupList.size(); i++) {
+                        if(sc.getId() == personSupList.get(i-1).getId()){
+                            sc.setRowNum(i);
+                        }
+                    }
+                }
+            }
+
+            for (PsyConsultantSchedule sc : scheduleList) {
+                if (sc.getScheduleType() == 23){//个人体验
+                    for (int i = 1; i <= personExpList.size(); i++) {
+                        if(sc.getId() == personExpList.get(i-1).getId()){
+                            sc.setRowNum(i);
+                        }
+                    }
+                }
+            }
+            
+            
+        }
+        psyConsultVO.setScheduleList(scheduleList);
+        return psyConsultVO;
     }
 }

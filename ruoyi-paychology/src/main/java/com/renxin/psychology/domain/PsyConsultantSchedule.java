@@ -81,4 +81,9 @@ public class PsyConsultantSchedule extends BaseEntity
     @TableField(exist = false)
     private String realTimeStart;
     
+    //在该平台的第几次服务
+    private Integer rowNum;
+    //咨询形式   1语音咨询    2视频咨询   3面对面咨询
+    private Integer mode;
+    
 }

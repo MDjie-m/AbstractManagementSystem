@@ -7,6 +7,7 @@ import com.renxin.psychology.request.PsyAdminConsultReq;
 import com.renxin.psychology.request.PsyConsultReq;
 import com.renxin.psychology.dto.PsyConsultInfoDTO;
 import com.renxin.psychology.request.PsyRefConsultServeReq;
+import com.renxin.psychology.request.VisitorDetailReq;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
@@ -52,5 +53,12 @@ public interface IPsyConsultService {
     int delete(Long id);
     
     void addAllRelation();
+
+    /**
+     * 查询来访咨询师详情
+     * @param req
+     * @return
+     */
+    PsyConsultVO queryConsultantDetail(VisitorDetailReq req);
 
 }

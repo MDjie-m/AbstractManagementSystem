@@ -92,5 +92,6 @@ public class PsyConsultOrderVO extends BaseValObj implements Serializable
     //咨询形式   1语音咨询    2视频咨询   3面对面咨询
     private String mode;
     private String userSex;
+    private String userAvatar;
 
 }
