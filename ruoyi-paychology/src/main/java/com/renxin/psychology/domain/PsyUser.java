@@ -50,14 +50,24 @@ public class PsyUser
     /**  */
     @Excel(name = "微信openId")
     private String wxOpenid;
+    private String sex;
 
     /** 创建时间 */
     @Excel(name = "创建时间" ,dateFormat = "yyyy-MM-dd HH:mm:SS")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    //用户自己填写的标签
+    private String userFillLabel;
+    //咨询师为用户填写的标签
+    private String consultantFillLabel;
+    //客服为用户填写的标签
+    private String adminFillLabel;
+
+    
     //咨询记录
     private List<OrderItemDTO> orderItemList;
+
 
 
 }

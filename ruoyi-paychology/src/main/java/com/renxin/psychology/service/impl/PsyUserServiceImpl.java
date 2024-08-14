@@ -190,6 +190,8 @@ public class PsyUserServiceImpl implements IPsyUserService {
     @Override
     public PsyUser queryUserDetail(VisitorDetailReq req){
         PsyUser psyUser = selectPsyUserById(req.getPayUserId().intValue());
+        psyUser.setWxOpenid(null);
+        psyUser.setPhone(null);
         OrderItemDTO itemReq = new OrderItemDTO();
         //若指定了收款人, 则查询其与该来访者用户的相关咨询记录
         if (ObjectUtils.isNotEmpty(req.getChargeConsultantId())){

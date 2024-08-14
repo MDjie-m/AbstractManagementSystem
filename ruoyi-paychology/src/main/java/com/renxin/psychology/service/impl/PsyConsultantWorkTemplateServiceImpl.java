@@ -4,13 +4,17 @@ package com.renxin.psychology.service.impl;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.psychology.domain.PsyConsultantWorkTemplate;
 import com.renxin.psychology.mapper.PsyConsultantWorkTemplateMapper;
+import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.service.IPsyConsultService;
+import com.renxin.psychology.service.IPsyConsultWorkService;
 import com.renxin.psychology.service.IPsyConsultantWorkTemplateService;
 import com.renxin.psychology.vo.PsyConsultVO;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -27,6 +31,9 @@ public class PsyConsultantWorkTemplateServiceImpl implements IPsyConsultantWorkT
     
     @Autowired
     private IPsyConsultService psyConsultService;
+    
+    @Autowired
+    private IPsyConsultWorkService consultWorkService;
 
     /**
      * 查询咨询师排程模版
@@ -113,7 +120,38 @@ public class PsyConsultantWorkTemplateServiceImpl implements IPsyConsultantWorkT
     //执行指定模版, 生成排班数据
     @Override
     public void executeConsultantWorkTemplate(PsyConsultantWorkTemplate req){
-        
+        fillStartAndEnd(req);
+        //需要执行的模板清单
+        List<PsyConsultantWorkTemplate> workTemplateList = psyConsultantWorkTemplateMapper.selectPsyConsultantWorkTemplateList(req);
+
+        for (PsyConsultantWorkTemplate workTemplate : workTemplateList) {
+           // consultWorkService.
+        }
+
     }
-    
+
+    //填充起止日期 (默认今天至下个月底)
+    private void fillStartAndEnd(PsyConsultantWorkTemplate req){
+        String start = req.getStartDate();
+        String end = req.getEndDate();
+        if (ObjectUtils.isNotEmpty(start) && ObjectUtils.isNotEmpty(end)){
+            return;
+        }
+
+        //获取今天的日期
+        LocalDate today = LocalDate.now();
+        // 计算下个月的第一天的日期
+        LocalDate firstDayOfNextMonth = today.plusMonths(1).withDayOfMonth(1);
+        // 计算下个月的最后一天
+        LocalDate lastDayOfNextMonth = firstDayOfNextMonth.plusMonths(1).minusDays(1);
+        // 定义日期格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // 格式化日期
+        String todayStr = today.format(formatter);
+        String endOfNextMonthStr = lastDayOfNextMonth.format(formatter);
+
+        req.setStartDate(todayStr);
+        req.setEndDate(endOfNextMonthStr);
+
+    }
 }

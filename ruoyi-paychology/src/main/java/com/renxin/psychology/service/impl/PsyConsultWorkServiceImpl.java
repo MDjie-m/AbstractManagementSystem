@@ -434,7 +434,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
         
     }
     
-    //填充起止日期
+    //填充起止日期 (默认今天至下个月底)
     private void fillStartAndEnd(PsyWorkReq req){
         String start = req.getStart();
         String end = req.getEnd();
