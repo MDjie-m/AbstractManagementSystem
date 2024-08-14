@@ -3,6 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.renxin.psychology.mapper.PsyConsultWorkMapper">
+    
 
     <select id="checkDataUnique" resultType="com.renxin.psychology.domain.PsyConsultWork">
         <include refid="selectPsyConsultWorkVo"/>
@@ -92,4 +93,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consultId != null "> and a.consult_id = #{consultId}</if>
         </where>
     </select>
+
+    <insert id="insertBatch" parameterType="PsyConsultWork">
+        INSERT INTO psy_consult_work 
+        (
+            id,
+            consult_id,
+            day,
+            week,
+            time_start,
+            times,
+            live,
+            used,
+            time_end,
+            status,
+            consult_type,
+            create_by,
+            update_by,
+            create_time,
+            update_time
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.consultId},
+            #{item.day},
+            #{item.week},
+            #{item.timeStart},
+            #{item.times},
+            #{item.live},
+            #{item.used},
+            #{item.timeEnd},
+            #{item.status},
+            #{item.consultType},
+            #{item.createBy},
+            #{item.updateBy},
+            #{item.createTime},
+            #{item.updateTime}
+            )
+        </foreach>
+    </insert>
+    
 </mapper>

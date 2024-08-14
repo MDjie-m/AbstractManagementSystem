@@ -33,6 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPsyConsultantWorkTemplateList" parameterType="PsyConsultantWorkTemplate" resultMap="PsyConsultantWorkTemplateResult">
         <include refid="selectPsyConsultantWorkTemplateVo"/>
         <where>
+            <if test="id != null "> and id = #{id}</if>
             <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
             <if test="consultantName != null  and consultantName != ''"> and consultant_name like concat('%', #{consultantName}, '%')</if>
             <if test="startDate != null  and startDate != ''"> and start_date = #{startDate}</if>
