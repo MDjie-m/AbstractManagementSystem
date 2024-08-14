@@ -22,6 +22,7 @@ public class PsyWorkReq implements Serializable
     private String day;
     private String start;
     private String end;
+    private String week;
     private String status;
     private Long consultId;
     private String userId;

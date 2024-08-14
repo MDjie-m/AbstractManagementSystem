@@ -113,6 +113,11 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     public Long consultantDraft(Long consultantId)
     {
         PartnerDTO one = getInfoByConsultId(consultantId);
+        //状态修为"审核中"
+        if (ConsultConstant.PARTNER_STATUS_1.equals(one.getStatus())){
+            throw new ServiceException("入驻申请已在审核中");
+        }
+        
         if (one == null) {
             Long  id = IDhelper.getNextId();
             PsyConsultPartner partner = new PsyConsultPartner();

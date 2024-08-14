@@ -404,6 +404,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
         scheduleReq.setConsultId(req.getConsultId());
         scheduleReq.setStart(req.getStart());
         scheduleReq.setEnd(req.getEnd());
+        scheduleReq.setWeek(req.getWeek());
         List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(scheduleReq);
 
         //清单合并

@@ -36,8 +36,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null "> and id = #{id}</if>
             <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
             <if test="consultantName != null  and consultantName != ''"> and consultant_name like concat('%', #{consultantName}, '%')</if>
-            <if test="startDate != null  and startDate != ''"> and start_date = #{startDate}</if>
-            <if test="endDate != null  and endDate != ''"> and end_date = #{endDate}</if>
             <if test="monday != null  and monday != ''"> and monday = #{monday}</if>
             <if test="tuesday != null  and tuesday != ''"> and tuesday = #{tuesday}</if>
             <if test="wednesday != null  and wednesday != ''"> and wednesday = #{wednesday}</if>

@@ -15,6 +15,7 @@ import com.renxin.psychology.vo.PsyConsultWorkVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -109,8 +110,10 @@ public class ConsultantWorkController extends BaseController {
     @RateLimiter
     public AjaxResult recentWorkList(@RequestBody PsyWorkReq req, HttpServletRequest request)
     {
-        Long consultId = consultantTokenService.getConsultId(request);
-        req.setConsultId(consultId);
+        if (ObjectUtils.isEmpty(req.getConsultId())){
+            Long consultId = consultantTokenService.getConsultId(request);
+            req.setConsultId(consultId);
+        }
         
         List<RecentWorkDTO> recentWorkList = psyConsultWorkService.recentWorkList(req);
         return AjaxResult.success(recentWorkList);
