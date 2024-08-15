@@ -3,11 +3,8 @@ package com.renxin.psychology.service;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultServe;
-import com.renxin.psychology.request.PsyAdminConsultReq;
-import com.renxin.psychology.request.PsyConsultReq;
+import com.renxin.psychology.request.*;
 import com.renxin.psychology.dto.PsyConsultInfoDTO;
-import com.renxin.psychology.request.PsyRefConsultServeReq;
-import com.renxin.psychology.request.VisitorDetailReq;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
@@ -19,6 +16,8 @@ public interface IPsyConsultService {
     PsyConsultInfoDTO getConsultInfoByServe(Long cId, Long sId);
 
     List<PsyConsultWorkVO> getConsultWorksById(Long id);
+    
+    List<PsyConsultWorkVO> getConsultWorks(PsyWorkReq req);
 
     PsyConsultVO getOne(Long id);
 

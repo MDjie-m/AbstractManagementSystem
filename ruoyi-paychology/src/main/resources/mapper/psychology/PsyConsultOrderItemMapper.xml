@@ -82,7 +82,8 @@ INNER JOIN psy_user c ON c.id = d.user_id
             item.update_time as updateTime,
             item.time,
             item.real_time as realTime,
-            item.consult_id as consultId
+            item.consult_id as consultId,
+            od.user_id as userId
         from
             psy_consult_order_item item
         left join psy_consult_order od on item.order_id = od.id

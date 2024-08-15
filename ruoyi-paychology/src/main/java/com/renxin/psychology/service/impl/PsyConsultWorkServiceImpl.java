@@ -7,9 +7,11 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renxin.common.constant.NewConstants;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.utils.StringUtils;
 import com.renxin.psychology.constant.ConsultConstant;
+import com.renxin.psychology.domain.PsyConsultOrderItem;
 import com.renxin.psychology.domain.PsyConsultWork;
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.dto.HeaderDTO;
@@ -459,4 +461,99 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
         req.setEnd(endOfNextMonthStr);
         
     }
+
+    /**
+     * 咨询师指定任务请假
+     * @param req
+     */
+    @Override
+    public void scheduleLeave(PsyWorkReq req){
+        Integer scheduleType = req.getScheduleType();
+        Long scheduleId = req.getScheduleId();
+        Long loginConsultId = req.getConsultId();
+        String loginUserId = req.getUserId();
+
+        switch (scheduleType) {
+            //个督/体验
+            case 22 :
+            case 23 :
+                PsyConsultantSchedule schedule = consultantScheduleService.selectPsyConsultantScheduleById(scheduleId);
+                if (ObjectUtils.isEmpty(schedule)){
+                    throw new ServiceException("scheduleId不存在, 找不到指定任务");
+                }
+                if ((loginConsultId+"").equals(schedule.getCreateBy())){
+                    schedule.setStatus("2");//付费人请假
+                }
+                else if (loginConsultId.equals(schedule.getConsultId())){
+                    schedule.setStatus("3");//收费人请假
+                }else{
+                    throw new ServiceException("当前用户与该排程任务不相关");
+                }
+                consultantScheduleService.updatePsyConsultantSchedule(schedule);
+                break;
+
+            //咨询
+            case 12 :
+                OrderItemDTO itemReq = new OrderItemDTO();
+                itemReq.setId(scheduleId);
+                List<OrderItemDTO> orderItemList = orderItemService.queryOrderItemList(itemReq);
+                if (ObjectUtils.isEmpty(orderItemList)){
+                    throw new ServiceException("scheduleId不存在,找不到指定任务.");
+                }
+                OrderItemDTO item = orderItemList.get(0);
+                if (loginUserId.equals(item.getUserId())){
+                    item.setStatus("2");//付费人请假
+                }else if (item.getConsultId().equals(loginConsultId)){
+                    item.setStatus("3");//收费人请假
+                }else{
+                    throw new ServiceException("当前用户与该排程任务不相关.");
+                }
+                orderItemService.update(item);
+                break;
+                
+            //无匹配
+            default:
+                throw new ServiceException("该类型的预约不存在或不可请假");
+        }
+    }
+
+
+    /**
+     * 咨询师指定时间请假
+     * @param req
+     */
+    @Override
+    public void dateLeave(PsyWorkReq req){
+        List<PsyConsultWork> workList = psyConsultWorkMapper.selectList(new LambdaQueryWrapper<PsyConsultWork>()
+                .eq(PsyConsultWork::getDay, req.getDay())
+                .eq(PsyConsultWork::getConsultId, req.getConsultId()));
+        if (ObjectUtils.isEmpty(workList)){
+            throw new ServiceException("当前咨询师在这一天没有排程, 无需请假");
+        }
+
+        PsyConsultWork work = workList.get(0);
+        String leaveHours = req.getHours();
+        //仅live涉及的时间点, 需要填入used中请假
+        if (ObjectUtils.isEmpty(leaveHours)){
+            work.setUsed(work.getLive());
+        }else {
+            String commonHours = getCommonHours(leaveHours, work.getLive());
+            work.setUsed(commonHours);
+        }
+        psyConsultWorkMapper.updateById(work);
+    }
+    
+    //获取时间点的交集
+    private String getCommonHours(String aHours,String bHours){
+        aHours = aHours.replace("[","").replace("]","");
+        bHours = bHours.replace("[","").replace("]","");
+
+        Set<String> aSet = new HashSet<>(Arrays.asList(aHours.split(",")));
+        Set<String> bSet = new HashSet<>(Arrays.asList(bHours.split(",")));
+        aSet.retainAll(bSet);
+        
+        String result = new TreeSet<String>(aSet).toString();
+        return result;
+    }
+    
 }

@@ -91,6 +91,26 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
 
         return psyConsultWorkService.getConsultWorks(req);
     }
+    
+    //指定咨询师近期可约时间
+    @Override
+    public List<PsyConsultWorkVO> getConsultWorks(PsyWorkReq req){
+        req.setStatus("0");
+       /* String dayStr = req.getDay();
+        //查询近期N天内
+        Integer day = ObjectUtils.isNotEmpty(dayStr) ? Integer.valueOf(dayStr) : 15;
+        
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        req.setStart(sdf.format(calendar.getTime()));
+        calendar.add(Calendar.DATE, day-1);
+        req.setEnd(sdf.format(calendar.getTime()));*/
+        List<PsyConsultWorkVO> consultWorks = psyConsultWorkService.getConsultWorks(req);
+        return consultWorks;
+    }
 
 
     @Override

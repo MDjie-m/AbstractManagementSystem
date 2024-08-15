@@ -56,7 +56,7 @@ public class PsyConsultOrderItem extends BasePlusEntity implements Serializable
     @Excel(name = "实际咨询时间")
     private String realTime;
 
-    /** 状态（0待咨询 1咨询完成） */
+    /** 状态  0待办  1已完成  2付费人请假   3收费人请假 */
     @Excel(name = "状态", readConverterExp = "0=待咨询,1=咨询完成")
     private String status;
 }

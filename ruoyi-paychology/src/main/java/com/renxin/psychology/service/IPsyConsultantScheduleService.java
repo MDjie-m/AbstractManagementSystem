@@ -37,6 +37,8 @@ public interface IPsyConsultantScheduleService
      * @return 结果
      */
     public int insertPsyConsultantSchedule(PsyConsultantSchedule psyConsultantSchedule);
+    
+    public int insertPsyConsultantScheduleList(List<PsyConsultantSchedule> list);
 
     /**
      * 修改咨询师排班任务

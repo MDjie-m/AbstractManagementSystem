@@ -6,8 +6,11 @@ import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.psychology.domain.PsyConsultOrder;
+import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.service.IPsyConsultOrderService;
+import com.renxin.psychology.service.IPsyConsultWorkService;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +33,9 @@ public class PocketConsultOrderController extends BaseController
 
     @Autowired
     private PocketTokenService pocketTokenService;
+
+    @Resource
+    private IPsyConsultWorkService psyConsultWorkService;
 
 
     @PostMapping(value = "/getOrderInfo/{id}")
@@ -86,6 +92,18 @@ public class PocketConsultOrderController extends BaseController
     {
         PsyConsultOrder order = psyConsultOrderService.getOrderById(id);
         psyConsultOrderService.cancel(order, order.getNickName());
+        return AjaxResult.success();
+    }
+
+
+    @ApiOperation(value = "来访者指定任务请假")
+    @PostMapping("/scheduleLeave")
+    public AjaxResult scheduleLeave(@RequestBody PsyWorkReq req, HttpServletRequest request)
+    {
+        Integer userId = pocketTokenService.getUserId(request);
+            req.setUserId(userId+"");
+            req.setScheduleType(12);
+        psyConsultWorkService.scheduleLeave(req);
         return AjaxResult.success();
     }
 

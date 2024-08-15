@@ -82,6 +82,13 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         return psyConsultantScheduleMapper.insertPsyConsultantSchedule(psyConsultantSchedule);
     }
 
+    @Override
+    public int insertPsyConsultantScheduleList(List<PsyConsultantSchedule> list)
+    {
+        return psyConsultantScheduleMapper.insertPsyConsultantScheduleBatch(list);
+    }
+    
+
     /**
      * 修改咨询师排班任务
      * 

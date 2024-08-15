@@ -49,5 +49,9 @@ public interface IPsyConsultWorkService {
     int delete(Long id);
 
     List<RecentWorkDTO> recentWorkList(PsyWorkReq req);
+    
+    void scheduleLeave(PsyWorkReq req);
+    
+    void dateLeave(PsyWorkReq req);
 
 }

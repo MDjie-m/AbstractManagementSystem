@@ -42,7 +42,7 @@ public class PsyConsultOrderItemVO extends BaseValObj implements Serializable
     /** 周 */
     private String week;
 
-    /** 状态（0待咨询 1咨询完成） */
+    /** 状态  0待办  1已完成  2付费人请假   3收费人请假 */
     private String status;
 
     private String realTime;

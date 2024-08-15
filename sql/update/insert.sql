@@ -304,7 +304,7 @@ CREATE TABLE `psy_consultant_schedule` (
                                            `time_end` VARCHAR(10) NULL DEFAULT NULL COMMENT '结束时间' COLLATE 'utf8mb4_0900_ai_ci',
                                            `day` VARCHAR(20) NULL DEFAULT NULL COMMENT '天' COLLATE 'utf8mb4_0900_ai_ci',
                                            `week` VARCHAR(10) NULL DEFAULT NULL COMMENT '周' COLLATE 'utf8mb4_0900_ai_ci',
-                                           `status` CHAR(1) NULL DEFAULT '0' COMMENT '状态（0待办  1已完成）' COLLATE 'utf8mb4_0900_ai_ci',
+                                           `status` CHAR(1) NULL DEFAULT '0' COMMENT '状态  0待办  1已完成  2付费人请假   3收费人请假' COLLATE 'utf8mb4_0900_ai_ci',
                                            `create_by` VARCHAR(64) NULL DEFAULT NULL COMMENT '创建人' COLLATE 'utf8mb4_0900_ai_ci',
                                            `create_time` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
                                            `update_by` VARCHAR(64) NULL DEFAULT NULL COMMENT '更新者' COLLATE 'utf8mb4_0900_ai_ci',

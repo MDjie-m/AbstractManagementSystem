@@ -1,7 +1,9 @@
 package com.renxin.psychology.service;
 
 
+import com.renxin.psychology.domain.PsyConsultWork;
 import com.renxin.psychology.domain.PsyConsultantWorkTemplate;
+import com.renxin.psychology.request.PsyWorkReq;
 
 import java.util.List;
 
@@ -63,4 +65,6 @@ public interface IPsyConsultantWorkTemplateService
     
     //执行指定模版, 生成排班数据
     public void executeConsultantWorkTemplate(PsyConsultantWorkTemplate req);
+    
+    public void savePsyConsultantWorkBatch(List<PsyConsultWork> newWorkList);
 }

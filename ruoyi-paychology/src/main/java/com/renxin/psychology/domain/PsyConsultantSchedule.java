@@ -53,7 +53,7 @@ public class PsyConsultantSchedule extends BaseEntity
     @Excel(name = "周")
     private String week;
 
-    /** 状态（0待办  1已完成） */
+    /** 状态  0待办  1已完成  2付费人请假   3收费人请假 */
     @Excel(name = "状态", readConverterExp = "0=待办,1=已完成")
     private String status;
 

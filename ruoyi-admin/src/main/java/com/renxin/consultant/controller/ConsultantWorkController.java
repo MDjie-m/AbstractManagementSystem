@@ -11,6 +11,7 @@ import com.renxin.psychology.dto.RecentWorkDTO;
 import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.service.IPsyConsultWorkService;
+import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +40,7 @@ public class ConsultantWorkController extends BaseController {
     @Resource
     private IPsyConsultService psyConsultService;
 
+
     @ApiOperation(value = "咨询师排版计划表")
     @PostMapping("/liveHour")
     @RateLimiter
@@ -56,11 +58,15 @@ public class ConsultantWorkController extends BaseController {
     /**
      * 指定咨询师的可约时间(最近七天)
      */
-    @PostMapping(value = "/getConsultWorksById/{id}")
+    @PostMapping(value = "/getConsultWorks")
     @RateLimiter
-    public AjaxResult getConsultWorksById(@PathVariable("id") Long id)
+    public AjaxResult getConsultWorks(@RequestBody PsyWorkReq req, HttpServletRequest request)
     {
-        return AjaxResult.success(psyConsultService.getConsultWorksById(id));
+        Long consultId = consultantTokenService.getConsultId(request);
+        if (ObjectUtils.isEmpty(req.getConsultId())){
+            req.setConsultId(consultId);
+        }
+        return AjaxResult.success(psyConsultService.getConsultWorks(req));
     }
 
     @ApiOperation(value = "本咨询师今日任务")
@@ -105,7 +111,7 @@ public class ConsultantWorkController extends BaseController {
         return AjaxResult.success(psyConsultWorkService.add(req));
     }
 
-    @ApiOperation(value = "本咨询师近期安排")
+    @ApiOperation(value = "本咨询师近期任务")
     @PostMapping("/recentWorkList")
     @RateLimiter
     public AjaxResult recentWorkList(@RequestBody PsyWorkReq req, HttpServletRequest request)
@@ -118,5 +124,27 @@ public class ConsultantWorkController extends BaseController {
         List<RecentWorkDTO> recentWorkList = psyConsultWorkService.recentWorkList(req);
         return AjaxResult.success(recentWorkList);
     }
+
+    @ApiOperation(value = "咨询师指定任务请假")
+    @PostMapping("/scheduleLeave")
+    public AjaxResult scheduleLeave(@RequestBody PsyWorkReq req,HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+            req.setConsultId(consultId);
+        psyConsultWorkService.scheduleLeave(req);
+        return AjaxResult.success();
+    }
+
+
+    @ApiOperation(value = "咨询师指定时间请假")
+    @PostMapping("/dateLeave")
+    public AjaxResult dateLeave(@RequestBody PsyWorkReq req,HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+            req.setConsultId(consultId);
+        psyConsultWorkService.dateLeave(req);
+        return AjaxResult.success();
+    }
+    
     
 }

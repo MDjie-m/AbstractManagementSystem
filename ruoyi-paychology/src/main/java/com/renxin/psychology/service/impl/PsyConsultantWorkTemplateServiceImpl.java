@@ -237,33 +237,77 @@ public class PsyConsultantWorkTemplateServiceImpl implements IPsyConsultantWorkT
                 //}
             }
 
-            //比较新旧清单
+            //比较新旧清单, 执行分类
             Map<String, List<PsyConsultWork>> listMap = compareWorkLists(oldWorkList, newWorkList);
-            List<PsyConsultWork> commonList = listMap.get("common");//共有部分
-            List<PsyConsultWork> onlyOldList = listMap.get("onlyOld");
-            List<PsyConsultWork> onlyNewList = listMap.get("onlyNew");
-            
-            commonList.forEach(p -> {
-                p.setUpdateTime(new Date());
-                p.setUpdateBy(createBy);
-                consultWorkMapper.updateById(p);
-            });
-            onlyOldList.forEach(p -> {
-                p.setUpdateTime(new Date());
-                p.setUpdateBy(createBy);
-                consultWorkMapper.updateById(p);
-            });
-            onlyNewList.forEach(p -> {
-                p.setCreateTime(new Date());
-                p.setCreateBy(createBy);
-            });
-            if (ObjectUtils.isNotEmpty(onlyNewList)){
-                consultWorkMapper.insertBatch(onlyNewList);
-            }
+            //根据分类清单执行数据refresh
+            refreshWorkData(listMap, createBy);
         }
-        
     }
-    
+
+    @Override
+    public void savePsyConsultantWorkBatch(List<PsyConsultWork> newWorkList){
+        //指定咨询师在该时期已有的旧排程
+        List<String> oldWorkDayList = newWorkList.stream().map(p -> p.getDay()).collect(Collectors.toList());
+        List<PsyConsultWork> oldWorkList = consultWorkMapper.selectList(new LambdaQueryWrapper<PsyConsultWork>()
+                .eq(PsyConsultWork::getConsultId, newWorkList.get(0).getConsultId())
+                .in(PsyConsultWork::getDay,oldWorkDayList));
+
+        Map<String, List<PsyConsultWork>> listMap = compareWorkListsForTeam(oldWorkList, newWorkList);
+        refreshWorkData(listMap,"system");
+    }
+
+
+    //比较新旧清单(团督课程生成排程专用)
+    private Map<String, List<PsyConsultWork>> compareWorkListsForTeam(List<PsyConsultWork> oldWorkList, List<PsyConsultWork> newWorkList) {
+        Set<String> oldDays = oldWorkList.stream()
+                .map(PsyConsultWork::getDay)
+                .collect(Collectors.toSet());
+
+        Set<String> newDays = newWorkList.stream()
+                .map(PsyConsultWork::getDay)
+                .collect(Collectors.toSet());
+
+        // 获取共同的部分并更新 live 字段
+        List<PsyConsultWork> common = oldWorkList.stream()
+                .filter(work -> newDays.contains(work.getDay()))
+                .peek(work -> {
+                    // 找到对应的 newWork
+                    Optional<PsyConsultWork> matchingNewWork = newWorkList.stream()
+                            .filter(newWork -> newWork.getDay().equals(work.getDay()))
+                            .findFirst();
+
+
+                    if (matchingNewWork.isPresent()) {
+                        PsyConsultWork newWork = matchingNewWork.get();
+                        // live : 合并 新live 和 旧live 字段的并集
+                        String combinedLive = mergeLiveAndUsed(work.getLive(), newWork.getLive());
+                        combinedLive = combinedLive.replace("[,","[").replace(" ","");
+                        work.setLive(combinedLive);
+
+                        //used 取新旧并集
+                        String combinedUsed = mergeLiveAndUsed(work.getUsed(), newWork.getUsed());
+                        combinedUsed = combinedUsed.replace("[,","[").replace(" ","");
+                        work.setUsed(combinedUsed);
+                        
+                    }
+                })
+                .collect(Collectors.toList());
+
+        List<PsyConsultWork> onlyOld = oldWorkList.stream()
+                .filter(work -> !newDays.contains(work.getDay()))
+                .collect(Collectors.toList());
+
+        List<PsyConsultWork> onlyNew = newWorkList.stream()
+                .filter(work -> !oldDays.contains(work.getDay()))
+                .collect(Collectors.toList());
+
+        Map<String, List<PsyConsultWork>> resultMap = new HashMap<>();
+        resultMap.put("onlyOld", onlyOld);
+        resultMap.put("onlyNew", onlyNew);
+        resultMap.put("common", common);
+
+        return resultMap;
+    }
     
     //比较新旧清单
     private Map<String, List<PsyConsultWork>> compareWorkLists(List<PsyConsultWork> oldWorkList, List<PsyConsultWork> newWorkList) {
@@ -283,17 +327,18 @@ public class PsyConsultantWorkTemplateServiceImpl implements IPsyConsultantWorkT
                     Optional<PsyConsultWork> matchingNewWork = newWorkList.stream()
                             .filter(newWork -> newWork.getDay().equals(work.getDay()))
                             .findFirst();
-
-                    // 合并 新live 和 旧used 字段的并集
+                    
                     if (matchingNewWork.isPresent()) {
-                        String combinedLive = mergeLiveAndUsed(work.getUsed(), matchingNewWork.get().getLive());
+                        PsyConsultWork newWork = matchingNewWork.get();
+                        // live : 合并 新live 和 旧used 字段的并集
+                        String combinedLive = mergeLiveAndUsed(work.getUsed(), newWork.getLive());
                         // 移除开头的逗号和空格
-                        combinedLive = combinedLive.replace("[,","[");
-                        combinedLive = combinedLive.replace(" ","");
+                        combinedLive = combinedLive.replace("[,","[").replace(" ","");
                         work.setLive(combinedLive);
 
-                        // 更新 times 字段，以 newWork 中的为准
-                        work.setTimes(matchingNewWork.get().getTimes());
+                        // times :  以 newWork 中的为准
+                        String newWorkTimes = newWork.getTimes();
+                        if (ObjectUtils.isNotEmpty(newWorkTimes)) { work.setTimes(newWorkTimes); }
                     }
                 })
                 .collect(Collectors.toList());
@@ -314,7 +359,31 @@ public class PsyConsultantWorkTemplateServiceImpl implements IPsyConsultantWorkT
 
         return resultMap;
     }
-    
+
+    //根据分类清单执行数据refresh
+    private void refreshWorkData(Map<String, List<PsyConsultWork>> listMap, String createBy){
+        List<PsyConsultWork> commonList = listMap.get("common");//共有部分
+        List<PsyConsultWork> onlyOldList = listMap.get("onlyOld");
+        List<PsyConsultWork> onlyNewList = listMap.get("onlyNew");
+
+        commonList.forEach(p -> {
+            p.setUpdateTime(new Date());
+            p.setUpdateBy(createBy);
+            consultWorkMapper.updateById(p);
+        });
+        onlyOldList.forEach(p -> {
+            p.setUpdateTime(new Date());
+            p.setUpdateBy(createBy);
+            consultWorkMapper.updateById(p);
+        });
+        onlyNewList.forEach(p -> {
+            p.setCreateTime(new Date());
+            p.setCreateBy(createBy);
+        });
+        if (ObjectUtils.isNotEmpty(onlyNewList)){
+            consultWorkMapper.insertBatch(onlyNewList);
+        }
+    }
     
     //获取起止日期内的每一天
     private List<String> getDateListBetween(String startDate, String endDate) {
@@ -332,6 +401,23 @@ public class PsyConsultantWorkTemplateServiceImpl implements IPsyConsultantWorkT
         }
         return dateList;
     }
+
+    //获取时间点的并集
+    private String getUnionHours(String aHours,String bHours){
+        aHours = aHours.replace("[","").replace("]","");
+        bHours = bHours.replace("[","").replace("]","");
+
+        // 将字符串转换为集合
+        Set<String> aSet = new HashSet<>(Arrays.asList(aHours.split(",")));
+        Set<String> bSet = new HashSet<>(Arrays.asList(bHours.split(",")));
+
+        // 合并两个集合
+        aSet.addAll(bSet);
+
+        String result = new TreeSet<String>(aSet).toString();
+        return result;
+    }
+    
     
     //根据日期获取周几
     private String getDayOfWeek(String dateStr) {

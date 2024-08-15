@@ -15,14 +15,11 @@ import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.*;
 import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
-import com.renxin.psychology.service.IPsyConsultService;
-import com.renxin.psychology.service.IPsyConsultantScheduleService;
-import com.renxin.psychology.service.IPsyConsultantSupervisionMemberService;
+import com.renxin.psychology.service.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantTeamSupervisionMapper;
-import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -48,6 +45,9 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     
     @Autowired
     private PsyConsultMapper psyConsultMapper;
+    
+    @Autowired
+    private IPsyConsultantWorkTemplateService consultantWorkTemplateService;
 
     /**
      * 查询团队督导(组织)
@@ -261,34 +261,72 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(teamId);
 
         //更新团队信息
-        List<String> nextNDays = getNextNDays(team.getCycleNumber().intValue(), team.getWeekDay());//获取开课日期清单
-        team.setFirstLectureDate(nextNDays.get(0));//初次开课日期
+        List<String> lectureDayList = getNextNDays(team.getCycleNumber().intValue(), team.getWeekDay());//获取开课日期清单
+        team.setFirstLectureDate(lectureDayList.get(0));//初次开课日期
         team.setStatus(ConsultConstant.TEAM_STATUS_START_1);
         psyConsultantTeamSupervisionMapper.updatePsyConsultantTeamSupervision(team);
         
         //为督导师添加排程
-        PsyConsultantSchedule schedule = new PsyConsultantSchedule();
-        schedule.setTeamId(teamId);
-        schedule.setTimeStart(team.getLectureStartTime());
-        schedule.setTimeEnd(team.getLectureEndTime());
-        schedule.setWeek(getWeekday(team.getWeekDay()));
-        schedule.setTime(Integer.valueOf(team.getLectureStartTime().substring(0,2)));
-        schedule.setConsultId(Long.valueOf(team.getConsultantId()));
-        schedule.setScheduleType(2);//2.团督开课
-        schedule.setCreateTime(new Date());
-        schedule.setUpdateTime(new Date());
-        schedule.setCreateBy("system");
-        schedule.setUpdateBy("system");
+        ArrayList<PsyConsultantSchedule> scheduleList = new ArrayList<>();
+        ArrayList<PsyConsultWork> workDayList = new ArrayList<>();
         int timeNum = 1;
-        for (String lectureDay : nextNDays) {
+        for (String lectureDay : lectureDayList) {
+            //每日任务
+            PsyConsultantSchedule schedule = new PsyConsultantSchedule();
+            schedule.setTeamId(teamId);
+            schedule.setTimeStart(team.getLectureStartTime());
+            schedule.setTimeEnd(team.getLectureEndTime());
+            schedule.setWeek(getWeekday(team.getWeekDay()));
+            schedule.setTime(Integer.valueOf(team.getLectureStartTime().substring(0,2)));
+            schedule.setConsultId(Long.valueOf(team.getConsultantId()));
+            schedule.setScheduleType(21);//21.团督开课
+            schedule.setCreateTime(new Date());
+            schedule.setUpdateTime(new Date());
+            schedule.setCreateBy("system");
+            schedule.setUpdateBy("system");
+            
             schedule.setDay(lectureDay);
             schedule.setRealTime(lectureDay + " " + team.getLectureStartTime());
             schedule.setTimeNum(timeNum++);
-            consultantScheduleService.insertPsyConsultantSchedule(schedule);
+            scheduleList.add(schedule);
+
+            //排程占用
+            PsyConsultWork work = new PsyConsultWork();
+            work.setConsultId(Long.valueOf(team.getConsultantId()));
+            work.setDay(lectureDay);
+            work.setWeek(getWeekday(team.getWeekDay()));
+            work.setCreateTime(new Date());
+            work.setUpdateTime(new Date());
+            work.setCreateBy("system");
+            work.setUpdateBy("system");
+            String used = "[" + getUsedHours(team.getLectureStartTime(),team.getLectureEndTime()) + "]";
+            work.setLive(used);
+            work.setUsed(used);
+            workDayList.add(work);
         }
+        consultantScheduleService.insertPsyConsultantScheduleList(scheduleList);
+        consultantWorkTemplateService.savePsyConsultantWorkBatch(workDayList);
+        
     }
 
-
+    //获取指定时间段涉及的时间点
+    private String getUsedHours(String startTime, String endTime){
+        //获取整点数
+        Integer start = Integer.valueOf(startTime.split(":")[0]);
+        Integer end = Integer.valueOf(endTime.split(":")[0]);
+        
+        //获取期间的每一个整点
+        StringBuilder result = new StringBuilder();
+        for (int i = start; i <= end; i++) {
+            if (result.length() > 0) {
+                result.append(","); // 如果不是第一个元素，添加逗号
+            }
+            result.append(i); // 添加当前数字
+        }
+        
+        return result.toString();
+    }
+    
     /**
      * 获取往后N个周几的日期, 不含当天 (如:最近5个周三的日期)
      * @param currentDate
