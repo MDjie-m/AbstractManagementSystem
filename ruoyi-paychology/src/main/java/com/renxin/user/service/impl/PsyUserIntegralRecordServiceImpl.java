@@ -66,7 +66,7 @@ public class PsyUserIntegralRecordServiceImpl extends ServiceImpl<PsyUserIntegra
 
     @Override
     public Integer getUserIntegral(HttpServletRequest request) {
-        Integer id = pocketTokenService.getUserId(request);
+        Long id = pocketTokenService.getUserId(request);
         if (id == -1) {
             return 0;
         }

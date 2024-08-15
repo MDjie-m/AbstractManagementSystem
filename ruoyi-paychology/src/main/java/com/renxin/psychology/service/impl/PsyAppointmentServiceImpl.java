@@ -26,7 +26,7 @@ public class PsyAppointmentServiceImpl implements IPsyAppointmentService
      * @return 咨询师预约
      */
     @Override
-    public PsyAppointment selectPsyAppointmentById(Integer id)
+    public PsyAppointment selectPsyAppointmentById(Long id)
     {
         return psyAppointmentMapper.selectPsyAppointmentById(id);
     }
@@ -74,7 +74,7 @@ public class PsyAppointmentServiceImpl implements IPsyAppointmentService
      * @return 结果
      */
     @Override
-    public int deletePsyAppointmentByIds(Integer[] ids)
+    public int deletePsyAppointmentByIds(Long[] ids)
     {
         return psyAppointmentMapper.deletePsyAppointmentByIds(ids);
     }
@@ -86,7 +86,7 @@ public class PsyAppointmentServiceImpl implements IPsyAppointmentService
      * @return 结果
      */
     @Override
-    public int deletePsyAppointmentById(Integer id)
+    public int deletePsyAppointmentById(Long id)
     {
         return psyAppointmentMapper.deletePsyAppointmentById(id);
     }

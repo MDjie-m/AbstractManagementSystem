@@ -15,7 +15,7 @@ public class PsyGaugeClass extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
+    private Long id;
 
     @Excel(name = "分类名")
     private String name;

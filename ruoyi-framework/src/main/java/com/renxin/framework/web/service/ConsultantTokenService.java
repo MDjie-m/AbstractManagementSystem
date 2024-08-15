@@ -98,7 +98,7 @@ public class ConsultantTokenService {
      *
      * @return 用户id
      */
-    public Integer getUserId(HttpServletRequest request) {
+    public Long getUserId(HttpServletRequest request) {
         ConsultDTO loginUser = getLoginUser(request);
         return loginUser != null && loginUser.getUserId() != null ? loginUser.getUserId() : -1;
     }

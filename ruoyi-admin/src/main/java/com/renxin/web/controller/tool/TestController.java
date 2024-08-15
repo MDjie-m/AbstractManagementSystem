@@ -34,8 +34,8 @@ public class TestController extends BaseController
 {
     private final static Map<Integer, UserEntity> users = new LinkedHashMap<Integer, UserEntity>();
     {
-        users.put(1, new UserEntity(1, "admin", "admin123", "15888888888"));
-        users.put(2, new UserEntity(2, "ry", "admin123", "15666666666"));
+        users.put(1, new UserEntity(1L, "admin", "admin123", "15888888888"));
+        users.put(2, new UserEntity(2L, "ry", "admin123", "15666666666"));
     }
 
     @ApiOperation("获取用户列表")
@@ -49,7 +49,7 @@ public class TestController extends BaseController
     @ApiOperation("获取用户详细")
     @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "int", paramType = "path", dataTypeClass = Integer.class)
     @GetMapping("/{userId}")
-    public R<UserEntity> getUser(@PathVariable Integer userId)
+    public R<UserEntity> getUser(@PathVariable Long userId)
     {
         if (!users.isEmpty() && users.containsKey(userId))
         {
@@ -75,7 +75,7 @@ public class TestController extends BaseController
         {
             return R.fail("用户ID不能为空");
         }
-        users.put(user.getUserId(), user);
+        users.put(user.getUserId().intValue(), user);
         return R.ok();
     }
 
@@ -92,14 +92,14 @@ public class TestController extends BaseController
             return R.fail("用户不存在");
         }
         users.remove(user.getUserId());
-        users.put(user.getUserId(), user);
+        users.put(user.getUserId().intValue(), user);
         return R.ok();
     }
 
     @ApiOperation("删除用户信息")
     @ApiImplicitParam(name = "userId", value = "用户ID", required = true, dataType = "int", paramType = "path", dataTypeClass = Integer.class)
     @DeleteMapping("/{userId}")
-    public R<String> delete(@PathVariable Integer userId)
+    public R<String> delete(@PathVariable Long userId)
     {
         if (!users.isEmpty() && users.containsKey(userId))
         {
@@ -117,7 +117,7 @@ public class TestController extends BaseController
 class UserEntity
 {
     @ApiModelProperty("用户ID")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty("用户名称")
     private String username;
@@ -133,7 +133,7 @@ class UserEntity
 
     }
 
-    public UserEntity(Integer userId, String username, String password, String mobile)
+    public UserEntity(Long userId, String username, String password, String mobile)
     {
         this.userId = userId;
         this.username = username;
@@ -141,12 +141,12 @@ class UserEntity
         this.mobile = mobile;
     }
 
-    public Integer getUserId()
+    public Long getUserId()
     {
         return userId;
     }
 
-    public void setUserId(Integer userId)
+    public void setUserId(Long userId)
     {
         this.userId = userId;
     }

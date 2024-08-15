@@ -18,11 +18,11 @@ public class PsyGaugeQuestionsOptions extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** $column.columnComment */
-    private Integer id;
+    private Long id;
 
     /** 测评表单题目ID */
     @Excel(name = "测评表单题目ID")
-    private Integer gaugeQuestionsId;
+    private Long gaugeQuestionsId;
 
     /** 选项名 */
     @Excel(name = "选项名")

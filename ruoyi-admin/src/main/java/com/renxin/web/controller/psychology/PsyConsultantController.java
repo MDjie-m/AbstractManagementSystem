@@ -64,7 +64,7 @@ public class PsyConsultantController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('psychology:consultant:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Integer id)
+    public AjaxResult getInfo(@PathVariable("id") Long id)
     {
         return AjaxResult.success(psyConsultantService.selectPsyConsultantById(id));
     }
@@ -97,7 +97,7 @@ public class PsyConsultantController extends BaseController
     @PreAuthorize("@ss.hasPermi('psychology:consultant:remove')")
     @Log(title = "心理咨询师", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Integer[] ids)
+    public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(psyConsultantService.deletePsyConsultantByIds(ids));
     }

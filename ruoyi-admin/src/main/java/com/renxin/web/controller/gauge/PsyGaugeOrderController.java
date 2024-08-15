@@ -70,7 +70,7 @@ public class PsyGaugeOrderController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('gauge:order:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Integer id)
+    public AjaxResult getInfo(@PathVariable("id") Long id)
     {
         return AjaxResult.success(psyOrderService.selectPsyOrderById(id));
     }

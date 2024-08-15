@@ -51,12 +51,12 @@ public class WxPayTest {
     @Test
     public void payTest() {
         WechatPayDTO dto = new WechatPayDTO();
-        dto.setUserId(84);
+        dto.setUserId(84L);
         dto.setServeId(1673151921080299521L);
         dto.setWorkId(0L);
         dto.setAmount(new BigDecimal("106.00"));
         dto.setModule("consult");
-        Integer userId = dto.getUserId(); //用户id
+        Long userId = dto.getUserId(); //用户id
         String out_trade_no = null;
 
         BigDecimal amount = dto.getAmount(); //单位：元
@@ -107,10 +107,10 @@ public class WxPayTest {
 
     @Test
     public void testOrderNo() {
-        System.out.println(createOrderNo(PsyConstants.ORDER_CONSULT, 84));
+        System.out.println(createOrderNo(PsyConstants.ORDER_CONSULT, 84L));
     }
 
-    private String  createOrderNo(String head, Integer id) {
+    private String  createOrderNo(String head, Long id) {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 //        int length = uid.length();

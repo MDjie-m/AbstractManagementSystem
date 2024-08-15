@@ -26,7 +26,7 @@ public class PsyGaugeClassServiceImpl implements IPsyGaugeClassService
      * @return 测评分类
      */
     @Override
-    public PsyGaugeClass selectPsyGaugeClassById(Integer id)
+    public PsyGaugeClass selectPsyGaugeClassById(Long id)
     {
         return psyGaugeClassMapper.selectPsyGaugeClassById(id);
     }
@@ -74,7 +74,7 @@ public class PsyGaugeClassServiceImpl implements IPsyGaugeClassService
      * @return 结果
      */
     @Override
-    public int deletePsyGaugeClassByIds(Integer[] ids)
+    public int deletePsyGaugeClassByIds(Long[] ids)
     {
         return psyGaugeClassMapper.deletePsyGaugeClassByIds(ids);
     }
@@ -86,7 +86,7 @@ public class PsyGaugeClassServiceImpl implements IPsyGaugeClassService
      * @return 结果
      */
     @Override
-    public int deletePsyGaugeClassById(Integer id)
+    public int deletePsyGaugeClassById(Long id)
     {
         return psyGaugeClassMapper.deletePsyGaugeClassById(id);
     }

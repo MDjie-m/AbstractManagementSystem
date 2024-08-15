@@ -21,7 +21,7 @@ public interface PsyGaugeQuestionsResultMapper
      * @param id 心理测评问题结果主键
      * @return 心理测评问题结果
      */
-    public PsyGaugeQuestionsResult selectPsyGaugeQuestionsResultById(Integer id);
+    public PsyGaugeQuestionsResult selectPsyGaugeQuestionsResultById(Long id);
 
     /**
      * 查询心理测评问题结果列表
@@ -53,7 +53,7 @@ public interface PsyGaugeQuestionsResultMapper
      * @param id 心理测评问题结果主键
      * @return 结果
      */
-    public int deletePsyGaugeQuestionsResultById(Integer id);
+    public int deletePsyGaugeQuestionsResultById(Long id);
 
     /**
      * 批量删除心理测评问题结果
@@ -61,7 +61,7 @@ public interface PsyGaugeQuestionsResultMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deletePsyGaugeQuestionsResultByIds(Integer[] ids);
+    public int deletePsyGaugeQuestionsResultByIds(Long[] ids);
 
     int batchInsert(List<PsyGaugeQuestionsResult> list);
 

@@ -16,7 +16,7 @@ public class PsyGaugeBannerConfig extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
-    private Integer id;
+    private Long id;
 
     /** banner图片地址 */
     @Excel(name = "banner图片地址")

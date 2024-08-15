@@ -84,7 +84,7 @@ public class CourOrderController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('course:order:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Integer id)
+    public AjaxResult getInfo(@PathVariable("id") Long id)
     {
         return AjaxResult.success(courOrderService.selectCourOrderById(id));
     }
@@ -98,7 +98,7 @@ public class CourOrderController extends BaseController
     public AjaxResult add(@RequestBody CourOrder courOrder)
     {
         try {
-            int res = courOrderService.insertCourOrder(courOrder);
+            Long res = courOrderService.insertCourOrder(courOrder);
             return AjaxResult.success(res);
         } catch (Exception e) {
             return AjaxResult.error(500, "新增课程订单失败");
@@ -127,7 +127,7 @@ public class CourOrderController extends BaseController
     @PreAuthorize("@ss.hasPermi('course:order:remove')")
     @Log(title = "课程订单", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Integer[] ids)
+    public AjaxResult remove(@PathVariable Long[] ids)
     {
         try {
             int res = courOrderService.deleteCourOrderByIds(ids);

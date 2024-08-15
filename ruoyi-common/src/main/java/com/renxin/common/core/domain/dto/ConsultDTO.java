@@ -13,7 +13,7 @@ public class ConsultDTO  implements UserDetails {
     /**
      * 用户id
      */
-    private Integer userId;
+    private Long userId;
 
      /**
      * 咨询师ID

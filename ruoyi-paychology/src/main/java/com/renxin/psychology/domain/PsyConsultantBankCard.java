@@ -27,7 +27,7 @@ public class PsyConsultantBankCard
     private static final long serialVersionUID = 1L;
 
     /** id */
-    private Integer id;
+    private Long id;
 
     /** 名字 */
     @Excel(name = "名字")

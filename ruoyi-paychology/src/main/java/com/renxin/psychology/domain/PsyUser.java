@@ -26,7 +26,7 @@ public class PsyUser
     private static final long serialVersionUID = 1L;
 
     /** 用户id */
-    private Integer id;
+    private Long id;
 
     /**  */
     @Excel(name = "用户名")

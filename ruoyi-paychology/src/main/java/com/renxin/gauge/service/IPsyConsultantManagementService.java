@@ -19,7 +19,7 @@ public interface IPsyConsultantManagementService
      * @param id 咨询师管理主键
      * @return 咨询师管理
      */
-    public PsyConsultantManagement selectPsyConsultantManagementById(Integer id);
+    public PsyConsultantManagement selectPsyConsultantManagementById(Long id);
 
     /**
      * 查询咨询师管理列表
@@ -51,7 +51,7 @@ public interface IPsyConsultantManagementService
      * @param ids 需要删除的咨询师管理主键集合
      * @return 结果
      */
-    public int deletePsyConsultantManagementByIds(Integer[] ids);
+    public int deletePsyConsultantManagementByIds(Long[] ids);
 
     /**
      * 删除咨询师管理信息
@@ -59,5 +59,5 @@ public interface IPsyConsultantManagementService
      * @param id 咨询师管理主键
      * @return 结果
      */
-    public int deletePsyConsultantManagementById(Integer id);
+    public int deletePsyConsultantManagementById(Long id);
 }

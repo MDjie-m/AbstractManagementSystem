@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class SectionVO implements Serializable {
     /** 章节ID */
     @ApiModelProperty("ID")
-    private Integer id;
+    private Long id;
 
     /** 章节编号 */
     @Excel(name = "章节编号")
@@ -47,7 +47,7 @@ public class SectionVO implements Serializable {
     /** 课程ID */
     @Excel(name = "课程ID")
     @ApiModelProperty("课程ID")
-    private Integer courseId;
+    private Long courseId;
 
     /** 内容类型（0-视频，1-音频） */
     @Excel(name = "内容类型", readConverterExp = "0=-视频，1-音频")

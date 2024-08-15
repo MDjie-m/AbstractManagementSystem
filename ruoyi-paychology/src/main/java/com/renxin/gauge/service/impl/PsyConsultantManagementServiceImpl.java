@@ -28,7 +28,7 @@ public class PsyConsultantManagementServiceImpl implements IPsyConsultantManagem
      * @return 咨询师管理
      */
     @Override
-    public PsyConsultantManagement selectPsyConsultantManagementById(Integer id)
+    public PsyConsultantManagement selectPsyConsultantManagementById(Long id)
     {
         return psyConsultantManagementMapper.selectPsyConsultantManagementById(id);
     }
@@ -78,7 +78,7 @@ public class PsyConsultantManagementServiceImpl implements IPsyConsultantManagem
      * @return 结果
      */
     @Override
-    public int deletePsyConsultantManagementByIds(Integer[] ids)
+    public int deletePsyConsultantManagementByIds(Long[] ids)
     {
         return psyConsultantManagementMapper.deletePsyConsultantManagementByIds(ids);
     }
@@ -90,7 +90,7 @@ public class PsyConsultantManagementServiceImpl implements IPsyConsultantManagem
      * @return 结果
      */
     @Override
-    public int deletePsyConsultantManagementById(Integer id)
+    public int deletePsyConsultantManagementById(Long id)
     {
         return psyConsultantManagementMapper.deletePsyConsultantManagementById(id);
     }

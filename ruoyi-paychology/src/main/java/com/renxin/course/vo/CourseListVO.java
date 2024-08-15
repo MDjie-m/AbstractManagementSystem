@@ -14,7 +14,7 @@ public class CourseListVO implements Serializable {
 
     /** ID */
     @ApiModelProperty("ID")
-    private Integer id;
+    private Long id;
 
     /** 课程名称 */
     @ApiModelProperty("课程名称")

@@ -13,7 +13,7 @@ import java.util.Date;
 @ApiModel("课程订单")
 public class CourseOrderVO {
     /** ID */
-    private Integer id;
+    private Long id;
 
     /** 订单编号 */
     @ApiModelProperty("订单编号")

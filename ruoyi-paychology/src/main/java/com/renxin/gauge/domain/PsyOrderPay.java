@@ -26,13 +26,13 @@ public class PsyOrderPay extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
-    private Integer id;
+    private Long id;
 
     /** 订单号 */
     @Excel(name = "订单号")
-    private Integer orderId;
+    private Long orderId;
 
-    private Integer consultantOrderId;
+    private Long consultantOrderId;
 
     /** 支付状态(1-待支付,2-已支付，3-取消支付) */
     @Excel(name = "支付状态(1-待支付,2-已支付，3-取消支付)")

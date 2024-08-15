@@ -17,7 +17,7 @@ import java.util.List;
 public class PsyQuestionVO {
 
     @ApiModelProperty("问题id")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty("问题描述")
     private String title;
@@ -43,6 +43,6 @@ public class PsyQuestionVO {
     private List<PsyGaugeQuestionsOptions> options;
 
     @ApiModelProperty("答案")
-    private List<Integer> answers;
+    private List<Long> answers;
 
 }

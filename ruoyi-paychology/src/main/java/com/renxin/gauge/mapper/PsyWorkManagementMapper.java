@@ -18,7 +18,7 @@ public interface PsyWorkManagementMapper
      * @param id 排班管理主键
      * @return 排班管理
      */
-    public PsyWorkManagement selectPsyWorkManagementById(Integer id);
+    public PsyWorkManagement selectPsyWorkManagementById(Long id);
 
     /**
      * 查询排班管理列表
@@ -50,7 +50,7 @@ public interface PsyWorkManagementMapper
      * @param id 排班管理主键
      * @return 结果
      */
-    public int deletePsyWorkManagementById(Integer id);
+    public int deletePsyWorkManagementById(Long id);
 
     /**
      * 批量删除排班管理
@@ -58,5 +58,5 @@ public interface PsyWorkManagementMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deletePsyWorkManagementByIds(Integer[] ids);
+    public int deletePsyWorkManagementByIds(Long[] ids);
 }

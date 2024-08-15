@@ -16,11 +16,11 @@ public class PsyGaugeLabel extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
-    private Integer id;
+    private Long id;
 
     /** 量表id */
 //    @Excel(name = "量表id")
-    private Integer gaugeId;
+    private Long gaugeId;
 
     private Integer sort;
 

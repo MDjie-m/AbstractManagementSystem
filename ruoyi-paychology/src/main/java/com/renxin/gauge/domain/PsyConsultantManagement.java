@@ -18,7 +18,7 @@ public class PsyConsultantManagement extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** $column.columnComment */
-    private Integer id;
+    private Long id;
 
     /** 咨询师名称 */
     @Excel(name = "咨询师名称")

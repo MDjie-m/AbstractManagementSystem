@@ -57,7 +57,7 @@ public class PsyUserServiceImpl implements IPsyUserService {
      * @return 用户
      */
     @Override
-    public PsyUser selectPsyUserById(Integer id) {
+    public PsyUser selectPsyUserById(Long id) {
         PsyUser psyUser = psyUserMapper.selectPsyUserById(id);
         if (ObjectUtils.isEmpty(psyUser.getName())){
             psyUser.setName("");
@@ -112,7 +112,7 @@ public class PsyUserServiceImpl implements IPsyUserService {
      * @return 结果
      */
     @Override
-    public int deletePsyUserByIds(Integer[] ids) {
+    public int deletePsyUserByIds(Long[] ids) {
         return psyUserMapper.deletePsyUserByIds(ids);
     }
 
@@ -123,7 +123,7 @@ public class PsyUserServiceImpl implements IPsyUserService {
      * @return 结果
      */
     @Override
-    public int deletePsyUserById(Integer id) {
+    public int deletePsyUserById(Long id) {
         return psyUserMapper.deletePsyUserById(id);
     }
 
@@ -189,7 +189,7 @@ public class PsyUserServiceImpl implements IPsyUserService {
      */
     @Override
     public PsyUser queryUserDetail(VisitorDetailReq req){
-        PsyUser psyUser = selectPsyUserById(req.getPayUserId().intValue());
+        PsyUser psyUser = selectPsyUserById(req.getPayUserId());
         psyUser.setWxOpenid(null);
         psyUser.setPhone(null);
         OrderItemDTO itemReq = new OrderItemDTO();

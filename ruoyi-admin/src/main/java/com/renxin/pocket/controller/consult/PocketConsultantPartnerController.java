@@ -54,7 +54,7 @@ public class PocketConsultantPartnerController extends BaseController
     @RateLimiter
     public AjaxResult draft(HttpServletRequest request)
     {
-        Integer userId = pocketTokenService.getUserId(request);
+        Long userId = pocketTokenService.getUserId(request);
         partnerService.draft(userId);
         return AjaxResult.success();
     }
@@ -63,7 +63,7 @@ public class PocketConsultantPartnerController extends BaseController
     @RateLimiter
     public AjaxResult save(@RequestBody PsyConsultPartner entity, HttpServletRequest request)
     {
-        Integer userId = pocketTokenService.getUserId(request);
+        Long userId = pocketTokenService.getUserId(request);
         entity.setUserId(userId);
         return AjaxResult.success(partnerService.save(entity));
     }
@@ -72,7 +72,7 @@ public class PocketConsultantPartnerController extends BaseController
     @RateLimiter
     public AjaxResult getInfo(HttpServletRequest request)
     {
-        Integer userId = pocketTokenService.getUserId(request);
+        Long userId = pocketTokenService.getUserId(request);
         return AjaxResult.success(partnerService.getInfoByUserId(userId));
     }
 

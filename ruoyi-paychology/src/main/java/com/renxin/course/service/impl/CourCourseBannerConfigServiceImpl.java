@@ -27,7 +27,7 @@ public class CourCourseBannerConfigServiceImpl implements ICourCourseBannerConfi
      * @return 课程banner配置
      */
     @Override
-    public CourCourseBannerConfig selectCourCourseBannerConfigById(Integer id)
+    public CourCourseBannerConfig selectCourCourseBannerConfigById(Long id)
     {
         return courCourseBannerConfigMapper.selectCourCourseBannerConfigById(id);
     }
@@ -76,7 +76,7 @@ public class CourCourseBannerConfigServiceImpl implements ICourCourseBannerConfi
      * @return 结果
      */
     @Override
-    public int deleteCourCourseBannerConfigByIds(Integer[] ids)
+    public int deleteCourCourseBannerConfigByIds(Long[] ids)
     {
         return courCourseBannerConfigMapper.deleteCourCourseBannerConfigByIds(ids);
     }
@@ -88,7 +88,7 @@ public class CourCourseBannerConfigServiceImpl implements ICourCourseBannerConfi
      * @return 结果
      */
     @Override
-    public int deleteCourCourseBannerConfigById(Integer id)
+    public int deleteCourCourseBannerConfigById(Long id)
     {
         return courCourseBannerConfigMapper.deleteCourCourseBannerConfigById(id);
     }

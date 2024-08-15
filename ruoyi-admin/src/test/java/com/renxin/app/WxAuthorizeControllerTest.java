@@ -33,10 +33,10 @@ public class WxAuthorizeControllerTest {
         loginUser.setWxOpenId("oviCP50GGq_RKKZ7X-2Zl2181O2U");
         loginUser.setAccount("oviCP50GGq_RKKZ7X-2Zl2181O2U");
         loginUser.setLoginType(LoginType.WX);
-        loginUser.setUserId(55);
+        loginUser.setUserId(55L);
 
 //        LoginVO loginVO = LoginVO.builder().userId(84).token(appTokenService.createToken(loginUser, null)).name("进").avatar("https://thirdwx.qlogo.cn/mmopen/vi_32/3SMCDnLMChqt0Flb0icHvwPQmxnrMEtM7jxV6VMLRibY5oA8BhicqCR3RSwvjdZia2ERA2broS7XLOqSmNfpXolbPw/132").build();
-        LoginVO loginVO = LoginVO.builder().userId(55).token(pocketTokenService.createToken(loginUser, null)).name("姗姗").avatar("https://thirdwx.qlogo.cn/mmopen/vi_32/ibkVKJebFcicyZAibpxzLy3uwu5icYZrWWrvPJBOJz7ld1mQuCpXyjCy0EiaibDbjAVibOmOg5VCSHyjmAbpVhPf6DrEw/132").build();
+        LoginVO loginVO = LoginVO.builder().userId(55L).token(pocketTokenService.createToken(loginUser, null)).name("姗姗").avatar("https://thirdwx.qlogo.cn/mmopen/vi_32/ibkVKJebFcicyZAibpxzLy3uwu5icYZrWWrvPJBOJz7ld1mQuCpXyjCy0EiaibDbjAVibOmOg5VCSHyjmAbpVhPf6DrEw/132").build();
         log.info("用户登录模拟::::::userInfo::" + JSONObject.toJSONString(loginVO));
         log.info("token::::::" + JSONObject.toJSONString(loginVO.getToken()));
 //        return AjaxResult.success(RespMessageConstants.APP_LOGIN_SUCCESS, loginVO);

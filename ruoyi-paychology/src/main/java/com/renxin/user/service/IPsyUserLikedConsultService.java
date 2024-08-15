@@ -9,7 +9,7 @@ public interface IPsyUserLikedConsultService {
 
     PsyUserLikedConsult getLiked(PsyUserLikedConsult psyConsultFocus);
 
-    List<PsyUserLikedConsultVO> getLikes(Integer userId);
+    List<PsyUserLikedConsultVO> getLikes(Long userId);
 
     int add(PsyUserLikedConsult psyConsultFocus);
 

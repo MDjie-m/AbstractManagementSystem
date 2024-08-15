@@ -100,7 +100,7 @@ public class PocketCourseController extends BaseController
     @PostMapping("/getCourseListByUserId")
     @ApiOperation("根据用户ID查询课程列表")
     @RateLimiter
-    public TableDataInfo getCourseListByUserId(@RequestParam Integer userId)
+    public TableDataInfo getCourseListByUserId(@RequestParam Long userId)
     {
         startPage();
         List<CourCourse> list = courCourseService.getCourseListByUserId(userId);
@@ -146,7 +146,7 @@ public class PocketCourseController extends BaseController
     @PostMapping(value = "/getInfo")
     @ApiOperation("查询课程信息")
     @RateLimiter
-    public AjaxResult getInfo(@RequestParam(value = "id") Integer courseId)
+    public AjaxResult getInfo(@RequestParam(value = "id") Long courseId)
     {
         CourCourse course = courCourseService.selectCourCourseById(courseId);
         if (course == null) {
@@ -185,10 +185,10 @@ public class PocketCourseController extends BaseController
     @PostMapping(value = "/detail/{courseId}")
     @ApiOperation("查询课程详情")
     @RateLimiter
-    public AjaxResult detail(@PathVariable("courseId") Integer courseId, HttpServletRequest request)
+    public AjaxResult detail(@PathVariable("courseId") Long courseId, HttpServletRequest request)
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
-        Integer userId = loginUser.getUserId();
+        Long userId = loginUser.getUserId();
 
         CourCourse course = courCourseService.selectCourCourseById(courseId);
         if (course == null) {
@@ -216,14 +216,14 @@ public class PocketCourseController extends BaseController
         for (CourSection section: sectionList) {
             SectionVO sectionVO = new SectionVO();
             CourUserCourseSection userCourseSection = new CourUserCourseSection();
-            userCourseSection.setUserId(userId);
+            userCourseSection.setUserId(userId.longValue());
             userCourseSection.setCourseId(courseId);
             BeanUtils.copyProperties(section, sectionVO);
             userCourseSection.setSectionId(section.getId());
             sectionVO.setEndTime(courUserCourseSectionService.findEndTime(userCourseSection));
 
             // 未购买课程的普通章节不返回内容链接
-            if (courCourseService.getPaidCourseCount(userId, courseId) == 0 && sectionVO.getType() == CourConstant.SECTION_NORMAL) {
+            if (courCourseService.getPaidCourseCount(userId.longValue(), courseId) == 0 && sectionVO.getType() == CourConstant.SECTION_NORMAL) {
                 sectionVO.setContentUrl(null);
             }
 
@@ -235,7 +235,7 @@ public class PocketCourseController extends BaseController
         if (userId == 0 || courseVO.getPayType() == CourConstant.COURSE_FREE) { // 没有给出用户标识
             return AjaxResult.success(courseVO);
         }
-        List<CourOrder> courOrderList = courOrderService.selectCourOrderByUser(userId, courseId);
+        List<CourOrder> courOrderList = courOrderService.selectCourOrderByUser(userId.longValue(), courseId);
         courseVO.setIsBuy(courOrderList.size() > 0 ? CourConstant.COURSE_BUY : CourConstant.COURSE_NOT_BUY);
 
         return AjaxResult.success(courseVO);

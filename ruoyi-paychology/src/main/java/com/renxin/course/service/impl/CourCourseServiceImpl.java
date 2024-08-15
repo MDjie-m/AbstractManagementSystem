@@ -39,7 +39,7 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 课程
      */
     @Override
-    public CourCourse selectCourCourseById(Integer id)
+    public CourCourse selectCourCourseById(Long id)
     {
         return courCourseMapper.selectCourCourseById(id);
     }
@@ -100,7 +100,7 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 结果
      */
     @Override
-    public int deleteCourCourseByIds(Integer[] ids)
+    public int deleteCourCourseByIds(Long[] ids)
     {
         return courCourseMapper.deleteCourCourseByIds(ids);
     }
@@ -112,7 +112,7 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 结果
      */
     @Override
-    public int deleteCourCourseById(Integer id)
+    public int deleteCourCourseById(Long id)
     {
         return courCourseMapper.deleteCourCourseById(id);
     }
@@ -124,7 +124,7 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @param courseId 课程编号
      * @return 课程信息
      */
-    public boolean calCourCourseList(Integer userId, Integer courseId) {
+    public boolean calCourCourseList(Long userId, Long courseId) {
         CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
         courUserCourseSection.setCourseId(courseId);
         List<CourUserCourseSection> courUserCourseSectionList =
@@ -143,7 +143,7 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @param courseId 课程ID
      * @return 课程信息
      */
-    public Integer calCourCourseStudyDuration(Integer userId, Integer courseId) {
+    public Integer calCourCourseStudyDuration(Long userId, Long courseId) {
         Integer studyDuration = 0;
         CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
         courUserCourseSection.setUserId(userId);
@@ -168,17 +168,17 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @param courseId 课程ID
      * @return 课程支付数量
      */
-    public int getPaidCourseCount(Integer userId, Integer courseId) {
-        return courCourseMapper.getPaidCourseCount(userId, courseId);
+    public int getPaidCourseCount(Long userId, Long courseId) {
+        return courCourseMapper.getPaidCourseCount(userId.longValue(), courseId);
     }
-
+    
     /**
      * 根据用户ID查询课程列表
      *
      * @param userId 用户ID
      * @return 课程集合
      */
-    public List<CourCourse> getCourseListByUserId(Integer userId)
+    public List<CourCourse> getCourseListByUserId(Long userId)
     {
         return courCourseMapper.getCourseListByUserId(userId);
     }

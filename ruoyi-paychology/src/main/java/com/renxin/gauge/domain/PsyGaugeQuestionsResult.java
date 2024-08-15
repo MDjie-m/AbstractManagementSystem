@@ -26,14 +26,14 @@ public class PsyGaugeQuestionsResult extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
+    private Long id;
 
     @Excel(name = "用户ID")
-    private Integer userId;
+    private Long userId;
 
     @Excel(name = "量表")
     @NotNull(message = "量表id不能为空")
-    private Integer gaugeId;
+    private Long gaugeId;
 
     @Excel(name = "问题")
     @NotNull(message = "问题id不能为空")
@@ -43,7 +43,7 @@ public class PsyGaugeQuestionsResult extends BaseEntity
     @NotNull(message = "问题选项id集合不能为空")
     private List<Integer> questionsOptionsIdList;
 
-    private Integer questionsOptionsId;
+    private Long questionsOptionsId;
 
     private Integer questionsLat;
 
@@ -57,7 +57,7 @@ public class PsyGaugeQuestionsResult extends BaseEntity
     /**
      * 订单id
      */
-    private Integer orderId;
+    private Long orderId;
 
     @Override
     public String toString() {

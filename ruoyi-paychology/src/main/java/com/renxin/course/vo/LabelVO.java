@@ -8,11 +8,11 @@ import lombok.Data;
 public class LabelVO extends BaseEntity {
 
     /** ID */
-    private Integer id;
+    private Long id;
 
     /** 课程编号 */
     @Excel(name = "课程ID")
-    private Integer courseId;
+    private Long courseId;
 
     /** 课程名称 */
     @Excel(name = "课程名称")

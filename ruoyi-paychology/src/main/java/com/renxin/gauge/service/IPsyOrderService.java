@@ -20,7 +20,7 @@ public interface IPsyOrderService
      * @param id 心理测评订单信息主键
      * @return 心理测评订单信息
      */
-    public PsyOrder selectPsyOrderById(Integer id);
+    public PsyOrder selectPsyOrderById(Long id);
 
     /**
      * 查询心理测评订单信息列表
@@ -40,7 +40,7 @@ public interface IPsyOrderService
      * @param psyOrder 心理测评订单信息
      * @return 结果
      */
-    public int insertPsyOrder(PsyOrder psyOrder);
+    public Long insertPsyOrder(PsyOrder psyOrder);
 
     /**
      * 修改心理测评订单信息
@@ -63,7 +63,7 @@ public interface IPsyOrderService
      * @param ids 需要删除的心理测评订单信息主键集合
      * @return 结果
      */
-    public int deletePsyOrderByIds(Integer[] ids);
+    public int deletePsyOrderByIds(Long[] ids);
 
     /**
      * 删除心理测评订单信息信息
@@ -71,13 +71,13 @@ public interface IPsyOrderService
      * @param id 心理测评订单信息主键
      * @return 结果
      */
-    public int deletePsyOrderById(Integer id);
+    public int deletePsyOrderById(Long id);
 
     List<PsyOrder> queryOrderInfo(PsyOrder psyOrder);
 
     int getMyReportNum(LoginDTO loginUser);
 
-    int getOrderNumByGaugeId(Integer gaugeId);
+    int getOrderNumByGaugeId(Long gaugeId);
 
     /**
      * 查询测评订单
@@ -102,7 +102,7 @@ public interface IPsyOrderService
      * @param gaugeId 测评ID
      * @return 测评是否已经购买
      */
-    public Integer getGaugeIsBuy(Integer userId, Integer gaugeId);
+    public Integer getGaugeIsBuy(Long userId, Long gaugeId);
 
     /**
      * 根据用户ID和测评ID查询测评订单信息
@@ -111,5 +111,5 @@ public interface IPsyOrderService
      * @param gaugeId 测评ID
      * @return 订单信息
      */
-    public List<PsyOrder> getPsyOrder(Integer userId, Integer gaugeId);
+    public List<PsyOrder> getPsyOrder(Long userId, Long gaugeId);
 }

@@ -33,7 +33,7 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
      * @return 用户-课程-章节关系
      */
     @Override
-    public CourUserCourseSection selectCourUserCourseSectionById(Integer id)
+    public CourUserCourseSection selectCourUserCourseSectionById(Long id)
     {
         return courUserCourseSectionMapper.selectCourUserCourseSectionById(id);
     }
@@ -82,7 +82,7 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
      * @return 结果
      */
     @Override
-    public int deleteCourUserCourseSectionByIds(Integer[] ids)
+    public int deleteCourUserCourseSectionByIds(Long[] ids)
     {
         return courUserCourseSectionMapper.deleteCourUserCourseSectionByIds(ids);
     }
@@ -94,7 +94,7 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
      * @return 结果
      */
     @Override
-    public int deleteCourUserCourseSectionById(Integer id)
+    public int deleteCourUserCourseSectionById(Long id)
     {
         return courUserCourseSectionMapper.deleteCourUserCourseSectionById(id);
     }
@@ -106,7 +106,7 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
      * @param courseId 课程ID
      */
     @Override
-    public void initCourUserCourseSection(Integer userId, Integer courseId, Integer userType) {
+    public void initCourUserCourseSection(Long userId, Long courseId, Integer userType) {
 
         // 根据课程ID查询课程章节列表
         CourSection courSection = new CourSection();
@@ -114,7 +114,7 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
         List<CourSection> courSectionList = courSectionService.selectCourSectionList(courSection);
 
         CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
-        courUserCourseSection.setUserId(userId);
+        courUserCourseSection.setUserId(userId.longValue());
         courUserCourseSection.setUserType(userType);
         courUserCourseSection.setCourseId(courseId);
         courUserCourseSection.setEndTime(0);

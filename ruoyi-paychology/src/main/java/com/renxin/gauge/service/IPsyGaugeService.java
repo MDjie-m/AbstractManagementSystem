@@ -17,7 +17,7 @@ public interface IPsyGaugeService
      * @param id 心理测评主键
      * @return 心理测评
      */
-    public PsyGauge selectPsyGaugeById(Integer id);
+    public PsyGauge selectPsyGaugeById(Long id);
 
     /**
      * 查询心理测评列表
@@ -49,7 +49,7 @@ public interface IPsyGaugeService
      * @param ids 需要删除的心理测评主键集合
      * @return 结果
      */
-    public int deletePsyGaugeByIds(Integer[] ids);
+    public int deletePsyGaugeByIds(Long[] ids);
 
     /**
      * 删除心理测评信息
@@ -57,5 +57,5 @@ public interface IPsyGaugeService
      * @param id 心理测评主键
      * @return 结果
      */
-    public int deletePsyGaugeById(Integer id);
+    public int deletePsyGaugeById(Long id);
 }

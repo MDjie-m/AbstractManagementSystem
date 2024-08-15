@@ -23,10 +23,10 @@ public class GaugeCommitResultDTO {
 
     @ApiModelProperty("订单id")
     @NotNull(message = "订单id不能为空")
-    private Integer orderId;
+    private Long orderId;
 
     @ApiModelProperty("用户id")
-    private Integer userId;
+    private Long userId;
 
     @ApiModelProperty("性别")
     private String sex;

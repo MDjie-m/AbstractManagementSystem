@@ -18,7 +18,7 @@ public interface ICourSectionService
      * @param id 章节主键
      * @return 章节
      */
-    public CourSection selectCourSectionById(Integer id);
+    public CourSection selectCourSectionById(Long id);
 
     /**
      * 查询章节列表
@@ -50,7 +50,7 @@ public interface ICourSectionService
      * @param ids 需要删除的章节主键集合
      * @return 结果
      */
-    public int deleteCourSectionByIds(Integer[] ids);
+    public int deleteCourSectionByIds(Long[] ids);
 
     /**
      * 删除章节信息
@@ -58,6 +58,6 @@ public interface ICourSectionService
      * @param id 章节主键
      * @return 结果
      */
-    public int deleteCourSectionById(Integer id);
+    public int deleteCourSectionById(Long id);
 
 }

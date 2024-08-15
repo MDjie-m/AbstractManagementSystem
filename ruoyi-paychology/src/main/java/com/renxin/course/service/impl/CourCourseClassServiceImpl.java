@@ -26,7 +26,7 @@ public class CourCourseClassServiceImpl implements ICourCourseClassService
      * @return 类型
      */
     @Override
-    public CourCourseClass selectCourCourseClassById(Integer id)
+    public CourCourseClass selectCourCourseClassById(Long id)
     {
         return courCourseClassMapper.selectCourCourseClassById(id);
     }
@@ -74,7 +74,7 @@ public class CourCourseClassServiceImpl implements ICourCourseClassService
      * @return 结果
      */
     @Override
-    public int deleteCourCourseClassByIds(Integer[] ids)
+    public int deleteCourCourseClassByIds(Long[] ids)
     {
         return courCourseClassMapper.deleteCourCourseClassByIds(ids);
     }
@@ -86,7 +86,7 @@ public class CourCourseClassServiceImpl implements ICourCourseClassService
      * @return 结果
      */
     @Override
-    public int deleteCourCourseClassById(Integer id)
+    public int deleteCourCourseClassById(Long id)
     {
         return courCourseClassMapper.deleteCourCourseClassById(id);
     }

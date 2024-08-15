@@ -18,7 +18,7 @@ public interface PsyGaugeScoreSettingMapper
      * @param id 心理测评普通设置主键
      * @return 心理测评普通设置
      */
-    public PsyGaugeScoreSetting selectPsyGaugeScoreSettingById(Integer id);
+    public PsyGaugeScoreSetting selectPsyGaugeScoreSettingById(Long id);
 
     /**
      * 查询心理测评普通设置列表
@@ -35,7 +35,7 @@ public interface PsyGaugeScoreSettingMapper
      * @param ids 心理测评得分设置ID
      * @return 心理测评普通设置集合
      */
-    public List<PsyGaugeScoreSetting> selectPsyGaugeScoreSettingListByIds(Integer[] ids);
+    public List<PsyGaugeScoreSetting> selectPsyGaugeScoreSettingListByIds(Long[] ids);
 
     /**
      * 新增心理测评普通设置
@@ -59,7 +59,7 @@ public interface PsyGaugeScoreSettingMapper
      * @param id 心理测评普通设置主键
      * @return 结果
      */
-    public int deletePsyGaugeScoreSettingById(Integer id);
+    public int deletePsyGaugeScoreSettingById(Long id);
 
     /**
      * 批量删除心理测评普通设置
@@ -67,7 +67,7 @@ public interface PsyGaugeScoreSettingMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deletePsyGaugeScoreSettingByIds(Integer[] ids);
+    public int deletePsyGaugeScoreSettingByIds(Long[] ids);
 
     PsyGaugeScoreSetting selectPsyGaugeScoreSettingByGaugeId(HashMap<String, Object> paramMap);
 }

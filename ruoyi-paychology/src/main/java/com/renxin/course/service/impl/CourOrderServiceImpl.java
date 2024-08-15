@@ -40,7 +40,7 @@ public class CourOrderServiceImpl implements ICourOrderService
      * @return 课程订单
      */
     @Override
-    public CourOrder selectCourOrderById(Integer id)
+    public CourOrder selectCourOrderById(Long id)
     {
         return courOrderMapper.selectCourOrderById(id);
     }
@@ -85,7 +85,7 @@ public class CourOrderServiceImpl implements ICourOrderService
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insertCourOrder(CourOrder courOrder)
+    public Long insertCourOrder(CourOrder courOrder)
     {
         courOrder.setCreateTime(DateUtils.getNowDate());
         return courOrderMapper.insertCourOrder(courOrder);
@@ -112,7 +112,7 @@ public class CourOrderServiceImpl implements ICourOrderService
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteCourOrderByIds(Integer[] ids)
+    public int deleteCourOrderByIds(Long[] ids)
     {
         return courOrderMapper.deleteCourOrderByIds(ids);
     }
@@ -125,7 +125,7 @@ public class CourOrderServiceImpl implements ICourOrderService
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteCourOrderById(Integer id)
+    public int deleteCourOrderById(Long id)
     {
         return courOrderMapper.deleteCourOrderById(id);
     }
@@ -138,7 +138,7 @@ public class CourOrderServiceImpl implements ICourOrderService
      * @return 结果
      */
     @Override
-    public List<CourOrder> selectCourOrderByUser(Integer userId, Integer courseId) {
+    public List<CourOrder> selectCourOrderByUser(Long userId, Long courseId) {
 
         CourOrder courOrder = CourOrder.builder()
                 .courseId(courseId)
@@ -156,7 +156,7 @@ public class CourOrderServiceImpl implements ICourOrderService
      * @return 课程订单详情
      */
     @Override
-    public OrderVO getOrderDetailById(Integer id) {
+    public OrderVO getOrderDetailById(Long id) {
         return courOrderMapper.getOrderDetailById(id);
     }
 
@@ -185,7 +185,7 @@ public class CourOrderServiceImpl implements ICourOrderService
         }
 
         courOrder.setCreateTime(DateUtils.getNowDate()); // 下单时间
-        int code = courOrderMapper.insertCourOrder(courOrder);
+        Long code = courOrderMapper.insertCourOrder(courOrder);
         if (code == 1) {
             return selectCourOrderByOrderId(courOrder.getOrderId());
         }
@@ -201,7 +201,7 @@ public class CourOrderServiceImpl implements ICourOrderService
     }
 
     @Override
-    public List<CourseOrderVO> getOrderListByUserId(Integer userId,Integer status) {
+    public List<CourseOrderVO> getOrderListByUserId(Long userId,Integer status) {
         return courOrderMapper.getOrderListByUserId(userId,status);
     }
 }

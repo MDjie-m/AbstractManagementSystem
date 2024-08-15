@@ -41,7 +41,7 @@ public class PocketUserLabelController extends BaseController
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody PsyUserLabel psyUserLabel, HttpServletRequest request)
     {
-        Integer userId = pocketTokenService.getUserId(request);
+        Long userId = pocketTokenService.getUserId(request);
         psyUserLabel.setUserId(Long.valueOf(userId));
         List<PsyUserLabel> list = psyUserLabelService.selectPsyUserLabelList(psyUserLabel);
         return getDataTable(list);
@@ -65,7 +65,7 @@ public class PocketUserLabelController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody PsyUserLabel psyUserLabel, HttpServletRequest request)
     {
-        Integer userId = pocketTokenService.getUserId(request);
+        Long userId = pocketTokenService.getUserId(request);
         psyUserLabel.setUserId(Long.valueOf(userId));
         psyUserLabel.setConsultantFillLabel(null);
         psyUserLabel.setAdminFillLabel(null);
@@ -80,7 +80,7 @@ public class PocketUserLabelController extends BaseController
     @PostMapping("/edit")
     public AjaxResult edit(@RequestBody PsyUserLabel psyUserLabel, HttpServletRequest request)
     {
-        Integer userId = pocketTokenService.getUserId(request);
+        Long userId = pocketTokenService.getUserId(request);
         psyUserLabel.setUserId(Long.valueOf(userId));
         psyUserLabel.setConsultantFillLabel(null);
         psyUserLabel.setAdminFillLabel(null);

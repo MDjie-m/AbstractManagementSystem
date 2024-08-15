@@ -21,7 +21,7 @@ public interface CourCourseMapper
      * @param id 课程主键
      * @return 课程
      */
-    public CourCourse selectCourCourseById(Integer id);
+    public CourCourse selectCourCourseById(Long id);
 
     /**
      * 课程分类查询
@@ -62,7 +62,7 @@ public interface CourCourseMapper
      * @param id 课程主键
      * @return 结果
      */
-    public int deleteCourCourseById(Integer id);
+    public int deleteCourCourseById(Long id);
 
     /**
      * 批量删除课程
@@ -70,7 +70,7 @@ public interface CourCourseMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteCourCourseByIds(Integer[] ids);
+    public int deleteCourCourseByIds(Long[] ids);
 
 
     /**
@@ -79,7 +79,7 @@ public interface CourCourseMapper
      * @param courseId 课程ID
      * @return 课程支付数量
      */
-    public int getPaidCourseCount(@Param("userId") Integer userId, @Param("courseId") Integer courseId);
+    public int getPaidCourseCount(@Param("userId") Long userId, @Param("courseId") Long courseId);
 
     /**
      * 根据用户ID查询课程列表
@@ -87,7 +87,7 @@ public interface CourCourseMapper
      * @param userId 用户ID
      * @return 课程集合
      */
-    public List<CourCourse> getCourseListByUserId(Integer userId);
+    public List<CourCourse> getCourseListByUserId(Long userId);
 
     public List<CourCourse> queryCourCourseList(CourseQueryDTO courseQueryDTO);
 

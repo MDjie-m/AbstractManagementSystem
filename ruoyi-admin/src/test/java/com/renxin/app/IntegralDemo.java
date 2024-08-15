@@ -55,7 +55,7 @@ public class IntegralDemo {
         record.setUpdateTime(new Date());
         record.setLinkId("1234");
         record.setLinkType(IntegralRecordConstants.INTEGRAL_RECORD_LINK_TYPE_ORDER);
-        record.setUid(84);
+        record.setUid(84L);
         record.setBalance(100);
         record.setIntegral(100);
         record.setDelFlag(0);

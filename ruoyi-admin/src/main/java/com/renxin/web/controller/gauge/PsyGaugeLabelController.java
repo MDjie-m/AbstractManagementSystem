@@ -64,7 +64,7 @@ public class PsyGaugeLabelController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('gauge:label:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Integer id)
+    public AjaxResult getInfo(@PathVariable("id") Long id)
     {
         return AjaxResult.success(psyGaugeLabelService.selectPsyGaugeLabelById(id));
     }
@@ -107,7 +107,7 @@ public class PsyGaugeLabelController extends BaseController
     @PreAuthorize("@ss.hasPermi('gauge:label:remove')")
     @Log(title = "测评标签", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Integer[] ids)
+    public AjaxResult remove(@PathVariable Long[] ids)
     {
         try {
             int res = psyGaugeLabelService.deletePsyGaugeLabelByIds(ids);

@@ -27,7 +27,7 @@ public class PsyOrderPayServiceImpl implements IPsyOrderPayService {
      * @return 心理咨询订单支付信息
      */
     @Override
-    public PsyOrderPay selectPsyOrderPayById(Integer id) {
+    public PsyOrderPay selectPsyOrderPayById(Long id) {
         return psyOrderPayMapper.selectPsyOrderPayById(id);
     }
 
@@ -76,7 +76,7 @@ public class PsyOrderPayServiceImpl implements IPsyOrderPayService {
      * @return 结果
      */
     @Override
-    public int deletePsyOrderPayByIds(Integer[] ids) {
+    public int deletePsyOrderPayByIds(Long[] ids) {
         return psyOrderPayMapper.deletePsyOrderPayByIds(ids);
     }
 
@@ -87,7 +87,7 @@ public class PsyOrderPayServiceImpl implements IPsyOrderPayService {
      * @return 结果
      */
     @Override
-    public int deletePsyOrderPayById(Integer id) {
+    public int deletePsyOrderPayById(Long id) {
         return psyOrderPayMapper.deletePsyOrderPayById(id);
     }
 }

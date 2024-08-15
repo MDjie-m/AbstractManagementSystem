@@ -67,7 +67,7 @@ public class PocketCourseOrderController extends BaseController
     @PostMapping("/detail")
     @ApiOperation("根据订单ID查询课程订单详情")
     @RateLimiter
-    public AjaxResult detail(@RequestParam(value = "orderId") Integer id)
+    public AjaxResult detail(@RequestParam(value = "orderId") Long id)
     {
         CourOrder courOrder = courOrderService.selectCourOrderById(id);
         CourCourse course = courCourseService.selectCourCourseById(courOrder.getCourseId());
@@ -98,7 +98,7 @@ public class PocketCourseOrderController extends BaseController
     @PostMapping("/cancel")
     @ApiOperation("取消订单")
     @RateLimiter
-    public AjaxResult cancelOrder(@RequestParam Integer orderId)    {
+    public AjaxResult cancelOrder(@RequestParam Long orderId)    {
 
         CourOrder courOrder = new CourOrder();
         courOrder.setId(orderId);

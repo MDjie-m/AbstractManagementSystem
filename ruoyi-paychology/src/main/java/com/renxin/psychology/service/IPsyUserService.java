@@ -21,7 +21,7 @@ public interface IPsyUserService {
      * @param id 用户主键
      * @return 用户
      */
-    public PsyUser selectPsyUserById(Integer id);
+    public PsyUser selectPsyUserById(Long id);
 
     /**
      * 查询用户列表
@@ -53,7 +53,7 @@ public interface IPsyUserService {
      * @param ids 需要删除的用户主键集合
      * @return 结果
      */
-    public int deletePsyUserByIds(Integer[] ids);
+    public int deletePsyUserByIds(Long[] ids);
 
     /**
      * 删除用户信息
@@ -61,7 +61,7 @@ public interface IPsyUserService {
      * @param id 用户主键
      * @return 结果
      */
-    public int deletePsyUserById(Integer id);
+    public int deletePsyUserById(Long id);
 
     PsyUser queryUserByAccount(String account);
 

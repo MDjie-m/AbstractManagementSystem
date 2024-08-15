@@ -63,7 +63,7 @@ public class PsyConsultOrder extends BasePlusEntity implements Serializable
 
     /** 客户id */
     @Excel(name = "客户id")
-    private Integer userId;
+    private Long userId;
 
     /** 客户 */
     @Excel(name = "客户")

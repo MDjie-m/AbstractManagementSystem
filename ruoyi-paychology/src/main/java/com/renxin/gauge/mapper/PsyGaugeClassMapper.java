@@ -17,7 +17,7 @@ public interface PsyGaugeClassMapper
      * @param id 测评分类主键
      * @return 测评分类
      */
-    public PsyGaugeClass selectPsyGaugeClassById(Integer id);
+    public PsyGaugeClass selectPsyGaugeClassById(Long id);
 
     /**
      * 查询测评分类列表
@@ -49,7 +49,7 @@ public interface PsyGaugeClassMapper
      * @param id 测评分类主键
      * @return 结果
      */
-    public int deletePsyGaugeClassById(Integer id);
+    public int deletePsyGaugeClassById(Long id);
 
     /**
      * 批量删除测评分类
@@ -57,5 +57,5 @@ public interface PsyGaugeClassMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deletePsyGaugeClassByIds(Integer[] ids);
+    public int deletePsyGaugeClassByIds(Long[] ids);
 }

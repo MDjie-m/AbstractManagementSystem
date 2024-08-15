@@ -15,7 +15,7 @@ import java.util.Date;
 public class OrderQueryVO implements Serializable {
     /** 订单ID */
     @Excel(name = "订单ID")
-    private Integer id;
+    private Long id;
     /** 订单编号 */
     @Excel(name = "订单编号")
     private String orderId;

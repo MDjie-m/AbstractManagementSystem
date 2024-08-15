@@ -18,7 +18,7 @@ public interface PsyConsultingOrderMapper
      * @param id 咨询订单主键
      * @return 咨询订单
      */
-    public PsyConsultingOrder selectPsyConsultingOrderById(Integer id);
+    public PsyConsultingOrder selectPsyConsultingOrderById(Long id);
 
     /**
      * 查询咨询订单列表
@@ -50,7 +50,7 @@ public interface PsyConsultingOrderMapper
      * @param id 咨询订单主键
      * @return 结果
      */
-    public int deletePsyConsultingOrderById(Integer id);
+    public int deletePsyConsultingOrderById(Long id);
 
     /**
      * 批量删除咨询订单
@@ -58,5 +58,5 @@ public interface PsyConsultingOrderMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deletePsyConsultingOrderByIds(Integer[] ids);
+    public int deletePsyConsultingOrderByIds(Long[] ids);
 }

@@ -43,7 +43,7 @@ public class OrderDTO extends BaseValObj implements Serializable
     private String serveName;
 
     /** 客户id */
-    private Integer userId;
+    private Long userId;
 
     /** 客户 */
     private String nickName;

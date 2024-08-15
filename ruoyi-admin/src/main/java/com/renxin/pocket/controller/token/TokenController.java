@@ -69,7 +69,7 @@ public class TokenController extends BaseController {
              token = consultantTokenService.createToken(consultDTO,3600000);
         }
         if (type == 3){//来访者
-            PsyUser psyUser = psyUserService.selectPsyUserById(id.intValue());
+            PsyUser psyUser = psyUserService.selectPsyUserById(id);
             LoginDTO loginDTO=new LoginDTO();
             loginDTO.setUserId(psyUser.getId());//psy_user表
             loginDTO.setPhone(psyUser.getPhone());

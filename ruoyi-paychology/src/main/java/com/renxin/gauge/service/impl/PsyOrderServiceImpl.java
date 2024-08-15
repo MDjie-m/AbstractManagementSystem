@@ -34,7 +34,7 @@ public class PsyOrderServiceImpl implements IPsyOrderService {
      * @return 心理测评订单信息
      */
     @Override
-    public PsyOrder selectPsyOrderById(Integer id) {
+    public PsyOrder selectPsyOrderById(Long id) {
         return psyOrderMapper.selectPsyOrderById(id);
     }
 
@@ -70,7 +70,7 @@ public class PsyOrderServiceImpl implements IPsyOrderService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insertPsyOrder(PsyOrder psyOrder) {
+    public Long insertPsyOrder(PsyOrder psyOrder) {
         psyOrder.setCreateTime(DateUtils.getNowDate());
         return psyOrderMapper.insertPsyOrder(psyOrder);
     }
@@ -105,7 +105,7 @@ public class PsyOrderServiceImpl implements IPsyOrderService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deletePsyOrderByIds(Integer[] ids) {
+    public int deletePsyOrderByIds(Long[] ids) {
         return psyOrderMapper.deletePsyOrderByIds(ids);
     }
 
@@ -117,7 +117,7 @@ public class PsyOrderServiceImpl implements IPsyOrderService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deletePsyOrderById(Integer id) {
+    public int deletePsyOrderById(Long id) {
         return psyOrderMapper.deletePsyOrderById(id);
     }
 
@@ -132,7 +132,7 @@ public class PsyOrderServiceImpl implements IPsyOrderService {
     }
 
     @Override
-    public int getOrderNumByGaugeId(Integer gaugeId) {
+    public int getOrderNumByGaugeId(Long gaugeId) {
         return psyOrderMapper.getOrderNumByGaugeId(gaugeId);
     }
 
@@ -157,7 +157,7 @@ public class PsyOrderServiceImpl implements IPsyOrderService {
     @Override
     public PsyOrder generatePsyOrder(PsyOrder psyOrder) {
         psyOrder.setCreateTime(DateUtils.getNowDate());
-        int code = psyOrderMapper.insertPsyOrder(psyOrder);
+        Long code = psyOrderMapper.insertPsyOrder(psyOrder);
         if (code == 1) {
             return selectPsyOrderByOrderId(psyOrder.getId().toString());
         }
@@ -166,7 +166,7 @@ public class PsyOrderServiceImpl implements IPsyOrderService {
 
 
     @Override
-    public Integer getGaugeIsBuy(Integer useId, Integer gaugeId) {
+    public Integer getGaugeIsBuy(Long useId, Long gaugeId) {
         PsyOrder psyOrder = new PsyOrder();
         psyOrder.setUserId(useId);
         psyOrder.setGaugeId(gaugeId);
@@ -179,7 +179,7 @@ public class PsyOrderServiceImpl implements IPsyOrderService {
     }
 
     @Override
-    public List<PsyOrder> getPsyOrder(Integer useId, Integer gaugeId) {
+    public List<PsyOrder> getPsyOrder(Long useId, Long gaugeId) {
         PsyOrder psyOrder = new PsyOrder();
         psyOrder.setUserId(useId);
         psyOrder.setGaugeId(gaugeId);

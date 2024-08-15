@@ -18,7 +18,7 @@ public interface PsyConsultingServiceMapper
      * @param id 咨询服务主键
      * @return 咨询服务
      */
-    public PsyConsultingService selectPsyConsultingServiceById(Integer id);
+    public PsyConsultingService selectPsyConsultingServiceById(Long id);
 
     /**
      * 查询咨询服务列表
@@ -50,7 +50,7 @@ public interface PsyConsultingServiceMapper
      * @param id 咨询服务主键
      * @return 结果
      */
-    public int deletePsyConsultingServiceById(Integer id);
+    public int deletePsyConsultingServiceById(Long id);
 
     /**
      * 批量删除咨询服务
@@ -58,5 +58,5 @@ public interface PsyConsultingServiceMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deletePsyConsultingServiceByIds(Integer[] ids);
+    public int deletePsyConsultingServiceByIds(Long[] ids);
 }

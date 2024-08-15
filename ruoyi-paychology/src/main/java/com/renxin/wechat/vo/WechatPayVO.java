@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 
 @Data
 public class WechatPayVO implements Serializable {
-    private Integer userId;
-    private Integer courseId;
+    private Long userId;
+    private Long courseId;
 
-    private Integer gaugeId;
+    private Long gaugeId;
 
     private BigDecimal amount;
 

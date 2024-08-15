@@ -18,7 +18,7 @@ public interface ICourCourseBannerConfigService
      * @param id 课程banner配置主键
      * @return 课程banner配置
      */
-    public CourCourseBannerConfig selectCourCourseBannerConfigById(Integer id);
+    public CourCourseBannerConfig selectCourCourseBannerConfigById(Long id);
 
     /**
      * 查询课程banner配置列表
@@ -50,7 +50,7 @@ public interface ICourCourseBannerConfigService
      * @param ids 需要删除的课程banner配置主键集合
      * @return 结果
      */
-    public int deleteCourCourseBannerConfigByIds(Integer[] ids);
+    public int deleteCourCourseBannerConfigByIds(Long[] ids);
 
     /**
      * 删除课程banner配置信息
@@ -58,5 +58,5 @@ public interface ICourCourseBannerConfigService
      * @param id 课程banner配置主键
      * @return 结果
      */
-    public int deleteCourCourseBannerConfigById(Integer id);
+    public int deleteCourCourseBannerConfigById(Long id);
 }

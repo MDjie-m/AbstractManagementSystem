@@ -17,7 +17,7 @@ public interface PsyConsultantMapper
      * @param id 心理咨询师主键
      * @return 心理咨询师
      */
-    public PsyConsultant selectPsyConsultantById(Integer id);
+    public PsyConsultant selectPsyConsultantById(Long id);
 
     /**
      * 查询心理咨询师列表
@@ -49,7 +49,7 @@ public interface PsyConsultantMapper
      * @param id 心理咨询师主键
      * @return 结果
      */
-    public int deletePsyConsultantById(Integer id);
+    public int deletePsyConsultantById(Long id);
 
     /**
      * 批量删除心理咨询师
@@ -57,5 +57,5 @@ public interface PsyConsultantMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deletePsyConsultantByIds(Integer[] ids);
+    public int deletePsyConsultantByIds(Long[] ids);
 }

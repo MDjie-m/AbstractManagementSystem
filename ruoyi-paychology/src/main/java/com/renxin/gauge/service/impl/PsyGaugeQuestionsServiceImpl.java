@@ -36,7 +36,7 @@ public class PsyGaugeQuestionsServiceImpl implements IPsyGaugeQuestionsService {
      * @return 心理测评问题
      */
     @Override
-    public PsyGaugeQuestions selectPsyGaugeQuestionsById(Integer id) {
+    public PsyGaugeQuestions selectPsyGaugeQuestionsById(Long id) {
         return psyGaugeQuestionsMapper.selectPsyGaugeQuestionsById(id);
     }
 
@@ -82,7 +82,7 @@ public class PsyGaugeQuestionsServiceImpl implements IPsyGaugeQuestionsService {
      * @return 结果
      */
     @Override
-    public int deletePsyGaugeQuestionsByIds(Integer[] ids) {
+    public int deletePsyGaugeQuestionsByIds(Long[] ids) {
         return psyGaugeQuestionsMapper.deletePsyGaugeQuestionsByIds(ids);
     }
 
@@ -93,7 +93,7 @@ public class PsyGaugeQuestionsServiceImpl implements IPsyGaugeQuestionsService {
      * @return 结果
      */
     @Override
-    public int deletePsyGaugeQuestionsById(Integer id) {
+    public int deletePsyGaugeQuestionsById(Long id) {
         return psyGaugeQuestionsMapper.deletePsyGaugeQuestionsById(id);
     }
 
@@ -111,7 +111,7 @@ public class PsyGaugeQuestionsServiceImpl implements IPsyGaugeQuestionsService {
     }
 
     @Override
-    public List<PsyQuestionVO> wrongs(Integer orderId, Integer gaugeId) {
+    public List<PsyQuestionVO> wrongs(Long orderId, Long gaugeId) {
         PsyGaugeQuestions query = new PsyGaugeQuestions();
         PsyGaugeQuestionsResult queryResult = new PsyGaugeQuestionsResult();
         query.setGaugeId(gaugeId);

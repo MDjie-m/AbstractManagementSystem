@@ -77,7 +77,7 @@ public class PocketGaugeOrderController extends BaseController {
     @PostMapping(value = "/{id}")
     @ApiOperation("获取订单详细信息")
     @RateLimiter
-    public AjaxResult getInfo(@PathVariable("id") Integer id) {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return AjaxResult.success(psyOrderService.selectPsyOrderById(id));
     }
 

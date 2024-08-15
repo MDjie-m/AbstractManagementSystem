@@ -26,7 +26,7 @@ public class PsyGaugeScoreSettingServiceImpl implements IPsyGaugeScoreSettingSer
      * @return 心理测评普通设置
      */
     @Override
-    public PsyGaugeScoreSetting selectPsyGaugeScoreSettingById(Integer id)
+    public PsyGaugeScoreSetting selectPsyGaugeScoreSettingById(Long id)
     {
         return psyGaugeScoreSettingMapper.selectPsyGaugeScoreSettingById(id);
     }
@@ -44,7 +44,7 @@ public class PsyGaugeScoreSettingServiceImpl implements IPsyGaugeScoreSettingSer
     }
 
     @Override
-    public List<PsyGaugeScoreSetting> selectPsyGaugeScoreSettingListByIds(Integer[] ids) {
+    public List<PsyGaugeScoreSetting> selectPsyGaugeScoreSettingListByIds(Long[] ids) {
       return psyGaugeScoreSettingMapper.selectPsyGaugeScoreSettingListByIds(ids);
     }
 
@@ -81,7 +81,7 @@ public class PsyGaugeScoreSettingServiceImpl implements IPsyGaugeScoreSettingSer
      * @return 结果
      */
     @Override
-    public int deletePsyGaugeScoreSettingByIds(Integer[] ids)
+    public int deletePsyGaugeScoreSettingByIds(Long[] ids)
     {
         return psyGaugeScoreSettingMapper.deletePsyGaugeScoreSettingByIds(ids);
     }
@@ -93,7 +93,7 @@ public class PsyGaugeScoreSettingServiceImpl implements IPsyGaugeScoreSettingSer
      * @return 结果
      */
     @Override
-    public int deletePsyGaugeScoreSettingById(Integer id)
+    public int deletePsyGaugeScoreSettingById(Long id)
     {
         return psyGaugeScoreSettingMapper.deletePsyGaugeScoreSettingById(id);
     }

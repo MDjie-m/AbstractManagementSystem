@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class WxPayDTO {
 
     @ApiModelProperty("测评id")
-    private Integer gaugeId;
+    private Long gaugeId;
 
     @ApiModelProperty("支付金额")
     private BigDecimal amount;

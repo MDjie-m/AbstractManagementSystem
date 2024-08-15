@@ -17,7 +17,7 @@ public interface PsyAppointmentMapper
      * @param id 咨询师预约主键
      * @return 咨询师预约
      */
-    public PsyAppointment selectPsyAppointmentById(Integer id);
+    public PsyAppointment selectPsyAppointmentById(Long id);
 
     /**
      * 查询咨询师预约列表
@@ -49,7 +49,7 @@ public interface PsyAppointmentMapper
      * @param id 咨询师预约主键
      * @return 结果
      */
-    public int deletePsyAppointmentById(Integer id);
+    public int deletePsyAppointmentById(Long id);
 
     /**
      * 批量删除咨询师预约
@@ -57,5 +57,5 @@ public interface PsyAppointmentMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deletePsyAppointmentByIds(Integer[] ids);
+    public int deletePsyAppointmentByIds(Long[] ids);
 }

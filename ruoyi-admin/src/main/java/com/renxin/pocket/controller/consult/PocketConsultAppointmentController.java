@@ -57,7 +57,7 @@ public class PocketConsultAppointmentController extends BaseController
      */
     // @PreAuthorize("@ss.hasPermi('psychology:appointment:query')")
     @PostMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Integer id)
+    public AjaxResult getInfo(@PathVariable("id") Long id)
     {
         return AjaxResult.success(psyAppointmentService.selectPsyAppointmentById(id));
     }
@@ -90,7 +90,7 @@ public class PocketConsultAppointmentController extends BaseController
     // @PreAuthorize("@ss.hasPermi('psychology:appointment:remove')")
     @Log(title = "咨询师预约", businessType = BusinessType.DELETE)
     @PostMapping("/remove/{ids}")
-    public AjaxResult remove(@PathVariable Integer[] ids)
+    public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(psyAppointmentService.deletePsyAppointmentByIds(ids));
     }

@@ -24,10 +24,10 @@ public class PsyGaugeQuestionsResultAll extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
+    private Long id;
 
     @Excel(name = "用户ID")
-    private Integer userId;
+    private Long userId;
 
 
     @Excel(name = "问题")

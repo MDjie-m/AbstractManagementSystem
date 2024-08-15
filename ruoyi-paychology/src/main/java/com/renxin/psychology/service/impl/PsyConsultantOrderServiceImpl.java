@@ -161,7 +161,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
         }
         //课程
         else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)){
-            CourCourse courCourse = courCourseService.selectCourCourseById(Integer.valueOf(order.getServerId()));
+            CourCourse courCourse = courCourseService.selectCourCourseById(Long.valueOf(order.getServerId()));
             order.setCourseDetail(courCourse);
         }
         
@@ -227,7 +227,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 }
                 //课程
                 else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)){
-                    CourCourse courCourse = courCourseService.selectCourCourseById(Integer.valueOf(order.getServerId()));
+                    CourCourse courCourse = courCourseService.selectCourCourseById(Long.valueOf(order.getServerId()));
                     order.setCourseDetail(courCourse);
                 }
             }
@@ -485,7 +485,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 consultantOrderService.updatePsyConsultantOrder(consultantOrder);
                 
                 // 将用户-课程-章节关系初始化
-                userCourseSectionService.initCourUserCourseSection(Integer.parseInt(consultantOrder.getPayConsultantId()), Integer.parseInt(consultantOrder.getServerId()),PsyConstants.USER_CONSULTANT);
+                userCourseSectionService.initCourUserCourseSection(Long.valueOf(consultantOrder.getPayConsultantId()), Long.valueOf(consultantOrder.getServerId()),PsyConstants.USER_CONSULTANT);
             }
         }else if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_PACKAGE)) {
             //套餐权益 , 更新订单状态

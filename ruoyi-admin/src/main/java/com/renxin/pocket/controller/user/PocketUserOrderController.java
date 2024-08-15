@@ -62,7 +62,7 @@ public class PocketUserOrderController extends BaseController
     public AjaxResult getOrderList(@RequestBody PocketUserOrderReq req, HttpServletRequest request)
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
-        Integer userId = loginUser.getUserId();
+        Long userId = loginUser.getUserId();
         if(req.getOrderType()==1) {
 
             PsyConsultOrderVO psyConsultOrderVO = new PsyConsultOrderVO();

@@ -22,7 +22,7 @@ public interface IPsyConsultPartnerService {
     // 编辑字表资料
     // 确认并提交资料
 
-    void draft(Integer userId);
+    void draft(Long userId);
     
     Long consultantDraft(Long consultId);
 
@@ -40,7 +40,7 @@ public interface IPsyConsultPartnerService {
 
     AjaxResult createUser(Long id);
 
-    PartnerDTO getInfoByUserId(Integer userId);
+    PartnerDTO getInfoByUserId(Long userId);
 
     PartnerDTO getInfoById(Long userId);
     

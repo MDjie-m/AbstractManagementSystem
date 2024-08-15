@@ -43,7 +43,7 @@ public class WxpayServiceImpl implements IWxpayService {
 
         String orderId = OrderIdUtils.getOrderId();
         String serverName = wxPayDTO.getName();
-        int id = 0;
+        Long id = 0L;
         if (serverName==null){
             id = generateOrder(wxPayDTO, loginUser, orderId);
         }
@@ -80,7 +80,7 @@ public class WxpayServiceImpl implements IWxpayService {
 
     }
 
-    private void generatePay(WxPayDTO wxPayDTO, LoginDTO loginUser, int id) {
+    private void generatePay(WxPayDTO wxPayDTO, LoginDTO loginUser, Long id) {
         PsyOrderPay psyOrderPay = PsyOrderPay.builder()
                 .orderId(id)
                 .amount(wxPayDTO.getAmount())
@@ -99,7 +99,7 @@ public class WxpayServiceImpl implements IWxpayService {
      */
     private void  generatePayUpdate(WxPayDTO wxPayDTO, LoginDTO loginUser, int id){
         PsyOrderPay psyOrderPay = PsyOrderPay.builder()
-                .orderId(Integer.valueOf(wxPayDTO.getOrderId()))
+                .orderId(Long.valueOf(wxPayDTO.getOrderId()))
                 .payStatus(wxPayDTO.getStatus())
                 .build();
         psyOrderPay.setCreateBy(loginUser.getUsername());
@@ -107,7 +107,7 @@ public class WxpayServiceImpl implements IWxpayService {
     }
 
 
-    private int generateOrder(WxPayDTO wxPayDTO, LoginDTO loginUser, String orderId) {
+    private Long generateOrder(WxPayDTO wxPayDTO, LoginDTO loginUser, String orderId) {
         PsyOrder psyOrder = PsyOrder.builder()
                 .orderId(orderId)
                 .amount(wxPayDTO.getAmount())
@@ -117,7 +117,7 @@ public class WxpayServiceImpl implements IWxpayService {
                 .build();
         psyOrder.setCreateBy(loginUser.getUsername());
 
-        int id = psyOrderService.insertPsyOrder(psyOrder);
+        Long id = psyOrderService.insertPsyOrder(psyOrder);
         return id;
     }
 
@@ -145,15 +145,15 @@ public class WxpayServiceImpl implements IWxpayService {
      * @param orderId
      * @return
      */
-    private int generateCourseOrder(WxPayDTO wxPayDTO, LoginDTO loginUser, String orderId){
+    private Long generateCourseOrder(WxPayDTO wxPayDTO, LoginDTO loginUser, String orderId){
         CourOrder courOrder = CourOrder.builder()
                 .orderId(orderId)
                 .amount(wxPayDTO.getAmount())
                 .status(OrderStatus.CREATE.getValue())
-                .courseId(Integer.parseInt(wxPayDTO.getGaugeId().toString()))
+                .courseId(wxPayDTO.getGaugeId())
                 .build();
-        courOrder.setUserId(loginUser.getUserId());
-        int id = courOrderService.insertCourOrder(courOrder);
+        courOrder.setUserId(loginUser.getUserId().longValue());
+        Long id = courOrderService.insertCourOrder(courOrder);
         return id;
     }
 

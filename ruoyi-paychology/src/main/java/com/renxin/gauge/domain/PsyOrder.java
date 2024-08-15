@@ -24,7 +24,7 @@ public class PsyOrder extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
-    private Integer id;
+    private Long id;
 
     /** 订单编号 */
     @Excel(name = "订单编号")
@@ -32,7 +32,7 @@ public class PsyOrder extends BaseEntity
 
     /** 测评编号 */
     @Excel(name = "测评编号")
-    private Integer gaugeId;
+    private Long gaugeId;
 
     /** 订单状态(1-创建,2-完成,3-关闭) */
     @Excel(name = "订单状态(1-创建,2-完成,3-关闭)")
@@ -57,7 +57,7 @@ public class PsyOrder extends BaseEntity
 
     /** 用户id */
     @Excel(name = "用户id")
-    private Integer userId;
+    private Long userId;
 
     /** 用户id */
     @Excel(name = "用户名")

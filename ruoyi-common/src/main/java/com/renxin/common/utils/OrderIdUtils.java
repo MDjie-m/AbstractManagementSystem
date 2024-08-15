@@ -36,7 +36,7 @@ public class OrderIdUtils {
      * @param id   用户id
      * @return
      */
-    public static String createOrderNo(String head, Integer id) {
+    public static String createOrderNo(String head, Long id) {
 //        StringBuilder uid = new StringBuilder(id.toString());
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");

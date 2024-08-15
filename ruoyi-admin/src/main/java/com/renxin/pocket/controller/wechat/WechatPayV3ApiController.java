@@ -94,7 +94,7 @@ public class WechatPayV3ApiController extends BaseController {
         //@TODO demo中先写死的一些参数
 
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
-        Integer userId = loginUser.getUserId();//用户id
+        Long userId = loginUser.getUserId();//用户id
 
 
         String out_trade_no = null;
@@ -145,7 +145,7 @@ public class WechatPayV3ApiController extends BaseController {
         wechatPayV3ApiService.wechatPay(vo);
 
         // 根据用户ID从用户表中查询openid
-        PsyUser user = psyUserService.selectPsyUserById(Integer.parseInt(userId.toString()));
+        PsyUser user = psyUserService.selectPsyUserById(userId);
         String openid = user.getWxOpenid();
  
         Calendar calendar = Calendar.getInstance();
@@ -216,7 +216,7 @@ public class WechatPayV3ApiController extends BaseController {
     @PostMapping("/wechatRefund")
     public Map<String, Object> wechatRefund(String transaction_id) {
         //@TODO demo中先写死的一些参数
-        Integer userId = 1; //先写死一个用户id
+        Long userId = 1L; //先写死一个用户id
         BigDecimal amount = new BigDecimal("0.01"); //先写死一个退款金额 单位：元
         String reason = "支付demo-退还订金"; //先写死一个退款原因 这是可选的
  

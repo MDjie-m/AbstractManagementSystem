@@ -57,9 +57,10 @@ public class PocketTokenService {
      *
      * @return 用户id
      */
-    public Integer getUserId(HttpServletRequest request) {
+    public long getUserId(HttpServletRequest request) {
         LoginDTO loginUser = getLoginUser(request);
-        return loginUser != null && loginUser.getUserId() != null ? loginUser.getUserId() : -1;
+        long userId = loginUser != null && loginUser.getUserId() != null ? loginUser.getUserId() : -1;
+        return userId;
     }
 
     /**

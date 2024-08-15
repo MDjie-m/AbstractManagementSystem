@@ -21,7 +21,7 @@ public class PartnerReq extends BaseValObj implements Serializable
     private Long id;
 
     /** 登录名 */
-    private Integer userId;
+    private Long userId;
 
     /** 咨询师号 */
     private Long cId;

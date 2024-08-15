@@ -66,10 +66,10 @@ public class PocketGaugeController extends BaseController
     @PostMapping(value = "/getPayInfo")
     @ApiOperation("查询量表支付信息")
     @RateLimiter
-    public AjaxResult getPayInfo(@RequestParam(value = "id") Integer id, HttpServletRequest request)
+    public AjaxResult getPayInfo(@RequestParam(value = "id") Long id, HttpServletRequest request)
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
-        Integer userId = loginUser.getUserId();
+        Long userId = loginUser.getUserId();
 
         GaugeVO gaugeVO = new GaugeVO();
 
@@ -120,10 +120,10 @@ public class PocketGaugeController extends BaseController
     @PostMapping(value = "/getInfo")
     @ApiOperation("查询量表详细信息")
     @RateLimiter
-    public AjaxResult getInfo(@RequestParam(value = "id") Integer id, HttpServletRequest request)
+    public AjaxResult getInfo(@RequestParam(value = "id") Long id, HttpServletRequest request)
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
-        Integer userId = loginUser.getUserId();
+        Long userId = loginUser.getUserId();
         PsyGauge psyGauge = psyGaugeService.selectPsyGaugeById(id);
         GaugeVO gaugeVO = new GaugeVO();
         BeanUtils.copyProperties(psyGauge, gaugeVO);

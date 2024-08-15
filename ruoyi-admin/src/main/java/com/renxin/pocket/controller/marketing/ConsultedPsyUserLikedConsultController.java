@@ -37,7 +37,7 @@ public class ConsultedPsyUserLikedConsultController extends BaseController {
 
     @GetMapping("/getLikes")
     public TableDataInfo getLikes(HttpServletRequest request) {
-        Integer id = pocketTokenService.getUserId(request);
+        Long id = pocketTokenService.getUserId(request);
         List<PsyUserLikedConsultVO> list = new ArrayList<>();
         startPage();
         if (id == -1) {

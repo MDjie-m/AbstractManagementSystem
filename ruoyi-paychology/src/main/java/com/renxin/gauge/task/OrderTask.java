@@ -33,7 +33,7 @@ public class OrderTask {
                 order.setOrderStatus(GaugeConstant.GAUGE_ORDER_STATUE_CANCELED);
                 psyOrderService.updatePsyOrder(order);
             });
-            List<Integer> collect = cancelList.stream().map(PsyOrder::getId).collect(Collectors.toList());
+            List<Long> collect = cancelList.stream().map(PsyOrder::getId).collect(Collectors.toList());
             log.info("测评订单取消, 订单id={} 自动修改订单状态为已取消，操作已完成", collect);
         }
     }

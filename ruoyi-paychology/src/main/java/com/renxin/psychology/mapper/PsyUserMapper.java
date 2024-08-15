@@ -17,7 +17,7 @@ public interface PsyUserMapper
      * @param id 用户主键
      * @return 用户
      */
-    public PsyUser selectPsyUserById(Integer id);
+    public PsyUser selectPsyUserById(Long id);
 
     /**
      * 查询用户列表
@@ -49,7 +49,7 @@ public interface PsyUserMapper
      * @param id 用户主键
      * @return 结果
      */
-    public int deletePsyUserById(Integer id);
+    public int deletePsyUserById(Long id);
 
     /**
      * 批量删除用户
@@ -57,7 +57,7 @@ public interface PsyUserMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deletePsyUserByIds(Integer[] ids);
+    public int deletePsyUserByIds(Long[] ids);
 
     int insertOrUpdate(PsyUser psyUser);
 

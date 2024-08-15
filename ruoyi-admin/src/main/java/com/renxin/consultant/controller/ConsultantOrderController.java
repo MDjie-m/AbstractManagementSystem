@@ -185,7 +185,7 @@ public class ConsultantOrderController extends BaseController
                 
             case PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_COURSE, null);
-                CourCourse courCourse = courCourseService.selectCourCourseById(Integer.parseInt(consultantOrder.getServerId()));
+                CourCourse courCourse = courCourseService.selectCourCourseById(Long.valueOf(consultantOrder.getServerId()));
                 originalPrice = courCourse.getPrice();
                 serverName = "购买课程-"+courCourse.getName();
                 break;

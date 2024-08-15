@@ -109,7 +109,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
     }
 
     @Override
-    public boolean checkNewByServe(Long orderId, Long serveId, Integer userId) {
+    public boolean checkNewByServe(Long orderId, Long serveId, Long userId) {
         Integer bound;
         if (orderId == null) {
             PsyConsultServeConfigVO one = psyConsultServeConfigService.getOne(serveId);

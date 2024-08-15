@@ -26,7 +26,7 @@ public class PsyUserIntegralRecord extends BasePlusEntity implements Serializabl
 
     /** 用户uid */
     @Excel(name = "用户uid")
-    private Integer uid;
+    private Long uid;
 
     /** 关联单号 */
     @Excel(name = "关联单号")

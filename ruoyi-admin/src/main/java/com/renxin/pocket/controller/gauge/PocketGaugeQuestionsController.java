@@ -47,14 +47,14 @@ public class PocketGaugeQuestionsController extends BaseController
     public AjaxResult list(@RequestBody PsyGaugeQuestions psyGaugeQuestions ,HttpServletRequest request)
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
-        Integer userId = loginUser.getUserId();
+        Long userId = loginUser.getUserId();
         psyGaugeQuestions.setUserId(userId);
         List<PsyQuestionVO> list = psyGaugeQuestionsService.appQueryQuesList(psyGaugeQuestions);
         return AjaxResult.success(list);
     }
 
     @PostMapping("/lats")
-    @ApiOperation("查询测评问题列表") // Integer gaugeId
+    @ApiOperation("查询测评问题列表") // Long gaugeId
     @RateLimiter
     public AjaxResult lats(@RequestBody PsyGaugeMultiSetting psyGaugeMultiSetting)
     {
@@ -64,7 +64,7 @@ public class PocketGaugeQuestionsController extends BaseController
     @PostMapping("/wrongs/{orderId}/{gaugeId}")
     @ApiOperation("查询测评问题列表")
     @RateLimiter
-    public AjaxResult wrongs(@PathVariable("orderId") Integer orderId, @PathVariable("gaugeId") Integer gaugeId)
+    public AjaxResult wrongs(@PathVariable("orderId") Long orderId, @PathVariable("gaugeId") Long gaugeId)
     {
         return AjaxResult.success(psyGaugeQuestionsService.wrongs(orderId, gaugeId));
     }

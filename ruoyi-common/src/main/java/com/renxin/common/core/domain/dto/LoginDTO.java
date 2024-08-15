@@ -72,7 +72,7 @@ public class LoginDTO implements UserDetails {
     /**
      * 用户id
      */
-    private Integer userId;
+    private Long userId;
     /**
      * 手机号码
      */

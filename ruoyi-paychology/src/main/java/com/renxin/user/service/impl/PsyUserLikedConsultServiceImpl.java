@@ -22,7 +22,7 @@ public class PsyUserLikedConsultServiceImpl implements IPsyUserLikedConsultServi
     }
 
     @Override
-    public List<PsyUserLikedConsultVO> getLikes(Integer userId) {
+    public List<PsyUserLikedConsultVO> getLikes(Long userId) {
         return psyConsultFocusMapper.getLikes(userId);
     }
 

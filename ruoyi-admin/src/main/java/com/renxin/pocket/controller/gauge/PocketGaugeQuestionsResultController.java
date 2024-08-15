@@ -47,7 +47,7 @@ public class PocketGaugeQuestionsResultController extends BaseController
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
         System.out.println(loginUser);
-        Integer userId = loginUser.getUserId();
+        Long userId = loginUser.getUserId();
         return toAjax(psyGaugeQuestionsResultService.answer(psyGaugeQuestionsResult ,userId));
     }
 
@@ -61,7 +61,7 @@ public class PocketGaugeQuestionsResultController extends BaseController
     public AjaxResult commitResult(@RequestBody @Validated GaugeCommitResultDTO gaugeCommitResultDTO, HttpServletRequest request)
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
-        Integer userId = loginUser.getUserId();
+        Long userId = loginUser.getUserId();
         String result = psyGaugeQuestionsResultService.commitResult(gaugeCommitResultDTO, userId);
 
         return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS, result);

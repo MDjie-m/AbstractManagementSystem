@@ -20,11 +20,11 @@ public class PsyAppointment
     private static final long serialVersionUID = 1L;
 
     /** $column.columnComment */
-    private Integer id;
+    private Long id;
 
     /** 用户ID */
     @Excel(name = "用户ID")
-    private Integer userId;
+    private Long userId;
 
     /** 咨询师ID */
     @Excel(name = "咨询师ID")

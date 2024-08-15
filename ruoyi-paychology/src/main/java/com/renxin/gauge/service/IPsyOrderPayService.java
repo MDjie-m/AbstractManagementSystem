@@ -17,7 +17,7 @@ public interface IPsyOrderPayService
      * @param id 心理咨询订单支付信息主键
      * @return 心理咨询订单支付信息
      */
-    public PsyOrderPay selectPsyOrderPayById(Integer id);
+    public PsyOrderPay selectPsyOrderPayById(Long id);
 
     /**
      * 查询心理咨询订单支付信息列表
@@ -56,7 +56,7 @@ public interface IPsyOrderPayService
      * @param ids 需要删除的心理咨询订单支付信息主键集合
      * @return 结果
      */
-    public int deletePsyOrderPayByIds(Integer[] ids);
+    public int deletePsyOrderPayByIds(Long[] ids);
 
     /**
      * 删除心理咨询订单支付信息信息
@@ -64,5 +64,5 @@ public interface IPsyOrderPayService
      * @param id 心理咨询订单支付信息主键
      * @return 结果
      */
-    public int deletePsyOrderPayById(Integer id);
+    public int deletePsyOrderPayById(Long id);
 }

@@ -34,7 +34,7 @@ public class PsyConsultPartner extends BasePlusEntity implements Serializable
     /** 登录名 */
     @Excel(name = "登录名")
     @TableField(exist = false)
-    private Integer userId;
+    private Long userId;
 
     /** 咨询师号 */
     private Long consultId;

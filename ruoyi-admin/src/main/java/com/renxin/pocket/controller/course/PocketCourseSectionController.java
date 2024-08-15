@@ -42,10 +42,10 @@ public class PocketCourseSectionController extends BaseController
     {
         startPage();
         List<CourSection> list = courSectionService.selectCourSectionList(courSection);
-        Integer userId = pocketTokenService.getUserId(request);
+        Long userId = pocketTokenService.getUserId(request);
 
         // 判断课程是否已经下单支付
-        if (courCourseService.getPaidCourseCount(userId, courSection.getCourseId()) == 0) { // 未下单支付
+        if (courCourseService.getPaidCourseCount(userId.longValue(), courSection.getCourseId()) == 0) { // 未下单支付
             list.forEach(item -> {
                 if (item.getType() == 0) { // 普通课程禁止学习
                     item.setContentUrl(null);
@@ -63,7 +63,7 @@ public class PocketCourseSectionController extends BaseController
     @PostMapping(value = "/getInfo")
     @ApiOperation("查询章节详情")
     @RateLimiter
-    public AjaxResult getInfo(@RequestParam(value = "id") Integer id)
+    public AjaxResult getInfo(@RequestParam(value = "id") Long id)
     {
         return AjaxResult.success(courSectionService.selectCourSectionById(id));
     }

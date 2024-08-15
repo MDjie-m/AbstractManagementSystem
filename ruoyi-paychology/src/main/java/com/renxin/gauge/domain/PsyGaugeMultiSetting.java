@@ -16,11 +16,11 @@ public class PsyGaugeMultiSetting extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** ID */
-    private Integer id;
+    private Long id;
 
     /** 测评表单ID */
     @Excel(name = "测评表单ID")
-    private Integer gaugeId;
+    private Long gaugeId;
 
     /** 纬度名 */
     @Excel(name = "纬度名")

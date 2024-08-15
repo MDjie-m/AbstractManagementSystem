@@ -89,7 +89,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void draft(Integer userId)
+    public void draft(Long userId)
     {
         PartnerDTO one = getInfoByUserId(userId);
         if (one == null) {
@@ -289,7 +289,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     }
 
     @Override
-    public PartnerDTO getInfoByUserId(Integer userId)
+    public PartnerDTO getInfoByUserId(Long userId)
     {
         PsyAdminPartnerReq req = new PsyAdminPartnerReq();
         req.setUserId(userId);

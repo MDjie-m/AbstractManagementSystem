@@ -18,22 +18,22 @@ public class CourUserCourseSection extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** ID */
-    private Integer id;
+    private Long id;
 
     /** 用户编号 */
     @Excel(name = "用户ID")
-    private Integer userId;
+    private Long userId;
 
     //用户类型  1管理端  2咨询者  3来访者
     private Integer userType;
 
     /** 课程编号 */
     @Excel(name = "课程编号")
-    private Integer courseId;
+    private Long courseId;
 
     /** 章节编号 */
     @Excel(name = "章节编号")
-    private Integer sectionId;
+    private Long sectionId;
 
     /** 上次结束时间（单位：秒） */
     @Excel(name = "上次结束时间", readConverterExp = "单=位：秒")

@@ -47,7 +47,7 @@ public class PsyGaugeScoreSettingController extends BaseController
     }
     @PreAuthorize("@ss.hasPermi('gauge:setting:listByIds')")
     @GetMapping("list/by/{ids}")
-    public TableDataInfo list(@PathVariable Integer[] ids)
+    public TableDataInfo list(@PathVariable Long[] ids)
     {
         startPage();
         List<PsyGaugeScoreSetting> list = psyGaugeScoreSettingService.selectPsyGaugeScoreSettingListByIds(ids);
@@ -72,7 +72,7 @@ public class PsyGaugeScoreSettingController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('gauge:setting:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Integer id)
+    public AjaxResult getInfo(@PathVariable("id") Long id)
     {
         return AjaxResult.success(psyGaugeScoreSettingService.selectPsyGaugeScoreSettingById(id));
     }
@@ -108,7 +108,7 @@ public class PsyGaugeScoreSettingController extends BaseController
     @PreAuthorize("@ss.hasPermi('gauge:setting:remove')")
     @Log(title = "心理测评普通设置", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Integer[] ids)
+    public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(psyGaugeScoreSettingService.deletePsyGaugeScoreSettingByIds(ids));
     }

@@ -15,11 +15,11 @@ public class PsyGaugeScoreSetting
     private static final long serialVersionUID = 1L;
 
     /**  */
-    private Integer id;
+    private Long id;
 
     /** 测评表单ID */
     @Excel(name = "测评表单ID")
-    private Integer gaugeId;
+    private Long gaugeId;
 
     /** 得分范围start */
     @Excel(name = "得分范围start")

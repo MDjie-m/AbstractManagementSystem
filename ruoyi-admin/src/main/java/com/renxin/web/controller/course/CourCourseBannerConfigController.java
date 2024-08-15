@@ -65,7 +65,7 @@ public class CourCourseBannerConfigController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('course:config:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Integer id)
+    public AjaxResult getInfo(@PathVariable("id") Long id)
     {
         return AjaxResult.success(courCourseBannerConfigService.selectCourCourseBannerConfigById(id));
     }
@@ -108,7 +108,7 @@ public class CourCourseBannerConfigController extends BaseController
     @PreAuthorize("@ss.hasPermi('course:config:remove')")
     @Log(title = "课程banner配置", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Integer[] ids)
+    public AjaxResult remove(@PathVariable Long[] ids)
     {
         try {
             int res = courCourseBannerConfigService.deleteCourCourseBannerConfigByIds(ids);

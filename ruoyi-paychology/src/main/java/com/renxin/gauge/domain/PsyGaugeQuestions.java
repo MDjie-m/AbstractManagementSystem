@@ -18,11 +18,11 @@ public class PsyGaugeQuestions extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** ID */
-    private Integer id;
+    private Long id;
 
     /** 测评表单ID */
     @Excel(name = "测评表单ID")
-    private Integer gaugeId;
+    private Long gaugeId;
 
     /** 标题 */
     @Excel(name = "标题")
@@ -42,14 +42,14 @@ public class PsyGaugeQuestions extends BaseEntity
     @Excel(name = "序号")
     private Integer no;
 
-    private Integer userId;
+    private Long userId;
 
     private String img;
 
     /**
      * 订单id
      */
-    private Integer orderId;
+    private Long orderId;
 
     public Integer getSelectType() {
         return selectType;

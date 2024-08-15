@@ -68,7 +68,7 @@ public class PocketConsultOrderController extends BaseController
     {
 
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
-        Integer userId = loginUser.getUserId();
+        Long userId = loginUser.getUserId();
         req.setUserId(userId);
         return AjaxResult.success(psyConsultOrderService.getOrderList(req));
     }
@@ -100,7 +100,7 @@ public class PocketConsultOrderController extends BaseController
     @PostMapping("/scheduleLeave")
     public AjaxResult scheduleLeave(@RequestBody PsyWorkReq req, HttpServletRequest request)
     {
-        Integer userId = pocketTokenService.getUserId(request);
+        Long userId = pocketTokenService.getUserId(request);
             req.setUserId(userId+"");
             req.setScheduleType(12);
         psyConsultWorkService.scheduleLeave(req);

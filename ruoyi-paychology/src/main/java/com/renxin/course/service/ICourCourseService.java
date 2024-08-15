@@ -20,7 +20,7 @@ public interface ICourCourseService
      * @param id 课程主键
      * @return 课程
      */
-    public CourCourse selectCourCourseById(Integer id);
+    public CourCourse selectCourCourseById(Long id);
 
     /**
      * 课程分类查询
@@ -45,7 +45,7 @@ public interface ICourCourseService
      * @param courseId 课程ID
      * @return 课程信息
      */
-    public boolean calCourCourseList(Integer userId, Integer courseId);
+    public boolean calCourCourseList(Long userId, Long courseId);
 
     /**
      * 根据课程的章节计算课程学习时长
@@ -54,7 +54,7 @@ public interface ICourCourseService
      * @param courseId 课程ID
      * @return 课程信息
      */
-    public Integer calCourCourseStudyDuration(Integer userId, Integer courseId);
+    public Integer calCourCourseStudyDuration(Long userId, Long courseId);
     /**
      * 新增课程
      * 
@@ -77,7 +77,7 @@ public interface ICourCourseService
      * @param ids 需要删除的课程主键集合
      * @return 结果
      */
-    public int deleteCourCourseByIds(Integer[] ids);
+    public int deleteCourCourseByIds(Long[] ids);
 
     /**
      * 删除课程信息
@@ -85,7 +85,7 @@ public interface ICourCourseService
      * @param id 课程主键
      * @return 结果
      */
-    public int deleteCourCourseById(Integer id);
+    public int deleteCourCourseById(Long id);
 
     /**
      * 查询课程是否支付
@@ -93,7 +93,7 @@ public interface ICourCourseService
      * @param courseId 课程ID
      * @return 课程支付数量
      */
-    public int getPaidCourseCount(Integer userId, Integer courseId);
+    public int getPaidCourseCount(Long userId, Long courseId);
 
     /**
      * 根据用户ID查询课程列表
@@ -101,7 +101,7 @@ public interface ICourCourseService
      * @param userId 用户ID
      * @return 课程集合
      */
-    public List<CourCourse> getCourseListByUserId(Integer userId);
+    public List<CourCourse> getCourseListByUserId(Long userId);
 
     /**
      * 根据条件询课程列表

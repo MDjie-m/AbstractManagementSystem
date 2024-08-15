@@ -19,11 +19,11 @@ public class PsyConsultingOrder extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** $column.columnComment */
-    private Integer id;
+    private Long id;
 
     /** 用户id */
     @Excel(name = "用户id")
-    private Integer userId;
+    private Long userId;
 
     /** 咨询师id */
     @Excel(name = "咨询师id")

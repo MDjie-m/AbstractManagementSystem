@@ -17,7 +17,7 @@ public class PsyAdminPartnerReq implements Serializable
     private static final long serialVersionUID = -147133832575660721L;
 
     /** 登录名 */
-    private Integer userId;
+    private Long userId;
 
     private Long id;
     

@@ -23,7 +23,7 @@ public class PsyUserLikedConsult implements Serializable
     private static final long serialVersionUID = -139254167831601253L;
 
     /** 用户 */
-    private Integer userId;
+    private Long userId;
 
     /** 咨询师 */
     private Long consultId;

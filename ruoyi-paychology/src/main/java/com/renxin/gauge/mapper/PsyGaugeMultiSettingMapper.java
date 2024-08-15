@@ -17,7 +17,7 @@ public interface PsyGaugeMultiSettingMapper
      * @param id 心理测评多维设置主键
      * @return 心理测评多维设置
      */
-    public PsyGaugeMultiSetting selectPsyGaugeMultiSettingById(Integer id);
+    public PsyGaugeMultiSetting selectPsyGaugeMultiSettingById(Long id);
 
     /**
      * 查询心理测评多维设置列表
@@ -49,7 +49,7 @@ public interface PsyGaugeMultiSettingMapper
      * @param id 心理测评多维设置主键
      * @return 结果
      */
-    public int deletePsyGaugeMultiSettingById(Integer id);
+    public int deletePsyGaugeMultiSettingById(Long id);
 
     /**
      * 批量删除心理测评多维设置
@@ -57,5 +57,5 @@ public interface PsyGaugeMultiSettingMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deletePsyGaugeMultiSettingByIds(Integer[] ids);
+    public int deletePsyGaugeMultiSettingByIds(Long[] ids);
 }

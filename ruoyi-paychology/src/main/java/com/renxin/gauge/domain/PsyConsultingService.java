@@ -16,7 +16,7 @@ public class PsyConsultingService extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** ID */
-    private Integer id;
+    private Long id;
 
     /** 咨询师id */
     @Excel(name = "咨询师id")

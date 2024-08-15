@@ -53,7 +53,7 @@ public class PsyGaugeQuestionsResultServiceImpl implements IPsyGaugeQuestionsRes
      * @return 心理测评问题结果
      */
     @Override
-    public PsyGaugeQuestionsResult selectPsyGaugeQuestionsResultById(Integer id)
+    public PsyGaugeQuestionsResult selectPsyGaugeQuestionsResultById(Long id)
     {
         return psyGaugeQuestionsResultMapper.selectPsyGaugeQuestionsResultById(id);
     }
@@ -78,7 +78,7 @@ public class PsyGaugeQuestionsResultServiceImpl implements IPsyGaugeQuestionsRes
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int answer(PsyGaugeQuestionsResult psyGaugeQuestionsResult ,Integer userId)
+    public int answer(PsyGaugeQuestionsResult psyGaugeQuestionsResult ,Long userId)
     {
         //先删除该问题的答案
         psyGaugeQuestionsResult.setUserId(userId);
@@ -125,7 +125,7 @@ public class PsyGaugeQuestionsResultServiceImpl implements IPsyGaugeQuestionsRes
      * @return 结果
      */
     @Override
-    public int deletePsyGaugeQuestionsResultByIds(Integer[] ids)
+    public int deletePsyGaugeQuestionsResultByIds(Long[] ids)
     {
         return psyGaugeQuestionsResultMapper.deletePsyGaugeQuestionsResultByIds(ids);
     }
@@ -137,13 +137,13 @@ public class PsyGaugeQuestionsResultServiceImpl implements IPsyGaugeQuestionsRes
      * @return 结果
      */
     @Override
-    public int deletePsyGaugeQuestionsResultById(Integer id)
+    public int deletePsyGaugeQuestionsResultById(Long id)
     {
         return psyGaugeQuestionsResultMapper.deletePsyGaugeQuestionsResultById(id);
     }
 
     @Override
-    public String commitResult(GaugeCommitResultDTO gaugeCommitResultDTO ,Integer userId) {
+    public String commitResult(GaugeCommitResultDTO gaugeCommitResultDTO ,Long userId) {
         //获取订单分值
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("orderId",gaugeCommitResultDTO.getOrderId());

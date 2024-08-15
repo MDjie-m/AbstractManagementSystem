@@ -5,6 +5,7 @@ import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -21,12 +22,13 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class CourOrder extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** ID */
-    private Integer id;
+    private Long id;
 
     /** 订单编号 */
     @Excel(name = "订单编号")
@@ -43,7 +45,7 @@ public class CourOrder extends BaseEntity
 
     /** 用户编号 */
     @Excel(name = "用户ID")
-    private Integer userId;
+    private Long userId;
 
     /** 应付金额 */
     @Excel(name = "应付金额")
@@ -51,94 +53,10 @@ public class CourOrder extends BaseEntity
 
     /** 课程ID */
     @Excel(name = "课程ID")
-    private Integer courseId;
+    private Long courseId;
 
     /** 课程信息 */
     @Excel(name = "课程信息")
     private CourCourse courseInfo;
-    public void setId(int id)
-    {
-        this.id = id;
-    }
-
-    public Integer getId()
-    {
-        return id;
-    }
-    public void setOrderId(String orderId) 
-    {
-        this.orderId = orderId;
-    }
-
-    public String getOrderId() 
-    {
-        return orderId;
-    }
-
-    public Date getCreateTime()
-    {
-        return createTime;
-    }
-    public void setCreateTime(Date createTime)
-    {
-        this.createTime = createTime;
-    }
-
-    public void setStatus(Integer status) 
-    {
-        this.status = status;
-    }
-
-
-    public Integer getStatus() 
-    {
-        return status;
-    }
-    public void setUserId(Integer userId)
-    {
-        this.userId = userId;
-    }
-
-    public Integer getUserId()
-    {
-        return userId;
-    }
-
-
-    public void setAmount(BigDecimal amount) 
-    {
-        this.amount = amount;
-    }
-
-    public BigDecimal getAmount() 
-    {
-        return amount;
-    }
-    public void setCourseId(Integer courseId)
-    {
-        this.courseId = courseId;
-    }
-
-    public Integer getCourseId()
-    {
-        return courseId;
-    }
-
-    public CourCourse getCourseInfo() { return courseInfo; }
-    public void setCourseInfo(CourCourse courseMap){
-        this.courseInfo = courseMap;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("orderId", getOrderId())
-            .append("createTime", getCreateTime())
-            .append("status", getStatus())
-            .append("userId", getUserId())
-            .append("amount", getAmount())
-            .append("courseId", getCourseId())
-            .toString();
-    }
+  
 }

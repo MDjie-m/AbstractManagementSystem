@@ -18,7 +18,7 @@ public interface CourUserCourseSectionMapper
      * @param id 用户-课程-章节关系主键
      * @return 用户-课程-章节关系
      */
-    public CourUserCourseSection selectCourUserCourseSectionById(Integer id);
+    public CourUserCourseSection selectCourUserCourseSectionById(Long id);
 
     /**
      * 查询用户-课程-章节关系列表
@@ -51,7 +51,7 @@ public interface CourUserCourseSectionMapper
      * @param id 用户-课程-章节关系主键
      * @return 结果
      */
-    public int deleteCourUserCourseSectionById(Integer id);
+    public int deleteCourUserCourseSectionById(Long id);
 
     /**
      * 批量删除用户-课程-章节关系
@@ -59,7 +59,7 @@ public interface CourUserCourseSectionMapper
      * @param ids 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteCourUserCourseSectionByIds(Integer[] ids);
+    public int deleteCourUserCourseSectionByIds(Long[] ids);
 
     /**
      * 记录用户学习课程章节的结束时间点

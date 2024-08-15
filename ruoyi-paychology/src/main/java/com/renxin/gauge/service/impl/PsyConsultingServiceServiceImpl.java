@@ -29,7 +29,7 @@ public class PsyConsultingServiceServiceImpl implements IPsyConsultingServiceSer
      * @return 咨询服务
      */
     @Override
-    public PsyConsultingService selectPsyConsultingServiceById(Integer id)
+    public PsyConsultingService selectPsyConsultingServiceById(Long id)
     {
         return psyConsultingServiceMapper.selectPsyConsultingServiceById(id);
     }
@@ -79,7 +79,7 @@ public class PsyConsultingServiceServiceImpl implements IPsyConsultingServiceSer
      * @return 结果
      */
     @Override
-    public int deletePsyConsultingServiceByIds(Integer[] ids)
+    public int deletePsyConsultingServiceByIds(Long[] ids)
     {
         return psyConsultingServiceMapper.deletePsyConsultingServiceByIds(ids);
     }
@@ -91,7 +91,7 @@ public class PsyConsultingServiceServiceImpl implements IPsyConsultingServiceSer
      * @return 结果
      */
     @Override
-    public int deletePsyConsultingServiceById(Integer id)
+    public int deletePsyConsultingServiceById(Long id)
     {
         return psyConsultingServiceMapper.deletePsyConsultingServiceById(id);
     }

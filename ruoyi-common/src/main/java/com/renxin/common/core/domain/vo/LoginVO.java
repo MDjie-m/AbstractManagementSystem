@@ -27,6 +27,6 @@ public class LoginVO {
     private String phone;
 
     @ApiModelProperty(hidden = true)
-    private Integer userId;
+    private Long userId;
 
 }

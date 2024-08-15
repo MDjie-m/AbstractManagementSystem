@@ -18,7 +18,7 @@ public class CourCourseClass extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 类型ID */
-    private Integer id;
+    private Long id;
 
     /** 类型名称 */
     @Excel(name = "类型名称")

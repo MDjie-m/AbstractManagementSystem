@@ -33,7 +33,7 @@ public class OrderTask {
                 order.setStatus(CourConstant.COUR_ORDER_STATUE_CANCELED);
                 courOrderService.updateCourOrder(order);
             });
-            List<Integer> collect = cancelList.stream().map(CourOrder::getId).collect(Collectors.toList());
+            List<Long> collect = cancelList.stream().map(CourOrder::getId).collect(Collectors.toList());
             log.info("课程订单取消, 订单id={} 自动修改订单状态为已取消，操作已完成", collect);
         }
     }

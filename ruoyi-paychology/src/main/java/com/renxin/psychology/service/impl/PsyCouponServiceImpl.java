@@ -117,7 +117,7 @@ public class PsyCouponServiceImpl implements IPsyCouponService
                 break;
 
             case "2"+PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
-                CourCourse courCourse = courCourseService.selectCourCourseById(Integer.parseInt(psyCoupon.getOrderServerId()));
+                CourCourse courCourse = courCourseService.selectCourCourseById(Long.valueOf(psyCoupon.getOrderServerId()));
                 originalPrice = courCourse.getPrice();
                 break;
 
