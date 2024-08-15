@@ -41,6 +41,10 @@ public class SysPasswordService
         return CacheConstants.PWD_ERR_CNT_KEY + username;
     }
 
+    /**
+     * 校验当前系统用户的登录重试次数
+     * @param user
+     */
     public void validate(SysUser user)
     {
         Authentication usernamePasswordAuthenticationToken = AuthenticationContextHolder.getContext();
@@ -59,14 +63,17 @@ public class SysPasswordService
             throw new UserPasswordRetryLimitExceedException(maxRetryCount, lockTime);
         }
 
+        // 这里提前先验证密码
         if (!matches(user, password))
         {
+            // 密码错误的话，登录重试次数就加一
             retryCount = retryCount + 1;
             redisCache.setCacheObject(getCacheKey(username), retryCount, lockTime, TimeUnit.MINUTES);
             throw new UserPasswordNotMatchException();
         }
         else
         {
+            // 登录成功后，就自动清除登录次数的缓存
             clearLoginRecordCache(username);
         }
     }

@@ -38,6 +38,7 @@ public class UserDetailsServiceImpl implements UserDetailsService
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
         SysUser user = userService.selectUserByUserName(username);
+        // 1.判断当前系统用户状态
         if (StringUtils.isNull(user))
         {
             log.info("登录用户：{} 不存在.", username);
@@ -53,9 +54,9 @@ public class UserDetailsServiceImpl implements UserDetailsService
             log.info("登录用户：{} 已被停用.", username);
             throw new ServiceException(MessageUtils.message("user.blocked"));
         }
-
+        // 2.先提前校验了密码，以及密码重试次数
         passwordService.validate(user);
-
+        // 3.封装好当前系统用户的权限
         return createLoginUser(user);
     }
 

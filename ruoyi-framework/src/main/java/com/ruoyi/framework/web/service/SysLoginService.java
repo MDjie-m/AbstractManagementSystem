@@ -54,6 +54,14 @@ public class SysLoginService
 
     /**
      * 登录验证
+     *
+     * RuoYi用户登录的主要步骤
+     * 1.验证要登录用户状态是否正常，比如账户是否被冻结 -> UserDetailsServiceImpl.loadUserByUsername
+     * 2.验证当前用户的登录重试次数，防止多次登录 -> SysUserDetailsServiceImpl.loadUserByUsername
+     * 3.设置当前登录用户的权限 -> UserDetailsServiceImpl.loadUserByUsername
+     * 4.刷新数据库中用户的最近一次登录状况 -> recordLoginInfo(loginUser.getUserId())
+     * 5.设置当前登录用户的代理信息 -> tokenService.createToken(loginUser)
+     * 6.在redis中缓存当前用户的登录信息作为是否在线的依据，并生成jwt返回用户 -> tokenService.createToken(loginUser)
      * 
      * @param username 用户名
      * @param password 密码
@@ -95,6 +103,7 @@ public class SysLoginService
         }
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        // 在数据库中对当前用户设置最近一次的登录信息
         recordLoginInfo(loginUser.getUserId());
         // 生成token
         return tokenService.createToken(loginUser);

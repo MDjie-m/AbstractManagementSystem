@@ -123,7 +123,7 @@ public class SecurityConfig
             // 添加JWT filter
             .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
             // 添加CORS filter
-            .addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class)
+            // .addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class) 这应该算是多出来的过滤器
             .addFilterBefore(corsFilter, LogoutFilter.class)
             .build();
     }
