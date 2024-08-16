@@ -1,15 +1,18 @@
 package com.ruoyi.system.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.util.Date;
+
 /**
  * 产品对象 sys_product
  * 
- * @author xgg
- * @date 2024-07-23
+ * @author tyc
+ * @date 2024-08-16
  */
 public class SysProduct extends BaseEntity
 {
@@ -122,6 +125,58 @@ public class SysProduct extends BaseEntity
 
     /** 产品视频 */
     private String productVideo;
+
+    /** 产品样品：0支持，1不支持 */
+    private Long sample;
+
+    /** 产品规格 */
+    private String specifications;
+
+    /** 产品库存 */
+    private String inventory;
+
+    /** 产品状态(0-期货,1-现货) */
+    private int status;
+
+    /** 生产日期”yyyy-mm-dd” */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date productionDate;
+
+    /** 保质期 */
+    private String shelfLife;
+
+    /** 产品产地 */
+    private String origin;
+
+    /** 储存方式0:-冷冻1-冷鲜 */
+    private int storageMode;
+
+    /** 仓库地址 */
+    private String warehouse_address;
+
+    /** 是否主营产品：0-不是，1-是 */
+    private int mainProduct;
+
+    /** 删除状态：0-未删除，1-已删除 */
+    private int delFlag;
+
+    /** 报价状态0未报/1 已报 */
+    private int quoteStatus;
+
+    /** 询价状态0 未询/1 已询 */
+    private int inquiryStatus;
+
+    /** 采购员id外键，用户表 */
+    private String buyerId;
+
+    /** 询价清单标识0 不常/1 经常 */
+    private int inquiryListFlag;
+
+    /** 报价清单标识0 不常/1 经常 */
+    private int quoteListFlag;
+
+    /** 备注 */
+    private String remark;
 
     /** 预留字段1 */
     private String futureField1;
@@ -425,6 +480,144 @@ public class SysProduct extends BaseEntity
         return futureField3;
     }
 
+    public Long getSample() {
+        return sample;
+    }
+
+    public void setSample(Long sample) {
+        this.sample = sample;
+    }
+
+    public String getSpecifications() {
+        return specifications;
+    }
+
+    public void setSpecifications(String specifications) {
+        this.specifications = specifications;
+    }
+
+    public String getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(String inventory) {
+        this.inventory = inventory;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public Date getProductionDate() {
+        return productionDate;
+    }
+
+    public void setProductionDate(Date productionDate) {
+        this.productionDate = productionDate;
+    }
+
+    public String getShelfLife() {
+        return shelfLife;
+    }
+
+    public void setShelfLife(String shelfLife) {
+        this.shelfLife = shelfLife;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public int getStorageMode() {
+        return storageMode;
+    }
+
+    public void setStorageMode(int storageMode) {
+        this.storageMode = storageMode;
+    }
+
+    public String getWarehouse_address() {
+        return warehouse_address;
+    }
+
+    public void setWarehouse_address(String warehouse_address) {
+        this.warehouse_address = warehouse_address;
+    }
+
+    public int getMainProduct() {
+        return mainProduct;
+    }
+
+    public void setMainProduct(int mainProduct) {
+        this.mainProduct = mainProduct;
+    }
+
+    public int getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(int delFlag) {
+        this.delFlag = delFlag;
+    }
+
+    public int getQuoteStatus() {
+        return quoteStatus;
+    }
+
+    public void setQuoteStatus(int quoteStatus) {
+        this.quoteStatus = quoteStatus;
+    }
+
+    public int getInquiryStatus() {
+        return inquiryStatus;
+    }
+
+    public void setInquiryStatus(int inquiryStatus) {
+        this.inquiryStatus = inquiryStatus;
+    }
+
+    public String getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(String buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public int getInquiryListFlag() {
+        return inquiryListFlag;
+    }
+
+    public void setInquiryListFlag(int inquiryListFlag) {
+        this.inquiryListFlag = inquiryListFlag;
+    }
+
+    public int getQuoteListFlag() {
+        return quoteListFlag;
+    }
+
+    public void setQuoteListFlag(int quoteListFlag) {
+        this.quoteListFlag = quoteListFlag;
+    }
+
+    @Override
+    public String getRemark() {
+        return remark;
+    }
+
+    @Override
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     @Override
     public String toString() {
         return "SysProduct{" +
@@ -459,9 +652,23 @@ public class SysProduct extends BaseEntity
                 ", tagName='" + tagName + '\'' +
                 ", productImage='" + productImage + '\'' +
                 ", productVideo='" + productVideo + '\'' +
-                ", futureField1='" + futureField1 + '\'' +
-                ", futureField2='" + futureField2 + '\'' +
-                ", futureField3='" + futureField3 + '\'' +
+                ", sample=" + sample +
+                ", specifications='" + specifications + '\'' +
+                ", inventory='" + inventory + '\'' +
+                ", status=" + status +
+                ", productionDate=" + productionDate +
+                ", shelfLife='" + shelfLife + '\'' +
+                ", origin='" + origin + '\'' +
+                ", storageMode=" + storageMode +
+                ", warehouse_address='" + warehouse_address + '\'' +
+                ", mainProduct=" + mainProduct +
+                ", delFlag=" + delFlag +
+                ", quoteStatus=" + quoteStatus +
+                ", inquiryStatus=" + inquiryStatus +
+                ", buyerId='" + buyerId + '\'' +
+                ", inquiryListFlag=" + inquiryListFlag +
+                ", quoteListFlag=" + quoteListFlag +
+                ", remark='" + remark + '\'' +
                 '}';
     }
 }
