@@ -37,6 +37,13 @@
     <dependencyManagement>
         <dependencies>
 
+            <!--第三方认证-->
+            <dependency>
+                <groupId>me.zhyd.oauth</groupId>
+                <artifactId>JustAuth</artifactId>
+                <version>1.16.6</version>
+            </dependency>
+
             <!-- SpringFramework的依赖配置-->
             <dependency>
                 <groupId>org.springframework</groupId>

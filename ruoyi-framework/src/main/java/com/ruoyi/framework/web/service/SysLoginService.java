@@ -1,12 +1,5 @@
 package com.ruoyi.framework.web.service;
 
-import javax.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
@@ -14,20 +7,32 @@ import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.exception.user.BlackListException;
-import com.ruoyi.common.exception.user.CaptchaException;
-import com.ruoyi.common.exception.user.CaptchaExpireException;
-import com.ruoyi.common.exception.user.UserNotExistsException;
-import com.ruoyi.common.exception.user.UserPasswordNotMatchException;
+import com.ruoyi.common.exception.user.*;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.ip.IpUtils;
+import com.ruoyi.framework.config.properties.GiteeLoginProperties;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
+import me.zhyd.oauth.config.AuthConfig;
+import me.zhyd.oauth.model.AuthCallback;
+import me.zhyd.oauth.model.AuthResponse;
+import me.zhyd.oauth.model.AuthUser;
+import me.zhyd.oauth.request.AuthGiteeRequest;
+import me.zhyd.oauth.request.AuthRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 登录校验方法
@@ -51,6 +56,12 @@ public class SysLoginService
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    private SysPermissionService permissionService;
+
+    @Autowired
+    private GiteeLoginProperties giteeLoginProperties;
 
     /**
      * 登录验证
@@ -104,6 +115,46 @@ public class SysLoginService
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         // 在数据库中对当前用户设置最近一次的登录信息
+        recordLoginInfo(loginUser.getUserId());
+        // 生成token
+        return tokenService.createToken(loginUser);
+    }
+
+
+    public String loginByOtherSource(String code, String source, String uuid) {
+        //先到数据库查询这个人曾经有没有登录过，没有就注册
+        // 创建授权request
+        AuthRequest authRequest = new AuthGiteeRequest(AuthConfig.builder()
+                .clientId(giteeLoginProperties.getClientId())
+                .clientSecret(giteeLoginProperties.getClientSecret())
+                .redirectUri(giteeLoginProperties.getRedirectUri())
+                .build());
+        AuthResponse<AuthUser> login = authRequest.login(AuthCallback.builder().state(uuid).code(code).build());
+        System.out.println(login);
+        //先查询数据库有没有该用户
+        AuthUser authUser = login.getData();
+        SysUser sysUser = new SysUser();
+        sysUser.setUserName(authUser.getUsername());
+        sysUser.setSource(authUser.getSource());
+        List<SysUser> sysUsers = userService.selectUserListNoDataScope(sysUser);
+        if (sysUsers.size() > 1) {
+            throw new ServiceException("第三方登录异常，账号重叠");
+        } else if (sysUsers.size() == 0) {
+            //相当于注册
+            sysUser.setNickName(authUser.getNickname());
+            sysUser.setAvatar(authUser.getAvatar());
+            sysUser.setEmail(authUser.getEmail());
+            sysUser.setRemark(authUser.getRemark());
+            userService.registerUserAndReturnUserId(sysUser);
+            AsyncManager.me().execute(AsyncFactory.recordLogininfor(sysUser.getUserName(), Constants.REGISTER,
+                    MessageUtils.message("user.register.success")));
+        } else {
+            sysUser = sysUsers.get(0);
+        }
+        AsyncManager.me().execute(AsyncFactory.recordLogininfor(sysUser.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
+        //注册成功或者是已经存在的用户
+        LoginUser loginUser =
+                new LoginUser(sysUser.getUserId(), sysUser.getDeptId(), sysUser, permissionService.getMenuPermission(sysUser));
         recordLoginInfo(loginUser.getUserId());
         // 生成token
         return tokenService.createToken(loginUser);
