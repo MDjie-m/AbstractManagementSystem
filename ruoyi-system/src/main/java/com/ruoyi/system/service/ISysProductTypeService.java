@@ -65,7 +65,7 @@ public interface ISysProductTypeService
      * 按照层级组装成一个TreeList
      * @return
      */
-    List<Map<String,Object>> selectSysProductTypeTreeList(Integer depth);
+    List<Map<String,Object>> selectSysProductTypeTreeList(Integer depth ,Integer flag);
 
     List<SysProductType> selectType(String[] newCodes);
 
