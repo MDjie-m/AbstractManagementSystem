@@ -40,6 +40,19 @@ public class SysProductType extends TreeEntity
     @Excel(name = "是否显示", readConverterExp = "0：显示，1：不显示 ")
     private Integer showFlag;
 
+    /** 是否删除：0-未删除，1-已删除
+     *  */
+    @Excel(name = "是否删除", readConverterExp = "0-未删除，1-已删除 ")
+    private Integer delFlag;
+
+    /** 统计标记字段以","间隔 */
+    @Excel(name = "统计标记字段以\",\"间隔")
+    private String statistical_marker;
+
+    /** 0-国产,1-进口,2-国产进口 */
+    @Excel(name = "是否显示", readConverterExp = "0-国产,1-进口,2-国产进口 ")
+    private Integer classification;
+
     /** 备注 */
     @Excel(name = "备注")
     private String remark;
@@ -47,13 +60,16 @@ public class SysProductType extends TreeEntity
     public SysProductType() {
     }
 
-    public SysProductType( String productCode, String productName, String parentCode, String tagId, String tagName, Integer showFlag, String remark) {
+    public SysProductType( String productCode, String productName, String parentCode, String tagId, String tagName, Integer showFlag, Integer delFlag, String statistical_marker, Integer classification, String remark) {
         this.productCode = productCode;
         this.productName = productName;
         this.parentCode = parentCode;
         this.tagId = tagId;
         this.tagName = tagName;
         this.showFlag = showFlag;
+        this.delFlag = delFlag;
+        this.statistical_marker = statistical_marker;
+        this.classification = classification;
         this.remark = remark;
     }
 
@@ -155,6 +171,54 @@ public class SysProductType extends TreeEntity
 
     /**
      * 获取
+     * @return delFlag
+     */
+    public Integer getDelFlag() {
+        return delFlag;
+    }
+
+    /**
+     * 设置
+     * @param delFlag
+     */
+    public void setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
+    }
+
+    /**
+     * 获取
+     * @return statistical_marker
+     */
+    public String getStatistical_marker() {
+        return statistical_marker;
+    }
+
+    /**
+     * 设置
+     * @param statistical_marker
+     */
+    public void setStatistical_marker(String statistical_marker) {
+        this.statistical_marker = statistical_marker;
+    }
+
+    /**
+     * 获取
+     * @return classification
+     */
+    public Integer getClassification() {
+        return classification;
+    }
+
+    /**
+     * 设置
+     * @param classification
+     */
+    public void setClassification(Integer classification) {
+        this.classification = classification;
+    }
+
+    /**
+     * 获取
      * @return remark
      */
     public String getRemark() {
@@ -170,6 +234,6 @@ public class SysProductType extends TreeEntity
     }
 
     public String toString() {
-        return "SysProductType{productCode = " + productCode + ", productName = " + productName + ", parentCode = " + parentCode + ", tagId = " + tagId + ", tagName = " + tagName + ", showFlag = " + showFlag + ", remark = " + remark + "}";
+        return "SysProductType{productCode = " + productCode + ", productName = " + productName + ", parentCode = " + parentCode + ", tagId = " + tagId + ", tagName = " + tagName + ", showFlag = " + showFlag + ", delFlag = " + delFlag + ", statistical_marker = " + statistical_marker + ", classification = " + classification + ", remark = " + remark + "}";
     }
 }
