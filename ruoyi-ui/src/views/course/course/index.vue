@@ -19,6 +19,18 @@
           />
         </el-select>
       </el-form-item>
+
+      <el-form-item label="服务对象" prop="typeValue">
+        <el-select v-model="queryParams.serviceTo" placeholder="请选择服务对象" clearable>
+          <el-option
+            v-for="dict in dict.type.user_type"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="付费类型" prop="payTypeValue">
         <el-select v-model="queryParams.payTypeValue" placeholder="请选择课程付费方式" clearable>
           <el-option
@@ -120,6 +132,11 @@
       <el-table-column label="课程类型" align="center" prop="type">
         <template slot-scope="scope">
           {{ getCourseClassName(scope.row.type) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="服务对象" align="center" prop="serviceTo">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.user_type" :value="scope.row.serviceTo"/>
         </template>
       </el-table-column>
       <el-table-column label="付费类型" align="center" prop="payType">
@@ -225,7 +242,7 @@
                   v-for="item in courseClassList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id"
+                  :value="parseInt(item.id)"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -238,6 +255,21 @@
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="服务对象" prop="type">
+              <el-select v-model="form.serviceTo" placeholder="请选择服务对象">
+                <el-option
+                  v-for="dict in userTypeList"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -286,6 +318,7 @@ import SectionDrawer from '@/views/components/course/sectionDrawer/index.vue'
 
 export default {
   name: "Course",
+  dicts: ['user_type'],
   data() {
     var validatePrice = (rule, value, callback) => {
       // 保留两位小数
@@ -302,6 +335,7 @@ export default {
         module: this.$constants['picModules'][0],
         type: this.$constants['picTypes'][2]
       },
+      userTypeList: this.$constants.userType,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -331,6 +365,7 @@ export default {
         lowPrice: null,
         highPrice: null,
         onSaleValue: null,
+        serviceTo: null,
       },
       // 表单参数
       form: {

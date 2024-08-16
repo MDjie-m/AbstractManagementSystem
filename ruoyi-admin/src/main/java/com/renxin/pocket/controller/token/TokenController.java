@@ -53,7 +53,7 @@ public class TokenController extends BaseController {
     public AjaxResult getToken(@RequestParam("type") Integer type, @RequestParam("id") Long id){
         String token = "";
         
-        if (type == 1){//管理员
+        if (type == 3){//管理员
             SysUser sysUser = sysUserService.selectUserById(id);
             LoginUser loginUser = new LoginUser();
             loginUser.setUserId(sysUser.getUserId());//sys_user表
@@ -68,7 +68,7 @@ public class TokenController extends BaseController {
             consultDTO.setPhone(psyConsult.getPhonenumber());
              token = consultantTokenService.createToken(consultDTO,3600000);
         }
-        if (type == 3){//来访者
+        if (type == 1){//来访者
             PsyUser psyUser = psyUserService.selectPsyUserById(id);
             LoginDTO loginDTO=new LoginDTO();
             loginDTO.setUserId(psyUser.getId());//psy_user表

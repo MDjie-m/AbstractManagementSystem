@@ -115,7 +115,7 @@
       </el-table-column>
       <el-table-column label="本期开课次数" align="center" prop="cycleNumber" />
       <el-table-column label="满额人数" align="center" prop="maxNumPeople" />
-      <el-table-column label="剩余名额" align="center" prop="surplusNum" />
+      <el-table-column label="剩余名额" align="center" prop="surplusJoinNum" />
 
       <el-table-column label="服务价格" align="center" prop="price" sortable=""/>
       <el-table-column label="每周几开课" align="center" prop="weekDay" >

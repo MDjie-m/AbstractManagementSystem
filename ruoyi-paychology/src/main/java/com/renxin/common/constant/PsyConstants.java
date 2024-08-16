@@ -25,9 +25,10 @@ public class PsyConstants {
     public static final String COUPON_NO = "YHQ"; //优惠券
     
     //用户类型
-    public static final Integer USER_ADMIN_ = 1; //管理员
+
+    public static final Integer USER_CONSULTED = 1; //来访者
     public static final Integer USER_CONSULTANT = 2; //咨询师
-    public static final Integer USER_CONSULTED = 3; //来访者
+    public static final Integer USER_ADMIN_ = 3; //管理员
     
     //支付方式  1.现款支付   2.权益支付
     public static final Integer PAY_TYPE_CASH = 1; //现款支付

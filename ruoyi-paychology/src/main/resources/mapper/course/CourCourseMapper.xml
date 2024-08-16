@@ -16,6 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="price"    column="price"    />
         <result property="detail"    column="detail"    />
         <result property="onSale"    column="on_sale"    />
+        <result property="serviceTo"    column="service_to"    />
 <!--        <result property="createBy"    column="create_by"    />-->
 <!--        <result property="createTime"    column="create_time"    />-->
 <!--        <result property="updateTime"    column="update_time"    />-->
@@ -23,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCourCourseVo">
-        select id, name, type, pay_type, author, user_name, url, icon_url, price, detail, on_sale, create_by, create_time, update_time, update_by from cour_course
+        select id, name, type, pay_type, author, user_name, url, icon_url, price, detail, on_sale, create_by, create_time, update_time, update_by,service_to from cour_course
     </sql>
 
     <select id="selectCourCourseList" parameterType="CourCourse" resultMap="CourCourseResult">
@@ -60,6 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payTypeValue != null "> and pay_type = #{payTypeValue}</if>
             <if test="authorValue != null  and authorValue != ''"> and author like concat('%', #{authorValue}, '%')</if>
             <if test="onSaleValue != null "> and on_sale = #{onSaleValue}</if>
+            <if test="serviceTo != null "> and service_to = #{serviceTo}</if>
         </where>
     </select>
     
@@ -94,6 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="updateBy != null">update_by,</if>
+            <if test="serviceTo != null">service_to,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null and name != ''">#{name},</if>
@@ -110,6 +113,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
+            <if test="serviceTo != null">#{serviceTo},</if>
          </trim>
     </insert>
 
@@ -130,6 +134,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="serviceTo != null">service_to = #{serviceTo},</if>
         </trim>
         where id = #{id}
     </update>

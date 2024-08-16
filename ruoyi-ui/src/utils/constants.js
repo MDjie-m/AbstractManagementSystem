@@ -279,3 +279,9 @@ export const payType = [
   { label: '现款支付', value: '1' },
   { label: '权益支付', value: '2' },
 ];
+
+// 用户类型
+export const userType = [
+  { label: '来访者用户', value: 1 },
+  { label: '咨询师用户', value: 2 },
+];
