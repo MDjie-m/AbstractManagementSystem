@@ -19,116 +19,88 @@ public class SysProductStandard extends BaseEntity
     private String productId;
 
     /** 产品名称 */
-    @Excel(name = "产品名称")
     private String productName;
 
     /** 海关一级分类 */
-    @Excel(name = "海关一级分类")
     private String primaryCategory;
 
     /** 海关一级分类名称 */
-    @Excel(name = "海关一级分类名称")
     private String primaryCategoryName;
 
     /** 海关二级分类 */
-    @Excel(name = "海关二级分类")
     private String secondaryCategory;
 
     /** 海关二级分类名称 */
-    @Excel(name = "海关二级分类名称")
     private String secondaryCategoryName;
 
     /** 海关三级分类 */
-    @Excel(name = "海关三级分类")
     private String tertiaryCategory;
 
     /** 海关三级分类名称 */
-    @Excel(name = "海关三级分类名称")
     private String tertiaryCategoryName;
 
     /** 海关四级分类 */
-    @Excel(name = "海关四级分类")
     private String quaternaryCategory;
 
     /** 海关四级分类名称 */
-    @Excel(name = "海关四级分类名称")
     private String quaternaryCategoryName;
 
     /** 海关五级分类 */
-    @Excel(name = "海关五级分类")
     private String fifthCategory;
 
     /** 海关五级分类名称 */
-    @Excel(name = "海关五级分类名称")
     private String fifthCategoryName;
 
     /** 公司一级分类 */
-    @Excel(name = "公司一级分类")
     private String cnPrimaryCategory;
 
     /** 公司一级分类名称 */
-    @Excel(name = "公司一级分类名称")
     private String cnPrimaryCategoryName;
 
     /** 公司二级分类 */
-    @Excel(name = "公司二级分类")
     private String cnSecondaryCategory;
 
     /** 公司二级分类名称 */
-    @Excel(name = "公司二级分类名称")
     private String cnSecondaryCategoryName;
 
     /** 公司三级分类 */
-    @Excel(name = "公司三级分类")
     private String cnTertiaryCategory;
 
     /** 公司三级分类名称 */
-    @Excel(name = "公司三级分类名称")
     private String cnTertiaryCategoryName;
 
     /** 公司四级分类 */
-    @Excel(name = "公司四级分类")
     private String cnQuaternaryCategory;
 
     /** 公司四级分类名称 */
-    @Excel(name = "公司四级分类名称")
     private String cnQuaternaryCategoryName;
 
     /** 公司五级分类 */
-    @Excel(name = "公司五级分类")
     private String cnFifthCategory;
 
     /** 公司五级分类名称 */
-    @Excel(name = "公司五级分类名称")
     private String cnFifthCategoryName;
 
     /** 0-国产 1-进口 */
-    @Excel(name = "0-国产 1-进口")
     private Long domesticImportedType;
 
     /** 储存方式 */
-    @Excel(name = "储存方式")
     private String storageMode;
 
     /** 产品规格 */
-    @Excel(name = "产品规格")
     private String specifications;
 
     /** 标签id由，隔开 */
-    @Excel(name = "标签id由，隔开")
     private String tagId;
 
     /** 标签由，隔开 */
-    @Excel(name = "标签由，隔开")
     private String tagName;
 
 
     /** 图片地址由”,”隔开 */
-    @Excel(name = "图片地址由”,”隔开")
     private String imagePath;
 
     /** 视频地址由”,”隔开 */
-    @Excel(name = "视频地址由”,”隔开")
     private String videoPath;
 
     /** 删除状态：0-未删除，1-已删除 */

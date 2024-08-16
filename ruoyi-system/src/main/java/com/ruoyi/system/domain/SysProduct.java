@@ -25,93 +25,78 @@ public class SysProduct extends BaseEntity
     private String supplierId;
 
     /** 供应商名称 */
-    @Excel(name = "供应商名称")
     private String supplierName;
 
     /** 一级分类 */
     private String primaryCategory;
 
     /** 一级分类名称 */
-    @Excel(name = "一级分类名称")
     private String primaryCategoryName;
 
     /** 二级分类 */
     private String secondaryCategory;
 
     /** 二级分类名称 */
-    @Excel(name = "二级分类名称")
     private String secondaryCategoryName;
 
     /** 三级分类 */
     private String tertiaryCategory;
 
     /** 三级分类名称 */
-    @Excel(name = "三级分类名称")
     private String tertiaryCategoryName;
 
     /** 四级分类 */
     private String quaternaryCategory;
 
     /** 四级分类名称 */
-    @Excel(name = "四级分类名称")
     private String quaternaryCategoryName;
 
     /** 五级分类 */
     private String fifthCategory;
 
     /** 五级分类名称 */
-    @Excel(name = "五级分类名称")
     private String fifthCategoryName;
 
     /** 产品名称 */
-    @Excel(name = "产品名称")
     private String productName;
 
     /** 0-国产 1-进口 */
-    @Excel(name = "进口/国产", readConverterExp = "0=国产,1=进口")
     private Integer domesticImportedType;
 
     /** 产品型号 */
-    @Excel(name = "产品型号")
     private String productModel;
 
     /** 是否可报价：0：不可报价，1：可报价 */
-    @Excel(name = "是否可报价", readConverterExp = "0=不可报价,1=可报价")
     private Integer quotationFlag;
 
     /** 内部一级分类，cn_primary_category */
     private String cnPrimaryCategory;
 
     /** 内部一级分类名称，cn_primary_category_name */
-    @Excel(name = "国产一级分类名称")
     private String cnPrimaryCategoryName;
 
     /** 内部二级分类，cn_secondary_category */
     private String cnSecondaryCategory;
 
     /** 内部二级分类名称，cn_secondary_category_name */
-    @Excel(name = "国产二级分类名称")
     private String cnSecondaryCategoryName;
 
     /** 内部三级分类，cn_tertiary_category */
     private String cnTertiaryCategory;
 
     /** 内部三级分类名称，cn_tertiary_category_name */
-    @Excel(name = "国产三级分类名称")
     private String cnTertiaryCategoryName;
 
     /** 内部四级分类，cn_quaternary_category */
     private String cnQuaternaryCategory;
 
     /** 内部四级分类名称，cn_quaternary_category_name */
-    @Excel(name = "国产四级分类名称")
     private String cnQuaternaryCategoryName;
 
     /** 五级分类 */
     private String cnFifthCategory;
 
     /** 五级分类名称 */
-    @Excel(name = "国产五级分类名称")
     private String cnFifthCategoryName;
 
     /** 标签id，以'/'区分，tag_id */

@@ -22,37 +22,29 @@ public class SysInquiry extends BaseEntity
     private String inquiryId;
 
     /** 采购员id */
-    @Excel(name = "采购员id")
     private String buyerId;
 
     /** 产品id */
-    @Excel(name = "产品id")
     private String productId;
 
     /** 询价日期年月日 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "询价日期年月日", width = 30, dateFormat = "yyyy-MM-dd")
     private Date inquiryDate;
 
     /** 回应日期年月日 */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Excel(name = "回应日期年月日", width = 30, dateFormat = "yyyy-MM-dd")
     private Date responseDate;
 
     /** 询价反馈状态0待报价，1已报价,2已拒绝 */
-    @Excel(name = "询价反馈状态0待报价，1已报价,2已拒绝")
     private Long feedbackStatus;
 
     /** 报价价格 */
-    @Excel(name = "报价价格")
     private BigDecimal priceRmb;
 
     /** 美金报价 */
-    @Excel(name = "美金报价")
     private BigDecimal priceUsd;
 
     /** 0-未删除，1-已删除 */
-    @Excel(name = "0-未删除，1-已删除")
     private Long delFlg;
 
     public void setInquiryId(String inquiryId) 
