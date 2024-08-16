@@ -39,6 +39,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select product_code, product_name, parent_code, remark, tag_id, tag_Name , show_flag  from sys_product_type where parent_code=#{parentCode}
     </select>
 
+<!--    下面这个是根据传来的某个分类的每一级的分类列表查询对应的名字和标签-->
+    <select id="selectType" resultMap="SysProductTypeResult">
+        SELECT product_code, product_name, tag_id, tag_name
+                 FROM sys_product_type
+                 WHERE product_code IN
+                 <foreach item="item" index="index" collection="productCodes" open="(" separator="," close=")">
+                     #{item}
+                </foreach>
+             ORDER BY product_code
+    </select>
+    <select id="selectTag" resultMap="SysProductTypeResult" parameterType="String">
+        select product_code,product_name,tag_id,tag_name from sys_product_type
+        where product_code = #{code}
+    </select>
+
     <insert id="insertSysProductType" parameterType="SysProductType">
         insert into sys_product_type
         <trim prefix="(" suffix=")" suffixOverrides=",">

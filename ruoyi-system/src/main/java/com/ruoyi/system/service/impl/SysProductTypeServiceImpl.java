@@ -156,4 +156,14 @@ public class SysProductTypeServiceImpl implements ISysProductTypeService
 //        返回本次组装好的mapList
         return mapList;
     }
+
+    @Override
+    public List<SysProductType> selectType(String[] newCodes) {
+        return sysProductTypeMapper.selectType(newCodes);
+    }
+
+    @Override
+    public SysProductType selectTag(String code) {
+        return sysProductTypeMapper.selectTag(code);
+    }
 }
