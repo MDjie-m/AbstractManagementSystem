@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.renxin.advert.mapper.PsyAdvertMapper">
+    
+    <resultMap type="PsyAdvert" id="PsyAdvertResult">
+        <result property="advertNo"    column="advert_no"    />
+        <result property="advertTitle"    column="advert_title"    />
+        <result property="advertText"    column="advert_text"    />
+        <result property="pageFor"    column="page_for"    />
+        <result property="dataType"    column="data_type"    />
+        <result property="queryUrl"    column="query_url"    />
+        <result property="serviceTo"    column="service_to"    />
+        <result property="advertImg"    column="advert_img"    />
+        <result property="remark"    column="remark"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPsyAdvertVo">
+        select advert_no, advert_title, advert_text, page_for, data_type, query_url, service_to, advert_img, remark, del_flag, create_by, create_time, update_by, update_time from psy_advert
+    </sql>
+
+    <select id="selectPsyAdvertList" parameterType="PsyAdvert" resultMap="PsyAdvertResult">
+        <include refid="selectPsyAdvertVo"/>
+        <where>
+            del_flag = 0
+            <if test="advertTitle != null  and advertTitle != ''"> and advert_title = #{advertTitle}</if>
+            <if test="advertText != null  and advertText != ''"> and advert_text = #{advertText}</if>
+            <if test="pageFor != null  and pageFor != ''"> and page_for = #{pageFor}</if>
+            <if test="dataType != null  and dataType != ''"> and data_type = #{dataType}</if>
+            <if test="queryUrl != null  and queryUrl != ''"> and query_url = #{queryUrl}</if>
+            <if test="serviceTo != null "> and service_to = #{serviceTo}</if>
+            <if test="advertImg != null  and advertImg != ''"> and advert_img = #{advertImg}</if>
+        </where>
+    </select>
+    
+    <select id="selectPsyAdvertByAdvertNo" parameterType="String" resultMap="PsyAdvertResult">
+        <include refid="selectPsyAdvertVo"/>
+        where del_flag = 0 and  advert_no = #{advertNo} 
+    </select>
+        
+    <insert id="insertPsyAdvert" parameterType="PsyAdvert">
+        insert into psy_advert
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="advertNo != null">advert_no,</if>
+            <if test="advertTitle != null">advert_title,</if>
+            <if test="advertText != null">advert_text,</if>
+            <if test="pageFor != null">page_for,</if>
+            <if test="dataType != null">data_type,</if>
+            <if test="queryUrl != null">query_url,</if>
+            <if test="serviceTo != null">service_to,</if>
+            <if test="advertImg != null">advert_img,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="advertNo != null">#{advertNo},</if>
+            <if test="advertTitle != null">#{advertTitle},</if>
+            <if test="advertText != null">#{advertText},</if>
+            <if test="pageFor != null">#{pageFor},</if>
+            <if test="dataType != null">#{dataType},</if>
+            <if test="queryUrl != null">#{queryUrl},</if>
+            <if test="serviceTo != null">#{serviceTo},</if>
+            <if test="advertImg != null">#{advertImg},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePsyAdvert" parameterType="PsyAdvert">
+        update psy_advert
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="advertTitle != null">advert_title = #{advertTitle},</if>
+            <if test="advertText != null">advert_text = #{advertText},</if>
+            <if test="pageFor != null">page_for = #{pageFor},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+            <if test="queryUrl != null">query_url = #{queryUrl},</if>
+            <if test="serviceTo != null">service_to = #{serviceTo},</if>
+            <if test="advertImg != null">advert_img = #{advertImg},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where advert_no = #{advertNo}
+    </update>
+
+    <delete id="deletePsyAdvertByAdvertNo" parameterType="String">
+        update psy_advert
+        set del_flag = 1
+        where advert_no = #{advertNo}
+    </delete>
+
+    <delete id="deletePsyAdvertByAdvertNos" parameterType="String">
+        update psy_advert
+        set del_flag = 1
+        where advert_no in 
+        <foreach item="advertNo" collection="array" open="(" separator="," close=")">
+            #{advertNo}
+        </foreach>
+    </delete>
+</mapper>

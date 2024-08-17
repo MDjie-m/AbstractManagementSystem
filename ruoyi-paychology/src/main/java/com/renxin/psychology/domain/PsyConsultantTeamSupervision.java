@@ -142,6 +142,6 @@ public class PsyConsultantTeamSupervision extends BaseEntity
 
     /** 督导师详情*/
     private PsyConsult consultantDetail;
-
+    private List<String> idList;
     
 }

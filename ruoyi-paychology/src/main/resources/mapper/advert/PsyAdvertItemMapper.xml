@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.renxin.advert.mapper.PsyAdvertItemMapper">
+
+    <resultMap type="PsyAdvertItem" id="PsyAdvertItemResult">
+        <result property="id"    column="id"    />
+        <result property="advertNo"    column="advert_no"    />
+        <result property="sortNo"    column="sort_no"    />
+        <result property="itemTitle"    column="item_title"    />
+        <result property="itemText"    column="item_text"    />
+        <result property="itemImg"    column="item_img"    />
+        <result property="toPage"    column="to_page"    />
+        <result property="toUrl"    column="to_url"    />
+        <result property="param"    column="param"    />
+        <result property="relationObjectId"    column="relation_object_id"    />
+        <result property="relationObjectType"    column="relation_object_type"    />
+        <result property="remark"    column="remark"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPsyAdvertItemVo">
+        select id, advert_no, sort_no, item_title, item_text, item_img, to_page, to_url, param, relation_object_id, relation_object_type, remark, del_flag, create_by, create_time, update_by, update_time from psy_advert_item
+    </sql>
+
+    <select id="selectPsyAdvertItemList" parameterType="PsyAdvertItem" resultMap="PsyAdvertItemResult">
+        <include refid="selectPsyAdvertItemVo"/>
+        <where>
+            del_flag = 0
+            <if test="advertNo != null  and advertNo != ''"> and advert_no = #{advertNo}</if>
+            <if test="sortNo != null "> and sort_no = #{sortNo}</if>
+            <if test="itemTitle != null  and itemTitle != ''"> and item_title = #{itemTitle}</if>
+            <if test="itemText != null  and itemText != ''"> and item_text = #{itemText}</if>
+            <if test="itemImg != null  and itemImg != ''"> and item_img = #{itemImg}</if>
+            <if test="toPage != null  and toPage != ''"> and to_page = #{toPage}</if>
+            <if test="toUrl != null  and toUrl != ''"> and to_url = #{toUrl}</if>
+            <if test="param != null "> and param = #{param}</if>
+            <if test="relationObjectId != null  and relationObjectId != ''"> and relation_object_id = #{relationObjectId}</if>
+            <if test="relationObjectType != null  and relationObjectType != ''"> and relation_object_type = #{relationObjectType}</if>
+        </where>
+    </select>
+
+    <select id="selectPsyAdvertItemById" parameterType="Long" resultMap="PsyAdvertItemResult">
+        <include refid="selectPsyAdvertItemVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPsyAdvertItem" parameterType="PsyAdvertItem" useGeneratedKeys="true" keyProperty="id">
+        insert into psy_advert_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="advertNo != null">advert_no,</if>
+            <if test="sortNo != null">sort_no,</if>
+            <if test="itemTitle != null">item_title,</if>
+            <if test="itemText != null">item_text,</if>
+            <if test="itemImg != null">item_img,</if>
+            <if test="toPage != null">to_page,</if>
+            <if test="toUrl != null">to_url,</if>
+            <if test="param != null">param,</if>
+            <if test="relationObjectId != null">relation_object_id,</if>
+            <if test="relationObjectType != null">relation_object_type,</if>
+            <if test="remark != null">remark,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="advertNo != null">#{advertNo},</if>
+            <if test="sortNo != null">#{sortNo},</if>
+            <if test="itemTitle != null">#{itemTitle},</if>
+            <if test="itemText != null">#{itemText},</if>
+            <if test="itemImg != null">#{itemImg},</if>
+            <if test="toPage != null">#{toPage},</if>
+            <if test="toUrl != null">#{toUrl},</if>
+            <if test="param != null">#{param},</if>
+            <if test="relationObjectId != null">#{relationObjectId},</if>
+            <if test="relationObjectType != null">#{relationObjectType},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertPsyAdvertItemList" parameterType="list">
+        INSERT INTO psy_advert_item
+        (advert_no, sort_no ,item_title, item_text, item_img, to_page, to_url, param, relation_object_id, relation_object_type, remark, del_flag, create_by, create_time, update_by, update_time)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.advertNo},#{item.sortNo}, #{item.itemTitle}, #{item.itemText}, #{item.itemImg}, #{item.toPage}, #{item.toUrl}, #{item.param}, #{item.relationObjectId}, #{item.relationObjectType}, #{item.remark}, #{item.delFlag}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+        </foreach>
+    </insert>
+    
+
+    <update id="updatePsyAdvertItem" parameterType="PsyAdvertItem">
+        update psy_advert_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="advertNo != null">advert_no = #{advertNo},</if>
+            <if test="sortNo != null">sort_no = #{sortNo},</if>
+            <if test="itemTitle != null">item_title = #{itemTitle},</if>
+            <if test="itemText != null">item_text = #{itemText},</if>
+            <if test="itemImg != null">item_img = #{itemImg},</if>
+            <if test="toPage != null">to_page = #{toPage},</if>
+            <if test="toUrl != null">to_url = #{toUrl},</if>
+            <if test="param != null">param = #{param},</if>
+            <if test="relationObjectId != null">relation_object_id = #{relationObjectId},</if>
+            <if test="relationObjectType != null">relation_object_type = #{relationObjectType},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteItemByAdvertNo">
+        update psy_advert_item
+        set del_flag = 1
+        where advert_no = #{advertNo}
+    </delete>
+
+    <delete id="deleteItemByIds" parameterType="String">
+        update psy_advert_item 
+        set del_flag = 1
+        where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

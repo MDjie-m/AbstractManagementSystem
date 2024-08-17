@@ -79,6 +79,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             
             <if test="waitDays != null  and waitDays != ''"> and wk.day >= CURDATE() AND day &lt; CURDATE() + INTERVAL #{waitDays} DAY</if>
 
+            <if test="idList != null and idList.size > 0">
+                and team.id in 
+                <foreach collection="idList" open="(" close=")" separator="," item="id">
+                    #{id}
+                </foreach>
+            </if>
         </where>
         group by team.id
     </select>
