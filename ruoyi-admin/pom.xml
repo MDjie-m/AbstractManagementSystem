@@ -85,6 +85,11 @@
             <artifactId>ruoyi-generator</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-zwj</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
