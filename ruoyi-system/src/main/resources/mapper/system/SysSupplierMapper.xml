@@ -8,31 +8,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="supplierId"    column="supplier_id"    />
         <result property="label"    column="label"    />
         <result property="country"    column="country"    />
+        <result property="nature"   column="nature"     />
         <result property="province"    column="province"    />
         <result property="city"    column="city"    />
         <result property="area"    column="area"    />
-        <result property="productType"    column="product_type"    />
+        <result property="businessCategory"    column="business_category"    />
+        <result property="mainCategory"    column="main_category"    />
+        <result property="mainProductId"    column="main_product_id"    />
+        <result property="mainProduct"    column="main_product"    />
         <result property="registrationNo"    column="registration_no"    />
         <result property="registrationNoInChina"    column="registration_no_in_china"    />
         <result property="supplierNameCn"    column="supplier_name_cn"    />
         <result property="supplierNameEn"    column="supplier_name_en"    />
+        <result property="supplierNameOwn"    column="supplier_name_own"    />
         <result property="registrationTime"    column="registration_time"    />
         <result property="registrationTimeValidityPeriod"    column="registration_time_validity_period"    />
+        <result property="legalPerson"    column="registration_time_validity_period"    />
+        <result property="legalPersonTelephone"    column="registration_time_validity_period"    />
+        <result property="legalPersonEmail"    column="registration_time_validity_period"    />
+        <result property="principalName"    column="registration_time_validity_period"    />
+        <result property="principalTelephone"    column="registration_time_validity_period"    />
+        <result property="principalEmail"    column="registration_time_validity_period"    />
+        <result property="classification"    column="classification"    />
         <result property="rate"    column="rate"    />
         <result property="reviewRating"    column="review_rating"    />
         <result property="deleteFlag"    column="delete_flag"    />
         <result property="inspectionId"    column="inspection_id"    />
-        <result property="contacts"    column="contacts"    />
-        <result property="telephone"    column="telephone"    />
-        <result property="principal_telephone"    column="principal_telephone"    />
-        <result property="email"    column="email"    />
-        <result property="classification"    column="classification"    />
         <result property="auditStatus"    column="audit_status"    />
         <result property="inspectionStatus"    column="inspection_status"    />
         <result property="inspectionAuditStatus"    column="inspection_audit_status"    />
         <result property="dataSources"    column="data_sources"    />
-        <result property="imageAddress"    column="image_address"    />
-        <result property="videoAddress"    column="video_address"    />
+        <result property="imagePath"    column="image_address"    />
+        <result property="videoPath"    column="video_address"    />
         <result property="remark"    column="remark"    />
         <result property="futureField1"    column="future_field1"    />
     </resultMap>
@@ -59,13 +66,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysSupplierVo">
-        select supplier_id, label, country, province, city, area, product_type,
+        select supplier_id, label, country, nature, province, city, area, business_category, main_category,
+               main_product_id, main_product, product_type,
                registration_no, registration_no_in_china, supplier_name_cn,
-               supplier_name_en, registration_time, registration_time_validity_period,
-               rate, review_rating, delete_flag, inspection_id, contacts, telephone,
-               principal_telephone, email, classification, audit_status, inspection_status,
-               inspection_audit_status, data_sources, image_address, video_address,
-               remark, future_field1 from sys_supplier
+               supplier_name_en, supplier_name_own, registration_time, registration_time_validity_period,
+               legal_person, legal_person_telephone, legal_person_email, principal_name, principal_telephone, principal_email,
+               classification, rate, review_rating, delete_flag, inspection_id, contacts, telephone,
+               principal_telephone, email, audit_status, inspection_status,
+               inspection_audit_status, data_sources, image_path, video_path,
+               remark from sys_supplier
     </sql>
 
     <select id="selectSysSupplierList" parameterType="SysSupplier" resultMap="SysSupplierResult">
@@ -73,24 +82,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             <if test="label != null "> and label = #{label}</if>
             <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="nature != null  and nature != ''"> and nature = #{nature}</if>
             <if test="province != null  and province != ''"> and province like concat('%',#{province},'%')</if>
             <if test="city != null  and city != ''"> and city like concat('%',#{city},'%') </if>
             <if test="area != null  and area != ''"> and area like concat('%',#{area},'%') </if>
-            <if test="productType != null  and productType != ''"> and product_type like concat('%',#{productType},'%') </if>
+            <if test="businessCategory != null  and businessCategory != ''"> and business_category like concat('%',#{businessCategory},'%') </if>
+            <if test="mainCategory != null  and mainCategory != ''"> and main_category like concat('%',#{mainCategory},'%') </if>
+            <if test="mainProductId != null  and mainProductId != ''"> and main_product_id like concat('%',#{mainProductId},'%') </if>
+            <if test="mainProduct != null  and mainProduct != ''"> and main_product like concat('%',#{mainProduct},'%') </if>
             <if test="registrationNo != null  and registrationNo != ''"> and registration_no like concat('%',#{registrationNo},'%') </if>
             <if test="registrationNoInChina != null  and registrationNoInChina != ''"> and registration_no_in_china like concat('%',#{registrationNoInChina},'%')</if>
             <if test="supplierNameCn != null  and supplierNameCn != ''"> and supplier_name_cn like concat('%',#{supplierNameCn},'%') </if>
             <if test="supplierNameEn != null  and supplierNameEn != ''"> and supplier_name_en like concat('%',#{supplierNameEn},'%') </if>
+            <if test="supplierNameOwn != null  and supplierNameOwn != ''"> and supplier_name_own like concat('%',#{supplierNameOwn},'%') </if>
             <if test="registrationTime != null "> and registration_time = #{registrationTime}</if>
             <if test="registrationTimeValidityPeriod != null "> and registration_time_validity_period = #{registrationTimeValidityPeriod}</if>
+            <if test="legalPerson != null "> and legal_person = #{legalPerson}</if>
+            <if test="legalPersonTelephone != null "> and legal_person_telephone = #{legalPersonTelephone}</if>
+            <if test="legalPersonEmail != null "> and legal_person_email = #{legalPersonEmail}</if>
+            <if test="principalName != null "> and principal_name = #{principalName}</if>
+            <if test="principalTelephone != null "> and principal_telephone = #{principalTelephone}</if>
+            <if test="principalEmail != null "> and principal_email = #{principalEmail}</if>
+            <if test="classification != null "> and classification = #{classification}</if>
             <if test="rate != null  and rate != ''"> and rate = #{rate}</if>
             <if test="reviewRating != null  and reviewRating != ''"> and review_rating = #{reviewRating}</if>
             <if test="inspectionId != null  and inspectionId != ''"> and inspection_id = #{inspectionId}</if>
-            <if test="contacts != null  and contacts != ''"> and contacts like concat('%',#{contacts},'%') </if>
-            <if test="telephone != null  and telephone != ''"> and telephone = #{telephone} </if>
-            <if test="principalTelephone != null  and principalTelephone != ''"> and principal_telephone = #{principalTelephone} </if>
-            <!--            <if test="email != null  and email != ''"> and email like concat('%',#{email},'%') </if>-->
-            <if test="classification != null "> and classification = #{classification}</if>
             <if test="auditStatus != null "> and audit_status = #{auditStatus}</if>
             <if test="inspectionStatus != null "> and inspection_status = #{inspectionStatus}</if>
             <if test="inspectionAuditStatus != null "> and inspection_audit_status = #{inspectionAuditStatus}</if>
@@ -100,13 +116,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectSysSupplierBySupplierId" parameterType="String" resultMap="SysSupplierSysProductResult">
-        select supplier_id, label, country, province, city, area, product_type, registration_no, registration_no_in_china, supplier_name_cn, supplier_name_en, registration_time, registration_time_validity_period, rate, review_rating, delete_flag, inspection_id, contacts, telephone, principal_telephone, email, classification, audit_status, inspection_status, inspection_audit_status, data_sources, image_address, video_address, remark, future_field1, future_field2, future_field3, future_field4, future_field5
+        select supplier_id, label, country, nature, province, city, area, business_category,
+               main_category, main_product_id, main_product, registration_no, registration_no_in_china,
+               supplier_name_cn, supplier_name_en, supplier_name_own, registration_time,
+               registration_time_validity_period, legal_person, legal_person_telephone, legal_person_email,
+               principal_name, principal_telephone, principal_email, classification, rate, review_rating,
+               delete_flag, inspection_id, audit_status, inspection_status, inspection_audit_status, data_sources,
+               head_portrait_path, image_path, video_path, remark
         from sys_supplier
         where supplier_id = #{supplierId}
     </select>
 
     <select id="selectSysProductList" resultMap="SysProductResult">
-        select product_id, supplier_id, primary_category, secondary_category, tertiary_category, quaternary_category, fifth_category, product_name, domestic_imported_type, product_model, quotation_flag, future_field1, future_field2, future_field3
+        select *
         from sys_product
         where supplier_id = #{supplier_id}
     </select>
@@ -116,32 +138,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="supplierId != null">supplier_id,</if>
             <if test="label != null">label,</if>
+            <if test="nature != null">nature,</if>
             <if test="country != null and country != ''">country,</if>
             <if test="province != null">province,</if>
             <if test="city != null">city,</if>
             <if test="area != null">area,</if>
-            <if test="productType != null">product_type,</if>
+            <if test="businessCategory != null">business_category,</if>
+            <if test="mainCategory != null">main_category,</if>
+            <if test="mainProductId != null">main_product_id,</if>
+            <if test="mainProduct != null">main_product,</if>
             <if test="registrationNo != null and registrationNo != ''">registration_no,</if>
             <if test="registrationNoInChina != null">registration_no_in_china,</if>
             <if test="supplierNameCn != null">supplier_name_cn,</if>
             <if test="supplierNameEn != null">supplier_name_en,</if>
+            <if test="supplierNameOwn != null">supplier_name_own,</if>
             <if test="registrationTime != null">registration_time,</if>
             <if test="registrationTimeValidityPeriod != null">registration_time_validity_period,</if>
+            <if test="legalPerson != null ">legal_person,</if>
+            <if test="legalPersonTelephone != null ">legal_person_telephone,</if>
+            <if test="legalPersonEmail != null ">legal_person_email,</if>
+            <if test="principalName != null ">principal_name,</if>
+            <if test="principalTelephone != null ">principal_telephone,</if>
+            <if test="principalEmail != null ">principal_email,</if>
+            <if test="classification != null ">classification,</if>
             <if test="rate != null">rate,</if>
             <if test="reviewRating != null">review_rating,</if>
             <if test="deleteFlag != null">delete_flag,</if>
             <if test="inspectionId != null">inspection_id,</if>
-            <if test="contacts != null">contacts,</if>
-            <if test="telephone != null">telephone,</if>
-            <if test="principalTelephone != null">principal_telephone,</if>
-            <if test="email != null">email,</if>
-            <if test="classification != null">classification,</if>
             <if test="auditStatus != null">audit_status,</if>
             <if test="inspectionStatus != null">inspection_status,</if>
             <if test="inspectionAuditStatus != null">inspection_audit_status,</if>
             <if test="dataSources != null">data_sources,</if>
-            <if test="imageAddress != null">image_address,</if>
-            <if test="videoAddress != null">video_address,</if>
+            <if test="headPortraitPath != null">head_portrait_path,</if>
+            <if test="imagePath != null">image_path,</if>
+            <if test="videoPath != null">video_path,</if>
             <if test="remark != null">remark,</if>
             <if test="futureField1 != null">future_field1,</if>
             <if test="futureField2 != null">future_field2,</if>
@@ -151,17 +181,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="supplierId != null">#{supplierId},</if>
             <if test="label != null">#{label},</if>
+            <if test="nature != null">nature,</if>
             <if test="country != null and country != ''">#{country},</if>
             <if test="province != null">#{province},</if>
             <if test="city != null">#{city},</if>
             <if test="area != null">#{area},</if>
-            <if test="productType != null">#{productType},</if>
+            <if test="businessCategory != null">business_category,</if>
+            <if test="mainCategory != null">main_category,</if>
+            <if test="mainProductId != null">main_product_id,</if>
+            <if test="mainProduct != null">main_product,</if>
             <if test="registrationNo != null and registrationNo != ''">#{registrationNo},</if>
             <if test="registrationNoInChina != null">#{registrationNoInChina},</if>
             <if test="supplierNameCn != null">#{supplierNameCn},</if>
             <if test="supplierNameEn != null">#{supplierNameEn},</if>
+            <if test="supplierNameOwn != null">supplier_name_own,</if>
             <if test="registrationTime != null">#{registrationTime},</if>
             <if test="registrationTimeValidityPeriod != null">#{registrationTimeValidityPeriod},</if>
+            <if test="legalPerson != null ">#{legalPerson},</if>
+            <if test="legalPersonTelephone != null ">#{legalPersonTelephone},</if>
+            <if test="legalPersonEmail != null ">#{legalPersonEmail},</if>
+            <if test="principalName != null ">#{principalName},</if>
+            <if test="principalTelephone != null ">#{principalTelephone},</if>
+            <if test="principalEmail != null ">#{principalEmail},</if>
+            <if test="classification != null ">#{classification},</if>
             <if test="rate != null">#{rate},</if>
             <if test="reviewRating != null">#{reviewRating},</if>
             <if test="deleteFlag != null">#{deleteFlag},</if>
@@ -170,13 +212,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="telephone != null">#{telephone},</if>
             <if test="principalTelephone != null">#{principalTelephone},</if>
             <if test="email != null">#{email},</if>
-            <if test="classification != null">#{classification},</if>
             <if test="auditStatus != null">#{auditStatus},</if>
             <if test="inspectionStatus != null">#{inspectionStatus},</if>
             <if test="inspectionAuditStatus != null">#{inspectionAuditStatus},</if>
             <if test="dataSources != null">#{dataSources},</if>
-            <if test="imageAddress != null">#{imageAddress},</if>
-            <if test="videoAddress != null">#{videoAddress},</if>
+            <if test="headPortraitPath != null">head_portrait_path,</if>
+            <if test="imagePath != null">image_path,</if>
+            <if test="videoPath != null">video_path,</if>
             <if test="remark != null">#{remark},</if>
             <if test="futureField1 != null">#{futureField1},</if>
             <if test="futureField2 != null">#{futureField2},</if>
@@ -188,18 +230,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 批量导入  -->
     <insert id="saveSysSupplier" parameterType="SysSupplier">
         INSERT INTO
-        sys_supplier(supplier_id,label,country,province,city,area,
-                     product_type,registration_no,registration_no_in_china,
-                     supplier_name_cn,supplier_name_en,registration_time,
-                     registration_time_validity_period,delete_flag,contacts,
-                     telephone,principal_telephone,email,classification,data_sources)
+        sys_supplier(supplier_id, label, nature, country, province, city, area,
+                     business_category, main_category, registration_no, registration_no_in_china,
+                     supplier_name_cn, supplier_name_en, supplier_name_own, registration_time,
+                     registration_time_validity_period, delete_flag, legalPerson, legal_person_telephone,
+                     legal_person_email, principal_name, principal_telephone, principal_email,
+                     classification, data_sources)
         VALUES
         <foreach item="item" index="index" collection="list" separator=",">
-            (#{item.supplierId},#{item.label},#{item.country},#{item.province},#{item.city},#{item.area},
-            #{item.productType},#{item.registrationNo},#{item.registrationNoInChina},
-             #{item.supplierNameCn},#{item.supplierNameEn},#{item.registrationTime},
-             #{item.registrationTimeValidityPeriod},#{item.deleteFlag},#{item.contacts},
-             #{item.telephone},#{item.principalTelephone},#{item.email},#{item.classification},#{item.dataSources})
+            (#{item.supplierId},#{item.label},#{item.nature},#{item.country},#{item.province},#{item.city},#{item.area},
+            #{item.businessCategory},#{item.mainCategory},#{item.registrationNo},#{item.registrationNoInChina},
+             #{item.supplierNameCn},#{item.supplierNameEn},#{item.supplierNameOwn},#{item.registrationTime},
+             #{item.registrationTimeValidityPeriod},#{item.deleteFlag},#{item.legalPerson},#{item.legalPersonTelephone},
+             #{item.legalPersonEmail},#{item.principalName},#{item.principalTelephone},#{item.principalEmail},#{item.classification},#{item.dataSources})
         </foreach>
     </insert>
 
@@ -208,31 +251,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update sys_supplier
         <trim prefix="SET" suffixOverrides=",">
             <if test="label != null">label = #{label},</if>
+            <if test="nature != null">nature = #{nature},</if>
             <if test="country != null and country != ''">country = #{country},</if>
             <if test="province != null">province = #{province},</if>
             <if test="city != null">city = #{city},</if>
             <if test="area != null">area = #{area},</if>
-            <if test="productType != null">product_type = #{productType},</if>
+            <if test="businessCategory != null">business_category = #{businessCategory},</if>
+            <if test="mainCategory != null">main_category = #{mainCategory},</if>
+            <if test="mainProductId != null">main_product_id = #{mainProductId},</if>
+            <if test="mainProduct != null">main_product = #{mainProduct},</if>
             <if test="registrationNo != null and registrationNo != ''">registration_no = #{registrationNo},</if>
             <if test="registrationNoInChina != null">registration_no_in_china = #{registrationNoInChina},</if>
             <if test="supplierNameCn != null">supplier_name_cn = #{supplierNameCn},</if>
             <if test="supplierNameEn != null">supplier_name_en = #{supplierNameEn},</if>
+            <if test="supplierNameOwn != null">supplier_name_own = #{supplierNameOwn},</if>
             <if test="registrationTime != null">registration_time = #{registrationTime},</if>
             <if test="registrationTimeValidityPeriod != null">registration_time_validity_period = #{registrationTimeValidityPeriod},</if>
             <if test="rate != null">rate = #{rate},</if>
             <if test="reviewRating != null">review_rating = #{reviewRating},</if>
             <if test="inspectionId != null">inspection_id = #{inspectionId},</if>
-<!--            <if test="contacts != null">contacts = #{contacts},</if>-->
-<!--            <if test="telephone != null">telephone = #{telephone},</if>-->
-            <if test="principalTelephone != null">#{principalTelephone},</if>
-            <if test="email != null">email = #{email},</if>
+            <if test="principalName != null ">principal_name = #{principalName},</if>
+            <if test="principalTelephone != null ">principal_telephone = #{principalTelephone},</if>
+            <if test="principalEmail != null ">principal_email = #{principalEmail},</if>
             <if test="classification != null">classification = #{classification},</if>
             <if test="auditStatus != null">audit_status = #{auditStatus},</if>
             <if test="inspectionStatus != null">inspection_status = #{inspectionStatus},</if>
             <if test="inspectionAuditStatus != null">inspection_audit_status = #{inspectionAuditStatus},</if>
             <if test="dataSources != null">data_sources = #{dataSources},</if>
-            <if test="imageAddress != null">image_address,</if>
-            <if test="videoAddress != null">video_address,</if>
+            <if test="headPortraitPath != null">head_portrait_path = #{headPortraitPath},</if>
+            <if test="imagePath != null">image_path = #{imagePath},</if>
+            <if test="videoPath != null">video_path = #{videoPath},</if>
             <if test="remark != null">remark = #{remark},</if>
         </trim>
         where supplier_id = #{supplierId}

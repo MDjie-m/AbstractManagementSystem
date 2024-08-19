@@ -19,55 +19,51 @@ public class SysInspection extends BaseEntity
     private String inspectionId;
 
     /** 供应商uuid（外键） */
-    @Excel(name = "供应商uuid", readConverterExp = "外=键")
     private String supplierId;
 
     /** 供应商名称（对应供应商表中uuid同行的供应商名称） */
-    @Excel(name = "供应商名称", readConverterExp = "对=应供应商表中uuid同行的供应商名称")
     private String supplierName;
 
     /** 考察员id（外键） */
-    @Excel(name = "考察员id", readConverterExp = "外=键")
     private String inspectorId;
 
     /** 考察员姓名 */
-    @Excel(name = "考察员姓名")
     private String inspectorName;
 
     /** 考察图片保存地址 */
-    @Excel(name = "考察图片保存地址")
     private String imageAddress;
 
     /** 视频保存地址 */
-    @Excel(name = "视频保存地址")
     private String videoAddress;
 
     /** 考察详情描述 */
-    @Excel(name = "考察详情描述")
     private String investigationDetails;
 
     /** 删除标志（0:未删除，1:已删除） */
-    @Excel(name = "删除标志", readConverterExp = "0=:未删除，1:已删除")
     private Integer deleteFlag;
 
+    /** 考察员评价：A、B、C、D、E */
+    private String rate;
+
+    /** 考察审核备注 */
+    private String auditRemark;
+
+    /** 考察审核结果：0-待审核，1-已通过，2-未通过 */
+    private String auditResult;
+
     /** 预留字段1 */
-    @Excel(name = "预留字段1")
     private String futureField1;
 
     /** 预留字段2 */
-    @Excel(name = "预留字段2")
     private String futureField2;
 
     /** 预留字段3 */
-    @Excel(name = "预留字段3")
     private String futureField3;
 
     /** 预留字段4 */
-    @Excel(name = "预留字段4")
     private String futureField4;
 
     /** 预留字段5 */
-    @Excel(name = "预留字段5")
     private String futureField5;
 
     public void setInspectionId(String inspectionId) 
@@ -197,6 +193,30 @@ public class SysInspection extends BaseEntity
         return futureField5;
     }
 
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
+
+    public String getAuditRemark() {
+        return auditRemark;
+    }
+
+    public void setAuditRemark(String auditRemark) {
+        this.auditRemark = auditRemark;
+    }
+
+    public String getAuditResult() {
+        return auditResult;
+    }
+
+    public void setAuditResult(String auditResult) {
+        this.auditResult = auditResult;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -209,6 +229,9 @@ public class SysInspection extends BaseEntity
             .append("videoAddress", getVideoAddress())
             .append("investigationDetails", getInvestigationDetails())
             .append("deleteFlag", getDeleteFlag())
+            .append("rate", getRate())
+            .append("auditRemark", getAuditRemark())
+            .append("auditResult", getAuditResult())
             .append("futureField1", getFutureField1())
             .append("futureField2", getFutureField2())
             .append("futureField3", getFutureField3())

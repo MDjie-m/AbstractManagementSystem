@@ -14,6 +14,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="videoAddress"    column="video_address"    />
         <result property="investigationDetails"    column="investigation_details"    />
         <result property="deleteFlag"    column="delete_flag"    />
+        <result property="rate"    column="rate"    />
+        <result property="auditRemark"    column="audit_remark"    />
+        <result property="auditResult"    column="audit_result"    />
         <result property="futureField1"    column="future_field1"    />
         <result property="futureField2"    column="future_field2"    />
         <result property="futureField3"    column="future_field3"    />
@@ -22,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysInspectionVo">
-        select inspection_id, supplier_id, supplier_name, inspector_id, inspector_name, image_address, video_address, investigation_details, delete_flag, future_field1, future_field2, future_field3, future_field4, future_field5 from sys_inspection
+        select inspection_id, supplier_id, supplier_name, inspector_id, inspector_name, image_address, video_address, investigation_details, delete_flag, rate, audit_remark, audit_result,future_field1, future_field2, future_field3, future_field4, future_field5 from sys_inspection
     </sql>
 
     <select id="selectSysInspectionList" parameterType="SysInspection" resultMap="SysInspectionResult">
@@ -36,6 +39,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="videoAddress != null  and videoAddress != ''"> and video_address = #{videoAddress}</if>
             <if test="investigationDetails != null  and investigationDetails != ''"> and investigation_details = #{investigationDetails}</if>
             <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            <if test="rate != null"> and rate = #{rate},</if>
+            <if test="auditRemark != null"> and audit_remark = #{auditRemark},</if>
+            <if test="auditResult != null"> and audit_result = #{auditResult},</if>
             <if test="futureField1 != null  and futureField1 != ''"> and future_field1 = #{futureField1}</if>
             <if test="futureField2 != null  and futureField2 != ''"> and future_field2 = #{futureField2}</if>
             <if test="futureField3 != null  and futureField3 != ''"> and future_field3 = #{futureField3}</if>
@@ -61,6 +67,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="videoAddress != null and videoAddress != ''">video_address,</if>
             <if test="investigationDetails != null and investigationDetails != ''">investigation_details,</if>
             <if test="deleteFlag != null">delete_flag,</if>
+            <if test="rate != null">#{rate},</if>
+            <if test="auditRemark != null">#{auditRemark},</if>
+            <if test="auditResult != null">#{auditResult},</if>
             <if test="futureField1 != null">future_field1,</if>
             <if test="futureField2 != null">future_field2,</if>
             <if test="futureField3 != null">future_field3,</if>
@@ -77,6 +86,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="videoAddress != null and videoAddress != ''">#{videoAddress},</if>
             <if test="investigationDetails != null and investigationDetails != ''">#{investigationDetails},</if>
             <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="rate != null">#{rate},</if>
+            <if test="auditRemark != null">#{auditRemark},</if>
+            <if test="auditResult != null">#{auditResult},</if>
             <if test="futureField1 != null">#{futureField1},</if>
             <if test="futureField2 != null">#{futureField2},</if>
             <if test="futureField3 != null">#{futureField3},</if>
@@ -96,6 +108,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="videoAddress != null and videoAddress != ''">video_address = #{videoAddress},</if>
             <if test="investigationDetails != null and investigationDetails != ''">investigation_details = #{investigationDetails},</if>
             <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="rate != null">rate = #{rate},</if>
+            <if test="auditRemark != null">audit_remark = #{auditRemark},</if>
+            <if test="auditResult != null">audit_result = #{auditResult},</if>
             <if test="futureField1 != null">future_field1 = #{futureField1},</if>
             <if test="futureField2 != null">future_field2 = #{futureField2},</if>
             <if test="futureField3 != null">future_field3 = #{futureField3},</if>
@@ -124,7 +139,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!--  编辑审核状态  -->
     <update id="updateInspectAudit" parameterType="list">
         update sys_inspection
-        set future_field2 = #{remark}, future_field3 = #{status}
+        set remark = #{remark}, audit_result = #{status}
         where supplier_id in
         <foreach item="item" collection="list" open="(" separator="," close=")">
             #{item}
