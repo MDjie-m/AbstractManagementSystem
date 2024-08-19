@@ -3,22 +3,30 @@ package com.renxin.consultant.controller.course;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.core.page.TableDataInfo;
-import com.renxin.course.domain.CourCourseClass;
-import com.renxin.course.service.ICourCourseClassService;
+import com.renxin.course.constant.CourConstant;
+import com.renxin.course.domain.*;
+import com.renxin.course.service.*;
+import com.renxin.course.vo.CourseListVO;
+import com.renxin.course.vo.CourseVO;
+import com.renxin.course.vo.SectionVO;
+import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultClass;
 import com.renxin.psychology.service.IPsyConsultClassService;
 import com.renxin.psychology.vo.PsyConsultClassVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -27,17 +35,191 @@ import java.util.List;
 public class ConsultantCourseController extends BaseController {
 
     @Resource
+    private IPsyConsultClassService PsyConsultClassService;
+
+    @Autowired
+    private ICourCourseService courCourseService;
+
+    @Autowired
+    private ICourUserCourseSectionService courUserCourseSectionService;
+
+    @Autowired
+    private ICourOrderService courOrderService;
+
+    @Autowired
+    private ICourSectionService courSectionService;
+
+    @Resource
+    ConsultantTokenService consultantTokenService;
+
+    @Autowired
     private ICourCourseClassService courCourseClassService;
+    
+    @Autowired
+    private ICourUserCourseSectionService userCourseSectionService;
 
     @ApiOperation(value = "查询class列表")
     @PostMapping("/class/list")
     @RateLimiter
-    public AjaxResult list(CourCourseClass courCourseClass)
+    public TableDataInfo list(@RequestBody CourCourseClass courCourseClass)
     {
-        //startPage();
+        startPage();
         courCourseClass.setServiceTo(2);//咨询师
         List<CourCourseClass> list = courCourseClassService.selectCourCourseClassList(courCourseClass);
+        return getDataTable(list);
+    }
+    
+    /**
+     * 根据课程类型查询课程列表
+     */
+//    @PreAuthorize("@ss.hasPermi('course:course:list')")
+    @PostMapping("/list")
+    @ApiOperation("查询课程列表")
+    @RateLimiter
+    public TableDataInfo list(@RequestBody CourCourse courCourse)
+    {
+        startPage();
+        courCourse.setOnSale(CourConstant.COUR_COURSE_ON_SALE);
+        courCourse.setServiceTo(2);//面向咨询师
+        List<CourseListVO> list = courCourseService.getCourseListByClassId(courCourse);
+        return getDataTable(list);
+    }
+
+    /**
+     * 根据搜素条件查询课程列表
+     */
+    @PostMapping("/search")
+    @ApiOperation("查询课程列表")
+    @RateLimiter
+    public AjaxResult getList(@RequestParam String searchValue) {
+        // 只查询已上架的课程
+        CourCourse course = new CourCourse();
+        course.setOnSale(CourConstant.COUR_COURSE_ON_SALE);
+        course.setServiceTo(2);//面向咨询师
+        List<CourCourse> list = courCourseService.selectCourCourseList(course);
+
+        list = list.stream()
+                .filter(item -> item.getName().contains(searchValue) || item.getAuthor().contains(searchValue))
+                .collect(Collectors.toList());
         return AjaxResult.success(list);
+    }
+
+
+
+    /**
+     * 查询课程信息，与用户无关的信息
+     */
+//    @PreAuthorize("@ss.hasPermi('course:course:query')")
+    @PostMapping(value = "/getInfo")
+    @ApiOperation("查询课程信息")
+    @RateLimiter
+    public AjaxResult getInfo(@RequestParam(value = "id") Long courseId)
+    {
+        CourCourse course = courCourseService.selectCourCourseById(courseId);
+        if (course == null) {
+            return AjaxResult.error("查询课程详情失败");
+        }
+        // 查询课程的学习人数
+        CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
+        courUserCourseSection.setCourseId(courseId);
+        List<CourUserCourseSection> courUserCourseSectionList = courUserCourseSectionService.selectCourUserCourseSectionList(courUserCourseSection);
+
+        CourseVO courseVO = new CourseVO();
+        BeanUtils.copyProperties(course, courseVO);
+        courseVO.setStudyNum(courUserCourseSectionList.size());
+
+        // 增加章节列表
+        CourSection courSection = CourSection.builder()
+                .courseId(courseId)
+                .build();
+        List<CourSection> sectionList = courSectionService.selectCourSectionList(courSection);
+        // 查询章节的学习情况
+        List<SectionVO> sectionVOList = new ArrayList<>();
+        for (CourSection section: sectionList) {
+            SectionVO sectionVO = new SectionVO();
+            BeanUtils.copyProperties(section, sectionVO);
+            sectionVOList.add(sectionVO);
+        }
+        courseVO.setSectionList(sectionVOList);
+
+        return AjaxResult.success(courseVO);
+    }
+
+    /**
+     * 根据课程主键查询课程详情
+     */
+//    @PreAuthorize("@ss.hasPermi('course:course:query')")
+    @PostMapping(value = "/detail/{courseId}")
+    @ApiOperation("查询课程详情")
+    @RateLimiter
+    public AjaxResult detail(@PathVariable("courseId") Long courseId,HttpServletRequest request)
+    {
+        Long cUserId = consultantTokenService.getConsultId(request);
+
+        CourCourse course = courCourseService.selectCourCourseById(courseId);
+        if (course == null) {
+            return AjaxResult.error("查询课程详情失败");
+        }
+
+        // 查询课程的学习人数
+        CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
+        courUserCourseSection.setCourseId(courseId);
+        List<CourUserCourseSection> courUserCourseSectionList = courUserCourseSectionService.selectCourUserCourseSectionList(courUserCourseSection);
+
+        CourseVO courseVO = new CourseVO();
+        BeanUtils.copyProperties(course, courseVO);
+        courseVO.setStudyNum(courUserCourseSectionList.size());
+
+        // 增加章节列表
+        CourSection courSection = CourSection.builder()
+                .courseId(courseId)
+                .build();
+        List<CourSection> sectionList = courSectionService.selectCourSectionList(courSection);
+        // 查询章节的学习情况
+        List<SectionVO> sectionVOList = new ArrayList<>();
+
+
+        for (CourSection section: sectionList) {
+            SectionVO sectionVO = new SectionVO();
+            CourUserCourseSection userCourseSection = new CourUserCourseSection();
+            userCourseSection.setUserId(cUserId);
+            userCourseSection.setCourseId(courseId);
+            BeanUtils.copyProperties(section, sectionVO);
+            userCourseSection.setSectionId(section.getId());
+            sectionVO.setEndTime(courUserCourseSectionService.findEndTime(userCourseSection));
+
+            // 未购买课程的普通章节不返回内容链接
+            if (courCourseService.getPaidCourseCount(cUserId, courseId) == 0 && sectionVO.getType() == CourConstant.SECTION_NORMAL) {
+                sectionVO.setContentUrl(null);
+            }
+
+            sectionVOList.add(sectionVO);
+        }
+        courseVO.setSectionList(sectionVOList);
+
+        // 查询用户有没有购买该订单
+        if (cUserId == 0 || courseVO.getPayType() == CourConstant.COURSE_FREE) { // 没有给出用户标识
+            return AjaxResult.success(courseVO);
+        }
+        List<CourOrder> courOrderList = courOrderService.selectCourOrderByUser(cUserId, courseId);
+        courseVO.setIsBuy(courOrderList.size() > 0 ? CourConstant.COURSE_BUY : CourConstant.COURSE_NOT_BUY);
+
+        return AjaxResult.success(courseVO);
+    }
+
+    
+    /**
+     * 根据搜素条件查询课程列表
+     */
+    @PostMapping("/updateSectionNote")
+    @ApiOperation("修改课程笔记")
+    @RateLimiter
+    public AjaxResult updateSectionNote(@RequestParam CourUserCourseSection req) {
+        
+        
+        Integer i = userCourseSectionService.updateCourUserCourseSection(req);
+
+        return AjaxResult.success(i);
     }
 
 }

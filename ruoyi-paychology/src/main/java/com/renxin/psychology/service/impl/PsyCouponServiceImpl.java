@@ -138,6 +138,8 @@ public class PsyCouponServiceImpl implements IPsyCouponService
                     BigDecimal payAmount = originalPrice.subtract(coupon.getMaxDeductionPrice());
                     if (payAmount.compareTo(BigDecimal.ZERO) < 0) {
                         coupon.setPayAmount(BigDecimal.ZERO);
+                    }else {
+                        coupon.setPayAmount(payAmount);
                     }
                 }
                 else if (coupon.getCouponType() == 2){//折扣券

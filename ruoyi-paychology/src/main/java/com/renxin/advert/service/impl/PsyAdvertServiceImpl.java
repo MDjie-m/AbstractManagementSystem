@@ -9,6 +9,9 @@ import com.renxin.advert.service.IPsyAdvertService;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
+import com.renxin.course.domain.CourCourse;
+import com.renxin.course.service.ICourCourseService;
+import com.renxin.course.vo.CourseListVO;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import org.apache.commons.lang3.ObjectUtils;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 页面广告Service业务层处理
@@ -36,6 +40,9 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
     @Autowired
     private IPsyConsultantTeamSupervisionService teamSupervisionService;
 
+    @Autowired
+    private ICourCourseService courCourseService;
+
     /**
      * 查询各类型的对象清单
      */
@@ -48,7 +55,14 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
             case "团队督导":
                 PsyConsultantTeamSupervision teamReq = new PsyConsultantTeamSupervision();
                 teamReq.setIdList(idList);
-                return AjaxResult.success(teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq));
+                List<PsyConsultantTeamSupervision> list1 = teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq);
+                return AjaxResult.success(list1);
+            case "course":
+                CourCourse courCourseReq = new CourCourse();
+                courCourseReq.setIdList(idList.stream().map(Long::valueOf).collect(Collectors.toList()));
+                List<CourseListVO> list2 = courCourseService.getCourseListByClassId(courCourseReq);
+                return AjaxResult.success(list2);
+                
         }
 
         return AjaxResult.success();

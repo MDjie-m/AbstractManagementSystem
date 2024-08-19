@@ -12,6 +12,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sectionId"    column="section_id"    />
         <result property="endTime"    column="end_time"    />
         <result property="finishStatus"    column="finish_status"    />
+        <result property="note"    column="note"    />
+        <result property="noteTime"    column="note_time"    />
     </resultMap>
 
     <resultMap type="CourCourse" id="CourCourseResult">
@@ -26,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCourUserCourseSectionVo">
-        select id, user_id, course_id, section_id, end_time, finish_status from cour_user_course_section
+        select id, user_id, course_id, section_id, end_time, finish_status, note, note_time from cour_user_course_section
     </sql>
 
     <select id="selectCourUserCourseSectionList" parameterType="CourUserCourseSection" resultMap="CourUserCourseSectionResult">
@@ -53,6 +55,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="endTime != null">end_time,</if>
             <if test="finishStatus != null">finish_status,</if>
             <if test="userType != null">user_type,</if>
+            <if test="note != null">note,</if>
+            <if test="noteTime != null">note_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null and userId != ''">#{userId},</if>
@@ -61,6 +65,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="endTime != null">#{endTime},</if>
             <if test="finishStatus != null">#{finishStatus},</if>
             <if test="userType != null">#{userType},</if>
+            <if test="note != null">#{note},</if>
+            <if test="noteTime != null">#{noteTime},</if>
          </trim>
     </insert>
 
@@ -73,6 +79,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="endTime != null">end_time = #{endTime},</if>
             <if test="finishStatus != null">finish_status = #{finishStatus},</if>
             <if test="userType != null">user_type = #{userType},</if>
+            <if test="note != null">note = #{note},</if>
+            <if test="noteTime != null">note_time = #{noteTime},</if>
         </trim>
         where id = #{id}
     </update>

@@ -1,6 +1,7 @@
 package com.renxin.course.domain;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -72,6 +73,8 @@ public class CourCourse extends BaseEntity
     /** 是否上架（0-未上架，1-已上架）*/
     @Excel(name = "是否上架")
     private Integer onSale;
+    
+    private List<Long> idList;
 
     @Override
     public String toString() {

@@ -42,6 +42,11 @@ public class CourUserCourseSection extends BaseEntity
     /** 完成状态（0-未完成， 1-已完成） */
     @Excel(name = "完成状态", readConverterExp = "0=-未完成，,1=-已完成")
     private Integer finishStatus;
+    
+    /** 笔记 */
+    private String note;
+    /** 笔记时间 */
+    private String noteTime;
 
 
 
