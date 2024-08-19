@@ -118,7 +118,7 @@ public class SysProduct extends BaseEntity
     private String specifications;
 
     /** 产品库存 */
-    private String inventory;
+    private int inventory;
 
     /** 产品状态(0-期货,1-现货) */
     private int status;
@@ -137,7 +137,7 @@ public class SysProduct extends BaseEntity
     private int storageMode;
 
     /** 仓库地址 */
-    private String warehouse_address;
+    private String warehouseAddress;
 
     /** 是否主营产品：0-不是，1-是 */
     private int mainProduct;
@@ -152,7 +152,7 @@ public class SysProduct extends BaseEntity
     private int inquiryStatus;
 
     /** 采购员id外键，用户表 */
-    private String buyerId;
+    private Long buyerId;
 
     /** 询价清单标识0 不常/1 经常 */
     private int inquiryListFlag;
@@ -481,11 +481,11 @@ public class SysProduct extends BaseEntity
         this.specifications = specifications;
     }
 
-    public String getInventory() {
+    public int getInventory() {
         return inventory;
     }
 
-    public void setInventory(String inventory) {
+    public void setInventory(int inventory) {
         this.inventory = inventory;
     }
 
@@ -529,12 +529,12 @@ public class SysProduct extends BaseEntity
         this.storageMode = storageMode;
     }
 
-    public String getWarehouse_address() {
-        return warehouse_address;
+    public String getWarehouseAddress() {
+        return warehouseAddress;
     }
 
-    public void setWarehouse_address(String warehouse_address) {
-        this.warehouse_address = warehouse_address;
+    public void setWarehouseAddress(String warehouseAddress) {
+        this.warehouseAddress = warehouseAddress;
     }
 
     public int getMainProduct() {
@@ -569,11 +569,11 @@ public class SysProduct extends BaseEntity
         this.inquiryStatus = inquiryStatus;
     }
 
-    public String getBuyerId() {
+    public Long getBuyerId() {
         return buyerId;
     }
 
-    public void setBuyerId(String buyerId) {
+    public void setBuyerId(Long buyerId) {
         this.buyerId = buyerId;
     }
 
@@ -645,7 +645,7 @@ public class SysProduct extends BaseEntity
                 ", shelfLife='" + shelfLife + '\'' +
                 ", origin='" + origin + '\'' +
                 ", storageMode=" + storageMode +
-                ", warehouse_address='" + warehouse_address + '\'' +
+                ", warehouse_address='" + warehouseAddress + '\'' +
                 ", mainProduct=" + mainProduct +
                 ", delFlag=" + delFlag +
                 ", quoteStatus=" + quoteStatus +
