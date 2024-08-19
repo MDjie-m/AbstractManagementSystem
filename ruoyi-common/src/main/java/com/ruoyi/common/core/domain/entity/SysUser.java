@@ -62,6 +62,31 @@ public class SysUser extends BaseEntity
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;
 
+    /** 是否为子账号（0,代表否 1 代表是子账号） */
+    @Excel(name = "是否为子账号", readConverterExp = "0,代表否 1 代表是子账号")
+    private String subAccountFlag;
+
+    /** 供应商id */
+    @Excel(name = "供应商id")
+    private String supplierId;
+
+
+    /** 用户详情id */
+    @Excel(name = "用户详情id")
+    private String userDetailsId;
+
+    /** 有效期 */
+    @Excel(name = "有效期", width = 30, dateFormat = "yyyy-MM-dd", type = Type.EXPORT)
+    private Date expirationDate;
+
+    /** 直接上级用户id */
+    @Excel(name = "直接上级用户id")
+    private String parentUserId;
+
+    /** 类别职位 */
+    @Excel(name = "类别职位")
+    private String position;
+
     /** 最后登录IP */
     @Excel(name = "最后登录IP", type = Type.EXPORT)
     private String loginIp;
@@ -89,6 +114,35 @@ public class SysUser extends BaseEntity
     /** 角色ID */
     private Long roleId;
     private String userType;
+
+    public SysUser( Long userId, Long deptId, String userName, String nickName, String userType, String email, String phonenumber, String sex, String avatar, String password, String status, String delFlag, String subAccountFlag, String supplierId, String userDetailsId, Date expirationDate, String parentUserId, String position, String loginIp, Date loginDate, SysDept dept, List<SysRole> roles, Long[] roleIds, Long[] postIds, Long roleId) {
+        this.userId = userId;
+        this.deptId = deptId;
+        this.userName = userName;
+        this.nickName = nickName;
+        this.userType = userType;
+        this.email = email;
+        this.phonenumber = phonenumber;
+        this.sex = sex;
+        this.avatar = avatar;
+        this.password = password;
+        this.status = status;
+        this.delFlag = delFlag;
+        this.subAccountFlag = subAccountFlag;
+        this.supplierId = supplierId;
+        this.userDetailsId = userDetailsId;
+        this.expirationDate = expirationDate;
+        this.parentUserId = parentUserId;
+        this.position = position;
+        this.loginIp = loginIp;
+        this.loginDate = loginDate;
+        this.dept = dept;
+        this.roles = roles;
+        this.roleIds = roleIds;
+        this.postIds = postIds;
+        this.roleId = roleId;
+        this.userType = userType;
+    }
 
     public String getUserType() {
         return userType;
@@ -329,5 +383,101 @@ public class SysUser extends BaseEntity
             .append("remark", getRemark())
             .append("dept", getDept())
             .toString();
+    }
+
+    /**
+     * 获取
+     * @return subAccountFlag
+     */
+    public String getSubAccountFlag() {
+        return subAccountFlag;
+    }
+
+    /**
+     * 设置
+     * @param subAccountFlag
+     */
+    public void setSubAccountFlag(String subAccountFlag) {
+        this.subAccountFlag = subAccountFlag;
+    }
+
+    /**
+     * 获取
+     * @return supplierId
+     */
+    public String getSupplierId() {
+        return supplierId;
+    }
+
+    /**
+     * 设置
+     * @param supplierId
+     */
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    /**
+     * 获取
+     * @return userDetailsId
+     */
+    public String getUserDetailsId() {
+        return userDetailsId;
+    }
+
+    /**
+     * 设置
+     * @param userDetailsId
+     */
+    public void setUserDetailsId(String userDetailsId) {
+        this.userDetailsId = userDetailsId;
+    }
+
+    /**
+     * 获取
+     * @return expirationDate
+     */
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    /**
+     * 设置
+     * @param expirationDate
+     */
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    /**
+     * 获取
+     * @return parentUserId
+     */
+    public String getParentUserId() {
+        return parentUserId;
+    }
+
+    /**
+     * 设置
+     * @param parentUserId
+     */
+    public void setParentUserId(String parentUserId) {
+        this.parentUserId = parentUserId;
+    }
+
+    /**
+     * 获取
+     * @return position
+     */
+    public String getPosition() {
+        return position;
+    }
+
+    /**
+     * 设置
+     * @param position
+     */
+    public void setPosition(String position) {
+        this.position = position;
     }
 }
