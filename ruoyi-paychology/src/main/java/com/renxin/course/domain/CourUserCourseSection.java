@@ -37,6 +37,9 @@ public class CourUserCourseSection extends BaseEntity
     /** 章节编号 */
     @Excel(name = "章节编号")
     private Long sectionId;
+    
+    //章节标题
+    private String sectionTopic;
 
     /** 上次结束时间（单位：秒） */
     @Excel(name = "上次结束时间", readConverterExp = "单=位：秒")

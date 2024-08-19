@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="finishStatus"    column="finish_status"    />
         <result property="note"    column="note"    />
         <result property="noteTime"    column="note_time"    />
+        <result property="sectionTopic"    column="sectionTopic"    />
     </resultMap>
 
     <resultMap type="CourCourse" id="CourCourseResult">
@@ -32,13 +33,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectCourUserCourseSectionList" parameterType="CourUserCourseSection" resultMap="CourUserCourseSectionResult">
-        <include refid="selectCourUserCourseSectionVo"/>
+        select
+        re.id, re.user_id, re.course_id, re.section_id, re.end_time, re.finish_status, re.note, re.note_time,
+               sec.topic as sectionTopic
+        from cour_user_course_section re
+            left join cour_section sec on re.section_id = sec.id
         <where>  
-            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
-            <if test="courseId != null  and courseId != ''"> and course_id = #{courseId}</if>
-            <if test="sectionId != null  and sectionId != ''"> and section_id = #{sectionId}</if>
-            <if test="finishStatus != null "> and finish_status = #{finishStatus}</if>
-             <if test="isQueryNote">and note is not null and note != ''</if>
+            <if test="userId != null  and userId != ''"> and re.user_id = #{userId}</if>
+            <if test="courseId != null  and courseId != ''"> and re.course_id = #{courseId}</if>
+            <if test="sectionId != null  and sectionId != ''"> and re.section_id = #{sectionId}</if>
+            <if test="finishStatus != null "> and re.finish_status = #{finishStatus}</if>
+             <if test="isQueryNote">and re.note is not null and re.note != ''</if>
         </where>
     </select>
     
