@@ -34,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select 
            sc.id, sc.order_id,sc.team_id, sc.work_id,sc.time_num,sc.schedule_type, sc.time_start, sc.time_end, sc.day, sc.week, sc.status, sc.create_by,
            sc.create_time, sc.update_by, sc.update_time, sc.time, sc.real_time, sc.consult_id ,
-            COALESCE(team.title, cf.name) AS serverName,  con.nick_name as userNickName ,con.id as userId, cf.mode
+            COALESCE(team.title, cf.name) AS serverName,  ifnull(con.nick_name,'') as userNickName ,ifnull(con.id,'') as userId, ifnull(cf.mode,'') as mode
         from psy_consultant_schedule sc
             left join psy_consultant_team_supervision team on team.id = sc.team_id
             left join psy_consult con on con.id = sc.create_by   

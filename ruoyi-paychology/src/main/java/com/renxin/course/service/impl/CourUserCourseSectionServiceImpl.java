@@ -1,15 +1,20 @@
 package com.renxin.course.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
+import com.renxin.common.exception.ServiceException;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourSection;
 import com.renxin.course.service.ICourSectionService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.renxin.course.mapper.CourUserCourseSectionMapper;
 import com.renxin.course.domain.CourUserCourseSection;
 import com.renxin.course.service.ICourUserCourseSectionService;
+
+import javax.annotation.Resource;
 
 /**
  * 用户-课程-章节关系Service业务层处理
@@ -20,10 +25,10 @@ import com.renxin.course.service.ICourUserCourseSectionService;
 @Service
 public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionService 
 {
-    @Autowired
+    @Resource
     private CourUserCourseSectionMapper courUserCourseSectionMapper;
 
-    @Autowired
+    @Resource
     private ICourSectionService courSectionService;
 
     /**
@@ -158,5 +163,22 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
     @Override
     public Integer findEndTime(CourUserCourseSection userCourseSection) {
         return courUserCourseSectionMapper.findEndTime(userCourseSection);
+    }
+
+    //修改章节笔记
+    @Override
+    public Integer updateSectionNote(CourUserCourseSection req){
+        if (ObjectUtils.isEmpty(req.getCourseId()) || ObjectUtils.isEmpty(req.getSectionId())){
+            throw new ServiceException("课程id和章节id不能为空");
+        }
+        List<CourUserCourseSection> sectionList = courUserCourseSectionMapper.selectCourUserCourseSectionList(req);
+        if (ObjectUtils.isEmpty(sectionList)){
+            throw new ServiceException("用户未购买该章节, 无法维护笔记");
+        }
+        CourUserCourseSection courseSection = sectionList.get(0);
+        courseSection.setNote(req.getNote());
+        courseSection.setNoteTime(new Date());
+        int i = courUserCourseSectionMapper.updateCourUserCourseSection(courseSection);
+        return i;
     }
 }

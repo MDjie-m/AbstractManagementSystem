@@ -32,7 +32,9 @@ INNER JOIN psy_user c ON c.id = d.user_id
         user.id AS `userId`,
         user.name AS `userNickName`,
         user.avatar AS `userAvatar`,
-        server.name as serverName
+        server.name as serverName,
+        server.mode as mode
+           
     from
         psy_consult_order_item item 
     left join psy_consult con on con.id = item.consult_id

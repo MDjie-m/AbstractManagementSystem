@@ -23,6 +23,8 @@ public class PsyUserLabel extends BaseEntity
     /** 用户id */
     @Excel(name = "用户id")
     private Long userId;
+    //咨询师id
+    private Long consultantId;
     
     /** 用户自己填写的标签 */
     @Excel(name = "用户自己填写的标签")
@@ -38,17 +40,9 @@ public class PsyUserLabel extends BaseEntity
 
     /** 删除标志（0代表存在 1代表删除） */
     private String delFlag;
-
-    /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
-    private String paramNo1;
-
-    /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    
     private String paramNo2;
 
-    /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
     private String paramNo3;
 
 }

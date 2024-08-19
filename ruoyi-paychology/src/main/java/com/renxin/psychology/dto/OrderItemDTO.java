@@ -34,5 +34,7 @@ public class OrderItemDTO extends PsyConsultOrderItem {
     private String orderBy;
     private int timeNum;
     private Integer rowNum;
+    //咨询形式   1语音咨询    2视频咨询   3面对面咨询
+    private Integer mode;
 
 }

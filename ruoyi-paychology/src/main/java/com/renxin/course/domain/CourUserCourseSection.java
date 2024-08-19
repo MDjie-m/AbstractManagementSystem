@@ -1,10 +1,13 @@
 package com.renxin.course.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
+
+import java.util.Date;
 
 /**
  * 用户-课程-章节关系对象 cour_user_course_section
@@ -46,8 +49,12 @@ public class CourUserCourseSection extends BaseEntity
     /** 笔记 */
     private String note;
     /** 笔记时间 */
-    private String noteTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date noteTime;
 
+
+    //是否针对查询笔记
+    private Boolean isQueryNote ;
 
 
     @Override

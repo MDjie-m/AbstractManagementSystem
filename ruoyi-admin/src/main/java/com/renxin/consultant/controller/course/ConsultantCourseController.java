@@ -12,12 +12,14 @@ import com.renxin.course.vo.CourseListVO;
 import com.renxin.course.vo.CourseVO;
 import com.renxin.course.vo.SectionVO;
 import com.renxin.framework.web.service.ConsultantTokenService;
+import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.psychology.domain.PsyConsultClass;
 import com.renxin.psychology.service.IPsyConsultClassService;
 import com.renxin.psychology.vo.PsyConsultClassVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +59,7 @@ public class ConsultantCourseController extends BaseController {
     
     @Autowired
     private ICourUserCourseSectionService userCourseSectionService;
+    
 
     @ApiOperation(value = "查询class列表")
     @PostMapping("/class/list")
@@ -209,17 +212,71 @@ public class ConsultantCourseController extends BaseController {
 
     
     /**
-     * 根据搜素条件查询课程列表
+     * 修改课程笔记
      */
     @PostMapping("/updateSectionNote")
-    @ApiOperation("修改课程笔记")
+    @ApiOperation("修改课程章节笔记")
     @RateLimiter
-    public AjaxResult updateSectionNote(@RequestParam CourUserCourseSection req) {
-        
-        
-        Integer i = userCourseSectionService.updateCourUserCourseSection(req);
+    public AjaxResult updateSectionNote(@RequestParam CourUserCourseSection req, HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        req.setUserType(2);//咨询师
+        req.setUserId(consultId);
+        Integer i = userCourseSectionService.updateSectionNote(req);
 
         return AjaxResult.success(i);
     }
 
+    /**
+     * 查询笔记
+     */
+//    @PreAuthorize("@ss.hasPermi('course:section:list')")
+    @PostMapping("/sectionNoteList")
+    @ApiOperation("查询笔记清单")
+    @RateLimiter
+    public TableDataInfo sectionNoteList(@RequestBody CourUserCourseSection req, HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        req.setIsQueryNote(true);
+        req.setUserId(consultId);
+        req.setUserType(2);//咨询师
+        List<CourUserCourseSection> list = userCourseSectionService.selectCourUserCourseSectionList(req);
+        
+        return getDataTable(list);
+    }
+    
+    
+    /**
+     * 查询课程章节列表
+     */
+//    @PreAuthorize("@ss.hasPermi('course:section:list')")
+    @PostMapping("/sectionList")
+    @ApiOperation("查询课程章节列表")
+    @RateLimiter
+    public TableDataInfo sectionList(@RequestBody CourSection req, HttpServletRequest request)
+    {
+        List<CourSection> list = courSectionService.selectCourSectionList(req);
+        Long consultId = consultantTokenService.getConsultId(request);
+        // 判断课程是否已经下单支付
+        if (courCourseService.getPaidCourseCount(consultId, req.getCourseId()) == 0) { // 未下单支付
+            list.forEach(item -> {
+                if (item.getType() == 0) { // 普通课程禁止学习
+                    item.setContentUrl(null);
+                }
+            });
+        };
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询章节详情
+     */
+//    @PreAuthorize("@ss.hasPermi('course:section:query')")
+    @PostMapping(value = "/getSectionInfo")
+    @ApiOperation("查询章节详情")
+    @RateLimiter
+    public AjaxResult getSectionInfo(@RequestParam(value = "id") Long id)
+    {
+        return AjaxResult.success(courSectionService.selectCourSectionById(id));
+    }
 }

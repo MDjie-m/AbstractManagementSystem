@@ -60,7 +60,6 @@ public class ConsultantUserLabelController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody PsyUserLabel psyUserLabel)
     {
-        psyUserLabel.setUserFillLabel(null);
         psyUserLabel.setAdminFillLabel(null);
         return toAjax(psyUserLabelService.insertPsyUserLabel(psyUserLabel));
     }

@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="PsyUserLabel" id="PsyUserLabelResult">
         <result property="id"    column="id"    />
         <result property="userId"    column="user_id"    />
+        <result property="consultantId"    column="consultant_id"    />
         <result property="userFillLabel"    column="user_fill_label"    />
         <result property="consultantFillLabel"    column="consultant_fill_label"    />
         <result property="adminFillLabel"    column="admin_fill_label"    />
@@ -15,13 +16,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
-        <result property="paramNo1"    column="param_no1"    />
         <result property="paramNo2"    column="param_no2"    />
         <result property="paramNo3"    column="param_no3"    />
     </resultMap>
 
     <sql id="selectPsyUserLabelVo">
-        select id, user_id, consultant_id, user_fill_label, consultant_fill_label, admin_fill_label, del_flag, create_by, create_time, update_by, update_time, param_no1, param_no2, param_no3 from psy_user_label
+        select id, user_id, consultant_id, user_fill_label, consultant_fill_label, admin_fill_label, del_flag, create_by, create_time, update_by, update_time, consultant_id, param_no2, param_no3 from psy_user_label
     </sql>
 
     <select id="selectPsyUserLabelList" parameterType="PsyUserLabel" resultMap="PsyUserLabelResult">
@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userFillLabel != null  and userFillLabel != ''"> and user_fill_label = #{userFillLabel}</if>
             <if test="consultantFillLabel != null  and consultantFillLabel != ''"> and consultant_fill_label = #{consultantFillLabel}</if>
             <if test="adminFillLabel != null  and adminFillLabel != ''"> and admin_fill_label = #{adminFillLabel}</if>
-            <if test="paramNo1 != null  and paramNo1 != ''"> and param_no1 = #{paramNo1}</if>
+            <if test="consultantId != null  and consultantId != ''"> and consultant_id = #{consultantId}</if>
             <if test="paramNo2 != null  and paramNo2 != ''"> and param_no2 = #{paramNo2}</if>
             <if test="paramNo3 != null  and paramNo3 != ''"> and param_no3 = #{paramNo3}</if>
         </where>
@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-            <if test="paramNo1 != null">param_no1,</if>
+            <if test="consultantId != null">consultant_id,</if>
             <if test="paramNo2 != null">param_no2,</if>
             <if test="paramNo3 != null">param_no3,</if>
          </trim>
@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-            <if test="paramNo1 != null">#{paramNo1},</if>
+            <if test="consultantId != null">#{consultantId},</if>
             <if test="paramNo2 != null">#{paramNo2},</if>
             <if test="paramNo3 != null">#{paramNo3},</if>
          </trim>
@@ -86,7 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="paramNo1 != null">param_no1 = #{paramNo1},</if>
+            <if test="consultantId != null">consultant_id = #{consultantId},</if>
             <if test="paramNo2 != null">param_no2 = #{paramNo2},</if>
             <if test="paramNo3 != null">param_no3 = #{paramNo3},</if>
         </trim>

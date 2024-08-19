@@ -322,6 +322,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
             req.setRealTime(item.getRealTime());
             Integer timeNum = orderItemService.getTimeNumForConsulted(req);
             item.setTimeNum(timeNum);
+            item.setScheduleType(12);//咨询
         }
         
         //查询面向[咨询师]的服务待办清单

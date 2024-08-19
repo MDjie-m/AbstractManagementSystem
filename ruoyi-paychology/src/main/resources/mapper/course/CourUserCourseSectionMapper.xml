@@ -38,6 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="courseId != null  and courseId != ''"> and course_id = #{courseId}</if>
             <if test="sectionId != null  and sectionId != ''"> and section_id = #{sectionId}</if>
             <if test="finishStatus != null "> and finish_status = #{finishStatus}</if>
+             <if test="isQueryNote">and note is not null and note != ''</if>
         </where>
     </select>
     

@@ -78,4 +78,7 @@ public interface ICourUserCourseSectionService
      * @return 结束时间点
      */
     Integer findEndTime(CourUserCourseSection userCourseSection);
+    
+    //修改章节笔记
+    Integer updateSectionNote(CourUserCourseSection req);
 }

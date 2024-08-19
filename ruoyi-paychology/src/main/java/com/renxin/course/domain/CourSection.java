@@ -58,5 +58,6 @@ public class CourSection extends BaseEntity
     @Excel(name = "内容类型", readConverterExp = "0=-视频，1-音频")
     private Integer contentType;
 
+
     
 }
