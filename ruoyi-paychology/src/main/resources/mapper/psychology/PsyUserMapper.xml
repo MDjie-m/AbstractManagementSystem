@@ -31,7 +31,7 @@
         </where>
     </select>
 
-    <select id="selectPsyUserById" parameterType="Integer" resultMap="PsyUserResult">
+    <select id="selectPsyUserById"  resultMap="PsyUserResult">
         select user.id, user.name, user.phone, user.avatar, user.status, user.wx_openid, user.integral, user.create_time , user.sex,
                label.user_fill_label as userFillLabel, label.consultant_fill_label as consultantFillLabel, label.admin_fill_label as adminFillLabel
         from psy_user user
@@ -75,7 +75,7 @@
         where id = #{id}
     </update>
 
-    <delete id="deletePsyUserById" parameterType="Integer">
+    <delete id="deletePsyUserById" >
         delete
         from psy_user
         where id = #{id}

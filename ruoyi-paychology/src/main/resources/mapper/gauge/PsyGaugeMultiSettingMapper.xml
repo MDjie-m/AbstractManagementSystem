@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by x asc
     </select>
 
-    <select id="selectPsyGaugeMultiSettingById" parameterType="Integer" resultMap="PsyGaugeMultiSettingResult">
+    <select id="selectPsyGaugeMultiSettingById"  resultMap="PsyGaugeMultiSettingResult">
         <include refid="selectPsyGaugeMultiSettingVo"/>
         where id = #{id}
     </select>
@@ -64,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deletePsyGaugeMultiSettingById" parameterType="Integer">
+    <delete id="deletePsyGaugeMultiSettingById" >
         delete from psy_gauge_multi_setting where id = #{id}
     </delete>
 

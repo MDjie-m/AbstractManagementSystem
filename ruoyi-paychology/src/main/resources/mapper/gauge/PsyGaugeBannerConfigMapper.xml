@@ -26,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectPsyGaugeBannerConfigById" parameterType="Integer" resultMap="PsyGaugeBannerConfigResult">
+    <select id="selectPsyGaugeBannerConfigById"  resultMap="PsyGaugeBannerConfigResult">
         <include refid="selectPsyGaugeBannerConfigVo"/>
         where id = #{id}
     </select>
@@ -63,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deletePsyGaugeBannerConfigById" parameterType="Integer">
+    <delete id="deletePsyGaugeBannerConfigById" >
         delete from psy_gauge_banner_config where id = #{id}
     </delete>
 

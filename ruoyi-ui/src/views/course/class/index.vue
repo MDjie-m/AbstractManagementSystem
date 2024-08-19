@@ -47,7 +47,11 @@
 
     <el-table v-loading="loading" :data="classList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="类型名称" align="center" prop="name">
+      <el-table-column label="类型名称" align="center" prop="name"/>
+      <el-table-column label="服务对象" align="center" prop="serviceTo">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.user_type" :value="scope.row.serviceTo"/>
+        </template>
       </el-table-column>
       <el-table-column label="图标地址" align="center" prop="url" width="120">
         <template slot-scope="scope">
@@ -89,6 +93,18 @@
         <el-form-item label="类型名称" prop="name">
           <el-input v-model="form.name" placeholder="请选择类型名称" />
         </el-form-item>
+
+        <el-form-item label="服务对象" prop="type">
+          <el-select v-model="form.serviceTo" placeholder="请选择服务对象">
+            <el-option
+              v-for="dict in userTypeList"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="图标地址">
           <image-upload v-model="form.url" :extraData="extraData" />
         </el-form-item>
@@ -109,7 +125,7 @@ import { listClass, getClass, delClass, addClass, updateClass } from "@/api/cour
 
 export default {
   name: "Class",
-  dicts: ['course_type'],
+  dicts: ['course_type','user_type'],
   data() {
     return {
       // 上传
@@ -117,6 +133,7 @@ export default {
         module: this.$constants['picModules'][0],
         type: this.$constants['picTypes'][0]
       },
+      userTypeList: this.$constants.userType,
       // 遮罩层
       loading: true,
       // 选中数组

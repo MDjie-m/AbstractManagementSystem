@@ -35,6 +35,7 @@ public class ConsultantCourseController extends BaseController {
     public AjaxResult list(CourCourseClass courCourseClass)
     {
         //startPage();
+        courCourseClass.setServiceTo(2);//咨询师
         List<CourCourseClass> list = courCourseClassService.selectCourCourseClassList(courCourseClass);
         return AjaxResult.success(list);
     }

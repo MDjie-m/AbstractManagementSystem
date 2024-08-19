@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectPsyConsultantManagementById" parameterType="Integer" resultMap="PsyConsultantManagementResult">
+    <select id="selectPsyConsultantManagementById"  resultMap="PsyConsultantManagementResult">
         <include refid="selectPsyConsultantManagementVo"/>
         where id = #{id}
     </select>
@@ -109,7 +109,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deletePsyConsultantManagementById" parameterType="Integer">
+    <delete id="deletePsyConsultantManagementById" >
         delete from psy_consultant_management where id = #{id}
     </delete>
 

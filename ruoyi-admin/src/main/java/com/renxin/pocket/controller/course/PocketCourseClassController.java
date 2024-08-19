@@ -32,6 +32,7 @@ public class PocketCourseClassController extends BaseController
     public TableDataInfo list(CourCourseClass courCourseClass)
     {
         startPage();
+        courCourseClass.setServiceTo(1);//来访者
         List<CourCourseClass> list = courCourseClassService.selectCourCourseClassList(courCourseClass);
         return getDataTable(list);
     }

@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectCourCourseLabelById" parameterType="Integer" resultMap="CourCourseLabelResult">
+    <select id="selectCourCourseLabelById"  resultMap="CourCourseLabelResult">
         <include refid="selectCourCourseLabelVo"/>
         where id = #{id}
     </select>
@@ -48,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteCourCourseLabelById" parameterType="Integer">
+    <delete id="deleteCourCourseLabelById" >
         delete from cour_course_label where id = #{id}
     </delete>
 

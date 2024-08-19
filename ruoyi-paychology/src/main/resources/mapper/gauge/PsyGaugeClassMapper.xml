@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectPsyGaugeClassById" parameterType="Integer" resultMap="PsyGaugeClassResult">
+    <select id="selectPsyGaugeClassById"  resultMap="PsyGaugeClassResult">
         <include refid="selectPsyGaugeClassVo"/>
         where id = #{id}
     </select>
@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deletePsyGaugeClassById" parameterType="Integer">
+    <delete id="deletePsyGaugeClassById" >
         delete from psy_gauge_class where id = #{id}
     </delete>
 

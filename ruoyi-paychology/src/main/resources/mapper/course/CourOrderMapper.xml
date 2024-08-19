@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
-    <select id="selectCourOrderById" parameterType="Integer" resultMap="CourOrderResult">
+    <select id="selectCourOrderById"  resultMap="CourOrderResult">
         <include refid="selectCourOrderVo"/>
         where id = #{id}
     </select>
@@ -78,7 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
     </update>
 
-    <delete id="deleteCourOrderById" parameterType="Integer">
+    <delete id="deleteCourOrderById" >
         delete from cour_order where id = #{id}
     </delete>
 
@@ -89,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
-    <select id="getOrderDetailById" parameterType="Integer" resultType="com.renxin.course.vo.OrderVO">
+    <select id="getOrderDetailById"  resultType="com.renxin.course.vo.OrderVO">
         select co.id, co.order_id, co.status, co.user_id, co.amount as amount, co.course_id, pop.pay_status , pop.amount as pay_amount
         from cour_order co
         left join psy_order_pay pop
@@ -113,7 +113,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
-    <select id="getOrderByCancel" parameterType="Integer" resultMap="CourOrderResult">
+    <select id="getOrderByCancel"  resultMap="CourOrderResult">
         <include refid="selectCourOrderVo"/>
         <where>
             <if test="status != null">and status = #{status}</if>
@@ -121,7 +121,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
-    <select id="getOrderListByUserId" parameterType="Integer" resultType="com.renxin.course.vo.CourseOrderVO">
+    <select id="getOrderListByUserId"  resultType="com.renxin.course.vo.CourseOrderVO">
         SELECT
         co.user_id,
         c.author,

@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectPsyOrderPayById" parameterType="Integer" resultMap="PsyOrderPayResult">
+    <select id="selectPsyOrderPayById"  resultMap="PsyOrderPayResult">
         <include refid="selectPsyOrderPayVo"/>
         where id = #{id}
     </select>
@@ -86,7 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="payType != null">and pay_type = #{payType}</if>
     </update>
 
-    <delete id="deletePsyOrderPayById" parameterType="Integer">
+    <delete id="deletePsyOrderPayById" >
         delete from psy_order_pay where id = #{id}
     </delete>
 

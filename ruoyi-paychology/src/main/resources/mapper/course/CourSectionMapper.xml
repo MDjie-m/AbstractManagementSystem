@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectCourSectionById" parameterType="Integer" resultMap="CourSectionResult">
+    <select id="selectCourSectionById"  resultMap="CourSectionResult">
         <include refid="selectCourSectionVo"/>
         where id = #{id} and delete_flag = 0
     </select>
@@ -79,7 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteCourSectionById" parameterType="Integer">
+    <delete id="deleteCourSectionById" >
         update cour_section set delete_flag = 1 where id = #{id}
     </delete>
 

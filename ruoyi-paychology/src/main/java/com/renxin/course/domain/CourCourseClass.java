@@ -31,6 +31,9 @@ public class CourCourseClass extends BaseEntity
     /** 排序 */
     @Excel(name = "图标路径")
     private String url;
+    
+    //服务对象  1.来访者  2.咨询师
+    private Integer serviceTo;
 
 
     @Override

@@ -8,20 +8,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
         <result property="sort"    column="sort"    />
+        <result property="serviceTo"    column="service_to"    />
     </resultMap>
 
     <sql id="selectCourCourseClassVo">
-        select id, name, url, sort from cour_course_class
+        select id, name, url, sort , service_to from cour_course_class
     </sql>
 
     <select id="selectCourCourseClassList" parameterType="CourCourseClass" resultMap="CourCourseClassResult">
         <include refid="selectCourCourseClassVo"/>
         <where>  
+            <if test="serviceTo != null and serviceTo != ''">and  service_to = #{serviceTo}</if>
         </where>
         order by sort asc
     </select>
     
-    <select id="selectCourCourseClassById" parameterType="Integer" resultMap="CourCourseClassResult">
+    <select id="selectCourCourseClassById" resultMap="CourCourseClassResult">
         <include refid="selectCourCourseClassVo"/>
         where id = #{id}
     </select>
@@ -32,10 +34,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="name != null and name != ''">name,</if>
             <if test="url != null and url != ''">url,</if>
             <if test="sort != null">sort,</if>
+            <if test="serviceTo != null">service_to,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="name != null and name != ''">#{name},</if>
+            <if test="url != null and url != ''">#{url},</if>
             <if test="sort != null">#{sort},</if>
+            <if test="serviceTo != null">#{serviceTo},</if>
          </trim>
     </insert>
 
@@ -45,11 +50,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="name != null and name != ''">name = #{name},</if>
             <if test="url != null and url != ''">url = #{url},</if>
             <if test="sort != null">sort = #{sort},</if>
+            <if test="serviceTo != null">service_to = #{serviceTo},</if>
         </trim>
         where id = #{id}
     </update>
 
-    <delete id="deleteCourCourseClassById" parameterType="Integer">
+    <delete id="deleteCourCourseClassById" >
         delete from cour_course_class where id = #{id}
     </delete>
 

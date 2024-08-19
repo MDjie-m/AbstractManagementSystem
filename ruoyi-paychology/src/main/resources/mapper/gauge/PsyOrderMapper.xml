@@ -58,7 +58,7 @@
                  left join psy_user u ON po.user_id = u.id
     </sql>
 
-    <select id="selectPsyOrderById" parameterType="Integer" resultType="com.renxin.gauge.domain.PsyOrder">
+    <select id="selectPsyOrderById"  resultType="com.renxin.gauge.domain.PsyOrder">
         <include refid="selectPsyOrder"/>
         where po.id = #{id}
     </select>
@@ -118,7 +118,7 @@
 
     </update>
 
-    <delete id="deletePsyOrderById" parameterType="Integer">
+    <delete id="deletePsyOrderById" >
         delete
         from psy_order
         where id = #{id}

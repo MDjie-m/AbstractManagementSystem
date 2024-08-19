@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
 
-    <select id="selectPsyGaugeLabelById" parameterType="Integer" resultMap="PsyGaugeLabelResult">
+    <select id="selectPsyGaugeLabelById"  resultMap="PsyGaugeLabelResult">
         <include refid="selectPsyGaugeLabelVo"/>
         where id = #{id}
     </select>
@@ -52,7 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deletePsyGaugeLabelById" parameterType="Integer">
+    <delete id="deletePsyGaugeLabelById" >
         delete from psy_gauge_label where id = #{id}
     </delete>
 

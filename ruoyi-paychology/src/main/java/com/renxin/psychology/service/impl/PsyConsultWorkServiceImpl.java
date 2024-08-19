@@ -310,7 +310,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
     }
     
     @Override
-    public List<OrderItemDTO> getTodoList(PsyWorkReq req){
+    public List<PsyConsultantSchedule> getTodoList(PsyWorkReq req){
         //Long consultId = req.getConsultId();//本咨询师id
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         req.setDay(today);
@@ -347,8 +347,10 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
         
         //清单合并
         List<OrderItemDTO> scheduleToItemList = BeanUtil.copyToList(scheduleList, OrderItemDTO.class);
-        List<OrderItemDTO> mergedList = new ArrayList<>(orderItemList);
-        mergedList.addAll(scheduleToItemList);
+        List<PsyConsultantSchedule> orderItemToSchedule = BeanUtil.copyToList(orderItemList, PsyConsultantSchedule.class);
+
+        List<PsyConsultantSchedule> mergedList = new ArrayList<>(scheduleList);
+        mergedList.addAll(orderItemToSchedule);
         // 按timeStart字段（字符串格式为"HH:mm"）进行正序排序
         mergedList.sort(Comparator.comparing(dto -> LocalTime.parse(dto.getTimeStart())));
 
