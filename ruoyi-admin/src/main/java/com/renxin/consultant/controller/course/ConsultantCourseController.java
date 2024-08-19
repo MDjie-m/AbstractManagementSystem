@@ -217,7 +217,7 @@ public class ConsultantCourseController extends BaseController {
     @PostMapping("/updateSectionNote")
     @ApiOperation("修改课程章节笔记")
     @RateLimiter
-    public AjaxResult updateSectionNote(@RequestParam CourUserCourseSection req, HttpServletRequest request)
+    public AjaxResult updateSectionNote(@RequestBody CourUserCourseSection req, HttpServletRequest request)
     {
         Long consultId = consultantTokenService.getConsultId(request);
         req.setUserType(2);//咨询师
