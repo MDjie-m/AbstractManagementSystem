@@ -9,10 +9,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="productName"    column="product_name"    />
         <result property="parentCode"    column="parent_code"    />
         <result property="remark"    column="remark"    />
+        <result property="tagId"    column="tag_id"    />
+        <result property="tagName"    column="tag_Name"    />
+        <result property="showFlag"    column="show_flag"    />
     </resultMap>
 
     <sql id="selectSysProductTypeVo">
-        select product_code, product_name, parent_code, remark from sys_product_type
+        select product_code, product_name, parent_code, remark, tag_id, tag_name , show_flag from sys_product_type
     </sql>
 
     <select id="selectSysProductTypeList" parameterType="SysProductType" resultMap="SysProductTypeResult">
@@ -21,6 +24,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productCode != null  and productCode != ''"> and product_code = #{productCode}</if>
             <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
             <if test="parentCode != null  and parentCode != ''"> and parent_code = #{parentCode}</if>
+            <if test="tagId != null  and tagId != ''"> and tag_Id = #{tagId}</if>
+            <if test="tagName != null  and tagName != ''"> and tag_Name like concat('%', #{tagName}, '%')</if>
+            <if test="showFlag != null  and showFlag != ''"> and show_flag = #{showFlag}</if>
         </where>
     </select>
 
@@ -30,7 +36,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectChildren" resultMap="SysProductTypeResult" parameterType="String">
-        select product_code, product_name, parent_code, remark from sys_product_type where parent_code=#{parentCode}
+        select product_code, product_name, parent_code, remark, tag_id, tag_Name , show_flag  from sys_product_type where parent_code=#{parentCode}
+    </select>
+
+<!--    下面这个是根据传来的某个分类的每一级的分类列表查询对应的名字和标签-->
+    <select id="selectType" resultMap="SysProductTypeResult">
+        SELECT product_code, product_name, tag_id, tag_name
+                 FROM sys_product_type
+                 WHERE product_code IN
+                 <foreach item="item" index="index" collection="productCodes" open="(" separator="," close=")">
+                     #{item}
+                </foreach>
+             ORDER BY product_code
+    </select>
+    <select id="selectTag" resultMap="SysProductTypeResult" parameterType="String">
+        select product_code,product_name,tag_id,tag_name from sys_product_type
+        where product_code = #{code}
     </select>
 
     <insert id="insertSysProductType" parameterType="SysProductType">
@@ -40,12 +61,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productName != null and productName != ''">product_name,</if>
             <if test="parentCode != null and parentCode != ''">parent_code,</if>
             <if test="remark != null and remark != ''">remark,</if>
+            <if test="tagId != null and tagId != ''">tag_id,</if>
+            <if test="tagName != null and tagName != ''">tag_name,</if>
+            <if test="showFlag != null and showFlag != ''">show_flag, </if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="productCode != null and productCode != ''">#{productCode},</if>
             <if test="productName != null and productName != ''">#{productName},</if>
             <if test="parentCode != null and parentCode != ''">#{parentCode},</if>
             <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="tagId != null and tagId != ''">#{tagId},</if>
+            <if test="tagName != null and tagName != ''">#{tagName},</if>
+            <if test="showFlag != null and showFlag != ''">#{showFlag},</if>
          </trim>
     </insert>
 
@@ -55,6 +82,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productName != null and productName != ''">product_name = #{productName},</if>
             <if test="parentCode != null and parentCode != ''">parent_code = #{parentCode},</if>
             <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="tagId != null  and tagId != ''">tag_Id = #{tagId},</if>
+            <if test="tagName != null  and tagName != ''">tag_Name = #{tagName},</if>
+            <if test="showFlag != null  and showFlag != ''">show_flag = #{showFlag}</if>
         </trim>
         where product_code = #{productCode}
     </update>

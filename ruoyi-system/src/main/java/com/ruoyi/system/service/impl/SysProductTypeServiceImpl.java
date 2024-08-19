@@ -100,8 +100,15 @@ public class SysProductTypeServiceImpl implements ISysProductTypeService
      * @return 返回一个List,里面按照层级组装成一个TreeList
      */
     @Override
-    public List<Map<String,Object>> selectSysProductTypeTreeList(Integer depth) {
-//        如果前端传入的depth为null，就默认深度为5
+    public List<Map<String,Object>> selectSysProductTypeTreeList(Integer depth , Integer flag) {
+        if (flag == 0){
+            //        如果前端传入的depth为null，就默认深度为5
+            if(Objects.isNull(depth))
+                return listTreeByMap("cn0",TREE_DEPTH);
+//        如果不为null就把depth作为参数传递，另外默认0为国产进口的父级编码，只有这俩的父级编码才是0
+            return listTreeByMap("cn0",depth);
+        }
+        //        如果前端传入的depth为null，就默认深度为5
         if(Objects.isNull(depth))
             return listTreeByMap("0",TREE_DEPTH);
 //        如果不为null就把depth作为参数传递，另外默认0为国产进口的父级编码，只有这俩的父级编码才是0
@@ -148,5 +155,15 @@ public class SysProductTypeServiceImpl implements ISysProductTypeService
         }
 //        返回本次组装好的mapList
         return mapList;
+    }
+
+    @Override
+    public List<SysProductType> selectType(String[] newCodes) {
+        return sysProductTypeMapper.selectType(newCodes);
+    }
+
+    @Override
+    public SysProductType selectTag(String code) {
+        return sysProductTypeMapper.selectTag(code);
     }
 }
