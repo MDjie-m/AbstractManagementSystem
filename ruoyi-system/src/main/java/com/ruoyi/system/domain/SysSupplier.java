@@ -37,6 +37,13 @@ public class SysSupplier extends BaseEntity {
     private Integer label;
 
     /**
+     * 性质：0-厂家、贸易商，1-厂家，2-贸易商
+     */
+    @ExcelProperty(value = "性质", converter = EasyExcelConvert.class)
+    @EnumFiledConvert(enumMap = "0-厂家、贸易商,1-厂家,2-贸易商")
+    private Integer nature;
+
+    /**
      * 国家
      */
     @ExcelProperty("国家")
@@ -61,10 +68,28 @@ public class SysSupplier extends BaseEntity {
     private String area;
 
     /**
-     * 产品分类:进口/牛肉，国产/鸡肉
+     * 经营类别,多条一二级分类，以 “，”隔开
      */
-    @ExcelProperty("产品分类")
-    private String productType;
+    @ExcelProperty("经营类别")
+    private String businessCategory;
+
+    /**
+     * 主营类别,仅有一条一二级分类
+     */
+    @ExcelProperty("主营类别")
+    private String mainCategory;
+
+    /**
+     * 主营产品id
+     */
+    @ExcelIgnore
+    private String mainProductId;
+
+    /**
+     * 主营产品名称
+     */
+    @ExcelProperty("主营产品")
+    private String mainProduct;
 
     /**
      * 注册编号
@@ -91,6 +116,12 @@ public class SysSupplier extends BaseEntity {
     private String supplierNameEn;
 
     /**
+     * 企业名称（本国语）
+     */
+    @ExcelProperty("企业名称（本国语）")
+    private String supplierNameOwn;
+
+    /**
      * 注册时间
      */
     @ExcelProperty("注册时间")
@@ -103,6 +134,49 @@ public class SysSupplier extends BaseEntity {
     @ExcelProperty("注册时间有效期")
     @DateTimeFormat("yyyy-mm-dd")
     private Date registrationTimeValidityPeriod;
+
+    /**
+     * 法人
+     */
+    @ExcelProperty("法人")
+    private String legalPerson;
+
+    /**
+     * 法人电话
+     */
+    @ExcelProperty("法人电话")
+    private String legalPersonTelephone;
+
+    /**
+     *  法人电子邮件
+     */
+    @ExcelProperty("法人电子邮件")
+    private String legalPersonEmail;
+
+    /**
+     * 负责人
+     */
+    @ExcelProperty("负责人")
+    private String principalName;
+
+    /**
+     * 负责人电话
+     */
+    @ExcelProperty("负责人电话")
+    private String principalTelephone;
+
+    /**
+     * 负责人电子邮件
+     */
+    @ExcelProperty("负责人电子邮件")
+    private String principalEmail;
+
+    /**
+     * 分类：0：国产，1：进口
+     */
+    @ExcelProperty(value = "分类", converter = EasyExcelConvert.class)
+    @EnumFiledConvert(enumMap = "0-国产,1-进口")
+    private Integer classification;
 
     /**
      * 考察评级:A、B、C、D、E
@@ -128,37 +202,6 @@ public class SysSupplier extends BaseEntity {
      */
     @ExcelIgnore
     private String inspectionId;
-
-    /**
-     * 联系人
-     */
-    @ExcelProperty("法人")
-    private String contacts;
-
-    /**
-     * 联系电话
-     */
-    @ExcelProperty("法人电话")
-    private String telephone;
-
-    /**
-     * 负责人电话
-     */
-    @ExcelProperty("负责人电话")
-    private String principalTelephone;
-
-    /**
-     * 电子邮件
-     */
-    @ExcelProperty("电子邮件")
-    private String email;
-
-    /**
-     * 分类：0：国产，1：进口
-     */
-    @ExcelProperty(value = "分类", converter = EasyExcelConvert.class)
-    @EnumFiledConvert(enumMap = "0-国产,1-进口")
-    private Integer classification;
 
     /**
      * 审核状态:0：待审核:1：已通过:2：未通过
@@ -188,18 +231,23 @@ public class SysSupplier extends BaseEntity {
     @EnumFiledConvert(enumMap = "0-供应商入驻,1-系统新增,2-批量导入")
     private Integer dataSources;
 
+    /**
+     * 头像地址
+     */
+    @ExcelIgnore
+    private String headPortraitPath;
 
     /**
      * 图片地址
      */
     @ExcelIgnore
-    private String imageAddress;
+    private String imagePath;
 
     /**
      * 视频地址
      */
     @ExcelIgnore
-    private String videoAddress;
+    private String videoPath;
 
     /**
      * 备注
@@ -208,7 +256,7 @@ public class SysSupplier extends BaseEntity {
     private String remark;
 
     /**
-     * 供应商国家语名称
+     * 预留字段1
      */
     @ExcelIgnore
     private String futureField1;
@@ -291,14 +339,6 @@ public class SysSupplier extends BaseEntity {
         return area;
     }
 
-    public void setProductType(String productType) {
-        this.productType = productType;
-    }
-
-    public String getProductType() {
-        return productType;
-    }
-
     public void setRegistrationNo(String registrationNo) {
         this.registrationNo = registrationNo;
     }
@@ -377,30 +417,6 @@ public class SysSupplier extends BaseEntity {
 
     public String getInspectionId() {
         return inspectionId;
-    }
-
-    public void setContacts(String contacts) {
-        this.contacts = contacts;
-    }
-
-    public String getContacts() {
-        return contacts;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public void setClassification(Integer classification) {
@@ -483,14 +499,6 @@ public class SysSupplier extends BaseEntity {
         return futureField5;
     }
 
-    public List<SysProduct> getSysProductList() {
-        return sysProductList;
-    }
-
-    public void setSysProductList(List<SysProduct> sysProductList) {
-        this.sysProductList = sysProductList;
-    }
-
     public String getPrincipalTelephone() {
         return principalTelephone;
     }
@@ -499,20 +507,116 @@ public class SysSupplier extends BaseEntity {
         this.principalTelephone = principalTelephone;
     }
 
-    public String getImageAddress() {
-        return imageAddress;
+    public Integer getNature() {
+        return nature;
     }
 
-    public void setImageAddress(String imageAddress) {
-        this.imageAddress = imageAddress;
+    public void setNature(Integer nature) {
+        this.nature = nature;
     }
 
-    public String getVideoAddress() {
-        return videoAddress;
+    public String getBusinessCategory() {
+        return businessCategory;
     }
 
-    public void setVideoAddress(String video_address) {
-        this.videoAddress = videoAddress;
+    public void setBusinessCategory(String businessCategory) {
+        this.businessCategory = businessCategory;
+    }
+
+    public String getMainCategory() {
+        return mainCategory;
+    }
+
+    public void setMainCategory(String mainCategory) {
+        this.mainCategory = mainCategory;
+    }
+
+    public String getMainProductId() {
+        return mainProductId;
+    }
+
+    public void setMainProductId(String mainProductId) {
+        this.mainProductId = mainProductId;
+    }
+
+    public String getMainProduct() {
+        return mainProduct;
+    }
+
+    public void setMainProduct(String mainProduct) {
+        this.mainProduct = mainProduct;
+    }
+
+    public String getSupplierNameOwn() {
+        return supplierNameOwn;
+    }
+
+    public void setSupplierNameOwn(String supplierNameOwn) {
+        this.supplierNameOwn = supplierNameOwn;
+    }
+
+    public String getLegalPerson() {
+        return legalPerson;
+    }
+
+    public void setLegalPerson(String legalPerson) {
+        this.legalPerson = legalPerson;
+    }
+
+    public String getLegalPersonTelephone() {
+        return legalPersonTelephone;
+    }
+
+    public void setLegalPersonTelephone(String legalPersonTelephone) {
+        this.legalPersonTelephone = legalPersonTelephone;
+    }
+
+    public String getLegalPersonEmail() {
+        return legalPersonEmail;
+    }
+
+    public void setLegalPersonEmail(String legalPersonEmail) {
+        this.legalPersonEmail = legalPersonEmail;
+    }
+
+    public String getPrincipalName() {
+        return principalName;
+    }
+
+    public void setPrincipalName(String principalName) {
+        this.principalName = principalName;
+    }
+
+    public String getPrincipalEmail() {
+        return principalEmail;
+    }
+
+    public void setPrincipalEmail(String principalEmail) {
+        this.principalEmail = principalEmail;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getVideoPath() {
+        return videoPath;
+    }
+
+    public void setVideoPath(String videoPath) {
+        this.videoPath = videoPath;
+    }
+
+    public String getHeadPortraitPath() {
+        return headPortraitPath;
+    }
+
+    public void setHeadPortraitPath(String headPortraitPath) {
+        this.headPortraitPath = headPortraitPath;
     }
 
     @Override
@@ -525,34 +629,53 @@ public class SysSupplier extends BaseEntity {
         this.remark = remark;
     }
 
+    public List<SysProduct> getSysProductList() {
+        return sysProductList;
+    }
+
+    public void setSysProductList(List<SysProduct> sysProductList) {
+        this.sysProductList = sysProductList;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("supplierId", getSupplierId())
                 .append("label", getLabel())
+                .append("nature", getNature())
                 .append("country", getCountry())
                 .append("province", getProvince())
                 .append("city", getCity())
                 .append("area", getArea())
-                .append("productType", getProductType())
+                .append("businessCategory", getBusinessCategory())
+                .append("mainCategory", getMainCategory())
+                .append("mainProductId", getMainProductId())
+                .append("mainProduct", getMainProduct())
                 .append("registrationNo", getRegistrationNo())
                 .append("registrationNoInChina", getRegistrationNoInChina())
                 .append("supplierNameCn", getSupplierNameCn())
                 .append("supplierNameEn", getSupplierNameEn())
+                .append("supplierNameOwn", getSupplierNameOwn())
                 .append("registrationTime", getRegistrationTime())
                 .append("registrationTimeValidityPeriod", getRegistrationTimeValidityPeriod())
+                .append("legalPerson", getLegalPerson())
+                .append("legalPersonTelephone", getLegalPersonTelephone())
+                .append("legalPersonEmail", getLegalPersonEmail())
+                .append("principalName", getPrincipalName())
+                .append("principalTelephone", getPrincipalTelephone())
+                .append("principalEmail", getPrincipalEmail())
+                .append("classification", getClassification())
                 .append("rate", getRate())
                 .append("reviewRating", getReviewRating())
                 .append("deleteFlag", getDeleteFlag())
                 .append("inspectionId", getInspectionId())
-                .append("contacts", getContacts())
-                .append("telephone", getTelephone())
-                .append("email", getEmail())
-                .append("classification", getClassification())
                 .append("auditStatus", getAuditStatus())
                 .append("inspectionStatus", getInspectionStatus())
                 .append("inspectionAuditStatus", getInspectionAuditStatus())
                 .append("dataSources", getDataSources())
+                .append("headPortraitPath", getHeadPortraitPath())
+                .append("imagePath", getImagePath())
+                .append("videoPath", getVideoPath())
                 .append("remark", getRemark())
                 .append("futureField1", getFutureField1())
                 .append("futureField2", getFutureField2())
