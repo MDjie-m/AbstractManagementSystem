@@ -3,16 +3,11 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.annotation.Anonymous;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -37,7 +32,8 @@ public class SysProductTypeController extends BaseController
     /**
      * 查询产品分类列表
      */
-    @PreAuthorize("@ss.hasPermi('system:productType:list')")
+//    @PreAuthorize("@ss.hasPermi('system:productType:list')")
+    @Anonymous
     @GetMapping("/list")
     public AjaxResult list(SysProductType sysProductType)
     {
@@ -47,14 +43,15 @@ public class SysProductTypeController extends BaseController
 
     /**
      * @param depth 产品分类树的深度
-     * @param flag 进口或国产 0-国产 1-进口
+     * @param classification 进口或国产0-国产,1-进口,2-国产进口
      * 查询产品分类列表，按照层级组装成树。
      */
 //    @PreAuthorize("@ss.hasPermi('system:productType:list')")
+    @Anonymous
     @GetMapping("/treeList")
-    public AjaxResult treeList(Integer depth, Integer flag)
+    public AjaxResult treeList( Integer depth, Integer classification)
     {
-        List<Map<String,Object>> list = sysProductTypeService.selectSysProductTypeTreeList(depth ,flag);
+        List<Map<String,Object>> list = sysProductTypeService.selectSysProductTypeTreeList(depth ,classification);
         return success(list);
     }
 
@@ -74,7 +71,8 @@ public class SysProductTypeController extends BaseController
     /**
      * 获取产品分类详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:productType:query')")
+//    @PreAuthorize("@ss.hasPermi('system:productType:query')")
+    @Anonymous
     @GetMapping(value = "/{productCode}")
     public AjaxResult getInfo(@PathVariable("productCode") String productCode)
     {
@@ -108,7 +106,7 @@ public class SysProductTypeController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:productType:remove')")
     @Log(title = "产品分类", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{productCodes}")
+	@PostMapping("/{productCodes}")
     public AjaxResult remove(@PathVariable String[] productCodes)
     {
         return toAjax(sysProductTypeService.deleteSysProductTypeByProductCodes(productCodes));

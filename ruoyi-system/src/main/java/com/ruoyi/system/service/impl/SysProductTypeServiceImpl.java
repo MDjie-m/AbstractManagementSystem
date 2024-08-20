@@ -1,7 +1,9 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import com.ruoyi.system.mapper.SysTagMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysProductTypeMapper;
@@ -56,6 +58,11 @@ public class SysProductTypeServiceImpl implements ISysProductTypeService
     @Override
     public int insertSysProductType(SysProductType sysProductType)
     {
+//        String[] parts = sysProductType.getTagId().split(",");
+//        List<Integer> tagIds = new ArrayList<>();
+//        for (String part : parts) {
+//            tagIds.add(Integer.parseInt(part));
+//        }
         return sysProductTypeMapper.insertSysProductType(sysProductType);
     }
 
@@ -100,26 +107,20 @@ public class SysProductTypeServiceImpl implements ISysProductTypeService
      * @return 返回一个List,里面按照层级组装成一个TreeList
      */
     @Override
-    public List<Map<String,Object>> selectSysProductTypeTreeList(Integer depth , Integer flag) {
-        if (flag == 0){
+    public List<Map<String,Object>> selectSysProductTypeTreeList(Integer depth , Integer classification) {
             //        如果前端传入的depth为null，就默认深度为5
             if(Objects.isNull(depth))
-                return listTreeByMap("cn0",TREE_DEPTH);
+                return listTreeByMap("CN0",TREE_DEPTH,classification);
 //        如果不为null就把depth作为参数传递，另外默认0为国产进口的父级编码，只有这俩的父级编码才是0
-            return listTreeByMap("cn0",depth);
+            return listTreeByMap("CN0",depth, classification);
         }
-        //        如果前端传入的depth为null，就默认深度为5
-        if(Objects.isNull(depth))
-            return listTreeByMap("0",TREE_DEPTH);
-//        如果不为null就把depth作为参数传递，另外默认0为国产进口的父级编码，只有这俩的父级编码才是0
-        return listTreeByMap("0",depth);
-    }
 
-    private List<Map<String,Object>> listTreeByMap(String parentCode,Integer depth){
+
+    private List<Map<String,Object>> listTreeByMap(String parentCode,Integer depth,Integer classification){
 //        创建一个存放map的list用来保存组装好的数据
         List<Map<String,Object>> mapList = new ArrayList<>();
         //1、按父级编码等于多少查一级分类（国产/进口）,国产进口的父编码为0，返回的是一个列表
-        List<SysProductType> list = sysProductTypeMapper.selectChildren(parentCode);
+        List<SysProductType> list = sysProductTypeMapper.selectChildren(parentCode,classification);
         //如果查出来数据为0说明没有子产品，返回为null
         if(list.size()==0){
             return null;
@@ -135,7 +136,7 @@ public class SysProductTypeServiceImpl implements ISysProductTypeService
                 map.put("label", sysProductType.getProductName());
 
                 // 3、递归查询编这个产品分类这个编码下的子产品,递归的时候深度相应减1
-                List<Map<String, Object>> mapListChildren = listTreeByMap(sysProductType.getProductCode(), depth - 1);
+                List<Map<String, Object>> mapListChildren = listTreeByMap(sysProductType.getProductCode(), depth-1, classification);
                 // 如果不为null，就说明有子产品编码，就拼接children
                 if (!Objects.isNull(mapListChildren)) {
 //                    mapListChildren不为null就组装其children

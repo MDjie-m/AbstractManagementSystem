@@ -37,20 +37,20 @@ public class SysProductType extends TreeEntity
 
     /** 是否显示：0：显示，1：不显示
      * （没有具体产品名称即没有五级编码和名称） */
-    @Excel(name = "是否显示", readConverterExp = "0：显示，1：不显示 ")
+    @Excel(name = "是否显示", readConverterExp = "0=显示,1=不显示 ")
     private Integer showFlag;
 
     /** 是否删除：0-未删除，1-已删除
      *  */
-    @Excel(name = "是否删除", readConverterExp = "0-未删除，1-已删除 ")
+//    @Excel(name = "是否删除", readConverterExp = "0-未删除，1-已删除 ")
     private Integer delFlag;
 
     /** 统计标记字段以","间隔 */
     @Excel(name = "统计标记字段以\",\"间隔")
-    private String statistical_marker;
+    private String statisticalMarker;
 
     /** 0-国产,1-进口,2-国产进口 */
-    @Excel(name = "是否显示", readConverterExp = "0-国产,1-进口,2-国产进口 ")
+    @Excel(name = "国产进口标识", readConverterExp = "0=国产,1=进口,2=国产进口 ")
     private Integer classification;
 
     /** 备注 */
@@ -60,7 +60,7 @@ public class SysProductType extends TreeEntity
     public SysProductType() {
     }
 
-    public SysProductType( String productCode, String productName, String parentCode, String tagId, String tagName, Integer showFlag, Integer delFlag, String statistical_marker, Integer classification, String remark) {
+    public SysProductType( String productCode, String productName, String parentCode, String tagId, String tagName, Integer showFlag, Integer delFlag, String statisticalMarker, Integer classification, String remark) {
         this.productCode = productCode;
         this.productName = productName;
         this.parentCode = parentCode;
@@ -68,7 +68,7 @@ public class SysProductType extends TreeEntity
         this.tagName = tagName;
         this.showFlag = showFlag;
         this.delFlag = delFlag;
-        this.statistical_marker = statistical_marker;
+        this.statisticalMarker = statisticalMarker;
         this.classification = classification;
         this.remark = remark;
     }
@@ -187,18 +187,18 @@ public class SysProductType extends TreeEntity
 
     /**
      * 获取
-     * @return statistical_marker
+     * @return statisticalMarker
      */
-    public String getStatistical_marker() {
-        return statistical_marker;
+    public String getStatisticalMarker() {
+        return statisticalMarker;
     }
 
     /**
      * 设置
-     * @param statistical_marker
+     * @param statisticalMarker
      */
-    public void setStatistical_marker(String statistical_marker) {
-        this.statistical_marker = statistical_marker;
+    public void setStatisticalMarker(String statisticalMarker) {
+        this.statisticalMarker = statisticalMarker;
     }
 
     /**
@@ -234,6 +234,6 @@ public class SysProductType extends TreeEntity
     }
 
     public String toString() {
-        return "SysProductType{productCode = " + productCode + ", productName = " + productName + ", parentCode = " + parentCode + ", tagId = " + tagId + ", tagName = " + tagName + ", showFlag = " + showFlag + ", delFlag = " + delFlag + ", statistical_marker = " + statistical_marker + ", classification = " + classification + ", remark = " + remark + "}";
+        return "SysProductType{productCode = " + productCode + ", productName = " + productName + ", parentCode = " + parentCode + ", tagId = " + tagId + ", tagName = " + tagName + ", showFlag = " + showFlag + ", delFlag = " + delFlag + ", statisticalMarker = " + statisticalMarker + ", classification = " + classification + ", remark = " + remark + "}";
     }
 }
