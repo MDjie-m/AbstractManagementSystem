@@ -63,7 +63,7 @@ public class SysProduct extends BaseEntity
     /** 0-国产 1-进口 */
     private Integer domesticImportedType;
 
-    /** 产品型号 */
+    /** 产品参数 */
     private String productModel;
 
     /** 是否可报价：0：不可报价，1：可报价 */
@@ -112,16 +112,16 @@ public class SysProduct extends BaseEntity
     private String productVideo;
 
     /** 产品样品：0支持，1不支持 */
-    private Long sample;
+    private Integer sample;
 
     /** 产品规格 */
     private String specifications;
 
     /** 产品库存 */
-    private int inventory;
+    private Integer inventory;
 
     /** 产品状态(0-期货,1-现货) */
-    private int status;
+    private Integer status;
 
     /** 生产日期”yyyy-mm-dd” */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -134,34 +134,49 @@ public class SysProduct extends BaseEntity
     private String origin;
 
     /** 储存方式0:-冷冻1-冷鲜 */
-    private int storageMode;
+    private Integer storageMode;
 
     /** 仓库地址 */
     private String warehouseAddress;
 
     /** 是否主营产品：0-不是，1-是 */
-    private int mainProduct;
+    private Integer mainProduct;
 
     /** 删除状态：0-未删除，1-已删除 */
     private int delFlag;
 
     /** 报价状态0未报/1 已报 */
-    private int quoteStatus;
+    private Integer quoteStatus;
 
     /** 询价状态0 未询/1 已询 */
-    private int inquiryStatus;
+    private Integer inquiryStatus;
 
     /** 采购员id外键，用户表 */
     private Long buyerId;
 
     /** 询价清单标识0 不常/1 经常 */
-    private int inquiryListFlag;
+    private Integer inquiryListFlag;
 
-    /** 报价清单标识0 不常/1 经常 */
-    private int quoteListFlag;
+    /** 报价清单标识0 不常或经常都有/1 只有经常 */
+    private Integer quoteListFlag;
 
     /** 备注 */
     private String remark;
+
+    /** 品牌或者厂号 */
+    private String mark;
+
+    /** 单价 */
+    private Double unitprice;
+
+    /** 单价的单位 */
+    private String unitpriceUnit;
+
+    /** 起批数量 */
+    private Integer startBatch;
+
+    /** 起批数量的单位或者库存的单位都是这个 */
+    private String batchUnit;
 
     /** 预留字段1 */
     private String futureField1;
@@ -172,152 +187,139 @@ public class SysProduct extends BaseEntity
     /** 预留字段3 */
     private String futureField3;
 
-    public void setProductId(String productId) 
-    {
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
-    public String getProductId() 
-    {
-        return productId;
+    public String getSupplierId() {
+        return supplierId;
     }
-    public void setSupplierId(String supplierId) 
-    {
+
+    public void setSupplierId(String supplierId) {
         this.supplierId = supplierId;
     }
 
-    public String getSupplierId() 
-    {
-        return supplierId;
+    public String getSupplierName() {
+        return supplierName;
     }
-    public void setSupplierName(String supplierName) 
-    {
+
+    public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
     }
 
-    public String getSupplierName() 
-    {
-        return supplierName;
+    public String getPrimaryCategory() {
+        return primaryCategory;
     }
-    public void setPrimaryCategory(String primaryCategory) 
-    {
+
+    public void setPrimaryCategory(String primaryCategory) {
         this.primaryCategory = primaryCategory;
     }
 
-    public String getPrimaryCategory() 
-    {
-        return primaryCategory;
+    public String getPrimaryCategoryName() {
+        return primaryCategoryName;
     }
-    public void setPrimaryCategoryName(String primaryCategoryName) 
-    {
+
+    public void setPrimaryCategoryName(String primaryCategoryName) {
         this.primaryCategoryName = primaryCategoryName;
     }
 
-    public String getPrimaryCategoryName() 
-    {
-        return primaryCategoryName;
+    public String getSecondaryCategory() {
+        return secondaryCategory;
     }
-    public void setSecondaryCategory(String secondaryCategory) 
-    {
+
+    public void setSecondaryCategory(String secondaryCategory) {
         this.secondaryCategory = secondaryCategory;
     }
 
-    public String getSecondaryCategory() 
-    {
-        return secondaryCategory;
+    public String getSecondaryCategoryName() {
+        return secondaryCategoryName;
     }
-    public void setSecondaryCategoryName(String secondaryCategoryName) 
-    {
+
+    public void setSecondaryCategoryName(String secondaryCategoryName) {
         this.secondaryCategoryName = secondaryCategoryName;
     }
 
-    public String getSecondaryCategoryName() 
-    {
-        return secondaryCategoryName;
+    public String getTertiaryCategory() {
+        return tertiaryCategory;
     }
-    public void setTertiaryCategory(String tertiaryCategory) 
-    {
+
+    public void setTertiaryCategory(String tertiaryCategory) {
         this.tertiaryCategory = tertiaryCategory;
     }
 
-    public String getTertiaryCategory() 
-    {
-        return tertiaryCategory;
+    public String getTertiaryCategoryName() {
+        return tertiaryCategoryName;
     }
-    public void setTertiaryCategoryName(String tertiaryCategoryName) 
-    {
+
+    public void setTertiaryCategoryName(String tertiaryCategoryName) {
         this.tertiaryCategoryName = tertiaryCategoryName;
     }
 
-    public String getTertiaryCategoryName() 
-    {
-        return tertiaryCategoryName;
+    public String getQuaternaryCategory() {
+        return quaternaryCategory;
     }
-    public void setQuaternaryCategory(String quaternaryCategory) 
-    {
+
+    public void setQuaternaryCategory(String quaternaryCategory) {
         this.quaternaryCategory = quaternaryCategory;
     }
 
-    public String getQuaternaryCategory() 
-    {
-        return quaternaryCategory;
+    public String getQuaternaryCategoryName() {
+        return quaternaryCategoryName;
     }
-    public void setQuaternaryCategoryName(String quaternaryCategoryName) 
-    {
+
+    public void setQuaternaryCategoryName(String quaternaryCategoryName) {
         this.quaternaryCategoryName = quaternaryCategoryName;
     }
 
-    public String getQuaternaryCategoryName() 
-    {
-        return quaternaryCategoryName;
+    public String getFifthCategory() {
+        return fifthCategory;
     }
-    public void setFifthCategory(String fifthCategory) 
-    {
+
+    public void setFifthCategory(String fifthCategory) {
         this.fifthCategory = fifthCategory;
     }
 
-    public String getFifthCategory() 
-    {
-        return fifthCategory;
+    public String getFifthCategoryName() {
+        return fifthCategoryName;
     }
-    public void setFifthCategoryName(String fifthCategoryName) 
-    {
+
+    public void setFifthCategoryName(String fifthCategoryName) {
         this.fifthCategoryName = fifthCategoryName;
     }
 
-    public String getFifthCategoryName() 
-    {
-        return fifthCategoryName;
+    public String getProductName() {
+        return productName;
     }
-    public void setProductName(String productName) 
-    {
+
+    public void setProductName(String productName) {
         this.productName = productName;
     }
 
-    public String getProductName() 
-    {
-        return productName;
+    public Integer getDomesticImportedType() {
+        return domesticImportedType;
     }
-    public void setDomesticImportedType(Integer domesticImportedType) 
-    {
+
+    public void setDomesticImportedType(Integer domesticImportedType) {
         this.domesticImportedType = domesticImportedType;
     }
 
-    public Integer getDomesticImportedType() 
-    {
-        return domesticImportedType;
+    public String getProductModel() {
+        return productModel;
     }
-    public void setProductModel(String productModel) 
-    {
+
+    public void setProductModel(String productModel) {
         this.productModel = productModel;
     }
 
-    public String getProductModel() 
-    {
-        return productModel;
+    public Integer getQuotationFlag() {
+        return quotationFlag;
     }
-    public void setQuotationFlag(Integer quotationFlag) 
-    {
+
+    public void setQuotationFlag(Integer quotationFlag) {
         this.quotationFlag = quotationFlag;
     }
 
@@ -353,22 +355,6 @@ public class SysProduct extends BaseEntity
         this.cnSecondaryCategoryName = cnSecondaryCategoryName;
     }
 
-    public String getCnFifthCategory() {
-        return cnFifthCategory;
-    }
-
-    public void setCnFifthCategory(String cnFifthCategory) {
-        this.cnFifthCategory = cnFifthCategory;
-    }
-
-    public String getCnFifthCategoryName() {
-        return cnFifthCategoryName;
-    }
-
-    public void setCnFifthCategoryName(String cnFifthCategoryName) {
-        this.cnFifthCategoryName = cnFifthCategoryName;
-    }
-
     public String getCnTertiaryCategory() {
         return cnTertiaryCategory;
     }
@@ -399,6 +385,22 @@ public class SysProduct extends BaseEntity
 
     public void setCnQuaternaryCategoryName(String cnQuaternaryCategoryName) {
         this.cnQuaternaryCategoryName = cnQuaternaryCategoryName;
+    }
+
+    public String getCnFifthCategory() {
+        return cnFifthCategory;
+    }
+
+    public void setCnFifthCategory(String cnFifthCategory) {
+        this.cnFifthCategory = cnFifthCategory;
+    }
+
+    public String getCnFifthCategoryName() {
+        return cnFifthCategoryName;
+    }
+
+    public void setCnFifthCategoryName(String cnFifthCategoryName) {
+        this.cnFifthCategoryName = cnFifthCategoryName;
     }
 
     public String getTagId() {
@@ -433,43 +435,11 @@ public class SysProduct extends BaseEntity
         this.productVideo = productVideo;
     }
 
-    public Integer getQuotationFlag()
-    {
-        return quotationFlag;
-    }
-    public void setFutureField1(String futureField1) 
-    {
-        this.futureField1 = futureField1;
-    }
-
-    public String getFutureField1() 
-    {
-        return futureField1;
-    }
-    public void setFutureField2(String futureField2) 
-    {
-        this.futureField2 = futureField2;
-    }
-
-    public String getFutureField2() 
-    {
-        return futureField2;
-    }
-    public void setFutureField3(String futureField3) 
-    {
-        this.futureField3 = futureField3;
-    }
-
-    public String getFutureField3() 
-    {
-        return futureField3;
-    }
-
-    public Long getSample() {
+    public Integer getSample() {
         return sample;
     }
 
-    public void setSample(Long sample) {
+    public void setSample(Integer sample) {
         this.sample = sample;
     }
 
@@ -481,19 +451,19 @@ public class SysProduct extends BaseEntity
         this.specifications = specifications;
     }
 
-    public int getInventory() {
+    public Integer getInventory() {
         return inventory;
     }
 
-    public void setInventory(int inventory) {
+    public void setInventory(Integer inventory) {
         this.inventory = inventory;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -521,11 +491,11 @@ public class SysProduct extends BaseEntity
         this.origin = origin;
     }
 
-    public int getStorageMode() {
+    public Integer getStorageMode() {
         return storageMode;
     }
 
-    public void setStorageMode(int storageMode) {
+    public void setStorageMode(Integer storageMode) {
         this.storageMode = storageMode;
     }
 
@@ -537,11 +507,11 @@ public class SysProduct extends BaseEntity
         this.warehouseAddress = warehouseAddress;
     }
 
-    public int getMainProduct() {
+    public Integer getMainProduct() {
         return mainProduct;
     }
 
-    public void setMainProduct(int mainProduct) {
+    public void setMainProduct(Integer mainProduct) {
         this.mainProduct = mainProduct;
     }
 
@@ -553,19 +523,19 @@ public class SysProduct extends BaseEntity
         this.delFlag = delFlag;
     }
 
-    public int getQuoteStatus() {
+    public Integer getQuoteStatus() {
         return quoteStatus;
     }
 
-    public void setQuoteStatus(int quoteStatus) {
+    public void setQuoteStatus(Integer quoteStatus) {
         this.quoteStatus = quoteStatus;
     }
 
-    public int getInquiryStatus() {
+    public Integer getInquiryStatus() {
         return inquiryStatus;
     }
 
-    public void setInquiryStatus(int inquiryStatus) {
+    public void setInquiryStatus(Integer inquiryStatus) {
         this.inquiryStatus = inquiryStatus;
     }
 
@@ -577,19 +547,19 @@ public class SysProduct extends BaseEntity
         this.buyerId = buyerId;
     }
 
-    public int getInquiryListFlag() {
+    public Integer getInquiryListFlag() {
         return inquiryListFlag;
     }
 
-    public void setInquiryListFlag(int inquiryListFlag) {
+    public void setInquiryListFlag(Integer inquiryListFlag) {
         this.inquiryListFlag = inquiryListFlag;
     }
 
-    public int getQuoteListFlag() {
+    public Integer getQuoteListFlag() {
         return quoteListFlag;
     }
 
-    public void setQuoteListFlag(int quoteListFlag) {
+    public void setQuoteListFlag(Integer quoteListFlag) {
         this.quoteListFlag = quoteListFlag;
     }
 
@@ -603,57 +573,43 @@ public class SysProduct extends BaseEntity
         this.remark = remark;
     }
 
-    @Override
-    public String toString() {
-        return "SysProduct{" +
-                "productId='" + productId + '\'' +
-                ", supplierId='" + supplierId + '\'' +
-                ", supplierName='" + supplierName + '\'' +
-                ", primaryCategory='" + primaryCategory + '\'' +
-                ", primaryCategoryName='" + primaryCategoryName + '\'' +
-                ", secondaryCategory='" + secondaryCategory + '\'' +
-                ", secondaryCategoryName='" + secondaryCategoryName + '\'' +
-                ", tertiaryCategory='" + tertiaryCategory + '\'' +
-                ", tertiaryCategoryName='" + tertiaryCategoryName + '\'' +
-                ", quaternaryCategory='" + quaternaryCategory + '\'' +
-                ", quaternaryCategoryName='" + quaternaryCategoryName + '\'' +
-                ", fifthCategory='" + fifthCategory + '\'' +
-                ", fifthCategoryName='" + fifthCategoryName + '\'' +
-                ", productName='" + productName + '\'' +
-                ", domesticImportedType=" + domesticImportedType +
-                ", productModel='" + productModel + '\'' +
-                ", quotationFlag=" + quotationFlag +
-                ", cnPrimaryCategory='" + cnPrimaryCategory + '\'' +
-                ", cnPrimaryCategoryName='" + cnPrimaryCategoryName + '\'' +
-                ", cnSecondaryCategory='" + cnSecondaryCategory + '\'' +
-                ", cnSecondaryCategoryName='" + cnSecondaryCategoryName + '\'' +
-                ", cnTertiaryCategory='" + cnTertiaryCategory + '\'' +
-                ", cnTertiaryCategoryName='" + cnTertiaryCategoryName + '\'' +
-                ", cnQuaternaryCategory='" + cnQuaternaryCategory + '\'' +
-                ", cnQuaternaryCategoryName='" + cnQuaternaryCategoryName + '\'' +
-                ", cnFifthCategory='" + cnFifthCategory + '\'' +
-                ", cnFifthCategoryName='" + cnFifthCategoryName + '\'' +
-                ", tagId='" + tagId + '\'' +
-                ", tagName='" + tagName + '\'' +
-                ", productImage='" + productImage + '\'' +
-                ", productVideo='" + productVideo + '\'' +
-                ", sample=" + sample +
-                ", specifications='" + specifications + '\'' +
-                ", inventory='" + inventory + '\'' +
-                ", status=" + status +
-                ", productionDate=" + productionDate +
-                ", shelfLife='" + shelfLife + '\'' +
-                ", origin='" + origin + '\'' +
-                ", storageMode=" + storageMode +
-                ", warehouse_address='" + warehouseAddress + '\'' +
-                ", mainProduct=" + mainProduct +
-                ", delFlag=" + delFlag +
-                ", quoteStatus=" + quoteStatus +
-                ", inquiryStatus=" + inquiryStatus +
-                ", buyerId='" + buyerId + '\'' +
-                ", inquiryListFlag=" + inquiryListFlag +
-                ", quoteListFlag=" + quoteListFlag +
-                ", remark='" + remark + '\'' +
-                '}';
+    public String getMark() {
+        return mark;
+    }
+
+    public void setMark(String mark) {
+        this.mark = mark;
+    }
+
+    public Double getUnitprice() {
+        return unitprice;
+    }
+
+    public void setUnitprice(Double unitprice) {
+        this.unitprice = unitprice;
+    }
+
+    public String getUnitpriceUnit() {
+        return unitpriceUnit;
+    }
+
+    public void setUnitpriceUnit(String unitpriceUnit) {
+        this.unitpriceUnit = unitpriceUnit;
+    }
+
+    public Integer getStartBatch() {
+        return startBatch;
+    }
+
+    public void setStartBatch(Integer startBatch) {
+        this.startBatch = startBatch;
+    }
+
+    public String getBatchUnit() {
+        return batchUnit;
+    }
+
+    public void setBatchUnit(String batchUnit) {
+        this.batchUnit = batchUnit;
     }
 }
