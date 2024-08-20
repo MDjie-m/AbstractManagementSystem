@@ -86,7 +86,7 @@ public class SysProductServiceImpl implements ISysProductService {
      * @return 结果
      */
     @Override
-    public int deleteSysProductByProductIds(String[] productIds)
+    public int deleteSysProductByProductIds(List<String> productIds)
     {
         return sysProductMapper.deleteSysProductByProductIds(productIds);
     }
