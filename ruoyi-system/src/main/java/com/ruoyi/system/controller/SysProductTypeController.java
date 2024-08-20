@@ -32,8 +32,7 @@ public class SysProductTypeController extends BaseController
     /**
      * 查询产品分类列表
      */
-//    @PreAuthorize("@ss.hasPermi('system:productType:list')")
-    @Anonymous
+    @PreAuthorize("@ss.hasPermi('system:productType:list')")
     @GetMapping("/list")
     public AjaxResult list(SysProductType sysProductType)
     {
@@ -47,7 +46,6 @@ public class SysProductTypeController extends BaseController
      * 查询产品分类列表，按照层级组装成树。
      */
 //    @PreAuthorize("@ss.hasPermi('system:productType:list')")
-    @Anonymous
     @GetMapping("/treeList")
     public AjaxResult treeList( Integer depth, Integer classification)
     {
