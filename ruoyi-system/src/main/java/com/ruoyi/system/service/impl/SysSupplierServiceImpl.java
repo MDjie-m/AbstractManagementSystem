@@ -216,8 +216,6 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     @Override
     public int updateSysSupplier(SysSupplier sysSupplier)
     {
-        sysSupplierMapper.deleteSysProductBySupplierId(sysSupplier.getSupplierId());
-        insertSysProduct(sysSupplier);
         return sysSupplierMapper.updateSysSupplier(sysSupplier);
     }
 

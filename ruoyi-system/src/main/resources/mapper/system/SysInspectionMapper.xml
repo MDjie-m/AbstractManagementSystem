@@ -139,7 +139,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!--  编辑审核状态  -->
     <update id="updateInspectAudit" parameterType="list">
         update sys_inspection
-        set remark = #{remark}, audit_result = #{status}
+        set audit_remark = #{remark}, audit_result = #{status}
         where supplier_id in
         <foreach item="item" collection="list" open="(" separator="," close=")">
             #{item}
