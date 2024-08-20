@@ -279,4 +279,35 @@ public class ConsultantCourseController extends BaseController {
     {
         return AjaxResult.success(courSectionService.selectCourSectionById(id));
     }
+
+
+    /**
+     * 新增或更新用户-课程-章节关系
+     */
+    @PostMapping("/saveUserSectionInfo")
+    @ApiOperation("记录课程章节完成情况，新增或更新用户-课程-章节关系")
+    @RateLimiter
+    public AjaxResult saveUserSectionInfo(@RequestBody CourUserCourseSection userCourseSection, HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        if (userCourseSection.getFinishStatus() == null) {
+            userCourseSection.setFinishStatus(CourConstant.SECTION_UNFINISHED);
+        }
+        // 根据用户、课程、章节查询是否已有学习完成记录
+        CourUserCourseSection queryParams = new CourUserCourseSection();
+        queryParams.setUserId(consultId);
+        queryParams.setUserType(2);//咨询师
+        queryParams.setCourseId(userCourseSection.getCourseId());
+        queryParams.setSectionId(userCourseSection.getSectionId());
+        List<CourUserCourseSection> userCourseSectionList =  courUserCourseSectionService.selectCourUserCourseSectionList(queryParams);
+        if (userCourseSectionList.size() == 0) {
+            // 新增
+            return AjaxResult.success(courUserCourseSectionService.insertCourUserCourseSection(userCourseSection));
+        } else if (userCourseSectionList.size() == 1){
+            // 更新
+            userCourseSection.setId(userCourseSectionList.get(0).getId());
+            return AjaxResult.success(courUserCourseSectionService.recordEndTime(userCourseSection));
+        }
+        return AjaxResult.error("记录课程章节异常");
+    }
 }
