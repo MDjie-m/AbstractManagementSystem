@@ -88,44 +88,118 @@ public class SysSupplierServiceImpl implements ISysSupplierService
         if(sysSupplierMapper.checkLegalPersonTelephoneUnique(sysSupplier.getLegalPersonTelephone()) == null) {
             // 判断法人手机号是否已经被注册为用户
             if (userMapper.checkUserNameUnique(sysSupplier.getLegalPersonTelephone()) == null) {
-                SysUser user = new SysUser();
-                String userName = sysSupplier.getLegalPersonTelephone();
-                String nickName = sysSupplier.getSupplierNameCn();
-                String password = userName.substring(userName.length() - 6);
-                // 设置返回值
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("userName",userName);
-                jsonObject.put("password",password);
-                // 用户名为法人手机号
-                user.setUserName(userName);
-                // 用户昵称为公司中文名称
-                user.setNickName(nickName);
-                // 用户密码,使用法人手机号后六位
-                user.setPassword(SecurityUtils.encryptPassword(password));
-                // 用户角色为5-供应商
-                user.setUserType("5");
+                // 判断负责人手机号是否已经被注册为用户
+                if (userMapper.checkUserNameUnique(sysSupplier.getPrincipalTelephone()) == null) {
+                    // 设置供应商id
+                    sysSupplier.setSupplierId(UUID.randomUUID().toString());
 
-                int i = userMapper.insertUser(user);
-                Long userId = user.getUserId();
-                // 新增用户与角色管理
-                List<SysUserRole> list = new ArrayList<SysUserRole>();
-                SysUserRole ur = new SysUserRole();
-                ur.setUserId(userId);
-                ur.setRoleId(Long.parseLong("5"));
-                list.add(ur);
-                userRoleMapper.batchUserRole(list);
-                // 设置供应商id
-                sysSupplier.setSupplierId(UUID.randomUUID().toString());
-                int rows = sysSupplierMapper.insertSysSupplier(sysSupplier);
-                // 添加产品
-                insertSysProduct(sysSupplier);
-                if (rows > 0) {
-                    return AjaxResult.success(jsonObject);
-                } else {
-                    return AjaxResult.error();
+                    String supplierId = sysSupplier.getSupplierId();
+                    String legalPersonTelephone = sysSupplier.getLegalPersonTelephone();
+                    String principalTelephone = sysSupplier.getPrincipalTelephone();
+                    String nickName = sysSupplier.getSupplierNameCn();
+                    String legalPassword = legalPersonTelephone.substring(legalPersonTelephone.length() - 6);
+                    String principalPassword = principalTelephone.substring(principalTelephone.length() - 6);
+                    String legalPersonEmail = sysSupplier.getLegalPersonEmail();
+                    String principalEmail = sysSupplier.getPrincipalEmail();
+
+                    // 设置返回值
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("legalPersonUserName",legalPersonTelephone);
+                    jsonObject.put("legalPersonPassword",legalPassword);
+                    jsonObject.put("principalUserName",principalTelephone);
+                    jsonObject.put("principalPassword",principalPassword);
+
+                    // 主账号用户对象
+                    SysUser user = new SysUser();
+                    // 用户名为法人手机号
+                    user.setUserName(legalPersonTelephone);
+                    // 用户昵称为公司中文名称
+                    user.setNickName(nickName);
+                    // 用户密码,使用法人手机号后六位
+                    user.setPassword(SecurityUtils.encryptPassword(legalPassword));
+                    // 用户角色为5-供应商/商家,6-供应商,7-商家
+                    if (sysSupplier.getLabel() == 0) {
+                        user.setUserType("5");
+                    } else if (sysSupplier.getLabel() == 1) {
+                        user.setUserType("6");
+                    } else if (sysSupplier.getLabel() == 2) {
+                        user.setUserType("7");
+                    }
+                    // 用户邮箱为法人邮箱
+                    user.setEmail(legalPersonEmail);
+                    // 手机号码为法人手机号
+                    user.setPhonenumber(legalPersonTelephone);
+                    // 账号状态 0-正常
+                    user.setStatus("0");
+                    // 删除标志 0-存在
+                    user.setDelFlag("0");
+                    // 是否为子账号 0-否
+                    user.setSubAccountFlag("0");
+                    // 绑定供应商id
+                    user.setSupplierId(supplierId);
+                    // 注册主账号
+                    int i = userMapper.insertUser(user);
+                    if (i <= 0) {
+                        return AjaxResult.error("注册主账号失败!");
+                    }
+
+                    // 负责人用户对象
+                    SysUser userChild = new SysUser();
+                    // 用户名为负责人手机号
+                    userChild.setUserName(principalTelephone);
+                    // 用户昵称为公司中文名称
+                    userChild.setNickName(nickName);
+                    // 用户密码,使用负责人手机号后六位
+                    userChild.setPassword(SecurityUtils.encryptPassword(principalPassword));
+                    // 用户角色与主账号保持一致
+                    userChild.setUserType(user.getUserType());
+                    // 用户邮箱为负责人邮箱
+                    userChild.setEmail(principalEmail);
+                    // 手机号码为负责人手机号
+                    userChild.setPhonenumber(principalTelephone);
+                    // 账号状态 0-正常
+                    userChild.setStatus("0");
+                    // 删除标志 0-存在
+                    userChild.setDelFlag("0");
+                    // 是否为子账号 1-是
+                    userChild.setSubAccountFlag("1");
+                    // 子账号的父级id
+                    userChild.setParentUserId(String.valueOf(user.getUserId()));
+                    i = userMapper.insertUser(userChild);
+                    if (i <= 0) {
+                        return AjaxResult.error("子账号注册失败!");
+                    }
+
+                    // 新增用户与角色管理
+                    List<SysUserRole> list = new ArrayList<SysUserRole>();
+                    SysUserRole ur = new SysUserRole();
+                    ur.setUserId(user.getUserId());
+                    ur.setRoleId(Long.valueOf(user.getUserType()));
+                    list.add(ur);
+                    SysUserRole ur1 = new SysUserRole();
+                    ur1.setUserId(userChild.getUserId());
+                    ur1.setRoleId(Long.valueOf(userChild.getUserType()));
+                    list.add(ur1);
+                    i = userRoleMapper.batchUserRole(list);
+                    if (i <= 0) {
+                        return AjaxResult.error("新增用户与角色管理失败!");
+                    }
+
+                    // 新增供应商
+                    int rows = sysSupplierMapper.insertSysSupplier(sysSupplier);
+                    // 添加产品
+                    insertSysProduct(sysSupplier);
+                    if (rows > 0) {
+                        return AjaxResult.success(jsonObject);
+                    } else {
+                        return AjaxResult.error();
+                    }
+                }
+                else {
+                    return AjaxResult.error("负责人联系方式已被注册为用户!");
                 }
             } else {
-                return AjaxResult.error("此联系方式已被注册为用户!");
+                return AjaxResult.error("法人联系方式已被注册为用户!");
             }
         } else {
             return AjaxResult.error("此联系方式已被注册为供应商!");
@@ -213,6 +287,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                 new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
         // 查询供应商数据
         List<SysSupplier> list = sysSupplierMapper.selectSysSupplierList(supplier);
+        System.out.println(list.get(0));
         // 把查询到的数据导出至excel
         EasyExcel
                 .write(response.getOutputStream(), SysSupplier.class)

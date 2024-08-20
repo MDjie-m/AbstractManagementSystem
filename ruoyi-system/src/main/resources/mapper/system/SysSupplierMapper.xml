@@ -23,12 +23,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="supplierNameOwn"    column="supplier_name_own"    />
         <result property="registrationTime"    column="registration_time"    />
         <result property="registrationTimeValidityPeriod"    column="registration_time_validity_period"    />
-        <result property="legalPerson"    column="registration_time_validity_period"    />
-        <result property="legalPersonTelephone"    column="registration_time_validity_period"    />
-        <result property="legalPersonEmail"    column="registration_time_validity_period"    />
-        <result property="principalName"    column="registration_time_validity_period"    />
-        <result property="principalTelephone"    column="registration_time_validity_period"    />
-        <result property="principalEmail"    column="registration_time_validity_period"    />
+        <result property="legalPerson"    column="legal_person"    />
+        <result property="legalPersonTelephone"    column="legal_person_telephone"    />
+        <result property="legalPersonEmail"    column="legal_person_email"    />
+        <result property="principalName"    column="principal_name"    />
+        <result property="principalTelephone"    column="principal_telephone"    />
+        <result property="principalEmail"    column="principal_email"    />
         <result property="classification"    column="classification"    />
         <result property="rate"    column="rate"    />
         <result property="reviewRating"    column="review_rating"    />
@@ -42,7 +42,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="imagePath"    column="image_address"    />
         <result property="videoPath"    column="video_address"    />
         <result property="remark"    column="remark"    />
-        <result property="futureField1"    column="future_field1"    />
     </resultMap>
 
     <resultMap id="SysSupplierSysProductResult" type="SysSupplier" extends="SysSupplierResult">
