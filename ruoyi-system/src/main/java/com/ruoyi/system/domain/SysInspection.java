@@ -49,7 +49,7 @@ public class SysInspection extends BaseEntity
     private String auditRemark;
 
     /** 考察审核结果：0-待审核，1-已通过，2-未通过 */
-    private String auditResult;
+    private Integer auditResult;
 
     /** 预留字段1 */
     private String futureField1;
@@ -209,11 +209,11 @@ public class SysInspection extends BaseEntity
         this.auditRemark = auditRemark;
     }
 
-    public String getAuditResult() {
+    public Integer getAuditResult() {
         return auditResult;
     }
 
-    public void setAuditResult(String auditResult) {
+    public void setAuditResult(Integer auditResult) {
         this.auditResult = auditResult;
     }
 
