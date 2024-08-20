@@ -42,50 +42,147 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysProductVo">
-        select product_id, supplier_id, supplier_name, primary_category, primary_category_name, secondary_category,
-               secondary_category_name,tertiary_category, tertiary_category_name, quaternary_category,
-               quaternary_category_name, fifth_category, fifth_category_name,cn_primary_category,
-               cn_primary_category_name,cn_secondary_category,cn_secondary_category_name,cn_tertiary_category,
-               cn_tertiary_category_name,cn_quaternary_category,cn_quaternary_category_name,cn_fifth_category,
-               cn_fifth_category_name,tag_id,tag_name,product_image,product_video, product_name,
-               domestic_imported_type, product_model, quotation_flag,
-               future_field1, future_field2, future_field3 from sys_product
+        select product_id AS productId,supplier_id AS supplierId,supplier_name AS supplierName,primary_category AS primaryCategory,
+               primary_category_name AS primaryCategoryName,secondary_category AS secondaryCategory,secondary_category_name AS secondaryCategoryName,
+               tertiary_category AS tertiaryCategory,tertiary_category_name AS tertiaryCategoryName,quaternary_category AS quaternaryCategory,
+               quaternary_category_name AS quaternaryCategoryName,fifth_category AS fifthCategory,fifth_category_name AS fifthCategoryName,
+               cn_primary_category AS cnPrimaryCategory,cn_primary_category_name AS cnPrimaryCategoryName,cn_secondary_category AS cnSecondaryCategory,
+               cn_secondary_category_name AS cnSecondaryCategoryName,cn_tertiary_category AS cnTertiaryCategory,cn_tertiary_category_name AS cnTertiaryCategoryName,
+               cn_quaternary_category AS cnQuaternaryCategory,cn_quaternary_category_name AS cnQuaternaryCategoryName,
+               cn_fifth_category AS cnFifthCategory,cn_fifth_category_name AS cnFifthCategoryName,
+               tag_id AS tagId,tag_name AS tagName,product_image AS productImage,product_video AS productVideo,
+               product_name AS productName,domestic_imported_type AS domesticImportedType,
+               product_model AS productModel,quotation_flag AS quotationFlag,sample AS sample,
+               specifications AS specifications,inventory AS inventory,
+               status AS status,production_date AS productionDate,shelf_life AS shelfLife,origin AS origin,
+               storage_mode AS storageMode,warehouse_address AS warehouseAddress,main_product AS mainProduct,
+               del_flag AS delFlag,quote_status AS quoteStatus,inquiry_status AS inquiryStatus,buyer_id AS buyerId,
+               inquiry_list_flag AS inquiryListFlag,quote_list_flag AS quoteListFlag,remark AS remark,
+               mark AS mark,unitprice AS unitprice,unitprice_unit AS unitpriceUnit,
+               start_batch AS startBatch,batch_unit AS batchUnit
+               from sys_product
     </sql>
 
-    <select id="selectSysProductList" parameterType="SysProduct" resultMap="SysProductResult">
-        <include refid="selectSysProductVo"/>
-        <where>  
+<!--    这里是根据三个不同的角色查找产品，只查产品，不查其他内容，不涉及到产品报价询价等，后面看看能不能改造一下吧-->
+    <select id="selectSysProductList" parameterType="SysProDuctDTO"
+            resultType="com.ruoyi.system.domain.vo.SysProductVO">
+        <choose>
+            <when test="flag">
+                <!-- 当flag为true时，使用selectSysProductVo,不需要查供应商名字，因为是供应商自己在查询 -->
+                <include refid="selectSysProductVo"/>
+            </when>
+            <otherwise>
+                <!-- 当flag为false时，使用连表，但需要注意连接条件和字段选择，这是采购员或者管理员的查询，需要供应商名字 -->
+                SELECT a.product_id AS productId,a.supplier_id AS supplierId,a.supplier_name AS supplierName,a.primary_category AS primaryCategory,
+                a.primary_category_name AS primaryCategoryName,a.secondary_category AS secondaryCategory,a.secondary_category_name AS secondaryCategoryName,
+                a.tertiary_category AS tertiaryCategory,a.tertiary_category_name AS tertiaryCategoryName,a.quaternary_category AS quaternaryCategory,
+                a.quaternary_category_name AS quaternaryCategoryName,a.fifth_category AS fifthCategory,a.fifth_category_name AS fifthCategoryName,
+                a.cn_primary_category AS cnPrimaryCategory,a.cn_primary_category_name AS cnPrimaryCategoryName,a.cn_secondary_category AS cnSecondaryCategory,
+                a.cn_secondary_category_name AS cnSecondaryCategoryName,a.cn_tertiary_category AS cnTertiaryCategory,a.cn_tertiary_category_name AS cnTertiaryCategoryName,
+                a.cn_quaternary_category AS cnQuaternaryCategory,a.cn_quaternary_category_name AS cnQuaternaryCategoryName,
+                a.cn_fifth_category AS cnFifthCategory,a.cn_fifth_category_name AS cnFifthCategoryName,
+                a.tag_id AS tagId,a.tag_name AS tagName,a.product_image AS productImage,a.product_video AS productVideo,
+                a.product_name AS productName,a.domestic_imported_type AS domesticImportedType,
+                a.product_model AS productModel,a.quotation_flag AS quotationFlag,a.sample AS sample,
+                a.specifications AS specifications,a.inventory AS inventory,
+                a.status AS status,a.production_date AS productionDate,a.shelf_life AS shelfLife,a.origin AS origin,
+                a.storage_mode AS storageMode,a.warehouse_address AS warehouseAddress,a.main_product AS mainProduct,
+                a.del_flag AS delFlag,a.quote_status AS quoteStatus,a.inquiry_status AS inquiryStatus,a.buyer_id AS buyerId,
+                a.inquiry_list_flag AS inquiryListFlag,a.quote_list_flag AS quoteListFlag,a.remark AS remark,
+                a.mark AS mark,a.unitprice AS unitprice,a.unitprice_unit AS unitpriceUnit,
+                a.start_batch AS startBatch,a.batch_unit AS batchUnit,
+                b.supplier_name_cn as supplierNameCn,b.supplier_name_en as supplierNameEn,b.supplier_name_own as supplierNameOwn
+                FROM sys_product a
+                LEFT JOIN sys_supplier b ON a.supplier_id = b.supplier_id
+            </otherwise>
+        </choose>
+        <where>
+            <if test="flag == false">
+                    <!--如果他为false，说明是采购员或者管理员，需要供应商名字查询 -->
+                <if test="supplierName != null  and supplierName != ''"> and b.supplier_name_cn like concat('%', #{supplierName}, '%')</if>
+                <if test="supplierName != null  and supplierName != ''"> and b.supplier_name_en like concat('%', #{supplierName}, '%')</if>
+                <if test="supplierName != null  and supplierName != ''"> and b.supplier_name_own like concat('%', #{supplierName}, '%')</if>
+            </if>
+
             <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
-            <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
-            <if test="primaryCategory != null  and primaryCategory != ''"> and primary_category = #{primaryCategory}</if>
-            <if test="primaryCategoryName != null  and primaryCategoryName != ''"> and primary_category_name like concat('%', #{primaryCategoryName}, '%')</if>
-            <if test="secondaryCategory != null  and secondaryCategory != ''"> and secondary_category = #{secondaryCategory}</if>
-            <if test="secondaryCategoryName != null  and secondaryCategoryName != ''"> and secondary_category_name like concat('%', #{secondaryCategoryName}, '%')</if>
-            <if test="tertiaryCategory != null  and tertiaryCategory != ''"> and tertiary_category = #{tertiaryCategory}</if>
-            <if test="tertiaryCategoryName != null  and tertiaryCategoryName != ''"> and tertiary_category_name like concat('%', #{tertiaryCategoryName}, '%')</if>
-            <if test="quaternaryCategory != null  and quaternaryCategory != ''"> and quaternary_category = #{quaternaryCategory}</if>
-            <if test="quaternaryCategoryName != null  and quaternaryCategoryName != ''"> and quaternary_category_name like concat('%', #{quaternaryCategoryName}, '%')</if>
-            <if test="fifthCategory != null  and fifthCategory != ''"> and fifth_category = #{fifthCategory}</if>
-            <if test="fifthCategoryName != null  and fifthCategoryName != ''"> and fifth_category_name like concat('%', #{fifthCategoryName}, '%')</if>
+            <if test="buyerId!=null"> and buyer_id = #{buyerId}</if>
+            <if test="startInventory != null">inventory &gt;= #{startInventory}</if>
+            <if test="endInventory != null">inventory &lt;= #{endInventory}</if>
+
+            <if test="origins != null and !origins.isEmpty()">
+                AND origin IN
+                <foreach collection="origins" item="origin" open="(" close=")" separator=",">
+                    #{origin}
+                </foreach>
+            </if>
+
+            <if test="cnPrimaryCategorys != null and !cnPrimaryCategorys.isEmpty()">
+                AND cn_primary_category IN
+                <foreach collection="cnPrimaryCategorys" item="cnPrimary" open="(" close=")" separator=",">
+                    #{cnPrimary}
+                </foreach>
+            </if>
+            <if test="cnSecondaryCategorys != null and !cnSecondaryCategorys.isEmpty()">
+                AND cn_secondary_category IN
+                <foreach collection="cnSecondaryCategorys" item="cnSecondary" open="(" close=")" separator=",">
+                    #{cnSecondary}
+                </foreach>
+            </if>
+            <if test="cnTertiaryCategorys != null and !cnTertiaryCategorys.isEmpty()">
+                AND cn_tertiary_category IN
+                <foreach collection="cnTertiaryCategorys" item="cnTertiary" open="(" close=")" separator=",">
+                    #{cnTertiary}
+                </foreach>
+            </if>
+            <if test="cnQuaternaryCategorys != null and !cnQuaternaryCategorys.isEmpty()">
+                AND cn_quaternary_category IN
+                <foreach collection="cnQuaternaryCategorys" item="cnQuaternary" open="(" close=")" separator=",">
+                    #{cnQuaternary}
+                </foreach>
+            </if>
+            <if test="cnFifthCategorys != null and !cnFifthCategorys.isEmpty()">
+                AND cn_fifth_category IN
+                <foreach collection="cnFifthCategorys" item="cnFifth" open="(" close=")" separator=",">
+                    #{cnFifth}
+                </foreach>
+            </if>
+
+<!--            <if test="primaryCategory != null  and primaryCategory != ''"> and primary_category = #{primaryCategory}</if>-->
+<!--            <if test="primaryCategoryName != null  and primaryCategoryName != ''"> and primary_category_name like concat('%', #{primaryCategoryName}, '%')</if>-->
+<!--            <if test="secondaryCategory != null  and secondaryCategory != ''"> and secondary_category = #{secondaryCategory}</if>-->
+<!--            <if test="secondaryCategoryName != null  and secondaryCategoryName != ''"> and secondary_category_name like concat('%', #{secondaryCategoryName}, '%')</if>-->
+<!--            <if test="tertiaryCategory != null  and tertiaryCategory != ''"> and tertiary_category = #{tertiaryCategory}</if>-->
+<!--            <if test="tertiaryCategoryName != null  and tertiaryCategoryName != ''"> and tertiary_category_name like concat('%', #{tertiaryCategoryName}, '%')</if>-->
+<!--            <if test="quaternaryCategory != null  and quaternaryCategory != ''"> and quaternary_category = #{quaternaryCategory}</if>-->
+<!--            <if test="quaternaryCategoryName != null  and quaternaryCategoryName != ''"> and quaternary_category_name like concat('%', #{quaternaryCategoryName}, '%')</if>-->
+<!--            <if test="fifthCategory != null  and fifthCategory != ''"> and fifth_category = #{fifthCategory}</if>-->
+<!--            <if test="fifthCategoryName != null  and fifthCategoryName != ''"> and fifth_category_name like concat('%', #{fifthCategoryName}, '%')</if>-->
             <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
-            <if test="cnPrimaryCategory != null  and cnPrimaryCategory != ''"> and cn_primary_category = #{cnPrimaryCategory}</if>
-            <if test="cnPrimaryCategoryName != null  and cnPrimaryCategoryName != ''"> and cn_primary_category_name like concat('%', #{cnPrimaryCategoryName}, '%')</if>
-            <if test="cnSecondaryCategory != null  and cnSecondaryCategory != ''"> and cn_secondary_category = #{cnSecondaryCategory}</if>
-            <if test="cnSecondaryCategoryName != null  and cnSecondaryCategoryName != ''"> and cn_secondary_category_name like concat('%', #{cnSecondaryCategoryName}, '%')</if>
-            <if test="cnTertiaryCategory != null  and cnTertiaryCategory != ''"> and cn_tertiary_category = #{cnTertiaryCategory}</if>
-            <if test="cnTertiaryCategoryName != null  and cnTertiaryCategoryName != ''"> and cn_tertiary_category_name like concat('%', #{cnTertiaryCategoryName}, '%')</if>
-            <if test="cnQuaternaryCategory != null  and cnQuaternaryCategory != ''"> and cn_quaternary_category = #{cnQuaternaryCategory}</if>
-            <if test="cnQuaternaryCategoryName != null  and cnQuaternaryCategoryName != ''"> and cn_quaternary_category_name like concat('%', #{cnQuaternaryCategoryName}, '%')</if>
-
-            <if test="cnFifthCategory != null  and cnFifthCategory != ''"> and cn_fifth_category = #{cnFifthCategory}</if>
-            <if test="cnFifthCategoryName != null  and cnFifthCategoryName != ''"> and cn_fifth_category_name like concat('%', #{cnFifthCategoryName}, '%')</if>
-
+<!--            <if test="cnPrimaryCategory != null  and cnPrimaryCategory != ''"> and cn_primary_category = #{cnPrimaryCategory}</if>-->
+<!--            <if test="cnPrimaryCategoryName != null  and cnPrimaryCategoryName != ''"> and cn_primary_category_name like concat('%', #{cnPrimaryCategoryName}, '%')</if>-->
+<!--            <if test="cnSecondaryCategory != null  and cnSecondaryCategory != ''"> and cn_secondary_category = #{cnSecondaryCategory}</if>-->
+<!--            <if test="cnSecondaryCategoryName != null  and cnSecondaryCategoryName != ''"> and cn_secondary_category_name like concat('%', #{cnSecondaryCategoryName}, '%')</if>-->
+<!--            <if test="cnTertiaryCategory != null  and cnTertiaryCategory != ''"> and cn_tertiary_category = #{cnTertiaryCategory}</if>-->
+<!--            <if test="cnTertiaryCategoryName != null  and cnTertiaryCategoryName != ''"> and cn_tertiary_category_name like concat('%', #{cnTertiaryCategoryName}, '%')</if>-->
+<!--            <if test="cnQuaternaryCategory != null  and cnQuaternaryCategory != ''"> and cn_quaternary_category = #{cnQuaternaryCategory}</if>-->
+<!--            <if test="cnQuaternaryCategoryName != null  and cnQuaternaryCategoryName != ''"> and cn_quaternary_category_name like concat('%', #{cnQuaternaryCategoryName}, '%')</if>-->
+<!--            <if test="cnFifthCategory != null  and cnFifthCategory != ''"> and cn_fifth_category = #{cnFifthCategory}</if>-->
+<!--            <if test="cnFifthCategoryName != null  and cnFifthCategoryName != ''"> and cn_fifth_category_name like concat('%', #{cnFifthCategoryName}, '%')</if>-->
             <if test="domesticImportedType != null "> and domestic_imported_type = #{domesticImportedType}</if>
-            <if test="productModel != null  and productModel != ''"> and product_model = #{productModel}</if>
+<!--             <if test="productModel != null  and productModel != ''"> and product_model = #{productModel}</if>-->
             <if test="quotationFlag != null "> and quotation_flag = #{quotationFlag}</if>
-            <if test="futureField1 != null  and futureField1 != ''"> and future_field1 = #{futureField1}</if>
-            <if test="futureField2 != null  and futureField2 != ''"> and future_field2 = #{futureField2}</if>
-            <if test="futureField3 != null  and futureField3 != ''"> and future_field3 = #{futureField3}</if>
+            <if test="sample != null">sample=#{sample}</if>
+            <if test="status != null"> status=#{status}</if>
+            <if test="storageMode !=null">storage_mode=#{storageMode}</if>
+            <if test="warehouseAddress!=null and warehouseAddress!=''">warehouse_address like concat('%', #{warehouseAddress}, '%')</if>
+            <if test="mainProduct != null">main_product=#{mainProduct}</if>
+            <if test="quoteStatus !=null">quote_status=#{quoteStatus}</if>
+            <if test="inquiryStatus !=null">inquiry_status=#{inquiryStatus}</if>
+            <if test="inquiryListFlag !=null">inquiry_list_flag=#{inquiryListFlag}</if>
+            <if test="quoteListFlag !=null">quote_list_flag=#{quoteListFlag}</if>
+            <if test="mark != null and mark != ''">and mark like concat('%', #{mark}, '%')</if>
+            and del_flag=0
+
         </where>
     </select>
     

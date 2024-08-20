@@ -1,7 +1,11 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.SysProduct;
+import com.ruoyi.system.domain.dto.SysProDuctDTO;
+import com.ruoyi.system.domain.vo.SysProductVO;
 
 /**
  * 产品Service接口
@@ -22,10 +26,12 @@ public interface ISysProductService
     /**
      * 查询产品列表
      * 
-     * @param sysProduct 产品
+     * @param sysProductDTO 产品dto对象
+     * @param supplierId 供应商Id
+     * @param userId 采购员id
      * @return 产品集合
      */
-    public List<SysProduct> selectSysProductList(SysProduct sysProduct);
+    public List<SysProductVO> selectSysProductList(SysProDuctDTO sysProDuctDTO);
 
     /**
      * 新增产品

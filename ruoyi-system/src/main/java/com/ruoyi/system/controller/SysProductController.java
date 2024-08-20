@@ -1,10 +1,16 @@
 package com.ruoyi.system.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.annotation.Anonymous;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.SysProductType;
 import com.ruoyi.system.domain.dto.SysProDuctDTO;
+import com.ruoyi.system.domain.vo.SysProductVO;
 import com.ruoyi.system.service.ISysProductTypeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,16 +54,36 @@ public class SysProductController extends BaseController
      * 查询产品列表
      */
     @PreAuthorize("@ss.hasPermi('system:product:list')")
-    @GetMapping("/list")
-    public TableDataInfo list(SysProduct sysProduct)
+    @PostMapping("/list")
+    public TableDataInfo list(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
-        startPage();
-        List<SysProduct> list = sysProductService.selectSysProductList(sysProduct);
+        //从上下文中获取角色id,暂时假定一个用户一个角色哈。
+        Long roleId = SecurityUtils.getLoginUser().getUser().getRoleId();
+        //然后判断roleid是管理员的id还是供应商的id还是采购员的id，三个都不一样的，不能根据名称判断，因为名称可能被修改
+        List<SysProductVO> list = null;
+        sysProDuctDTO.setFlag(false);
+        if(roleId==1){
+            //说明是管理员，则查所有产品信息。如果供应商id为null且userid为0说明查所有
+            startPage();
+            list = sysProductService.selectSysProductList(sysProDuctDTO);
+        }else if (roleId==2){
+            //说明是采购员，如果供应商id为null且userid有具体值说明查采购员自己管理的产品
+            sysProDuctDTO.setBuyerId(SecurityUtils.getUserId());
+            startPage();
+            list = sysProductService.selectSysProductList(sysProDuctDTO);
+        }else if (roleId==6){
+            sysProDuctDTO.setFlag(true);
+            //说明是供应商，根据供应商的id查他自己的产品信息,供应商Id为他自己的供应商id，采购员id为0说明是供应商查他自己的产品。
+            sysProDuctDTO.setSupplierId(SecurityUtils.getLoginUser().getUser().getSupplierId());
+            startPage();
+            list = sysProductService.selectSysProductList(sysProDuctDTO);
+        }
         return getDataTable(list);
     }
+
     /**
      * 下载模板地址返回
-     * @return
+     * @return AjaxResult
      */
     @PostMapping("/getUrl")
     public  AjaxResult getUrl(){
@@ -87,9 +113,9 @@ public class SysProductController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysProduct sysProduct)
     {
-        List<SysProduct> list = sysProductService.selectSysProductList(sysProduct);
-        ExcelUtil<SysProduct> util = new ExcelUtil<SysProduct>(SysProduct.class);
-        util.exportExcel(response, list, "产品数据");
+//        List<SysProduct> list = sysProductService.selectSysProductList(sysProduct);
+//        ExcelUtil<SysProduct> util = new ExcelUtil<SysProduct>(SysProduct.class);
+//        util.exportExcel(response, list, "产品数据");
     }
 
     /**
