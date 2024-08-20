@@ -296,7 +296,25 @@
         </el-form-item>
 
         <el-form-item label="课程详情">
-          <editor v-model="form.detail" :min-height="192" :extraData="extraData"/>
+<!--          <editor v-model="form.detail" :min-height="192" :extraData="extraData"/>-->
+
+<!--<div>111
+            &lt;!&ndash; 显示已上传的图片 &ndash;&gt;
+            <div v-if="detailImages.length > 0">
+              <div v-for="(url, index) in detailImages" :key="index">
+                <image-upload  :value="url" :extraData="extraData" />
+              </div>
+            </div>
+222
+            <image-upload v-model="currentImage" :extraData="extraData" @finish-upload="addImage" />
+             </div>-->
+            <div class="upload-container">
+              <image-upload v-model="form.detailImg1" :extraData="extraData"  :isShowTip="false" class="image-upload"/>
+              <image-upload v-model="form.detailImg2" :extraData="extraData"  :isShowTip="false" class="image-upload"/>
+              <image-upload v-model="form.detailImg3" :extraData="extraData"  :isShowTip="false" class="image-upload"/>
+              <image-upload v-model="form.detailImg4" :extraData="extraData"  :isShowTip="false" class="image-upload"/>
+            </div>
+
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -367,8 +385,28 @@ export default {
         onSaleValue: null,
         serviceTo: null,
       },
+      currentImage: '', // 用于暂存上传的图片
+      detailImages:[],
       // 表单参数
       form: {
+        id: null,
+        name: null,
+        type: null,
+        payType: null,
+        author: null,
+        userName: null,
+        url: null,
+        iconUrl: null,
+        price: null,
+        detail: null,
+        createBy: null,
+        createTime: null,
+        updateTime: null,
+        updateBy: null,
+        detailImg1:null,
+        detailImg2:null,
+        detailImg3:null,
+        detailImg4:null
       },
       // 表单校验
       rules: {
@@ -421,7 +459,27 @@ export default {
     this.getList()
     this.getConsult()
   },
+  /*computed: {
+    detailImages() {
+      // 从 detail 字符串生成数组
+      console.log("****************************")
+      console.log(this.form.detail ? this.form.detail.split(',') : [])
+      return this.form.detail ? this.form.detail.split(',') : [];
+    },
+  },*/
   methods: {
+      addImage(fileList) {
+        this.detailImages.push(fileList[0].url);
+        this.currentImage = ''; // 清空当前图片
+        console.log(this.detailImages)
+      },
+      removeImage(index) {
+        // 从数组中移除指定的图片
+        const imagesArray = this.detailImages;
+        imagesArray.splice(index, 1);
+        this.form.detail = imagesArray.join(','); // 更新 detail 字符串
+      },
+
     async getConsult() {
       // consultList
       const req = {
@@ -487,7 +545,11 @@ export default {
         createBy: null,
         createTime: null,
         updateTime: null,
-        updateBy: null
+        updateBy: null,
+        detailImg1:null,
+        detailImg2:null,
+        detailImg3:null,
+        detailImg4:null
       };
       this.resetForm("form");
     },
@@ -524,6 +586,16 @@ export default {
       const id = row.id || this.ids
       getCourse(id).then(response => {
         this.form = response.data;
+        if (this.form.detail){
+          let imgList = this.form.detail.split(",");
+          this.form.detailImg1 = imgList[0];
+          this.form.detailImg2 = imgList[1];
+          this.form.detailImg3 = imgList[2];
+          this.form.detailImg4 = imgList[3];
+
+          console.log(this.form)
+        }
+
         this.open = true;
         this.title = "修改课程";
       });
@@ -536,6 +608,7 @@ export default {
             const item = this.consultList.find(a => a.value === this.form.author)
             this.form.userName = item ? item.userName : ''
           }
+          this.form.detail = this.form.detailImg1 + "," + this.form.detailImg2 + "," + this.form.detailImg3 + "," + this.form.detailImg4 ;
 
           if (this.form.id != null) {
             updateCourse(this.form).then(response => {
@@ -605,6 +678,16 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.upload-container {
+  display: flex;
+  flex-wrap: wrap; /* 如果有很多组件，可以换行 */
+  gap: 10px; /* 组件之间的间距，可以根据需要调整 */
+}
+
+.image-upload {
+  width: 150px; /* 设置固定宽度 */
+  height: 200px; /* 设置固定高度，确保是正方形 */
+}
 .author_input {
   ::v-deep .el-input__inner {
     width: 217px;

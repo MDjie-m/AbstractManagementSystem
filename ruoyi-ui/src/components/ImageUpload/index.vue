@@ -196,6 +196,9 @@ export default {
         this.number = 0;
         this.$emit("input", this.listToString(this.fileList));
         this.$modal.closeLoading();
+
+        //回调页面方法
+        this.$emit("finish-upload", this.fileList);
       }
     },
     // 预览
