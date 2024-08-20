@@ -178,12 +178,12 @@ public class SysProductController extends BaseController
     }
 
     /**
-     * 删除产品
+     * 删除产品,根据产品id列表进行逻辑删除
      */
     @PreAuthorize("@ss.hasPermi('system:product:remove')")
     @Log(title = "产品", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{productIds}")
-    public AjaxResult remove(@PathVariable String[] productIds)
+	@PostMapping("/deleteByIds")
+    public AjaxResult remove(@RequestBody List<String> productIds)
     {
         return toAjax(sysProductService.deleteSysProductByProductIds(productIds));
     }

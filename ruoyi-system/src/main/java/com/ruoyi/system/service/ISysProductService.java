@@ -55,7 +55,7 @@ public interface ISysProductService
      * @param productIds 需要删除的产品主键集合
      * @return 结果
      */
-    public int deleteSysProductByProductIds(String[] productIds);
+    public int deleteSysProductByProductIds(List<String> productIds);
 
     /**
      * 删除产品信息

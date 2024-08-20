@@ -354,12 +354,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from sys_product where product_id = #{productId}
     </delete>
 
-    <delete id="deleteSysProductByProductIds" parameterType="String">
-        delete from sys_product where product_id in 
-        <foreach item="productId" collection="array" open="(" separator="," close=")">
+    <update id="deleteSysProductByProductIds" parameterType="java.util.List">
+        update sys_product set del_flag=1 where product_id in
+        <foreach item="productId" collection="productIds" open="(" separator="," close=")">
             #{productId}
         </foreach>
-    </delete>
+    </update>
 
     <select id="selectProductNamesByParam" resultType="java.lang.String">
     SELECT product_Name
