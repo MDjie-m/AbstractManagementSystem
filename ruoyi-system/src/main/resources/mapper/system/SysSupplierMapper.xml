@@ -234,7 +234,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         sys_supplier(supplier_id, label, nature, country, province, city, area,
                      business_category, main_category, registration_no, registration_no_in_china,
                      supplier_name_cn, supplier_name_en, supplier_name_own, registration_time,
-                     registration_time_validity_period, delete_flag, legalPerson, legal_person_telephone,
+                     registration_time_validity_period, delete_flag, legal_person, legal_person_telephone,
                      legal_person_email, principal_name, principal_telephone, principal_email,
                      classification, data_sources)
         VALUES

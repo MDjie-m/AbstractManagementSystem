@@ -106,12 +106,12 @@ public class SupplierListener implements ReadListener<SysSupplier> {
             } else if (data.getRegistrationNo() == null) {
                 int row = context.readRowHolder().getRowIndex() + 1;
                 arrayList.add("第" + row + "行" + "注册编号列数据异常");
-//            } else if (data.getContacts() == null) {
-//                int row = context.readRowHolder().getRowIndex() + 1;
-//                arrayList.add("第" + row + "行" + "法人列数据异常");
-//            } else if (data.getTelephone() == null) {
-//                int row = context.readRowHolder().getRowIndex() + 1;
-//                arrayList.add("第" + row + "行" + "法人电话列数据异常");
+            } else if (data.getLegalPerson() == null) {
+                int row = context.readRowHolder().getRowIndex() + 1;
+                arrayList.add("第" + row + "行" + "法人列数据异常");
+            } else if (data.getLegalPersonTelephone() == null) {
+                int row = context.readRowHolder().getRowIndex() + 1;
+                arrayList.add("第" + row + "行" + "法人电话列数据异常");
             } else {
                 // 设置供应商UUID
                 data.setSupplierId(UUID.randomUUID().toString());
@@ -205,6 +205,7 @@ public class SupplierListener implements ReadListener<SysSupplier> {
             sysSupplierMapper.saveSysSupplier(cachedDataList);
         } catch (Exception e) {
             log.error("存储数据库失败:{}", e.getMessage());
+            arrayList.add("存储数据库失败!");
         }
         log.info("存储数据库成功！");
     }
