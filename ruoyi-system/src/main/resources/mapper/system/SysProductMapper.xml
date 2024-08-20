@@ -194,81 +194,120 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertSysProduct" parameterType="SysProduct">
         insert into sys_product
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="productId != null">product_id,</if>
-            <if test="supplierId != null">supplier_id,</if>
-            <if test="supplierName != null">supplier_name,</if>
-            <if test="primaryCategory != null">primary_category,</if>
-            <if test="primaryCategoryName != null">primary_category_name,</if>
-            <if test="secondaryCategory != null">secondary_category,</if>
-            <if test="secondaryCategoryName != null">secondary_category_name,</if>
-            <if test="tertiaryCategory != null">tertiary_category,</if>
-            <if test="tertiaryCategoryName != null">tertiary_category_name,</if>
-            <if test="quaternaryCategory != null">quaternary_category,</if>
-            <if test="quaternaryCategoryName != null">quaternary_category_name,</if>
-            <if test="fifthCategory != null">fifth_category,</if>
-            <if test="fifthCategoryName != null">fifth_category_name,</if>
-
-            <if test="cnPrimaryCategory != null">cn_primary_category,</if>
-            <if test="cnPrimaryCategoryName != null">cn_primary_category_name,</if>
-            <if test="cnSecondaryCategory != null">cn_secondary_category,</if>
-            <if test="cnSecondaryCategoryName != null">cn_secondary_category_name,</if>
-            <if test="cnTertiaryCategory != null">cn_tertiary_category,</if>
-            <if test="cnTertiaryCategoryName != null">cn_tertiary_category_name,</if>
-            <if test="cnQuaternaryCategory != null">cn_quaternary_category,</if>
-            <if test="cnQuaternaryCategoryName != null">cn_quaternary_category_name,</if>
-            <if test="cnFifthCategory != null">cn_fifth_category,</if>
-            <if test="cnFifthCategoryName != null">cn_fifth_category_name,</if>
-
-            <if test="tagId != null">tag_id,</if>
-            <if test="tagName != null">tag_name,</if>
-            <if test="productImage != null">product_image,</if>
-            <if test="productVideo != null">product_video,</if>
-
-            <if test="productName != null">product_name,</if>
+            <if test="productId != null and productId != ''">product_id,</if>
+            <if test="supplierId != null and supplierId != ''">supplier_id,</if>
+            <if test="supplierName != null and supplierName != ''">supplier_name,</if>
+            <if test="productName != null and productName != ''">product_name,</if>
+<!--            <if test="primaryCategory != null and primaryCategory != ''">primary_category,</if>-->
+<!--            <if test="primaryCategoryName != null and primaryCategoryName != ''">primary_category_name,</if>-->
+<!--            <if test="secondaryCategory != null and secondaryCategory != ''">secondary_category,</if>-->
+<!--            <if test="secondaryCategoryName != null and secondaryCategoryName != ''">secondary_category_name,</if>-->
+<!--            <if test="tertiaryCategory != null and tertiaryCategory != ''">tertiary_category,</if>-->
+<!--            <if test="tertiaryCategoryName != null and tertiaryCategoryName != ''">tertiary_category_name,</if>-->
+<!--            <if test="quaternaryCategory != null and quaternaryCategory != ''">quaternary_category,</if>-->
+<!--            <if test="quaternaryCategoryName != null and quaternaryCategoryName != ''">quaternary_category_name,</if>-->
+<!--            <if test="fifthCategory != null and fifthCategory != ''">fifth_category,</if>-->
+<!--            <if test="fifthCategoryName != null and fifthCategoryName != ''">fifth_category_name,</if>-->
+            <if test="cnPrimaryCategory != null and cnPrimaryCategory != ''">cn_primary_category,</if>
+            <if test="cnPrimaryCategoryName != null and cnPrimaryCategoryName != ''">cn_primary_category_name,</if>
+            <if test="cnSecondaryCategory != null and cnSecondaryCategory != ''">cn_secondary_category,</if>
+            <if test="cnSecondaryCategoryName != null and cnSecondaryCategoryName != ''">cn_secondary_category_name,</if>
+            <if test="cnTertiaryCategory != null and cnTertiaryCategory != ''">cn_tertiary_category,</if>
+            <if test="cnTertiaryCategoryName != null and cnTertiaryCategoryName != ''">cn_tertiary_category_name,</if>
+            <if test="cnQuaternaryCategory != null and cnQuaternaryCategory != ''">cn_quaternary_category,</if>
+            <if test="cnQuaternaryCategoryName != null and cnQuaternaryCategoryName != ''">cn_quaternary_category_name,</if>
+            <if test="cnFifthCategory != null and cnFifthCategory != ''">cn_fifth_category,</if>
+            <if test="cnFifthCategoryName != null and cnFifthCategoryName != ''">cn_fifth_category_name,</if>
             <if test="domesticImportedType != null">domestic_imported_type,</if>
-            <if test="productModel != null">product_model,</if>
+            <if test="productModel != null and productModel != ''">product_model,</if>
+            <if test="productVideo != null and productVideo != ''">product_video,</if>
+            <if test="productImage != null and productImage != ''">product_image,</if>
+            <if test="tagId != null and tagId != ''">tag_id,</if>
+            <if test="tagName != null and tagName != ''">tag_name,</if>
             <if test="quotationFlag != null">quotation_flag,</if>
-            <if test="futureField1 != null">future_field1,</if>
-            <if test="futureField2 != null">future_field2,</if>
-            <if test="futureField3 != null">future_field3,</if>
+            <if test="sample != null">sample,</if>
+            <if test="specifications != null and specifications != ''">specifications,</if>
+            <if test="inventory != null">inventory,</if>
+            <if test="status != null">status,</if>
+            <if test="productionDate != null">production_date,</if>
+            <if test="shelfLife != null and shelfLife != ''">shelf_life,</if>
+            <if test="origin != null and origin != ''">origin,</if>
+            <if test="storageMode != null">storage_mode,</if>
+            <if test="warehouseAddress != null and warehouseAddress != ''">warehouse_address,</if>
+            <if test="mainProduct != null">main_product,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="quoteStatus != null">quote_status,</if>
+            <if test="inquiryStatus != null">inquiry_status,</if>
+            <if test="buyerId != null">buyer_id,</if>
+            <if test="inquiryListFlag != null">inquiry_list_flag,</if>
+            <if test="quoteListFlag != null">quote_list_flag,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+            <if test="mark != null and mark != ''">mark,</if>
+            <if test="unitprice != null">unitprice,</if>
+            <if test="unitpriceUnit != null and unitpriceUnit != ''">unitprice_unit,</if>
+            <if test="startBatch != null">start_batch,</if>
+            <if test="batchUnit != null and batchUnit != ''">batch_unit,</if>
+            <if test="futureField1 != null and futureField1 != ''">future_field1,</if>
+            <if test="futureField2 != null and futureField2 != ''">future_field2,</if>
+            <if test="futureField3 != null and futureField3 != ''">future_field3</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="productId != null">#{productId},</if>
-            <if test="supplierId != null">#{supplierId},</if>
-            <if test="supplierName != null">#{supplierName},</if>
-            <if test="primaryCategory != null">#{primaryCategory},</if>
-            <if test="primaryCategoryName != null">#{primaryCategoryName},</if>
-            <if test="secondaryCategory != null">#{secondaryCategory},</if>
-            <if test="secondaryCategoryName != null">#{secondaryCategoryName},</if>
-            <if test="tertiaryCategory != null">#{tertiaryCategory},</if>
-            <if test="tertiaryCategoryName != null">#{tertiaryCategoryName},</if>
-            <if test="quaternaryCategory != null">#{quaternaryCategory},</if>
-            <if test="quaternaryCategoryName != null">#{quaternaryCategoryName},</if>
-            <if test="fifthCategory != null">#{fifthCategory},</if>
-            <if test="fifthCategoryName != null">#{fifthCategoryName},</if>
-
-            <if test="cnPrimaryCategory != null">#{cnPrimaryCategory},</if>
-            <if test="cnPrimaryCategoryName != null">#{cnPrimaryCategoryName},</if>
-            <if test="cnSecondaryCategory != null">#{cnSecondaryCategory},</if>
-            <if test="cnSecondaryCategoryName != null">#{cnSecondaryCategoryName},</if>
-            <if test="cnTertiaryCategory != null">#{cnTertiaryCategory},</if>
-            <if test="cnTertiaryCategoryName != null">#{cnTertiaryCategoryName},</if>
-            <if test="cnQuaternaryCategory != null">#{cnQuaternaryCategory},</if>
-            <if test="cnQuaternaryCategoryName != null">#{cnQuaternaryCategoryName},</if>
-            <if test="cnFifthCategory != null">#{cnFifthCategory},</if>
-            <if test="cnFifthCategoryName != null">#{cnFifthCategoryName},</if>
-            <if test="tagId != null">#{tagId},</if>
-            <if test="tagName != null">#{tagName},</if>
-            <if test="productImage != null">#{productImage},</if>
-            <if test="productVideo != null">#{productVideo},</if>
-
-            <if test="productName != null">#{productName},</if>
+            <if test="productId != null and productId != ''">#{productId},</if>
+            <if test="supplierId != null and supplierId != ''">#{supplierId},</if>
+            <if test="supplierName != null and supplierName != ''">#{supplierName},</if>
+            <if test="productName != null and productName != ''">#{productName},</if>
+<!--            <if test="primaryCategory != null and primaryCategory != ''">#{primaryCategory},</if>-->
+<!--            <if test="primaryCategoryName != null and primaryCategoryName != ''">#{primaryCategoryName},</if>-->
+<!--            <if test="secondaryCategory != null and secondaryCategory != ''">#{secondaryCategory},</if>-->
+<!--            <if test="secondaryCategoryName != null and secondaryCategoryName != ''">#{secondaryCategoryName},</if>-->
+<!--            <if test="tertiaryCategory != null and tertiaryCategory != ''">#{tertiaryCategory},</if>-->
+<!--            <if test="tertiaryCategoryName != null and tertiaryCategoryName != ''">#{tertiaryCategoryName},</if>-->
+<!--            <if test="quaternaryCategory != null and quaternaryCategory != ''">#{quaternaryCategory},</if>-->
+<!--            <if test="quaternaryCategoryName != null and quaternaryCategoryName != ''">#{quaternaryCategoryName},</if>-->
+<!--            <if test="fifthCategory != null and fifthCategory != ''">#{fifthCategory},</if>-->
+<!--            <if test="fifthCategoryName != null and fifthCategoryName != ''">#{fifthCategoryName},</if>-->
+            <if test="cnPrimaryCategory != null and cnPrimaryCategory != ''">#{cnPrimaryCategory},</if>
+            <if test="cnPrimaryCategoryName != null and cnPrimaryCategoryName != ''">#{cnPrimaryCategoryName},</if>
+            <if test="cnSecondaryCategory != null and cnSecondaryCategory != ''">#{cnSecondaryCategory},</if>
+            <if test="cnSecondaryCategoryName != null and cnSecondaryCategoryName != ''">#{cnSecondaryCategoryName},</if>
+            <if test="cnTertiaryCategory != null and cnTertiaryCategory != ''">#{cnTertiaryCategory},</if>
+            <if test="cnTertiaryCategoryName != null and cnTertiaryCategoryName != ''">#{cnTertiaryCategoryName},</if>
+            <if test="cnQuaternaryCategory != null and cnQuaternaryCategory != ''">#{cnQuaternaryCategory},</if>
+            <if test="cnQuaternaryCategoryName != null and cnQuaternaryCategoryName != ''">#{cnQuaternaryCategoryName},</if>
+            <if test="cnFifthCategory != null and cnFifthCategory != ''">#{cnFifthCategory},</if>
+            <if test="cnFifthCategoryName != null and cnFifthCategoryName != ''">#{cnFifthCategoryName},</if>
             <if test="domesticImportedType != null">#{domesticImportedType},</if>
-            <if test="productModel != null">#{productModel},</if>
+            <if test="productModel != null and productModel != ''">#{productModel},</if>
+            <if test="productVideo != null and productVideo != ''">#{productVideo},</if>
+            <if test="productImage != null and productImage != ''">#{productImage},</if>
+            <if test="tagId != null and tagId != ''">#{tagId},</if>
+            <if test="tagName != null and tagName != ''">#{tagName},</if>
             <if test="quotationFlag != null">#{quotationFlag},</if>
-            <if test="futureField1 != null">#{futureField1},</if>
-            <if test="futureField2 != null">#{futureField2},</if>
-            <if test="futureField3 != null">#{futureField3},</if>
+            <if test="sample != null">#{sample},</if>
+            <if test="specifications != null and specifications != ''">#{specifications},</if>
+            <if test="inventory != null">#{inventory},</if>
+            <if test="status != null">#{status},</if>
+            <if test="productionDate != null">#{productionDate},</if>
+            <if test="shelfLife != null and shelfLife != ''">#{shelfLife},</if>
+            <if test="origin != null and origin != ''">#{origin},</if>
+            <if test="storageMode != null">#{storageMode},</if>
+            <if test="warehouseAddress != null and warehouseAddress != ''">#{warehouseAddress},</if>
+            <if test="mainProduct != null">#{mainProduct},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="quoteStatus != null">#{quoteStatus},</if>
+            <if test="inquiryStatus != null">#{inquiryStatus},</if>
+            <if test="buyerId != null">#{buyerId},</if>
+            <if test="inquiryListFlag != null">#{inquiryListFlag},</if>
+            <if test="quoteListFlag != null">#{quoteListFlag},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+            <if test="mark != null and mark != ''">#{mark},</if>
+            <if test="unitprice != null">#{unitprice},</if>
+            <if test="unitpriceUnit != null and unitpriceUnit != ''">#{unitpriceUnit},</if>
+            <if test="startBatch != null">#{startBatch},</if>
+            <if test="batchUnit != null and batchUnit != ''">#{batchUnit},</if>
+            <if test="futureField1 != null and futureField1 != ''">#{futureField1},</if>
+            <if test="futureField2 != null and futureField2 != ''">#{futureField2},</if>
+            <if test="futureField3 != null and futureField3 != ''">#{futureField3}</if>
          </trim>
     </insert>
 
