@@ -8,6 +8,8 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.ruoyi.common.annotation.EnumFiledConvert;
+import com.ruoyi.common.annotation.Sensitive;
+import com.ruoyi.common.enums.DesensitizedType;
 import com.ruoyi.common.enums.converter.EasyExcelConvert;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -139,36 +141,42 @@ public class SysSupplier extends BaseEntity {
      * 法人
      */
     @ExcelProperty("法人")
+    @Sensitive(desensitizedType = DesensitizedType.USERNAME)
     private String legalPerson;
 
     /**
      * 法人电话
      */
     @ExcelProperty("法人电话")
+    @Sensitive(desensitizedType = DesensitizedType.PHONE)
     private String legalPersonTelephone;
 
     /**
      *  法人电子邮件
      */
     @ExcelProperty("法人电子邮件")
+    @Sensitive(desensitizedType = DesensitizedType.EMAIL)
     private String legalPersonEmail;
 
     /**
      * 负责人
      */
     @ExcelProperty("负责人")
+    @Sensitive(desensitizedType = DesensitizedType.USERNAME)
     private String principalName;
 
     /**
      * 负责人电话
      */
     @ExcelProperty("负责人电话")
+    @Sensitive(desensitizedType = DesensitizedType.PHONE)
     private String principalTelephone;
 
     /**
      * 负责人电子邮件
      */
     @ExcelProperty("负责人电子邮件")
+    @Sensitive(desensitizedType = DesensitizedType.EMAIL)
     private String principalEmail;
 
     /**
