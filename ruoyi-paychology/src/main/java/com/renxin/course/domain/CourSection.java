@@ -1,5 +1,6 @@
 package com.renxin.course.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
+
+import java.util.Date;
 
 /**
  * 章节对象 cour_section
@@ -58,6 +61,21 @@ public class CourSection extends BaseEntity
     @Excel(name = "内容类型", readConverterExp = "0=-视频，1-音频")
     private Integer contentType;
 
+    private Long userId;
+    //1来访  2咨询师
+    private Integer userType;
+    /** 上次结束时间（单位：秒） */
+    private Integer endTime;
 
+
+    /** 完成状态（0-未完成， 1-已完成） */
+    @Excel(name = "完成状态", readConverterExp = "0=-未完成，,1=-已完成")
+    private Integer finishStatus;
+
+    /** 笔记 */
+    private String note;
+    /** 笔记时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date noteTime;
     
 }

@@ -162,7 +162,11 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
      */
     @Override
     public Integer findEndTime(CourUserCourseSection userCourseSection) {
-        return courUserCourseSectionMapper.findEndTime(userCourseSection);
+        Integer endTime = courUserCourseSectionMapper.findEndTime(userCourseSection);
+        if (endTime == null){
+            return 0;
+        }
+        return endTime;
     }
 
     //修改章节笔记

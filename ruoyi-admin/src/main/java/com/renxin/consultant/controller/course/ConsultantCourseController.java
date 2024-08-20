@@ -186,6 +186,7 @@ public class ConsultantCourseController extends BaseController {
             SectionVO sectionVO = new SectionVO();
             CourUserCourseSection userCourseSection = new CourUserCourseSection();
             userCourseSection.setUserId(cUserId);
+            userCourseSection.setUserType(2);//咨询师
             userCourseSection.setCourseId(courseId);
             BeanUtils.copyProperties(section, sectionVO);
             userCourseSection.setSectionId(section.getId());
@@ -293,6 +294,8 @@ public class ConsultantCourseController extends BaseController {
         if (userCourseSection.getFinishStatus() == null) {
             userCourseSection.setFinishStatus(CourConstant.SECTION_UNFINISHED);
         }
+        userCourseSection.setUserId(consultId);
+        userCourseSection.setUserType(2);//咨询师
         // 根据用户、课程、章节查询是否已有学习完成记录
         CourUserCourseSection queryParams = new CourUserCourseSection();
         queryParams.setUserId(consultId);
