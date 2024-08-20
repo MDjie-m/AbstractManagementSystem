@@ -1,9 +1,14 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.UUID;
+import com.ruoyi.system.domain.dto.SysProDuctDTO;
+import com.ruoyi.system.domain.vo.SysProductVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +45,13 @@ public class SysProductServiceImpl implements ISysProductService {
     /**
      * 查询产品列表
      * 
-     * @param sysProduct 产品
+     * @param sysProDuctDTO 产品
      * @return 产品
      */
     @Override
-    public List<SysProduct> selectSysProductList(SysProduct sysProduct)
+    public List<SysProductVO> selectSysProductList(SysProDuctDTO sysProDuctDTO)
     {
-        return sysProductMapper.selectSysProductList(sysProduct);
+        return sysProductMapper.selectSysProductList(sysProDuctDTO);
     }
 
     /**
@@ -107,43 +112,43 @@ public class SysProductServiceImpl implements ISysProductService {
      */
     @Override
     public String importProduct(List<SysProduct> productList, Boolean isUpdateSupport) {
-        if (StringUtils.isNull(productList) || productList.size() == 0) {
-            throw new ServiceException("导入产品数据不能为空！");
-        }
-        int successNum = 0;
-        int failureNum = 0;
+//        if (StringUtils.isNull(productList) || productList.size() == 0) {
+//            throw new ServiceException("导入产品数据不能为空！");
+//        }
+//        int successNum = 0;
+//        int failureNum = 0;
         StringBuilder successMsg = new StringBuilder();
-        StringBuilder failureMsg = new StringBuilder();
-        for (SysProduct sysProduct : productList) {
-            try {
-                // 验证
-                List<SysProduct> list = sysProductMapper.selectSysProductList(sysProduct);
-                if (list.isEmpty()) {
-                    sysProduct.setProductId(UUID.randomUUID().toString());
-                    sysProductMapper.insertSysProduct(sysProduct);
-                    successNum++;
-                    successMsg.append("<br/>" + successNum + "、产品 " + sysProduct.getProductName() + " 导入成功");
-                } else if (isUpdateSupport) {
-                    sysProductMapper.updateSysProduct(sysProduct);
-                    successNum++;
-                    successMsg.append("<br/>" + successNum + "、产品 " + sysProduct.getProductName() + " 更新成功");
-                } else {
-                    failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、产品 " + sysProduct.getProductName() + " 已存在");
-                }
-            } catch (Exception e) {
-                failureNum++;
-                String msg = "<br/>" + failureNum + "、产品 " + sysProduct.getProductName() + " 导入失败：";
-                failureMsg.append(msg + e.getMessage());
-                log.error(msg, e);
-            }
-        }
-        if (failureNum > 0) {
-            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
-            throw new ServiceException(failureMsg.toString());
-        } else {
-            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
-        }
+//        StringBuilder failureMsg = new StringBuilder();
+//        for (SysProduct sysProduct : productList) {
+//            try {
+//                // 验证
+//                List<SysProduct> list = sysProductMapper.selectSysProductList(sysProduct);
+//                if (list.isEmpty()) {
+//                    sysProduct.setProductId(UUID.randomUUID().toString());
+//                    sysProductMapper.insertSysProduct(sysProduct);
+//                    successNum++;
+//                    successMsg.append("<br/>" + successNum + "、产品 " + sysProduct.getProductName() + " 导入成功");
+//                } else if (isUpdateSupport) {
+//                    sysProductMapper.updateSysProduct(sysProduct);
+//                    successNum++;
+//                    successMsg.append("<br/>" + successNum + "、产品 " + sysProduct.getProductName() + " 更新成功");
+//                } else {
+//                    failureNum++;
+//                    failureMsg.append("<br/>" + failureNum + "、产品 " + sysProduct.getProductName() + " 已存在");
+//                }
+//            } catch (Exception e) {
+//                failureNum++;
+//                String msg = "<br/>" + failureNum + "、产品 " + sysProduct.getProductName() + " 导入失败：";
+//                failureMsg.append(msg + e.getMessage());
+//                log.error(msg, e);
+//            }
+//        }
+//        if (failureNum > 0) {
+//            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+//            throw new ServiceException(failureMsg.toString());
+//        } else {
+//            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+//        }
         return successMsg.toString();
     }
     /**

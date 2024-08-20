@@ -1,7 +1,11 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.system.domain.SysProduct;
+import com.ruoyi.system.domain.dto.SysProDuctDTO;
+import com.ruoyi.system.domain.vo.SysProductVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Param;
@@ -25,10 +29,10 @@ public interface SysProductMapper
     /**
      * 查询产品列表
      * 
-     * @param sysProduct 产品
+     * @param sysProDuctDTO
      * @return 产品集合
      */
-    public List<SysProduct> selectSysProductList(SysProduct sysProduct);
+    public List<SysProductVO> selectSysProductList(SysProDuctDTO sysProDuctDTO);
 
     /**
      * 新增产品
