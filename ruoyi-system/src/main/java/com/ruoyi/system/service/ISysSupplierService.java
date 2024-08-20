@@ -2,6 +2,8 @@ package com.ruoyi.system.service;
 
 import java.io.IOException;
 import java.util.List;
+
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.SysSupplier;
 import com.ruoyi.system.domain.vo.AuditVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,11 +36,11 @@ public interface ISysSupplierService
 
     /**
      * 新增供应商
-     * 
+     *
      * @param sysSupplier 供应商
      * @return 结果
      */
-    public int insertSysSupplier(SysSupplier sysSupplier);
+    public AjaxResult insertSysSupplier(SysSupplier sysSupplier);
 
     /**
      * 修改供应商

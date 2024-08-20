@@ -9,6 +9,8 @@ import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.UUID;
@@ -80,28 +82,54 @@ public class SysSupplierServiceImpl implements ISysSupplierService
      */
     @Transactional
     @Override
-    public int insertSysSupplier(SysSupplier sysSupplier)
+    public AjaxResult insertSysSupplier(SysSupplier sysSupplier)
     {
-        String supplierNameCn = sysSupplier.getSupplierNameCn();
-        SysUser user = new SysUser();
-        user.setUserName(supplierNameCn);
-        user.setNickName(supplierNameCn);
-        user.setPassword(SecurityUtils.encryptPassword("123456"));
-        user.setUserType("5");
-        int i = userMapper.insertUser(user);
-        Long userId = user.getUserId();
-        // 新增用户与角色管理
-        List<SysUserRole> list = new ArrayList<SysUserRole>();
-        SysUserRole ur = new SysUserRole();
-        ur.setUserId(userId);
-        ur.setRoleId(Long.parseLong("5"));
-        list.add(ur);
-        userRoleMapper.batchUserRole(list);
-        sysSupplier.setSupplierId(UUID.randomUUID().toString());
-        int rows = sysSupplierMapper.insertSysSupplier(sysSupplier);
-        insertSysProduct(sysSupplier);
-        return rows;
+        // 根据法人手机号判断供应商是否已经存在
+        if(sysSupplierMapper.checkLegalPersonTelephoneUnique(sysSupplier.getLegalPersonTelephone()) == null) {
+            // 判断法人手机号是否已经被注册为用户
+            if (userMapper.checkUserNameUnique(sysSupplier.getLegalPersonTelephone()) == null) {
+                SysUser user = new SysUser();
+                String userName = sysSupplier.getLegalPersonTelephone();
+                String nickName = sysSupplier.getSupplierNameCn();
+                String password = userName.substring(userName.length() - 6);
+                // 设置返回值
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("userName",userName);
+                jsonObject.put("password",password);
+                // 用户名为法人手机号
+                user.setUserName(userName);
+                // 用户昵称为公司中文名称
+                user.setNickName(nickName);
+                // 用户密码,使用法人手机号后六位
+                user.setPassword(SecurityUtils.encryptPassword(password));
+                // 用户角色为5-供应商
+                user.setUserType("5");
 
+                int i = userMapper.insertUser(user);
+                Long userId = user.getUserId();
+                // 新增用户与角色管理
+                List<SysUserRole> list = new ArrayList<SysUserRole>();
+                SysUserRole ur = new SysUserRole();
+                ur.setUserId(userId);
+                ur.setRoleId(Long.parseLong("5"));
+                list.add(ur);
+                userRoleMapper.batchUserRole(list);
+                // 设置供应商id
+                sysSupplier.setSupplierId(UUID.randomUUID().toString());
+                int rows = sysSupplierMapper.insertSysSupplier(sysSupplier);
+                // 添加产品
+                insertSysProduct(sysSupplier);
+                if (rows > 0) {
+                    return AjaxResult.success(jsonObject);
+                } else {
+                    return AjaxResult.error();
+                }
+            } else {
+                return AjaxResult.error("此联系方式已被注册为用户!");
+            }
+        } else {
+            return AjaxResult.error("此联系方式已被注册为供应商!");
+        }
     }
 
     /**
@@ -228,12 +256,17 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     {
         List<SysProduct> sysProductList = sysSupplier.getSysProductList();
         String supplierId = sysSupplier.getSupplierId();
+        String supplierName = sysSupplier.getSupplierNameCn();
         if (StringUtils.isNotNull(sysProductList))
         {
             List<SysProduct> list = new ArrayList<SysProduct>();
             for (SysProduct sysProduct : sysProductList)
             {
+                sysProduct.setProductId(UUID.randomUUID().toString());
                 sysProduct.setSupplierId(supplierId);
+                sysProduct.setSupplierName(supplierName);
+                // 是主营产品
+                sysProduct.setMainProduct(1);
                 list.add(sysProduct);
             }
             if (list.size() > 0)

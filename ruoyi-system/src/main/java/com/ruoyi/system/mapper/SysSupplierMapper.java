@@ -3,7 +3,6 @@ package com.ruoyi.system.mapper;
 import java.util.List;
 import com.ruoyi.system.domain.SysSupplier;
 import com.ruoyi.system.domain.SysProduct;
-import com.ruoyi.system.domain.vo.AuditVo;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -131,4 +130,11 @@ public interface SysSupplierMapper
      * @return
      */
     public int inspectionAuditSysSupplier(@Param("list")List<String> list, @Param("inspectionAuditStatus") int inspectionAuditStatus,@Param("rate") String rate);
+
+    /**
+     * 根据法人电话核验唯一性
+     * @param legalPersonTelephone 法人电话
+     * @return 供应商信息
+     */
+    public SysSupplier checkLegalPersonTelephoneUnique(@Param("legalPersonTelephone") String legalPersonTelephone);
 }

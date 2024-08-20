@@ -67,9 +67,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="videoAddress != null and videoAddress != ''">video_address,</if>
             <if test="investigationDetails != null and investigationDetails != ''">investigation_details,</if>
             <if test="deleteFlag != null">delete_flag,</if>
-            <if test="rate != null">#{rate},</if>
-            <if test="auditRemark != null">#{auditRemark},</if>
-            <if test="auditResult != null">#{auditResult},</if>
+            <if test="rate != null">rate,</if>
+            <if test="auditRemark != null">audit_remark,</if>
+            <if test="auditResult != null">audit_result,</if>
             <if test="futureField1 != null">future_field1,</if>
             <if test="futureField2 != null">future_field2,</if>
             <if test="futureField3 != null">future_field3,</if>

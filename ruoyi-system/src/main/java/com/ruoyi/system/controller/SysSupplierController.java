@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.system.domain.vo.AuditVo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +38,7 @@ public class SysSupplierController extends BaseController
      * 查询供应商列表
      */
     @PreAuthorize("@ss.hasPermi('system:supplier:list')")
-    @GetMapping("/list")
+    @PostMapping("/list")
     public TableDataInfo list(SysSupplier sysSupplier)
     {
         startPage();
@@ -91,7 +92,7 @@ public class SysSupplierController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody SysSupplier sysSupplier)
     {
-        return toAjax(sysSupplierService.insertSysSupplier(sysSupplier));
+        return sysSupplierService.insertSysSupplier(sysSupplier);
     }
 
     /**
@@ -133,7 +134,7 @@ public class SysSupplierController extends BaseController
     @PostMapping("/add")
     public AjaxResult noPermissionsadd(@RequestBody SysSupplier sysSupplier)
     {
-        return toAjax(sysSupplierService.insertSysSupplier(sysSupplier));
+        return sysSupplierService.insertSysSupplier(sysSupplier);
     }
 
     /**
