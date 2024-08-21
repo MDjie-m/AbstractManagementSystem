@@ -120,6 +120,9 @@ public class SysProduct extends BaseEntity
     /** 产品库存 */
     private Integer inventory;
 
+    /** 库存的单位 */
+    private String inventoryUnit;
+
     /** 产品状态(0-期货,1-现货) */
     private Integer status;
 
@@ -175,7 +178,7 @@ public class SysProduct extends BaseEntity
     /** 起批数量 */
     private Integer startBatch;
 
-    /** 起批数量的单位或者库存的单位都是这个 */
+    /** 起批数量的单位 */
     private String batchUnit;
 
     /** 预留字段1 */
@@ -186,6 +189,14 @@ public class SysProduct extends BaseEntity
 
     /** 预留字段3 */
     private String futureField3;
+
+    public String getInventoryUnit() {
+        return inventoryUnit;
+    }
+
+    public void setInventoryUnit(String inventoryUnit) {
+        this.inventoryUnit = inventoryUnit;
+    }
 
     public String getProductId() {
         return productId;

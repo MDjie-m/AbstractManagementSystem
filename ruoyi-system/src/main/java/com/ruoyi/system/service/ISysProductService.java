@@ -26,7 +26,7 @@ public interface ISysProductService
     /**
      * 查询产品列表
      * 
-     * @param sysProductDTO 产品dto对象
+     * @param sysProDuctDTO 产品dto对象
      * @return 产品集合
      */
     public List<SysProductVO> selectSysProductList(SysProDuctDTO sysProDuctDTO);
