@@ -16,14 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -57,23 +50,23 @@ public class SysProductController extends BaseController
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
-        //从上下文中获取角色id,暂时假定一个用户一个角色哈。
+        //从上下文中获取角色id
         Long roleId = SecurityUtils.getLoginUser().getUser().getRoleId();
-        //然后判断roleid是管理员的id还是供应商的id还是采购员的id，三个都不一样的，不能根据名称判断，因为名称可能被修改
+        //然后判断roleid是管理员还是供应商还是采购员，三个都不一样的，不能根据名称判断，因为名称可能被修改
         List<SysProductVO> list = null;
         sysProDuctDTO.setFlag(false);
         if(roleId==1){
-            //说明是管理员，则查所有产品信息。如果供应商id为null且userid为0说明查所有
+            //说明是管理员，则查所有产品信息。如果供应商id为null且buyerid为null说明查所有
             startPage();
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }else if (roleId==2){
-            //说明是采购员，如果供应商id为null且userid有具体值说明查采购员自己管理的产品
+            //说明是采购员，如果供应商id为null且buyerid有具体值说明查采购员自己管理的产品
             sysProDuctDTO.setBuyerId(SecurityUtils.getUserId());
             startPage();
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }else if (roleId==6){
             sysProDuctDTO.setFlag(true);
-            //说明是供应商，根据供应商的id查他自己的产品信息,供应商Id为他自己的供应商id，采购员id为0说明是供应商查他自己的产品。
+            //说明是供应商，根据供应商的id查他自己的产品信息,供应商Id为他自己的供应商id，采购员id为null说明是供应商查他自己的产品。
             sysProDuctDTO.setSupplierId(SecurityUtils.getLoginUser().getUser().getSupplierId());
             startPage();
             list = sysProductService.selectSysProductList(sysProDuctDTO);
@@ -122,10 +115,31 @@ public class SysProductController extends BaseController
      * 获取产品详细信息
      */
     @PreAuthorize("@ss.hasPermi('system:product:query')")
-    @GetMapping(value = "/{productId}")
-    public AjaxResult getInfo(@PathVariable("productId") String productId)
+    @GetMapping("/getInfo")
+    public AjaxResult getInfo(@RequestParam String productId)
     {
-        return success(sysProductService.selectSysProductByProductId(productId));
+        //从上下文中获取角色id
+        Long roleId = SecurityUtils.getLoginUser().getUser().getRoleId();
+        //然后判断roleid是管理员还是供应商还是采购员，三个都不一样的，不能根据名称判断，因为名称可能被修改
+        SysProDuctDTO sysProDuctDTO = new SysProDuctDTO();
+        sysProDuctDTO.setProductId(productId);
+        SysProductVO sysProductVO = null;
+        //设置为false，代表要顺便查供应商名称
+        sysProDuctDTO.setFlag(false);
+        if(roleId==1){
+            //说明是管理员，则查所有产品信息。如果供应商id为null且buyerid为null说明要查名字
+            sysProductVO = sysProductService.selectSysProductByProductId(sysProDuctDTO);
+        }else if (roleId==2){
+            //说明是采购员，如果供应商id为null且userid有具体值说明查采购员自己管理的产品
+            sysProDuctDTO.setBuyerId(SecurityUtils.getUserId());
+            sysProductVO = sysProductService.selectSysProductByProductId(sysProDuctDTO);
+        }else if (roleId==6){
+            sysProDuctDTO.setFlag(true);
+            //说明是供应商，根据供应商的id查他自己的产品信息,供应商Id为他自己的供应商id，采购员id为null说明是供应商查他自己的产品。
+            sysProDuctDTO.setSupplierId(SecurityUtils.getLoginUser().getUser().getSupplierId());
+            sysProductVO = sysProductService.selectSysProductByProductId(sysProDuctDTO);
+        }
+        return success().put("data",sysProductVO);
     }
 
     /**

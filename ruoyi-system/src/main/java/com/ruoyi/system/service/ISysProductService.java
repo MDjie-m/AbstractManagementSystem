@@ -18,17 +18,15 @@ public interface ISysProductService
     /**
      * 查询产品
      * 
-     * @param productId 产品主键
+     * @param sysProDuctDTO 产品
      * @return 产品
      */
-    public SysProduct selectSysProductByProductId(String productId);
+    public SysProductVO selectSysProductByProductId(SysProDuctDTO sysProDuctDTO);
 
     /**
      * 查询产品列表
      * 
      * @param sysProductDTO 产品dto对象
-     * @param supplierId 供应商Id
-     * @param userId 采购员id
      * @return 产品集合
      */
     public List<SysProductVO> selectSysProductList(SysProDuctDTO sysProDuctDTO);
