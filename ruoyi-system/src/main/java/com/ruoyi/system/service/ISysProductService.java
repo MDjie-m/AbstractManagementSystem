@@ -77,4 +77,6 @@ public interface ISysProductService
      * @return 结果
      */
     public int updateStatus(String productId,String status);
+
+    int updateQuoteStatus(String productId, String status);
 }
