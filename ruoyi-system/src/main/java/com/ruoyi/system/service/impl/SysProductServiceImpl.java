@@ -33,13 +33,13 @@ public class SysProductServiceImpl implements ISysProductService {
     /**
      * 查询产品
      * 
-     * @param productId 产品主键
+     * @param sysProDuctDTO 产品
      * @return 产品
      */
     @Override
-    public SysProduct selectSysProductByProductId(String productId)
+    public SysProductVO selectSysProductByProductId(SysProDuctDTO sysProDuctDTO)
     {
-        return sysProductMapper.selectSysProductByProductId(productId);
+        return sysProductMapper.selectSysProductByProductId(sysProDuctDTO);
     }
 
     /**
