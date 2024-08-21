@@ -216,10 +216,10 @@ public class SysProductController extends BaseController
      * 切换产品的报价清单状态
      */
     @PreAuthorize("@ss.hasPermi('system:product:updateStatus')")
-    @GetMapping("/updateQuoteStatus")
-    public AjaxResult updateQuoteStatus(@RequestParam String productId,@RequestParam String status)
+    @GetMapping("/updateQuoteListStatus")
+    public AjaxResult updateQuoteListStatus(@RequestParam String productId,@RequestParam String status)
     {
         // 跟上面切换是否可报价状态的逻辑一致
-        return toAjax(sysProductService.updateQuoteStatus(productId,status));
+        return toAjax(sysProductService.updateQuoteListStatus(productId,status));
     }
 }

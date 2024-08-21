@@ -401,7 +401,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
 <!--    切换该产品是否属于报价清单的状态-->
-    <update id="updateQuoteStatus">
+    <update id="updateQuoteListStatus">
         update sys_product
         set quote_status = #{status}
         where product_id = #{productId}
