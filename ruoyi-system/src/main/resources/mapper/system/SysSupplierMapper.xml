@@ -12,6 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="province"    column="province"    />
         <result property="city"    column="city"    />
         <result property="area"    column="area"    />
+        <result property="detailedAddress"      column="detailed_address"    />
         <result property="businessCategory"    column="business_category"    />
         <result property="mainCategory"    column="main_category"    />
         <result property="mainProductId"    column="main_product_id"    />
@@ -66,7 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysSupplierVo">
-        select supplier_id, label, country, nature, province, city, area, business_category, main_category,
+        select supplier_id, label, country, nature, province, city, area, detailed_address, business_category, main_category,
                main_product_id, main_product,
                registration_no, registration_no_in_china, supplier_name_cn,
                supplier_name_en, supplier_name_own, registration_time, registration_time_validity_period,
@@ -86,6 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="province != null  and province != ''"> and province like concat('%',#{province},'%')</if>
             <if test="city != null  and city != ''"> and city like concat('%',#{city},'%') </if>
             <if test="area != null  and area != ''"> and area like concat('%',#{area},'%') </if>
+            <if test="detailedAddress != null  and detailedAddress != ''"> and detailed_address like concat('%',#{detailed_address},'%') </if>
             <if test="businessCategory != null  and businessCategory != ''"> and business_category like concat('%',#{businessCategory},'%') </if>
             <if test="mainCategory != null  and mainCategory != ''"> and main_category like concat('%',#{mainCategory},'%') </if>
             <if test="mainProductId != null  and mainProductId != ''"> and main_product_id like concat('%',#{mainProductId},'%') </if>
@@ -116,7 +118,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectSysSupplierBySupplierId" parameterType="String" resultMap="SysSupplierSysProductResult">
-        select supplier_id, label, country, nature, province, city, area, business_category,
+        select supplier_id, label, country, nature, province, city, area, detailed_address, business_category,
                main_category, main_product_id, main_product, registration_no, registration_no_in_china,
                supplier_name_cn, supplier_name_en, supplier_name_own, registration_time,
                registration_time_validity_period, legal_person, legal_person_telephone, legal_person_email,
@@ -148,6 +150,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="province != null">province,</if>
             <if test="city != null">city,</if>
             <if test="area != null">area,</if>
+            <if test="detailedAddress != null">detailed_address,</if>
             <if test="businessCategory != null">business_category,</if>
             <if test="mainCategory != null">main_category,</if>
             <if test="mainProductId != null">main_product_id,</if>
@@ -178,10 +181,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="imagePath != null">image_path,</if>
             <if test="videoPath != null">video_path,</if>
             <if test="remark != null">remark,</if>
-            <if test="futureField1 != null">future_field1,</if>
-            <if test="futureField2 != null">future_field2,</if>
-            <if test="futureField3 != null">future_field3,</if>
-            <if test="futureField4 != null">future_field4</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="supplierId != null">#{supplierId},</if>
@@ -191,6 +190,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="province != null">#{province},</if>
             <if test="city != null">#{city},</if>
             <if test="area != null">#{area},</if>
+            <if test="detailedAddress != null">#{detailedAddress},</if>
             <if test="businessCategory != null">#{businessCategory},</if>
             <if test="mainCategory != null">#{mainCategory},</if>
             <if test="mainProductId != null">#{mainProductId},</if>
@@ -221,17 +221,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="imagePath != null">#{imagePath},</if>
             <if test="videoPath != null">#{videoPath},</if>
             <if test="remark != null">#{remark},</if>
-            <if test="futureField1 != null">#{futureField1},</if>
-            <if test="futureField2 != null">#{futureField2},</if>
-            <if test="futureField3 != null">#{futureField3},</if>
-            <if test="futureField4 != null">#{futureField4}</if>
          </trim>
     </insert>
 
     <!-- 批量导入  -->
     <insert id="saveSysSupplier" parameterType="SysSupplier">
         INSERT INTO
-        sys_supplier(supplier_id, label, nature, country, province, city, area,
+        sys_supplier(supplier_id, label, nature, country, province, city, area, detailed_address,
                      business_category, main_category, registration_no, registration_no_in_china,
                      supplier_name_cn, supplier_name_en, supplier_name_own, registration_time,
                      registration_time_validity_period, delete_flag, legal_person, legal_person_telephone,
@@ -240,6 +236,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         VALUES
         <foreach item="item" index="index" collection="list" separator=",">
             (#{item.supplierId},#{item.label},#{item.nature},#{item.country},#{item.province},#{item.city},#{item.area},
+             #{item.detailedAddress},
             #{item.businessCategory},#{item.mainCategory},#{item.registrationNo},#{item.registrationNoInChina},
              #{item.supplierNameCn},#{item.supplierNameEn},#{item.supplierNameOwn},#{item.registrationTime},
              #{item.registrationTimeValidityPeriod},#{item.deleteFlag},#{item.legalPerson},#{item.legalPersonTelephone},
@@ -257,6 +254,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="province != null">province = #{province},</if>
             <if test="city != null">city = #{city},</if>
             <if test="area != null">area = #{area},</if>
+            <if test="detailedAddress != null">detailed_address = #{detailedAddress},</if>
             <if test="businessCategory != null">business_category = #{businessCategory},</if>
             <if test="mainCategory != null">main_category = #{mainCategory},</if>
             <if test="mainProductId != null">main_product_id = #{mainProductId},</if>

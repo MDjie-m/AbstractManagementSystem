@@ -70,6 +70,12 @@ public class SysSupplier extends BaseEntity {
     private String area;
 
     /**
+     * 详细地址
+     */
+    @ExcelProperty("详细地址")
+    private String detailedAddress;
+
+    /**
      * 经营类别,多条一二级分类，以 “，”隔开
      */
     @ExcelProperty("经营类别")
@@ -345,6 +351,14 @@ public class SysSupplier extends BaseEntity {
 
     public String getArea() {
         return area;
+    }
+
+    public String getDetailedAddress() {
+        return detailedAddress;
+    }
+
+    public void setDetailedAddress(String detailedAddress) {
+        this.detailedAddress = detailedAddress;
     }
 
     public void setRegistrationNo(String registrationNo) {
@@ -655,6 +669,7 @@ public class SysSupplier extends BaseEntity {
                 .append("province", getProvince())
                 .append("city", getCity())
                 .append("area", getArea())
+                .append("detailedAddress", getDetailedAddress())
                 .append("businessCategory", getBusinessCategory())
                 .append("mainCategory", getMainCategory())
                 .append("mainProductId", getMainProductId())

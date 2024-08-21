@@ -48,7 +48,7 @@ public class SysInspectionController extends BaseController
      * 查询考察情况列表
      */
     @PreAuthorize("@ss.hasPermi('system:inspection:list')")
-    @GetMapping("/list")
+    @PostMapping("/list")
     public TableDataInfo list(SysInspection sysInspection)
     {
         startPage();
