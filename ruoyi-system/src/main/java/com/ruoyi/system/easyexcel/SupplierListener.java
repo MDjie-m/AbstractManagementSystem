@@ -36,6 +36,7 @@ public class SupplierListener implements ReadListener<SysSupplier> {
             "省份",
             "市",
             "地区",
+            "详细地址",
             "经营类别",
             "主营类别",
             "注册编号",
