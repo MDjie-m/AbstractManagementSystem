@@ -78,5 +78,12 @@ public interface ISysProductService
      */
     public int updateStatus(String productId,String status);
 
-    int updateQuoteStatus(String productId, String status);
+    /**
+     * 切换报价清单状态(不常用、常用)：报价清单中的产品即为常用的报价产品
+     * @param productId
+     * @param status
+     * @return
+     */
+    int updateQuoteListStatus(String productId, String status);
+
 }

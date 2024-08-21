@@ -176,11 +176,11 @@ public class SysProductServiceImpl implements ISysProductService {
      * @return 结果
      */
     @Override
-    public int updateQuoteStatus(String productId, String status) {
+    public int updateQuoteListStatus(String productId, String status) {
         String res = "0";
         if("0".equals(status)){
             res = "1";
         }
-        return sysProductMapper.updateQuoteStatus(productId,status);
+        return sysProductMapper.updateQuoteListStatus(productId,status);
     }
 }
