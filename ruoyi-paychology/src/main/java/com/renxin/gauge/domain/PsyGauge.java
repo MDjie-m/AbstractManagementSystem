@@ -1,6 +1,7 @@
 package com.renxin.gauge.domain;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.Data;
 import com.renxin.common.annotation.Excel;
@@ -77,5 +78,7 @@ public class PsyGauge extends BaseEntity
 
     @Excel(name = "列表展示图片")
     private String listShowPicture;
+    
+    private List<Long> idList;
 
 }

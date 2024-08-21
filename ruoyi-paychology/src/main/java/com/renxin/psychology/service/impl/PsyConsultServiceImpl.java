@@ -72,6 +72,9 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     
     @Resource
     private IPsyConsultantScheduleService scheduleService;
+    
+    @Resource
+    private IPsyConsultantOrderService consultantOrderService;
 
     @Override
     public List<PsyConsultWorkVO> getConsultWorksById(Long id) {
@@ -481,6 +484,14 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
         List<PsyConsult> psyConsultList = psyConsultMapper.queryConsultantList(req);
         for (PsyConsult psyConsult : psyConsultList) {
             psyConsult.setServerName(psyConsult.getServerName().split("-")[1]);
+            //统计该咨询师的已付款下单次数
+            PsyConsultantOrder orderReq = new PsyConsultantOrder();
+                orderReq.setPayConsultantId(req.getConsultId()+"");
+                orderReq.setPayStatus("2");//已支付
+            List<PsyConsultantOrder> orderList = consultantOrderService.selectPsyConsultantOrderList(orderReq);
+            if (ObjectUtils.isNotEmpty(orderList)){
+                psyConsult.setUserOrderCount(orderList.size());
+            }
         }
         return psyConsultList;
     }

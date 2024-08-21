@@ -12,10 +12,16 @@ import com.renxin.common.utils.DateUtils;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.vo.CourseListVO;
+import com.renxin.gauge.domain.PsyGauge;
+import com.renxin.gauge.service.IPsyGaugeService;
+import com.renxin.psychology.domain.PsyConsultant;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.service.IPsyConsultantService;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -42,30 +48,48 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
 
     @Autowired
     private ICourCourseService courCourseService;
+    
+    @Autowired
+    private IPsyGaugeService gaugeService;
+
+    @Autowired
+    private IPsyConsultantService consultantService;
 
     /**
      * 查询各类型的对象清单
      */
+    @Override
     public AjaxResult queryObjectByIds(PsyAdvert req){
         String ids = req.getIds();
-        List<String> idList = Arrays.asList(ids.split(","));
+        List<String> idListStr = Arrays.asList(ids.split(","));
+        List<Long> idListLong = idListStr.stream().map(Long::valueOf).collect(Collectors.toList());
         String dataType = req.getDataType();
 
         switch (dataType){
-            case "团队督导":
+            case "teamSup":
                 PsyConsultantTeamSupervision teamReq = new PsyConsultantTeamSupervision();
-                teamReq.setIdList(idList);
+                teamReq.setIdList(idListStr);
                 List<PsyConsultantTeamSupervision> list1 = teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq);
                 return AjaxResult.success(list1);
             case "course":
                 CourCourse courCourseReq = new CourCourse();
-                courCourseReq.setIdList(idList.stream().map(Long::valueOf).collect(Collectors.toList()));
+                courCourseReq.setIdList(idListLong);
                 List<CourseListVO> list2 = courCourseService.getCourseListByClassId(courCourseReq);
                 return AjaxResult.success(list2);
+            case "gauge":
+                PsyGauge gauge = new PsyGauge();
+                gauge.setIdList(idListLong);
+                List<PsyGauge> list3 = gaugeService.selectPsyGaugeList(gauge);
+                return AjaxResult.success(list3);
+            case "consultant":
+                PsyConsultant consultant = new PsyConsultant();
+                consultant.setIdList(idListLong);
+                List<PsyConsultant> list4 = consultantService.selectPsyConsultantList(consultant);
+                return AjaxResult.success(list4);
+            default:
+                return AjaxResult.success();
                 
         }
-
-        return AjaxResult.success();
     }
     
     
@@ -76,6 +100,8 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
      * @return 页面广告
      */
     @Override
+    @Cacheable(value = "selectPsyAdvertByAdvertNoCache", key = "#advertNo", 
+             unless = "#result == null")
     public PsyAdvert selectPsyAdvertByAdvertNo(String advertNo)
     {
         PsyAdvert advert = psyAdvertMapper.selectPsyAdvertByAdvertNo(advertNo);
@@ -127,6 +153,7 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
      * @return 结果
      */
     @Override
+    @CacheEvict(cacheNames = "selectPsyAdvertByAdvertNoCache", key="#advert.advertNo")
     public int updatePsyAdvert(PsyAdvert advert)
     {
         advert.setUpdateTime(DateUtils.getNowDate());
@@ -149,6 +176,7 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
      * @return 结果
      */
     @Override
+    @CacheEvict(cacheNames = "selectPsyAdvertByAdvertNoCache", allEntries = true)
     public int deletePsyAdvertByAdvertNos(String[] advertNos)
     {
         return psyAdvertMapper.deletePsyAdvertByAdvertNos(advertNos);
@@ -161,6 +189,7 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
      * @return 结果
      */
     @Override
+    @CacheEvict(cacheNames = "selectPsyAdvertByAdvertNoCache", key="#advert.advertNo")
     public int deletePsyAdvertByAdvertNo(String advertNo)
     {
         int i = psyAdvertMapper.deletePsyAdvertByAdvertNo(advertNo);

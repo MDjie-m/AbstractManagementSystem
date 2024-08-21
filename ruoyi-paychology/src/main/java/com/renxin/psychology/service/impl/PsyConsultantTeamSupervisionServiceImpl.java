@@ -18,6 +18,9 @@ import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
 import com.renxin.psychology.service.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantTeamSupervisionMapper;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +59,8 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      * @return 团队督导(组织)
      */
     @Override
+    @Cacheable(value = "selectPsyConsultantTeamSupervisionByIdCache", key = "#id",
+            unless = "#result == null")
     public PsyConsultantTeamSupervision selectPsyConsultantTeamSupervisionById(Long id)
     {
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(id);
@@ -121,6 +126,8 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      * @return 团队督导(组织)
      */
     @Override
+    /*@Cacheable(value = "selectPsyConsultantTeamSupervisionListCache", key = "#req.idList",
+            unless = "#result == null||#result.isEmpty()")*/
     public List<PsyConsultantTeamSupervision> selectPsyConsultantTeamSupervisionList(PsyConsultantTeamSupervision req)
     {
         Integer teamType = req.getTeamType();//督导类型
@@ -175,6 +182,12 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      * @return 结果
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionListCache", allEntries = true),
+                    @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionByIdCache", key = "#id"),
+            }
+    )
     public int updatePsyConsultantTeamSupervision(PsyConsultantTeamSupervision psyConsultantTeamSupervision)
     {
         psyConsultantTeamSupervision.setUpdateTime(DateUtils.getNowDate());
@@ -210,6 +223,12 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      * @return 结果
      */
     @Override
+    @Caching(
+        evict = {
+                @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionListCache", allEntries = true),
+                @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionByIdCache", allEntries = true),
+        }
+    )
     public int deletePsyConsultantTeamSupervisionByIds(Long[] ids)
     {
         return psyConsultantTeamSupervisionMapper.deletePsyConsultantTeamSupervisionByIds(ids);
@@ -222,6 +241,12 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      * @return 结果
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionListCache", allEntries = true),
+                    @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionByIdCache", key = "#id"),
+            }
+    )
     public int deletePsyConsultantTeamSupervisionById(Long id)
     {
         return psyConsultantTeamSupervisionMapper.deletePsyConsultantTeamSupervisionById(id);

@@ -504,7 +504,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                     throw new ServiceException("scheduleId不存在,找不到指定任务.");
                 }
                 OrderItemDTO item = orderItemList.get(0);
-                if (loginUserId.equals(item.getUserId())){
+                if (item.getUserId().equals(loginUserId)){
                     item.setStatus("2");//付费人请假
                 }else if (item.getConsultId().equals(loginConsultId)){
                     item.setStatus("3");//收费人请假

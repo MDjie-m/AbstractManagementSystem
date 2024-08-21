@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.renxin.common.annotation.Excel;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 心理咨询师对象 psy_consultant
@@ -46,6 +47,8 @@ public class PsyConsultant
     @Excel(name = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+    
+    private List<Long> idList;
 
     @Override
     public String toString() {

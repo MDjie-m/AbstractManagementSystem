@@ -6,6 +6,9 @@ import com.renxin.common.utils.DateUtils;
 import com.renxin.gauge.domain.*;
 import com.renxin.gauge.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import com.renxin.gauge.service.IPsyGaugeService;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +44,8 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
      * @return 心理测评
      */
     @Override
+    @Cacheable(value = "selectPsyGaugeByIdCache", key = "#id",
+            unless = "#result == null")
     public PsyGauge selectPsyGaugeById(Long id)
     {
         return psyGaugeMapper.selectPsyGaugeById(id);
@@ -53,6 +58,8 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
      * @return 心理测评
      */
     @Override
+    /*@Cacheable(value = "selectPsyGaugeListCache", key = "#psyGauge.idList",
+            unless = "#result == null||#result.isEmpty()")*/
     public List<PsyGauge> selectPsyGaugeList(PsyGauge psyGauge)
     {
         return psyGaugeMapper.selectPsyGaugeList(psyGauge);
@@ -138,6 +145,12 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
      * @return 结果
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "selectPsyGaugeListCache", allEntries = true),
+                    @CacheEvict(cacheNames = "selectPsyGaugeByIdCache", key = "#psyGauge.id"),
+            }
+    )
     public int updatePsyGauge(PsyGauge psyGauge)
     {
         psyGauge.setUpdateTime(DateUtils.getNowDate());
@@ -151,6 +164,12 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
      * @return 结果
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "selectPsyGaugeListCache", allEntries = true),
+                    @CacheEvict(cacheNames = "selectPsyGaugeByIdCache", allEntries = true),
+            }
+    )
     public int deletePsyGaugeByIds(Long[] ids)
     {
         return psyGaugeMapper.deletePsyGaugeByIds(ids);
@@ -163,6 +182,12 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
      * @return 结果
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "selectPsyGaugeListCache", allEntries = true),
+                    @CacheEvict(cacheNames = "selectPsyGaugeByIdCache", key = "#psyGauge.id"),
+            }
+    )
     public int deletePsyGaugeById(Long id)
     {
         return psyGaugeMapper.deletePsyGaugeById(id);

@@ -75,6 +75,7 @@ public class CourCourse extends BaseEntity
     private Integer onSale;
     
     private List<Long> idList;
+    private String ids;
 
     @Override
     public String toString() {

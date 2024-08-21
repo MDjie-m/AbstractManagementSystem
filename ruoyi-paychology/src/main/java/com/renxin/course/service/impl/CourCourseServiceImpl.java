@@ -12,6 +12,8 @@ import com.renxin.course.service.ICourSectionService;
 import com.renxin.course.service.ICourUserCourseSectionService;
 import com.renxin.course.vo.CourseListVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,6 +41,8 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 课程
      */
     @Override
+    @Cacheable(value = "selectCourCourseByIdCache", key = "#id",
+            unless = "#result == null")
     public CourCourse selectCourCourseById(Long id)
     {
         return courCourseMapper.selectCourCourseById(id);
@@ -87,6 +91,7 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 结果
      */
     @Override
+    @CacheEvict(cacheNames = "selectCourCourseByIdCache", key = "#courCourse.id")
     public int updateCourCourse(CourCourse courCourse)
     {
         courCourse.setUpdateTime(DateUtils.getNowDate());
@@ -100,6 +105,7 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 结果
      */
     @Override
+    @CacheEvict(cacheNames = "selectCourCourseByIdCache", allEntries = true)
     public int deleteCourCourseByIds(Long[] ids)
     {
         return courCourseMapper.deleteCourCourseByIds(ids);
@@ -112,6 +118,7 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 结果
      */
     @Override
+    @CacheEvict(cacheNames = "selectCourCourseByIdCache", key = "#id")
     public int deleteCourCourseById(Long id)
     {
         return courCourseMapper.deleteCourCourseById(id);
@@ -190,6 +197,9 @@ public class CourCourseServiceImpl implements ICourCourseService
         return courCourseMapper.queryCourCourseList(courseQueryDTO);
     }
 
+    @Override
+    /*@Cacheable(value = "getCourseListByClassIdCache", key = "#courCourse.idList",
+            unless = "#result == null||#result.isEmpty()")*/
     public List<CourseListVO> getCourseListByClassId(CourCourse courCourse){
         return courCourseMapper.getCourseListByClassId(courCourse);
     }

@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectPsyGaugeList" parameterType="com.renxin.gauge.domain.PsyGauge" resultMap="PsyGaugeResult">
         <include refid="selectPsyGaugeVo"/>
-        <where>  
+        <where>
             <if test="title != null  and title != ''"> and title = #{title}</if>
             <if test="subtitle != null  and subtitle != ''"> and subtitle = #{subtitle}</if>
             <if test="headPicture != null  and headPicture != ''"> and head_picture = #{headPicture}</if>
@@ -50,6 +50,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="num != null "> and num = #{num}</if>
             <if test="type != null "> and type = #{type}</if>
             <if test="gaugeDes != null "> and gauge_des = #{gaugeDes}</if>
+            <if test="idList != null and idList.size > 0">
+                and id in
+                <foreach collection="idList" open="(" close=")" separator="," item="id">
+                    #{id}
+                </foreach>
+            </if>
         </where>
     </select>
     

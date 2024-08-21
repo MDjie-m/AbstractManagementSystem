@@ -182,6 +182,10 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     @TableField(exist = false)
     private String serverName;
 
+    //已付款订单次数
+    @TableField(exist = false)
+    private Integer userOrderCount;
+
     
     
 }
