@@ -169,10 +169,10 @@ public class SysProductServiceImpl implements ISysProductService {
     }
 
     /**
-     * 修改产品状态前端切换状态
+     * 修改产品报价清单的状态
      *
      * @param productId 产品id
-     * @param status 产品当前是否属于报价清单的状态
+     * @param status 产品当前的报价清单状态
      * @return 结果
      */
     @Override
@@ -182,5 +182,21 @@ public class SysProductServiceImpl implements ISysProductService {
             res = "1";
         }
         return sysProductMapper.updateQuoteListStatus(productId,res);
+    }
+
+    /**
+     * 修改产品询价清单的状态
+     *
+     * @param productId 产品id
+     * @param status 产品当前的报价清单状态
+     * @return 结果
+     */
+    @Override
+    public int updateInquiryListStatus(String productId, String status) {
+        String res = "0";
+        if("0".equals(status)){
+            res = "1";
+        }
+        return sysProductMapper.updateInquiryListStatus(productId,res);
     }
 }
