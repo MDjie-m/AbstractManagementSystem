@@ -62,7 +62,8 @@ public interface SysProductTypeMapper
      */
     public int deleteSysProductTypeByProductCodes(String[] productCodes);
 
-    List<SysProductType> selectChildren(@Param("parentCode") String parentCode);
+    List<SysProductType> selectChildren(@Param("parentCode") String parentCode,
+                                        @Param("classification") Integer classification);
 
     List<SysProductType> selectType(@Param("productCodes") String[] newCodes);
 

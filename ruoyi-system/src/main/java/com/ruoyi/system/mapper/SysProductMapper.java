@@ -64,7 +64,7 @@ public interface SysProductMapper
      * @param productIds 需要删除的数据主键集合
      * @return 结果
      */
-    public int deleteSysProductByProductIds(String[] productIds);
+    public int deleteSysProductByProductIds(@Param("productIds") List<String> productIds);
 
     public List<String> selectProductNamesByParam(
             @Param("supplierId")String supplierId , @Param("productName")String productName);
