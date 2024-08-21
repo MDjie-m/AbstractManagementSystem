@@ -152,6 +152,8 @@ public class SysLoginService
             sysUser = sysUsers.get(0);
         }
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(sysUser.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
+        // 还需要从数据查一次用户SysUser，才能查出完整信息
+        sysUser = userService.selectUserByUserName(sysUser.getUserName());
         //注册成功或者是已经存在的用户
         LoginUser loginUser =
                 new LoginUser(sysUser.getUserId(), sysUser.getDeptId(), sysUser, permissionService.getMenuPermission(sysUser));
