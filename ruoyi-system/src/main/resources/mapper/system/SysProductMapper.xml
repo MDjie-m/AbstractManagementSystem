@@ -409,6 +409,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where product_id = #{productId}
     </update>
 
+    <!--    切换该产品是否属于询价清单的状态-->
+    <update id="updateInquiryListStatus">
+        update sys_product
+        set inquiry_list_flag = #{status}
+        where product_id = #{productId}
+    </update>
+
     <delete id="deleteSysProductByProductId" parameterType="String">
         delete from sys_product where product_id = #{productId}
     </delete>

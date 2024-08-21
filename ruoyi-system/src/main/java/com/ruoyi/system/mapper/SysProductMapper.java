@@ -85,5 +85,7 @@ public interface SysProductMapper
      */
     public int updateStatus(@Param("productId")String productId,@Param("status")String status);
 
-    int updateQuoteListStatus(String productId, String status);
+    int updateQuoteListStatus(@Param("productId")String productId,@Param("status")String status);
+
+    int updateInquiryListStatus(@Param("productId")String productId,@Param("status")String status);
 }
