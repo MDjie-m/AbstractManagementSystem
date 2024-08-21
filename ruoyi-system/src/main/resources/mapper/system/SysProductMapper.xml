@@ -212,7 +212,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 a.tag_id AS tagId,a.tag_name AS tagName,a.product_image AS productImage,a.product_video AS productVideo,
                 a.product_name AS productName,a.domestic_imported_type AS domesticImportedType,
                 a.product_model AS productModel,a.quotation_flag AS quotationFlag,a.sample AS sample,
-                a.specifications AS specifications,a.inventory AS inventory,
+                a.specifications AS specifications,a.inventory AS inventory,a.inventory_unit as inventoryUnit,
                 a.status AS status,a.production_date AS productionDate,a.shelf_life AS shelfLife,a.origin AS origin,
                 a.storage_mode AS storageMode,a.warehouse_address AS warehouseAddress,a.main_product AS mainProduct,
                 a.del_flag AS delFlag,a.quote_status AS quoteStatus,a.inquiry_status AS inquiryStatus,a.buyer_id AS buyerId,
@@ -278,6 +278,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sample != null">sample,</if>
             <if test="specifications != null and specifications != ''">specifications,</if>
             <if test="inventory != null">inventory,</if>
+            <if test="inventoryUnit != null and inventoryUnit != ''">inventory_unit,</if>
             <if test="status != null">status,</if>
             <if test="productionDate != null">production_date,</if>
             <if test="shelfLife != null and shelfLife != ''">shelf_life,</if>
@@ -336,6 +337,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sample != null">#{sample},</if>
             <if test="specifications != null and specifications != ''">#{specifications},</if>
             <if test="inventory != null">#{inventory},</if>
+            <if test="inventoryUnit != null and inventoryUnit != ''">#{inventoryUnit},</if>
             <if test="status != null">#{status},</if>
             <if test="productionDate != null">#{productionDate},</if>
             <if test="shelfLife != null and shelfLife != ''">#{shelfLife},</if>
