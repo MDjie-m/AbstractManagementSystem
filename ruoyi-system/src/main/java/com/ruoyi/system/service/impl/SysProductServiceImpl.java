@@ -181,6 +181,6 @@ public class SysProductServiceImpl implements ISysProductService {
         if("0".equals(status)){
             res = "1";
         }
-        return sysProductMapper.updateQuoteListStatus(productId,status);
+        return sysProductMapper.updateQuoteListStatus(productId,res);
     }
 }
