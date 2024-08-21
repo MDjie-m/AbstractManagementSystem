@@ -238,7 +238,7 @@ public class GenController extends BaseController
 
     /**
      *
-     * 生成zip文件
+     * 生成代码的zip文件
      */
     private void genCode(HttpServletResponse response, byte[] data) throws IOException
     {
@@ -247,7 +247,7 @@ public class GenController extends BaseController
         response.addHeader("Access-Control-Expose-Headers", "Content-Disposition");
         response.setHeader("Content-Disposition", "attachment; filename=\"ruoyi.zip\"");
         response.addHeader("Content-Length", "" + data.length);
-        response.setContentType("application/octet-stream; charset=UTF-8");
+        response.setContentType("application/octet-stream; charset=UTF-8"); // 8bit流
         IOUtils.write(data, response.getOutputStream());
     }
 }

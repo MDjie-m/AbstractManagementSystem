@@ -1,14 +1,10 @@
 package com.ruoyi.common.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.springframework.util.AntPathMatcher;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.text.StrFormatter;
+import org.springframework.util.AntPathMatcher;
+
+import java.util.*;
 
 /**
  * 字符串工具类
@@ -396,6 +392,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
 
     /**
      * 判断给定的collection列表中是否包含数组array 判断给定的数组array中是否包含给定的元素value
+     *
+     * 通俗说就是判断两个集合交集是否为空
      *
      * @param collection 给定的集合
      * @param array 给定的数组

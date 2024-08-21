@@ -1,21 +1,5 @@
 package com.ruoyi.framework.aspectj;
 
-import java.util.Collection;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.ArrayUtils;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.NamedThreadLocal;
-import org.springframework.stereotype.Component;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson2.JSON;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -30,10 +14,29 @@ import com.ruoyi.common.utils.ip.IpUtils;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
 import com.ruoyi.system.domain.SysOperLog;
+import org.apache.commons.lang3.ArrayUtils;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.NamedThreadLocal;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * 操作日志记录处理
- * 
+ *
+ * 主要是拦截Controller的方法，然后记录请求参数、返回参数、异常信息
+ *
  * @author ruoyi
  */
 @Aspect
@@ -54,6 +57,7 @@ public class LogAspect
     @Before(value = "@annotation(controllerLog)")
     public void boBefore(JoinPoint joinPoint, Log controllerLog)
     {
+        // 记录方法执行前的时间戳
         TIME_THREADLOCAL.set(System.currentTimeMillis());
     }
 
@@ -70,7 +74,10 @@ public class LogAspect
 
     /**
      * 拦截异常操作
-     * 
+     *
+     * 关于@AfterThrowing的用法：
+     * AfterThrowing处理虽然处理了该异常，但它不能完全处理异常，该异常依然会传播到上一级调用者
+     *
      * @param joinPoint 切点
      * @param e 异常
      */
@@ -80,6 +87,14 @@ public class LogAspect
         handleLog(joinPoint, controllerLog, e, null);
     }
 
+    /**
+     * 方法执行完后记录操作日志
+     *
+     * @param joinPoint
+     * @param controllerLog
+     * @param e
+     * @param jsonResult
+     */
     protected void handleLog(final JoinPoint joinPoint, Log controllerLog, final Exception e, Object jsonResult)
     {
         try
@@ -156,6 +171,7 @@ public class LogAspect
             setRequestValue(joinPoint, operLog, log.excludeParamNames());
         }
         // 是否需要保存response，参数和值
+        // 就是保存controller方法的返回值
         if (log.isSaveResponseData() && StringUtils.isNotNull(jsonResult))
         {
             operLog.setJsonResult(StringUtils.substring(JSON.toJSONString(jsonResult), 0, 2000));
