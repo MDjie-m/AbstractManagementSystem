@@ -201,13 +201,25 @@ public class SysProductController extends BaseController
     {
         return toAjax(sysProductService.deleteSysProductByProductIds(productIds));
     }
+
     /**
      * 修改产品报价状态
      */
     @PreAuthorize("@ss.hasPermi('system:product:updateStatus')")
-    @PostMapping("/updateStatus")
+    @GetMapping("/updateStatus")
     public AjaxResult updateStatus(String productId,String status)
     {
         return toAjax(sysProductService.updateStatus(productId,status));
+    }
+
+    /**
+     * 切换产品的报价清单状态
+     */
+    @PreAuthorize("@ss.hasPermi('system:product:updateStatus')")
+    @GetMapping("/updateQuoteStatus")
+    public AjaxResult updateQuoteStatus(@RequestParam String productId,@RequestParam String status)
+    {
+        // 跟上面切换是否可报价状态的逻辑一致
+        return toAjax(sysProductService.updateQuoteStatus(productId,status));
     }
 }
