@@ -53,7 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                tag_id AS tagId,tag_name AS tagName,product_image AS productImage,product_video AS productVideo,
                product_name AS productName,domestic_imported_type AS domesticImportedType,
                product_model AS productModel,quotation_flag AS quotationFlag,sample AS sample,
-               specifications AS specifications,inventory AS inventory,
+               specifications AS specifications,inventory AS inventory,inventory_unit as inventoryUnit,
                status AS status,production_date AS productionDate,shelf_life AS shelfLife,origin AS origin,
                storage_mode AS storageMode,warehouse_address AS warehouseAddress,main_product AS mainProduct,
                del_flag AS delFlag,quote_status AS quoteStatus,inquiry_status AS inquiryStatus,buyer_id AS buyerId,
@@ -84,7 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 a.tag_id AS tagId,a.tag_name AS tagName,a.product_image AS productImage,a.product_video AS productVideo,
                 a.product_name AS productName,a.domestic_imported_type AS domesticImportedType,
                 a.product_model AS productModel,a.quotation_flag AS quotationFlag,a.sample AS sample,
-                a.specifications AS specifications,a.inventory AS inventory,
+                a.specifications AS specifications,a.inventory AS inventory,a.inventory_unit as inventoryUnit,
                 a.status AS status,a.production_date AS productionDate,a.shelf_life AS shelfLife,a.origin AS origin,
                 a.storage_mode AS storageMode,a.warehouse_address AS warehouseAddress,a.main_product AS mainProduct,
                 a.del_flag AS delFlag,a.quote_status AS quoteStatus,a.inquiry_status AS inquiryStatus,a.buyer_id AS buyerId,
@@ -106,9 +106,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
             <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
             <if test="buyerId!=null"> and buyer_id = #{buyerId}</if>
-            <if test="startInventory != null">inventory &gt;= #{startInventory}</if>
-            <if test="endInventory != null">inventory &lt;= #{endInventory}</if>
-
+            <if test="startInventory != null">and inventory &gt;= #{startInventory}</if>
+            <if test="endInventory != null">and inventory &lt;= #{endInventory}</if>
+            <if test="inventoryUnit != null  and inventoryUnit != ''">and inventory_unit = #{inventoryUnit}</if>
             <if test="origins != null and !origins.isEmpty()">
                 AND origin IN
                 <foreach collection="origins" item="origin" open="(" close=")" separator=",">
@@ -171,24 +171,74 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="domesticImportedType != null "> and domestic_imported_type = #{domesticImportedType}</if>
 <!--             <if test="productModel != null  and productModel != ''"> and product_model = #{productModel}</if>-->
             <if test="quotationFlag != null "> and quotation_flag = #{quotationFlag}</if>
-            <if test="sample != null">sample=#{sample}</if>
-            <if test="status != null"> status=#{status}</if>
-            <if test="storageMode !=null">storage_mode=#{storageMode}</if>
-            <if test="warehouseAddress!=null and warehouseAddress!=''">warehouse_address like concat('%', #{warehouseAddress}, '%')</if>
-            <if test="mainProduct != null">main_product=#{mainProduct}</if>
-            <if test="quoteStatus !=null">quote_status=#{quoteStatus}</if>
-            <if test="inquiryStatus !=null">inquiry_status=#{inquiryStatus}</if>
-            <if test="inquiryListFlag !=null">inquiry_list_flag=#{inquiryListFlag}</if>
-            <if test="quoteListFlag !=null">quote_list_flag=#{quoteListFlag}</if>
+            <if test="sample != null">and sample=#{sample}</if>
+            <if test="status != null">and status=#{status}</if>
+            <if test="storageMode !=null">and storage_mode=#{storageMode}</if>
+            <if test="warehouseAddress!=null and warehouseAddress!=''">and warehouse_address like concat('%', #{warehouseAddress}, '%')</if>
+            <if test="mainProduct != null">and main_product=#{mainProduct}</if>
+            <if test="quoteStatus !=null">and quote_status=#{quoteStatus}</if>
+            <if test="inquiryStatus !=null">and inquiry_status=#{inquiryStatus}</if>
+            <if test="inquiryListFlag !=null">and inquiry_list_flag=#{inquiryListFlag}</if>
+            <if test="quoteListFlag !=null">and quote_list_flag=#{quoteListFlag}</if>
             <if test="mark != null and mark != ''">and mark like concat('%', #{mark}, '%')</if>
-            and del_flag=0
-
+            <choose>
+                <when test="flag">
+                    and del_flag=0
+                </when>
+                <otherwise>
+                    and a.del_flag=0
+                </otherwise>
+            </choose>
         </where>
     </select>
-    
-    <select id="selectSysProductByProductId" parameterType="String" resultMap="SysProductResult">
-        <include refid="selectSysProductVo"/>
-        where product_id = #{productId}
+
+<!--    单独根据产品Id查产品详情，但是要注意供应商只能查自己的详情，采购员只能查自己负责的详情，管理员查所有-->
+    <select id="selectSysProductByProductId" parameterType="SysProDuctDTO" resultType="com.ruoyi.system.domain.vo.SysProductVO">
+        <choose>
+            <when test="flag">
+                <!-- 当flag为true时，使用selectSysProductVo,不需要查供应商名字，因为是供应商自己在查询 -->
+                <include refid="selectSysProductVo"/>
+            </when>
+            <otherwise>
+                <!-- 当flag为false时，使用连表，但需要注意连接条件和字段选择，这是采购员或者管理员的查询，需要供应商名字 -->
+                SELECT a.product_id AS productId,a.supplier_id AS supplierId,a.supplier_name AS supplierName,a.primary_category AS primaryCategory,
+                a.primary_category_name AS primaryCategoryName,a.secondary_category AS secondaryCategory,a.secondary_category_name AS secondaryCategoryName,
+                a.tertiary_category AS tertiaryCategory,a.tertiary_category_name AS tertiaryCategoryName,a.quaternary_category AS quaternaryCategory,
+                a.quaternary_category_name AS quaternaryCategoryName,a.fifth_category AS fifthCategory,a.fifth_category_name AS fifthCategoryName,
+                a.cn_primary_category AS cnPrimaryCategory,a.cn_primary_category_name AS cnPrimaryCategoryName,a.cn_secondary_category AS cnSecondaryCategory,
+                a.cn_secondary_category_name AS cnSecondaryCategoryName,a.cn_tertiary_category AS cnTertiaryCategory,a.cn_tertiary_category_name AS cnTertiaryCategoryName,
+                a.cn_quaternary_category AS cnQuaternaryCategory,a.cn_quaternary_category_name AS cnQuaternaryCategoryName,
+                a.cn_fifth_category AS cnFifthCategory,a.cn_fifth_category_name AS cnFifthCategoryName,
+                a.tag_id AS tagId,a.tag_name AS tagName,a.product_image AS productImage,a.product_video AS productVideo,
+                a.product_name AS productName,a.domestic_imported_type AS domesticImportedType,
+                a.product_model AS productModel,a.quotation_flag AS quotationFlag,a.sample AS sample,
+                a.specifications AS specifications,a.inventory AS inventory,a.inventory_unit as inventoryUnit,
+                a.status AS status,a.production_date AS productionDate,a.shelf_life AS shelfLife,a.origin AS origin,
+                a.storage_mode AS storageMode,a.warehouse_address AS warehouseAddress,a.main_product AS mainProduct,
+                a.del_flag AS delFlag,a.quote_status AS quoteStatus,a.inquiry_status AS inquiryStatus,a.buyer_id AS buyerId,
+                a.inquiry_list_flag AS inquiryListFlag,a.quote_list_flag AS quoteListFlag,a.remark AS remark,
+                a.mark AS mark,a.unitprice AS unitprice,a.unitprice_unit AS unitpriceUnit,
+                a.start_batch AS startBatch,a.batch_unit AS batchUnit,
+                b.supplier_name_cn as supplierNameCn,b.supplier_name_en as supplierNameEn,b.supplier_name_own as supplierNameOwn
+                FROM sys_product a
+                LEFT JOIN sys_supplier b ON a.supplier_id = b.supplier_id
+            </otherwise>
+        </choose>
+        <where>
+            product_id = #{productId}
+            <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
+            <if test="buyerId!=null"> and buyer_id = #{buyerId}</if>
+            <choose>
+                <when test="flag">
+                <!-- 说明是供应商自己在查，那不需要连表-->
+                    and del_flag=0
+                </when>
+                <otherwise>
+                    <!-- 说明是非供应商在查，那需要连表查询-->
+                    and a.del_flag=0
+                </otherwise>
+            </choose>
+        </where>
     </select>
 
     <insert id="insertSysProduct" parameterType="SysProduct">
@@ -228,6 +278,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sample != null">sample,</if>
             <if test="specifications != null and specifications != ''">specifications,</if>
             <if test="inventory != null">inventory,</if>
+            <if test="inventoryUnit != null and inventoryUnit != ''">inventory_unit,</if>
             <if test="status != null">status,</if>
             <if test="productionDate != null">production_date,</if>
             <if test="shelfLife != null and shelfLife != ''">shelf_life,</if>
@@ -286,6 +337,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sample != null">#{sample},</if>
             <if test="specifications != null and specifications != ''">#{specifications},</if>
             <if test="inventory != null">#{inventory},</if>
+            <if test="inventoryUnit != null and inventoryUnit != ''">#{inventoryUnit},</if>
             <if test="status != null">#{status},</if>
             <if test="productionDate != null">#{productionDate},</if>
             <if test="shelfLife != null and shelfLife != ''">#{shelfLife},</if>
@@ -347,6 +399,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateStatus">
         update sys_product
         set quotation_flag = #{status}
+        where product_id = #{productId}
+    </update>
+
+<!--    切换该产品是否属于报价清单的状态-->
+    <update id="updateQuoteListStatus">
+        update sys_product
+        set quote_list_flag = #{status}
+        where product_id = #{productId}
+    </update>
+
+    <!--    切换该产品是否属于询价清单的状态-->
+    <update id="updateInquiryListStatus">
+        update sys_product
+        set inquiry_list_flag = #{status}
         where product_id = #{productId}
     </update>
 

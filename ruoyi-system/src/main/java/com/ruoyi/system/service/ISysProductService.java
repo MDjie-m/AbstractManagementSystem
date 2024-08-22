@@ -18,17 +18,15 @@ public interface ISysProductService
     /**
      * 查询产品
      * 
-     * @param productId 产品主键
+     * @param sysProDuctDTO 产品
      * @return 产品
      */
-    public SysProduct selectSysProductByProductId(String productId);
+    public SysProductVO selectSysProductByProductId(SysProDuctDTO sysProDuctDTO);
 
     /**
      * 查询产品列表
      * 
-     * @param sysProductDTO 产品dto对象
-     * @param supplierId 供应商Id
-     * @param userId 采购员id
+     * @param sysProDuctDTO 产品dto对象
      * @return 产品集合
      */
     public List<SysProductVO> selectSysProductList(SysProDuctDTO sysProDuctDTO);
@@ -79,4 +77,20 @@ public interface ISysProductService
      * @return 结果
      */
     public int updateStatus(String productId,String status);
+
+    /**
+     * 切换报价清单状态(不常用、常用)：报价清单中的产品即为常用的报价产品
+     * @param productId
+     * @param status
+     * @return
+     */
+    int updateQuoteListStatus(String productId, String status);
+
+    /**
+     * 切换询价清单状态(不常用、常用)：询价清单中的产品即为常用来询价的产品
+     * @param productId
+     * @param status
+     * @return
+     */
+    int updateInquiryListStatus(String productId, String status);
 }
