@@ -3,6 +3,7 @@ package com.renxin.psychology.service.impl;
 import java.math.BigDecimal;
 import java.rmi.ServerException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 import com.renxin.common.constant.IntegralRecordConstants;
 import com.renxin.common.constant.PsyConstants;
+import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.enums.GaugeStatus;
 import com.renxin.common.enums.OrderPayStatus;
 import com.renxin.common.enums.OrderStatus;
@@ -20,9 +22,14 @@ import com.renxin.common.utils.IDhelper;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.CourOrder;
+import com.renxin.course.domain.CourSection;
+import com.renxin.course.domain.CourUserCourseSection;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.service.ICourOrderService;
+import com.renxin.course.service.ICourSectionService;
 import com.renxin.course.service.ICourUserCourseSectionService;
+import com.renxin.course.vo.CourseVO;
+import com.renxin.course.vo.SectionVO;
 import com.renxin.gauge.constant.GaugeConstant;
 import com.renxin.gauge.domain.PsyOrder;
 import com.renxin.gauge.domain.PsyOrderPay;
@@ -36,6 +43,7 @@ import com.renxin.psychology.vo.PsyConsultServeConfigVO;
 import com.renxin.user.domain.PsyUserIntegralRecord;
 import com.renxin.user.service.IPsyUserIntegralRecordService;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantOrderMapper;
@@ -119,12 +127,15 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     
     @Resource
     private ICourCourseService courCourseService;
+
+    @Autowired
+    private ICourUserCourseSectionService courUserCourseSectionService;
+    
+    @Autowired
+    private ICourSectionService courSectionService;
     
     /**
-     * 查询团队督导(组织)订单
-     * 
-     * @param orderNo 团队督导(组织)订单主键
-     * @return 团队督导(组织)订单
+     * 查询订单
      */
     @Override
     public PsyConsultantOrder selectPsyConsultantOrderByOrderNo(String orderNo)
@@ -161,8 +172,48 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
         }
         //课程
         else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)){
-            CourCourse courCourse = courCourseService.selectCourCourseById(Long.valueOf(order.getServerId()));
-            order.setCourseDetail(courCourse);
+            CourCourse course = courCourseService.selectCourCourseById(Long.valueOf(order.getServerId()));
+            Long courseId = course.getId();
+            if (course == null) {
+               throw new ServiceException("查询课程详情失败");
+            }
+
+            // 查询课程的学习人数
+            CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
+            courUserCourseSection.setCourseId(courseId);
+            List<CourUserCourseSection> courUserCourseSectionList = courUserCourseSectionService.selectCourUserCourseSectionList(courUserCourseSection);
+
+            CourseVO courseVO = new CourseVO();
+            BeanUtils.copyProperties(course, courseVO);
+            courseVO.setStudyNum(courUserCourseSectionList.size());
+
+            // 增加章节列表
+            CourSection courSection = CourSection.builder()
+                    .courseId(courseId)
+                    .build();
+            List<CourSection> sectionList = courSectionService.selectCourSectionList(courSection);
+            // 查询章节的学习情况
+            List<SectionVO> sectionVOList = new ArrayList<>();
+
+
+            for (CourSection section: sectionList) {
+                SectionVO sectionVO = new SectionVO();
+                CourUserCourseSection userCourseSection = new CourUserCourseSection();
+                userCourseSection.setUserId(Long.valueOf(order.getPayConsultantId()));
+                userCourseSection.setUserType(2);//咨询师
+                userCourseSection.setCourseId(courseId);
+                BeanUtils.copyProperties(section, sectionVO);
+                userCourseSection.setSectionId(section.getId());
+                sectionVO.setEndTime(courUserCourseSectionService.findEndTime(userCourseSection));
+
+                // 未购买课程的普通章节不返回内容链接
+                if (courCourseService.getPaidCourseCount(Long.valueOf(order.getPayConsultantId()), courseId) == 0 && sectionVO.getType() == CourConstant.SECTION_NORMAL) {
+                    sectionVO.setContentUrl(null);
+                }
+                sectionVOList.add(sectionVO);
+            }
+            course.setSectionList(sectionVOList);
+            order.setCourseDetail(course);
         }
         
         return order;
@@ -227,8 +278,49 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 }
                 //课程
                 else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)){
-                    CourCourse courCourse = courCourseService.selectCourCourseById(Long.valueOf(order.getServerId()));
-                    order.setCourseDetail(courCourse);
+                    CourCourse course = courCourseService.selectCourCourseById(Long.valueOf(order.getServerId()));
+                    Long courseId = course.getId();
+                    if (course == null) {
+                        throw new ServiceException("查询课程详情失败");
+                    }
+
+                    // 查询课程的学习人数
+                    CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
+                    courUserCourseSection.setCourseId(courseId);
+                    List<CourUserCourseSection> courUserCourseSectionList = courUserCourseSectionService.selectCourUserCourseSectionList(courUserCourseSection);
+
+                    CourseVO courseVO = new CourseVO();
+                    BeanUtils.copyProperties(course, courseVO);
+                    courseVO.setStudyNum(courUserCourseSectionList.size());
+
+                    // 增加章节列表
+                    CourSection courSection = CourSection.builder()
+                            .courseId(courseId)
+                            .build();
+                    List<CourSection> sectionList = courSectionService.selectCourSectionList(courSection);
+                    // 查询章节的学习情况
+                    List<SectionVO> sectionVOList = new ArrayList<>();
+
+
+                    for (CourSection section: sectionList) {
+                        SectionVO sectionVO = new SectionVO();
+                        CourUserCourseSection userCourseSection = new CourUserCourseSection();
+                        userCourseSection.setUserId(Long.valueOf(order.getPayConsultantId()));
+                        userCourseSection.setUserType(2);//咨询师
+                        userCourseSection.setCourseId(courseId);
+                        BeanUtils.copyProperties(section, sectionVO);
+                        userCourseSection.setSectionId(section.getId());
+                        sectionVO.setEndTime(courUserCourseSectionService.findEndTime(userCourseSection));
+
+                        // 未购买课程的普通章节不返回内容链接
+                        if (courCourseService.getPaidCourseCount(Long.valueOf(order.getPayConsultantId()), courseId) == 0 && sectionVO.getType() == CourConstant.SECTION_NORMAL) {
+                            sectionVO.setContentUrl(null);
+                        }
+                        sectionVOList.add(sectionVO);
+                    }
+                    course.setSectionList(sectionVOList);
+                    
+                    order.setCourseDetail(course);
                 }
             }
             

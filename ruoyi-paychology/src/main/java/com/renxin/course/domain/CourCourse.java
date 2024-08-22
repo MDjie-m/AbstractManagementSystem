@@ -3,6 +3,7 @@ package com.renxin.course.domain;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.renxin.course.vo.SectionVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -76,6 +77,9 @@ public class CourCourse extends BaseEntity
     
     private List<Long> idList;
     private String ids;
+
+    //章节清单
+    private List<SectionVO> sectionList;
 
     @Override
     public String toString() {
