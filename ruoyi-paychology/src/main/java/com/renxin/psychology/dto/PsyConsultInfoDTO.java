@@ -24,5 +24,8 @@ public class PsyConsultInfoDTO implements Serializable
     private PsyConsultServeConfigVO serve;
 
     private List<PsyConsultWorkVO> works;
+    
+    //咨询师-服务  关联id
+    private Long relationId;
 
 }

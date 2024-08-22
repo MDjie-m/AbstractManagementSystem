@@ -26,5 +26,8 @@ public class PsyConsultServe implements Serializable
 
     /** 咨询师 */
     private Long consultId;
+    
+    //关联id
+    private Long relationId;
 
 }

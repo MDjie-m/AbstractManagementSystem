@@ -122,7 +122,6 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
         PsyConsultServeConfigVO serve = psyConsultServeConfigService.getOne(sId);
         PsyConsultVO consult = getOne(cId);
 
-        vo.setWorks(getConsultWorksById(cId));
         if (ConsultConstant.CONSULT_MODE_SOUND.equals(serve.getMode())) {
             serve.setModeName("语音咨询");
         } else if (ConsultConstant.CONSULT_MODE_VOICE.equals(serve.getMode())) {
@@ -130,7 +129,16 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
         } else if (ConsultConstant.CONSULT_MODE_FACE.equals(serve.getMode())) {
             serve.setModeName("当面咨询");
         }
-
+        //查询 咨询师-服务 关联id
+        PsyConsultServe consultServe = new PsyConsultServe();
+            consultServe.setConsultId(cId);
+            consultServe.setServeId(sId);
+        List<PsyConsultServe> list = serveService.getList(consultServe);
+        if (ObjectUtils.isNotEmpty(list)){
+            vo.setRelationId(list.get(0).getRelationId());
+        }
+        
+        vo.setWorks(getConsultWorksById(cId));
         vo.setServe(serve);
         vo.setConsult(consult);
         return vo;

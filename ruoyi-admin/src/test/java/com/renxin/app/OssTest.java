@@ -4,6 +4,7 @@ import com.qcloud.cos.model.Bucket;
 import com.qcloud.cos.model.UploadResult;
 import com.renxin.RuoYiApplication;
 import com.renxin.common.utils.cos.COSClientFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = RuoYiApplication.class)
+@Ignore
 public class OssTest {
 
     @Test

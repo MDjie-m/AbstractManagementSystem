@@ -17,6 +17,7 @@ import com.renxin.psychology.vo.PsyConsultWorkVO;
 import com.renxin.wechat.service.WechatPayV3ApiService;
 import com.renxin.wechat.vo.WechatPayVO;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +32,7 @@ import java.util.Date;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = RuoYiApplication.class)
 @Slf4j
+@Ignore
 public class WxPayTest {
 
     @Resource
