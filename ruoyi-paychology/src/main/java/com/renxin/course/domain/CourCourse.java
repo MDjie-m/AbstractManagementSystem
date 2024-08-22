@@ -81,6 +81,10 @@ public class CourCourse extends BaseEntity
     //章节清单
     private List<CourSection> sectionList;
 
+    private Integer studyNum;//学习人数
+    private Integer sectionCount;//章节数量
+    private Integer totalDuration;//总时长
+    
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)

@@ -41,8 +41,8 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 课程
      */
     @Override
-    @Cacheable(value = "selectCourCourseByIdCache", key = "#id",
-            unless = "#result == null")
+    /*@Cacheable(value = "selectCourCourseByIdCache", key = "#id",
+            unless = "#result == null")*/
     public CourCourse selectCourCourseById(Long id)
     {
         return courCourseMapper.selectCourCourseById(id);

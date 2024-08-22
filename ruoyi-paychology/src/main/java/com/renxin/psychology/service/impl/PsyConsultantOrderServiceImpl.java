@@ -179,7 +179,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             }
 
             // 查询课程的学习人数
-            CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
+         /*   CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
             courUserCourseSection.setCourseId(courseId);
             List<CourUserCourseSection> courUserCourseSectionList = courUserCourseSectionService.selectCourUserCourseSectionList(courUserCourseSection);
 
@@ -191,7 +191,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             CourSection courSection = CourSection.builder()
                     .courseId(courseId)
                     .build();
-            List<CourSection> sectionList = courSectionService.selectCourSectionList(courSection);
+            List<CourSection> sectionList = courSectionService.selectCourSectionList(courSection);*/
             // 查询章节的学习情况
            /* List<SectionVO> sectionVOList = new ArrayList<>();
             for (CourSection section: sectionList) {
@@ -210,7 +210,6 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 }
                 sectionVOList.add(sectionVO);
             }*/
-            course.setSectionList(sectionList);
             order.setCourseDetail(course);
         }
         
@@ -283,19 +282,19 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     }
 
                     // 查询课程的学习人数
-                    CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
-                    courUserCourseSection.setCourseId(courseId);
-                    List<CourUserCourseSection> courUserCourseSectionList = courUserCourseSectionService.selectCourUserCourseSectionList(courUserCourseSection);
+//                    CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
+//                    courUserCourseSection.setCourseId(courseId);
+//                    List<CourUserCourseSection> courUserCourseSectionList = courUserCourseSectionService.selectCourUserCourseSectionList(courUserCourseSection);
 
-                    CourseVO courseVO = new CourseVO();
-                    BeanUtils.copyProperties(course, courseVO);
-                    courseVO.setStudyNum(courUserCourseSectionList.size());
+//                    CourseVO courseVO = new CourseVO();
+//                    BeanUtils.copyProperties(course, courseVO);
+//                    courseVO.setStudyNum(courUserCourseSectionList.size());
 
                     // 增加章节列表
-                    CourSection courSection = CourSection.builder()
-                            .courseId(courseId)
-                            .build();
-                    List<CourSection> sectionList = courSectionService.selectCourSectionDetailList(courSection);
+//                    CourSection courSection = CourSection.builder()
+//                            .courseId(courseId)
+//                            .build();
+//                    List<CourSection> sectionList = courSectionService.selectCourSectionDetailList(courSection);
                     // 查询章节的学习情况
                     /*List<SectionVO> sectionVOList = new ArrayList<>();
                     
@@ -315,7 +314,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                         }
                         sectionVOList.add(sectionVO);
                     }*/
-                    course.setSectionList(sectionList);
+                   // course.setSectionList(sectionList);
                     order.setCourseDetail(course);
                 }
             }
