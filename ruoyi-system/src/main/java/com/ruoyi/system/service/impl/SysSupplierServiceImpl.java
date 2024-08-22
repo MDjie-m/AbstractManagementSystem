@@ -143,7 +143,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                     // 删除标志 0-存在
                     user.setDelFlag("0");
                     // 是否为子账号 0-否
-                    user.setSubAccountFlag("0");
+                    user.setSubAccountFlag(0);
                     // 绑定供应商id
                     user.setSupplierId(supplierId);
                     // 注册主账号
@@ -171,7 +171,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                     // 删除标志 0-存在
                     userChild.setDelFlag("0");
                     // 是否为子账号 1-是
-                    userChild.setSubAccountFlag("1");
+                    userChild.setSubAccountFlag(1);
                     // 子账号的父级id
                     userChild.setParentUserId(String.valueOf(user.getUserId()));
                     i = userMapper.insertUser(userChild);
