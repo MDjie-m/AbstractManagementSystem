@@ -21,10 +21,10 @@ public interface SysProductMapper
     /**
      * 查询产品
      * 
-     * @param productId 产品主键
+     * @param sysProDuctDTO 产品dto
      * @return 产品
      */
-    public SysProduct selectSysProductByProductId(String productId);
+    public SysProductVO selectSysProductByProductId(SysProDuctDTO sysProDuctDTO);
 
     /**
      * 查询产品列表
@@ -84,4 +84,8 @@ public interface SysProductMapper
      * @return
      */
     public int updateStatus(@Param("productId")String productId,@Param("status")String status);
+
+    int updateQuoteListStatus(@Param("productId")String productId,@Param("status")String status);
+
+    int updateInquiryListStatus(@Param("productId")String productId,@Param("status")String status);
 }

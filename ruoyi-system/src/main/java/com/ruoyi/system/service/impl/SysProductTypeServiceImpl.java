@@ -3,7 +3,7 @@ package com.ruoyi.system.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.ruoyi.system.mapper.SysTagMapper;
+//import com.ruoyi.system.mapper.SysTagMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysProductTypeMapper;

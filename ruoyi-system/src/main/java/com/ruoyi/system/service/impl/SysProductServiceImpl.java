@@ -33,13 +33,13 @@ public class SysProductServiceImpl implements ISysProductService {
     /**
      * 查询产品
      * 
-     * @param productId 产品主键
+     * @param sysProDuctDTO 产品
      * @return 产品
      */
     @Override
-    public SysProduct selectSysProductByProductId(String productId)
+    public SysProductVO selectSysProductByProductId(SysProDuctDTO sysProDuctDTO)
     {
-        return sysProductMapper.selectSysProductByProductId(productId);
+        return sysProductMapper.selectSysProductByProductId(sysProDuctDTO);
     }
 
     /**
@@ -151,10 +151,12 @@ public class SysProductServiceImpl implements ISysProductService {
 //        }
         return successMsg.toString();
     }
+
     /**
      * 修改产品状态前端切换状态
      *
      * @param productId 产品id
+     * @param status 产品是否可报价的当前的状态
      * @return 结果
      */
     @Override
@@ -164,6 +166,37 @@ public class SysProductServiceImpl implements ISysProductService {
             res = "1";
         }
         return sysProductMapper.updateStatus(productId,res);
+    }
 
+    /**
+     * 修改产品报价清单的状态
+     *
+     * @param productId 产品id
+     * @param status 产品当前的报价清单状态
+     * @return 结果
+     */
+    @Override
+    public int updateQuoteListStatus(String productId, String status) {
+        String res = "0";
+        if("0".equals(status)){
+            res = "1";
+        }
+        return sysProductMapper.updateQuoteListStatus(productId,res);
+    }
+
+    /**
+     * 修改产品询价清单的状态
+     *
+     * @param productId 产品id
+     * @param status 产品当前的报价清单状态
+     * @return 结果
+     */
+    @Override
+    public int updateInquiryListStatus(String productId, String status) {
+        String res = "0";
+        if("0".equals(status)){
+            res = "1";
+        }
+        return sysProductMapper.updateInquiryListStatus(productId,res);
     }
 }

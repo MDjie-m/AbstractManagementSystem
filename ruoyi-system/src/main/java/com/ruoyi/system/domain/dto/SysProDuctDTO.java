@@ -19,8 +19,13 @@ public class SysProDuctDTO extends SysProduct {
     private Integer endInventory;
     //预计后面如果筛选条件可以多选的话就得自己添加list参数
     //还有起批应该也是范围查询
-    //多选：产品产地、产品分类（5个）、产品规格、保质期
-    //还没加上的多选条件有，规格、保质期
+    /** 最小起批数量 */
+    private Integer minStartBatch;
+    /** 最大起批数量 */
+    private Integer maxStartBatch;
+
+    //多选：产品产地、产品分类（5个）、保质期
+    //还没加上的多选条件有，保质期
     /** 产品产地列表，多选然后查询 */
     private List<String> origins;
 
@@ -38,6 +43,22 @@ public class SysProDuctDTO extends SysProduct {
     //范围查询：库存和起批，单价范围、生产日期
     //todo 目前只弄了库存，起批和单价范围、生成日期范围都没弄，但是库存的范围查询暂时存疑，生产日期可以为null，这里要注意一下。
 
+
+    public Integer getMinStartBatch() {
+        return minStartBatch;
+    }
+
+    public void setMinStartBatch(Integer minStartBatch) {
+        this.minStartBatch = minStartBatch;
+    }
+
+    public Integer getMaxStartBatch() {
+        return maxStartBatch;
+    }
+
+    public void setMaxStartBatch(Integer maxStartBatch) {
+        this.maxStartBatch = maxStartBatch;
+    }
 
     public boolean getFlag() {
         return flag;
