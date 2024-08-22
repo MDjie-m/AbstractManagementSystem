@@ -27,6 +27,8 @@ public interface ICourSectionService
      * @return 章节集合
      */
     public List<CourSection> selectCourSectionList(CourSection courSection);
+    
+    public List<CourSection> selectCourSectionDetailList(CourSection courSection);
 
     /**
      * 新增章节

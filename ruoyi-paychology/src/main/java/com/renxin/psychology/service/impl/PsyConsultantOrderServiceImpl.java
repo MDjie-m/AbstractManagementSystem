@@ -193,9 +193,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     .build();
             List<CourSection> sectionList = courSectionService.selectCourSectionList(courSection);
             // 查询章节的学习情况
-            List<SectionVO> sectionVOList = new ArrayList<>();
-
-
+           /* List<SectionVO> sectionVOList = new ArrayList<>();
             for (CourSection section: sectionList) {
                 SectionVO sectionVO = new SectionVO();
                 CourUserCourseSection userCourseSection = new CourUserCourseSection();
@@ -211,8 +209,8 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     sectionVO.setContentUrl(null);
                 }
                 sectionVOList.add(sectionVO);
-            }
-            course.setSectionList(sectionVOList);
+            }*/
+            course.setSectionList(sectionList);
             order.setCourseDetail(course);
         }
         
@@ -297,11 +295,10 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     CourSection courSection = CourSection.builder()
                             .courseId(courseId)
                             .build();
-                    List<CourSection> sectionList = courSectionService.selectCourSectionList(courSection);
+                    List<CourSection> sectionList = courSectionService.selectCourSectionDetailList(courSection);
                     // 查询章节的学习情况
-                    List<SectionVO> sectionVOList = new ArrayList<>();
-
-
+                    /*List<SectionVO> sectionVOList = new ArrayList<>();
+                    
                     for (CourSection section: sectionList) {
                         SectionVO sectionVO = new SectionVO();
                         CourUserCourseSection userCourseSection = new CourUserCourseSection();
@@ -317,9 +314,8 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                             sectionVO.setContentUrl(null);
                         }
                         sectionVOList.add(sectionVO);
-                    }
-                    course.setSectionList(sectionVOList);
-                    
+                    }*/
+                    course.setSectionList(sectionList);
                     order.setCourseDetail(course);
                 }
             }

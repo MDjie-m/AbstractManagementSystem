@@ -44,6 +44,12 @@ public class CourSectionServiceImpl implements ICourSectionService
         return courSectionMapper.selectCourSectionList(courSection);
     }
 
+
+    @Override
+    public List<CourSection> selectCourSectionDetailList(CourSection courSection){
+        return courSectionMapper.selectCourSectionDetailList(courSection);
+    }
+
     /**
      * 新增章节
      * 

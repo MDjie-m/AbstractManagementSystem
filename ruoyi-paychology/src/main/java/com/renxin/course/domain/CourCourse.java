@@ -79,7 +79,7 @@ public class CourCourse extends BaseEntity
     private String ids;
 
     //章节清单
-    private List<SectionVO> sectionList;
+    private List<CourSection> sectionList;
 
     @Override
     public String toString() {

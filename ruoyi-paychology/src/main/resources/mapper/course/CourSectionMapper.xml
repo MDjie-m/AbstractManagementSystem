@@ -39,7 +39,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCourSectionVo"/>
         where id = #{id} and delete_flag = 0
     </select>
-        
+    
+    <select id="selectCourSectionDetailList" resultType="com.renxin.course.domain.CourSection">
+        select
+            sec.id, sec.section_id, sec.topic, sec.duration, sec.type, sec.content, sec.course_id, sec.content_type ,
+            CASE
+                WHEN re.end_time IS NOT NULL THEN sec.content_url
+                ELSE NULL
+            END AS content_url,
+            re.end_time as endTime
+        from cour_section sec 
+            left join cour_user_course_section re on sec.id = re.section_id 
+        where
+            1=1
+            <if test="sectionId != null  and sectionId != ''"> and sec.section_id = #{sectionId}</if>
+            <if test="topic != null  and topic != ''"> and sec.topic = #{topic}</if>
+            <if test="duration != null "> and sec.duration = #{duration}</if>
+            <if test="type != null "> and sec.type = #{type}</if>
+            <if test="content != null  and content != ''"> and sec.content = #{content}</if>
+            <if test="contentUrl != null  and contentUrl != ''"> and sec.content_url = #{contentUrl}</if>
+            <if test="courseId != null  and courseId != ''"> and sec.course_id = #{courseId}</if>
+            <if test="contentType != null "> and sec.content_type = #{contentType}</if>
+            <if test="userId != null  and userId != ''"> and re.user_id = #{userId}</if>
+            <if test="userType != null  and userType != ''"> and re.user_type = #{userType}</if>
+    </select>
+
     <insert id="insertCourSection" parameterType="CourSection" useGeneratedKeys="true" keyProperty="id">
         insert into cour_section
         <trim prefix="(" suffix=")" suffixOverrides=",">
