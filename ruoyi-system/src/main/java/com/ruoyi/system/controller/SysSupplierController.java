@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.system.domain.vo.AuditVo;
+import com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,17 @@ public class SysSupplierController extends BaseController
     {
         startPage();
         List<SysSupplier> list = sysSupplierService.selectSysSupplierList(sysSupplier);
+        return getDataTable(list);
+    }
+
+    /**
+     * 根据产品查询供应商
+     */
+    @PreAuthorize("@ss.hasAnyPermi('system:supplier:supplierList')")
+    @PostMapping("/supplierList")
+    public TableDataInfo supplierList(@RequestBody SelectSupplierVo selectSupplierVo){
+        startPage();
+        List<SysSupplier> list = sysSupplierService.selectSupplierByProduct(selectSupplierVo);
         return getDataTable(list);
     }
 

@@ -246,6 +246,12 @@ public class SysSupplier extends BaseEntity {
     private Integer dataSources;
 
     /**
+     * 入驻时间
+     */
+    @ExcelIgnore
+    @DateTimeFormat("yyyy-mm-dd")
+    private Date entryDate;
+    /**
      * 头像地址
      */
     @ExcelIgnore
@@ -305,228 +311,20 @@ public class SysSupplier extends BaseEntity {
     @ExcelIgnore
     private List<SysProduct> sysProductList;
 
-    public void setSupplierId(String supplierId) {
-        this.supplierId = supplierId;
-    }
-
     public String getSupplierId() {
         return supplierId;
     }
 
-    public void setLabel(Integer label) {
-        this.label = label;
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
     }
 
     public Integer getLabel() {
         return label;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public String getDetailedAddress() {
-        return detailedAddress;
-    }
-
-    public void setDetailedAddress(String detailedAddress) {
-        this.detailedAddress = detailedAddress;
-    }
-
-    public void setRegistrationNo(String registrationNo) {
-        this.registrationNo = registrationNo;
-    }
-
-    public String getRegistrationNo() {
-        return registrationNo;
-    }
-
-    public void setRegistrationNoInChina(String registrationNoInChina) {
-        this.registrationNoInChina = registrationNoInChina;
-    }
-
-    public String getRegistrationNoInChina() {
-        return registrationNoInChina;
-    }
-
-    public void setSupplierNameCn(String supplierNameCn) {
-        this.supplierNameCn = supplierNameCn;
-    }
-
-    public String getSupplierNameCn() {
-        return supplierNameCn;
-    }
-
-    public void setSupplierNameEn(String supplierNameEn) {
-        this.supplierNameEn = supplierNameEn;
-    }
-
-    public String getSupplierNameEn() {
-        return supplierNameEn;
-    }
-
-    public void setRegistrationTime(Date registrationTime) {
-        this.registrationTime = registrationTime;
-    }
-
-    public Date getRegistrationTime() {
-        return registrationTime;
-    }
-
-    public void setRegistrationTimeValidityPeriod(Date registrationTimeValidityPeriod) {
-        this.registrationTimeValidityPeriod = registrationTimeValidityPeriod;
-    }
-
-    public Date getRegistrationTimeValidityPeriod() {
-        return registrationTimeValidityPeriod;
-    }
-
-    public void setRate(String rate) {
-        this.rate = rate;
-    }
-
-    public String getRate() {
-        return rate;
-    }
-
-    public void setReviewRating(String reviewRating) {
-        this.reviewRating = reviewRating;
-    }
-
-    public String getReviewRating() {
-        return reviewRating;
-    }
-
-    public void setDeleteFlag(Integer deleteFlag) {
-        this.deleteFlag = deleteFlag;
-    }
-
-    public Integer getDeleteFlag() {
-        return deleteFlag;
-    }
-
-    public void setInspectionId(String inspectionId) {
-        this.inspectionId = inspectionId;
-    }
-
-    public String getInspectionId() {
-        return inspectionId;
-    }
-
-    public void setClassification(Integer classification) {
-        this.classification = classification;
-    }
-
-    public Integer getClassification() {
-        return classification;
-    }
-
-    public void setAuditStatus(Integer auditStatus) {
-        this.auditStatus = auditStatus;
-    }
-
-    public Integer getAuditStatus() {
-        return auditStatus;
-    }
-
-    public void setInspectionStatus(Integer inspectionStatus) {
-        this.inspectionStatus = inspectionStatus;
-    }
-
-    public Integer getInspectionStatus() {
-        return inspectionStatus;
-    }
-
-    public void setInspectionAuditStatus(Integer inspectionAuditStatus) {
-        this.inspectionAuditStatus = inspectionAuditStatus;
-    }
-
-    public Integer getInspectionAuditStatus() {
-        return inspectionAuditStatus;
-    }
-
-    public void setDataSources(Integer dataSources) {
-        this.dataSources = dataSources;
-    }
-
-    public Integer getDataSources() {
-        return dataSources;
-    }
-
-    public void setFutureField1(String futureField1) {
-        this.futureField1 = futureField1;
-    }
-
-    public String getFutureField1() {
-        return futureField1;
-    }
-
-    public void setFutureField2(String futureField2) {
-        this.futureField2 = futureField2;
-    }
-
-    public String getFutureField2() {
-        return futureField2;
-    }
-
-    public void setFutureField3(String futureField3) {
-        this.futureField3 = futureField3;
-    }
-
-    public String getFutureField3() {
-        return futureField3;
-    }
-
-    public void setFutureField4(String futureField4) {
-        this.futureField4 = futureField4;
-    }
-
-    public String getFutureField4() {
-        return futureField4;
-    }
-
-    public void setFutureField5(String futureField5) {
-        this.futureField5 = futureField5;
-    }
-
-    public String getFutureField5() {
-        return futureField5;
-    }
-
-    public String getPrincipalTelephone() {
-        return principalTelephone;
-    }
-
-    public void setPrincipalTelephone(String principalTelephone) {
-        this.principalTelephone = principalTelephone;
+    public void setLabel(Integer label) {
+        this.label = label;
     }
 
     public Integer getNature() {
@@ -535,6 +333,46 @@ public class SysSupplier extends BaseEntity {
 
     public void setNature(Integer nature) {
         this.nature = nature;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getDetailedAddress() {
+        return detailedAddress;
+    }
+
+    public void setDetailedAddress(String detailedAddress) {
+        this.detailedAddress = detailedAddress;
     }
 
     public String getBusinessCategory() {
@@ -569,12 +407,60 @@ public class SysSupplier extends BaseEntity {
         this.mainProduct = mainProduct;
     }
 
+    public String getRegistrationNo() {
+        return registrationNo;
+    }
+
+    public void setRegistrationNo(String registrationNo) {
+        this.registrationNo = registrationNo;
+    }
+
+    public String getRegistrationNoInChina() {
+        return registrationNoInChina;
+    }
+
+    public void setRegistrationNoInChina(String registrationNoInChina) {
+        this.registrationNoInChina = registrationNoInChina;
+    }
+
+    public String getSupplierNameCn() {
+        return supplierNameCn;
+    }
+
+    public void setSupplierNameCn(String supplierNameCn) {
+        this.supplierNameCn = supplierNameCn;
+    }
+
+    public String getSupplierNameEn() {
+        return supplierNameEn;
+    }
+
+    public void setSupplierNameEn(String supplierNameEn) {
+        this.supplierNameEn = supplierNameEn;
+    }
+
     public String getSupplierNameOwn() {
         return supplierNameOwn;
     }
 
     public void setSupplierNameOwn(String supplierNameOwn) {
         this.supplierNameOwn = supplierNameOwn;
+    }
+
+    public Date getRegistrationTime() {
+        return registrationTime;
+    }
+
+    public void setRegistrationTime(Date registrationTime) {
+        this.registrationTime = registrationTime;
+    }
+
+    public Date getRegistrationTimeValidityPeriod() {
+        return registrationTimeValidityPeriod;
+    }
+
+    public void setRegistrationTimeValidityPeriod(Date registrationTimeValidityPeriod) {
+        this.registrationTimeValidityPeriod = registrationTimeValidityPeriod;
     }
 
     public String getLegalPerson() {
@@ -609,12 +495,108 @@ public class SysSupplier extends BaseEntity {
         this.principalName = principalName;
     }
 
+    public String getPrincipalTelephone() {
+        return principalTelephone;
+    }
+
+    public void setPrincipalTelephone(String principalTelephone) {
+        this.principalTelephone = principalTelephone;
+    }
+
     public String getPrincipalEmail() {
         return principalEmail;
     }
 
     public void setPrincipalEmail(String principalEmail) {
         this.principalEmail = principalEmail;
+    }
+
+    public Integer getClassification() {
+        return classification;
+    }
+
+    public void setClassification(Integer classification) {
+        this.classification = classification;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
+
+    public String getReviewRating() {
+        return reviewRating;
+    }
+
+    public void setReviewRating(String reviewRating) {
+        this.reviewRating = reviewRating;
+    }
+
+    public Integer getDeleteFlag() {
+        return deleteFlag;
+    }
+
+    public void setDeleteFlag(Integer deleteFlag) {
+        this.deleteFlag = deleteFlag;
+    }
+
+    public String getInspectionId() {
+        return inspectionId;
+    }
+
+    public void setInspectionId(String inspectionId) {
+        this.inspectionId = inspectionId;
+    }
+
+    public Integer getAuditStatus() {
+        return auditStatus;
+    }
+
+    public void setAuditStatus(Integer auditStatus) {
+        this.auditStatus = auditStatus;
+    }
+
+    public Integer getInspectionStatus() {
+        return inspectionStatus;
+    }
+
+    public void setInspectionStatus(Integer inspectionStatus) {
+        this.inspectionStatus = inspectionStatus;
+    }
+
+    public Integer getInspectionAuditStatus() {
+        return inspectionAuditStatus;
+    }
+
+    public void setInspectionAuditStatus(Integer inspectionAuditStatus) {
+        this.inspectionAuditStatus = inspectionAuditStatus;
+    }
+
+    public Integer getDataSources() {
+        return dataSources;
+    }
+
+    public void setDataSources(Integer dataSources) {
+        this.dataSources = dataSources;
+    }
+
+    public Date getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(Date entryDate) {
+        this.entryDate = entryDate;
+    }
+
+    public String getHeadPortraitPath() {
+        return headPortraitPath;
+    }
+
+    public void setHeadPortraitPath(String headPortraitPath) {
+        this.headPortraitPath = headPortraitPath;
     }
 
     public String getImagePath() {
@@ -633,14 +615,6 @@ public class SysSupplier extends BaseEntity {
         this.videoPath = videoPath;
     }
 
-    public String getHeadPortraitPath() {
-        return headPortraitPath;
-    }
-
-    public void setHeadPortraitPath(String headPortraitPath) {
-        this.headPortraitPath = headPortraitPath;
-    }
-
     @Override
     public String getRemark() {
         return remark;
@@ -649,6 +623,46 @@ public class SysSupplier extends BaseEntity {
     @Override
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getFutureField1() {
+        return futureField1;
+    }
+
+    public void setFutureField1(String futureField1) {
+        this.futureField1 = futureField1;
+    }
+
+    public String getFutureField2() {
+        return futureField2;
+    }
+
+    public void setFutureField2(String futureField2) {
+        this.futureField2 = futureField2;
+    }
+
+    public String getFutureField3() {
+        return futureField3;
+    }
+
+    public void setFutureField3(String futureField3) {
+        this.futureField3 = futureField3;
+    }
+
+    public String getFutureField4() {
+        return futureField4;
+    }
+
+    public void setFutureField4(String futureField4) {
+        this.futureField4 = futureField4;
+    }
+
+    public String getFutureField5() {
+        return futureField5;
+    }
+
+    public void setFutureField5(String futureField5) {
+        this.futureField5 = futureField5;
     }
 
     public List<SysProduct> getSysProductList() {
@@ -696,6 +710,7 @@ public class SysSupplier extends BaseEntity {
                 .append("inspectionStatus", getInspectionStatus())
                 .append("inspectionAuditStatus", getInspectionAuditStatus())
                 .append("dataSources", getDataSources())
+                .append("entryDate",getEntryDate())
                 .append("headPortraitPath", getHeadPortraitPath())
                 .append("imagePath", getImagePath())
                 .append("videoPath", getVideoPath())

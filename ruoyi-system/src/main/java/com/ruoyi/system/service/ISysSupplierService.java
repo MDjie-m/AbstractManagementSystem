@@ -6,6 +6,7 @@ import java.util.List;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.SysSupplier;
 import com.ruoyi.system.domain.vo.AuditVo;
+import com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +34,13 @@ public interface ISysSupplierService
      * @return 供应商集合
      */
     public List<SysSupplier> selectSysSupplierList(SysSupplier sysSupplier);
+
+    /**
+     * 根据产品查询供应商
+     * @param sysSupplier 供应商详细包括了产品
+     * @return 供应商集合
+     */
+    public List<SysSupplier> selectSupplierByProduct(SelectSupplierVo sysSupplier);
 
     /**
      * 新增供应商
