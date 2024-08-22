@@ -63,8 +63,8 @@ public class SysUser extends BaseEntity
     private String delFlag;
 
     /** 是否为子账号（0,代表否 1 代表是子账号） */
-    @Excel(name = "是否为子账号", readConverterExp = "0,代表否 1 代表是子账号")
-    private String subAccountFlag;
+    @Excel(name = "是否为子账号", readConverterExp = "0=非子账号 1=是子账号")
+    private Integer subAccountFlag;
 
     /** 供应商id */
     @Excel(name = "供应商id")
@@ -115,7 +115,7 @@ public class SysUser extends BaseEntity
     private Long roleId;
     private String userType;
 
-    public SysUser( Long userId, Long deptId, String userName, String nickName, String userType, String email, String phonenumber, String sex, String avatar, String password, String status, String delFlag, String subAccountFlag, String supplierId, String userDetailsId, Date expirationDate, String parentUserId, String position, String loginIp, Date loginDate, SysDept dept, List<SysRole> roles, Long[] roleIds, Long[] postIds, Long roleId) {
+    public SysUser( Long userId, Long deptId, String userName, String nickName, String userType, String email, String phonenumber, String sex, String avatar, String password, String status, String delFlag, Integer subAccountFlag, String supplierId, String userDetailsId, Date expirationDate, String parentUserId, String position, String loginIp, Date loginDate, SysDept dept, List<SysRole> roles, Long[] roleIds, Long[] postIds, Long roleId) {
         this.userId = userId;
         this.deptId = deptId;
         this.userName = userName;
@@ -389,7 +389,7 @@ public class SysUser extends BaseEntity
      * 获取
      * @return subAccountFlag
      */
-    public String getSubAccountFlag() {
+    public Integer getSubAccountFlag() {
         return subAccountFlag;
     }
 
@@ -397,7 +397,7 @@ public class SysUser extends BaseEntity
      * 设置
      * @param subAccountFlag
      */
-    public void setSubAccountFlag(String subAccountFlag) {
+    public void setSubAccountFlag(Integer subAccountFlag) {
         this.subAccountFlag = subAccountFlag;
     }
 
