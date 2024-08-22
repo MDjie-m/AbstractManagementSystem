@@ -111,7 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inventoryUnit != null  and inventoryUnit != ''">and inventory_unit = #{inventoryUnit}</if>
             <if test="minStartBatch != null">and start_batch &gt;= #{minStartBatch}</if>
             <if test="maxStartBatch != null">and start_batch &lt;= #{maxStartBatch}</if>
-            <if test="batchUnit != null  and inventoryUnit != ''">and batch_unit = #{batchUnit}</if>
+            <if test="batchUnit != null  and batchUnit != ''">and batch_unit = #{batchUnit}</if>
             <if test="origins != null and !origins.isEmpty()">
                 AND origin IN
                 <foreach collection="origins" item="origin" open="(" close=")" separator=",">
