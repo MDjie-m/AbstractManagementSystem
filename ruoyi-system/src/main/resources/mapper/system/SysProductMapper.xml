@@ -109,6 +109,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="startInventory != null">and inventory &gt;= #{startInventory}</if>
             <if test="endInventory != null">and inventory &lt;= #{endInventory}</if>
             <if test="inventoryUnit != null  and inventoryUnit != ''">and inventory_unit = #{inventoryUnit}</if>
+            <if test="minStartBatch != null">and start_batch &gt;= #{minStartBatch}</if>
+            <if test="maxStartBatch != null">and start_batch &lt;= #{maxStartBatch}</if>
+            <if test="batchUnit != null  and inventoryUnit != ''">and batch_unit = #{batchUnit}</if>
             <if test="origins != null and !origins.isEmpty()">
                 AND origin IN
                 <foreach collection="origins" item="origin" open="(" close=")" separator=",">
@@ -172,6 +175,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <!--             <if test="productModel != null  and productModel != ''"> and product_model = #{productModel}</if>-->
             <if test="quotationFlag != null "> and quotation_flag = #{quotationFlag}</if>
             <if test="sample != null">and sample=#{sample}</if>
+            <if test="specifications == '抄码'">and specifications = '抄码'</if>
+            <if test="specifications == '非抄码'">and specifications != '抄码'</if>
             <if test="status != null">and status=#{status}</if>
             <if test="storageMode !=null">and storage_mode=#{storageMode}</if>
             <if test="warehouseAddress!=null and warehouseAddress!=''">and warehouse_address like concat('%', #{warehouseAddress}, '%')</if>
