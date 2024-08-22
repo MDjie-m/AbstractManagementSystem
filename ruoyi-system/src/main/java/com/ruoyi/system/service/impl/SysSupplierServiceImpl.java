@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.excel.EasyExcel;
@@ -16,6 +17,7 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.vo.AuditVo;
+import com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo;
 import com.ruoyi.system.easyexcel.SupplierListener;
 import com.ruoyi.system.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +76,11 @@ public class SysSupplierServiceImpl implements ISysSupplierService
         return sysSupplierMapper.selectSysSupplierList(sysSupplier);
     }
 
+    @Override
+    public List<SysSupplier> selectSupplierByProduct(SelectSupplierVo sysSupplier) {
+        return sysSupplierMapper.selectSupplierByProduct(sysSupplier);
+    }
+
     /**
      * 新增供应商
      *
@@ -92,6 +99,8 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                 if (userMapper.checkUserNameUnique(sysSupplier.getPrincipalTelephone()) == null) {
                     // 设置供应商id
                     sysSupplier.setSupplierId(UUID.randomUUID().toString());
+                    // 设置供应商入驻时间
+                    sysSupplier.setEntryDate(new Date());
 
                     String supplierId = sysSupplier.getSupplierId();
                     String legalPersonTelephone = sysSupplier.getLegalPersonTelephone();
@@ -134,7 +143,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                     // 删除标志 0-存在
                     user.setDelFlag("0");
                     // 是否为子账号 0-否
-                    user.setSubAccountFlag("0");
+                    user.setSubAccountFlag(0);
                     // 绑定供应商id
                     user.setSupplierId(supplierId);
                     // 注册主账号
@@ -162,7 +171,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                     // 删除标志 0-存在
                     userChild.setDelFlag("0");
                     // 是否为子账号 1-是
-                    userChild.setSubAccountFlag("1");
+                    userChild.setSubAccountFlag(1);
                     // 子账号的父级id
                     userChild.setParentUserId(String.valueOf(user.getUserId()));
                     i = userMapper.insertUser(userChild);
@@ -340,6 +349,16 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                 sysProduct.setSupplierName(supplierName);
                 // 是主营产品
                 sysProduct.setMainProduct(1);
+                // 删除标识 0-未删除
+                sysProduct.setDelFlag(0);
+                // 未报价
+                sysProduct.setQuoteStatus(0);
+                // 未询价
+                sysProduct.setInquiryStatus(0);
+                // 不常报价
+                sysProduct.setQuoteListFlag(0);
+                // 不常询价
+                sysProduct.setInquiryListFlag(0);
                 list.add(sysProduct);
             }
             if (list.size() > 0)
