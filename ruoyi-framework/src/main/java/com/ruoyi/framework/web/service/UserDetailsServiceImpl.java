@@ -1,5 +1,6 @@
 package com.ruoyi.framework.web.service;
 
+import com.ruoyi.common.core.domain.entity.SysRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class UserDetailsServiceImpl implements UserDetailsService
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
         SysUser user = userService.selectUserByUserName(username);
+        //链式法则获取角色id组
+        user.setRoleIds(user.getRoles().stream().map(
+                SysRole::getRoleId).distinct().toArray(Long[]::new));
         if (StringUtils.isNull(user))
         {
             log.info("登录用户：{} 不存在.", username);
