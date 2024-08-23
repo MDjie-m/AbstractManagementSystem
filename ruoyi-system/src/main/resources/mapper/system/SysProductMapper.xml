@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                del_flag AS delFlag,quote_status AS quoteStatus,inquiry_status AS inquiryStatus,buyer_id AS buyerId,
                inquiry_list_flag AS inquiryListFlag,quote_list_flag AS quoteListFlag,remark AS remark,
                mark AS mark,unitprice AS unitprice,unitprice_unit AS unitpriceUnit,
-               start_batch AS startBatch,batch_unit AS batchUnit
+               start_batch AS startBatch,batch_unit AS batchUnit,create_time as createTime,update_time as updateTime
                from sys_product
     </sql>
 
@@ -90,7 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 a.del_flag AS delFlag,a.quote_status AS quoteStatus,a.inquiry_status AS inquiryStatus,a.buyer_id AS buyerId,
                 a.inquiry_list_flag AS inquiryListFlag,a.quote_list_flag AS quoteListFlag,a.remark AS remark,
                 a.mark AS mark,a.unitprice AS unitprice,a.unitprice_unit AS unitpriceUnit,
-                a.start_batch AS startBatch,a.batch_unit AS batchUnit,
+                a.start_batch AS startBatch,a.batch_unit AS batchUnit,a.create_time as createTime,a.update_time as updateTime,
                 b.supplier_name_cn as supplierNameCn,b.supplier_name_en as supplierNameEn,b.supplier_name_own as supplierNameOwn
                 FROM sys_product a
                 LEFT JOIN sys_supplier b ON a.supplier_id = b.supplier_id
@@ -223,7 +223,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 a.del_flag AS delFlag,a.quote_status AS quoteStatus,a.inquiry_status AS inquiryStatus,a.buyer_id AS buyerId,
                 a.inquiry_list_flag AS inquiryListFlag,a.quote_list_flag AS quoteListFlag,a.remark AS remark,
                 a.mark AS mark,a.unitprice AS unitprice,a.unitprice_unit AS unitpriceUnit,
-                a.start_batch AS startBatch,a.batch_unit AS batchUnit,
+                a.start_batch AS startBatch,a.batch_unit AS batchUnit,a.create_time as createTime,a.update_time as updateTime,
                 b.supplier_name_cn as supplierNameCn,b.supplier_name_en as supplierNameEn,b.supplier_name_own as supplierNameOwn
                 FROM sys_product a
                 LEFT JOIN sys_supplier b ON a.supplier_id = b.supplier_id
@@ -305,7 +305,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="batchUnit != null and batchUnit != ''">batch_unit,</if>
             <if test="futureField1 != null and futureField1 != ''">future_field1,</if>
             <if test="futureField2 != null and futureField2 != ''">future_field2,</if>
-            <if test="futureField3 != null and futureField3 != ''">future_field3</if>
+            <if test="futureField3 != null and futureField3 != ''">future_field3,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="productId != null and productId != ''">#{productId},</if>
@@ -364,7 +365,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="batchUnit != null and batchUnit != ''">#{batchUnit},</if>
             <if test="futureField1 != null and futureField1 != ''">#{futureField1},</if>
             <if test="futureField2 != null and futureField2 != ''">#{futureField2},</if>
-            <if test="futureField3 != null and futureField3 != ''">#{futureField3}</if>
+            <if test="futureField3 != null and futureField3 != ''">#{futureField3},</if>
+            sysdate()
          </trim>
     </insert>
 
