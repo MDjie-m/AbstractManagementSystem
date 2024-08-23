@@ -103,8 +103,6 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                     sysSupplier.setEntryDate(new Date());
                     // 设置数据创建时间
                     sysSupplier.setCreateTime(new Date());
-                    // 设置数据修改时间
-                    sysSupplier.setUpdateTime(new Date());
 
                     String supplierId = sysSupplier.getSupplierId();
                     String legalPersonTelephone = sysSupplier.getLegalPersonTelephone();
@@ -366,8 +364,6 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                 sysProduct.setInquiryListFlag(0);
                 // 创建时间
                 sysProduct.setCreateTime(new Date());
-                // 修改时间
-                sysProduct.setUpdateTime(new Date());
                 list.add(sysProduct);
             }
             if (list.size() > 0)
