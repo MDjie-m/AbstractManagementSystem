@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysProductStandardMapper">
+    
+    <resultMap type="SysProductStandard" id="SysProductStandardResult">
+        <result property="productId"    column="product_id"    />
+        <result property="productName"    column="product_name"    />
+        <result property="primaryCategory"    column="primary_category"    />
+        <result property="primaryCategoryName"    column="primary_category_name"    />
+        <result property="secondaryCategory"    column="secondary_category"    />
+        <result property="secondaryCategoryName"    column="secondary_category_name"    />
+        <result property="tertiaryCategory"    column="tertiary_category"    />
+        <result property="tertiaryCategoryName"    column="tertiary_category_name"    />
+        <result property="quaternaryCategory"    column="quaternary_category"    />
+        <result property="quaternaryCategoryName"    column="quaternary_category_name"    />
+        <result property="fifthCategory"    column="fifth_category"    />
+        <result property="fifthCategoryName"    column="fifth_category_name"    />
+        <result property="cnPrimaryCategory"    column="cn_primary_category"    />
+        <result property="cnPrimaryCategoryName"    column="cn_primary_category_name"    />
+        <result property="cnSecondaryCategory"    column="cn_secondary_category"    />
+        <result property="cnSecondaryCategoryName"    column="cn_secondary_category_name"    />
+        <result property="cnTertiaryCategory"    column="cn_tertiary_category"    />
+        <result property="cnTertiaryCategoryName"    column="cn_tertiary_category_name"    />
+        <result property="cnQuaternaryCategory"    column="cn_quaternary_category"    />
+        <result property="cnQuaternaryCategoryName"    column="cn_quaternary_category_name"    />
+        <result property="cnFifthCategory"    column="cn_fifth_category"    />
+        <result property="cnFifthCategoryName"    column="cn_fifth_category_name"    />
+        <result property="domesticImportedType"    column="domestic_imported_type"    />
+        <result property="storageMode"    column="storage_mode"    />
+        <result property="specifications"    column="specifications"    />
+        <result property="tagId"    column="tag_id"    />
+        <result property="tagName"    column="tag_name"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="imagePath"    column="image_path"    />
+        <result property="videoPath"    column="video_path"    />
+        <result property="productModel"    column="product_model"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysProductStandardVo">
+        select product_id, product_name, primary_category, primary_category_name, secondary_category, secondary_category_name, tertiary_category, tertiary_category_name, quaternary_category, quaternary_category_name, fifth_category, fifth_category_name, cn_primary_category, cn_primary_category_name, cn_secondary_category, cn_secondary_category_name, cn_tertiary_category, cn_tertiary_category_name, cn_quaternary_category, cn_quaternary_category_name, cn_fifth_category, cn_fifth_category_name, domestic_imported_type, storage_mode, specifications, tag_id, tag_name, del_flag, image_path, video_path, product_model, status, remark, create_time, update_time from sys_product_standard
+    </sql>
+
+    <select id="selectSysProductStandardList" parameterType="SysProductStandard" resultMap="SysProductStandardResult">
+        <include refid="selectSysProductStandardVo"/>
+        <where>  
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="primaryCategory != null  and primaryCategory != ''"> and primary_category = #{primaryCategory}</if>
+            <if test="primaryCategoryName != null  and primaryCategoryName != ''"> and primary_category_name like concat('%', #{primaryCategoryName}, '%')</if>
+            <if test="secondaryCategory != null  and secondaryCategory != ''"> and secondary_category = #{secondaryCategory}</if>
+            <if test="secondaryCategoryName != null  and secondaryCategoryName != ''"> and secondary_category_name like concat('%', #{secondaryCategoryName}, '%')</if>
+            <if test="tertiaryCategory != null  and tertiaryCategory != ''"> and tertiary_category = #{tertiaryCategory}</if>
+            <if test="tertiaryCategoryName != null  and tertiaryCategoryName != ''"> and tertiary_category_name like concat('%', #{tertiaryCategoryName}, '%')</if>
+            <if test="quaternaryCategory != null  and quaternaryCategory != ''"> and quaternary_category = #{quaternaryCategory}</if>
+            <if test="quaternaryCategoryName != null  and quaternaryCategoryName != ''"> and quaternary_category_name like concat('%', #{quaternaryCategoryName}, '%')</if>
+            <if test="fifthCategory != null  and fifthCategory != ''"> and fifth_category = #{fifthCategory}</if>
+            <if test="fifthCategoryName != null  and fifthCategoryName != ''"> and fifth_category_name like concat('%', #{fifthCategoryName}, '%')</if>
+            <if test="cnPrimaryCategory != null  and cnPrimaryCategory != ''"> and cn_primary_category = #{cnPrimaryCategory}</if>
+            <if test="cnPrimaryCategoryName != null  and cnPrimaryCategoryName != ''"> and cn_primary_category_name like concat('%', #{cnPrimaryCategoryName}, '%')</if>
+            <if test="cnSecondaryCategory != null  and cnSecondaryCategory != ''"> and cn_secondary_category = #{cnSecondaryCategory}</if>
+            <if test="cnSecondaryCategoryName != null  and cnSecondaryCategoryName != ''"> and cn_secondary_category_name like concat('%', #{cnSecondaryCategoryName}, '%')</if>
+            <if test="cnTertiaryCategory != null  and cnTertiaryCategory != ''"> and cn_tertiary_category = #{cnTertiaryCategory}</if>
+            <if test="cnTertiaryCategoryName != null  and cnTertiaryCategoryName != ''"> and cn_tertiary_category_name like concat('%', #{cnTertiaryCategoryName}, '%')</if>
+            <if test="cnQuaternaryCategory != null  and cnQuaternaryCategory != ''"> and cn_quaternary_category = #{cnQuaternaryCategory}</if>
+            <if test="cnQuaternaryCategoryName != null  and cnQuaternaryCategoryName != ''"> and cn_quaternary_category_name like concat('%', #{cnQuaternaryCategoryName}, '%')</if>
+            <if test="cnFifthCategory != null  and cnFifthCategory != ''"> and cn_fifth_category = #{cnFifthCategory}</if>
+            <if test="cnFifthCategoryName != null  and cnFifthCategoryName != ''"> and cn_fifth_category_name like concat('%', #{cnFifthCategoryName}, '%')</if>
+            <if test="domesticImportedType != null "> and domestic_imported_type = #{domesticImportedType}</if>
+            <if test="storageMode != null  and storageMode != ''"> and storage_mode = #{storageMode}</if>
+            <if test="specifications != null  and specifications != ''"> and specifications = #{specifications}</if>
+            <if test="tagId != null  and tagId != ''"> and tag_id = #{tagId}</if>
+            <if test="tagName != null  and tagName != ''"> and tag_name like concat('%', #{tagName}, '%')</if>
+            <if test="imagePath != null  and imagePath != ''"> and image_path = #{imagePath}</if>
+            <if test="videoPath != null  and videoPath != ''"> and video_path = #{videoPath}</if>
+            <if test="productModel != null  and productModel != ''"> and product_model = #{productModel}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysProductStandardByProductId" parameterType="String" resultMap="SysProductStandardResult">
+        <include refid="selectSysProductStandardVo"/>
+        where product_id = #{productId}
+    </select>
+
+    <insert id="insertSysProductStandard" parameterType="SysProductStandard">
+        insert into sys_product_standard
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">product_id,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="primaryCategory != null">primary_category,</if>
+            <if test="primaryCategoryName != null">primary_category_name,</if>
+            <if test="secondaryCategory != null">secondary_category,</if>
+            <if test="secondaryCategoryName != null">secondary_category_name,</if>
+            <if test="tertiaryCategory != null">tertiary_category,</if>
+            <if test="tertiaryCategoryName != null">tertiary_category_name,</if>
+            <if test="quaternaryCategory != null">quaternary_category,</if>
+            <if test="quaternaryCategoryName != null">quaternary_category_name,</if>
+            <if test="fifthCategory != null">fifth_category,</if>
+            <if test="fifthCategoryName != null">fifth_category_name,</if>
+            <if test="cnPrimaryCategory != null">cn_primary_category,</if>
+            <if test="cnPrimaryCategoryName != null">cn_primary_category_name,</if>
+            <if test="cnSecondaryCategory != null">cn_secondary_category,</if>
+            <if test="cnSecondaryCategoryName != null">cn_secondary_category_name,</if>
+            <if test="cnTertiaryCategory != null">cn_tertiary_category,</if>
+            <if test="cnTertiaryCategoryName != null">cn_tertiary_category_name,</if>
+            <if test="cnQuaternaryCategory != null">cn_quaternary_category,</if>
+            <if test="cnQuaternaryCategoryName != null">cn_quaternary_category_name,</if>
+            <if test="cnFifthCategory != null">cn_fifth_category,</if>
+            <if test="cnFifthCategoryName != null">cn_fifth_category_name,</if>
+            <if test="domesticImportedType != null">domestic_imported_type,</if>
+            <if test="storageMode != null">storage_mode,</if>
+            <if test="specifications != null">specifications,</if>
+            <if test="tagId != null">tag_id,</if>
+            <if test="tagName != null">tag_name,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="imagePath != null">image_path,</if>
+            <if test="videoPath != null">video_path,</if>
+            <if test="productModel != null">product_model,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productId != null">#{productId},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="primaryCategory != null">#{primaryCategory},</if>
+            <if test="primaryCategoryName != null">#{primaryCategoryName},</if>
+            <if test="secondaryCategory != null">#{secondaryCategory},</if>
+            <if test="secondaryCategoryName != null">#{secondaryCategoryName},</if>
+            <if test="tertiaryCategory != null">#{tertiaryCategory},</if>
+            <if test="tertiaryCategoryName != null">#{tertiaryCategoryName},</if>
+            <if test="quaternaryCategory != null">#{quaternaryCategory},</if>
+            <if test="quaternaryCategoryName != null">#{quaternaryCategoryName},</if>
+            <if test="fifthCategory != null">#{fifthCategory},</if>
+            <if test="fifthCategoryName != null">#{fifthCategoryName},</if>
+            <if test="cnPrimaryCategory != null">#{cnPrimaryCategory},</if>
+            <if test="cnPrimaryCategoryName != null">#{cnPrimaryCategoryName},</if>
+            <if test="cnSecondaryCategory != null">#{cnSecondaryCategory},</if>
+            <if test="cnSecondaryCategoryName != null">#{cnSecondaryCategoryName},</if>
+            <if test="cnTertiaryCategory != null">#{cnTertiaryCategory},</if>
+            <if test="cnTertiaryCategoryName != null">#{cnTertiaryCategoryName},</if>
+            <if test="cnQuaternaryCategory != null">#{cnQuaternaryCategory},</if>
+            <if test="cnQuaternaryCategoryName != null">#{cnQuaternaryCategoryName},</if>
+            <if test="cnFifthCategory != null">#{cnFifthCategory},</if>
+            <if test="cnFifthCategoryName != null">#{cnFifthCategoryName},</if>
+            <if test="domesticImportedType != null">#{domesticImportedType},</if>
+            <if test="storageMode != null">#{storageMode},</if>
+            <if test="specifications != null">#{specifications},</if>
+            <if test="tagId != null">#{tagId},</if>
+            <if test="tagName != null">#{tagName},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="imagePath != null">#{imagePath},</if>
+            <if test="videoPath != null">#{videoPath},</if>
+            <if test="productModel != null">#{productModel},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysProductStandard" parameterType="SysProductStandard">
+        update sys_product_standard
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="primaryCategory != null">primary_category = #{primaryCategory},</if>
+            <if test="primaryCategoryName != null">primary_category_name = #{primaryCategoryName},</if>
+            <if test="secondaryCategory != null">secondary_category = #{secondaryCategory},</if>
+            <if test="secondaryCategoryName != null">secondary_category_name = #{secondaryCategoryName},</if>
+            <if test="tertiaryCategory != null">tertiary_category = #{tertiaryCategory},</if>
+            <if test="tertiaryCategoryName != null">tertiary_category_name = #{tertiaryCategoryName},</if>
+            <if test="quaternaryCategory != null">quaternary_category = #{quaternaryCategory},</if>
+            <if test="quaternaryCategoryName != null">quaternary_category_name = #{quaternaryCategoryName},</if>
+            <if test="fifthCategory != null">fifth_category = #{fifthCategory},</if>
+            <if test="fifthCategoryName != null">fifth_category_name = #{fifthCategoryName},</if>
+            <if test="cnPrimaryCategory != null">cn_primary_category = #{cnPrimaryCategory},</if>
+            <if test="cnPrimaryCategoryName != null">cn_primary_category_name = #{cnPrimaryCategoryName},</if>
+            <if test="cnSecondaryCategory != null">cn_secondary_category = #{cnSecondaryCategory},</if>
+            <if test="cnSecondaryCategoryName != null">cn_secondary_category_name = #{cnSecondaryCategoryName},</if>
+            <if test="cnTertiaryCategory != null">cn_tertiary_category = #{cnTertiaryCategory},</if>
+            <if test="cnTertiaryCategoryName != null">cn_tertiary_category_name = #{cnTertiaryCategoryName},</if>
+            <if test="cnQuaternaryCategory != null">cn_quaternary_category = #{cnQuaternaryCategory},</if>
+            <if test="cnQuaternaryCategoryName != null">cn_quaternary_category_name = #{cnQuaternaryCategoryName},</if>
+            <if test="cnFifthCategory != null">cn_fifth_category = #{cnFifthCategory},</if>
+            <if test="cnFifthCategoryName != null">cn_fifth_category_name = #{cnFifthCategoryName},</if>
+            <if test="domesticImportedType != null">domestic_imported_type = #{domesticImportedType},</if>
+            <if test="storageMode != null">storage_mode = #{storageMode},</if>
+            <if test="specifications != null">specifications = #{specifications},</if>
+            <if test="tagId != null">tag_id = #{tagId},</if>
+            <if test="tagName != null">tag_name = #{tagName},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="imagePath != null">image_path = #{imagePath},</if>
+            <if test="videoPath != null">video_path = #{videoPath},</if>
+            <if test="productModel != null">product_model = #{productModel},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where product_id = #{productId}
+    </update>
+
+    <delete id="deleteSysProductStandardByProductId" parameterType="String">
+        delete from sys_product_standard where product_id = #{productId}
+    </delete>
+
+    <delete id="deleteSysProductStandardByProductIds" parameterType="String">
+        delete from sys_product_standard where product_id in 
+        <foreach item="productId" collection="array" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </delete>
+</mapper>
