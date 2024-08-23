@@ -44,6 +44,9 @@ public class SysInquiry extends BaseEntity
     /** 美金报价 */
     private BigDecimal priceUsd;
 
+    /** 报价单位 */
+    private String unit;
+
     /** 0-未删除，1-已删除 */
     private Long delFlg;
 
