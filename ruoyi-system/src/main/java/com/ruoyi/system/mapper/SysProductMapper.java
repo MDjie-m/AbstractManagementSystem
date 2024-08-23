@@ -87,5 +87,5 @@ public interface SysProductMapper
 
     int updateQuoteListStatus(SysProDuctDTO sysProDuctDTO);
 
-    int updateInquiryListStatus(@Param("productId")String productId,@Param("status")String status);
+    int updateInquiryListStatus(SysProDuctDTO sysProDuctDTO);
 }
