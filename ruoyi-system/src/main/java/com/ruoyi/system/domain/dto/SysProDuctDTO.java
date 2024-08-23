@@ -9,6 +9,10 @@ public class SysProDuctDTO extends SysProduct {
     private String names;
     private String codes;
 
+    /** 切换报价清单与询价清单使用 */
+    private List<String> productIds;
+    private Integer status;
+
     /** 标识是否查找供应商名称 */
     private boolean flag;
 
@@ -43,6 +47,24 @@ public class SysProDuctDTO extends SysProduct {
     //范围查询：库存和起批，单价范围、生产日期
     //todo 目前只弄了库存，起批和单价范围、生成日期范围都没弄，但是库存的范围查询暂时存疑，生产日期可以为null，这里要注意一下。
 
+
+    public List<String> getProductIds() {
+        return productIds;
+    }
+
+    public void setProductIds(List<String> productIds) {
+        this.productIds = productIds;
+    }
+
+    @Override
+    public Integer getStatus() {
+        return status;
+    }
+
+    @Override
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public Integer getMinStartBatch() {
         return minStartBatch;
