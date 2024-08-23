@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select
             sec.id, sec.section_id, sec.topic, sec.duration, sec.type, sec.content, sec.course_id, sec.content_type ,
             CASE
-                WHEN re.end_time IS NOT NULL THEN sec.content_url
+                WHEN re.id IS NOT NULL THEN sec.content_url
                 ELSE NULL
             END AS content_url,
             re.end_time as endTime , re.finish_status, re.last_learn_time

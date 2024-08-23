@@ -322,4 +322,22 @@ public class ConsultantCourseController extends BaseController {
         }
         return AjaxResult.error("记录课程章节异常");
     }
+    
+    /**
+     * 查询我的课程列表
+     */
+//    @PreAuthorize("@ss.hasPermi('course:course:list')")
+    @PostMapping("/myCourseList")
+    @ApiOperation("查询我的课程列表")
+    public TableDataInfo myCourseList(@RequestBody CourCourse courCourse, HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        courCourse.setUserId(consultId);
+        courCourse.setUserType(2);//咨询师
+        startPage();
+
+        List<CourCourse> courseList = courCourseService.myCourseList(courCourse);
+        return getDataTable(courseList);
+    }
+    
 }

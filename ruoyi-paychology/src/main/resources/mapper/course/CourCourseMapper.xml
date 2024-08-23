@@ -17,6 +17,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="detail"    column="detail"    />
         <result property="onSale"    column="on_sale"    />
         <result property="serviceTo"    column="service_to"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userType"    column="user_type"    />
 <!--        <result property="createBy"    column="create_by"    />-->
 <!--        <result property="createTime"    column="create_time"    />-->
 <!--        <result property="updateTime"    column="update_time"    />-->
@@ -71,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                (SELECT COUNT(DISTINCT user_id) AS learning_people_count
                 FROM cour_user_course_section
                 WHERE course_id = #{id}) as studyNum,
-               COALESCE(section_info.section_count, 0) AS sectionCount,
+               COALESCE(section_info.section_num, 0) AS sectionNum,
                COALESCE(section_info.total_duration, 0) AS totalDuration
                
         from cour_course cour
@@ -79,7 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             (
                 SELECT
                     course_id,
-                    COUNT(*) AS section_count,
+                    COUNT(*) AS section_num,
                     SUM(duration) AS total_duration
                 FROM
                     cour_section
@@ -209,4 +211,49 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         GROUP BY c.id
     </select>
+    
+    
+    <select id="myCourseList" resultType="com.renxin.course.domain.CourCourse">
+        select cour.id, cour.name, cour.type, cour.pay_type, cour.author, cour.user_name, cour.url, cour.icon_url, cour.price, cour.detail, cour.on_sale,
+               cour.create_by, cour.create_time, cour.update_time, cour.update_by,cour.service_to ,
+               COALESCE(section_info.section_num, 0) AS sectionNum,
+               COALESCE(user_section_info.completed_sections, 0) AS completedSectionNum,
+               COALESCE(user_section_info.total_learn_time, 0) AS totalLearnTime
+        from cour_course cour
+        left join psy_consultant_order od on od.server_type = 4 and od.server_id = cour.id and del_flag = 0 and status = 2
+        LEFT JOIN
+             (
+                 SELECT
+                     course_id,
+                     COUNT(*) AS section_num,
+                     SUM(duration) AS total_duration
+                 FROM
+                     cour_section
+                 WHERE
+                     delete_flag = 0
+                 GROUP BY
+                     course_id
+             ) AS section_info ON cour.id = section_info.course_id
+        
+        left join 
+            (
+                SELECT
+                    course_id,
+                    COUNT(CASE WHEN finish_status = 1 THEN section_id END) AS completed_sections,
+                    SUM(end_time) AS total_learn_time
+                FROM
+                    cour_user_course_section
+                WHERE
+                    user_id = #{userId} and user_type = 2
+                GROUP BY
+                    course_id
+            ) as user_section_info on cour.id = user_section_info.course_id
+        
+        where 1=1 
+            and od.pay_consultant_id = #{userId}
+
+
+    </select>
+    
+    
 </mapper>

@@ -68,6 +68,10 @@ public class CourseVO implements Serializable {
     @ApiModelProperty("是否购买")
     private Integer isBuy;
 
+    
+    private Integer sectionNum;//章节数量
+    private Integer totalDuration;//总时长
+
     @ApiModelProperty("章节列表")
     private List sectionList;
 

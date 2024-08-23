@@ -93,4 +93,6 @@ public interface CourCourseMapper
 
     public List<CourseListVO> getCourseListByClassId(CourCourse courCourse);
 
+    public List<CourCourse> myCourseList(CourCourse req);
+
 }

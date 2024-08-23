@@ -1,5 +1,6 @@
 package com.renxin.course.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.course.constant.CourConstant;
@@ -204,4 +205,14 @@ public class CourCourseServiceImpl implements ICourCourseService
         return courCourseMapper.getCourseListByClassId(courCourse);
     }
 
+    //我的已购课程列表
+    @Override
+    public List<CourCourse> myCourseList(CourCourse req){
+        List<CourCourse> courseList = new ArrayList<>();
+        if (req.getUserType() == 2){//咨询师
+            courseList = courCourseMapper.myCourseList(req);
+        }
+        return courseList;
+    }
+    
 }

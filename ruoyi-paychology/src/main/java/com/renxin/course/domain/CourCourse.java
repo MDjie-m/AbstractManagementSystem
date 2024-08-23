@@ -77,13 +77,19 @@ public class CourCourse extends BaseEntity
     
     private List<Long> idList;
     private String ids;
+    
+    private Integer studyNum;//学习人数
+    private Integer sectionNum;//章节数量
+    private Integer totalDuration;//总时长
+    private Integer completedSectionNum;//已学完的课程数
+    private Integer totalLearnTime;//学习总时长
+    
+    private Long userId;
+    private Integer userType;//1.来访者  2.咨询师
 
     //章节清单
     private List<CourSection> sectionList;
-
-    private Integer studyNum;//学习人数
-    private Integer sectionCount;//章节数量
-    private Integer totalDuration;//总时长
+    
     
     @Override
     public String toString() {

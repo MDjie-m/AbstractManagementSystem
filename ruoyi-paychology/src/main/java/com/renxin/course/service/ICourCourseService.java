@@ -107,6 +107,9 @@ public interface ICourCourseService
      * 根据条件询课程列表
      */
     public List<CourCourse> queryCourCourseList(CourseQueryDTO courseQueryDTO);
+    
+    //我的已购课程列表
+    public List<CourCourse> myCourseList(CourCourse courCourse);
 
 
     public List<CourseListVO> getCourseListByClassId(CourCourse courCourse);
