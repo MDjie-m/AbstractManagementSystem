@@ -710,7 +710,7 @@ public class SysSupplier extends BaseEntity {
                 .append("inspectionStatus", getInspectionStatus())
                 .append("inspectionAuditStatus", getInspectionAuditStatus())
                 .append("dataSources", getDataSources())
-                .append("entryDate",getEntryDate())
+                .append("entryDate", getEntryDate())
                 .append("headPortraitPath", getHeadPortraitPath())
                 .append("imagePath", getImagePath())
                 .append("videoPath", getVideoPath())

@@ -4,6 +4,9 @@ import com.alibaba.excel.annotation.format.DateTimeFormat;
 
 import java.util.Date;
 
+/**
+ * 供应商筛选Vo
+ */
 public class SelectSupplierVo {
 
     /**
@@ -114,10 +117,16 @@ public class SelectSupplierVo {
     private Integer dataSources;
 
     /**
-     * 入驻时间
+     * 起止入驻时间
      */
     @DateTimeFormat("yyyy-mm-dd")
-    private Date entryDate;
+    private Date startEntryDate;
+
+    /**
+     * 止入驻时间
+     */
+    @DateTimeFormat("yyyy-mm-dd")
+    private Date endEntryDate;
 
     /**
      * 内部一级分类
@@ -312,12 +321,12 @@ public class SelectSupplierVo {
         this.dataSources = dataSources;
     }
 
-    public Date getEntryDate() {
-        return entryDate;
+    public Date getStartEntryDate() {
+        return startEntryDate;
     }
 
-    public void setEntryDate(Date entryDate) {
-        this.entryDate = entryDate;
+    public void setStartEntryDate(Date startEntryDate) {
+        this.startEntryDate = startEntryDate;
     }
 
     public String getCnPrimaryCategory() {
@@ -358,5 +367,13 @@ public class SelectSupplierVo {
 
     public void setCnFifthCategory(String cnFifthCategory) {
         this.cnFifthCategory = cnFifthCategory;
+    }
+
+    public Date getEndEntryDate() {
+        return endEntryDate;
+    }
+
+    public void setEndEntryDate(Date endEntryDate) {
+        this.endEntryDate = endEntryDate;
     }
 }
