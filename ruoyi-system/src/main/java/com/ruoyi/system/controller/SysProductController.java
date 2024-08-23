@@ -143,7 +143,7 @@ public class SysProductController extends BaseController
     }
 
     /**
-     * 新增产品，产品分类要同时存进口和国产，进口没有的就不存。
+     * 新增产品
      */
     @PreAuthorize("@ss.hasPermi('system:product:add')")
     @Log(title = "产品", businessType = BusinessType.INSERT)
@@ -188,11 +188,12 @@ public class SysProductController extends BaseController
     /**
      * 切换产品的报价清单状态
      */
+    //todo 报价清单和询价清单批量？
     @PreAuthorize("@ss.hasPermi('system:product:updateStatus')")
-    @GetMapping("/updateQuoteListStatus")
-    public AjaxResult updateQuoteListStatus(@RequestParam String productId,@RequestParam String status)
+    @PostMapping("/updateQuoteListStatus")
+    public AjaxResult updateQuoteListStatus(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
         // 跟上面切换是否可报价状态的逻辑一致
-        return toAjax(sysProductService.updateQuoteListStatus(productId,status));
+        return toAjax(sysProductService.updateQuoteListStatus(sysProDuctDTO));
     }
 }
