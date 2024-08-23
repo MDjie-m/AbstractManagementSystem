@@ -9,11 +9,13 @@ import java.util.List;
 
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.core.domain.model.LoginUser;
+import com.renxin.common.domain.RelateInfo;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.*;
 import com.renxin.psychology.mapper.PsyConsultMapper;
+import com.renxin.psychology.mapper.PsyConsultantOrderMapper;
 import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
 import com.renxin.psychology.service.*;
 import org.apache.commons.lang3.ObjectUtils;
@@ -51,7 +53,13 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     
     @Autowired
     private IPsyConsultantWorkTemplateService consultantWorkTemplateService;
+    
+    @Autowired
+    private IPsyConsultantOrderService consultantOrderService;
 
+    @Autowired
+    private PsyConsultantOrderMapper psyConsultantOrderMapper;
+    
     /**
      * 查询团队督导(组织)
      * 
@@ -407,6 +415,25 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
                 break;
         }
         return weekday;
+    }
+
+
+    //获取团队督导(组织)与本用户关联信息
+    @Override
+    public RelateInfo getTeamRelateInfo(PsyConsultantTeamSupervision req){
+        RelateInfo relateInfo = new RelateInfo();
+        PsyConsultantOrder orderReq = new PsyConsultantOrder();
+            orderReq.setPayConsultantId(req.getConsultantId());
+            orderReq.setServerType("1");//团督
+            orderReq.setServerId(req.getId()+"");
+            orderReq.setStatus("2");//订单已完成
+        List<PsyConsultantOrder> orderList = psyConsultantOrderMapper.selectPsyConsultantOrderList(orderReq);
+        if (ObjectUtils.isNotEmpty(orderList)){
+            relateInfo.setIsBuy(1);//已购
+        }else {
+            relateInfo.setIsBuy(0);//未购
+        }
+        return relateInfo;
     }
     
 }

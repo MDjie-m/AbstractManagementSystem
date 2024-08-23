@@ -15,6 +15,7 @@ import com.renxin.psychology.service.*;
 import com.renxin.wechat.service.WechatPayV3ApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -148,6 +149,9 @@ public class ConsultantOrderController extends BaseController
             case PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_TEAM_SUP, null);
                 PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
+                if (ObjectUtils.isEmpty(team)){
+                    throw new ServiceException("未找到该id的团队督导");
+                }
                 originalPrice = team.getPrice();
                 serverName = team.getTitle() + "-第" + team.getPeriodNo() +"期";
                 //TODO 超卖问题.
@@ -160,6 +164,9 @@ public class ConsultantOrderController extends BaseController
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_SUP, null);
                 //PsyConsultantTeamSupervision consultantExp = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
                 PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(consultantOrder.getServerId());
+                if (ObjectUtils.isEmpty(serverDetail)){
+                    throw new ServiceException("未找到该id的个督服务, 请传入relationId");
+                }
                 originalPrice = serverDetail.getPrice();
                 serverName = "个人督导服务购买-" + serverDetail.getName() + "-" + serverDetail.getConsultantName();
 
@@ -175,6 +182,9 @@ public class ConsultantOrderController extends BaseController
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_EXP, null);
                 //PsyConsultantTeamSupervision consultantExp = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
                 PsyConsultServeConfig serverDetailExp = consultServeService.getServerDetailByRelationId(consultantOrder.getServerId());
+                if (ObjectUtils.isEmpty(serverDetailExp)){
+                    throw new ServiceException("未找到该id的个人体验服务, 请传入relationId");
+                }
                 originalPrice = serverDetailExp.getPrice();
                 serverName = "个人体验服务购买-" + serverDetailExp.getName() + "-" + serverDetailExp.getConsultantName();
 
@@ -189,6 +199,9 @@ public class ConsultantOrderController extends BaseController
             case PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_COURSE, null);
                 CourCourse courCourse = courCourseService.selectCourCourseById(Long.valueOf(consultantOrder.getServerId()));
+                if (ObjectUtils.isEmpty(courCourse)){
+                    throw new ServiceException("未找到该id的课程");
+                }
                 originalPrice = courCourse.getPrice();
                 serverName = "购买课程-"+courCourse.getName();
                 break;
@@ -196,6 +209,9 @@ public class ConsultantOrderController extends BaseController
             case PsyConstants.CONSULTANT_ORDER_PACKAGE_NUM:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PACKAGE, null);
                 PsyConsultantPackage psyConsultantPackage = consultantPackageService.selectPsyConsultantPackageByPackageId(Long.parseLong(consultantOrder.getServerId()));
+                if (ObjectUtils.isEmpty(psyConsultantPackage)){
+                    throw new ServiceException("未找到该id的套餐");
+                }
                 originalPrice = psyConsultantPackage.getPrice();
                 serverName = "购买套餐权益-"+psyConsultantPackage.getProductName();
                 
@@ -212,9 +228,9 @@ public class ConsultantOrderController extends BaseController
             consultantOrder.setOrderNo(out_trade_no);
             consultantOrder.setServerName(serverName);
             consultantOrder.setOriginalPrice(originalPrice);
-        psyConsultantOrderService.createConsultantOrder(consultantOrder);
-        
-        return AjaxResult.success();
+        PsyConsultantOrder newOrder = psyConsultantOrderService.createConsultantOrder(consultantOrder);
+
+        return AjaxResult.success(newOrder);
 
        /* Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);// 1天

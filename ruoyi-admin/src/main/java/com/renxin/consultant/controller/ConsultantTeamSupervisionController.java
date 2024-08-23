@@ -3,6 +3,7 @@ package com.renxin.consultant.controller;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.common.domain.RelateInfo;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -50,7 +52,22 @@ public class ConsultantTeamSupervisionController extends BaseController
     @PostMapping(value = "/detail")
     public AjaxResult getInfo(@RequestBody PsyConsultantTeamSupervision req)
     {
-        return AjaxResult.success(psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionById(req.getId()));
+        PsyConsultantTeamSupervision teamSupervision = psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionById(req.getId());
+        return AjaxResult.success(teamSupervision);
     }
+
     
+    /**
+     * 获取团队督导(组织)与本用户关联信息
+     */
+    @ApiOperation("获取团队督导(组织)详细信息")
+    @PostMapping(value = "/getTeamRelateInfo")
+    public AjaxResult getTeamRelateInfo(@RequestBody PsyConsultantTeamSupervision req, HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        req.setConsultantId(consultId+"");
+        RelateInfo teamRelateInfo = psyConsultantTeamSupervisionService.getTeamRelateInfo(req);
+        return AjaxResult.success(teamRelateInfo);
+    }
+
 }

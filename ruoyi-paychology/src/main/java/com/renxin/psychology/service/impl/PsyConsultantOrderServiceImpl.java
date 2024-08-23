@@ -418,7 +418,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void createConsultantOrder(PsyConsultantOrder consultantOrder)  {
+    public PsyConsultantOrder createConsultantOrder(PsyConsultantOrder consultantOrder)  {
         String nickName = consultService.getOne(Long.valueOf(consultantOrder.getPayConsultantId())).getNickName();
         consultantOrder.setCreateBy(consultantOrder.getPayConsultantId());
         consultantOrder.setUpdateBy(consultantOrder.getPayConsultantId());
@@ -444,6 +444,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
         }*/
         
         boolean isPayed = false;
+        PsyConsultantOrder newOrder = new PsyConsultantOrder();
         if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)) {
             //计算券后价格
             if(ObjectUtils.isNotEmpty(couponNo)) {
@@ -453,7 +454,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //生成团督订单
             PsyConsultantTeamSupervision team = teamSupervisionService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
             //consultantOrder.setServerName(team.getTitle()+"-第"+team.getPeriodNo()+"期");
-            PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
+             newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
             //内部生成支付对象
             /*PsyOrderPay orderPay = new PsyOrderPay();
             orderPay.setConsultantOrderId(Integer.valueOf(newOrder.getId()));
@@ -472,7 +473,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             // 个人督导服务
             //Long id = consultantOrder.getOrderId() != null ? consultantOrder.getOrderId() : IDhelper.getNextId();
             //consultantOrder.setServerName("个人督导服务");
-            PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
+             newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
         } else if (PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)) {
             //计算券后价格
             if(ObjectUtils.isNotEmpty(couponNo)) {
@@ -481,7 +482,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             // 个人体验服务
             //Long id = consultantOrder.getOrderId() != null ? consultantOrder.getOrderId() : IDhelper.getNextId();
             //consultantOrder.setServerName("个人体验服务");
-            PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
+             newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
         } else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)) {
             //计算券后价格
             if(ObjectUtils.isNotEmpty(couponNo)) {
@@ -490,25 +491,25 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             
             // 购买课程
             //consultantOrder.setServerName("购买课程");
-            PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
+             newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
         } else if (PsyConstants.CONSULTANT_ORDER_PACKAGE_NUM.equals(serverType)) {
             if(ObjectUtils.isNotEmpty(couponNo)) {
                 throw new ServiceException("套餐不可使用优惠券购买");
             }
             // 套餐权益
             //consultantOrder.setServerName("套餐权益");
-            PsyConsultantOrder newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
+             newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
             
         } else {
             throw new ServiceException("不存在的服务类型, 请确认serverType的值为1~5的整数");
         }
         
         //若应付金额为0, 则直接回调处理订单
-        if (consultantOrder.getPayAmount().compareTo(BigDecimal.ZERO) >= 0){
+        if (BigDecimal.ZERO.compareTo(consultantOrder.getPayAmount()) >= 0){
             paySuccessCallback(consultantOrder.getOrderNo(),consultantOrder.getPayId());
             couponService.useCoupon(couponNo);
         }
-        
+        return newOrder;
     }
 
     /**

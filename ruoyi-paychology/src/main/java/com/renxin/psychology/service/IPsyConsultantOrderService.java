@@ -66,7 +66,7 @@ public interface IPsyConsultantOrderService
      * 创建订单
      * @param wechatPay
      */
-    void createConsultantOrder(PsyConsultantOrder wechatPay);
+    PsyConsultantOrder createConsultantOrder(PsyConsultantOrder wechatPay);
     
     
     /**

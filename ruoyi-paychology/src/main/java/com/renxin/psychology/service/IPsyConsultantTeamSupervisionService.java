@@ -2,6 +2,7 @@ package com.renxin.psychology.service;
 
 import java.util.List;
 
+import com.renxin.common.domain.RelateInfo;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 
@@ -72,4 +73,7 @@ public interface IPsyConsultantTeamSupervisionService
      * @param teamId
      */
     void handleTeamFull(Long teamId);
+
+//获取团队督导(组织)与本用户关联信息
+    RelateInfo getTeamRelateInfo(PsyConsultantTeamSupervision req);
 }
