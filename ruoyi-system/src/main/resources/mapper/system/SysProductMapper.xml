@@ -444,7 +444,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateInquiryListStatus">
         update sys_product
         set inquiry_list_flag = #{status}
-        where product_id = #{productId}
+        where product_id in
+        <foreach collection="productIds" item="productId" open="(" close=")" separator=",">
+            #{productId}
+        </foreach>
     </update>
 
     <delete id="deleteSysProductByProductId" parameterType="String">

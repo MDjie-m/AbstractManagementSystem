@@ -80,17 +80,15 @@ public interface ISysProductService
 
     /**
      * 切换报价清单状态(不常用、常用)：报价清单中的产品即为常用的报价产品
-     * @param productId
-     * @param status
+     * @param sysProDuctDTO
      * @return
      */
     int updateQuoteListStatus(SysProDuctDTO sysProDuctDTO);
 
     /**
      * 切换询价清单状态(不常用、常用)：询价清单中的产品即为常用来询价的产品
-     * @param productId
-     * @param status
+     * @param sysProDuctDTO
      * @return
      */
-    int updateInquiryListStatus(String productId, String status);
+    int updateInquiryListStatus(SysProDuctDTO sysProDuctDTO);
 }
