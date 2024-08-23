@@ -269,6 +269,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     List<PsyConsultantSchedule> scList = consultantScheduleService.selectPsyConsultantScheduleList(querySche);
                     if (ObjectUtils.isNotEmpty(scList)){
                         order.setNextBeginTime(scList.get(0).getRealTime());
+                        order.setLastSchedule(scList.get(0));
                     }
                     
                     order.setServerDetail(serverDetail);

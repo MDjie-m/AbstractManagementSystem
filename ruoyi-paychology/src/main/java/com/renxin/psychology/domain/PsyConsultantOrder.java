@@ -2,6 +2,7 @@ package com.renxin.psychology.domain;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -40,6 +41,10 @@ public class PsyConsultantOrder extends BaseEntity
     /** 服务类型  1：体验 2:个督、3:团督、4:课程 5:个人套餐 */
     @Excel(name = "服务类型  1：体验 2:个督、3:团督、4:课程 5:个人套餐")
     private String serverType;
+
+    /** 服务类型  1：体验 2:个督、3:团督、4:课程 5:个人套餐 */
+    @TableField(exist = false)
+    private List<String> serverTypeList;
 
     /** 服务名称 */
     @Excel(name = "服务名称")
@@ -99,7 +104,6 @@ public class PsyConsultantOrder extends BaseEntity
     private String chargeConsultantName;//收费咨询师name
     @TableField(exist = false)
     private String nextBeginTime;//下次服务开始时间
-
     @TableField(exist = false)
     private Boolean isConsultantReq = false;//咨询师端请求
 
@@ -110,6 +114,12 @@ public class PsyConsultantOrder extends BaseEntity
     //服务详情 (个督/体验)
     @TableField(exist = false)
     private PsyConsultServeConfig serverDetail;
+    
+    //最近一次预约详情
+    @TableField(exist = false)
+    private PsyConsultantSchedule lastSchedule;
+    
+    
 
     //课程详情
     @TableField(exist = false)
