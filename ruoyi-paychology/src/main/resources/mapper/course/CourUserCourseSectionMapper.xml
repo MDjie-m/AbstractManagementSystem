@@ -14,7 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="finishStatus"    column="finish_status"    />
         <result property="note"    column="note"    />
         <result property="noteTime"    column="note_time"    />
-        <result property="sectionTopic"    column="sectionTopic"    />
+        <result property="lastLearnTime"    column="last_learn_time"    />
     </resultMap>
 
     <resultMap type="CourCourse" id="CourCourseResult">
@@ -29,13 +29,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCourUserCourseSectionVo">
-        select id, user_id, course_id, section_id, end_time, finish_status, note, note_time from cour_user_course_section
+        select id, user_id, course_id, section_id, end_time, finish_status, note, note_time ,last_learn_time from cour_user_course_section
     </sql>
 
     <select id="selectCourUserCourseSectionList" parameterType="CourUserCourseSection" resultMap="CourUserCourseSectionResult">
         select
-        re.id, re.user_id, re.course_id, re.section_id, re.end_time, re.finish_status, re.note, re.note_time,
+        re.id, re.user_id, re.course_id, re.section_id, re.end_time, re.finish_status, re.note, re.note_time, re.last_learn_time,
                sec.topic as sectionTopic
+        
         from cour_user_course_section re
             left join cour_section sec on re.section_id = sec.id
         <where>  
@@ -63,6 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userType != null">user_type,</if>
             <if test="note != null">note,</if>
             <if test="noteTime != null">note_time,</if>
+            <if test="lastLearnTime != null">last_learn_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null and userId != ''">#{userId},</if>
@@ -73,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userType != null">#{userType},</if>
             <if test="note != null">#{note},</if>
             <if test="noteTime != null">#{noteTime},</if>
+            <if test="lastLearnTime != null">#{lastLearnTime},</if>
          </trim>
     </insert>
 
@@ -87,6 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userType != null">user_type = #{userType},</if>
             <if test="note != null">note = #{note},</if>
             <if test="noteTime != null">note_time = #{noteTime},</if>
+            <if test="lastLearnTime != null">last_learn_time = #{lastLearnTime},</if>
         </trim>
         where id = #{id}
     </update>
@@ -106,10 +110,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update cour_user_course_section
         <trim prefix="SET" suffixOverrides=",">
             <if test="userId != null and userId != ''">user_id = #{userId},</if>
+            <if test="userType != null and userType != ''">user_type = #{userType},</if>
             <if test="courseId != null and courseId != ''">course_id = #{courseId},</if>
             <if test="sectionId != null and sectionId != ''">section_id = #{sectionId},</if>
             <if test="endTime != null">end_time = #{endTime},</if>
             <if test="finishStatus != null">finish_status = #{finishStatus},</if>
+            <if test="lastLearnTime != null">last_learn_time = #{lastLearnTime},</if>
         </trim>
         where id = #{id}
     </update>

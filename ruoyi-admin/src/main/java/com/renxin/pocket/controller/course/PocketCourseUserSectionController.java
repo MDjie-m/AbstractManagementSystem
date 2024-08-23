@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -70,6 +71,7 @@ public class PocketCourseUserSectionController extends BaseController {
         } else if (userCourseSectionList.size() == 1){
             // 更新
             userCourseSection.setId(userCourseSectionList.get(0).getId());
+            userCourseSection.setLastLearnTime(new Date());
             return AjaxResult.success(courUserCourseSectionService.recordEndTime(userCourseSection));
         }
         return AjaxResult.error("记录课程章节异常");

@@ -63,6 +63,9 @@ public class ConsultantOrderController extends BaseController
     @Resource
     private IPsyConsultServeService consultServeService;
 
+    @Resource
+    private IPsyConsultOrderService psyConsultOrderService;
+
    /* @ApiOperation(value = "查询订单信息")
     @GetMapping(value = "/getOrderInfo/{id}")
     @RateLimiter
@@ -302,10 +305,18 @@ public class ConsultantOrderController extends BaseController
             c.setCreateBy(payConsultId);
             c.setUpdateBy(payConsultId);
         });
-        
         consultantScheduleService.reservationServerBatch(consultantScheduleList);
-        
         return AjaxResult.success();
-        
+    }
+
+
+    /**
+     * 咨询
+     */
+    @PostMapping(value = "/doConsult/{id}/{workId}/{time}")
+    @RateLimiter
+    public AjaxResult doConsult(@PathVariable("id") Long id, @PathVariable("workId") Long workId, @PathVariable("time") Integer time)
+    {
+        return AjaxResult.success(psyConsultOrderService.doConsult(id, workId, time));
     }
 }

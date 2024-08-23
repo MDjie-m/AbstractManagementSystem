@@ -14,7 +14,9 @@ import com.renxin.course.vo.SectionVO;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.psychology.domain.PsyConsultClass;
+import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.service.IPsyConsultClassService;
+import com.renxin.psychology.service.IPsyConsultantOrderService;
 import com.renxin.psychology.vo.PsyConsultClassVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,6 +63,8 @@ public class ConsultantCourseController extends BaseController {
     @Autowired
     private ICourUserCourseSectionService userCourseSectionService;
     
+    @Autowired
+    private IPsyConsultantOrderService consultantOrderService;
 
     @ApiOperation(value = "查询class列表")
     @PostMapping("/class/list")
@@ -165,23 +170,23 @@ public class ConsultantCourseController extends BaseController {
         }
 
         // 查询课程的学习人数
-        CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
+        /*CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
         courUserCourseSection.setCourseId(courseId);
-        List<CourUserCourseSection> courUserCourseSectionList = courUserCourseSectionService.selectCourUserCourseSectionList(courUserCourseSection);
+        List<CourUserCourseSection> courUserCourseSectionList = courUserCourseSectionService.selectCourUserCourseSectionList(courUserCourseSection);*/
 
         CourseVO courseVO = new CourseVO();
         BeanUtils.copyProperties(course, courseVO);
-        courseVO.setStudyNum(courUserCourseSectionList.size());
+     //   courseVO.setStudyNum(courUserCourseSectionList.size());
 
         // 增加章节列表
         CourSection courSection = CourSection.builder()
                 .courseId(courseId)
+                .userId(cUserId)
+                .userType(2)//咨询师
                 .build();
-        List<CourSection> sectionList = courSectionService.selectCourSectionList(courSection);
+        List<CourSection> sectionList = courSectionService.selectCourSectionDetailList(courSection);
         // 查询章节的学习情况
-        List<SectionVO> sectionVOList = new ArrayList<>();
-
-
+       /* List<SectionVO> sectionVOList = new ArrayList<>();
         for (CourSection section: sectionList) {
             SectionVO sectionVO = new SectionVO();
             CourUserCourseSection userCourseSection = new CourUserCourseSection();
@@ -196,17 +201,20 @@ public class ConsultantCourseController extends BaseController {
             if (courCourseService.getPaidCourseCount(cUserId, courseId) == 0 && sectionVO.getType() == CourConstant.SECTION_NORMAL) {
                 sectionVO.setContentUrl(null);
             }
-
             sectionVOList.add(sectionVO);
-        }
-        courseVO.setSectionList(sectionVOList);
+        }*/
+        courseVO.setSectionList(sectionList);
 
-        // 查询用户有没有购买该订单
+        // 查询咨询师有没有购买该课程
         if (cUserId == 0 || courseVO.getPayType() == CourConstant.COURSE_FREE) { // 没有给出用户标识
             return AjaxResult.success(courseVO);
         }
-        List<CourOrder> courOrderList = courOrderService.selectCourOrderByUser(cUserId, courseId);
-        courseVO.setIsBuy(courOrderList.size() > 0 ? CourConstant.COURSE_BUY : CourConstant.COURSE_NOT_BUY);
+        PsyConsultantOrder orderReq = new PsyConsultantOrder();
+            orderReq.setPayConsultantId(cUserId+"");
+            orderReq.setServerType("4");//课程
+            orderReq.setServerId(courseId+"");
+        List<PsyConsultantOrder> orderList = consultantOrderService.selectPsyConsultantOrderList(orderReq);
+        courseVO.setIsBuy(orderList.size() > 0 ? CourConstant.COURSE_BUY : CourConstant.COURSE_NOT_BUY);
 
         return AjaxResult.success(courseVO);
     }
@@ -309,6 +317,7 @@ public class ConsultantCourseController extends BaseController {
         } else if (userCourseSectionList.size() == 1){
             // 更新
             userCourseSection.setId(userCourseSectionList.get(0).getId());
+            userCourseSection.setLastLearnTime(new Date());
             return AjaxResult.success(courUserCourseSectionService.recordEndTime(userCourseSection));
         }
         return AjaxResult.error("记录课程章节异常");

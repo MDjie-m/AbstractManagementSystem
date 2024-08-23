@@ -78,5 +78,8 @@ public class CourSection extends BaseEntity
     /** 笔记时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date noteTime;
+    //最近学习时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date lastLearnTime;
     
 }

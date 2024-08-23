@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 WHEN re.end_time IS NOT NULL THEN sec.content_url
                 ELSE NULL
             END AS content_url,
-            re.end_time as endTime
+            re.end_time as endTime , re.finish_status, re.last_learn_time
         from cour_section sec 
             left join cour_user_course_section re on sec.id = re.section_id 
         where
