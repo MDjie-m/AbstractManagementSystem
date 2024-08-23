@@ -101,6 +101,8 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                     sysSupplier.setSupplierId(UUID.randomUUID().toString());
                     // 设置供应商入驻时间
                     sysSupplier.setEntryDate(new Date());
+                    // 设置数据创建时间
+                    sysSupplier.setCreateTime(new Date());
 
                     String supplierId = sysSupplier.getSupplierId();
                     String legalPersonTelephone = sysSupplier.getLegalPersonTelephone();
@@ -225,6 +227,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     @Override
     public int updateSysSupplier(SysSupplier sysSupplier)
     {
+        sysSupplier.setUpdateTime(new Date());
         return sysSupplierMapper.updateSysSupplier(sysSupplier);
     }
 
@@ -359,6 +362,8 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                 sysProduct.setQuoteListFlag(0);
                 // 不常询价
                 sysProduct.setInquiryListFlag(0);
+                // 创建时间
+                sysProduct.setCreateTime(new Date());
                 list.add(sysProduct);
             }
             if (list.size() > 0)

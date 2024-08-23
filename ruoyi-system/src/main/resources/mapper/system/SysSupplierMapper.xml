@@ -178,7 +178,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionStatus != null "> and inspection_status = #{inspectionStatus}</if>
             <if test="inspectionAuditStatus != null "> and inspection_audit_status = #{inspectionAuditStatus}</if>
             <if test="dataSources != null "> and data_sources = #{dataSources}</if>
-            <if test="entryDate != null "> and entry_date = #{entryDate}</if>
+            <if test="startEntryDate != null "> and entry_date &gt;= #{startEntryDate}</if>
+            <if test="endEntryDate != null "> and entry_date &lt;= #{endEntryDate}</if>
             <if test="cnPrimaryCategory != null "> and cn_primary_category = #{cnPrimaryCategory}</if>
             <if test="cnSecondaryCategory != null "> and cn_secondary_category = #{cnSecondaryCategory}</if>
             <if test="cnTertiaryCategory != null "> and cn_tertiary_category = #{cnTertiaryCategory}</if>
@@ -226,6 +227,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionAuditStatus != null">inspection_audit_status,</if>
             <if test="dataSources != null">data_sources,</if>
             <if test="entryDate != null">entry_date,</if>
+            <if test="createTime != null">create_time,</if>
             <if test="headPortraitPath != null">head_portrait_path,</if>
             <if test="imagePath != null">image_path,</if>
             <if test="videoPath != null">video_path,</if>
@@ -267,6 +269,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionAuditStatus != null">#{inspectionAuditStatus},</if>
             <if test="dataSources != null">#{dataSources},</if>
             <if test="entryDate != null">#{entryDate},</if>
+            <if test="createTime != null">#{createTime},</if>
             <if test="headPortraitPath != null">#{headPortraitPath},</if>
             <if test="imagePath != null">#{imagePath},</if>
             <if test="videoPath != null">#{videoPath},</if>
@@ -282,7 +285,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                      supplier_name_cn, supplier_name_en, supplier_name_own, registration_time,
                      registration_time_validity_period, delete_flag, legal_person, legal_person_telephone,
                      legal_person_email, principal_name, principal_telephone, principal_email,
-                     classification, data_sources, entry_date)
+                     classification, data_sources, entry_date, create_time)
         VALUES
         <foreach item="item" index="index" collection="list" separator=",">
             (#{item.supplierId},#{item.label},#{item.nature},#{item.country},#{item.province},#{item.city},#{item.area},
@@ -291,7 +294,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              #{item.supplierNameCn},#{item.supplierNameEn},#{item.supplierNameOwn},#{item.registrationTime},
              #{item.registrationTimeValidityPeriod},#{item.deleteFlag},#{item.legalPerson},#{item.legalPersonTelephone},
              #{item.legalPersonEmail},#{item.principalName},#{item.principalTelephone},#{item.principalEmail},#{item.classification},
-             #{item.dataSources}, #{item.entryDate})
+             #{item.dataSources}, #{item.entryDate}, #{item.createTime})
         </foreach>
     </insert>
 
@@ -328,6 +331,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="inspectionStatus != null">inspection_status = #{inspectionStatus},</if>
             <if test="inspectionAuditStatus != null">inspection_audit_status = #{inspectionAuditStatus},</if>
             <if test="dataSources != null">data_sources = #{dataSources},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="headPortraitPath != null">head_portrait_path = #{headPortraitPath},</if>
             <if test="imagePath != null">image_path = #{imagePath},</if>
             <if test="videoPath != null">video_path = #{videoPath},</if>
@@ -402,7 +406,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                                 cn_fifth_category, cn_fifth_category_name, domestic_imported_type, product_model,
                                 product_video, product_image, quotation_flag, sample, specifications, inventory, status,
                                 production_date, shelf_life, origin, storage_mode, warehouse_address, main_product,
-                             mark, inventory_unit
+                             mark, inventory_unit, create_time
         ) values
         <foreach item="item" index="index" collection="list" separator=",">
             ( #{item.productId}, #{item.supplierId}, #{item.supplierName}, #{item.productName},
@@ -415,7 +419,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              #{item.quotationFlag}, #{item.sample}, #{item.specifications}, #{item.inventory},
              #{item.status}, #{item.productionDate}, #{item.shelfLife}, #{item.origin},
              #{item.storageMode}, #{item.warehouseAddress}, #{item.mainProduct},
-             #{item.mark}, #{item.inventoryUnit})
+             #{item.mark}, #{item.inventoryUnit}, #{item.createTime})
         </foreach>
     </insert>
 </mapper>
