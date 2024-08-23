@@ -42,6 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService
         //链式法则获取角色id组
         user.setRoleIds(user.getRoles().stream().map(
                 SysRole::getRoleId).distinct().toArray(Long[]::new));
+        user.setRoleId(user.getRoleIds()[0]);//目前一个用户只有一个角色
         if (StringUtils.isNull(user))
         {
             log.info("登录用户：{} 不存在.", username);
