@@ -150,33 +150,6 @@ public class SysProductController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
-        String[] names = sysProDuctDTO.getNames().split("/");
-        String[] codes = sysProDuctDTO.getCodes().split("/");
-        //赋值到自己命名的产品名称字段里。
-        for (int i = 0; i < names.length; i++) {
-            switch (i) {
-                case 0:
-                    sysProDuctDTO.setCnPrimaryCategoryName(names[i]);
-                    sysProDuctDTO.setCnPrimaryCategory(codes[i]);
-                    break;
-                case 1:
-                    sysProDuctDTO.setCnSecondaryCategoryName(names[i]);
-                    sysProDuctDTO.setCnSecondaryCategory(codes[i]);
-                    break;
-                case 2:
-                    sysProDuctDTO.setCnTertiaryCategoryName(names[i]);
-                    sysProDuctDTO.setCnTertiaryCategory(codes[i]);
-                    break;
-                case 3:
-                    sysProDuctDTO.setCnQuaternaryCategoryName(names[i]);
-                    sysProDuctDTO.setCnQuaternaryCategory(codes[i]);
-                    break;
-                case 4:
-                    sysProDuctDTO.setCnFifthCategoryName(names[i]);
-                    sysProDuctDTO.setCnFifthCategory(codes[i]);
-                    break;
-            }
-        }
         return toAjax(sysProductService.insertSysProduct(sysProDuctDTO));
     }
 
@@ -185,7 +158,7 @@ public class SysProductController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:product:edit')")
     @Log(title = "产品", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody SysProduct sysProduct)
     {
         return toAjax(sysProductService.updateSysProduct(sysProduct));
