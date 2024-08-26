@@ -81,16 +81,4 @@ public class SysProductStandardServiceImpl implements ISysProductStandardService
     {
         return sysProductStandardMapper.deleteSysProductStandardByProductIds(productIds);
     }
-
-    /**
-     * 删除产品信息
-     * 
-     * @param productId 产品主键
-     * @return 结果
-     */
-    @Override
-    public int deleteSysProductStandardByProductId(String productId)
-    {
-        return sysProductStandardMapper.deleteSysProductStandardByProductId(productId);
-    }
 }

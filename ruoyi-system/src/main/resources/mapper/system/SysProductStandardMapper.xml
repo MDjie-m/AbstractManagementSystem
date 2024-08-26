@@ -123,8 +123,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productModel != null">product_model,</if>
             <if test="status != null">status,</if>
             <if test="remark != null">remark,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateTime != null">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="productId != null">#{productId},</if>
@@ -160,8 +158,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productModel != null">#{productModel},</if>
             <if test="status != null">#{status},</if>
             <if test="remark != null">#{remark},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateTime != null">#{updateTime},</if>
+            createTime = sysdate()
          </trim>
     </insert>
 
@@ -200,20 +197,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productModel != null">product_model = #{productModel},</if>
             <if test="status != null">status = #{status},</if>
             <if test="remark != null">remark = #{remark},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
+            update_time = sysdate()
         </trim>
         where product_id = #{productId}
     </update>
 
-    <delete id="deleteSysProductStandardByProductId" parameterType="String">
-        delete from sys_product_standard where product_id = #{productId}
-    </delete>
-
-    <delete id="deleteSysProductStandardByProductIds" parameterType="String">
-        delete from sys_product_standard where product_id in 
+    <update id="deleteSysProductStandardByProductIds" parameterType="String">
+        update  sys_product_standard set del_flag=1,update_time = sysdate() where product_id in
         <foreach item="productId" collection="array" open="(" separator="," close=")">
             #{productId}
         </foreach>
-    </delete>
+    </update>
 </mapper>
