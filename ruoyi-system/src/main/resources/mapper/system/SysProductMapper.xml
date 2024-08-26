@@ -230,7 +230,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </otherwise>
         </choose>
         <where>
-            product_id = #{productId}
+            and product_id = #{productId}
             <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
             <if test="buyerId!=null"> and buyer_id = #{buyerId}</if>
             <choose>
@@ -467,5 +467,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     WHERE future_field1 = '1'
       <if test="supplierId != null  and supplierId != ''">and supplier_id = #{supplierId}</if>
         <if test="productName != null  and productName != ''">AND product_Name LIKE CONCAT('%', #{productName}, '%')</if>
+    </select>
+
+    <select id="selectPriceByProductId" resultType="com.ruoyi.system.domain.SysSupplierPrice">
+        select price_RMB as priceRMB from sys_supplier_price where product_id=#{productId} order by time desc limit 1
     </select>
 </mapper>
