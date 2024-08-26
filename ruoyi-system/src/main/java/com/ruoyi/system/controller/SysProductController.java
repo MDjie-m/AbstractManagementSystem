@@ -30,8 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 产品Controller
  * 
- * @author xgg
- * @date 2024-07-23
+ * @author tyc
+ * @date 2024-08-23
  */
 @RestController
 @RequestMapping("/system/product")
@@ -176,19 +176,23 @@ public class SysProductController extends BaseController
     }
 
     /**
-     * 修改产品报价状态
+     * 修改产品是否可报价的状态
      */
     @PreAuthorize("@ss.hasPermi('system:product:updateStatus')")
-    @GetMapping("/updateStatus")
-    public AjaxResult updateStatus(String productId,String status)
+    @PostMapping("/updateQuotationStatus")
+    public AjaxResult updateQuotationStatus(@RequestBody List<SysProDuctDTO> sysProDuctDTOList)
     {
-        return toAjax(sysProductService.updateStatus(productId,status));
+        int i = 0;
+        for (SysProDuctDTO dto:sysProDuctDTOList) {
+            sysProductService.updateStatus(dto.getProductId(),dto.getQuotationFlag());
+            i=i+1;
+        }
+        return toAjax(i);
     }
 
     /**
      * 切换产品的报价清单状态
      */
-    //todo 报价清单和询价清单批量？
     @PreAuthorize("@ss.hasPermi('system:product:updateStatus')")
     @PostMapping("/updateQuoteListStatus")
     public AjaxResult updateQuoteListStatus(@RequestBody SysProDuctDTO sysProDuctDTO)

@@ -160,19 +160,14 @@ public class SysProductServiceImpl implements ISysProductService {
      * @return 结果
      */
     @Override
-    public int updateStatus(String productId,String status) {
-        String res = "0";
-        if("0".equals(status)){
-            res = "1";
-        }
-        return sysProductMapper.updateStatus(productId,res);
+    public int updateStatus(String productId,Integer quotationFlag) {
+        return sysProductMapper.updateStatus(productId,quotationFlag);
     }
 
     /**
      * 修改产品报价清单的状态
      *
-     * @param productId 产品id
-     * @param status 产品当前的报价清单状态
+     * @param sysProDuctDTO 产品dto
      * @return 结果
      */
     @Override

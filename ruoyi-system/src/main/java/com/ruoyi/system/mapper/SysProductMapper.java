@@ -83,7 +83,7 @@ public interface SysProductMapper
      * @param productId
      * @return
      */
-    public int updateStatus(@Param("productId")String productId,@Param("status")String status);
+    public int updateStatus(@Param("productId")String productId,@Param("quotationFlag")Integer quotationFlag);
 
     int updateQuoteListStatus(SysProDuctDTO sysProDuctDTO);
 

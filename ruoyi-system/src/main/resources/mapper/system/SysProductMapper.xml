@@ -423,10 +423,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         set future_field1 = 1
         where product_id = #{productId}
     </update>
-    <!--  修改产品状态用于前端切换  -->
+    <!--  修改产品是否可报价状态用于前端切换  -->
     <update id="updateStatus">
         update sys_product
-        set quotation_flag = #{status}
+        set quotation_flag = #{quotationFlag}
         where product_id = #{productId}
     </update>
 
