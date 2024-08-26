@@ -350,16 +350,17 @@ public class GenTableColumn extends BaseEntity
 
     public String readConverterExp()
     {
+        // 格式 （1 wap,2 pc）
         String remarks = StringUtils.substringBetween(this.columnComment, "（", "）");
         StringBuffer sb = new StringBuffer();
         if (StringUtils.isNotEmpty(remarks))
         {
-            for (String value : remarks.split(" "))
+            for (String value : remarks.split(","))
             {
                 if (StringUtils.isNotEmpty(value))
                 {
-                    Object startStr = value.subSequence(0, 1);
-                    String endStr = value.substring(1);
+                    Object startStr = value.split(" ")[0];
+                    String endStr = value.split(" ")[1];
                     sb.append("").append(startStr).append("=").append(endStr).append(",");
                 }
             }
