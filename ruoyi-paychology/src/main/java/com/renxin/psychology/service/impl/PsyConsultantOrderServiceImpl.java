@@ -251,6 +251,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     //已使用的次数(排班信息)
                     PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
                     scheduleReq.setOrderId(order.getOrderNo());
+                    scheduleReq.setStatusList(Arrays.asList("0","1"));
                     List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(scheduleReq);
                     order.setUsedNum(ObjectUtils.isNotEmpty(scheduleList) ? scheduleList.size() : 0);
                     //剩余可用次数

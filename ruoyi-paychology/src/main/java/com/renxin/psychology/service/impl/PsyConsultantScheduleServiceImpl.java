@@ -165,7 +165,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
             
             schedule.setDay(work.getDay());
             schedule.setWeek(work.getWeek());
-            schedule.setScheduleType(2);//2.咨询服务
+            schedule.setScheduleType(Integer.valueOf("2"+order.getServerType()));
             schedule.setTimeStart(addZero(time)+":00");
             schedule.setTimeEnd(addZero(time)+":50");
             //schedule.setTimeNum(++usedNum);//第几次执行
