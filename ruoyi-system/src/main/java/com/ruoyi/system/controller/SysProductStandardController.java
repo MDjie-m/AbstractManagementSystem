@@ -88,7 +88,7 @@ public class SysProductStandardController extends BaseController
     }
 
     /**
-     * 删除产品
+     * 批量删除平台产品
      */
     @PreAuthorize("@ss.hasPermi('system:standard:remove')")
     @Log(title = "产品", businessType = BusinessType.DELETE)
