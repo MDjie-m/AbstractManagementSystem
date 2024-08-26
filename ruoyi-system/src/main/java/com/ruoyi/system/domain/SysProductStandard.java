@@ -8,7 +8,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 产品对象 sys_product_standard
  * 
- * @author ruoyi
+ * @author tyc
  * @date 2024-08-23
  */
 public class SysProductStandard extends BaseEntity
@@ -104,11 +104,11 @@ public class SysProductStandard extends BaseEntity
 
     /** 0-国产 1-进口 */
     @Excel(name = "0-国产 1-进口")
-    private Long domesticImportedType;
+    private Integer domesticImportedType;
 
     /** 储存方式0:-冷冻1-冷鲜 */
     @Excel(name = "储存方式0:-冷冻1-冷鲜")
-    private String storageMode;
+    private Integer storageMode;
 
     /** 产品规格 */
     @Excel(name = "产品规格")
@@ -123,7 +123,7 @@ public class SysProductStandard extends BaseEntity
     private String tagName;
 
     /** 删除状态：0-未删除，1-已删除 */
-    private Long delFlag;
+    private Integer delFlag;
 
     /** 图片地址由”,”隔开 */
     @Excel(name = "图片地址由”,”隔开")
@@ -139,9 +139,20 @@ public class SysProductStandard extends BaseEntity
 
     /** 产品状态(0-期货,1-现货) */
     @Excel(name = "产品状态(0-期货,1-现货)")
-    private Long status;
+    private Integer status;
 
-    public void setProductId(String productId) 
+    /** 保存这个平台产品有多少家供应商 */
+    private int total;
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public void setProductId(String productId)
     {
         this.productId = productId;
     }
@@ -339,21 +350,21 @@ public class SysProductStandard extends BaseEntity
     {
         return cnFifthCategoryName;
     }
-    public void setDomesticImportedType(Long domesticImportedType) 
+    public void setDomesticImportedType(Integer domesticImportedType)
     {
         this.domesticImportedType = domesticImportedType;
     }
 
-    public Long getDomesticImportedType() 
+    public Integer getDomesticImportedType()
     {
         return domesticImportedType;
     }
-    public void setStorageMode(String storageMode) 
+    public void setStorageMode(Integer storageMode)
     {
         this.storageMode = storageMode;
     }
 
-    public String getStorageMode() 
+    public Integer getStorageMode()
     {
         return storageMode;
     }
@@ -384,12 +395,12 @@ public class SysProductStandard extends BaseEntity
     {
         return tagName;
     }
-    public void setDelFlag(Long delFlag) 
+    public void setDelFlag(Integer delFlag)
     {
         this.delFlag = delFlag;
     }
 
-    public Long getDelFlag() 
+    public Integer getDelFlag()
     {
         return delFlag;
     }
@@ -420,12 +431,12 @@ public class SysProductStandard extends BaseEntity
     {
         return productModel;
     }
-    public void setStatus(Long status) 
+    public void setStatus(Integer status)
     {
         this.status = status;
     }
 
-    public Long getStatus() 
+    public Integer getStatus()
     {
         return status;
     }

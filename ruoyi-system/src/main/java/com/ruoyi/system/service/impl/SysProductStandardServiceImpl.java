@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.domain.dto.SysProductStandardDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysProductStandardMapper;
@@ -35,13 +36,13 @@ public class SysProductStandardServiceImpl implements ISysProductStandardService
     /**
      * 查询产品列表
      * 
-     * @param sysProductStandard 产品
+     * @param sysProductStandardDTO 产品
      * @return 产品
      */
     @Override
-    public List<SysProductStandard> selectSysProductStandardList(SysProductStandard sysProductStandard)
+    public List<SysProductStandard> selectSysProductStandardList(SysProductStandardDTO sysProductStandardDTO)
     {
-        return sysProductStandardMapper.selectSysProductStandardList(sysProductStandard);
+        return sysProductStandardMapper.selectSysProductStandardList(sysProductStandardDTO);
     }
 
     /**

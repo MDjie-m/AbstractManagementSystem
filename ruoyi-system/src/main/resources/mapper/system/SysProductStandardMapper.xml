@@ -43,42 +43,58 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysProductStandardVo">
-        select product_id, product_name, primary_category, primary_category_name, secondary_category, secondary_category_name, tertiary_category, tertiary_category_name, quaternary_category, quaternary_category_name, fifth_category, fifth_category_name, cn_primary_category, cn_primary_category_name, cn_secondary_category, cn_secondary_category_name, cn_tertiary_category, cn_tertiary_category_name, cn_quaternary_category, cn_quaternary_category_name, cn_fifth_category, cn_fifth_category_name, domestic_imported_type, storage_mode, specifications, tag_id, tag_name, del_flag, image_path, video_path, product_model, status, remark, create_time, update_time from sys_product_standard
+        select product_id, product_name, primary_category, primary_category_name, secondary_category,
+               secondary_category_name, tertiary_category, tertiary_category_name, quaternary_category,
+               quaternary_category_name, fifth_category, fifth_category_name, cn_primary_category,
+               cn_primary_category_name, cn_secondary_category, cn_secondary_category_name, cn_tertiary_category,
+               cn_tertiary_category_name, cn_quaternary_category, cn_quaternary_category_name, cn_fifth_category,
+               cn_fifth_category_name, domestic_imported_type, storage_mode, specifications, tag_id, tag_name,
+               del_flag,image_path, video_path, product_model, status, remark, create_time, update_time,
+               (select count(distinct sp.supplier_id) from sys_product sp where sp.product_name=product_name
+                and sp.specifications = specifications) as total
+        from sys_product_standard
     </sql>
 
-    <select id="selectSysProductStandardList" parameterType="SysProductStandard" resultMap="SysProductStandardResult">
+    <select id="selectSysProductStandardList" parameterType="SysProductStandardDTO" resultType="com.ruoyi.system.domain.SysProductStandard">
         <include refid="selectSysProductStandardVo"/>
-        <where>  
+        <where>
             <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
-            <if test="primaryCategory != null  and primaryCategory != ''"> and primary_category = #{primaryCategory}</if>
-            <if test="primaryCategoryName != null  and primaryCategoryName != ''"> and primary_category_name like concat('%', #{primaryCategoryName}, '%')</if>
-            <if test="secondaryCategory != null  and secondaryCategory != ''"> and secondary_category = #{secondaryCategory}</if>
-            <if test="secondaryCategoryName != null  and secondaryCategoryName != ''"> and secondary_category_name like concat('%', #{secondaryCategoryName}, '%')</if>
-            <if test="tertiaryCategory != null  and tertiaryCategory != ''"> and tertiary_category = #{tertiaryCategory}</if>
-            <if test="tertiaryCategoryName != null  and tertiaryCategoryName != ''"> and tertiary_category_name like concat('%', #{tertiaryCategoryName}, '%')</if>
-            <if test="quaternaryCategory != null  and quaternaryCategory != ''"> and quaternary_category = #{quaternaryCategory}</if>
-            <if test="quaternaryCategoryName != null  and quaternaryCategoryName != ''"> and quaternary_category_name like concat('%', #{quaternaryCategoryName}, '%')</if>
-            <if test="fifthCategory != null  and fifthCategory != ''"> and fifth_category = #{fifthCategory}</if>
-            <if test="fifthCategoryName != null  and fifthCategoryName != ''"> and fifth_category_name like concat('%', #{fifthCategoryName}, '%')</if>
-            <if test="cnPrimaryCategory != null  and cnPrimaryCategory != ''"> and cn_primary_category = #{cnPrimaryCategory}</if>
-            <if test="cnPrimaryCategoryName != null  and cnPrimaryCategoryName != ''"> and cn_primary_category_name like concat('%', #{cnPrimaryCategoryName}, '%')</if>
-            <if test="cnSecondaryCategory != null  and cnSecondaryCategory != ''"> and cn_secondary_category = #{cnSecondaryCategory}</if>
-            <if test="cnSecondaryCategoryName != null  and cnSecondaryCategoryName != ''"> and cn_secondary_category_name like concat('%', #{cnSecondaryCategoryName}, '%')</if>
-            <if test="cnTertiaryCategory != null  and cnTertiaryCategory != ''"> and cn_tertiary_category = #{cnTertiaryCategory}</if>
-            <if test="cnTertiaryCategoryName != null  and cnTertiaryCategoryName != ''"> and cn_tertiary_category_name like concat('%', #{cnTertiaryCategoryName}, '%')</if>
-            <if test="cnQuaternaryCategory != null  and cnQuaternaryCategory != ''"> and cn_quaternary_category = #{cnQuaternaryCategory}</if>
-            <if test="cnQuaternaryCategoryName != null  and cnQuaternaryCategoryName != ''"> and cn_quaternary_category_name like concat('%', #{cnQuaternaryCategoryName}, '%')</if>
-            <if test="cnFifthCategory != null  and cnFifthCategory != ''"> and cn_fifth_category = #{cnFifthCategory}</if>
-            <if test="cnFifthCategoryName != null  and cnFifthCategoryName != ''"> and cn_fifth_category_name like concat('%', #{cnFifthCategoryName}, '%')</if>
+            <if test="specifications == '抄码'">and specifications = '抄码'</if>
+            <if test="specifications == '非抄码'">and specifications != '抄码'</if>
+            <if test="cnPrimaryCategorys != null and !cnPrimaryCategorys.isEmpty()">
+                AND cn_primary_category IN
+                <foreach collection="cnPrimaryCategorys" item="cnPrimary" open="(" close=")" separator=",">
+                    #{cnPrimary}
+                </foreach>
+            </if>
+            <if test="cnSecondaryCategorys != null and !cnSecondaryCategorys.isEmpty()">
+                AND cn_secondary_category IN
+                <foreach collection="cnSecondaryCategorys" item="cnSecondary" open="(" close=")" separator=",">
+                    #{cnSecondary}
+                </foreach>
+            </if>
+            <if test="cnTertiaryCategorys != null and !cnTertiaryCategorys.isEmpty()">
+                AND cn_tertiary_category IN
+                <foreach collection="cnTertiaryCategorys" item="cnTertiary" open="(" close=")" separator=",">
+                    #{cnTertiary}
+                </foreach>
+            </if>
+            <if test="cnQuaternaryCategorys != null and !cnQuaternaryCategorys.isEmpty()">
+                AND cn_quaternary_category IN
+                <foreach collection="cnQuaternaryCategorys" item="cnQuaternary" open="(" close=")" separator=",">
+                    #{cnQuaternary}
+                </foreach>
+            </if>
+            <if test="cnFifthCategorys != null and !cnFifthCategorys.isEmpty()">
+                AND cn_fifth_category IN
+                <foreach collection="cnFifthCategorys" item="cnFifth" open="(" close=")" separator=",">
+                    #{cnFifth}
+                </foreach>
+            </if>
             <if test="domesticImportedType != null "> and domestic_imported_type = #{domesticImportedType}</if>
-            <if test="storageMode != null  and storageMode != ''"> and storage_mode = #{storageMode}</if>
-            <if test="specifications != null  and specifications != ''"> and specifications = #{specifications}</if>
-            <if test="tagId != null  and tagId != ''"> and tag_id = #{tagId}</if>
-            <if test="tagName != null  and tagName != ''"> and tag_name like concat('%', #{tagName}, '%')</if>
-            <if test="imagePath != null  and imagePath != ''"> and image_path = #{imagePath}</if>
-            <if test="videoPath != null  and videoPath != ''"> and video_path = #{videoPath}</if>
-            <if test="productModel != null  and productModel != ''"> and product_model = #{productModel}</if>
-            <if test="status != null "> and status = #{status}</if>
+            <if test="storageMode != null"> and storage_mode = #{storageMode}</if>
+            <if test="productModel != null  and productModel != ''"> and product_model likle concat('%',#{productModel},'%') </if>
+            <if test="status != null"> and status = #{status}</if>
         </where>
     </select>
     
