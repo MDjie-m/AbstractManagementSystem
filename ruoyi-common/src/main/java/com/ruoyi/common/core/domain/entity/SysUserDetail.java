@@ -1,9 +1,11 @@
-package com.ruoyi.system.domain;
+package com.ruoyi.common.core.domain.entity;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+
+import javax.validation.constraints.Size;
 
 /**
  * 用户详细信息对象 sys_user_detail
@@ -161,6 +163,7 @@ public class SysUserDetail extends BaseEntity
         this.companyCid = companyCid;
     }
 
+    @Size(min = 0, max = 18, message = "用户昵称长度不能超过18个字符")
     public String getCompanyCid() 
     {
         return companyCid;
