@@ -13,6 +13,7 @@ import com.renxin.common.utils.StringUtils;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsultOrderItem;
 import com.renxin.psychology.domain.PsyConsultWork;
+import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.dto.HeaderDTO;
 import com.renxin.psychology.dto.OrderItemDTO;
@@ -20,10 +21,9 @@ import com.renxin.psychology.dto.RecentWorkDTO;
 import com.renxin.psychology.mapper.PsyConsultWorkMapper;
 import com.renxin.psychology.request.PsyConsultWorkReq;
 import com.renxin.psychology.request.PsyWorkReq;
-import com.renxin.psychology.service.IPsyConsultOrderItemService;
-import com.renxin.psychology.service.IPsyConsultWorkService;
-import com.renxin.psychology.service.IPsyConsultantScheduleService;
+import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultOrderItemVO;
+import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -50,6 +50,12 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
 
     @Resource
     private IPsyConsultantScheduleService consultantScheduleService;
+    
+    @Resource
+    private IPsyConsultantOrderService consultantOrderService;
+
+    @Resource
+    private IPsyConsultOrderService consultOrderService;
 
     @Override
     public List<PsyConsultWorkVO> getConsultWorks(PsyWorkReq req) {
@@ -492,9 +498,15 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                 }else{
                     throw new ServiceException("当前用户与该排程任务不相关");
                 }
+                //排程请假
                 consultantScheduleService.updatePsyConsultantSchedule(schedule);
+                //订单状态修改为"进行中"
+                PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(schedule.getOrderId());
+                if (ConsultConstant.CONSULT_ORDER_STATUE_PENDING.equals(consultantOrder.getStatus())){//已完成
+                    consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);//进行中
+                    consultantOrderService.updatePsyConsultantOrder(consultantOrder);
+                }
                 break;
-
             //咨询
             case 12 :
                 OrderItemDTO itemReq = new OrderItemDTO();
@@ -511,7 +523,13 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                 }else{
                     throw new ServiceException("当前用户与该排程任务不相关.");
                 }
+                //子订单/排程请假
                 orderItemService.update(item);
+                PsyConsultOrderVO order = consultOrderService.getOne(item.getOrderId());
+                if (ConsultConstant.CONSULT_ORDER_STATUE_PENDING.equals(order.getStatus())){//已完成
+                    order.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);
+                    consultOrderService.update(order);
+                }
                 break;
                 
             //无匹配

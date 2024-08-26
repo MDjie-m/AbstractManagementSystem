@@ -7,6 +7,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 咨询师排班任务对象 psy_consultant_schedule
  * 
@@ -90,5 +92,7 @@ public class PsyConsultantSchedule extends BaseEntity
     private String orderBy;
     private String start;
     private String end;
+    /** 状态  0待办  1已完成  2付费人请假   3收费人请假 */
+    private List<String> statusList;
     
 }

@@ -3,10 +3,7 @@ package com.renxin.psychology.service.impl;
 import java.math.BigDecimal;
 import java.rmi.ServerException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.renxin.common.constant.IntegralRecordConstants;
@@ -153,6 +150,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //已使用的次数(排班信息)
             PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
             scheduleReq.setOrderId(orderNo);
+            scheduleReq.setStatusList(Arrays.asList("0","1"));//"待办" "已完成"
             List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(scheduleReq);
             order.setUsedNum(ObjectUtils.isNotEmpty(scheduleList) ? scheduleList.size() : 0);
 

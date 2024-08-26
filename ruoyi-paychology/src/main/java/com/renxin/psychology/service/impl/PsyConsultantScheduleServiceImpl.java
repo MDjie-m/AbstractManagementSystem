@@ -179,9 +179,9 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         //添加日程安排
         psyConsultantScheduleMapper.insertPsyConsultantScheduleBatch(consultantScheduleList);
         
-        //若[剩余次数]被用完, 则修改订单状态
+        //若订单的[剩余次数]被用完, 则修改订单状态
         if (surplusNum == consultantScheduleList.size()){
-            order.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);//已完成
+            order.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);//已完成
             consultantOrderService.updatePsyConsultantOrder(order);
         }
         

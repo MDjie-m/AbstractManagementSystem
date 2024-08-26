@@ -57,6 +57,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null  and createBy != ''"> and sc.create_by = #{createBy}</if>
             <if test="consultId != null "> and sc.consult_id = #{consultId}</if>
             <if test="realTimeStart != null "> and sc.real_time >= #{realTimeStart}</if>
+            <if test="statusList != null and statusList.size > 0">
+                and sc.status in
+                <foreach collection="statusList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
         </where>
         <if test="orderBy != null and orderDir != null">
             order by ${orderBy} ${orderDir}
