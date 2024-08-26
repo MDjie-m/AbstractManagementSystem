@@ -74,7 +74,7 @@ public class SysProductStandardController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:standard:add')")
     @Log(title = "产品", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public AjaxResult add(@RequestBody SysProductStandard sysProductStandard)
     {
         return toAjax(sysProductStandardService.insertSysProductStandard(sysProductStandard));
@@ -85,7 +85,7 @@ public class SysProductStandardController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:standard:edit')")
     @Log(title = "产品", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody SysProductStandard sysProductStandard)
     {
         return toAjax(sysProductStandardService.updateSysProductStandard(sysProductStandard));
@@ -96,8 +96,8 @@ public class SysProductStandardController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:standard:remove')")
     @Log(title = "产品", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{productIds}")
-    public AjaxResult remove(@PathVariable String[] productIds)
+	@PostMapping("/delete")
+    public AjaxResult remove(@RequestBody String[] productIds)
     {
         return toAjax(sysProductStandardService.deleteSysProductStandardByProductIds(productIds));
     }

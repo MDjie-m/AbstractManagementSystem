@@ -43,13 +43,6 @@ public interface SysProductStandardMapper
      */
     public int updateSysProductStandard(SysProductStandard sysProductStandard);
 
-    /**
-     * 删除产品
-     * 
-     * @param productId 产品主键
-     * @return 结果
-     */
-    public int deleteSysProductStandardByProductId(String productId);
 
     /**
      * 批量删除产品

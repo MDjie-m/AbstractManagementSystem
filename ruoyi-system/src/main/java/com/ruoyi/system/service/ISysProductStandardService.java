@@ -50,12 +50,4 @@ public interface ISysProductStandardService
      * @return 结果
      */
     public int deleteSysProductStandardByProductIds(String[] productIds);
-
-    /**
-     * 删除产品信息
-     * 
-     * @param productId 产品主键
-     * @return 结果
-     */
-    public int deleteSysProductStandardByProductId(String productId);
 }
