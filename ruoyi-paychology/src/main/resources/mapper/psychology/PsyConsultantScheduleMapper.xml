@@ -23,11 +23,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="time"    column="time"    />
         <result property="realTime"    column="real_time"    />
         <result property="consultId"    column="consult_id"    />
+        <result property="customerConfirm"    column="customer_confirm"    />
+        <result property="workRecord"    column="work_record"    />
     </resultMap>
 
     <sql id="selectPsyConsultantScheduleVo">
         select id, order_id,team_id, work_id,time_num,schedule_type, time_start, time_end, day, week, status, create_by, 
-               create_time, update_by, update_time, time, real_time, consult_id from psy_consultant_schedule
+               create_time, update_by, update_time, time, real_time, consult_id,customer_confirm, work_record  from psy_consultant_schedule
     </sql>
 
     <select id="selectPsyConsultantScheduleList" parameterType="PsyConsultantSchedule" resultMap="PsyConsultantScheduleResult">
@@ -56,6 +58,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="realTime != null  and realTime != ''"> and sc.real_time = #{realTime}</if>
             <if test="createBy != null  and createBy != ''"> and sc.create_by = #{createBy}</if>
             <if test="consultId != null "> and sc.consult_id = #{consultId}</if>
+            <if test="customerConfirm != null "> and sc.customer_confirm = #{customerConfirm}</if>
+            <if test="workRecord != null "> and sc.work_record = #{workRecord}</if>
             <if test="realTimeStart != null "> and sc.real_time >= #{realTimeStart}</if>
             <if test="statusList != null and statusList.size > 0">
                 and sc.status in
@@ -95,6 +99,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="time != null">time,</if>
             <if test="realTime != null">real_time,</if>
             <if test="consultId != null">consult_id,</if>
+            <if test="customerConfirm != null">customer_confirm,</if>
+            <if test="workRecord != null">work_record,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -115,6 +121,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="time != null">#{time},</if>
             <if test="realTime != null">#{realTime},</if>
             <if test="consultId != null">#{consultId},</if>
+            <if test="customerConfirm != null">#{customer_confirm},</if>
+            <if test="workRecord != null">#{work_record},</if>
          </trim>
     </insert>
     
@@ -122,7 +130,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into psy_consultant_schedule (
             id, order_id, team_id, schedule_type, time_num, work_id,
             time_start, time_end, day, week, status, create_by,
-            create_time, update_by, update_time, time, real_time, consult_id
+            create_time, update_by, update_time, time, real_time, consult_id, customer_confirm, work_record
         )
         values
         <foreach collection="list" item="item" index="index" separator=",">
@@ -144,7 +152,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.updateTime},
             #{item.time},
             #{item.realTime},
-            #{item.consultId}
+            #{item.consultId},
+            #{item.customerConfirm},
+            #{item.workRecord}
             )
         </foreach>
     </insert>
@@ -169,6 +179,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="time != null">time = #{time},</if>
             <if test="realTime != null">real_time = #{realTime},</if>
             <if test="consultId != null">consult_id = #{consultId},</if>
+            <if test="customerConfirm != null">customer_confirm = #{customerConfirm},</if>
+            <if test="workRecord != null">work_record = #{workRecord},</if>
         </trim>
         where id = #{id}
     </update>

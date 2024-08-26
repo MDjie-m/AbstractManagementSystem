@@ -146,6 +146,25 @@ public class ConsultantWorkController extends BaseController {
         psyConsultWorkService.dateLeave(req);
         return AjaxResult.success();
     }
-    
-    
+
+
+    @ApiOperation(value = "收费咨询师针对个督写记录")
+    @PostMapping("/recordSchedule")
+    public AjaxResult recordSchedule(@RequestBody PsyWorkReq req,HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        req.setConsultId(consultId);
+        psyConsultWorkService.recordSchedule(req);
+        return AjaxResult.success();
+    }
+
+    @ApiOperation(value = "付费咨询师针对个督确认完成")
+    @PostMapping("/confirmSchedule")
+    public AjaxResult confirmSchedule(@RequestBody PsyWorkReq req,HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        req.setConsultId(consultId);
+        psyConsultWorkService.confirmSchedule(req);
+        return AjaxResult.success();
+    }
 }

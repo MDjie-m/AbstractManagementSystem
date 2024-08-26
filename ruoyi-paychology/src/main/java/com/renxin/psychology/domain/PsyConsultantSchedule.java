@@ -75,6 +75,11 @@ public class PsyConsultantSchedule extends BaseEntity
     @Excel(name = "督导师")
     private Long consultId;
     
+    //收费人工作记录
+    private String workRecord;
+    //顾客确认状态   0待确认   1已确认
+    private Integer customerConfirm;
+    
     //付款方用户名
     private String userNickName;
     private String userId;

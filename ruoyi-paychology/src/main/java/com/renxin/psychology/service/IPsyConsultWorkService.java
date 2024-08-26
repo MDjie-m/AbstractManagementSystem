@@ -54,5 +54,11 @@ public interface IPsyConsultWorkService {
     void scheduleLeave(PsyWorkReq req);
     
     void dateLeave(PsyWorkReq req);
+    
+    //收费咨询师针对个督写记录
+    void recordSchedule(PsyWorkReq req);
+    
+    //付费咨询师针对个督确认完成
+    void confirmSchedule(PsyWorkReq req);
 
 }

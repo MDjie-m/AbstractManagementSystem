@@ -265,6 +265,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     PsyConsultantSchedule querySche = new PsyConsultantSchedule();
                         querySche.setOrderId(order.getOrderNo());
                         querySche.setRealTimeStart(LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                        querySche.setStatus("0");//待办
                     List<PsyConsultantSchedule> scList = consultantScheduleService.selectPsyConsultantScheduleList(querySche);
                     if (ObjectUtils.isNotEmpty(scList)){
                         order.setNextBeginTime(scList.get(0).getRealTime());

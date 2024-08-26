@@ -576,5 +576,27 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
         String result = new TreeSet<String>(aSet).toString();
         return result;
     }
+
+    //收费咨询师针对个督写记录
+    @Override
+    public void recordSchedule(PsyWorkReq req){
+        PsyConsultantSchedule schedule = consultantScheduleService.selectPsyConsultantScheduleById(req.getScheduleId());
+        if (!schedule.getConsultId().equals(req.getConsultId())){
+            throw new ServiceException("您并非该预约的收费人, 无发对其填写记录");
+        }
+        schedule.setWorkRecord(req.getWorkRecord());
+        consultantScheduleService.updatePsyConsultantSchedule(schedule);
+    }
+    
+    //付费咨询师针对个督确认完成
+    @Override
+    public void confirmSchedule(PsyWorkReq req){
+        PsyConsultantSchedule schedule = consultantScheduleService.selectPsyConsultantScheduleById(req.getScheduleId());
+        if (!schedule.getCreateBy().equals(req.getConsultId())){
+            throw new ServiceException("您并非该预约的付费人, 无发确认完成");
+        }
+        schedule.setCustomerConfirm(1);//1.已确认
+        consultantScheduleService.updatePsyConsultantSchedule(schedule);
+    }
     
 }
