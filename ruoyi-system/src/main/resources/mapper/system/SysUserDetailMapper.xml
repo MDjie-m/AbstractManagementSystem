@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysUserDetailMapper">
+    
+    <resultMap type="SysUserDetail" id="SysUserDetailResult">
+        <result property="userDetailsId"    column="user_details_id"    />
+        <result property="userNameCn"    column="user_name_cn"    />
+        <result property="userNameEn"    column="user_name_en"    />
+        <result property="userNameOwn"    column="user_name_own"    />
+        <result property="country"    column="country"    />
+        <result property="province"    column="province"    />
+        <result property="cityArea"    column="city_area"    />
+        <result property="detailedAddress"    column="detailed_address"    />
+        <result property="principalProductType"    column="principal_product_type"    />
+        <result property="principalProduct"    column="principal_product"    />
+        <result property="companyCid"    column="company_cid"    />
+        <result property="identificationNumber"    column="Identification_number"    />
+        <result property="delFlg"    column="del_flg"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysUserDetailVo">
+        select user_details_id, user_name_cn, user_name_en, user_name_own, country, province, city_area, detailed_address, principal_product_type, principal_product, company_cid, Identification_number, del_flg, remark from sys_user_detail
+    </sql>
+
+    <select id="selectSysUserDetailList" parameterType="SysUserDetail" resultMap="SysUserDetailResult">
+        <include refid="selectSysUserDetailVo"/>
+        <where>  
+            <if test="userNameCn != null  and userNameCn != ''"> and user_name_cn = #{userNameCn}</if>
+            <if test="userNameEn != null  and userNameEn != ''"> and user_name_en = #{userNameEn}</if>
+            <if test="userNameOwn != null  and userNameOwn != ''"> and user_name_own = #{userNameOwn}</if>
+            <if test="country != null  and country != ''"> and country = #{country}</if>
+            <if test="province != null  and province != ''"> and province = #{province}</if>
+            <if test="cityArea != null  and cityArea != ''"> and city_area = #{cityArea}</if>
+            <if test="detailedAddress != null  and detailedAddress != ''"> and detailed_address = #{detailedAddress}</if>
+            <if test="principalProductType != null  and principalProductType != ''"> and principal_product_type = #{principalProductType}</if>
+            <if test="principalProduct != null  and principalProduct != ''"> and principal_product = #{principalProduct}</if>
+            <if test="companyCid != null  and companyCid != ''"> and company_cid = #{companyCid}</if>
+            <if test="identification Number != null  and identification Number != ''"> and Identification_number = #{identificationNumber}</if>
+            <if test="delFlg != null "> and del_flg = #{delFlg}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysUserDetailByUserDetailsId" parameterType="String" resultMap="SysUserDetailResult">
+        <include refid="selectSysUserDetailVo"/>
+        where user_details_id = #{userDetailsId}
+    </select>
+
+    <insert id="insertSysUserDetail" parameterType="SysUserDetail">
+        insert into sys_user_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userDetailsId != null">user_details_id,</if>
+            <if test="userNameCn != null">user_name_cn,</if>
+            <if test="userNameEn != null">user_name_en,</if>
+            <if test="userNameOwn != null">user_name_own,</if>
+            <if test="country != null">country,</if>
+            <if test="province != null">province,</if>
+            <if test="cityArea != null">city_area,</if>
+            <if test="detailedAddress != null">detailed_address,</if>
+            <if test="principalProductType != null and principalProductType != ''">principal_product_type,</if>
+            <if test="principalProduct != null and principalProduct != ''">principal_product,</if>
+            <if test="companyCid != null">company_cid,</if>
+            <if test="identificationNumber != null">identification_number,</if>
+            <if test="delFlg != null">del_flg,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userDetailsId != null">#{userDetailsId},</if>
+            <if test="userNameCn != null">#{userNameCn},</if>
+            <if test="userNameEn != null">#{userNameEn},</if>
+            <if test="userNameOwn != null">#{userNameOwn},</if>
+            <if test="country != null">#{country},</if>
+            <if test="province != null">#{province},</if>
+            <if test="cityArea != null">#{cityArea},</if>
+            <if test="detailedAddress != null">#{detailedAddress},</if>
+            <if test="principalProductType != null and principalProductType != ''">#{principalProductType},</if>
+            <if test="principalProduct != null and principalProduct != ''">#{principalProduct},</if>
+            <if test="companyCid != null">#{companyCid},</if>
+            <if test="identificationNumber != null">#{identificationNumber},</if>
+            <if test="delFlg != null">#{delFlg},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+    <insert id="insertBoth" parameterType="Sysuser">
+        insert into sys_user_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userDetailsId != null">user_details_id,</if>
+            <if test="userNameCn != null">user_name_cn,</if>
+            <if test="userNameEn != null">user_name_en,</if>
+            <if test="userNameOwn != null">user_name_own,</if>
+            <if test="country != null">country,</if>
+            <if test="province != null">province,</if>
+            <if test="cityArea != null">city_area,</if>
+            <if test="detailedAddress != null">detailed_address,</if>
+            <if test="principalProductType != null and principalProductType != ''">principal_product_type,</if>
+            <if test="principalProduct != null and principalProduct != ''">principal_product,</if>
+            <if test="companyCid != null">company_cid,</if>
+            <if test="identification Number != null">Identification_number,</if>
+            <if test="delFlg != null">del_flg,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userDetailsId != null">#{userDetailsId},</if>
+            <if test="userNameCn != null">#{userNameCn},</if>
+            <if test="userNameEn != null">#{userNameEn},</if>
+            <if test="userNameOwn != null">#{userNameOwn},</if>
+            <if test="country != null">#{country},</if>
+            <if test="province != null">#{province},</if>
+            <if test="cityArea != null">#{cityArea},</if>
+            <if test="detailedAddress != null">#{detailedAddress},</if>
+            <if test="principalProductType != null and principalProductType != ''">#{principalProductType},</if>
+            <if test="principalProduct != null and principalProduct != ''">#{principalProduct},</if>
+            <if test="companyCid != null">#{companyCid},</if>
+            <if test="identification Number != null">#{identificationNumber},</if>
+            <if test="delFlg != null">#{delFlg},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysUserDetail" parameterType="SysUserDetail">
+        update sys_user_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userNameCn != null">user_name_cn = #{userNameCn},</if>
+            <if test="userNameEn != null">user_name_en = #{userNameEn},</if>
+            <if test="userNameOwn != null">user_name_own = #{userNameOwn},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="cityArea != null">city_area = #{cityArea},</if>
+            <if test="detailedAddress != null">detailed_address = #{detailedAddress},</if>
+            <if test="principalProductType != null and principalProductType != ''">principal_product_type = #{principalProductType},</if>
+            <if test="principalProduct != null and principalProduct != ''">principal_product = #{principalProduct},</if>
+            <if test="companyCid != null">company_cid = #{companyCid},</if>
+            <if test="identification Number != null">Identification_number = #{identificationNumber},</if>
+            <if test="delFlg != null">del_flg = #{delFlg},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where user_details_id = #{userDetailsId}
+    </update>
+
+    <delete id="deleteSysUserDetailByUserDetailsId" parameterType="String">
+        update  sys_user_detail
+        set del_flag = '1'
+        where user_details_id = #{userDetailsId}
+    </delete>
+
+    <delete id="deleteSysUserDetailByUserDetailsIds" parameterType="String">
+        update  sys_user_detail
+        set del_flag = '1'
+        where user_details_id in
+        <foreach item="userDetailsId" collection="array" open="(" separator="," close=")">
+            #{userDetailsId}
+        </foreach>
+    </delete>
+</mapper>

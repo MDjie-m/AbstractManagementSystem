@@ -3,6 +3,8 @@ package com.ruoyi.common.core.domain.entity;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -30,7 +32,7 @@ public class SysUser extends BaseEntity
     private Long deptId;
 
     /** 用户账号 */
-    @Excel(name = "登录名称")
+    @Excel(name = "登录账号")
     private String userName;
 
     /** 用户昵称 */
@@ -63,7 +65,7 @@ public class SysUser extends BaseEntity
     private String delFlag;
 
     /** 是否为子账号（0,代表否 1 代表是子账号） */
-    @Excel(name = "是否为子账号", readConverterExp = "0=非子账号 1=是子账号")
+    @Excel(name = "是否为子账号", readConverterExp = "0=否,1=是")
     private Integer subAccountFlag;
 
     /** 供应商id */
@@ -72,11 +74,11 @@ public class SysUser extends BaseEntity
 
 
     /** 用户详情id */
-    @Excel(name = "用户详情id")
+    @Excel(name = "用户详情id" ,type = Type.EXPORT)
     private String userDetailsId;
 
     /** 有效期 */
-    @Excel(name = "有效期", width = 30, dateFormat = "yyyy-MM-dd", type = Type.EXPORT)
+    @Excel(name = "有效期", width = 30, dateFormat = "yyyy-MM-dd", type = Type.ALL)
     private Date expirationDate;
 
     /** 直接上级用户id */
@@ -102,6 +104,22 @@ public class SysUser extends BaseEntity
     })
     private SysDept dept;
 
+    /** 用户详情对象 */
+    @Excels({
+            @Excel(name = "中文姓名", targetAttr = "userNameCn", type = Type.ALL),
+            @Excel(name = "英文姓名", targetAttr = "userNameEn", type = Type.ALL),
+            @Excel(name = "本国姓名", targetAttr = "userNameOwn", type = Type.ALL),
+            @Excel(name = "国家", targetAttr = "country", type = Type.ALL),
+            @Excel(name = "省份", targetAttr = "province", type = Type.ALL),
+            @Excel(name = "市、区", targetAttr = "cityArea", type = Type.ALL),
+            @Excel(name = "家庭地址", targetAttr = "detailedAddress", type = Type.ALL),
+            @Excel(name = "负责品类", targetAttr = "principalProductType", type = Type.ALL),
+            @Excel(name = "负责产品", targetAttr = "principalProduct", type = Type.ALL),
+            @Excel(name = "公司工号", targetAttr = "companyCid", type = Type.ALL),
+            @Excel(name = "身份证号", targetAttr = "identificationNumber", type = Type.ALL)
+    })
+    private SysUserDetail userDetail;
+
     /** 角色对象 */
     private List<SysRole> roles;
 
@@ -115,7 +133,12 @@ public class SysUser extends BaseEntity
     private Long roleId;
     private String userType;
 
-    public SysUser( Long userId, Long deptId, String userName, String nickName, String userType, String email, String phonenumber, String sex, String avatar, String password, String status, String delFlag, Integer subAccountFlag, String supplierId, String userDetailsId, Date expirationDate, String parentUserId, String position, String loginIp, Date loginDate, SysDept dept, List<SysRole> roles, Long[] roleIds, Long[] postIds, Long roleId) {
+    public SysUser( Long userId, Long deptId, String userName, String nickName, String userType,
+                    String email, String phonenumber, String sex, String avatar, String password,
+                    String status, String delFlag, Integer subAccountFlag, String supplierId,
+                    String userDetailsId, Date expirationDate, String parentUserId, String position,
+                    String loginIp, Date loginDate, SysDept dept, List<SysRole> roles, Long[] roleIds,
+                    Long[] postIds, Long roleId,SysUserDetail userDetail) {
         this.userId = userId;
         this.deptId = deptId;
         this.userName = userName;
@@ -142,6 +165,7 @@ public class SysUser extends BaseEntity
         this.postIds = postIds;
         this.roleId = roleId;
         this.userType = userType;
+        this.userDetail = userDetail;
     }
 
     public String getUserType() {
@@ -320,6 +344,16 @@ public class SysUser extends BaseEntity
         this.dept = dept;
     }
 
+    public SysUserDetail getUserDetail()
+    {
+        return userDetail;
+    }
+
+    public void setUserDetail(SysUserDetail userDetail)
+    {
+        this.userDetail = userDetail;
+    }
+
     public List<SysRole> getRoles()
     {
         return roles;
@@ -382,6 +416,7 @@ public class SysUser extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .append("dept", getDept())
+            .append("userDetail", getUserDetail())
             .toString();
     }
 
