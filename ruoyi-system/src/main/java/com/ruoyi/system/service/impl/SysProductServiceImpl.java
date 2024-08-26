@@ -1,12 +1,12 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.UUID;
+import com.ruoyi.system.domain.SysSupplierPrice;
 import com.ruoyi.system.domain.dto.SysProDuctDTO;
 import com.ruoyi.system.domain.vo.SysProductVO;
 import org.slf4j.Logger;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysProductMapper;
 import com.ruoyi.system.domain.SysProduct;
 import com.ruoyi.system.service.ISysProductService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 产品Service业务层处理
@@ -49,9 +50,23 @@ public class SysProductServiceImpl implements ISysProductService {
      * @return 产品
      */
     @Override
+    @Transactional
     public List<SysProductVO> selectSysProductList(SysProDuctDTO sysProDuctDTO)
     {
-        return sysProductMapper.selectSysProductList(sysProDuctDTO);
+        List<SysProductVO> list = sysProductMapper.selectSysProductList(sysProDuctDTO);
+        if(sysProDuctDTO.isQuoted()){//如果要要查
+            list = list.stream()
+                    .filter(sysProductVo -> {
+                        SysSupplierPrice sysSupplierPrice = sysProductMapper.selectPriceByProductId(sysProductVo.getProductId());
+                        // 赋值操作在过滤时进行
+                        if (sysSupplierPrice != null) {
+                            sysProductVo.setPriceRmb(sysSupplierPrice.getPriceRmb());
+                        }
+                        return sysSupplierPrice != null;
+                    })
+                    .collect(Collectors.toList());
+        }
+        return list;
     }
 
     /**
@@ -160,28 +175,19 @@ public class SysProductServiceImpl implements ISysProductService {
      * @return 结果
      */
     @Override
-    public int updateStatus(String productId,String status) {
-        String res = "0";
-        if("0".equals(status)){
-            res = "1";
-        }
-        return sysProductMapper.updateStatus(productId,res);
+    public int updateStatus(String productId,Integer quotationFlag) {
+        return sysProductMapper.updateStatus(productId,quotationFlag);
     }
 
     /**
      * 修改产品报价清单的状态
      *
-     * @param productId 产品id
-     * @param status 产品当前的报价清单状态
+     * @param sysProDuctDTO 产品dto
      * @return 结果
      */
     @Override
-    public int updateQuoteListStatus(String productId, String status) {
-        String res = "0";
-        if("0".equals(status)){
-            res = "1";
-        }
-        return sysProductMapper.updateQuoteListStatus(productId,res);
+    public int updateQuoteListStatus(SysProDuctDTO sysProDuctDTO) {
+        return sysProductMapper.updateQuoteListStatus(sysProDuctDTO);
     }
 
     /**
@@ -192,11 +198,7 @@ public class SysProductServiceImpl implements ISysProductService {
      * @return 结果
      */
     @Override
-    public int updateInquiryListStatus(String productId, String status) {
-        String res = "0";
-        if("0".equals(status)){
-            res = "1";
-        }
-        return sysProductMapper.updateInquiryListStatus(productId,res);
+    public int updateInquiryListStatus(SysProDuctDTO sysProDuctDTO) {
+        return sysProductMapper.updateInquiryListStatus(sysProDuctDTO);
     }
 }

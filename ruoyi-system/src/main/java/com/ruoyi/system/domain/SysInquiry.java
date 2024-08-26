@@ -19,10 +19,10 @@ public class SysInquiry extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 询价id */
-    private String inquiryId;
+    private Long inquiryId;
 
     /** 采购员id */
-    private String buyerId;
+    private Long buyerId;
 
     /** 产品id */
     private String productId;
@@ -44,24 +44,27 @@ public class SysInquiry extends BaseEntity
     /** 美金报价 */
     private BigDecimal priceUsd;
 
+    /** 报价单位 */
+    private String unit;
+
     /** 0-未删除，1-已删除 */
     private Long delFlg;
 
-    public void setInquiryId(String inquiryId) 
+    public void setInquiryId(Long inquiryId)
     {
         this.inquiryId = inquiryId;
     }
 
-    public String getInquiryId() 
+    public Long getInquiryId()
     {
         return inquiryId;
     }
-    public void setBuyerId(String buyerId) 
+    public void setBuyerId(Long buyerId)
     {
         this.buyerId = buyerId;
     }
 
-    public String getBuyerId() 
+    public Long getBuyerId()
     {
         return buyerId;
     }

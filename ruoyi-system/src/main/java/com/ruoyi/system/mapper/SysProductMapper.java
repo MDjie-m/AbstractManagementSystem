@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.system.domain.SysProduct;
+import com.ruoyi.system.domain.SysSupplierPrice;
 import com.ruoyi.system.domain.dto.SysProDuctDTO;
 import com.ruoyi.system.domain.vo.SysProductVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -25,6 +26,14 @@ public interface SysProductMapper
      * @return 产品
      */
     public SysProductVO selectSysProductByProductId(SysProDuctDTO sysProDuctDTO);
+
+    /**
+     * 查询产品
+     *
+     * @param productId 产品最新报价信息
+     * @return 产品
+     */
+    public SysSupplierPrice selectPriceByProductId(@Param("productId") String productId);
 
     /**
      * 查询产品列表
@@ -83,9 +92,9 @@ public interface SysProductMapper
      * @param productId
      * @return
      */
-    public int updateStatus(@Param("productId")String productId,@Param("status")String status);
+    public int updateStatus(@Param("productId")String productId,@Param("quotationFlag")Integer quotationFlag);
 
-    int updateQuoteListStatus(@Param("productId")String productId,@Param("status")String status);
+    int updateQuoteListStatus(SysProDuctDTO sysProDuctDTO);
 
-    int updateInquiryListStatus(@Param("productId")String productId,@Param("status")String status);
+    int updateInquiryListStatus(SysProDuctDTO sysProDuctDTO);
 }

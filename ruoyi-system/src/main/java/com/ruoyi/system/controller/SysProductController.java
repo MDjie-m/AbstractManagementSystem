@@ -30,8 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 产品Controller
  * 
- * @author xgg
- * @date 2024-07-23
+ * @author tyc
+ * @date 2024-08-23
  */
 @RestController
 @RequestMapping("/system/product")
@@ -143,40 +143,13 @@ public class SysProductController extends BaseController
     }
 
     /**
-     * 新增产品，产品分类要同时存进口和国产，进口没有的就不存。
+     * 新增产品
      */
     @PreAuthorize("@ss.hasPermi('system:product:add')")
     @Log(title = "产品", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     public AjaxResult add(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
-        String[] names = sysProDuctDTO.getNames().split("/");
-        String[] codes = sysProDuctDTO.getCodes().split("/");
-        //赋值到自己命名的产品名称字段里。
-        for (int i = 0; i < names.length; i++) {
-            switch (i) {
-                case 0:
-                    sysProDuctDTO.setCnPrimaryCategoryName(names[i]);
-                    sysProDuctDTO.setCnPrimaryCategory(codes[i]);
-                    break;
-                case 1:
-                    sysProDuctDTO.setCnSecondaryCategoryName(names[i]);
-                    sysProDuctDTO.setCnSecondaryCategory(codes[i]);
-                    break;
-                case 2:
-                    sysProDuctDTO.setCnTertiaryCategoryName(names[i]);
-                    sysProDuctDTO.setCnTertiaryCategory(codes[i]);
-                    break;
-                case 3:
-                    sysProDuctDTO.setCnQuaternaryCategoryName(names[i]);
-                    sysProDuctDTO.setCnQuaternaryCategory(codes[i]);
-                    break;
-                case 4:
-                    sysProDuctDTO.setCnFifthCategoryName(names[i]);
-                    sysProDuctDTO.setCnFifthCategory(codes[i]);
-                    break;
-            }
-        }
         return toAjax(sysProductService.insertSysProduct(sysProDuctDTO));
     }
 
@@ -185,7 +158,7 @@ public class SysProductController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:product:edit')")
     @Log(title = "产品", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody SysProduct sysProduct)
     {
         return toAjax(sysProductService.updateSysProduct(sysProduct));
@@ -203,23 +176,28 @@ public class SysProductController extends BaseController
     }
 
     /**
-     * 修改产品报价状态
+     * 修改产品是否可报价的状态
      */
     @PreAuthorize("@ss.hasPermi('system:product:updateStatus')")
-    @GetMapping("/updateStatus")
-    public AjaxResult updateStatus(String productId,String status)
+    @PostMapping("/updateQuotationStatus")
+    public AjaxResult updateQuotationStatus(@RequestBody List<SysProDuctDTO> sysProDuctDTOList)
     {
-        return toAjax(sysProductService.updateStatus(productId,status));
+        int i = 0;
+        for (SysProDuctDTO dto:sysProDuctDTOList) {
+            sysProductService.updateStatus(dto.getProductId(),dto.getQuotationFlag());
+            i=i+1;
+        }
+        return toAjax(i);
     }
 
     /**
      * 切换产品的报价清单状态
      */
     @PreAuthorize("@ss.hasPermi('system:product:updateStatus')")
-    @GetMapping("/updateQuoteListStatus")
-    public AjaxResult updateQuoteListStatus(@RequestParam String productId,@RequestParam String status)
+    @PostMapping("/updateQuoteListStatus")
+    public AjaxResult updateQuoteListStatus(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
         // 跟上面切换是否可报价状态的逻辑一致
-        return toAjax(sysProductService.updateQuoteListStatus(productId,status));
+        return toAjax(sysProductService.updateQuoteListStatus(sysProDuctDTO));
     }
 }

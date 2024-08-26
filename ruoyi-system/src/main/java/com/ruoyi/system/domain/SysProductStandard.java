@@ -8,103 +8,138 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 产品对象 sys_product_standard
  * 
- * @author tyc
- * @date 2024-08-16
+ * @author ruoyi
+ * @date 2024-08-23
  */
 public class SysProductStandard extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 产品编号 */
+    /** 平台产品id */
     private String productId;
 
     /** 产品名称 */
+    @Excel(name = "产品名称")
     private String productName;
 
     /** 海关一级分类 */
+    @Excel(name = "海关一级分类")
     private String primaryCategory;
 
     /** 海关一级分类名称 */
+    @Excel(name = "海关一级分类名称")
     private String primaryCategoryName;
 
     /** 海关二级分类 */
+    @Excel(name = "海关二级分类")
     private String secondaryCategory;
 
     /** 海关二级分类名称 */
+    @Excel(name = "海关二级分类名称")
     private String secondaryCategoryName;
 
     /** 海关三级分类 */
+    @Excel(name = "海关三级分类")
     private String tertiaryCategory;
 
     /** 海关三级分类名称 */
+    @Excel(name = "海关三级分类名称")
     private String tertiaryCategoryName;
 
     /** 海关四级分类 */
+    @Excel(name = "海关四级分类")
     private String quaternaryCategory;
 
     /** 海关四级分类名称 */
+    @Excel(name = "海关四级分类名称")
     private String quaternaryCategoryName;
 
     /** 海关五级分类 */
+    @Excel(name = "海关五级分类")
     private String fifthCategory;
 
     /** 海关五级分类名称 */
+    @Excel(name = "海关五级分类名称")
     private String fifthCategoryName;
 
     /** 公司一级分类 */
+    @Excel(name = "公司一级分类")
     private String cnPrimaryCategory;
 
     /** 公司一级分类名称 */
+    @Excel(name = "公司一级分类名称")
     private String cnPrimaryCategoryName;
 
     /** 公司二级分类 */
+    @Excel(name = "公司二级分类")
     private String cnSecondaryCategory;
 
     /** 公司二级分类名称 */
+    @Excel(name = "公司二级分类名称")
     private String cnSecondaryCategoryName;
 
     /** 公司三级分类 */
+    @Excel(name = "公司三级分类")
     private String cnTertiaryCategory;
 
     /** 公司三级分类名称 */
+    @Excel(name = "公司三级分类名称")
     private String cnTertiaryCategoryName;
 
     /** 公司四级分类 */
+    @Excel(name = "公司四级分类")
     private String cnQuaternaryCategory;
 
     /** 公司四级分类名称 */
+    @Excel(name = "公司四级分类名称")
     private String cnQuaternaryCategoryName;
 
     /** 公司五级分类 */
+    @Excel(name = "公司五级分类")
     private String cnFifthCategory;
 
     /** 公司五级分类名称 */
+    @Excel(name = "公司五级分类名称")
     private String cnFifthCategoryName;
 
     /** 0-国产 1-进口 */
+    @Excel(name = "0-国产 1-进口")
     private Long domesticImportedType;
 
-    /** 储存方式 */
+    /** 储存方式0:-冷冻1-冷鲜 */
+    @Excel(name = "储存方式0:-冷冻1-冷鲜")
     private String storageMode;
 
     /** 产品规格 */
+    @Excel(name = "产品规格")
     private String specifications;
 
     /** 标签id由，隔开 */
+    @Excel(name = "标签id由，隔开")
     private String tagId;
 
     /** 标签由，隔开 */
+    @Excel(name = "标签由，隔开")
     private String tagName;
-
-
-    /** 图片地址由”,”隔开 */
-    private String imagePath;
-
-    /** 视频地址由”,”隔开 */
-    private String videoPath;
 
     /** 删除状态：0-未删除，1-已删除 */
     private Long delFlag;
+
+    /** 图片地址由”,”隔开 */
+    @Excel(name = "图片地址由”,”隔开")
+    private String imagePath;
+
+    /** 视频地址由”,”隔开 */
+    @Excel(name = "视频地址由”,”隔开")
+    private String videoPath;
+
+    /** 产品参数 */
+    @Excel(name = "产品参数")
+    private String productModel;
+
+    /** 产品状态(0-期货,1-现货) */
+    @Excel(name = "产品状态(0-期货,1-现货)")
+    private Long status;
 
     public void setProductId(String productId) 
     {
@@ -376,6 +411,24 @@ public class SysProductStandard extends BaseEntity
     {
         return videoPath;
     }
+    public void setProductModel(String productModel) 
+    {
+        this.productModel = productModel;
+    }
+
+    public String getProductModel() 
+    {
+        return productModel;
+    }
+    public void setStatus(Long status) 
+    {
+        this.status = status;
+    }
+
+    public Long getStatus() 
+    {
+        return status;
+    }
 
     @Override
     public String toString() {
@@ -410,7 +463,11 @@ public class SysProductStandard extends BaseEntity
             .append("delFlag", getDelFlag())
             .append("imagePath", getImagePath())
             .append("videoPath", getVideoPath())
+            .append("productModel", getProductModel())
+            .append("status", getStatus())
             .append("remark", getRemark())
+            .append("createTime", getCreateTime())
+            .append("updateTime", getUpdateTime())
             .toString();
     }
 }

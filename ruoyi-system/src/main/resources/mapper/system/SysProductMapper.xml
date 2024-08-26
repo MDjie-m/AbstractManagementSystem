@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                del_flag AS delFlag,quote_status AS quoteStatus,inquiry_status AS inquiryStatus,buyer_id AS buyerId,
                inquiry_list_flag AS inquiryListFlag,quote_list_flag AS quoteListFlag,remark AS remark,
                mark AS mark,unitprice AS unitprice,unitprice_unit AS unitpriceUnit,
-               start_batch AS startBatch,batch_unit AS batchUnit
+               start_batch AS startBatch,batch_unit AS batchUnit,create_time as createTime,update_time as updateTime
                from sys_product
     </sql>
 
@@ -90,7 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 a.del_flag AS delFlag,a.quote_status AS quoteStatus,a.inquiry_status AS inquiryStatus,a.buyer_id AS buyerId,
                 a.inquiry_list_flag AS inquiryListFlag,a.quote_list_flag AS quoteListFlag,a.remark AS remark,
                 a.mark AS mark,a.unitprice AS unitprice,a.unitprice_unit AS unitpriceUnit,
-                a.start_batch AS startBatch,a.batch_unit AS batchUnit,
+                a.start_batch AS startBatch,a.batch_unit AS batchUnit,a.create_time as createTime,a.update_time as updateTime,
                 b.supplier_name_cn as supplierNameCn,b.supplier_name_en as supplierNameEn,b.supplier_name_own as supplierNameOwn
                 FROM sys_product a
                 LEFT JOIN sys_supplier b ON a.supplier_id = b.supplier_id
@@ -223,14 +223,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 a.del_flag AS delFlag,a.quote_status AS quoteStatus,a.inquiry_status AS inquiryStatus,a.buyer_id AS buyerId,
                 a.inquiry_list_flag AS inquiryListFlag,a.quote_list_flag AS quoteListFlag,a.remark AS remark,
                 a.mark AS mark,a.unitprice AS unitprice,a.unitprice_unit AS unitpriceUnit,
-                a.start_batch AS startBatch,a.batch_unit AS batchUnit,
+                a.start_batch AS startBatch,a.batch_unit AS batchUnit,a.create_time as createTime,a.update_time as updateTime,
                 b.supplier_name_cn as supplierNameCn,b.supplier_name_en as supplierNameEn,b.supplier_name_own as supplierNameOwn
                 FROM sys_product a
                 LEFT JOIN sys_supplier b ON a.supplier_id = b.supplier_id
             </otherwise>
         </choose>
         <where>
-            product_id = #{productId}
+            and product_id = #{productId}
             <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
             <if test="buyerId!=null"> and buyer_id = #{buyerId}</if>
             <choose>
@@ -305,7 +305,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="batchUnit != null and batchUnit != ''">batch_unit,</if>
             <if test="futureField1 != null and futureField1 != ''">future_field1,</if>
             <if test="futureField2 != null and futureField2 != ''">future_field2,</if>
-            <if test="futureField3 != null and futureField3 != ''">future_field3</if>
+            <if test="futureField3 != null and futureField3 != ''">future_field3,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="productId != null and productId != ''">#{productId},</if>
@@ -364,7 +365,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="batchUnit != null and batchUnit != ''">#{batchUnit},</if>
             <if test="futureField1 != null and futureField1 != ''">#{futureField1},</if>
             <if test="futureField2 != null and futureField2 != ''">#{futureField2},</if>
-            <if test="futureField3 != null and futureField3 != ''">#{futureField3}</if>
+            <if test="futureField3 != null and futureField3 != ''">#{futureField3},</if>
+            sysdate()
          </trim>
     </insert>
 
@@ -373,23 +375,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="supplierId != null">supplier_id = #{supplierId},</if>
             <if test="supplierName != null">supplier_name = #{supplierName},</if>
-            <if test="primaryCategory != null">primary_category = #{primaryCategory},</if>
-            <if test="primaryCategoryName != null">primary_category_name = #{primaryCategoryName},</if>
-            <if test="secondaryCategory != null">secondary_category = #{secondaryCategory},</if>
-            <if test="secondaryCategoryName != null">secondary_category_name = #{secondaryCategoryName},</if>
-            <if test="tertiaryCategory != null">tertiary_category = #{tertiaryCategory},</if>
-            <if test="tertiaryCategoryName != null">tertiary_category_name = #{tertiaryCategoryName},</if>
-            <if test="quaternaryCategory != null">quaternary_category = #{quaternaryCategory},</if>
-            <if test="quaternaryCategoryName != null">quaternary_category_name = #{quaternaryCategoryName},</if>
-            <if test="fifthCategory != null">fifth_category = #{fifthCategory},</if>
-            <if test="fifthCategoryName != null">fifth_category_name = #{fifthCategoryName},</if>
+            <if test="cnPrimaryCategory != null">cn_primary_category = #{cnPrimaryCategory},</if>
+            <if test="cnPrimaryCategoryName != null">cn_primary_category_name = #{cnPrimaryCategoryName},</if>
+            <if test="cnSecondaryCategory != null">cn_secondary_category = #{cnSecondaryCategory},</if>
+            <if test="cnSecondaryCategoryName != null">cn_secondary_category_name = #{cnSecondaryCategoryName},</if>
+            <if test="cnTertiaryCategory != null">cn_tertiary_category = #{cnTertiaryCategory},</if>
+            <if test="cnTertiaryCategoryName != null">cn_tertiary_category_name = #{cnTertiaryCategoryName},</if>
+            <if test="cnQuaternaryCategory != null">cn_quaternary_category = #{cnQuaternaryCategory},</if>
+            <if test="cnQuaternaryCategoryName != null">cn_quaternary_category_name = #{cnQuaternaryCategoryName},</if>
+            <if test="cnFifthCategory != null">cn_fifth_category = #{cnFifthCategory},</if>
+            <if test="cnFifthCategoryName != null">cn_fifth_category_name = #{cnFifthCategoryName},</if>
             <if test="productName != null">product_name = #{productName},</if>
             <if test="domesticImportedType != null">domestic_imported_type = #{domesticImportedType},</if>
             <if test="productModel != null">product_model = #{productModel},</if>
             <if test="quotationFlag != null">quotation_flag = #{quotationFlag},</if>
-            <if test="futureField1 != null">future_field1 = #{futureField1},</if>
-            <if test="futureField2 != null">future_field2 = #{futureField2},</if>
-            <if test="futureField3 != null">future_field3 = #{futureField3},</if>
+            <if test="sample != null">sample = #{sample},</if>
+            <if test="specifications != null">specifications = #{specifications},</if>
+            <if test="inventory != null">inventory = #{inventory},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="origin != null">origin = #{origin},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="mark != null">mark = #{mark},</if>
+            <if test="unitprice != null">unitprice = #{unitprice},</if>
+            <if test="unitpriceUnit != null">unitprice_unit = #{unitpriceUnit},</if>
+            <if test="productModel != null">product_model = #{productModel},</if>
+            <if test="productVideo != null">product_video = #{productVideo},</if>
+            <if test="productImage != null">product_image = #{productImage},</if>
+            <if test="tagId != null">tag_id = #{tagId},</if>
+            <if test="tagName != null">tag_name = #{tagName},</if>
+            <if test="quotationFlag != null">quotation_flag = #{quotationFlag},</if>
+            <if test="inventoryUnit != null">inventory_unit = #{inventoryUnit},</if>
+            <if test="productionDate != null">production_date = #{productionDate},</if>
+            <if test="shelfLife != null">shelf_life = #{shelfLife},</if>
+            <if test="storageMode != null">storage_mode = #{storageMode},</if>
+            <if test="warehouseAddress != null">warehouse_address = #{warehouseAddress},</if>
+            <if test="mainProduct != null">main_product = #{mainProduct},</if>
+            <if test="startBatch != null">start_batch = #{startBatch},</if>
+            <if test="batchUnit != null">batch_unit = #{batchUnit},</if>
+            update_time = sysdate()
         </trim>
         where product_id = #{productId}
     </update>
@@ -400,10 +423,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         set future_field1 = 1
         where product_id = #{productId}
     </update>
-    <!--  修改产品状态用于前端切换  -->
+    <!--  修改产品是否可报价状态用于前端切换  -->
     <update id="updateStatus">
         update sys_product
-        set quotation_flag = #{status}
+        set quotation_flag = #{quotationFlag}
         where product_id = #{productId}
     </update>
 
@@ -411,14 +434,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateQuoteListStatus">
         update sys_product
         set quote_list_flag = #{status}
-        where product_id = #{productId}
+        where product_id in
+        <foreach collection="productIds" item="productId" open="(" close=")" separator=",">
+            #{productId}
+        </foreach>
     </update>
 
     <!--    切换该产品是否属于询价清单的状态-->
     <update id="updateInquiryListStatus">
         update sys_product
         set inquiry_list_flag = #{status}
-        where product_id = #{productId}
+        where product_id in
+        <foreach collection="productIds" item="productId" open="(" close=")" separator=",">
+            #{productId}
+        </foreach>
     </update>
 
     <delete id="deleteSysProductByProductId" parameterType="String">
@@ -438,5 +467,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     WHERE future_field1 = '1'
       <if test="supplierId != null  and supplierId != ''">and supplier_id = #{supplierId}</if>
         <if test="productName != null  and productName != ''">AND product_Name LIKE CONCAT('%', #{productName}, '%')</if>
+    </select>
+
+    <select id="selectPriceByProductId" resultType="com.ruoyi.system.domain.SysSupplierPrice">
+        select price_RMB as priceRMB from sys_supplier_price where product_id=#{productId} order by time desc limit 1
     </select>
 </mapper>
