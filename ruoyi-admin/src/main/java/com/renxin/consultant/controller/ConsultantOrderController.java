@@ -152,6 +152,9 @@ public class ConsultantOrderController extends BaseController
                 if (ObjectUtils.isEmpty(team)){
                     throw new ServiceException("未找到该id的团队督导");
                 }
+                if (team.getConsultantId().equals(consultId)){
+                    throw new ServiceException("不可报名自己开班的团队督导");
+                }
                 originalPrice = team.getPrice();
                 serverName = team.getTitle() + "-第" + team.getPeriodNo() +"期";
                 //TODO 超卖问题.
@@ -166,6 +169,9 @@ public class ConsultantOrderController extends BaseController
                 PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(consultantOrder.getServerId());
                 if (ObjectUtils.isEmpty(serverDetail)){
                     throw new ServiceException("未找到该id的个督服务, 请传入relationId");
+                }
+                if (serverDetail.getConsultantId().equals(consultId)){
+                    throw new ServiceException("不可购买自己提供的服务");
                 }
                 originalPrice = serverDetail.getPrice();
                 serverName = "个人督导服务购买-" + serverDetail.getName() + "-" + serverDetail.getConsultantName();
@@ -184,6 +190,9 @@ public class ConsultantOrderController extends BaseController
                 PsyConsultServeConfig serverDetailExp = consultServeService.getServerDetailByRelationId(consultantOrder.getServerId());
                 if (ObjectUtils.isEmpty(serverDetailExp)){
                     throw new ServiceException("未找到该id的个人体验服务, 请传入relationId");
+                }
+                if (serverDetailExp.getConsultantId().equals(consultId)){
+                    throw new ServiceException("不可购买自己提供的服务");
                 }
                 originalPrice = serverDetailExp.getPrice();
                 serverName = "个人体验服务购买-" + serverDetailExp.getName() + "-" + serverDetailExp.getConsultantName();

@@ -592,7 +592,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
     @Override
     public void confirmSchedule(PsyWorkReq req){
         PsyConsultantSchedule schedule = consultantScheduleService.selectPsyConsultantScheduleById(req.getScheduleId());
-        if (!schedule.getCreateBy().equals(req.getConsultId())){
+        if (!schedule.getCreateBy().equals(req.getConsultId()+"")){
             throw new ServiceException("您并非该预约的付费人, 无发确认完成");
         }
         schedule.setCustomerConfirm(1);//1.已确认
