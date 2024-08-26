@@ -2,6 +2,9 @@ package com.ruoyi.system.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.annotation.Anonymous;
+import com.ruoyi.system.domain.dto.SysProductStandardDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +27,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 /**
  * 产品Controller
  * 
- * @author ruoyi
+ * @author tyc
  * @date 2024-08-23
  */
 @RestController
@@ -35,14 +38,14 @@ public class SysProductStandardController extends BaseController
     private ISysProductStandardService sysProductStandardService;
 
     /**
-     * 查询产品列表
+     * 查询平台产品列表，游客也可以访问
      */
-    @PreAuthorize("@ss.hasPermi('system:standard:list')")
-    @GetMapping("/list")
-    public TableDataInfo list(SysProductStandard sysProductStandard)
+    @Anonymous
+    @PostMapping("/list")
+    public TableDataInfo list(@RequestBody SysProductStandardDTO sysProductStandardDTO)
     {
         startPage();
-        List<SysProductStandard> list = sysProductStandardService.selectSysProductStandardList(sysProductStandard);
+        List<SysProductStandard> list = sysProductStandardService.selectSysProductStandardList(sysProductStandardDTO);
         return getDataTable(list);
     }
 
@@ -54,9 +57,9 @@ public class SysProductStandardController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysProductStandard sysProductStandard)
     {
-        List<SysProductStandard> list = sysProductStandardService.selectSysProductStandardList(sysProductStandard);
-        ExcelUtil<SysProductStandard> util = new ExcelUtil<SysProductStandard>(SysProductStandard.class);
-        util.exportExcel(response, list, "产品数据");
+//        List<SysProductStandard> list = sysProductStandardService.selectSysProductStandardList(sysProductStandard);
+//        ExcelUtil<SysProductStandard> util = new ExcelUtil<SysProductStandard>(SysProductStandard.class);
+//        util.exportExcel(response, list, "产品数据");
     }
 
     /**

@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.SysProductStandard;
+import com.ruoyi.system.domain.dto.SysProductStandardDTO;
 
 /**
  * 产品Mapper接口
@@ -25,7 +26,7 @@ public interface SysProductStandardMapper
      * @param sysProductStandard 产品
      * @return 产品集合
      */
-    public List<SysProductStandard> selectSysProductStandardList(SysProductStandard sysProductStandard);
+    public List<SysProductStandard> selectSysProductStandardList(SysProductStandardDTO sysProductStandardDTO);
 
     /**
      * 新增产品
