@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.SysInquiry;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 【请填写功能名称】Mapper接口
@@ -58,4 +59,6 @@ public interface SysInquiryMapper
      * @return 结果
      */
     public int deleteSysInquiryByInquiryIds(String[] inquiryIds);
+
+    Integer selectInquiryTimes(@Param("productId") String productId);
 }

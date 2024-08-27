@@ -11,6 +11,16 @@ public class SysProductVO extends SysProduct {
     private BigDecimal priceRmb;//报价的人民币价格
     private BigDecimal priceUsd;//报价的人民币价格
 
+    private Integer inquiryTimes;//询价次数，询价菜单查看询价列表才显示
+
+    public Integer getInquiryTimes() {
+        return inquiryTimes;
+    }
+
+    public void setInquiryTimes(Integer inquiryTimes) {
+        this.inquiryTimes = inquiryTimes;
+    }
+
     public BigDecimal getPriceRmb() {
         return priceRmb;
     }
