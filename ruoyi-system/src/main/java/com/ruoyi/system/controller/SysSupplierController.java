@@ -122,7 +122,7 @@ public class SysSupplierController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:supplier:edit')")
     @Log(title = "供应商", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PostMapping("/edit")
     public AjaxResult edit(@RequestBody SysSupplier sysSupplier)
     {
         return toAjax(sysSupplierService.updateSysSupplier(sysSupplier));
