@@ -237,13 +237,13 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="课程类型" prop="type">
-              <el-select v-model="form.type" placeholder="请选择课程类型">
+            <el-form-item label="服务对象" prop="serviceTo">
+              <el-select v-model="form.serviceTo" placeholder="请选择服务对象" @change="changeServiceTo">
                 <el-option
-                  v-for="item in courseClassList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="parseInt(item.id)"
+                  v-for="dict in userTypeList"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -264,13 +264,13 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="服务对象" prop="type">
-              <el-select v-model="form.serviceTo" placeholder="请选择服务对象">
+            <el-form-item label="课程类型" prop="type">
+              <el-select v-model="form.type" placeholder="请选择课程类型">
                 <el-option
-                  v-for="dict in userTypeList"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
+                  v-for="item in courseClassByServiceToList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="parseInt(item.id)"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -414,6 +414,9 @@ export default {
         name: [
           { required: true, message: "课程名称不能为空", trigger: "blur" }
         ],
+        serviceTo: [
+          { required: true, message: "服务对象不能为空", trigger: "change" }
+        ],
         type: [
           { required: true, message: "课程类型不能为空", trigger: "change" }
         ],
@@ -428,6 +431,7 @@ export default {
       drawOpen: false,
       drawCourse: null,
       courseClassList: [],
+      courseClassByServiceToList: [],
       consultList: [],
       coursePayTypeList: [
         {
@@ -508,7 +512,9 @@ export default {
       // return this.coursePayTypeList.filter(item => item.id === payType)[0].name
     },
     getCourseClassName(type) {
-      const list = this.courseClassList.filter(item => item.id === type)
+      const list = this.courseClassList.filter(item => parseInt(item.id) === type)
+/*      console.log("**********************",this.courseClassList)
+      console.log("----------------------",list)*/
       return list.length > 0 ? list[0].name : undefined
     },
     getCourseClassList() {
@@ -516,6 +522,17 @@ export default {
         this.courseClassList = response.rows;
       });
     },
+    changeServiceTo(newValue){
+        this.form.type = '';
+        this.getCourseClassByServiceToList(newValue);
+    },
+    async getCourseClassByServiceToList(newValue) {
+      await listClass({"serviceTo":newValue}).then(response => {
+        this.courseClassByServiceToList = response.rows;
+      });
+      console.log("//////////////////////",this.courseClassByServiceToList);
+    },
+
     /** 查询课程列表 */
     getList() {
       this.loading = true;
@@ -594,11 +611,13 @@ export default {
           this.form.detailImg3 = imgList[2];
           this.form.detailImg4 = imgList[3];
 
-          console.log(this.form)
+         // console.log(this.form)
         }
+        this.getCourseClassByServiceToList(this.form.serviceTo).then(response => {
+          this.open = true;
+          this.title = "修改课程";
+        })
 
-        this.open = true;
-        this.title = "修改课程";
       });
     },
     /** 提交按钮 */

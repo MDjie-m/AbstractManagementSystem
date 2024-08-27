@@ -119,7 +119,6 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
     public PsyAdvert selectPsyAdvertByAdvertNo(String advertNo)
     {
         PsyAdvert advert = psyAdvertMapper.selectPsyAdvertByAdvertNo(advertNo);
-
         //查询条目清单
         PsyAdvertItem itemReq = new PsyAdvertItem();
             itemReq.setAdvertNo(advert.getAdvertNo());
@@ -139,7 +138,15 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
     @Override
     public List<PsyAdvert> selectPsyAdvertList(PsyAdvert psyAdvert)
     {
-        return psyAdvertMapper.selectPsyAdvertList(psyAdvert);
+        List<PsyAdvert> advertList = psyAdvertMapper.selectPsyAdvertList(psyAdvert);
+        
+        for (PsyAdvert advert : advertList) {
+            PsyAdvertItem itemReq = new PsyAdvertItem();
+                itemReq.setAdvertNo(advert.getAdvertNo());
+            List<PsyAdvertItem> itemList = advertItemService.selectPsyAdvertItemList(itemReq);
+            advert.setItemList(itemList);
+        }
+        return advertList;
     }
 
     /**
