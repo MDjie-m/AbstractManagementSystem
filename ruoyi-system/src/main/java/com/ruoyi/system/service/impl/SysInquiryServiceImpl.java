@@ -100,4 +100,14 @@ public class SysInquiryServiceImpl implements ISysInquiryService
     public Integer selectInquiryTimes(String productId) {
         return sysInquiryMapper.selectInquiryTimes(productId);
     }
+
+    /**
+     * 批量拒绝报价
+     * @param inquiryIds 询价id列表
+     * @return int
+     */
+    @Override
+    public int refuseQuotation(List<Long> inquiryIds) {
+        return sysInquiryMapper.refuseQuotation(inquiryIds);
+    }
 }
