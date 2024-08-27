@@ -45,8 +45,7 @@ public class SysInquiryController extends BaseController
     /**
      *这里查的是询价界面的询价和询价清单的列表，除了正常的筛选，还包括可报价不可报价，返回的数据包括询价次数。
      */
-//    @PreAuthorize("@ss.hasPermi('system:inquiry:list')")
-    @Anonymous
+    @PreAuthorize("@ss.hasPermi('system:inquiry:list')")
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
