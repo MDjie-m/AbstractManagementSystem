@@ -87,13 +87,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where inquiry_id = #{inquiryId}
     </update>
 
+<!--    批量将某些询价变为拒绝状态-->
+    <update id="refuseQuotation" parameterType="java.util.List">
+        update sys_inquiry set feedback_status=2,response_date=sysdate(),update_time=sysdate()
+        where inquiry_id in
+        <foreach item="inquiryId" collection="inquiryIds" open="(" separator="," close=")">
+            #{inquiryId}
+        </foreach>
+    </update>
+
     <delete id="deleteSysInquiryByInquiryId" parameterType="String">
         delete from sys_inquiry where inquiry_id = #{inquiryId}
     </delete>
 
     <delete id="deleteSysInquiryByInquiryIds" parameterType="String">
         delete from sys_inquiry where inquiry_id in 
-        <foreach item="inquiryId" collection="array" open="(" separator="," close=")">
+        <foreach item="inquiryId" collection="list" open="(" separator="," close=")">
             #{inquiryId}
         </foreach>
     </delete>
