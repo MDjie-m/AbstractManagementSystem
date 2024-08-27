@@ -193,8 +193,7 @@ public class SysProductServiceImpl implements ISysProductService {
     /**
      * 修改产品询价清单的状态
      *
-     * @param productId 产品id
-     * @param status 产品当前的报价清单状态
+     * @param sysProDuctDTO 产品dto
      * @return 结果
      */
     @Override
