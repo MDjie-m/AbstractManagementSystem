@@ -46,7 +46,7 @@ public class SysProductStandardController extends BaseController
      * 导出产品列表
      */
     @PreAuthorize("@ss.hasPermi('system:standard:export')")
-    @Log(title = "产品", businessType = BusinessType.EXPORT)
+    @Log(title = "平台产品", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysProductStandard sysProductStandard)
     {
@@ -69,7 +69,7 @@ public class SysProductStandardController extends BaseController
      * 新增产品
      */
     @PreAuthorize("@ss.hasPermi('system:standard:add')")
-    @Log(title = "产品", businessType = BusinessType.INSERT)
+    @Log(title = "平台产品", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     public AjaxResult add(@RequestBody SysProductStandard sysProductStandard)
     {
@@ -80,7 +80,7 @@ public class SysProductStandardController extends BaseController
      * 修改产品
      */
     @PreAuthorize("@ss.hasPermi('system:standard:edit')")
-    @Log(title = "产品", businessType = BusinessType.UPDATE)
+    @Log(title = "平台产品", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     public AjaxResult edit(@RequestBody SysProductStandard sysProductStandard)
     {
@@ -91,7 +91,7 @@ public class SysProductStandardController extends BaseController
      * 批量删除平台产品
      */
     @PreAuthorize("@ss.hasPermi('system:standard:remove')")
-    @Log(title = "产品", businessType = BusinessType.DELETE)
+    @Log(title = "平台产品", businessType = BusinessType.DELETE)
 	@PostMapping("/delete")
     public AjaxResult remove(@RequestBody String[] productIds)
     {
