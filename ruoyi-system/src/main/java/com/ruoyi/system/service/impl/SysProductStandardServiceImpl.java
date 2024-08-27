@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.system.domain.dto.SysProductStandardDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,7 @@ public class SysProductStandardServiceImpl implements ISysProductStandardService
     @Override
     public int insertSysProductStandard(SysProductStandard sysProductStandard)
     {
-        sysProductStandard.setCreateTime(DateUtils.getNowDate());
+        sysProductStandard.setProductId(UUID.randomUUID().toString());
         return sysProductStandardMapper.insertSysProductStandard(sysProductStandard);
     }
 
