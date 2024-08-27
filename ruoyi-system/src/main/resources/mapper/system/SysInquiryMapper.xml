@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysInquiryMapper">
+    
+    <resultMap type="SysInquiry" id="SysInquiryResult">
+        <result property="inquiryId"    column="inquiry_id"    />
+        <result property="buyerId"    column="buyer_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="inquiryDate"    column="inquiry_date"    />
+        <result property="responseDate"    column="response_date"    />
+        <result property="feedbackStatus"    column="feedback_status"    />
+        <result property="priceRmb"    column="price_RMB"    />
+        <result property="priceUsd"    column="price_USD"    />
+        <result property="delFlg"    column="del_flg"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysInquiryVo">
+        select inquiry_id, buyer_id, product_id, inquiry_date, response_date, feedback_status, price_RMB, price_USD, del_flg, remark from sys_inquiry
+    </sql>
+
+    <select id="selectSysInquiryList" parameterType="SysInquiry" resultMap="SysInquiryResult">
+        <include refid="selectSysInquiryVo"/>
+        <where>  
+            <if test="buyerId != null  and buyerId != ''"> and buyer_id = #{buyerId}</if>
+            <if test="productId != null  and productId != ''"> and product_id = #{productId}</if>
+            <if test="inquiryDate != null "> and inquiry_date = #{inquiryDate}</if>
+            <if test="responseDate != null "> and response_date = #{responseDate}</if>
+            <if test="feedbackStatus != null "> and feedback_status = #{feedbackStatus}</if>
+            <if test="priceRmb != null "> and price_RMB = #{priceRmb}</if>
+            <if test="priceUsd != null "> and price_USD = #{priceUsd}</if>
+            <if test="delFlg != null "> and del_flg = #{delFlg}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysInquiryByInquiryId" parameterType="String" resultMap="SysInquiryResult">
+        <include refid="selectSysInquiryVo"/>
+        where inquiry_id = #{inquiryId}
+    </select>
+
+    <insert id="insertSysInquiry" parameterType="SysInquiry">
+        insert into sys_inquiry
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="inquiryId != null">inquiry_id,</if>
+            <if test="buyerId != null and buyerId != ''">buyer_id,</if>
+            <if test="productId != null and productId != ''">product_id,</if>
+            <if test="inquiryDate != null">inquiry_date,</if>
+            <if test="responseDate != null">response_date,</if>
+            <if test="feedbackStatus != null">feedback_status,</if>
+            <if test="priceRmb != null">price_RMB,</if>
+            <if test="priceUsd != null">price_USD,</if>
+            <if test="delFlg != null">del_flg,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="inquiryId != null">#{inquiryId},</if>
+            <if test="buyerId != null and buyerId != ''">#{buyerId},</if>
+            <if test="productId != null and productId != ''">#{productId},</if>
+            <if test="inquiryDate != null">#{inquiryDate},</if>
+            <if test="responseDate != null">#{responseDate},</if>
+            <if test="feedbackStatus != null">#{feedbackStatus},</if>
+            <if test="priceRmb != null">#{priceRmb},</if>
+            <if test="priceUsd != null">#{priceUsd},</if>
+            <if test="delFlg != null">#{delFlg},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysInquiry" parameterType="SysInquiry">
+        update sys_inquiry
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="buyerId != null and buyerId != ''">buyer_id = #{buyerId},</if>
+            <if test="productId != null and productId != ''">product_id = #{productId},</if>
+            <if test="inquiryDate != null">inquiry_date = #{inquiryDate},</if>
+            <if test="responseDate != null">response_date = #{responseDate},</if>
+            <if test="feedbackStatus != null">feedback_status = #{feedbackStatus},</if>
+            <if test="priceRmb != null">price_RMB = #{priceRmb},</if>
+            <if test="priceUsd != null">price_USD = #{priceUsd},</if>
+            <if test="delFlg != null">del_flg = #{delFlg},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+        </trim>
+        where inquiry_id = #{inquiryId}
+    </update>
+
+    <delete id="deleteSysInquiryByInquiryId" parameterType="String">
+        delete from sys_inquiry where inquiry_id = #{inquiryId}
+    </delete>
+
+    <delete id="deleteSysInquiryByInquiryIds" parameterType="String">
+        delete from sys_inquiry where inquiry_id in 
+        <foreach item="inquiryId" collection="array" open="(" separator="," close=")">
+            #{inquiryId}
+        </foreach>
+    </delete>
+</mapper>

@@ -7,7 +7,7 @@ import com.ruoyi.system.domain.dto.SysProductStandardDTO;
 /**
  * 产品Service接口
  * 
- * @author ruoyi
+ * @author tyc
  * @date 2024-08-23
  */
 public interface ISysProductStandardService 
