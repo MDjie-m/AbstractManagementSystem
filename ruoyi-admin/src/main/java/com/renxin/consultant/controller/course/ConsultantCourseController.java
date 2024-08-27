@@ -5,6 +5,7 @@ import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.common.domain.RelateInfo;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.*;
 import com.renxin.course.service.*;
@@ -338,6 +339,21 @@ public class ConsultantCourseController extends BaseController {
 
         List<CourCourse> courseList = courCourseService.myCourseList(courCourse);
         return getDataTable(courseList);
+    }
+
+    /**
+     * 查询我的课程列表
+     */
+    @PostMapping("/getCourseRatelaInfo")
+    @ApiOperation("查询与课程的关联信息")
+    public AjaxResult getCourseRatelaInfo(@RequestBody CourCourse courCourse, HttpServletRequest request)
+    {
+        Long consultId = consultantTokenService.getConsultId(request);
+        courCourse.setUserId(consultId);
+        courCourse.setUserType(2);//咨询师
+
+        RelateInfo relateInfo = courCourseService.getCourseRelateInfo(courCourse);
+        return AjaxResult.success(relateInfo);
     }
     
 }

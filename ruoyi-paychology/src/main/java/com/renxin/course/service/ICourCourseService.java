@@ -1,5 +1,6 @@
 package com.renxin.course.service;
 
+import com.renxin.common.domain.RelateInfo;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.dto.CourseQueryDTO;
 import com.renxin.course.vo.CourseListVO;
@@ -113,5 +114,8 @@ public interface ICourCourseService
 
 
     public List<CourseListVO> getCourseListByClassId(CourCourse courCourse);
+    
+    //查询与课程的关联信息
+    public RelateInfo getCourseRelateInfo(CourCourse courCourse);
 
 }

@@ -36,7 +36,8 @@
                 <el-input v-model="item.sortNo" />
               </el-form-item>
               <el-form-item label="条目图片" prop="itemImg">
-                <my-cropper v-model="item.itemImg" sizeTip="宽172px 高172px" :extraData="extraData" :width="172" :height="172"/>
+<!--                <my-cropper v-model="item.itemImg" sizeTip="宽172px 高172px" :extraData="extraData" :width="172" :height="172"/>-->
+                <image-upload v-model="item.itemImg" :extraData="extraData"  :isShowTip="true" class="image-upload"/>
               </el-form-item>
               <el-form-item label="跳转页面" prop="toPage">
                 <el-input v-model="item.toPage" />

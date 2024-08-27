@@ -26,6 +26,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="experience != null  and experience != ''"> and experience = #{experience}</if>
             <if test="certificate != null  and certificate != ''"> and certificate = #{certificate}</if>
             <if test="avatar != null  and avatar != ''"> and avatar = #{avatar}</if>
+            <if test="idList != null and idList.size > 0">
+                and id in
+                <foreach collection="idList" open="(" close=")" separator="," item="id">
+                    #{id}
+                </foreach>
+            </if>
         </where>
     </select>
     

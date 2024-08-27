@@ -134,7 +134,7 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      * @return 团队督导(组织)
      */
     @Override
-    /*@Cacheable(value = "selectPsyConsultantTeamSupervisionListCache", key = "#req.idList",
+    /*@Cacheable(value = "selectPsyConsultantTeamSupervisionListCache", key
             unless = "#result == null||#result.isEmpty()")*/
     public List<PsyConsultantTeamSupervision> selectPsyConsultantTeamSupervisionList(PsyConsultantTeamSupervision req)
     {

@@ -2,6 +2,8 @@ package com.renxin.course.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.renxin.common.domain.RelateInfo;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourCourse;
@@ -12,6 +14,8 @@ import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.service.ICourSectionService;
 import com.renxin.course.service.ICourUserCourseSectionService;
 import com.renxin.course.vo.CourseListVO;
+import com.renxin.psychology.domain.PsyConsultantOrder;
+import com.renxin.psychology.service.IPsyConsultantOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,6 +38,9 @@ public class CourCourseServiceImpl implements ICourCourseService
 
     @Autowired
     private ICourUserCourseSectionService courUserCourseSectionService;
+
+    @Autowired
+    private IPsyConsultantOrderService consultantOrderService;
 
     /**
      * 查询课程
@@ -213,6 +220,21 @@ public class CourCourseServiceImpl implements ICourCourseService
             courseList = courCourseMapper.myCourseList(req);
         }
         return courseList;
+    }
+    
+    //查询与课程的关联信息
+    @Override
+    public RelateInfo getCourseRelateInfo(CourCourse req){
+        RelateInfo relateInfo = new RelateInfo();
+        
+        PsyConsultantOrder orderReq = new PsyConsultantOrder();
+        orderReq.setPayConsultantId(req.getUserId()+"");
+        orderReq.setServerType("4");//课程
+        orderReq.setServerId(req.getId()+"");
+        List<PsyConsultantOrder> orderList = consultantOrderService.selectPsyConsultantOrderList(orderReq);
+        relateInfo.setIsBuy(orderList.size() > 0 ? CourConstant.COURSE_BUY : CourConstant.COURSE_NOT_BUY);
+        
+        return relateInfo;
     }
     
 }

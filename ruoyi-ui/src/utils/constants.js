@@ -285,3 +285,12 @@ export const userType = [
   { label: '来访者用户', value: 1 },
   { label: '咨询师用户', value: 2 },
 ];
+
+// 数据类型
+export const dataType = [
+  { label: '团队督导', value: 'teamSup' },
+  { label: '咨询师信息', value: 'consultantInfo' },
+  { label: '套餐', value: 'package' },
+  { label: '课程', value: 'course' },
+  { label: '测评', value: 'gauge' },
+];

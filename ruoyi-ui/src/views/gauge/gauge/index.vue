@@ -44,7 +44,7 @@
 
     <el-table v-loading="loading" :data="gaugeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-
+      <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="测评标题" align="center" prop="title" />
       <el-table-column label="子标题" align="center" prop="subtitle" />
       <el-table-column label="头部图片" align="center" prop="headPicture" width="100">

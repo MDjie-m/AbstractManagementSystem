@@ -267,6 +267,8 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
             DateLimitUtilVO dateLimit = NewDateUtil.getDateLimit(req.getDateLimit());
             wp.between(PsyConsult::getCreateTime, dateLimit.getStartTime(), dateLimit.getEndTime());
         }
+        
+        wp.in(ObjectUtils.isNotEmpty(req.getIdList()),PsyConsult::getId,req.getIdList());
 
         return psyConsultMapper.selectList(wp);
     }

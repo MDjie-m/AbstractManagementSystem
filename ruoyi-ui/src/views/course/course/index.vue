@@ -128,6 +128,7 @@
 
     <el-table v-loading="loading" :data="courseList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="课程名称" align="center" prop="name" />
       <el-table-column label="课程类型" align="center" prop="type">
         <template slot-scope="scope">

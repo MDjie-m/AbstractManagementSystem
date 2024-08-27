@@ -178,6 +178,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null  and delFlag != ''"> and del_flag = #{delFlag}</if>
              
             <if test="level != null  and level != ''"> and level = #{level}</if>
+            <if test="idList != null and idList.size > 0">
+                and id in
+                <foreach collection="idList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
         </where>
     </select>
     

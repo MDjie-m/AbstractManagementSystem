@@ -43,6 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="relationObjectId != null  and relationObjectId != ''"> and relation_object_id = #{relationObjectId}</if>
             <if test="relationObjectType != null  and relationObjectType != ''"> and relation_object_type = #{relationObjectType}</if>
         </where>
+        order by sortNo asc
     </select>
 
     <select id="selectPsyAdvertItemById" parameterType="Long" resultMap="PsyAdvertItemResult">

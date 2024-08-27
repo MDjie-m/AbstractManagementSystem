@@ -36,7 +36,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="queryUrl != null  and queryUrl != ''"> and query_url = #{queryUrl}</if>
             <if test="serviceTo != null "> and service_to = #{serviceTo}</if>
             <if test="advertImg != null  and advertImg != ''"> and advert_img = #{advertImg}</if>
+            <if test="advertNoList != null and advertNoList.size > 0">
+                and advert_no in
+                <foreach collection="advertNoList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
         </where>
+        order by create_time desc
     </select>
     
     <select id="selectPsyAdvertByAdvertNo" parameterType="String" resultMap="PsyAdvertResult">

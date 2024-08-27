@@ -147,4 +147,6 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     
     private List<PsyConsultantSchedule> scheduleList;
     
+    private List<Long> idList;
+    
 }

@@ -11,6 +11,7 @@ import com.renxin.common.core.domain.BaseEntity;
 import org.apache.poi.hpsf.Decimal;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 咨询师成长套餐对象 psy_consultant_package
@@ -62,7 +63,8 @@ public class PsyConsultantPackage extends BaseEntity
     private String personExpCouponTemplateName;
     @TableField(exist = false)
     private String courseCouponTemplateName;
-    
+    @TableField(exist = false)
+    private List<Long> packageIdList;
     /** 套餐价格*/
     private BigDecimal price;
 
@@ -72,6 +74,8 @@ public class PsyConsultantPackage extends BaseEntity
 
     /** 删除标志（0代表存在 1代表删除） */
     private String delFlag;
+    
+    
 
   
 }

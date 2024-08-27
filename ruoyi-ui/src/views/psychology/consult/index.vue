@@ -76,6 +76,7 @@
 
     <el-table v-loading="loading" :data="consultList" @selection-change="handleSelectionChange">
 <!--      <el-table-column type="selection" width="55" align="center" />-->
+      <el-table-column label="id" align="center" prop="id" />
       <el-table-column v-if="columns[1].visible" label="登录名" align="center" prop="userName" />
       <el-table-column v-if="columns[2].visible" label="头像" align="center" prop="avatar">
         <template slot-scope="scope">

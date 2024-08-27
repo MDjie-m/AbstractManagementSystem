@@ -129,9 +129,18 @@
         <el-form-item label="所属页面" prop="pageFor">
           <el-input v-model="form.pageFor" placeholder="请输入所属页面" />
         </el-form-item>
+
         <el-form-item label="数据类型" prop="dataType">
-          <el-input v-model="form.dataType" placeholder="请输入数据类型" />
+          <el-select v-model="form.dataType" placeholder="请选择数据类型">
+            <el-option
+              v-for="dict in dataTypeList"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
+
         <el-form-item label="服务对象" prop="type">
           <el-select v-model="form.serviceTo" placeholder="请选择服务对象">
             <el-option
@@ -143,7 +152,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="广告主图" prop="advertImg">
-          <my-cropper v-model="form.advertImg" sizeTip="宽500px 高500px" :extraData="extraData" :width="500" :height="500"/>
+<!--          <my-cropper v-model="form.advertImg" sizeTip="宽500px 高500px" :extraData="extraData" :width="500" :height="500"/>-->
+          <image-upload v-model="form.advertImg" :extraData="extraData"  :isShowTip="true" class="image-upload"/>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注" />
@@ -191,6 +201,7 @@ export default {
   data() {
     return {
       userTypeList: this.$constants.userType,
+      dataTypeList: this.$constants.dataType,
       advertItemListOpen:false,
       activeTab:'',
       advertNo:'',

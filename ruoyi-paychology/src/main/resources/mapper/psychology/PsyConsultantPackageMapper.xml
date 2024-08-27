@@ -42,6 +42,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productPicUrl != null  and productPicUrl != ''"> and product_pic_url = #{productPicUrl}</if>
             <if test="detailPicUrl != null  and detailPicUrl != ''"> and detail_pic_url = #{detailPicUrl}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="packageIdList != null and packageIdList.size > 0">
+                and package_id in
+                <foreach collection="packageIdList" open="(" close=")" separator="," item="id">
+                    #{id}
+                </foreach>
+            </if>
         </where>
     </select>
     

@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 咨询服务对象 psy_consult
@@ -185,7 +186,8 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     //已付款订单次数
     @TableField(exist = false)
     private Integer userOrderCount;
-
+    @TableField(exist = false)
+    private List<Long> idList;
     
     
 }

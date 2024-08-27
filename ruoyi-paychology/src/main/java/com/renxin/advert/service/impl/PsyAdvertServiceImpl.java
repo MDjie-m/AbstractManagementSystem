@@ -14,10 +14,16 @@ import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.vo.CourseListVO;
 import com.renxin.gauge.domain.PsyGauge;
 import com.renxin.gauge.service.IPsyGaugeService;
+import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultant;
+import com.renxin.psychology.domain.PsyConsultantPackage;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.request.PsyAdminConsultReq;
+import com.renxin.psychology.service.IPsyConsultService;
+import com.renxin.psychology.service.IPsyConsultantPackageService;
 import com.renxin.psychology.service.IPsyConsultantService;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
+import com.renxin.psychology.vo.PsyConsultVO;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -53,7 +59,10 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
     private IPsyGaugeService gaugeService;
 
     @Autowired
-    private IPsyConsultantService consultantService;
+    private IPsyConsultService consultService;
+    
+    @Autowired
+    private IPsyConsultantPackageService packageService;
 
     /**
      * 查询各类型的对象清单
@@ -82,10 +91,15 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
                 List<PsyGauge> list3 = gaugeService.selectPsyGaugeList(gauge);
                 return AjaxResult.success(list3);
             case "consultant":
-                PsyConsultant consultant = new PsyConsultant();
-                consultant.setIdList(idListLong);
-                List<PsyConsultant> list4 = consultantService.selectPsyConsultantList(consultant);
+                PsyAdminConsultReq consultantReq = new PsyAdminConsultReq();
+                consultantReq.setIdList(idListLong);
+                List<PsyConsult> list4 = consultService.getList(consultantReq);
                 return AjaxResult.success(list4);
+            case "package":
+                PsyConsultantPackage packageReq = new PsyConsultantPackage();
+                packageReq.setPackageIdList(idListLong);
+                List<PsyConsultantPackage> list5 = packageService.selectPsyConsultantPackageList(packageReq);
+                return AjaxResult.success(list5);
             default:
                 return AjaxResult.success();
                 

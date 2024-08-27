@@ -88,6 +88,7 @@
     <!--  督导清单  -->
     <el-table v-loading="loading" :data="teamList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="id" align="center" prop="id" />
       <!-- <el-table-column label="ID" align="center" prop="id" /> -->
       <el-table-column label="督导类型" align="center" prop="teamType" >
         <template slot-scope="scope">

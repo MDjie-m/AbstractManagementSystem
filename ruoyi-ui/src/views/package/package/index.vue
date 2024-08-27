@@ -45,6 +45,7 @@
 
     <el-table v-loading="loading" :data="packageList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="id" align="center" prop="packageId" />
       <el-table-column label="套餐名称" align="center" prop="productName"/>
       <el-table-column label="套餐产品图片" align="center" prop="productPicUrl">
         <template slot-scope="scope">

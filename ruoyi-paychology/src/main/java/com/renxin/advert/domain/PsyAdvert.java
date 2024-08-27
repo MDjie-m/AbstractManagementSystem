@@ -56,5 +56,7 @@ public class PsyAdvert extends BaseEntity
     //条目清单
     private List<PsyAdvertItem> itemList;
     private String ids;
+    
+    private List<String> advertNoList;
 
 }

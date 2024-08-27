@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * *
@@ -32,5 +33,7 @@ public class PsyAdminConsultReq implements Serializable
     private String delFlag;
 
     private String status;
+
+    private List<Long> idList;
 
 }
