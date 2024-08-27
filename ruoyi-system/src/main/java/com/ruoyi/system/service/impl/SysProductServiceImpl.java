@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 产品Service业务层处理
  * 
- * @author xgg
- * @date 2024-07-23
+ * @author tyc
+ * @date 2024-08-23
  */
 @Service
 public class SysProductServiceImpl implements ISysProductService {
@@ -54,7 +54,7 @@ public class SysProductServiceImpl implements ISysProductService {
     public List<SysProductVO> selectSysProductList(SysProDuctDTO sysProDuctDTO)
     {
         List<SysProductVO> list = sysProductMapper.selectSysProductList(sysProDuctDTO);
-        if(sysProDuctDTO.isQuoted()){//如果要要查
+        if(sysProDuctDTO.isQuoted()){//如果是点击报价界面的已报价，那就说明要查询最新的报价价格。
             list = list.stream()
                     .filter(sysProductVo -> {
                         SysSupplierPrice sysSupplierPrice = sysProductMapper.selectPriceByProductId(sysProductVo.getProductId());
@@ -171,7 +171,7 @@ public class SysProductServiceImpl implements ISysProductService {
      * 修改产品状态前端切换状态
      *
      * @param productId 产品id
-     * @param status 产品是否可报价的当前的状态
+     * @param quotationFlag 产品是否可报价的当前的状态
      * @return 结果
      */
     @Override

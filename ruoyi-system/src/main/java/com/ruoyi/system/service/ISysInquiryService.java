@@ -58,4 +58,6 @@ public interface ISysInquiryService
      * @return 结果
      */
     public int deleteSysInquiryByInquiryId(String inquiryId);
+
+    Integer selectInquiryTimes(String productId);
 }

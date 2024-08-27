@@ -39,6 +39,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectSysInquiryVo"/>
         where inquiry_id = #{inquiryId}
     </select>
+    <select id="selectInquiryTimes" resultType="java.lang.Integer">
+        select count(product_id) from sys_inquiry where product_id=#{productId}
+    </select>
 
     <insert id="insertSysInquiry" parameterType="SysInquiry">
         insert into sys_inquiry

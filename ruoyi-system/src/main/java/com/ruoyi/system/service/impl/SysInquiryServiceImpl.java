@@ -90,4 +90,14 @@ public class SysInquiryServiceImpl implements ISysInquiryService
     {
         return sysInquiryMapper.deleteSysInquiryByInquiryId(inquiryId);
     }
+
+    /**
+     * 查询询价次数
+     * @param productId
+     * @return
+     */
+    @Override
+    public Integer selectInquiryTimes(String productId) {
+        return sysInquiryMapper.selectInquiryTimes(productId);
+    }
 }
