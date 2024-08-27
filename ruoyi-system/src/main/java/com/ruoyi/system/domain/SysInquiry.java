@@ -12,14 +12,14 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * sys_inquiry
  * 
  * @author tyc
- * @date 2024-08-16
+ * @date 2024-08-26
  */
 public class SysInquiry extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 询价id */
-    private Long inquiryId;
+    private Integer inquiryId;
 
     /** 采购员id */
     private Long buyerId;
@@ -36,115 +36,113 @@ public class SysInquiry extends BaseEntity
     private Date responseDate;
 
     /** 询价反馈状态0待报价，1已报价,2已拒绝 */
-    private Long feedbackStatus;
+    private Integer feedbackStatus;
 
     /** 报价价格 */
-    private BigDecimal priceRmb;
+    private Double priceRmb;
 
     /** 美金报价 */
-    private BigDecimal priceUsd;
+    private Double priceUsd;
 
     /** 报价单位 */
     private String unit;
 
     /** 0-未删除，1-已删除 */
-    private Long delFlg;
+    private Integer delFlag;
 
-    public void setInquiryId(Long inquiryId)
-    {
+    public Integer getInquiryId() {
+        return inquiryId;
+    }
+
+    public void setInquiryId(Integer inquiryId) {
         this.inquiryId = inquiryId;
     }
 
-    public Long getInquiryId()
-    {
-        return inquiryId;
+    public Long getBuyerId() {
+        return buyerId;
     }
-    public void setBuyerId(Long buyerId)
-    {
+
+    public void setBuyerId(Long buyerId) {
         this.buyerId = buyerId;
     }
 
-    public Long getBuyerId()
-    {
-        return buyerId;
+    public String getProductId() {
+        return productId;
     }
-    public void setProductId(String productId) 
-    {
+
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
-    public String getProductId() 
-    {
-        return productId;
+    public Date getInquiryDate() {
+        return inquiryDate;
     }
-    public void setInquiryDate(Date inquiryDate) 
-    {
+
+    public void setInquiryDate(Date inquiryDate) {
         this.inquiryDate = inquiryDate;
     }
 
-    public Date getInquiryDate() 
-    {
-        return inquiryDate;
+    public Date getResponseDate() {
+        return responseDate;
     }
-    public void setResponseDate(Date responseDate) 
-    {
+
+    public void setResponseDate(Date responseDate) {
         this.responseDate = responseDate;
     }
 
-    public Date getResponseDate() 
-    {
-        return responseDate;
+    public Integer getFeedbackStatus() {
+        return feedbackStatus;
     }
-    public void setFeedbackStatus(Long feedbackStatus) 
-    {
+
+    public void setFeedbackStatus(Integer feedbackStatus) {
         this.feedbackStatus = feedbackStatus;
     }
 
-    public Long getFeedbackStatus() 
-    {
-        return feedbackStatus;
+    public Double getPriceRmb() {
+        return priceRmb;
     }
-    public void setPriceRmb(BigDecimal priceRmb) 
-    {
+
+    public void setPriceRmb(Double priceRmb) {
         this.priceRmb = priceRmb;
     }
 
-    public BigDecimal getPriceRmb() 
-    {
-        return priceRmb;
+    public Double getPriceUsd() {
+        return priceUsd;
     }
-    public void setPriceUsd(BigDecimal priceUsd) 
-    {
+
+    public void setPriceUsd(Double priceUsd) {
         this.priceUsd = priceUsd;
     }
 
-    public BigDecimal getPriceUsd() 
-    {
-        return priceUsd;
-    }
-    public void setDelFlg(Long delFlg) 
-    {
-        this.delFlg = delFlg;
+    public String getUnit() {
+        return unit;
     }
 
-    public Long getDelFlg() 
-    {
-        return delFlg;
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public Integer getDelFlag() {
+        return delFlag;
+    }
+
+    public void setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("inquiryId", getInquiryId())
-            .append("buyerId", getBuyerId())
-            .append("productId", getProductId())
-            .append("inquiryDate", getInquiryDate())
-            .append("responseDate", getResponseDate())
-            .append("feedbackStatus", getFeedbackStatus())
-            .append("priceRmb", getPriceRmb())
-            .append("priceUsd", getPriceUsd())
-            .append("delFlg", getDelFlg())
-            .append("remark", getRemark())
-            .toString();
+        return "SysInquiry{" +
+                "inquiryId=" + inquiryId +
+                ", buyerId=" + buyerId +
+                ", productId='" + productId + '\'' +
+                ", inquiryDate=" + inquiryDate +
+                ", responseDate=" + responseDate +
+                ", feedbackStatus=" + feedbackStatus +
+                ", priceRmb=" + priceRmb +
+                ", priceUsd=" + priceUsd +
+                ", unit='" + unit + '\'' +
+                ", delFlag=" + delFlag +
+                '}';
     }
 }

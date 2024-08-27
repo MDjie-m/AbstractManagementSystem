@@ -13,7 +13,7 @@ import com.ruoyi.system.service.ISysProductStandardService;
 /**
  * 产品Service业务层处理
  * 
- * @author ruoyi
+ * @author tyc
  * @date 2024-08-23
  */
 @Service
