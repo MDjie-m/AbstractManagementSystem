@@ -102,7 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <delete id="deleteSysInquiryByInquiryIds" parameterType="String">
         delete from sys_inquiry where inquiry_id in 
-        <foreach item="inquiryId" collection="list" open="(" separator="," close=")">
+        <foreach item="inquiryId" collection="array" open="(" separator="," close=")">
             #{inquiryId}
         </foreach>
     </delete>
