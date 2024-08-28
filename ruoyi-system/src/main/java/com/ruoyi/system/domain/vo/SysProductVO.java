@@ -8,10 +8,19 @@ public class SysProductVO extends SysProduct {
     private String supplierNameCn;
     private String supplierNameEn;
     private String supplierNameOwn;
-    private BigDecimal priceRmb;//报价的人民币价格
-    private BigDecimal priceUsd;//报价的人民币价格
+    private Double priceRmb;//报价的人民币价格
+    private String RMBQuoteUnit;//人民币报价单位
+    private Double priceUsd;//报价的美元价格
 
     private Integer inquiryTimes;//询价次数，询价菜单查看询价列表才显示
+
+    public String getRMBQuoteUnit() {
+        return RMBQuoteUnit;
+    }
+
+    public void setRMBQuoteUnit(String RMBQuoteUnit) {
+        this.RMBQuoteUnit = RMBQuoteUnit;
+    }
 
     public Integer getInquiryTimes() {
         return inquiryTimes;
@@ -21,19 +30,19 @@ public class SysProductVO extends SysProduct {
         this.inquiryTimes = inquiryTimes;
     }
 
-    public BigDecimal getPriceRmb() {
+    public Double getPriceRmb() {
         return priceRmb;
     }
 
-    public void setPriceRmb(BigDecimal priceRmb) {
+    public void setPriceRmb(Double priceRmb) {
         this.priceRmb = priceRmb;
     }
 
-    public BigDecimal getPriceUsd() {
+    public Double getPriceUsd() {
         return priceUsd;
     }
 
-    public void setPriceUsd(BigDecimal priceUsd) {
+    public void setPriceUsd(Double priceUsd) {
         this.priceUsd = priceUsd;
     }
 

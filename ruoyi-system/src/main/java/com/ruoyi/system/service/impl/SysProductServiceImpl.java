@@ -40,7 +40,16 @@ public class SysProductServiceImpl implements ISysProductService {
     @Override
     public SysProductVO selectSysProductByProductId(SysProDuctDTO sysProDuctDTO)
     {
-        return sysProductMapper.selectSysProductByProductId(sysProDuctDTO);
+        SysProductVO sysProductVo = sysProductMapper.selectSysProductByProductId(sysProDuctDTO);
+        SysSupplierPrice sysSupplierPrice = sysProductMapper.selectPriceByProductId(sysProductVo.getProductId());
+        // 赋值单价和单位、报价和单位的操作
+        if (sysSupplierPrice != null) {
+            sysProductVo.setPriceRmb(sysSupplierPrice.getPriceRmb());
+            sysProductVo.setRMBQuoteUnit(sysSupplierPrice.getRMBQuoteUnit());
+            sysProductVo.setUnitprice(sysSupplierPrice.getUnitprice());
+            sysProductVo.setUnitpriceUnit(sysSupplierPrice.getUnitpriceUnit());
+        }
+        return sysProductVo;
     }
 
     /**
@@ -58,9 +67,12 @@ public class SysProductServiceImpl implements ISysProductService {
             list = list.stream()
                     .filter(sysProductVo -> {
                         SysSupplierPrice sysSupplierPrice = sysProductMapper.selectPriceByProductId(sysProductVo.getProductId());
-                        // 赋值操作在过滤时进行
+                        // 赋值单价和单位、报价和单位的操作在过滤时进行
                         if (sysSupplierPrice != null) {
                             sysProductVo.setPriceRmb(sysSupplierPrice.getPriceRmb());
+                            sysProductVo.setRMBQuoteUnit(sysSupplierPrice.getRMBQuoteUnit());
+                            sysProductVo.setUnitprice(sysSupplierPrice.getUnitprice());
+                            sysProductVo.setUnitpriceUnit(sysSupplierPrice.getUnitpriceUnit());
                         }
                         return sysSupplierPrice != null;
                     })
