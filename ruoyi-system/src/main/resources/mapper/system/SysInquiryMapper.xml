@@ -105,6 +105,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
 
+<!--    批量变更产品询价状态为已询价-->
+    <update id="updateInquiryStatus" parameterType="list">
+        update sys_product set inquiry_status=1 and update_time=sysdate() where product_id in
+        <foreach item="productId" collection="productIds" open="(" separator="," close=")">
+            #{productId}
+        </foreach>
+    </update>
+
     <delete id="deleteSysInquiryByInquiryId" parameterType="String">
         delete from sys_inquiry where inquiry_id = #{inquiryId}
     </delete>
