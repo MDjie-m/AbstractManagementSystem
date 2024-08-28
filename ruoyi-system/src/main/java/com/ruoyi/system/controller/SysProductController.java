@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.SysProductType;
@@ -46,7 +47,8 @@ public class SysProductController extends BaseController
     /**
      * 查询产品列表
      */
-    @PreAuthorize("@ss.hasPermi('system:product:list')")
+//    @PreAuthorize("@ss.hasPermi('system:product:list')")
+    @Anonymous
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
@@ -57,18 +59,18 @@ public class SysProductController extends BaseController
         sysProDuctDTO.setFlag(false);
         if(roleId==1){
             //说明是管理员，则查所有产品信息。如果供应商id为null且buyerid为null说明查所有
-            startPage();
+            PageHelper.startPage(sysProDuctDTO.getPageNum(),sysProDuctDTO.getPageSize());
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }else if (roleId==2){
             //说明是采购员，如果供应商id为null且buyerid有具体值说明查采购员自己管理的产品
             sysProDuctDTO.setBuyerId(SecurityUtils.getUserId());
-            startPage();
+            PageHelper.startPage(sysProDuctDTO.getPageNum(),sysProDuctDTO.getPageSize());
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }else if (roleId==6){
             sysProDuctDTO.setFlag(true);
             //说明是供应商，根据供应商的id查他自己的产品信息,供应商Id为他自己的供应商id，采购员id为null说明是供应商查他自己的产品。
             sysProDuctDTO.setSupplierId(SecurityUtils.getLoginUser().getUser().getSupplierId());
-            startPage();
+            PageHelper.startPage(sysProDuctDTO.getPageNum(),sysProDuctDTO.getPageSize());
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }
         return getDataTable(list);

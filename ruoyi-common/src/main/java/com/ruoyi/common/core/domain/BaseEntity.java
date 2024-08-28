@@ -42,6 +42,27 @@ public class BaseEntity implements Serializable
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, Object> params;
 
+    /** 第几页 */
+    private int pageNum;
+    /** 每页多少个 */
+    private int pageSize;
+
+    public int getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(int pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
     public String getSearchValue()
     {
         return searchValue;
