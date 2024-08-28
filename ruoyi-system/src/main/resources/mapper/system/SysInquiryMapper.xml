@@ -43,7 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select count(product_id) from sys_inquiry where product_id=#{productId}
     </select>
     <select id="findLatestQuote" resultType="com.ruoyi.system.domain.SysSupplierPrice" parameterType="String">
-        select * from sys_supplier_price where product_id=#{productId} and time=sysdate() limit 1
+        select * from sys_supplier_price where product_id=#{productId} and time=date(sysdate()) limit 1
     </select>
 
     <insert id="insertSysInquiry" parameterType="SysInquiry">
