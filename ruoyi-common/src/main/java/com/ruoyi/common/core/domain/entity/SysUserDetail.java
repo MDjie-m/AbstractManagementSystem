@@ -1,5 +1,7 @@
 package com.ruoyi.common.core.domain.entity;
 
+import com.ruoyi.common.annotation.Sensitive;
+import com.ruoyi.common.enums.DesensitizedType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -22,14 +24,17 @@ public class SysUserDetail extends BaseEntity
 
     /** 中文姓名 */
     @Excel(name = "中文姓名")
+    @Sensitive(desensitizedType = DesensitizedType.USERNAME)
     private String userNameCn;
 
     /** 英文姓名 */
     @Excel(name = "英文姓名")
+    @Sensitive(desensitizedType = DesensitizedType.USERNAME)
     private String userNameEn;
 
     /** 本国姓名 */
     @Excel(name = "本国姓名")
+    @Sensitive(desensitizedType = DesensitizedType.USERNAME)
     private String userNameOwn;
 
     /** 国家 */
@@ -62,11 +67,12 @@ public class SysUserDetail extends BaseEntity
 
     /** 身份证号 */
     @Excel(name = "身份证号")
+    @Sensitive(desensitizedType = DesensitizedType.ID_CARD)
     private String identificationNumber;
 
     /** 0-未删除，1-已删除 */
     @Excel(name = "0-未删除，1-已删除")
-    private Long delFlg;
+    private Long delFlag;
 
     public void setUserDetailsId(String userDetailsId) 
     {
@@ -163,7 +169,6 @@ public class SysUserDetail extends BaseEntity
         this.companyCid = companyCid;
     }
 
-    @Size(min = 0, max = 18, message = "用户昵称长度不能超过18个字符")
     public String getCompanyCid() 
     {
         return companyCid;
@@ -172,19 +177,19 @@ public class SysUserDetail extends BaseEntity
     {
         this.identificationNumber = identificationNumber;
     }
-
+    @Size(min = 0, max = 18, message = "身份证长度不能超过18个字符")
     public String getIdentificationNumber()
     {
         return identificationNumber;
     }
-    public void setDelFlg(Long delFlg) 
+    public void setDelFlag(Long delFlag)
     {
-        this.delFlg = delFlg;
+        this.delFlag = delFlag;
     }
 
-    public Long getDelFlg() 
+    public Long getDelFlag()
     {
-        return delFlg;
+        return delFlag;
     }
 
     @Override
@@ -202,7 +207,7 @@ public class SysUserDetail extends BaseEntity
             .append("principalProduct", getPrincipalProduct())
             .append("companyCid", getCompanyCid())
             .append("identificationNumber", getIdentificationNumber())
-            .append("delFlg", getDelFlg())
+            .append("delFlag", getDelFlag())
             .append("remark", getRemark())
             .toString();
     }

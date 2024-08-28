@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.annotation.Sensitive;
+import com.ruoyi.common.enums.DesensitizedType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -41,10 +43,12 @@ public class SysUser extends BaseEntity
 
     /** 用户邮箱 */
     @Excel(name = "用户邮箱")
+    @Sensitive(desensitizedType = DesensitizedType.EMAIL)
     private String email;
 
     /** 手机号码 */
     @Excel(name = "手机号码", cellType = ColumnType.TEXT)
+    @Sensitive(desensitizedType = DesensitizedType.PHONE)
     private String phonenumber;
 
     /** 用户性别 */
@@ -55,6 +59,7 @@ public class SysUser extends BaseEntity
     private String avatar;
 
     /** 密码 */
+    @Sensitive(desensitizedType = DesensitizedType.PASSWORD)
     private String password;
 
     /** 帐号状态（0正常 1停用） */
