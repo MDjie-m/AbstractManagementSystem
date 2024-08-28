@@ -64,13 +64,6 @@ public class SysInquiryController extends BaseController
             startPage();
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }
-//        else if (roleId==6){
-//            sysProDuctDTO.setFlag(true);
-//            //说明是供应商，根据供应商的id查他自己的产品信息,供应商Id为他自己的供应商id，采购员id为null说明是供应商查他自己的产品。
-//            sysProDuctDTO.setSupplierId(SecurityUtils.getLoginUser().getUser().getSupplierId());
-//            startPage();
-//            list = sysProductService.selectSysProductList(sysProDuctDTO);
-//        }
         //多了个询价次数，因此要再查一下询价次数
         assert list != null;
         for (SysProductVO sysProductVO : list) {
@@ -79,6 +72,15 @@ public class SysInquiryController extends BaseController
         return getDataTable(list);
     }
 
+    /**
+     * 批量询价，如果今天已经询价怎么弄？
+     */
+    @PreAuthorize("@ss.hasPermi('system:inquiry:update')")
+    @PostMapping("/batchInquiry")
+    public AjaxResult batchInquiry(@RequestBody List<SysProDuctDTO> sysProDuctDTOList)
+    {
+        return success(sysInquiryService.batchInquiry(sysProDuctDTOList));
+    }
 
     /**
      * 获取【请填写功能名称】详细信息

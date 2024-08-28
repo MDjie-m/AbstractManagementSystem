@@ -1,6 +1,12 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.system.domain.SysSupplierPrice;
+import com.ruoyi.system.domain.dto.SysProDuctDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysInquiryMapper;
@@ -109,5 +115,40 @@ public class SysInquiryServiceImpl implements ISysInquiryService
     @Override
     public int refuseQuotation(List<Long> inquiryIds) {
         return sysInquiryMapper.refuseQuotation(inquiryIds);
+    }
+
+    @Override
+    public String batchInquiry(List<SysProDuctDTO> sysProDuctDTOList) {
+        int i=0;
+        for (SysProDuctDTO sysProDuctDTO : sysProDuctDTOList) {
+            //先判断这个产品的询价状态是否为已询价，如果是那就不会再添加一条询价,==0说明未询价，
+            if(sysProDuctDTO.getInquiryStatus()==0){
+                SysInquiry sysInquiry = new SysInquiry();
+                sysInquiry.setBuyerId(SecurityUtils.getLoginUser().getUserId());//赋值采购员id，也可能是管理员
+                sysInquiry.setProductId(sysProDuctDTO.getProductId());//赋值产品Id，
+                sysInquiry.setInquiryDate(new Date());
+                //还得判断这个产品今天是否已报价
+                if(sysProDuctDTO.getQuoteStatus()==1){//==0说明今天没报价，==1说明今天已报价
+                    sysInquiry.setFeedbackStatus(1);//赋值反馈状态为已报价
+                    //说明已报价，那就先去查一次今天的报价,然后赋值给询价对象里面的报价字段
+                    SysSupplierPrice sysSupplierPrice = sysInquiryMapper.findLatestQuote(sysProDuctDTO.getProductId());
+                    if(!Objects.isNull(sysSupplierPrice)) {//避免业务出错没查到数据的情况
+                        //赋值单价和人民币报价
+                        sysInquiry.setPriceRmb(sysSupplierPrice.getPriceRmb());
+                        sysInquiry.setPriceUsd(sysSupplierPrice.getPriceUsd());
+                        sysInquiry.setRMBQuoteUnit(sysSupplierPrice.getRMBQuoteUnit());
+                        sysInquiry.setUnitprice(sysSupplierPrice.getUnitprice());
+                        sysInquiry.setUnitpriceUnit(sysSupplierPrice.getUnitpriceUnit());
+                    }
+                }else {
+                    //说明未报价，那就赋值询价反馈状态为待报价
+                    sysInquiry.setFeedbackStatus(0);
+                }
+                //然后把这条询价数据添加进询价表中
+                sysInquiryMapper.insertSysInquiry(sysInquiry);
+                i = i + 1;
+            }
+        }
+        return "成功添加"+i+"条询价记录。";
     }
 }
