@@ -66,4 +66,6 @@ public interface SysInquiryMapper
     int refuseQuotation(@Param("inquiryIds") List<Long> inquiryIds);
 
     SysSupplierPrice findLatestQuote(@Param("productId") String productId);
+
+    int updateInquiryStatus(@Param("productIds") List<String> productIds);
 }

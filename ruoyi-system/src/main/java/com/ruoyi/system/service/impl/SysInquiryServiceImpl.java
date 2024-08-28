@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -120,9 +121,11 @@ public class SysInquiryServiceImpl implements ISysInquiryService
     @Override
     public String batchInquiry(List<SysProDuctDTO> sysProDuctDTOList) {
         int i=0;
+        List<String> productIds = new ArrayList<>();
         for (SysProDuctDTO sysProDuctDTO : sysProDuctDTOList) {
             //先判断这个产品的询价状态是否为已询价，如果是那就不会再添加一条询价,==0说明未询价，
-            if(sysProDuctDTO.getInquiryStatus()==0){
+            if(sysProDuctDTO.getInquiryStatus()==0){//==0说明未询价，那就把状态变为已询价
+                productIds.add(sysProDuctDTO.getProductId());//记录正在询价的产品的id
                 SysInquiry sysInquiry = new SysInquiry();
                 sysInquiry.setBuyerId(SecurityUtils.getLoginUser().getUserId());//赋值采购员id，也可能是管理员
                 sysInquiry.setProductId(sysProDuctDTO.getProductId());//赋值产品Id，
@@ -149,6 +152,7 @@ public class SysInquiryServiceImpl implements ISysInquiryService
                 i = i + 1;
             }
         }
+        sysInquiryMapper.updateInquiryStatus(productIds);//批量变更询价状态
         return "成功添加"+i+"条询价记录。";
     }
 }
