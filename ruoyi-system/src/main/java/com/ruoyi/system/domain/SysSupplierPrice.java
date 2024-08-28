@@ -43,7 +43,7 @@ public class SysSupplierPrice extends BaseEntity
 
     /** 单价 */
     @Excel(name = "单价")
-    private String unitprice;
+    private Double unitprice;
 
     /** 单价单位 */
     @Excel(name = "单价单位")
@@ -51,7 +51,7 @@ public class SysSupplierPrice extends BaseEntity
 
     /** 人民币报价 */
     @Excel(name = "人民币报价")
-    private BigDecimal priceRmb;
+    private Double priceRmb;
 
     /** 人民币报价单位 */
     @Excel(name = "人民币报价单位")
@@ -59,7 +59,7 @@ public class SysSupplierPrice extends BaseEntity
 
     /** 美金报价 */
     @Excel(name = "美金报价")
-    private BigDecimal priceUsd;
+    private Double priceUsd;
 
     /** 美金报价单位 */
     @Excel(name = "美金报价单位")
@@ -96,7 +96,7 @@ public class SysSupplierPrice extends BaseEntity
     public SysSupplierPrice() {
     }
 
-    public SysSupplierPrice( String supplierPriceId, String supplierId, String productId, String supplierNameCn, String supplierNameEn, String productName, String unitprice, String unitpriceUnit, BigDecimal priceRmb, String RMBQuoteUnit, BigDecimal priceUsd, String USDQuoteUnit, Double currency, Date time, String userId, String remarks, Integer delFlag, String futureField1, String futureField2) {
+    public SysSupplierPrice( String supplierPriceId, String supplierId, String productId, String supplierNameCn, String supplierNameEn, String productName, Double unitprice, String unitpriceUnit, Double priceRmb, String RMBQuoteUnit, Double priceUsd, String USDQuoteUnit, Double currency, Date time, String userId, String remarks, Integer delFlag, String futureField1, String futureField2) {
         this.supplierPriceId = supplierPriceId;
         this.supplierId = supplierId;
         this.productId = productId;
@@ -172,21 +172,21 @@ public class SysSupplierPrice extends BaseEntity
     {
         return productName;
     }
-    public void setPriceRmb(BigDecimal priceRmb) 
+    public void setPriceRmb(Double priceRmb)
     {
         this.priceRmb = priceRmb;
     }
 
-    public BigDecimal getPriceRmb() 
+    public Double getPriceRmb()
     {
         return priceRmb;
     }
-    public void setPriceUsd(BigDecimal priceUsd) 
+    public void setPriceUsd(Double priceUsd)
     {
         this.priceUsd = priceUsd;
     }
 
-    public BigDecimal getPriceUsd() 
+    public Double getPriceUsd()
     {
         return priceUsd;
     }
@@ -269,7 +269,7 @@ public class SysSupplierPrice extends BaseEntity
      * 获取
      * @return unitprice
      */
-    public String getUnitprice() {
+    public Double getUnitprice() {
         return unitprice;
     }
 
@@ -277,7 +277,7 @@ public class SysSupplierPrice extends BaseEntity
      * 设置
      * @param unitprice
      */
-    public void setUnitprice(String unitprice) {
+    public void setUnitprice(Double unitprice) {
         this.unitprice = unitprice;
     }
 

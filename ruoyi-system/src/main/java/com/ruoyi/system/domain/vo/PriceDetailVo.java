@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class PriceDetailVo {
     private Date time;
-    private BigDecimal price;
+    private Double price;
 
     public Date getTime() {
         return time;
@@ -15,11 +15,11 @@ public class PriceDetailVo {
         this.time = time;
     }
 
-    public BigDecimal getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 }
