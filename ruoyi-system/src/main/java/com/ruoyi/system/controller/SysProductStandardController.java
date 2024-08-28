@@ -3,6 +3,7 @@ package com.ruoyi.system.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.system.domain.dto.SysProductStandardDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +38,7 @@ public class SysProductStandardController extends BaseController
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody SysProductStandardDTO sysProductStandardDTO)
     {
-        startPage();
+        PageHelper.startPage(sysProductStandardDTO.getPageNum(),sysProductStandardDTO.getPageSize());
         List<SysProductStandard> list = sysProductStandardService.selectSysProductStandardList(sysProductStandardDTO);
         return getDataTable(list);
     }
