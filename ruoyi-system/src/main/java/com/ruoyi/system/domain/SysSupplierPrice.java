@@ -41,13 +41,33 @@ public class SysSupplierPrice extends BaseEntity
     @Excel(name = "产品名称")
     private String productName;
 
+    /** 单价 */
+    @Excel(name = "单价")
+    private String unitprice;
+
+    /** 单价单位 */
+    @Excel(name = "单价单位")
+    private String unitpriceUnit;
+
     /** 人民币报价 */
     @Excel(name = "人民币报价")
     private BigDecimal priceRmb;
 
+    /** 人民币报价单位 */
+    @Excel(name = "人民币报价单位")
+    private String RMBQuoteUnit;
+
     /** 美金报价 */
     @Excel(name = "美金报价")
     private BigDecimal priceUsd;
+
+    /** 美金报价单位 */
+    @Excel(name = "美金报价单位")
+    private String USDQuoteUnit;
+
+    /** 产品名称 */
+    @Excel(name = "汇率")
+    private Double currency;
 
     /** 时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -72,6 +92,31 @@ public class SysSupplierPrice extends BaseEntity
     /** 预留字段2 */
     @Excel(name = "预留字段2")
     private String futureField2;
+
+    public SysSupplierPrice() {
+    }
+
+    public SysSupplierPrice( String supplierPriceId, String supplierId, String productId, String supplierNameCn, String supplierNameEn, String productName, String unitprice, String unitpriceUnit, BigDecimal priceRmb, String RMBQuoteUnit, BigDecimal priceUsd, String USDQuoteUnit, Double currency, Date time, String userId, String remarks, Integer delFlag, String futureField1, String futureField2) {
+        this.supplierPriceId = supplierPriceId;
+        this.supplierId = supplierId;
+        this.productId = productId;
+        this.supplierNameCn = supplierNameCn;
+        this.supplierNameEn = supplierNameEn;
+        this.productName = productName;
+        this.unitprice = unitprice;
+        this.unitpriceUnit = unitpriceUnit;
+        this.priceRmb = priceRmb;
+        this.RMBQuoteUnit = RMBQuoteUnit;
+        this.priceUsd = priceUsd;
+        this.USDQuoteUnit = USDQuoteUnit;
+        this.currency = currency;
+        this.time = time;
+        this.userId = userId;
+        this.remarks = remarks;
+        this.delFlag = delFlag;
+        this.futureField1 = futureField1;
+        this.futureField2 = futureField2;
+    }
 
     public void setSupplierPriceId(String supplierPriceId) 
     {
@@ -218,5 +263,85 @@ public class SysSupplierPrice extends BaseEntity
             .append("futureField1", getFutureField1())
             .append("futureField2", getFutureField2())
             .toString();
+    }
+
+    /**
+     * 获取
+     * @return unitprice
+     */
+    public String getUnitprice() {
+        return unitprice;
+    }
+
+    /**
+     * 设置
+     * @param unitprice
+     */
+    public void setUnitprice(String unitprice) {
+        this.unitprice = unitprice;
+    }
+
+    /**
+     * 获取
+     * @return unitpriceUnit
+     */
+    public String getUnitpriceUnit() {
+        return unitpriceUnit;
+    }
+
+    /**
+     * 设置
+     * @param unitpriceUnit
+     */
+    public void setUnitpriceUnit(String unitpriceUnit) {
+        this.unitpriceUnit = unitpriceUnit;
+    }
+
+    /**
+     * 获取
+     * @return RMBQuoteUnit
+     */
+    public String getRMBQuoteUnit() {
+        return RMBQuoteUnit;
+    }
+
+    /**
+     * 设置
+     * @param RMBQuoteUnit
+     */
+    public void setRMBQuoteUnit(String RMBQuoteUnit) {
+        this.RMBQuoteUnit = RMBQuoteUnit;
+    }
+
+    /**
+     * 获取
+     * @return USDQuoteUnit
+     */
+    public String getUSDQuoteUnit() {
+        return USDQuoteUnit;
+    }
+
+    /**
+     * 设置
+     * @param USDQuoteUnit
+     */
+    public void setUSDQuoteUnit(String USDQuoteUnit) {
+        this.USDQuoteUnit = USDQuoteUnit;
+    }
+
+    /**
+     * 获取
+     * @return currency
+     */
+    public Double getCurrency() {
+        return currency;
+    }
+
+    /**
+     * 设置
+     * @param currency
+     */
+    public void setCurrency(Double currency) {
+        this.currency = currency;
     }
 }
