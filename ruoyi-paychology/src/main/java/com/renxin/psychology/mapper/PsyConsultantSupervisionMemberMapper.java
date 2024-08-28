@@ -1,7 +1,10 @@
 package com.renxin.psychology.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.renxin.psychology.domain.PsyConsultantSupervisionMember;
+import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 
 /**
  * 督导成员Mapper接口
@@ -9,7 +12,7 @@ import com.renxin.psychology.domain.PsyConsultantSupervisionMember;
  * @author renxin
  * @date 2024-06-26
  */
-public interface PsyConsultantSupervisionMemberMapper 
+public interface PsyConsultantSupervisionMemberMapper extends BaseMapper<PsyConsultantSupervisionMember>
 {
     /**
      * 查询督导成员

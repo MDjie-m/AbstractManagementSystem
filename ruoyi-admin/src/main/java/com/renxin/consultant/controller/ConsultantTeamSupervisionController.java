@@ -1,14 +1,21 @@
 package com.renxin.consultant.controller;
 
+import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.core.page.PageDomain;
 import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.common.core.page.TableSupport;
+import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.domain.RelateInfo;
+import com.renxin.common.utils.PageUtils;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.request.QueryListByTypeReq;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +40,9 @@ public class ConsultantTeamSupervisionController extends BaseController
     @Resource
     private ConsultantTokenService consultantTokenService;
     
+    @Resource
+    private RedisCache redisCache;
+    
     /**
      * 查询团队督导(组织)列表
      */
@@ -41,8 +51,29 @@ public class ConsultantTeamSupervisionController extends BaseController
     public TableDataInfo list(@RequestBody PsyConsultantTeamSupervision req)
     {
         startPage();
+        List<Long> idList = req.getIdList();
+        if (ObjectUtils.isNotEmpty(idList)){
+            List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.TEAM_SUP_BY_ID_KEY, idList);
+            //  if (idList.size() == cacheList.size()){
+            return getDataTable(cacheList);
+        }
+        
         List<PsyConsultantTeamSupervision> list = psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionList(req);
         return getDataTable(list);
+    }
+
+    /**
+     * 根据类型  查询团队督导(组织)列表
+     */
+    @ApiOperation(value = "查询团队督导(组织)列表")
+    @PostMapping("/listByType")
+    public TableDataInfo listByType(@RequestBody QueryListByTypeReq req)
+    {
+        String listType = req.getListType();
+        List<Long> idList = redisCache.getCacheList(CacheConstants.TEAM_SUP_ID_LIST + "::" + listType);
+        List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.TEAM_SUP_BY_ID_KEY , PageUtils.paginate(idList));
+        
+        return getDataTable(cacheList, idList.size());
     }
 
     /**

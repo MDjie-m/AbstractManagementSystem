@@ -87,6 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
         </where>
         group by team.id
+        order by team.create_time desc
     </select>
 
     <select id="selectPsyConsultantPersonSupervisionList"
@@ -137,9 +138,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where team.id = #{id}
     </select>
     
-   
-
-    <insert id="insertPsyConsultantTeamSupervision" parameterType="PsyConsultantTeamSupervision">
+    <insert id="insertPsyConsultantTeamSupervision" parameterType="PsyConsultantTeamSupervision" useGeneratedKeys="true" keyProperty="id" >
         insert into psy_consultant_team_supervision
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
@@ -226,7 +225,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deletePsyConsultantTeamSupervisionById" parameterType="Long">
-        delete from psy_consultant_team_supervision where id = #{id}
+        update psy_consultant_team_supervision
+        set del_flag = 1 where id = #{id}
     </delete>
 
     <delete id="deletePsyConsultantTeamSupervisionByIds" parameterType="String">

@@ -2,10 +2,12 @@ package com.renxin.web.controller.supervision;
 
 import com.github.pagehelper.PageHelper;
 import com.renxin.common.annotation.Log;
+import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.dto.ConsultDTO;
 import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.enums.BusinessType;
 import com.renxin.common.utils.poi.ExcelUtil;
 import com.renxin.framework.web.service.ConsultantTokenService;
@@ -13,6 +15,7 @@ import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,6 +42,9 @@ public class PsyConsultantTeamSupervisionController extends BaseController
 
     @Resource
     private ConsultantTokenService consultantTokenService;
+
+    @Resource
+    private RedisCache redisCache;
     
     /**
      * 查询团队督导(组织)列表
@@ -48,7 +55,15 @@ public class PsyConsultantTeamSupervisionController extends BaseController
     public TableDataInfo list(@RequestBody PsyConsultantTeamSupervision req)
     {
         startPage();
+        List<Long> idList = req.getIdList();
+        if (ObjectUtils.isNotEmpty(idList)){
+            List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.TEAM_SUP_BY_ID_KEY, idList);
+            //  if (idList.size() == cacheList.size()){
+                return getDataTable(cacheList);
+        }
+        
         List<PsyConsultantTeamSupervision> list = psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionList(req);
+       // psyConsultantTeamSupervisionService.refreshIdList();
         return getDataTable(list);
     }
 
@@ -85,9 +100,11 @@ public class PsyConsultantTeamSupervisionController extends BaseController
     //@PreAuthorize("@ss.hasPermi('system:supervision-team:add')")
     @Log(title = "团队督导(组织)", businessType = BusinessType.INSERT)
     @PostMapping("/add")
-    public AjaxResult add(@RequestBody PsyConsultantTeamSupervision psyConsultantTeamSupervision)
+    public AjaxResult add(@RequestBody PsyConsultantTeamSupervision req)
     {
-        return toAjax(psyConsultantTeamSupervisionService.insertPsyConsultantTeamSupervision(psyConsultantTeamSupervision));
+        psyConsultantTeamSupervisionService.insertPsyConsultantTeamSupervision(req);
+        psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionById(req.getId());
+        return AjaxResult.success();
     }
 
     /**
@@ -97,9 +114,11 @@ public class PsyConsultantTeamSupervisionController extends BaseController
     //@PreAuthorize("@ss.hasPermi('system:supervision:edit')")
     @Log(title = "团队督导(组织)", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
-    public AjaxResult edit(@RequestBody PsyConsultantTeamSupervision psyConsultantTeamSupervision)
+    public AjaxResult edit(@RequestBody PsyConsultantTeamSupervision req)
     {
-        return toAjax(psyConsultantTeamSupervisionService.updatePsyConsultantTeamSupervision(psyConsultantTeamSupervision));
+        int i = psyConsultantTeamSupervisionService.updatePsyConsultantTeamSupervision(req);
+        psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionById(req.getId());
+        return toAjax(i);
     }
 
     /**

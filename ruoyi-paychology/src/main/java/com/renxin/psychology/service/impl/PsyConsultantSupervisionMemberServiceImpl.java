@@ -2,11 +2,13 @@ package com.renxin.psychology.service.impl;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renxin.common.core.domain.model.LoginUser;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.mapper.PsyConsultantTeamSupervisionMapper;
+import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
@@ -20,13 +22,17 @@ import com.renxin.psychology.service.IPsyConsultantSupervisionMemberService;
  * @date 2024-06-26
  */
 @Service
-public class PsyConsultantSupervisionMemberServiceImpl implements IPsyConsultantSupervisionMemberService 
+public class PsyConsultantSupervisionMemberServiceImpl  extends ServiceImpl<PsyConsultantSupervisionMemberMapper, PsyConsultantSupervisionMember>
+        implements IPsyConsultantSupervisionMemberService 
 {
     @Autowired
     private PsyConsultantSupervisionMemberMapper psyConsultantSupervisionMemberMapper;
 
     @Autowired
     private PsyConsultantTeamSupervisionMapper psyConsultantTeamSupervisionMapper;
+
+    @Autowired
+    private IPsyConsultantTeamSupervisionService teamSupervisionService;
 
     /**
      * 查询督导成员
@@ -70,8 +76,11 @@ public class PsyConsultantSupervisionMemberServiceImpl implements IPsyConsultant
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(req.getTeamSupervisionId());
         req.setSupervisionId(Long.valueOf(team.getConsultantId()));//督导师id
         req.setSupervisionType("1");
+        int i = psyConsultantSupervisionMemberMapper.insertPsyConsultantSupervisionMember(req);
         
-        return psyConsultantSupervisionMemberMapper.insertPsyConsultantSupervisionMember(req);
+        //刷新团督缓存
+        teamSupervisionService.refreshCacheById(req.getTeamSupervisionId());
+        return i;
     }
 
     /**
@@ -110,4 +119,10 @@ public class PsyConsultantSupervisionMemberServiceImpl implements IPsyConsultant
     {
         return psyConsultantSupervisionMemberMapper.deletePsyConsultantSupervisionMemberById(id);
     }
+
+    //刷新相关联的其他对象缓存
+    private void refreshRelateCache(Long id){
+        
+    }
+    
 }

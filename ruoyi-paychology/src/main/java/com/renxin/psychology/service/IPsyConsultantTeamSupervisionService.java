@@ -2,6 +2,7 @@ package com.renxin.psychology.service;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.renxin.common.domain.RelateInfo;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
@@ -12,7 +13,7 @@ import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
  * @author renxin
  * @date 2024-06-26
  */
-public interface IPsyConsultantTeamSupervisionService 
+public interface IPsyConsultantTeamSupervisionService extends IService<PsyConsultantTeamSupervision>
 {
     /**
      * 查询团队督导(组织)
@@ -76,4 +77,11 @@ public interface IPsyConsultantTeamSupervisionService
 
 //获取团队督导(组织)与本用户关联信息
     RelateInfo getTeamRelateInfo(PsyConsultantTeamSupervision req);
+    
+    //刷新byId缓存
+    void refreshCacheByIdList(List<Long> idList);
+    void refreshCacheById(Long id);
+    void refreshCacheAll();
+    //刷新id清单缓存
+    void refreshIdList();
 }

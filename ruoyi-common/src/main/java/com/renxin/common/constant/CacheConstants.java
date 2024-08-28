@@ -51,4 +51,15 @@ public class CacheConstants
      * 登录账户密码错误次数 redis key
      */
     public static final String PWD_ERR_CNT_KEY = "pwd_err_cnt:";
+    
+
+    /**
+     * 团队督导id清单 redis key
+     */
+    public static final String TEAM_SUP_ID_LIST = "team_sup_id_list";
+    
+    /**
+     * 团队督导byId redis key
+     */
+    public static final String TEAM_SUP_BY_ID_KEY = "team_sup_by_id";
 }

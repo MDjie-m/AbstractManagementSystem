@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
@@ -175,6 +178,9 @@ public class RedisCache
      */
     public <T> long setCacheList(final String key, final List<T> dataList)
     {
+        // 清空原有列表
+        redisTemplate.delete(key);
+        // 添加新的
         Long count = redisTemplate.opsForList().rightPushAll(key, dataList);
         return count == null ? 0 : count;
     }
@@ -272,12 +278,30 @@ public class RedisCache
      * 获取多个Hash中的数据
      *
      * @param key Redis键
-     * @param hKeys Hash键集合
      * @return Hash对象集合
      */
-    public <T> List<T> getMultiCacheMapValue(final String key, final Collection<Object> hKeys)
+    /*public <T> List<T> getMultiCacheMapValue(final String key, final Collection<Object> hKeys)
     {
         return redisTemplate.opsForHash().multiGet(key, hKeys);
+    }*/
+
+    public <T> List<T> getMultiCacheMapValue(final String key, final Collection<Long> idList)
+    {
+        Collection<String> hKeys = idList.stream()
+                .map(id -> key + "::" + id)  // 转换为 String
+                .collect(Collectors.toList());
+
+        List list = redisTemplate.opsForValue().multiGet(hKeys);
+        list.removeIf(item -> ObjectUtils.isEmpty(item));
+        return list;
+    }
+    
+    public void deleteMultiCache(final String key, final Collection<Long> idList){
+        Collection<String> hKeys = idList.stream()
+                .map(id -> key + "::" + id)  // 转换为 String
+                .collect(Collectors.toList());
+
+        redisTemplate.delete(hKeys);
     }
 
     /**

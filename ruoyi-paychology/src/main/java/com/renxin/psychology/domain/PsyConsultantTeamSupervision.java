@@ -1,6 +1,7 @@
 package com.renxin.psychology.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.models.auth.In;
 import lombok.Data;
@@ -11,6 +12,7 @@ import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 import org.apache.poi.hpsf.Decimal;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -23,7 +25,7 @@ import java.util.List;
 @NoArgsConstructor
 @TableName("psy_consultant_team_supervision")
 @Data
-public class PsyConsultantTeamSupervision extends BaseEntity
+public class PsyConsultantTeamSupervision extends BaseEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
@@ -61,7 +63,8 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     private Integer status;
 
     /** 删除标志（0代表存在 1代表删除） */
-    private String delFlag;
+    @TableLogic
+    private Integer delFlag;
 
     /** 当前期数 */
     private Integer periodNo;
@@ -142,6 +145,9 @@ public class PsyConsultantTeamSupervision extends BaseEntity
 
     /** 督导师详情*/
     private PsyConsult consultantDetail;
-    private List<String> idList;
+    private List<Long> idList;
+    //清单类型
+    @TableField(exist = false)
+    private String listType;
     
 }

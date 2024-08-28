@@ -4,11 +4,17 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.core.domain.model.LoginUser;
+import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.domain.RelateInfo;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
@@ -19,13 +25,17 @@ import com.renxin.psychology.mapper.PsyConsultantOrderMapper;
 import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
 import com.renxin.psychology.service.*;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantTeamSupervisionMapper;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 /**
  * 团队督导(组织)Service业务层处理
@@ -34,8 +44,12 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2024-06-26
  */
 @Service
-public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTeamSupervisionService 
+public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyConsultantTeamSupervisionMapper, PsyConsultantTeamSupervision> 
+        implements IPsyConsultantTeamSupervisionService 
 {
+    @Autowired
+    private IPsyConsultantTeamSupervisionService self; // 注入自身
+    
     @Autowired
     private PsyConsultantTeamSupervisionMapper psyConsultantTeamSupervisionMapper;
     
@@ -59,6 +73,9 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
 
     @Autowired
     private PsyConsultantOrderMapper psyConsultantOrderMapper;
+
+    @Resource
+    private RedisCache redisCache;
     
     /**
      * 查询团队督导(组织)
@@ -67,8 +84,7 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      * @return 团队督导(组织)
      */
     @Override
-    @Cacheable(value = "selectPsyConsultantTeamSupervisionByIdCache", key = "#id",
-            unless = "#result == null")
+    @Cacheable(value = CacheConstants.TEAM_SUP_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyConsultantTeamSupervision selectPsyConsultantTeamSupervisionById(Long id)
     {
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(id);
@@ -123,7 +139,7 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
             }
         }
         
-        
+        //redisCache.setCacheObject("selectPsyConsultantTeamSupervisionByIdCache::1111",team);
         return team;
     }
 
@@ -171,16 +187,18 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insertPsyConsultantTeamSupervision(PsyConsultantTeamSupervision psyConsultantTeamSupervision)
+    public int insertPsyConsultantTeamSupervision(PsyConsultantTeamSupervision req)
     {
         LoginUser loginUser = SecurityUtils.getLoginUser();
-        psyConsultantTeamSupervision.setCreateBy(loginUser.getUserId()+"");
-        psyConsultantTeamSupervision.setUpdateBy(loginUser.getUserId()+"");
-        psyConsultantTeamSupervision.setCreateTime(DateUtils.getNowDate());
-        psyConsultantTeamSupervision.setUpdateTime(DateUtils.getNowDate());
+        req.setCreateBy(loginUser.getUserId()+"");
+        req.setUpdateBy(loginUser.getUserId()+"");
+        req.setCreateTime(DateUtils.getNowDate());
+        req.setUpdateTime(DateUtils.getNowDate());
+        int i = psyConsultantTeamSupervisionMapper.insertPsyConsultantTeamSupervision(req);
         
-        clearColumn(psyConsultantTeamSupervision);
-        return psyConsultantTeamSupervisionMapper.insertPsyConsultantTeamSupervision(psyConsultantTeamSupervision);
+        //redisCache.setCacheObject(CacheConstants.TEAM_SUP_BY_ID_KEY + req.getId(),req);
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -190,17 +208,17 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      * @return 结果
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionListCache", allEntries = true),
-                    @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionByIdCache", key = "#id"),
-            }
-    )
-    public int updatePsyConsultantTeamSupervision(PsyConsultantTeamSupervision psyConsultantTeamSupervision)
+    @CacheEvict(cacheNames = CacheConstants.TEAM_SUP_BY_ID_KEY, key = "#req.id")
+    public int updatePsyConsultantTeamSupervision(PsyConsultantTeamSupervision req)
     {
-        psyConsultantTeamSupervision.setUpdateTime(DateUtils.getNowDate());
-        clearColumn(psyConsultantTeamSupervision);
-        return psyConsultantTeamSupervisionMapper.updatePsyConsultantTeamSupervision(psyConsultantTeamSupervision);
+        req.setUpdateTime(DateUtils.getNowDate());
+        int i = psyConsultantTeamSupervisionMapper.updatePsyConsultantTeamSupervision(req);
+        
+        //缓存覆盖 - 废案
+        //redisCache.setCacheObject(CacheConstants.TEAM_SUP_BY_ID_KEY + req.getId(),req);
+        refreshIdList();
+        
+        return i;
     }
     
     //当类型不为"团队督导"时, 清除冗余字段
@@ -216,7 +234,7 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
             team.setWeekDay(null);
             team.setLectureStartTime(null);
             team.setLectureEndTime(null);
-            team.setFirstLectureDate(null);
+           // team.setFirstLectureDate(null);
             team.setMaxNumPeople(null);
             team.setSurplusJoinNum(null);
             team.setMemberList(null);
@@ -231,15 +249,13 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
      * @return 结果
      */
     @Override
-    @Caching(
-        evict = {
-                @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionListCache", allEntries = true),
-                @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionByIdCache", allEntries = true),
-        }
-    )
     public int deletePsyConsultantTeamSupervisionByIds(Long[] ids)
     {
-        return psyConsultantTeamSupervisionMapper.deletePsyConsultantTeamSupervisionByIds(ids);
+        int i = psyConsultantTeamSupervisionMapper.deletePsyConsultantTeamSupervisionByIds(ids);
+        //批量删除缓存
+        redisCache.deleteMultiCache(CacheConstants.TEAM_SUP_BY_ID_KEY,Arrays.asList(ids));
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -251,13 +267,15 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionListCache", allEntries = true),
-                    @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionByIdCache", key = "#id"),
+                   // @CacheEvict(cacheNames = "selectPsyConsultantTeamSupervisionListCache", allEntries = true),
+                    @CacheEvict(cacheNames = CacheConstants.TEAM_SUP_BY_ID_KEY, key = "#id"),
             }
     )
     public int deletePsyConsultantTeamSupervisionById(Long id)
     {
-        return psyConsultantTeamSupervisionMapper.deletePsyConsultantTeamSupervisionById(id);
+        int i = psyConsultantTeamSupervisionMapper.deletePsyConsultantTeamSupervisionById(id);
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -435,5 +453,48 @@ public class PsyConsultantTeamSupervisionServiceImpl implements IPsyConsultantTe
         }
         return relateInfo;
     }
+
+    //刷新缓存
+    @Override
+    public void refreshCacheByIdList(List<Long> idList){
+        redisCache.deleteMultiCache(CacheConstants.TEAM_SUP_BY_ID_KEY,idList);
+        for (Long id : idList) {
+            self.selectPsyConsultantTeamSupervisionById(id);
+        }
+        refreshIdList();
+    }
+
+    @Override
+    public void refreshCacheById(Long id){
+        refreshCacheByIdList(Arrays.asList(id));
+    }
+
+    @Override
+    public void refreshCacheAll(){
+        //获取完整id清单
+        List<Long> teamIdList = psyConsultantTeamSupervisionMapper.selectList(new LambdaQueryWrapper<PsyConsultantTeamSupervision>()
+                .select(PsyConsultantTeamSupervision::getId)
+                .orderByDesc(PsyConsultantTeamSupervision::getCreateTime)).stream().map(p -> p.getId()).collect(Collectors.toList());
+
+        //刷新byId缓存
+        refreshCacheByIdList(teamIdList);
+        refreshIdList();
+    }
     
+    //刷新该对象 各种类型下的id清单
+    @Override
+    public void refreshIdList(){
+        //完整对象清单
+        List<PsyConsultantTeamSupervision> allTeamList = psyConsultantTeamSupervisionMapper.selectList(new LambdaQueryWrapper<PsyConsultantTeamSupervision>()
+                .orderByDesc(PsyConsultantTeamSupervision::getCreateTime));
+
+        //id清单放入缓存
+        ////完整id清单
+        List<Long> allIdList = allTeamList.stream().map(p -> p.getId()).collect(Collectors.toList());
+        redisCache.setCacheList(CacheConstants.TEAM_SUP_ID_LIST + "::" + "all",allIdList);
+    }
+    
+    public PsyConsultantTeamSupervisionMapper getMapper() {
+        return psyConsultantTeamSupervisionMapper;
+    }
 }

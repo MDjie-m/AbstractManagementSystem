@@ -1,7 +1,10 @@
 package com.renxin.psychology.service;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.renxin.psychology.domain.PsyConsultantSupervisionMember;
+import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 
 /**
  * 督导成员Service接口
@@ -9,7 +12,7 @@ import com.renxin.psychology.domain.PsyConsultantSupervisionMember;
  * @author renxin
  * @date 2024-06-26
  */
-public interface IPsyConsultantSupervisionMemberService 
+public interface IPsyConsultantSupervisionMemberService extends IService<PsyConsultantSupervisionMember>
 {
     /**
      * 查询督导成员

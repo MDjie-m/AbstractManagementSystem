@@ -25,6 +25,7 @@ import com.renxin.system.service.ISysConfigService;
 import com.renxin.system.service.ISysUserService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -75,6 +76,12 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     
     @Resource
     private IPsyConsultantOrderService consultantOrderService;
+    
+    @Autowired
+    private IPsyConsultantTeamSupervisionService teamSupervisionService;
+    
+    @Resource
+    private IPsyConsultantSupervisionMemberService memberService;
 
     @Override
     public List<PsyConsultWorkVO> getConsultWorksById(Long id) {
@@ -386,7 +393,26 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
         userService.updateUserProfile(sysUser);
 
         converToStr(req);
-        return AjaxResult.success(psyConsultMapper.updateById(BeanUtil.toBean(req, PsyConsult.class)));
+        int i = psyConsultMapper.updateById(BeanUtil.toBean(req, PsyConsult.class));
+        
+        refreshRelateCache(req.getId());
+        return AjaxResult.success(i);
+    }
+    
+    //刷新相关联的其他对象缓存
+    private void refreshRelateCache(Long id){
+        //本人担任督导师 - 团督id清单
+        List<Long> supTeamIdList = teamSupervisionService.getBaseMapper().selectList(new LambdaQueryWrapper<PsyConsultantTeamSupervision>()
+                .select(PsyConsultantTeamSupervision::getId)
+                .eq(PsyConsultantTeamSupervision::getConsultantId, id)).stream().map(p -> p.getId()).collect(Collectors.toList());
+        teamSupervisionService.refreshCacheByIdList(supTeamIdList);
+        
+        //本人已报名加入 - 团督id清单
+        List<Long> memberTeamIdList = memberService.getBaseMapper().selectList(new LambdaQueryWrapper<PsyConsultantSupervisionMember>()
+                .select(PsyConsultantSupervisionMember::getTeamSupervisionId)
+                .eq(PsyConsultantSupervisionMember::getMemberId, id)).stream().map(p -> p.getId()).collect(Collectors.toList());
+        teamSupervisionService.refreshCacheByIdList(memberTeamIdList);
+
     }
 
     private SysUser convertToUser(PsyConsultVO req) {

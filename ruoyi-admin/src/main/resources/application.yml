@@ -181,6 +181,8 @@ mybatis-plus:
       id-type: ASSIGN_ID
       # 默认数据库表下划线命名
       table-underline: true
+      logic-delete-value: 1
+      logic-not-delete-value: 0
   configuration:
     # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

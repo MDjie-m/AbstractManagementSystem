@@ -77,7 +77,7 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
         switch (dataType){
             case "teamSup":
                 PsyConsultantTeamSupervision teamReq = new PsyConsultantTeamSupervision();
-                teamReq.setIdList(idListStr);
+                teamReq.setIdList(idListLong);
                 List<PsyConsultantTeamSupervision> list1 = teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq);
                 return AjaxResult.success(list1);
             case "course":
