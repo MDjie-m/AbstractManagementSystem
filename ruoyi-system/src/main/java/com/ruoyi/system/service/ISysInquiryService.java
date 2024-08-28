@@ -60,4 +60,11 @@ public interface ISysInquiryService
     public int deleteSysInquiryByInquiryId(String inquiryId);
 
     Integer selectInquiryTimes(String productId);
+
+    /**
+     * 批量拒绝报价
+     * @param inquiryIds 询价id列表
+     * @return int
+     */
+    int refuseQuotation(List<Long> inquiryIds);
 }

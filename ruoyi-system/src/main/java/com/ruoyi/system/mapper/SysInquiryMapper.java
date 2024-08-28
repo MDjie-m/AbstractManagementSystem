@@ -61,4 +61,6 @@ public interface SysInquiryMapper
     public int deleteSysInquiryByInquiryIds(String[] inquiryIds);
 
     Integer selectInquiryTimes(@Param("productId") String productId);
+
+    int refuseQuotation(@Param("inquiryIds") List<Long> inquiryIds);
 }

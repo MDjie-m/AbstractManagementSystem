@@ -91,7 +91,7 @@ public class SysInquiryController extends BaseController
     }
 
     /**
-     * 新增【请填写功能名称】
+     * 新增
      */
     @PreAuthorize("@ss.hasPermi('system:inquiry:add')")
     @Log(title = "【请填写功能名称】", businessType = BusinessType.INSERT)
@@ -102,7 +102,7 @@ public class SysInquiryController extends BaseController
     }
 
     /**
-     * 修改【请填写功能名称】
+     * 修改
      */
     @PreAuthorize("@ss.hasPermi('system:inquiry:edit')")
     @Log(title = "【请填写功能名称】", businessType = BusinessType.UPDATE)
@@ -113,7 +113,7 @@ public class SysInquiryController extends BaseController
     }
 
     /**
-     * 删除【请填写功能名称】
+     * 删除
      */
     @PreAuthorize("@ss.hasPermi('system:inquiry:remove')")
     @Log(title = "【请填写功能名称】", businessType = BusinessType.DELETE)
@@ -126,11 +126,20 @@ public class SysInquiryController extends BaseController
     /**
      * 切换询价清单状态
      */
-    @PreAuthorize("@ss.hasPermi('system:inquiry:add')")
+    @PreAuthorize("@ss.hasPermi('system:inquiry:edit')")
     @PostMapping("/updateInquiryListStatus")
     public AjaxResult updateInquiryListStatus(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
         return toAjax(sysProductService.updateInquiryListStatus(sysProDuctDTO));
     }
 
+    /**
+     * 批量拒绝报价
+     */
+    @PreAuthorize("@ss.hasPermi('system:inquiry:edit')")
+    @PostMapping("/refuseQuotation")
+    public AjaxResult refuseQuotation(@RequestBody List<Long> inquiryIds)
+    {
+        return toAjax(sysInquiryService.refuseQuotation(inquiryIds));
+    }
 }
