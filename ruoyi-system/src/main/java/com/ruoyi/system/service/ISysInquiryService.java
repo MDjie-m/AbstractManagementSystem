@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import com.ruoyi.system.domain.SysInquiry;
+import com.ruoyi.system.domain.dto.SysProDuctDTO;
 
 /**
  * 【请填写功能名称】Service接口
@@ -67,4 +68,11 @@ public interface ISysInquiryService
      * @return int
      */
     int refuseQuotation(List<Long> inquiryIds);
+
+    /**
+     * 批量询价
+     * @param sysProDuctDTOList 产品列表
+     * @return string
+     */
+    String batchInquiry(List<SysProDuctDTO> sysProDuctDTOList);
 }

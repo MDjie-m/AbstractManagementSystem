@@ -13,12 +13,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="feedbackStatus"    column="feedback_status"    />
         <result property="priceRmb"    column="price_RMB"    />
         <result property="priceUsd"    column="price_USD"    />
-        <result property="delFlg"    column="del_flg"    />
+        <result property="delFlag"    column="del_flag"    />
         <result property="remark"    column="remark"    />
     </resultMap>
 
     <sql id="selectSysInquiryVo">
-        select inquiry_id, buyer_id, product_id, inquiry_date, response_date, feedback_status, price_RMB, price_USD, del_flg, remark from sys_inquiry
+        select inquiry_id, buyer_id, product_id, inquiry_date, response_date, feedback_status, price_RMB, price_USD, del_flag, remark from sys_inquiry
     </sql>
 
     <select id="selectSysInquiryList" parameterType="SysInquiry" resultMap="SysInquiryResult">
@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="feedbackStatus != null "> and feedback_status = #{feedbackStatus}</if>
             <if test="priceRmb != null "> and price_RMB = #{priceRmb}</if>
             <if test="priceUsd != null "> and price_USD = #{priceUsd}</if>
-            <if test="delFlg != null "> and del_flg = #{delFlg}</if>
+            <if test="delFlag != null "> and del_flag = #{delFlag}</if>
         </where>
     </select>
     
@@ -42,11 +42,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectInquiryTimes" resultType="java.lang.Integer">
         select count(product_id) from sys_inquiry where product_id=#{productId}
     </select>
+    <select id="findLatestQuote" resultType="com.ruoyi.system.domain.SysSupplierPrice" parameterType="String">
+        select * from sys_supplier_price where product_id=#{productId} and time=date(sysdate()) limit 1
+    </select>
 
     <insert id="insertSysInquiry" parameterType="SysInquiry">
         insert into sys_inquiry
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="inquiryId != null">inquiry_id,</if>
             <if test="buyerId != null and buyerId != ''">buyer_id,</if>
             <if test="productId != null and productId != ''">product_id,</if>
             <if test="inquiryDate != null">inquiry_date,</if>
@@ -54,11 +56,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="feedbackStatus != null">feedback_status,</if>
             <if test="priceRmb != null">price_RMB,</if>
             <if test="priceUsd != null">price_USD,</if>
-            <if test="delFlg != null">del_flg,</if>
+            <if test="RMBQuoteUnit != null and RMBQuoteUnit != ''">RMB_quote_unit,</if>
+            <if test="unitprice != null">unitprice,</if>
+            <if test="unitpriceUnit != null and unitpriceUnit != ''">unitprice_unit,</if>
+            <if test="delFlag != null">del_flag,</if>
             <if test="remark != null and remark != ''">remark,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="inquiryId != null">#{inquiryId},</if>
             <if test="buyerId != null and buyerId != ''">#{buyerId},</if>
             <if test="productId != null and productId != ''">#{productId},</if>
             <if test="inquiryDate != null">#{inquiryDate},</if>
@@ -66,8 +71,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="feedbackStatus != null">#{feedbackStatus},</if>
             <if test="priceRmb != null">#{priceRmb},</if>
             <if test="priceUsd != null">#{priceUsd},</if>
-            <if test="delFlg != null">#{delFlg},</if>
+            <if test="RMBQuoteUnit != null and RMBQuoteUnit != ''">#{RMBQuoteUnit},</if>
+            <if test="unitprice != null">#{unitprice},</if>
+            <if test="unitpriceUnit != null and unitpriceUnit != ''">#{unitpriceUnit},</if>
+            <if test="delFlag != null">#{delFlag},</if>
             <if test="remark != null and remark != ''">#{remark},</if>
+            sysdate()
          </trim>
     </insert>
 
@@ -81,7 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="feedbackStatus != null">feedback_status = #{feedbackStatus},</if>
             <if test="priceRmb != null">price_RMB = #{priceRmb},</if>
             <if test="priceUsd != null">price_USD = #{priceUsd},</if>
-            <if test="delFlg != null">del_flg = #{delFlg},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="remark != null and remark != ''">remark = #{remark},</if>
         </trim>
         where inquiry_id = #{inquiryId}

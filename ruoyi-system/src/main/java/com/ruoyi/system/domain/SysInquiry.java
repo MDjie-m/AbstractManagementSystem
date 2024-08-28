@@ -45,7 +45,13 @@ public class SysInquiry extends BaseEntity
     private Double priceUsd;
 
     /** 报价单位 */
-    private String unit;
+    private String RMBQuoteUnit;
+
+    /** 产品单价 */
+    private Double unitprice;
+
+    /** 单价单位 */
+    private String unitpriceUnit;
 
     /** 0-未删除，1-已删除 */
     private Integer delFlag;
@@ -114,12 +120,12 @@ public class SysInquiry extends BaseEntity
         this.priceUsd = priceUsd;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getRMBQuoteUnit() {
+        return RMBQuoteUnit;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setRMBQuoteUnit(String RMBQuoteUnit) {
+        this.RMBQuoteUnit = RMBQuoteUnit;
     }
 
     public Integer getDelFlag() {
@@ -128,6 +134,22 @@ public class SysInquiry extends BaseEntity
 
     public void setDelFlag(Integer delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public Double getUnitprice() {
+        return unitprice;
+    }
+
+    public void setUnitprice(Double unitprice) {
+        this.unitprice = unitprice;
+    }
+
+    public String getUnitpriceUnit() {
+        return unitpriceUnit;
+    }
+
+    public void setUnitpriceUnit(String unitpriceUnit) {
+        this.unitpriceUnit = unitpriceUnit;
     }
 
     @Override
@@ -141,7 +163,7 @@ public class SysInquiry extends BaseEntity
                 ", feedbackStatus=" + feedbackStatus +
                 ", priceRmb=" + priceRmb +
                 ", priceUsd=" + priceUsd +
-                ", unit='" + unit + '\'' +
+                ", unit='" + RMBQuoteUnit + '\'' +
                 ", delFlag=" + delFlag +
                 '}';
     }

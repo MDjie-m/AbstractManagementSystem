@@ -2,6 +2,7 @@ package com.ruoyi.system.mapper;
 
 import java.util.List;
 import com.ruoyi.system.domain.SysInquiry;
+import com.ruoyi.system.domain.SysSupplierPrice;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -63,4 +64,6 @@ public interface SysInquiryMapper
     Integer selectInquiryTimes(@Param("productId") String productId);
 
     int refuseQuotation(@Param("inquiryIds") List<Long> inquiryIds);
+
+    SysSupplierPrice findLatestQuote(@Param("productId") String productId);
 }
