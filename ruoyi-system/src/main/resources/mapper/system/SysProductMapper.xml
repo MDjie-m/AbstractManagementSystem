@@ -470,6 +470,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectPriceByProductId" resultType="com.ruoyi.system.domain.SysSupplierPrice">
-        select price_RMB as priceRMB from sys_supplier_price where product_id=#{productId} order by time desc limit 1
+        select price_RMB as priceRmb,RMB_quote_unit as RMBQuoteUnit,unitprice as unitprice,unitprice_unit as unitpriceUnit
+        from sys_supplier_price where product_id=#{productId} order by time desc limit 1
     </select>
 </mapper>
