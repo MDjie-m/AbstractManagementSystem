@@ -9,7 +9,7 @@ public class SysProDuctDTO extends SysProduct {
     private String names;
     private String codes;
 
-    /** 切换报价清单与询价清单使用,批量询价也行 */
+    /** 切换报价清单与询价清单使用 */
     private List<String> productIds;
     private Integer status;
 

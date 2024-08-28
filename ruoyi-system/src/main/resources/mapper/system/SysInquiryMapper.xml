@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="feedbackStatus != null "> and feedback_status = #{feedbackStatus}</if>
             <if test="priceRmb != null "> and price_RMB = #{priceRmb}</if>
             <if test="priceUsd != null "> and price_USD = #{priceUsd}</if>
-            <if test="delFlag != null "> and del_flg = #{delFlag}</if>
+            <if test="delFlag != null "> and del_flag = #{delFlag}</if>
         </where>
     </select>
     
@@ -90,7 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="feedbackStatus != null">feedback_status = #{feedbackStatus},</if>
             <if test="priceRmb != null">price_RMB = #{priceRmb},</if>
             <if test="priceUsd != null">price_USD = #{priceUsd},</if>
-            <if test="delFlag != null">del_flg = #{delFlag},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="remark != null and remark != ''">remark = #{remark},</if>
         </trim>
         where inquiry_id = #{inquiryId}
