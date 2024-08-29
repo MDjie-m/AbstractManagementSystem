@@ -41,12 +41,19 @@ public class SysSupplierController extends BaseController
     /**
      * 查询供应商列表
      */
-//    @PreAuthorize("@ss.hasPermi('system:supplier:list')")
+    @PreAuthorize("@ss.hasPermi('system:supplier:list')")
     @PostMapping("/list")
-    @Anonymous
     public TableDataInfo list(@RequestBody SupplierVo supplierVo)
     {
-        PageHelper.startPage(supplierVo.getPageNum(), supplierVo.getPageSize());
+        Integer pageNum = supplierVo.getPageNum();
+        Integer pageSize = supplierVo.getPageSize();
+        if (pageNum == null) {
+            pageNum = 1;
+        }
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+        PageHelper.startPage(pageNum, pageSize);
         List<SysSupplier> list = sysSupplierService.selectSysSupplierList(supplierVo);
         return getDataTable(list);
     }
@@ -57,7 +64,15 @@ public class SysSupplierController extends BaseController
     @PreAuthorize("@ss.hasAnyPermi('system:supplier:supplierList')")
     @PostMapping("/supplierList")
     public TableDataInfo supplierList(@RequestBody SelectSupplierVo selectSupplierVo){
-        PageHelper.startPage(selectSupplierVo.getPageNum(), selectSupplierVo.getPageSize());
+        Integer pageNum = selectSupplierVo.getPageNum();
+        Integer pageSize = selectSupplierVo.getPageSize();
+        if (pageNum == null) {
+            pageNum = 1;
+        }
+        if (pageSize == null) {
+            pageSize = 10;
+        }
+        PageHelper.startPage(pageNum, pageSize);
         List<SysSupplier> list = sysSupplierService.selectSupplierByProduct(selectSupplierVo);
         return getDataTable(list);
     }
