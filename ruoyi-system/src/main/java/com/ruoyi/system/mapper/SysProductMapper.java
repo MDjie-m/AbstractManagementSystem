@@ -97,4 +97,6 @@ public interface SysProductMapper
     int updateQuoteListStatus(SysProDuctDTO sysProDuctDTO);
 
     int updateInquiryListStatus(SysProDuctDTO sysProDuctDTO);
+
+    SysProductVO getSysProductByProductId(String productId);
 }

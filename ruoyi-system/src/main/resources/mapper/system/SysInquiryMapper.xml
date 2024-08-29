@@ -13,6 +13,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="feedbackStatus"    column="feedback_status"    />
         <result property="priceRmb"    column="price_RMB"    />
         <result property="priceUsd"    column="price_USD"    />
+        <result property="RMBQuoteUnit"    column="RMB_quote_unit"    />
+        <result property="unitprice"    column="unitprice"    />
+        <result property="unitpriceUnit"    column="unitprice_unit"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="remark"    column="remark"    />
     </resultMap>
@@ -46,6 +49,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select unitprice as unitprice,unitprice_unit as unitpriceUnit, price_RMB as priceRmb,RMB_quote_unit as RMBQuoteUnit,
                price_USD as priceUsd,USD_quote_unit as USDQuoteUnit
         from sys_supplier_price where product_id=#{productId} and time=date(sysdate()) limit 1
+    </select>
+
+    <select id="selectAllByProductId" parameterType="String" resultMap="SysInquiryResult" >
+        select *  from  sys_inquiry  where product_id=#{productId};
     </select>
 
     <insert id="insertSysInquiry" parameterType="SysInquiry">
@@ -92,6 +99,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="feedbackStatus != null">feedback_status = #{feedbackStatus},</if>
             <if test="priceRmb != null">price_RMB = #{priceRmb},</if>
             <if test="priceUsd != null">price_USD = #{priceUsd},</if>
+            <if test="RMBQuoteUnit != null">RMB_quote_unit = #{RMBQuoteUnit},</if>
+            <if test="unitprice != null">unitprice = #{unitprice},</if>
+            <if test="unitpriceUnit != null">unitprice_unit = #{unitpriceUnit},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="remark != null and remark != ''">remark = #{remark},</if>
         </trim>
