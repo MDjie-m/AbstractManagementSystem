@@ -136,14 +136,14 @@ public class SysSupplier extends BaseEntity {
      * 注册时间
      */
     @ExcelProperty("注册时间")
-    @JsonFormat(pattern ="yyyy-mm-dd")
+    @JsonFormat(pattern ="yyyy-MM-dd")
     private Date registrationTime;
 
     /**
      * 注册时间有效期
      */
     @ExcelProperty("注册时间有效期")
-    @JsonFormat(pattern ="yyyy-mm-dd")
+    @JsonFormat(pattern ="yyyy-MM-dd")
     private Date registrationTimeValidityPeriod;
 
     /**
@@ -253,7 +253,7 @@ public class SysSupplier extends BaseEntity {
      * 入驻时间
      */
     @ExcelIgnore
-    @JsonFormat(pattern ="yyyy-mm-dd")
+    @JsonFormat(pattern ="yyyy-MM-dd HH:mm:ss")
     private Date entryDate;
 
     /**

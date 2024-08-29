@@ -6,10 +6,15 @@ import com.alibaba.excel.metadata.data.ReadCellData;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import com.alibaba.fastjson2.JSON;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.easyexcel.ExcelException;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.system.domain.SysSupplier;
+import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.mapper.SysSupplierMapper;
+import com.ruoyi.system.mapper.SysUserMapper;
+import com.ruoyi.system.mapper.SysUserRoleMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -68,23 +73,44 @@ public class SupplierListener implements ReadListener<SysSupplier> {
     /**
      * 记录异常信息
      */
-    private final List<String> arrayList = new ArrayList<>();
+    private List<String> arrayList = new ArrayList<>();
+    /**
+     * 记录数量
+     */
+    private int count = 1;
     /**
      * 缓存的数据
      */
     private List<SysSupplier> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
     /**
+     * 缓存的用户数据
+     */
+    private List<SysUser> cachedUserList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    /**
+     * 缓存的用户与角色管理数据
+     */
+    private List<SysUserRole> cachedUserRoleList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+    /**
      * 供应商mapper层
      */
     private SysSupplierMapper sysSupplierMapper;
-
+    /**
+     * 用户mapper层
+     */
+    private SysUserMapper sysUserMapper;
+    /**
+     * 用户与角色mapper层
+     */
+    private SysUserRoleMapper sysUserRoleMapper;
     /**
      * 个构造方法。每次创建Listener的时候需要把spring管理的类传进来
      *
      * @param sysSupplierMapper
      */
-    public SupplierListener(SysSupplierMapper sysSupplierMapper) {
+    public SupplierListener(SysSupplierMapper sysSupplierMapper, SysUserMapper sysUserMapper, SysUserRoleMapper sysUserRoleMapper) {
         this.sysSupplierMapper = sysSupplierMapper;
+        this.sysUserMapper = sysUserMapper;
+        this.sysUserRoleMapper = sysUserRoleMapper;
     }
 
     /**
@@ -98,35 +124,125 @@ public class SupplierListener implements ReadListener<SysSupplier> {
         // 当表头数据无误才会解析数据
         if (flag) {
             log.info("解析到一条数据:{}", JSON.toJSONString(data));
+            int row = context.readRowHolder().getRowIndex() + 1;
+            int i = arrayList.size();
+            final Long userId = sysUserMapper.getNewId();
             // 数据库中不能为空的字段
             if (data.getLabel() == null) {
-                int row = context.readRowHolder().getRowIndex() + 1;
-                arrayList.add("第" + row + "行" + "标签列数据异常");
-            } else if (data.getCountry() == null) {
-                int row = context.readRowHolder().getRowIndex() + 1;
-                arrayList.add("第" + row + "行" + "国家列数据异常");
-            } else if (data.getRegistrationNo() == null) {
-                int row = context.readRowHolder().getRowIndex() + 1;
-                arrayList.add("第" + row + "行" + "注册编号列数据异常");
-            } else if (data.getLegalPerson() == null) {
-                int row = context.readRowHolder().getRowIndex() + 1;
-                arrayList.add("第" + row + "行" + "法人列数据异常");
-            } else if (data.getLegalPersonTelephone() == null) {
-                int row = context.readRowHolder().getRowIndex() + 1;
-                arrayList.add("第" + row + "行" + "法人电话列数据异常");
-            } else {
+                arrayList.add("第" + row + "行" + "标签列数据异常!");
+            }
+            if (data.getCountry() == null) {
+                arrayList.add("第" + row + "行" + "国家列数据异常!");
+            }
+            if (data.getRegistrationNo() == null) {
+                arrayList.add("第" + row + "行" + "注册编号列数据异常!");
+            }
+            if (data.getLegalPerson() == null) {
+                arrayList.add("第" + row + "行" + "法人列数据异常!");
+            }
+            if (data.getLegalPersonTelephone() == null) {
+                arrayList.add("第" + row + "行" + "法人电话列数据异常!");
+            }
+            if (sysSupplierMapper.checkLegalPersonTelephoneUnique(data.getLegalPersonTelephone()) != null) {
+                arrayList.add("第" + row + "行" + "法人电话已经被注册为供应商!");
+            }
+            if (sysUserMapper.checkUserNameUnique(data.getLegalPersonTelephone()) != null) {
+                arrayList.add("第" + row + "行" + "法人电话已经被注册为用户!");
+            }
+            if (sysUserMapper.checkUserNameUnique(data.getPrincipalTelephone()) != null) {
+                arrayList.add("第" + row + "行" + "负责人电话已经被注册为用户!");
+            }
+            if(i == arrayList.size()){
+                count = count + 2;
                 // 设置供应商UUID
                 data.setSupplierId(UUID.randomUUID().toString());
                 // 设置入驻时间
                 data.setEntryDate(new Date());
                 // 设置创建时间
                 data.setCreateTime(new Date());
+
+                String supplierId = data.getSupplierId();
+                String legalPersonTelephone = data.getLegalPersonTelephone();
+                String principalTelephone = data.getPrincipalTelephone();
+                String nickName = data.getSupplierNameCn();
+                String legalPassword = legalPersonTelephone.substring(legalPersonTelephone.length() - 6);
+                String principalPassword = principalTelephone.substring(principalTelephone.length() - 6);
+                String legalPersonEmail = data.getLegalPersonEmail();
+                String principalEmail = data.getPrincipalEmail();
+
+                // 主账号用户对象
+                SysUser user = new SysUser();
+                // 用户名为法人手机号
+                user.setUserName(legalPersonTelephone);
+                // 用户昵称为公司中文名称
+                user.setNickName(nickName);
+                // 用户密码,使用法人手机号后六位
+                user.setPassword(SecurityUtils.encryptPassword(legalPassword));
+                // 用户角色为5-供应商/商家,6-供应商,7-商家
+                if (data.getLabel() == 0) {
+                    user.setUserType("5");
+                } else if (data.getLabel() == 1) {
+                    user.setUserType("6");
+                } else if (data.getLabel() == 2) {
+                    user.setUserType("7");
+                }
+                // 用户邮箱为法人邮箱
+                user.setEmail(legalPersonEmail);
+                // 手机号码为法人手机号
+                user.setPhonenumber(legalPersonTelephone);
+                // 账号状态 0-正常
+                user.setStatus("0");
+                // 删除标志 0-存在
+                user.setDelFlag("0");
+                // 是否为子账号 0-否
+                user.setSubAccountFlag(0);
+                // 绑定供应商id
+                user.setSupplierId(supplierId);
+                user.setUserId(userId);
+                cachedUserList.add(user);
+
+                // 负责人用户对象
+                SysUser userChild = new SysUser();
+                // 用户名为负责人手机号
+                userChild.setUserName(principalTelephone);
+                // 用户昵称为公司中文名称
+                userChild.setNickName(nickName);
+                // 用户密码,使用负责人手机号后六位
+                userChild.setPassword(SecurityUtils.encryptPassword(principalPassword));
+                // 用户角色与主账号保持一致
+                userChild.setUserType(user.getUserType());
+                // 用户邮箱为负责人邮箱
+                userChild.setEmail(principalEmail);
+                // 手机号码为负责人手机号
+                userChild.setPhonenumber(principalTelephone);
+                // 账号状态 0-正常
+                userChild.setStatus("0");
+                // 删除标志 0-存在
+                userChild.setDelFlag("0");
+                // 是否为子账号 1-是
+                userChild.setSubAccountFlag(1);
+                // 子账号的父级id
+                userChild.setParentUserId(String.valueOf(userId + count));
+                cachedUserList.add(userChild);
+
+                // 新增用户与角色管理
+                SysUserRole ur = new SysUserRole();
+                ur.setUserId(userId + count);
+                ur.setRoleId(Long.valueOf(user.getUserType()));
+                cachedUserRoleList.add(ur);
+                SysUserRole ur1 = new SysUserRole();
+                ur1.setUserId(userId + count + 1);
+                ur1.setRoleId(Long.valueOf(userChild.getUserType()));
+                cachedUserRoleList.add(ur1);
+
                 cachedDataList.add(data);
                 // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
                 if (cachedDataList.size() >= BATCH_COUNT) {
                     saveData();
                     // 存储完成清理 list
                     cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+                    cachedUserList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+                    cachedUserRoleList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
                 }
             }
         }
@@ -209,6 +325,8 @@ public class SupplierListener implements ReadListener<SysSupplier> {
         log.info("{}条数据，开始存储数据库！", cachedDataList.size());
         try {
             sysSupplierMapper.saveSysSupplier(cachedDataList);
+            sysUserMapper.saveSysUser(cachedUserList);
+            sysUserRoleMapper.batchUserRole(cachedUserRoleList);
             // TODO 批量新增用户
             // TODO 批量新增用户
         } catch (Exception e) {

@@ -99,7 +99,6 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                 if (userMapper.checkUserNameUnique(sysSupplier.getPrincipalTelephone()) == null) {
                     // 设置供应商id
                     sysSupplier.setSupplierId(UUID.randomUUID().toString());
-                    System.out.println(sysSupplier.getSupplierId().length());
                     // 设置供应商入驻时间
                     sysSupplier.setEntryDate(new Date());
                     // 设置数据创建时间
@@ -268,7 +267,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     @Override
     public void saveSysSupplier(MultipartFile file) throws IOException {
         EasyExcel
-                .read(file.getInputStream(), SysSupplier.class, new SupplierListener(sysSupplierMapper))
+                .read(file.getInputStream(), SysSupplier.class, new SupplierListener(sysSupplierMapper, userMapper, userRoleMapper))
                 .sheet()
                 .doRead();
     }

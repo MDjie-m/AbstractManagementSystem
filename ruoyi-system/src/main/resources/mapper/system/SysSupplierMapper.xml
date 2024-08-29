@@ -135,7 +135,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <!--  根据法人电话查询供应商信息-->
     <select id="checkLegalPersonTelephoneUnique" resultType="SysSupplier">
-        select * from sys_supplier where legal_person_telephone = #{legalPersonTelephone} and del_flag = 0
+        select * from sys_supplier where legal_person_telephone = #{legalPersonTelephone} and delete_flag = 0
     </select>
 
     <!--  根据产品分类查询  -->
