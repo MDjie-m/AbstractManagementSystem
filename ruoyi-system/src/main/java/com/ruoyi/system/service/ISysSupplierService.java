@@ -7,6 +7,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.SysSupplier;
 import com.ruoyi.system.domain.vo.AuditVo;
 import com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo;
+import com.ruoyi.system.domain.vo.supplierVo.SupplierVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,10 +31,10 @@ public interface ISysSupplierService
     /**
      * 查询供应商列表
      * 
-     * @param sysSupplier 供应商
+     * @param supplierVo 供应商
      * @return 供应商集合
      */
-    public List<SysSupplier> selectSysSupplierList(SysSupplier sysSupplier);
+    public List<SysSupplier> selectSysSupplierList(SupplierVo supplierVo);
 
     /**
      * 根据产品查询供应商
@@ -84,10 +85,10 @@ public interface ISysSupplierService
     /**
      * 导出供应商数据
      * @param response
-     * @param supplier 查询条件
+     * @param supplierVo 查询条件
      * @throws IOException
      */
-    public void exportSysSupplier(HttpServletResponse response, SysSupplier supplier) throws IOException;
+    public void exportSysSupplier(HttpServletResponse response, SupplierVo supplierVo) throws IOException;
 
     /**
      * 编辑供应商审核状态

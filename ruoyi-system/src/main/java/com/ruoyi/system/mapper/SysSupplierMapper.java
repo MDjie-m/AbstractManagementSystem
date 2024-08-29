@@ -4,6 +4,7 @@ import java.util.List;
 import com.ruoyi.system.domain.SysSupplier;
 import com.ruoyi.system.domain.SysProduct;
 import com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo;
+import com.ruoyi.system.domain.vo.supplierVo.SupplierVo;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -25,10 +26,10 @@ public interface SysSupplierMapper
     /**
      * 查询供应商列表
      * 
-     * @param sysSupplier 供应商
+     * @param supplierVo 供应商
      * @return 供应商集合
      */
-    public List<SysSupplier> selectSysSupplierList(SysSupplier sysSupplier);
+    public List<SysSupplier> selectSysSupplierList(SupplierVo supplierVo);
 
     /**
      * 根据产品查询供应商列表
