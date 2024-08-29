@@ -14,6 +14,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contentUrl"    column="content_url"    />
         <result property="courseId"    column="course_id"    />
         <result property="contentType"    column="content_type"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="finishStatus"    column="finish_status"    />
+        <result property="lastLearnTime"    column="last_learn_time"    />
     </resultMap>
 
     <sql id="selectCourSectionVo">
@@ -43,13 +46,35 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCourSectionDetailList" resultType="com.renxin.course.domain.CourSection">
         select
             sec.id, sec.section_id, sec.topic, sec.duration, sec.type, sec.content, sec.course_id, sec.content_type ,
-            CASE
+            <if test="userId != null  and userId != ''">
+                CASE
                 WHEN re.id IS NOT NULL THEN sec.content_url
-                ELSE NULL
-            END AS content_url,
-            re.end_time as endTime , re.finish_status, re.last_learn_time
-        from cour_section sec 
-            left join cour_user_course_section re on sec.id = re.section_id 
+                ELSE ''
+                END AS content_url,
+                re.end_time as endTime , 
+                re.finish_status, 
+                re.last_learn_time 
+            </if>
+            <if test="userId == null  or userId == ''">
+                sec.content_url
+            </if>
+            
+            
+        from cour_section sec
+        <if test="userId != null  and userId != ''">
+            left join 
+            (
+                select
+                    id,
+                    section_id,
+                    end_time,
+                    finish_status,
+                    last_learn_time
+                from cour_user_course_section
+                where user_id = #{userId} and user_type = #{userType}
+            ) re on re.section_id = sec.id 
+        </if>
+           
         where
             1=1
             <if test="sectionId != null  and sectionId != ''"> and sec.section_id = #{sectionId}</if>
@@ -60,8 +85,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contentUrl != null  and contentUrl != ''"> and sec.content_url = #{contentUrl}</if>
             <if test="courseId != null  and courseId != ''"> and sec.course_id = #{courseId}</if>
             <if test="contentType != null "> and sec.content_type = #{contentType}</if>
-            <if test="userId != null  and userId != ''"> and re.user_id = #{userId}</if>
-            <if test="userType != null  and userType != ''"> and re.user_type = #{userType}</if>
     </select>
 
     <insert id="insertCourSection" parameterType="CourSection" useGeneratedKeys="true" keyProperty="id">

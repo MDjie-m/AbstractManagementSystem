@@ -1,12 +1,20 @@
 package com.renxin.course.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.renxin.common.constant.CacheConstants;
+import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.domain.RelateInfo;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourCourse;
+import com.renxin.course.domain.CourSection;
 import com.renxin.course.domain.CourUserCourseSection;
 import com.renxin.course.domain.dto.CourseQueryDTO;
 import com.renxin.course.mapper.CourCourseMapper;
@@ -15,11 +23,17 @@ import com.renxin.course.service.ICourSectionService;
 import com.renxin.course.service.ICourUserCourseSectionService;
 import com.renxin.course.vo.CourseListVO;
 import com.renxin.psychology.domain.PsyConsultantOrder;
+import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.mapper.PsyConsultantTeamSupervisionMapper;
 import com.renxin.psychology.service.IPsyConsultantOrderService;
+import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * 课程Service业务层处理
@@ -28,8 +42,15 @@ import org.springframework.stereotype.Service;
  * @date 2023-03-14
  */
 @Service
-public class CourCourseServiceImpl implements ICourCourseService
+public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCourse> 
+        implements ICourCourseService
 {
+    @Autowired
+    private ICourCourseService self; // 注入自身
+
+    @Resource
+    private RedisCache redisCache;
+    
     @Autowired
     private CourCourseMapper courCourseMapper;
 
@@ -41,7 +62,8 @@ public class CourCourseServiceImpl implements ICourCourseService
 
     @Autowired
     private IPsyConsultantOrderService consultantOrderService;
-
+    
+    
     /**
      * 查询课程
      * 
@@ -49,11 +71,23 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 课程
      */
     @Override
-    /*@Cacheable(value = "selectCourCourseByIdCache", key = "#id",
-            unless = "#result == null")*/
+    @Cacheable(value = CacheConstants.COURSE_BY_ID_KEY, key = "#id", unless = "#result == null")
     public CourCourse selectCourCourseById(Long id)
     {
-        return courCourseMapper.selectCourCourseById(id);
+        CourCourse courCourse = courCourseMapper.selectCourCourseById(id);
+        if (ObjectUtils.isEmpty(courCourse)){
+            return null;
+        }
+        
+        CourSection courSection = CourSection.builder()
+                .courseId(id)
+                .userId(-1L)//无用户
+                .userType(-1)//无用户, 不查询与本用户的关联信息
+                .build();
+        List<CourSection> sectionList = courSectionService.selectCourSectionDetailList(courSection);
+        courCourse.setSectionList(sectionList);
+        
+        return courCourse;
     }
 
     /**
@@ -89,7 +123,9 @@ public class CourCourseServiceImpl implements ICourCourseService
     public int insertCourCourse(CourCourse courCourse)
     {
         courCourse.setCreateTime(DateUtils.getNowDate());
-        return courCourseMapper.insertCourCourse(courCourse);
+        int i = courCourseMapper.insertCourCourse(courCourse);
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -99,11 +135,13 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 结果
      */
     @Override
-    @CacheEvict(cacheNames = "selectCourCourseByIdCache", key = "#courCourse.id")
-    public int updateCourCourse(CourCourse courCourse)
+    @CacheEvict(cacheNames = CacheConstants.COURSE_BY_ID_KEY, key = "#req.id")
+    public int updateCourCourse(CourCourse req)
     {
-        courCourse.setUpdateTime(DateUtils.getNowDate());
-        return courCourseMapper.updateCourCourse(courCourse);
+        req.setUpdateTime(DateUtils.getNowDate());
+        int i = courCourseMapper.updateCourCourse(req);
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -113,10 +151,13 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 结果
      */
     @Override
-    @CacheEvict(cacheNames = "selectCourCourseByIdCache", allEntries = true)
     public int deleteCourCourseByIds(Long[] ids)
     {
-        return courCourseMapper.deleteCourCourseByIds(ids);
+        int i = courCourseMapper.deleteCourCourseByIds(ids);
+        //批量删除缓存
+        redisCache.deleteMultiCache(CacheConstants.COURSE_BY_ID_KEY,Arrays.asList(ids));
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -126,10 +167,12 @@ public class CourCourseServiceImpl implements ICourCourseService
      * @return 结果
      */
     @Override
-    @CacheEvict(cacheNames = "selectCourCourseByIdCache", key = "#id")
+    @CacheEvict(cacheNames = CacheConstants.COURSE_BY_ID_KEY, key = "#id")
     public int deleteCourCourseById(Long id)
     {
-        return courCourseMapper.deleteCourCourseById(id);
+        int i = courCourseMapper.deleteCourCourseById(id);
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -236,5 +279,59 @@ public class CourCourseServiceImpl implements ICourCourseService
         
         return relateInfo;
     }
+
+    //刷新缓存
+    @Override
+    public void refreshCacheByIdList(List<Long> idList){
+        redisCache.deleteMultiCache(CacheConstants.COURSE_BY_ID_KEY,idList);
+        for (Long id : idList) {
+            self.selectCourCourseById(id);
+        }
+        refreshIdList();
+    }
+
+    @Override
+    public void refreshCacheById(Long id){
+        refreshCacheByIdList(Arrays.asList(id));
+    }
+
+    @Override
+    public void refreshCacheAll(){
+        //获取完整id清单
+        List<Long> courseIdList = courCourseMapper.selectList(new LambdaQueryWrapper<CourCourse>()
+                .select(CourCourse::getId)
+                .orderByDesc(CourCourse::getCreateTime)).stream().map(p -> p.getId()).collect(Collectors.toList());
+
+        //刷新缓存
+        refreshCacheByIdList(courseIdList);
+        refreshIdList();
+    }
+
+    //刷新该对象 各种类型下的id清单
+    @Override
+    public void refreshIdList(){
+        //完整对象清单
+        List<CourCourse> allCourseList = courCourseMapper.selectList(new LambdaQueryWrapper<CourCourse>()
+                .select(CourCourse::getId,CourCourse::getType)
+                .orderByDesc(CourCourse::getCreateTime));
+
+        //id清单放入缓存
+        ////完整id清单
+        List<Long> allIdList = allCourseList.stream().map(p -> p.getId()).collect(Collectors.toList());
+        redisCache.setCacheList(CacheConstants.COURSE_ID_LIST + "::" + "all",allIdList);
+        
+        ////各个类型的id清单
+        Map<Integer, List<Long>> listMap =  allCourseList.stream()
+                .collect(Collectors.groupingBy(
+                        CourCourse::getType,
+                        Collectors.mapping(CourCourse::getId, Collectors.toList())
+                ));
+        for (Map.Entry<Integer, List<Long>> entry : listMap.entrySet()) {
+            redisCache.setCacheList(CacheConstants.COURSE_ID_LIST + "::" + "type" + entry.getKey(), entry.getValue());
+        }
+        
+    }
+
+
     
 }

@@ -79,6 +79,7 @@ public class PsyConsultantTeamSupervision extends BaseEntity implements Serializ
     private String lectureEndTime;
 
     //课堂时长(小时)
+    @TableField(exist = false)
     private Double lectureHour;
 
     /** 初次开课日期 */
@@ -91,47 +92,66 @@ public class PsyConsultantTeamSupervision extends BaseEntity implements Serializ
     private BigDecimal price;
 
     /** 督导类型  1.团体督导  2.个体督导  3.个人体验 */
+    @TableField(exist = false)
     private Integer teamType;
 
 
     /** 督导师 - 姓名 */
+    @TableField(exist = false)
     private String consultUserName;
     /** 督导师 - 头像 */
+    @TableField(exist = false)
     private String consultAvatar;
     /** 督导师 - 标签 */
+    @TableField(exist = false)
     private String consultTabs;
     /** 督导师 - 介绍 */
+    @TableField(exist = false)
     private String consultInfo;
     /** 督导师 - 详情 */
+    @TableField(exist = false)
     private String consultDetail;
     /** 督导师 - 经历 */
+    @TableField(exist = false)
     private String consultExperience;
     /** 督导师 - 流派方向 */
+    @TableField(exist = false)
     private String consultGenre;
     /** 督导师 - 咨询方式 */
+    @TableField(exist = false)
     private String consultMode;
     /** 督导师 - 执业资格 */
+    @TableField(exist = false)
     private String consultQualification;
     /** 督导师 - 咨询方向 */
+    @TableField(exist = false)
     private String consultWayStr;
     /** 督导师 - 级别  1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师 */
+    @TableField(exist = false)
     private String consultLevel;
 
 
     /** 最早讲课时间*/
+    @TableField(exist = false)
     private String lectureStartTimeBegin;
+    @TableField(exist = false)
     /** 最晚讲课时间*/
     private String lectureEndTimeFinish;
+    @TableField(exist = false)
     /** 最高价格*/
     private Double maxPrice;
     /** 最低价格*/
+    @TableField(exist = false)
     private Double minPrice;
     /** 近期几天内可约*/
+    @TableField(exist = false)
     private Integer waitDays;
     /** 剩余名额数*/
+    @TableField(exist = false)
     private Integer surplusJoinNum;
 
     /** 成员清单*/
+    @TableField(exist = false)
     private List<PsyConsultantSupervisionMember> memberList;
     
     @TableField(exist = false)
@@ -144,7 +164,9 @@ public class PsyConsultantTeamSupervision extends BaseEntity implements Serializ
     private String nextBeginTime;//下次服务开始时间
 
     /** 督导师详情*/
+    @TableField(exist = false)
     private PsyConsult consultantDetail;
+    @TableField(exist = false)
     private List<Long> idList;
     //清单类型
     @TableField(exist = false)

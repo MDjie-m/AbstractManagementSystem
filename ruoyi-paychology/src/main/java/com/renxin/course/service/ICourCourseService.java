@@ -1,9 +1,11 @@
 package com.renxin.course.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.renxin.common.domain.RelateInfo;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.dto.CourseQueryDTO;
 import com.renxin.course.vo.CourseListVO;
+import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 
 import java.util.List;
 
@@ -13,7 +15,7 @@ import java.util.List;
  * @author renxin
  * @date 2023-03-14
  */
-public interface ICourCourseService
+public interface ICourCourseService extends IService<CourCourse>
 {
     /**
      * 查询课程
@@ -117,5 +119,12 @@ public interface ICourCourseService
     
     //查询与课程的关联信息
     public RelateInfo getCourseRelateInfo(CourCourse courCourse);
+
+    //刷新byId缓存
+    void refreshCacheByIdList(List<Long> idList);
+    void refreshCacheById(Long id);
+    void refreshCacheAll();
+    //刷新id清单缓存
+    void refreshIdList();
 
 }

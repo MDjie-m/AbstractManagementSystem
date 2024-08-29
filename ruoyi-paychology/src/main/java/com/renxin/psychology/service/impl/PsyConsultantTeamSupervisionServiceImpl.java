@@ -49,6 +49,9 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
 {
     @Autowired
     private IPsyConsultantTeamSupervisionService self; // 注入自身
+
+    @Resource
+    private RedisCache redisCache;
     
     @Autowired
     private PsyConsultantTeamSupervisionMapper psyConsultantTeamSupervisionMapper;
@@ -73,9 +76,7 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
 
     @Autowired
     private PsyConsultantOrderMapper psyConsultantOrderMapper;
-
-    @Resource
-    private RedisCache redisCache;
+    
     
     /**
      * 查询团队督导(组织)
@@ -150,8 +151,6 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
      * @return 团队督导(组织)
      */
     @Override
-    /*@Cacheable(value = "selectPsyConsultantTeamSupervisionListCache", key
-            unless = "#result == null||#result.isEmpty()")*/
     public List<PsyConsultantTeamSupervision> selectPsyConsultantTeamSupervisionList(PsyConsultantTeamSupervision req)
     {
         Integer teamType = req.getTeamType();//督导类型
@@ -486,6 +485,7 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
     public void refreshIdList(){
         //完整对象清单
         List<PsyConsultantTeamSupervision> allTeamList = psyConsultantTeamSupervisionMapper.selectList(new LambdaQueryWrapper<PsyConsultantTeamSupervision>()
+                .select(PsyConsultantTeamSupervision::getId)
                 .orderByDesc(PsyConsultantTeamSupervision::getCreateTime));
 
         //id清单放入缓存
@@ -493,8 +493,5 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         List<Long> allIdList = allTeamList.stream().map(p -> p.getId()).collect(Collectors.toList());
         redisCache.setCacheList(CacheConstants.TEAM_SUP_ID_LIST + "::" + "all",allIdList);
     }
-    
-    public PsyConsultantTeamSupervisionMapper getMapper() {
-        return psyConsultantTeamSupervisionMapper;
-    }
+
 }

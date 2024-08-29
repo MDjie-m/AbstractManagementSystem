@@ -6,6 +6,7 @@ import java.util.List;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourSection;
+import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.service.ICourSectionService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
     @Resource
     private ICourSectionService courSectionService;
 
+    @Autowired
+    private ICourCourseService courCourseService;
+    
     /**
      * 查询用户-课程-章节关系
      * 
@@ -65,7 +69,10 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
     @Override
     public int insertCourUserCourseSection(CourUserCourseSection courUserCourseSection)
     {
-        return courUserCourseSectionMapper.insertCourUserCourseSection(courUserCourseSection);
+        int i = courUserCourseSectionMapper.insertCourUserCourseSection(courUserCourseSection);
+
+        courCourseService.refreshCacheById(courUserCourseSection.getCourseId());
+        return i;
     }
 
     /**
@@ -77,7 +84,10 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
     @Override
     public int updateCourUserCourseSection(CourUserCourseSection courUserCourseSection)
     {
-        return courUserCourseSectionMapper.updateCourUserCourseSection(courUserCourseSection);
+        int i = courUserCourseSectionMapper.updateCourUserCourseSection(courUserCourseSection);
+        
+        courCourseService.refreshCacheById(courUserCourseSection.getCourseId());
+        return i;
     }
 
     /**
@@ -89,7 +99,11 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
     @Override
     public int deleteCourUserCourseSectionByIds(Long[] ids)
     {
-        return courUserCourseSectionMapper.deleteCourUserCourseSectionByIds(ids);
+        //courUserCourseSectionMapper.deleteCourUserCourseSectionByIds(ids)
+        for (Long id : ids) {
+            deleteCourUserCourseSectionById(id);
+        }
+        return ids.length;
     }
 
     /**
@@ -101,7 +115,11 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
     @Override
     public int deleteCourUserCourseSectionById(Long id)
     {
-        return courUserCourseSectionMapper.deleteCourUserCourseSectionById(id);
+        CourUserCourseSection courUserCourseSection = courUserCourseSectionMapper.selectCourUserCourseSectionById(id);
+        int i = courUserCourseSectionMapper.deleteCourUserCourseSectionById(id);
+        
+        courCourseService.refreshCacheById(courUserCourseSection.getCourseId());
+        return i;
     }
 
     /**
@@ -141,6 +159,7 @@ public class CourUserCourseSectionServiceImpl implements ICourUserCourseSectionS
             }
 
         }
+        courCourseService.refreshCacheById(courseId);
     }
 
     /**

@@ -1,8 +1,10 @@
 package com.renxin.course.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.dto.CourseQueryDTO;
 import com.renxin.course.vo.CourseListVO;
+import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.List;
  * @author renxin
  * @date 2023-03-14
  */
-public interface CourCourseMapper 
+public interface CourCourseMapper extends BaseMapper<CourCourse>
 {
     /**
      * 查询课程

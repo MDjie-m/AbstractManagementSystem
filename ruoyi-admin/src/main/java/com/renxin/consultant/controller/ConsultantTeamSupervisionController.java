@@ -66,7 +66,7 @@ public class ConsultantTeamSupervisionController extends BaseController
      * 根据类型  查询团队督导(组织)列表
      */
     @ApiOperation(value = "查询团队督导(组织)列表")
-    @PostMapping("/listByType")
+    @PostMapping("/cache")
     public TableDataInfo listByType(@RequestBody QueryListByTypeReq req)
     {
         String listType = req.getListType();

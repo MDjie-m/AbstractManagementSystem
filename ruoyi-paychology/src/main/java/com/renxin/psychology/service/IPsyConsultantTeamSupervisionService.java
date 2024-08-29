@@ -75,7 +75,7 @@ public interface IPsyConsultantTeamSupervisionService extends IService<PsyConsul
      */
     void handleTeamFull(Long teamId);
 
-//获取团队督导(组织)与本用户关联信息
+    //获取团队督导(组织)与本用户关联信息
     RelateInfo getTeamRelateInfo(PsyConsultantTeamSupervision req);
     
     //刷新byId缓存

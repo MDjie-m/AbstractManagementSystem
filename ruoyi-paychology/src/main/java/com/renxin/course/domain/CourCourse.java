@@ -1,8 +1,12 @@
 package com.renxin.course.domain;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.renxin.course.vo.SectionVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,10 +24,9 @@ import com.renxin.common.core.domain.BaseEntity;
  * @date 2023-03-14
  */
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class CourCourse extends BaseEntity
+@TableName("cour_course")
+public class CourCourse extends BaseEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
@@ -75,19 +78,32 @@ public class CourCourse extends BaseEntity
     @Excel(name = "是否上架")
     private Integer onSale;
     
+    @TableLogic
+    private Integer deleteFlag;
+    
+    @TableField(exist = false)
     private List<Long> idList;
+    @TableField(exist = false)
     private String ids;
-    
+
+    @TableField(exist = false)
     private Integer studyNum;//学习人数
+    @TableField(exist = false)
     private Integer sectionNum;//章节数量
+    @TableField(exist = false)
     private Integer totalDuration;//总时长
+    @TableField(exist = false)
     private Integer completedSectionNum;//已学完的课程数
+    @TableField(exist = false)
     private Integer totalLearnTime;//学习总时长
-    
+
+    @TableField(exist = false)
     private Long userId;
+    @TableField(exist = false)
     private Integer userType;//1.来访者  2.咨询师
 
     //章节清单
+    @TableField(exist = false)
     private List<CourSection> sectionList;
     
     

@@ -132,4 +132,18 @@ public class PsyConsultantTeamSupervisionController extends BaseController
     {
         return toAjax(psyConsultantTeamSupervisionService.deletePsyConsultantTeamSupervisionByIds(ids));
     }
+
+
+    /**
+     * 刷新团督缓存
+     */
+    @ApiOperation("刷新团督缓存")
+    //@PreAuthorize("@ss.hasPermi('system:supervision:query')")
+    @GetMapping(value = "/refreshCacheAll")
+    public AjaxResult refreshCacheAll()
+    {
+        psyConsultantTeamSupervisionService.refreshCacheAll();
+        return AjaxResult.success();
+    }
+    
 }

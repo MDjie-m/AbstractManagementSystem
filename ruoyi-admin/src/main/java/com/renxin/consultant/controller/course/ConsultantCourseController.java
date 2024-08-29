@@ -1,11 +1,14 @@
 package com.renxin.consultant.controller.course;
 
 import com.renxin.common.annotation.RateLimiter;
+import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.domain.RelateInfo;
+import com.renxin.common.utils.PageUtils;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.*;
 import com.renxin.course.service.*;
@@ -16,6 +19,8 @@ import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.psychology.domain.PsyConsultClass;
 import com.renxin.psychology.domain.PsyConsultantOrder;
+import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.request.QueryListByTypeReq;
 import com.renxin.psychology.service.IPsyConsultClassService;
 import com.renxin.psychology.service.IPsyConsultantOrderService;
 import com.renxin.psychology.vo.PsyConsultClassVO;
@@ -67,6 +72,9 @@ public class ConsultantCourseController extends BaseController {
     @Autowired
     private IPsyConsultantOrderService consultantOrderService;
 
+    @Resource
+    private RedisCache redisCache;
+
     @ApiOperation(value = "查询class列表")
     @PostMapping("/class/list")
     @RateLimiter
@@ -79,7 +87,7 @@ public class ConsultantCourseController extends BaseController {
     }
     
     /**
-     * 根据课程类型查询课程列表
+     * 根据查询课程列表
      */
 //    @PreAuthorize("@ss.hasPermi('course:course:list')")
     @PostMapping("/list")
@@ -93,6 +101,22 @@ public class ConsultantCourseController extends BaseController {
         List<CourseListVO> list = courCourseService.getCourseListByClassId(courCourse);
         return getDataTable(list);
     }
+
+    /**
+     * 根据类型  查询课程列表
+     */
+    @ApiOperation(value = "查询团队督导(组织)列表")
+    @PostMapping("/cache")
+    public TableDataInfo listByType(@RequestBody QueryListByTypeReq req)
+    {
+        String listType = req.getListType();
+        List<Long> idList = redisCache.getCacheList(CacheConstants.COURSE_ID_LIST + "::" + listType);
+        List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.COURSE_BY_ID_KEY , PageUtils.paginate(idList));
+
+        return getDataTable(cacheList, idList.size());
+    }
+    
+    
 
     /**
      * 根据搜素条件查询课程列表
@@ -161,31 +185,29 @@ public class ConsultantCourseController extends BaseController {
     @PostMapping(value = "/detail/{courseId}")
     @ApiOperation("查询课程详情")
     @RateLimiter
-    public AjaxResult detail(@PathVariable("courseId") Long courseId,HttpServletRequest request)
+    public AjaxResult detail(@PathVariable("courseId") Long courseId)
     {
-        Long cUserId = consultantTokenService.getConsultId(request);
-
         CourCourse course = courCourseService.selectCourCourseById(courseId);
-        if (course == null) {
-            return AjaxResult.error("查询课程详情失败");
-        }
+//        if (course == null) {
+//            return AjaxResult.error("查询课程详情失败");
+//        }
 
         // 查询课程的学习人数
         /*CourUserCourseSection courUserCourseSection = new CourUserCourseSection();
         courUserCourseSection.setCourseId(courseId);
         List<CourUserCourseSection> courUserCourseSectionList = courUserCourseSectionService.selectCourUserCourseSectionList(courUserCourseSection);*/
 
-        CourseVO courseVO = new CourseVO();
-        BeanUtils.copyProperties(course, courseVO);
+//        CourseVO courseVO = new CourseVO();
+//        BeanUtils.copyProperties(course, courseVO);
      //   courseVO.setStudyNum(courUserCourseSectionList.size());
 
         // 增加章节列表
-        CourSection courSection = CourSection.builder()
-                .courseId(courseId)
-                .userId(cUserId)
-                .userType(2)//咨询师
-                .build();
-        List<CourSection> sectionList = courSectionService.selectCourSectionDetailList(courSection);
+//        CourSection courSection = CourSection.builder()
+//                .courseId(courseId)
+//                .userId(-1L)//无用户
+//                .userType(-1)//无用户, 不查询与本用户的关联信息
+//                .build();
+//        List<CourSection> sectionList = courSectionService.selectCourSectionDetailList(courSection);
         // 查询章节的学习情况
        /* List<SectionVO> sectionVOList = new ArrayList<>();
         for (CourSection section: sectionList) {
@@ -204,10 +226,10 @@ public class ConsultantCourseController extends BaseController {
             }
             sectionVOList.add(sectionVO);
         }*/
-        courseVO.setSectionList(sectionList);
+        //courseVO.setSectionList(sectionList);
 
         // 查询咨询师有没有购买该课程
-        if (cUserId == 0 || courseVO.getPayType() == CourConstant.COURSE_FREE) { // 没有给出用户标识
+       /* if (cUserId == 0 || courseVO.getPayType() == CourConstant.COURSE_FREE) { // 没有给出用户标识
             return AjaxResult.success(courseVO);
         }
         PsyConsultantOrder orderReq = new PsyConsultantOrder();
@@ -215,9 +237,9 @@ public class ConsultantCourseController extends BaseController {
             orderReq.setServerType("4");//课程
             orderReq.setServerId(courseId+"");
         List<PsyConsultantOrder> orderList = consultantOrderService.selectPsyConsultantOrderList(orderReq);
-        courseVO.setIsBuy(orderList.size() > 0 ? CourConstant.COURSE_BUY : CourConstant.COURSE_NOT_BUY);
+        courseVO.setIsBuy(orderList.size() > 0 ? CourConstant.COURSE_BUY : CourConstant.COURSE_NOT_BUY);*/
 
-        return AjaxResult.success(courseVO);
+        return AjaxResult.success(course);
     }
 
     
@@ -233,7 +255,7 @@ public class ConsultantCourseController extends BaseController {
         req.setUserType(2);//咨询师
         req.setUserId(consultId);
         Integer i = userCourseSectionService.updateSectionNote(req);
-
+        
         return AjaxResult.success(i);
     }
 

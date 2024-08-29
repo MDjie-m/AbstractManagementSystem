@@ -62,4 +62,14 @@ public class CacheConstants
      * 团队督导byId redis key
      */
     public static final String TEAM_SUP_BY_ID_KEY = "team_sup_by_id";
+
+    /**
+     * 课程id清单 redis key
+     */
+    public static final String COURSE_ID_LIST = "course_id_list";
+
+    /**
+     * 课程byId redis key
+     */
+    public static final String COURSE_BY_ID_KEY = "course_by_id";
 }

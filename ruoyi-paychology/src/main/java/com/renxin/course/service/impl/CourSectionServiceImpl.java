@@ -4,9 +4,12 @@ import java.util.List;
 
 import com.renxin.course.domain.CourSection;
 import com.renxin.course.mapper.CourSectionMapper;
+import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.service.ICourSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * 章节Service业务层处理
@@ -19,6 +22,9 @@ public class CourSectionServiceImpl implements ICourSectionService
 {
     @Autowired
     private CourSectionMapper courSectionMapper;
+
+    @Autowired
+    private ICourCourseService courCourseService;
 
     /**
      * 查询章节
@@ -59,7 +65,10 @@ public class CourSectionServiceImpl implements ICourSectionService
     @Override
     public int insertCourSection(CourSection courSection)
     {
-        return courSectionMapper.insertCourSection(courSection);
+        int i = courSectionMapper.insertCourSection(courSection);
+        
+        courCourseService.refreshCacheById(courSection.getCourseId());
+        return i;
     }
 
     /**
@@ -71,7 +80,10 @@ public class CourSectionServiceImpl implements ICourSectionService
     @Override
     public int updateCourSection(CourSection courSection)
     {
-        return courSectionMapper.updateCourSection(courSection);
+        int i = courSectionMapper.updateCourSection(courSection);
+        
+        courCourseService.refreshCacheById(courSection.getCourseId());
+        return i;
     }
 
     /**
@@ -83,7 +95,12 @@ public class CourSectionServiceImpl implements ICourSectionService
     @Override
     public int deleteCourSectionByIds(Long[] ids)
     {
-        return courSectionMapper.deleteCourSectionByIds(ids);
+        //int i = courSectionMapper.deleteCourSectionByIds(ids);
+
+        for (Long id : ids) {
+            deleteCourSectionById(id);
+        }
+        return ids.length;
     }
 
     /**
@@ -95,6 +112,10 @@ public class CourSectionServiceImpl implements ICourSectionService
     @Override
     public int deleteCourSectionById(Long id)
     {
-        return courSectionMapper.deleteCourSectionById(id);
+        CourSection courSection = courSectionMapper.selectCourSectionById(id);
+        int i = courSectionMapper.deleteCourSectionById(id);
+
+        courCourseService.refreshCacheById(courSection.getCourseId());
+        return i;
     }
 }

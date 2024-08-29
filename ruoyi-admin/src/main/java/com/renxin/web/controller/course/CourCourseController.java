@@ -84,6 +84,7 @@ public class CourCourseController extends BaseController
     {
         try {
             int res = courCourseService.insertCourCourse(courCourse);
+            courCourseService.selectCourCourseById(courCourse.getId());
             return AjaxResult.success(res);
         } catch (Exception e) {
             return AjaxResult.error(500, "新增课程失败");
@@ -101,6 +102,8 @@ public class CourCourseController extends BaseController
     {
         try {
             int res = courCourseService.updateCourCourse(courCourse);
+
+            courCourseService.selectCourCourseById(courCourse.getId());
             return AjaxResult.success(res);
         } catch (Exception e) {
             return AjaxResult.error(500, "修改课程失败");
@@ -121,5 +124,16 @@ public class CourCourseController extends BaseController
         } catch (Exception e) {
             return AjaxResult.error(500, "删除课程失败");
         }
+    }
+
+    /**
+     * 刷新课程缓存
+     */
+    //@PreAuthorize("@ss.hasPermi('course:course:list')")
+    @GetMapping("/refreshCacheAll")
+    public AjaxResult refreshCacheAll()
+    {
+        courCourseService.refreshCacheAll();
+        return AjaxResult.success();
     }
 }
