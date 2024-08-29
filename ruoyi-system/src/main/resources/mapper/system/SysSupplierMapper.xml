@@ -129,18 +129,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                entry_date,
                head_portrait_path, image_path, video_path, remark
         from sys_supplier
-        where supplier_id = #{supplierId}
+        where supplier_id = #{supplierId} and delete_flag = 0
     </select>
 
     <select id="selectSysProductList" resultMap="SysProductResult">
         select *
         from sys_product
-        where supplier_id = #{supplier_id}
+        where supplier_id = #{supplier_id} and del_flag = 0
     </select>
 
     <!--  根据法人电话查询供应商信息-->
     <select id="checkLegalPersonTelephoneUnique" resultType="SysSupplier">
-        select * from sys_supplier where legal_person_telephone = #{legalPersonTelephone}
+        select * from sys_supplier where legal_person_telephone = #{legalPersonTelephone} and del_flag = 0
     </select>
 
     <!--  根据产品分类查询  -->
