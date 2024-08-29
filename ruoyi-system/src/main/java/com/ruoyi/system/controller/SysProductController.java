@@ -47,8 +47,7 @@ public class SysProductController extends BaseController
     /**
      * 查询产品列表
      */
-//    @PreAuthorize("@ss.hasPermi('system:product:list')")
-    @Anonymous
+    @PreAuthorize("@ss.hasPermi('system:product:list')")
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
