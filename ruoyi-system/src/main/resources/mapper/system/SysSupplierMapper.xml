@@ -79,7 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                remark from sys_supplier
     </sql>
 
-    <select id="selectSysSupplierList" parameterType="com.ruoyi.system.domain.vo.supplierVo.SupplierVo" resultMap="SysSupplierResult">
+    <select id="selectSysSupplierList" parameterType="com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo" resultMap="SysSupplierResult">
         <include refid="selectSysSupplierVo"/>
         <where>
             <if test="label != null ">label = #{label}</if>

@@ -7,6 +7,8 @@ import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ruoyi.common.annotation.EnumFiledConvert;
 import com.ruoyi.common.annotation.Sensitive;
 import com.ruoyi.common.enums.DesensitizedType;
@@ -88,9 +90,10 @@ public class SysSupplier extends BaseEntity {
     private String mainCategory;
 
     /**
-     * 主营产品id
+     * 主营产品id,暂时废弃
      */
     @ExcelIgnore
+    @JsonIgnore
     private String mainProductId;
 
     /**
@@ -133,14 +136,14 @@ public class SysSupplier extends BaseEntity {
      * 注册时间
      */
     @ExcelProperty("注册时间")
-    @DateTimeFormat("yyyy-mm-dd")
+    @JsonFormat(pattern ="yyyy-mm-dd")
     private Date registrationTime;
 
     /**
      * 注册时间有效期
      */
     @ExcelProperty("注册时间有效期")
-    @DateTimeFormat("yyyy-mm-dd")
+    @JsonFormat(pattern ="yyyy-mm-dd")
     private Date registrationTimeValidityPeriod;
 
     /**
@@ -209,6 +212,7 @@ public class SysSupplier extends BaseEntity {
      */
     @ExcelProperty(value = "是否删除", converter = EasyExcelConvert.class)
     @EnumFiledConvert(enumMap = "0-未删除,1-已删除")
+    @JsonIgnore
     private Integer deleteFlag;
 
     /**
@@ -249,8 +253,9 @@ public class SysSupplier extends BaseEntity {
      * 入驻时间
      */
     @ExcelIgnore
-    @DateTimeFormat("yyyy-mm-dd")
+    @JsonFormat(pattern ="yyyy-mm-dd")
     private Date entryDate;
+
     /**
      * 头像地址
      */
@@ -279,36 +284,42 @@ public class SysSupplier extends BaseEntity {
      * 预留字段1
      */
     @ExcelIgnore
+    @JsonIgnore
     private String futureField1;
 
     /**
      * 预留字段2
      */
     @ExcelIgnore
+    @JsonIgnore
     private String futureField2;
 
     /**
      * 预留字段3
      */
     @ExcelIgnore
+    @JsonIgnore
     private String futureField3;
 
     /**
      * 预留字段4
      */
     @ExcelIgnore
+    @JsonIgnore
     private String futureField4;
 
     /**
      * 预留字段5
      */
     @ExcelIgnore
+    @JsonIgnore
     private String futureField5;
 
     /**
      * 产品信息
      */
     @ExcelIgnore
+    @JsonIgnore
     private List<SysProduct> sysProductList;
 
     public String getSupplierId() {

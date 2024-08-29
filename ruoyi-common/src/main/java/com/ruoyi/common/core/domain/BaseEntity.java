@@ -43,8 +43,11 @@ public class BaseEntity implements Serializable
     private Map<String, Object> params;
 
     /** 第几页 */
+    @JsonIgnore
     private int pageNum;
+
     /** 每页多少个 */
+    @JsonIgnore
     private int pageSize;
 
     public int getPageNum() {

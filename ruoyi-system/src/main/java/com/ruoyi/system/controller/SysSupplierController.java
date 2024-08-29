@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.system.domain.vo.AuditVo;
 import com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo;
-import com.ruoyi.system.domain.vo.supplierVo.SupplierVo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +41,14 @@ public class SysSupplierController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('system:supplier:list')")
     @PostMapping("/list")
-    public TableDataInfo list(@RequestBody SupplierVo supplierVo)
+    public TableDataInfo list(@RequestBody SelectSupplierVo supplierVo)
     {
-        Integer pageNum = supplierVo.getPageNum();
-        Integer pageSize = supplierVo.getPageSize();
-        if (pageNum == null) {
+        int pageNum = supplierVo.getPageNum();
+        int pageSize = supplierVo.getPageSize();
+        if (pageNum == 0) {
             pageNum = 1;
         }
-        if (pageSize == null) {
+        if (pageSize == 0) {
             pageSize = 10;
         }
         PageHelper.startPage(pageNum, pageSize);
@@ -64,12 +62,12 @@ public class SysSupplierController extends BaseController
     @PreAuthorize("@ss.hasAnyPermi('system:supplier:supplierList')")
     @PostMapping("/supplierList")
     public TableDataInfo supplierList(@RequestBody SelectSupplierVo selectSupplierVo){
-        Integer pageNum = selectSupplierVo.getPageNum();
-        Integer pageSize = selectSupplierVo.getPageSize();
-        if (pageNum == null) {
+        int pageNum = selectSupplierVo.getPageNum();
+        int pageSize = selectSupplierVo.getPageSize();
+        if (pageNum == 0) {
             pageNum = 1;
         }
-        if (pageSize == null) {
+        if (pageSize == 0) {
             pageSize = 10;
         }
         PageHelper.startPage(pageNum, pageSize);
@@ -101,7 +99,7 @@ public class SysSupplierController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:supplier:export')")
     @Log(title = "供应商", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, SupplierVo supplier) throws IOException {
+    public void export(HttpServletResponse response, SelectSupplierVo supplier) throws IOException {
         sysSupplierService.exportSysSupplier(response, supplier);
     }
 

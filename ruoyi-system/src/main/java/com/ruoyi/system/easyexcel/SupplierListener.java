@@ -209,6 +209,8 @@ public class SupplierListener implements ReadListener<SysSupplier> {
         log.info("{}条数据，开始存储数据库！", cachedDataList.size());
         try {
             sysSupplierMapper.saveSysSupplier(cachedDataList);
+            // TODO 批量新增用户
+            // TODO 批量新增用户
         } catch (Exception e) {
             log.error("存储数据库失败:{}", e.getMessage());
             arrayList.add("存储数据库失败!");
