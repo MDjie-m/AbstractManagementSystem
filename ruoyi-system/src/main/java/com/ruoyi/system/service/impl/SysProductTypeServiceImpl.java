@@ -115,8 +115,8 @@ public class SysProductTypeServiceImpl implements ISysProductTypeService
             return listTreeByMap("CN0",depth, classification);
         }
 
-
-    private List<Map<String,Object>> listTreeByMap(String parentCode,Integer depth,Integer classification){
+    @Override
+    public List<Map<String,Object>> listTreeByMap(String parentCode,Integer depth,Integer classification){
 //        创建一个存放map的list用来保存组装好的数据
         List<Map<String,Object>> mapList = new ArrayList<>();
         //1、按父级编码等于多少查一级分类（国产/进口）,国产进口的父编码为0，返回的是一个列表

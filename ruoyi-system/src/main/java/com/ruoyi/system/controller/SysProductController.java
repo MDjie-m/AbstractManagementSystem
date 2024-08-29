@@ -47,8 +47,7 @@ public class SysProductController extends BaseController
     /**
      * 查询产品列表
      */
-//    @PreAuthorize("@ss.hasPermi('system:product:list')")
-    @Anonymous
+    @PreAuthorize("@ss.hasPermi('system:product:list')")
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody SysProDuctDTO sysProDuctDTO)
     {
@@ -133,7 +132,7 @@ public class SysProductController extends BaseController
             sysProductVO = sysProductService.selectSysProductByProductId(sysProDuctDTO);
         }else if (roleId==2){
             //说明是采购员，如果供应商id为null且userid有具体值说明查采购员自己管理的产品
-            sysProDuctDTO.setBuyerId(SecurityUtils.getUserId());
+            sysProDuctDTO.setBuyerId(SecurityUtils.getLoginUser().getUserId());
             sysProductVO = sysProductService.selectSysProductByProductId(sysProDuctDTO);
         }else if (roleId==6){
             sysProDuctDTO.setFlag(true);
