@@ -43,12 +43,12 @@ public class SysSupplierController extends BaseController
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody SelectSupplierVo supplierVo)
     {
-        int pageNum = supplierVo.getPageNum();
-        int pageSize = supplierVo.getPageSize();
-        if (pageNum == 0) {
+        Integer pageNum = supplierVo.getPageNum();
+        Integer pageSize = supplierVo.getPageSize();
+        if (pageNum == null) {
             pageNum = 1;
         }
-        if (pageSize == 0) {
+        if (pageSize == null) {
             pageSize = 10;
         }
         PageHelper.startPage(pageNum, pageSize);
@@ -62,12 +62,12 @@ public class SysSupplierController extends BaseController
     @PreAuthorize("@ss.hasAnyPermi('system:supplier:supplierList')")
     @PostMapping("/supplierList")
     public TableDataInfo supplierList(@RequestBody SelectSupplierVo selectSupplierVo){
-        int pageNum = selectSupplierVo.getPageNum();
-        int pageSize = selectSupplierVo.getPageSize();
-        if (pageNum == 0) {
+        Integer pageNum = selectSupplierVo.getPageNum();
+        Integer pageSize = selectSupplierVo.getPageSize();
+        if (pageNum == null) {
             pageNum = 1;
         }
-        if (pageSize == 0) {
+        if (pageSize == null) {
             pageSize = 10;
         }
         PageHelper.startPage(pageNum, pageSize);
