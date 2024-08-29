@@ -420,7 +420,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!--  修改产品状态为1-已报价  -->
     <update id="updateSysProductStatus">
         update sys_product
-        set future_field1 = 1
+        set quote_status = 1
         where product_id = #{productId}
     </update>
     <!--  修改产品是否可报价状态用于前端切换  -->
@@ -464,7 +464,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectProductNamesByParam" resultType="java.lang.String">
     SELECT product_Name
     FROM sys_product
-    WHERE future_field1 = '1'
+    WHERE quote_status = '1'
       <if test="supplierId != null  and supplierId != ''">and supplier_id = #{supplierId}</if>
         <if test="productName != null  and productName != ''">AND product_Name LIKE CONCAT('%', #{productName}, '%')</if>
     </select>
@@ -472,5 +472,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPriceByProductId" resultType="com.ruoyi.system.domain.SysSupplierPrice">
         select price_RMB as priceRmb,RMB_quote_unit as RMBQuoteUnit,unitprice as unitprice,unitprice_unit as unitpriceUnit
         from sys_supplier_price where product_id=#{productId} order by time desc limit 1
+    </select>
+
+    <select id="getSysProductByProductId" resultType="com.ruoyi.system.domain.vo.SysProductVO">
+        <include refid="selectSysProductVo"/>
+        where product_id=#{productId}
     </select>
 </mapper>

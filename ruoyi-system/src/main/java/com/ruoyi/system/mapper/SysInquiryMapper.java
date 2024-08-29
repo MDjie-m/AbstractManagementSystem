@@ -68,4 +68,7 @@ public interface SysInquiryMapper
     SysSupplierPrice findLatestQuote(@Param("productId") String productId);
 
     int updateInquiryStatus(@Param("productIds") List<String> productIds);
+
+    SysInquiry selectAllByProductId(@Param("productId") String productId);
+
 }

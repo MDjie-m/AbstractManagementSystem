@@ -70,4 +70,6 @@ public interface ISysProductTypeService
     List<SysProductType> selectType(String[] newCodes);
 
     SysProductType selectTag(String code);
+
+     List<Map<String,Object>> listTreeByMap(String parentCode,Integer depth,Integer classification);
 }

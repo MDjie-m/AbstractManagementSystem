@@ -109,4 +109,19 @@ public class SysProductTypeController extends BaseController
     {
         return toAjax(sysProductTypeService.deleteSysProductTypeByProductCodes(productCodes));
     }
+    /**
+     * 根据父级id查询其子分类(侧边栏)
+     */
+    @Anonymous
+    @GetMapping("/getSubType")
+    public AjaxResult getSubType(String parentCode,
+                                 @RequestParam(required = false) Integer depth ,
+                                 Integer classification)
+    {
+        if (depth == null){
+            depth = 1;
+        }
+        List<Map<String,Object>> list = sysProductTypeService.listTreeByMap(parentCode,depth,classification);
+        return success(list);
+    }
 }
