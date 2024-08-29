@@ -43,13 +43,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysProductStandardVo">
-        select product_id, product_name, primary_category, primary_category_name, secondary_category,
-               secondary_category_name, tertiary_category, tertiary_category_name, quaternary_category,
-               quaternary_category_name, fifth_category, fifth_category_name, cn_primary_category,
-               cn_primary_category_name, cn_secondary_category, cn_secondary_category_name, cn_tertiary_category,
-               cn_tertiary_category_name, cn_quaternary_category, cn_quaternary_category_name, cn_fifth_category,
-               cn_fifth_category_name, domestic_imported_type, storage_mode, specifications, tag_id, tag_name,
-               del_flag,image_path, video_path, product_model, status, remark, create_time, update_time,
+        select product_id as productId, product_name as productName, primary_category AS primaryCategory,
+               primary_category_name AS primaryCategoryName,secondary_category AS secondaryCategory,
+               secondary_category_name AS secondaryCategoryName,tertiary_category AS tertiaryCategory,
+               tertiary_category_name AS tertiaryCategoryName,quaternary_category AS quaternaryCategory,
+               quaternary_category_name AS quaternaryCategoryName,fifth_category AS fifthCategory,
+               fifth_category_name AS fifthCategoryName,cn_primary_category AS cnPrimaryCategory,
+               cn_primary_category_name AS cnPrimaryCategoryName,cn_secondary_category AS cnSecondaryCategory,
+               cn_secondary_category_name AS cnSecondaryCategoryName,cn_tertiary_category AS cnTertiaryCategory,
+               cn_tertiary_category_name AS cnTertiaryCategoryName,cn_quaternary_category AS cnQuaternaryCategory,
+               cn_quaternary_category_name AS cnQuaternaryCategoryName,cn_fifth_category AS cnFifthCategory,
+               cn_fifth_category_name AS cnFifthCategoryName, domestic_imported_type AS domesticImportedType,
+               storage_mode AS storageMode, specifications as specifications, tag_id AS tagId,tag_name AS tagName,
+               del_flag as delFlag,image_path as imagePath, video_path as videoPath, product_model AS productModel,
+               status as status, remark as remark, create_time as createTime, update_time as updateTime,
                (select count(distinct sp.supplier_id) from sys_product sp where sp.product_name=product_name
                 and sp.specifications = specifications) as total
         from sys_product_standard
