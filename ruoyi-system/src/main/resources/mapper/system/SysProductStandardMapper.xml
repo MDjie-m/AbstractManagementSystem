@@ -106,7 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectSysProductStandardByProductId" parameterType="String" resultMap="SysProductStandardResult">
+    <select id="selectSysProductStandardByProductId" parameterType="String" resultType="com.ruoyi.system.domain.SysProductStandard">
         <include refid="selectSysProductStandardVo"/>
         where product_id = #{productId} and del_flag=0
     </select>
