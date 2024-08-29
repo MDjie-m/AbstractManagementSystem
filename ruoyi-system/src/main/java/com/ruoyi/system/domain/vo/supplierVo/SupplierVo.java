@@ -1,23 +1,30 @@
 package com.ruoyi.system.domain.vo.supplierVo;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
+import com.ruoyi.common.annotation.Sensitive;
+import com.ruoyi.common.enums.DesensitizedType;
 
 import java.util.Date;
 
 /**
- * 供应商筛选Vo
+ * 查询供应商
  */
-public class SelectSupplierVo {
-
+public class SupplierVo {
     /**
-     * 页数
+     * 页码
      */
     private Integer pageNum;
 
     /**
-     * 页码
+     * 页数
      */
     private Integer pageSize;
+
+    /**
+     * 供应商id
+     */
+    private String supplierId;
 
     /**
      * 标签：0：供应商、商家，1：供应商，2.商家
@@ -65,6 +72,26 @@ public class SelectSupplierVo {
     private String mainCategory;
 
     /**
+     * 主营产品id
+     */
+    private String mainProductId;
+
+    /**
+     * 主营产品名称
+     */
+    private String mainProduct;
+
+    /**
+     * 注册编号
+     */
+    private String registrationNo;
+
+    /**
+     * 在华注册编号
+     */
+    private String registrationNoInChina;
+
+    /**
      * 企业名称（中文）
      */
     private String supplierNameCn;
@@ -92,6 +119,42 @@ public class SelectSupplierVo {
     private Date registrationTimeValidityPeriod;
 
     /**
+     * 法人
+     */
+    @Sensitive(desensitizedType = DesensitizedType.USERNAME)
+    private String legalPerson;
+
+    /**
+     * 法人电话
+     */
+    @Sensitive(desensitizedType = DesensitizedType.PHONE)
+    private String legalPersonTelephone;
+
+    /**
+     *  法人电子邮件
+     */
+    @Sensitive(desensitizedType = DesensitizedType.EMAIL)
+    private String legalPersonEmail;
+
+    /**
+     * 负责人
+     */
+    @Sensitive(desensitizedType = DesensitizedType.USERNAME)
+    private String principalName;
+
+    /**
+     * 负责人电话
+     */
+    @Sensitive(desensitizedType = DesensitizedType.PHONE)
+    private String principalTelephone;
+
+    /**
+     * 负责人电子邮件
+     */
+    @Sensitive(desensitizedType = DesensitizedType.EMAIL)
+    private String principalEmail;
+
+    /**
      * 分类：0：国产，1：进口
      */
     private Integer classification;
@@ -112,6 +175,11 @@ public class SelectSupplierVo {
     private Integer auditStatus;
 
     /**
+     * 考察情况id
+     */
+    private String inspectionId;
+
+    /**
      * 考察状态：0候选，1：待考察，2：已考察
      */
     private Integer inspectionStatus;
@@ -127,41 +195,16 @@ public class SelectSupplierVo {
     private Integer dataSources;
 
     /**
-     * 起止入驻时间
+     * 入驻时间
      */
     @DateTimeFormat("yyyy-mm-dd")
-    private Date startEntryDate;
+    private Date entryDate;
 
     /**
-     * 止入驻时间
+     * 备注
      */
-    @DateTimeFormat("yyyy-mm-dd")
-    private Date endEntryDate;
-
-    /**
-     * 内部一级分类
-     */
-    private String cnPrimaryCategory;
-
-    /**
-     * 内部二级分类
-     */
-    private String cnSecondaryCategory;
-
-    /**
-     * 内部三级分类
-     */
-    private String cnTertiaryCategory;
-
-    /**
-     * 内部四级分类
-     */
-    private String cnQuaternaryCategory;
-
-    /**
-     * 内部五级分类
-     */
-    private String cnFifthCategory;
+    @ExcelIgnore
+    private String remark;
 
     public Integer getPageNum() {
         return pageNum;
@@ -177,6 +220,14 @@ public class SelectSupplierVo {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
     }
 
     public Integer getLabel() {
@@ -251,6 +302,38 @@ public class SelectSupplierVo {
         this.mainCategory = mainCategory;
     }
 
+    public String getMainProductId() {
+        return mainProductId;
+    }
+
+    public void setMainProductId(String mainProductId) {
+        this.mainProductId = mainProductId;
+    }
+
+    public String getMainProduct() {
+        return mainProduct;
+    }
+
+    public void setMainProduct(String mainProduct) {
+        this.mainProduct = mainProduct;
+    }
+
+    public String getRegistrationNo() {
+        return registrationNo;
+    }
+
+    public void setRegistrationNo(String registrationNo) {
+        this.registrationNo = registrationNo;
+    }
+
+    public String getRegistrationNoInChina() {
+        return registrationNoInChina;
+    }
+
+    public void setRegistrationNoInChina(String registrationNoInChina) {
+        this.registrationNoInChina = registrationNoInChina;
+    }
+
     public String getSupplierNameCn() {
         return supplierNameCn;
     }
@@ -289,6 +372,54 @@ public class SelectSupplierVo {
 
     public void setRegistrationTimeValidityPeriod(Date registrationTimeValidityPeriod) {
         this.registrationTimeValidityPeriod = registrationTimeValidityPeriod;
+    }
+
+    public String getLegalPerson() {
+        return legalPerson;
+    }
+
+    public void setLegalPerson(String legalPerson) {
+        this.legalPerson = legalPerson;
+    }
+
+    public String getLegalPersonTelephone() {
+        return legalPersonTelephone;
+    }
+
+    public void setLegalPersonTelephone(String legalPersonTelephone) {
+        this.legalPersonTelephone = legalPersonTelephone;
+    }
+
+    public String getLegalPersonEmail() {
+        return legalPersonEmail;
+    }
+
+    public void setLegalPersonEmail(String legalPersonEmail) {
+        this.legalPersonEmail = legalPersonEmail;
+    }
+
+    public String getPrincipalName() {
+        return principalName;
+    }
+
+    public void setPrincipalName(String principalName) {
+        this.principalName = principalName;
+    }
+
+    public String getPrincipalTelephone() {
+        return principalTelephone;
+    }
+
+    public void setPrincipalTelephone(String principalTelephone) {
+        this.principalTelephone = principalTelephone;
+    }
+
+    public String getPrincipalEmail() {
+        return principalEmail;
+    }
+
+    public void setPrincipalEmail(String principalEmail) {
+        this.principalEmail = principalEmail;
     }
 
     public Integer getClassification() {
@@ -347,59 +478,27 @@ public class SelectSupplierVo {
         this.dataSources = dataSources;
     }
 
-    public Date getStartEntryDate() {
-        return startEntryDate;
+    public Date getEntryDate() {
+        return entryDate;
     }
 
-    public void setStartEntryDate(Date startEntryDate) {
-        this.startEntryDate = startEntryDate;
+    public void setEntryDate(Date entryDate) {
+        this.entryDate = entryDate;
     }
 
-    public String getCnPrimaryCategory() {
-        return cnPrimaryCategory;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setCnPrimaryCategory(String cnPrimaryCategory) {
-        this.cnPrimaryCategory = cnPrimaryCategory;
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
-    public String getCnSecondaryCategory() {
-        return cnSecondaryCategory;
+    public String getInspectionId() {
+        return inspectionId;
     }
 
-    public void setCnSecondaryCategory(String cnSecondaryCategory) {
-        this.cnSecondaryCategory = cnSecondaryCategory;
-    }
-
-    public String getCnTertiaryCategory() {
-        return cnTertiaryCategory;
-    }
-
-    public void setCnTertiaryCategory(String cnTertiaryCategory) {
-        this.cnTertiaryCategory = cnTertiaryCategory;
-    }
-
-    public String getCnQuaternaryCategory() {
-        return cnQuaternaryCategory;
-    }
-
-    public void setCnQuaternaryCategory(String cnQuaternaryCategory) {
-        this.cnQuaternaryCategory = cnQuaternaryCategory;
-    }
-
-    public String getCnFifthCategory() {
-        return cnFifthCategory;
-    }
-
-    public void setCnFifthCategory(String cnFifthCategory) {
-        this.cnFifthCategory = cnFifthCategory;
-    }
-
-    public Date getEndEntryDate() {
-        return endEntryDate;
-    }
-
-    public void setEndEntryDate(Date endEntryDate) {
-        this.endEntryDate = endEntryDate;
+    public void setInspectionId(String inspectionId) {
+        this.inspectionId = inspectionId;
     }
 }

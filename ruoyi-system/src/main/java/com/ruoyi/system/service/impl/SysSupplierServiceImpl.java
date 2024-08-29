@@ -18,6 +18,7 @@ import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.vo.AuditVo;
 import com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo;
+import com.ruoyi.system.domain.vo.supplierVo.SupplierVo;
 import com.ruoyi.system.easyexcel.SupplierListener;
 import com.ruoyi.system.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,13 +68,13 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     /**
      * 查询供应商列表
      *
-     * @param sysSupplier 供应商
+     * @param supplierVo 供应商
      * @return 供应商
      */
     @Override
-    public List<SysSupplier> selectSysSupplierList(SysSupplier sysSupplier)
+    public List<SysSupplier> selectSysSupplierList(SupplierVo supplierVo)
     {
-        return sysSupplierMapper.selectSysSupplierList(sysSupplier);
+        return sysSupplierMapper.selectSysSupplierList(supplierVo);
     }
 
     @Override
@@ -99,6 +100,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
                 if (userMapper.checkUserNameUnique(sysSupplier.getPrincipalTelephone()) == null) {
                     // 设置供应商id
                     sysSupplier.setSupplierId(UUID.randomUUID().toString());
+                    System.out.println(sysSupplier.getSupplierId().length());
                     // 设置供应商入驻时间
                     sysSupplier.setEntryDate(new Date());
                     // 设置数据创建时间
@@ -275,11 +277,11 @@ public class SysSupplierServiceImpl implements ISysSupplierService
     /**
      * 导出供应商列表
      * @param response
-     * @param supplier 查询条件
+     * @param supplierVo 查询条件
      * @throws IOException
      */
     @Override
-    public void exportSysSupplier(HttpServletResponse response, SysSupplier supplier) throws IOException {
+    public void exportSysSupplier(HttpServletResponse response, SupplierVo supplierVo) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
         // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
@@ -296,7 +298,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
         HorizontalCellStyleStrategy horizontalCellStyleStrategy =
                 new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
         // 查询供应商数据
-        List<SysSupplier> list = sysSupplierMapper.selectSysSupplierList(supplier);
+        List<SysSupplier> list = sysSupplierMapper.selectSysSupplierList(supplierVo);
         System.out.println(list.get(0));
         // 把查询到的数据导出至excel
         EasyExcel

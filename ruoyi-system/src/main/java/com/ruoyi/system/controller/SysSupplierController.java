@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.system.domain.vo.AuditVo;
 import com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo;
+import com.ruoyi.system.domain.vo.supplierVo.SupplierVo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +41,13 @@ public class SysSupplierController extends BaseController
     /**
      * 查询供应商列表
      */
-    @PreAuthorize("@ss.hasPermi('system:supplier:list')")
+//    @PreAuthorize("@ss.hasPermi('system:supplier:list')")
     @PostMapping("/list")
-    public TableDataInfo list(SysSupplier sysSupplier)
+    @Anonymous
+    public TableDataInfo list(@RequestBody SupplierVo supplierVo)
     {
-        startPage();
-        List<SysSupplier> list = sysSupplierService.selectSysSupplierList(sysSupplier);
+        PageHelper.startPage(supplierVo.getPageNum(), supplierVo.getPageSize());
+        List<SysSupplier> list = sysSupplierService.selectSysSupplierList(supplierVo);
         return getDataTable(list);
     }
 
@@ -53,7 +57,7 @@ public class SysSupplierController extends BaseController
     @PreAuthorize("@ss.hasAnyPermi('system:supplier:supplierList')")
     @PostMapping("/supplierList")
     public TableDataInfo supplierList(@RequestBody SelectSupplierVo selectSupplierVo){
-        startPage();
+        PageHelper.startPage(selectSupplierVo.getPageNum(), selectSupplierVo.getPageSize());
         List<SysSupplier> list = sysSupplierService.selectSupplierByProduct(selectSupplierVo);
         return getDataTable(list);
     }
@@ -82,7 +86,7 @@ public class SysSupplierController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:supplier:export')")
     @Log(title = "供应商", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, SysSupplier supplier) throws IOException {
+    public void export(HttpServletResponse response, SupplierVo supplier) throws IOException {
         sysSupplierService.exportSysSupplier(response, supplier);
     }
 
