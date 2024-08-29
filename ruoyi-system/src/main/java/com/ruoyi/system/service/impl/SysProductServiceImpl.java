@@ -40,14 +40,18 @@ public class SysProductServiceImpl implements ISysProductService {
     @Override
     public SysProductVO selectSysProductByProductId(SysProDuctDTO sysProDuctDTO)
     {
-        SysProductVO sysProductVo = sysProductMapper.selectSysProductByProductId(sysProDuctDTO);
-        SysSupplierPrice sysSupplierPrice = sysProductMapper.selectPriceByProductId(sysProductVo.getProductId());
-        // 赋值单价和单位、报价和单位的操作
-        if (sysSupplierPrice != null) {
-            sysProductVo.setPriceRmb(sysSupplierPrice.getPriceRmb());
-            sysProductVo.setRMBQuoteUnit(sysSupplierPrice.getRMBQuoteUnit());
-            sysProductVo.setUnitprice(sysSupplierPrice.getUnitprice());
-            sysProductVo.setUnitpriceUnit(sysSupplierPrice.getUnitpriceUnit());
+//        SysProductVO sysProductVo = sysProductMapper.selectSysProductByProductId(sysProDuctDTO);//有bug，离谱，后面再看
+        SysProductVO sysProductVo = sysProductMapper.getSysProductByProductId(sysProDuctDTO.getProductId());
+        //查产品详情就没有查供应商名称，后续有需要可以查，这里目前只去查了最新的报价
+        if(!Objects.isNull(sysProductVo)){
+            SysSupplierPrice sysSupplierPrice = sysProductMapper.selectPriceByProductId(sysProductVo.getProductId());
+            // 赋值单价和单位、报价和单位的操作
+            if (sysSupplierPrice != null) {
+                sysProductVo.setPriceRmb(sysSupplierPrice.getPriceRmb());
+                sysProductVo.setRMBQuoteUnit(sysSupplierPrice.getRMBQuoteUnit());
+                sysProductVo.setUnitprice(sysSupplierPrice.getUnitprice());
+                sysProductVo.setUnitpriceUnit(sysSupplierPrice.getUnitpriceUnit());
+            }
         }
         return sysProductVo;
     }

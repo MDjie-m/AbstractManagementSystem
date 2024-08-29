@@ -63,6 +63,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                from sys_product
     </sql>
 
+    <sql id="selectSysProductVoAndSupplierName">
+        SELECT a.product_id AS productId,a.supplier_id AS supplierId,a.supplier_name AS supplierName,a.primary_category AS primaryCategory,
+               a.primary_category_name AS primaryCategoryName,a.secondary_category AS secondaryCategory,a.secondary_category_name AS secondaryCategoryName,
+               a.tertiary_category AS tertiaryCategory,a.tertiary_category_name AS tertiaryCategoryName,a.quaternary_category AS quaternaryCategory,
+               a.quaternary_category_name AS quaternaryCategoryName,a.fifth_category AS fifthCategory,a.fifth_category_name AS fifthCategoryName,
+               a.cn_primary_category AS cnPrimaryCategory,a.cn_primary_category_name AS cnPrimaryCategoryName,a.cn_secondary_category AS cnSecondaryCategory,
+               a.cn_secondary_category_name AS cnSecondaryCategoryName,a.cn_tertiary_category AS cnTertiaryCategory,a.cn_tertiary_category_name AS cnTertiaryCategoryName,
+               a.cn_quaternary_category AS cnQuaternaryCategory,a.cn_quaternary_category_name AS cnQuaternaryCategoryName,
+               a.cn_fifth_category AS cnFifthCategory,a.cn_fifth_category_name AS cnFifthCategoryName,
+               a.tag_id AS tagId,a.tag_name AS tagName,a.product_image AS productImage,a.product_video AS productVideo,
+               a.product_name AS productName,a.domestic_imported_type AS domesticImportedType,
+               a.product_model AS productModel,a.quotation_flag AS quotationFlag,a.sample AS sample,
+               a.specifications AS specifications,a.inventory AS inventory,a.inventory_unit as inventoryUnit,
+               a.status AS status,a.production_date AS productionDate,a.shelf_life AS shelfLife,a.origin AS origin,
+               a.storage_mode AS storageMode,a.warehouse_address AS warehouseAddress,a.main_product AS mainProduct,
+               a.del_flag AS delFlag,a.quote_status AS quoteStatus,a.inquiry_status AS inquiryStatus,a.buyer_id AS buyerId,
+               a.inquiry_list_flag AS inquiryListFlag,a.quote_list_flag AS quoteListFlag,a.remark AS remark,
+               a.mark AS mark,a.unitprice AS unitprice,a.unitprice_unit AS unitpriceUnit,
+               a.start_batch AS startBatch,a.batch_unit AS batchUnit,a.create_time as createTime,a.update_time as updateTime,
+               b.supplier_name_cn as supplierNameCn,b.supplier_name_en as supplierNameEn,b.supplier_name_own as supplierNameOwn
+        FROM sys_product a
+        LEFT JOIN sys_supplier b ON a.supplier_id = b.supplier_id
+    </sql>
+
 <!--    这里是根据三个不同的角色查找产品，只查产品，不查其他内容，不涉及到产品报价询价等，后面看看能不能改造一下吧-->
     <select id="selectSysProductList" parameterType="SysProDuctDTO"
             resultType="com.ruoyi.system.domain.vo.SysProductVO">
@@ -475,7 +499,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getSysProductByProductId" resultType="com.ruoyi.system.domain.vo.SysProductVO">
-        <include refid="selectSysProductVo"/>
+        <include refid="selectSysProductVoAndSupplierName"/>
         where product_id=#{productId}
     </select>
 </mapper>
