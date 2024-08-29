@@ -128,6 +128,7 @@ public class SysInquiryServiceImpl implements ISysInquiryService
                 productIds.add(sysProDuctDTO.getProductId());//记录正在询价的产品的id
                 SysInquiry sysInquiry = new SysInquiry();
                 sysInquiry.setBuyerId(SecurityUtils.getLoginUser().getUserId());//赋值采购员id，也可能是管理员
+//                sysInquiry.setBuyerId(Long.valueOf(2));//后端测试用
                 sysInquiry.setProductId(sysProDuctDTO.getProductId());//赋值产品Id，
                 sysInquiry.setInquiryDate(new Date());
                 //还得判断这个产品今天是否已报价

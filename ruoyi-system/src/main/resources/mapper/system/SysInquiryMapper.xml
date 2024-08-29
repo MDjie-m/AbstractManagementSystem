@@ -43,7 +43,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select count(product_id) from sys_inquiry where product_id=#{productId}
     </select>
     <select id="findLatestQuote" resultType="com.ruoyi.system.domain.SysSupplierPrice" parameterType="String">
-        select * from sys_supplier_price where product_id=#{productId} and time=date(sysdate()) limit 1
+        select unitprice as unitprice,unitprice_unit as unitpriceUnit, price_RMB as priceRmb,RMB_quote_unit as RMBQuoteUnit,
+               price_USD as priceUsd,USD_quote_unit as USDQuoteUnit
+        from sys_supplier_price where product_id=#{productId} and time=date(sysdate()) limit 1
     </select>
 
     <insert id="insertSysInquiry" parameterType="SysInquiry">
@@ -106,8 +108,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
 <!--    批量变更产品询价状态为已询价-->
-    <update id="updateInquiryStatus" parameterType="list">
-        update sys_product set inquiry_status=1 and update_time=sysdate() where product_id in
+    <update id="updateInquiryStatus" parameterType="java.util.List">
+        update sys_product set inquiry_status=1 ,update_time=sysdate() where product_id in
         <foreach item="productId" collection="productIds" open="(" separator="," close=")">
             #{productId}
         </foreach>
