@@ -59,7 +59,8 @@ public class SysProductStandardController extends BaseController
     /**
      * 获取平台产品详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:standard:query')")
+//    @PreAuthorize("@ss.hasPermi('system:standard:query')")
+    @Anonymous
     @GetMapping("/query")
     public AjaxResult getInfo(@RequestParam String productId)
     {
