@@ -18,7 +18,6 @@ import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.vo.AuditVo;
 import com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo;
-import com.ruoyi.system.domain.vo.supplierVo.SupplierVo;
 import com.ruoyi.system.easyexcel.SupplierListener;
 import com.ruoyi.system.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +71,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
      * @return 供应商
      */
     @Override
-    public List<SysSupplier> selectSysSupplierList(SupplierVo supplierVo)
+    public List<SysSupplier> selectSysSupplierList(SelectSupplierVo supplierVo)
     {
         return sysSupplierMapper.selectSysSupplierList(supplierVo);
     }
@@ -281,7 +280,7 @@ public class SysSupplierServiceImpl implements ISysSupplierService
      * @throws IOException
      */
     @Override
-    public void exportSysSupplier(HttpServletResponse response, SupplierVo supplierVo) throws IOException {
+    public void exportSysSupplier(HttpServletResponse response, SelectSupplierVo supplierVo) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
         // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
