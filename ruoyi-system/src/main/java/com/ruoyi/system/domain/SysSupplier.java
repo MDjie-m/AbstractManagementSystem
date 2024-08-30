@@ -9,6 +9,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ruoyi.common.annotation.EnumFiledConvert;
 import com.ruoyi.common.annotation.Sensitive;
 import com.ruoyi.common.enums.DesensitizedType;
@@ -93,7 +94,7 @@ public class SysSupplier extends BaseEntity {
      * 主营产品id,暂时废弃
      */
     @ExcelIgnore
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String mainProductId;
 
     /**
@@ -284,42 +285,42 @@ public class SysSupplier extends BaseEntity {
      * 预留字段1
      */
     @ExcelIgnore
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String futureField1;
 
     /**
      * 预留字段2
      */
     @ExcelIgnore
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String futureField2;
 
     /**
      * 预留字段3
      */
     @ExcelIgnore
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String futureField3;
 
     /**
      * 预留字段4
      */
     @ExcelIgnore
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String futureField4;
 
     /**
      * 预留字段5
      */
     @ExcelIgnore
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String futureField5;
 
     /**
      * 产品信息
      */
     @ExcelIgnore
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<SysProduct> sysProductList;
 
     public String getSupplierId() {
