@@ -124,4 +124,19 @@ public interface SysUserMapper
      * @return 结果
      */
     public SysUser checkEmailUnique(String email);
+
+    /**
+     * 批量新增用户
+     *
+     * @param sysUserList 用户列表
+     * @return 结果
+     */
+    public int saveSysUser(@Param("list") List<SysUser> sysUserList);
+
+    /**
+     * 获取最新的用户id
+     *
+     * @return 用户id
+     */
+    public Long getNewId();
 }

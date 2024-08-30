@@ -40,6 +40,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="inspectionAuditStatus"    column="inspection_audit_status"    />
         <result property="dataSources"    column="data_sources"    />
         <result property="entryDate"    column="entry_date"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
         <result property="headPortraitPath"    column="head_portrait_path"    />
         <result property="imagePath"    column="image_address"    />
         <result property="videoPath"    column="video_address"    />
@@ -120,40 +122,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectSysSupplierBySupplierId" parameterType="String" resultMap="SysSupplierSysProductResult">
-        select supplier_id, label, nature, country, nature, province, city, area, detailed_address, business_category,
-               main_category, main_product_id, main_product, registration_no, registration_no_in_china,
-               supplier_name_cn, supplier_name_en, supplier_name_own, registration_time,
-               registration_time_validity_period, legal_person, legal_person_telephone, legal_person_email,
-               principal_name, principal_telephone, principal_email, classification, rate, review_rating,
-               delete_flag, inspection_id, audit_status, inspection_status, inspection_audit_status, data_sources,
-               entry_date,
-               head_portrait_path, image_path, video_path, remark
+        select *
         from sys_supplier
-        where supplier_id = #{supplierId}
+        where supplier_id = #{supplierId} and delete_flag = 0
     </select>
 
     <select id="selectSysProductList" resultMap="SysProductResult">
         select *
         from sys_product
-        where supplier_id = #{supplier_id}
+        where supplier_id = #{supplier_id} and del_flag = 0
     </select>
 
     <!--  根据法人电话查询供应商信息-->
     <select id="checkLegalPersonTelephoneUnique" resultType="SysSupplier">
-        select * from sys_supplier where legal_person_telephone = #{legalPersonTelephone}
+        select * from sys_supplier where legal_person_telephone = #{legalPersonTelephone} and delete_flag = 0
     </select>
 
     <!--  根据产品分类查询  -->
     <select id="selectSupplierByProduct" resultMap="SysSupplierResult" parameterType="com.ruoyi.system.domain.vo.supplierVo.SelectSupplierVo">
-        select sys_supplier.supplier_id, sys_supplier.label, sys_supplier.nature, country, province, city, area, detailed_address,
-               business_category, sys_supplier.main_category, sys_supplier.main_product_id, sys_supplier.main_product,
-               registration_no, registration_no_in_china, supplier_name_cn,
-               supplier_name_en, supplier_name_own, registration_time, registration_time_validity_period,
-               legal_person, legal_person_telephone, legal_person_email, principal_name, principal_telephone,
-               principal_email, classification, rate, review_rating, delete_flag, inspection_id,
-               principal_telephone, audit_status, inspection_status, inspection_audit_status,
-               data_sources, entry_date,
-               sys_supplier.head_portrait_path,sys_supplier.image_path, sys_supplier.video_path, sys_supplier.remark
+        select *
         from sys_supplier, sys_product
         <where>
             sys_supplier.supplier_id = sys_product.supplier_id
@@ -297,7 +284,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              #{item.dataSources}, #{item.entryDate}, #{item.createTime})
         </foreach>
     </insert>
-
 
     <update id="updateSysSupplier" parameterType="SysSupplier">
         update sys_supplier

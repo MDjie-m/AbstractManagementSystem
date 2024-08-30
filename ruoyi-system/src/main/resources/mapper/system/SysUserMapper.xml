@@ -174,6 +174,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
 		select user_id, email from sys_user where email = #{email} and del_flag = '0' limit 1
 	</select>
+
+	<!--  获取最新的用户id	-->
+	<select id="getNewId" resultType="long">
+		select user_id
+		from sys_user
+		where del_flag = '0'
+		order by user_id desc
+		limit 1;
+	</select>
 	
 	<insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
  		insert into sys_user(
@@ -219,6 +228,45 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    <if test="position != null and position != ''">#{position},</if>
  			sysdate()
  		)
+	</insert>
+
+	<!--  供应商导入时批量添加用户 	-->
+	<insert id="saveSysUser">
+		insert into sys_user(
+		dept_id,user_name,nick_name,email,avatar,phonenumber,
+		password,
+		status,
+		create_by,
+		remark,
+		user_type,
+	sub_account_flag,
+		supplier_id,
+		user_details_id,
+		expiration_date,
+		parent_user_id,
+		position,
+		create_time
+		) values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.deptId},
+			#{item.userName},
+			#{item.nickName},
+			#{item.email},
+			#{item.avatar},
+			#{item.phonenumber},
+			#{item.password},
+			#{item.status},
+			#{item.createBy},
+			#{item.remark},
+			#{item.userType},
+			#{item.subAccountFlag},
+			#{item.supplierId},
+			#{item.userDetailsId},
+			#{item.expirationDate},
+			#{item.parentUserId},
+			#{item.position},
+			sysdate())
+		</foreach>
 	</insert>
 	
 	<update id="updateUser" parameterType="SysUser">
