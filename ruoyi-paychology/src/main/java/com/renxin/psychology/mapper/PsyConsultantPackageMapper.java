@@ -1,6 +1,9 @@
 package com.renxin.psychology.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.renxin.course.domain.CourCourse;
 import com.renxin.psychology.domain.PsyConsultantPackage;
 
 /**
@@ -9,7 +12,7 @@ import com.renxin.psychology.domain.PsyConsultantPackage;
  * @author renxin
  * @date 2024-06-26
  */
-public interface PsyConsultantPackageMapper 
+public interface PsyConsultantPackageMapper extends BaseMapper<PsyConsultantPackage>
 {
     /**
      * 查询咨询师成长套餐

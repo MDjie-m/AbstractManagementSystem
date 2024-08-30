@@ -1,18 +1,32 @@
 package com.renxin.psychology.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.renxin.common.constant.CacheConstants;
+import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
+import com.renxin.course.domain.CourCourse;
+import com.renxin.course.mapper.CourCourseMapper;
+import com.renxin.course.service.ICourCourseService;
 import com.renxin.psychology.domain.PsyCouponTemplate;
 import com.renxin.psychology.service.IPsyCouponTemplateService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import com.renxin.psychology.mapper.PsyConsultantPackageMapper;
 import com.renxin.psychology.domain.PsyConsultantPackage;
 import com.renxin.psychology.service.IPsyConsultantPackageService;
+
+import javax.annotation.Resource;
 
 /**
  * 咨询师成长套餐Service业务层处理
@@ -21,8 +35,16 @@ import com.renxin.psychology.service.IPsyConsultantPackageService;
  * @date 2024-06-26
  */
 @Service
-public class PsyConsultantPackageServiceImpl implements IPsyConsultantPackageService 
+public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPackageMapper, PsyConsultantPackage> 
+        implements IPsyConsultantPackageService 
 {
+
+    @Autowired
+    private IPsyConsultantPackageService self; // 注入自身
+
+    @Resource
+    private RedisCache redisCache;
+    
     @Autowired
     private PsyConsultantPackageMapper psyConsultantPackageMapper;
     
@@ -36,9 +58,11 @@ public class PsyConsultantPackageServiceImpl implements IPsyConsultantPackageSer
      * @return 咨询师成长套餐
      */
     @Override
+    @Cacheable(value = CacheConstants.PACKAGE_BY_ID_KEY, key = "#packageId", unless = "#result == null")
     public PsyConsultantPackage selectPsyConsultantPackageByPackageId(Long packageId)
     {
-        return psyConsultantPackageMapper.selectPsyConsultantPackageByPackageId(packageId);
+        PsyConsultantPackage pack = psyConsultantPackageMapper.selectPsyConsultantPackageByPackageId(packageId);
+        return pack;
     }
 
     /**
@@ -67,7 +91,10 @@ public class PsyConsultantPackageServiceImpl implements IPsyConsultantPackageSer
         psyConsultantPackage.setUpdateBy(userId+"");
         psyConsultantPackage.setCreateTime(DateUtils.getNowDate());
         psyConsultantPackage.setUpdateTime(DateUtils.getNowDate());
-        return psyConsultantPackageMapper.insertPsyConsultantPackage(psyConsultantPackage);
+        int i = psyConsultantPackageMapper.insertPsyConsultantPackage(psyConsultantPackage);
+
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -77,10 +104,14 @@ public class PsyConsultantPackageServiceImpl implements IPsyConsultantPackageSer
      * @return 结果
      */
     @Override
+    @CacheEvict(cacheNames = CacheConstants.PACKAGE_BY_ID_KEY, key = "#req.id")
     public int updatePsyConsultantPackage(PsyConsultantPackage psyConsultantPackage)
     {
         psyConsultantPackage.setUpdateTime(DateUtils.getNowDate());
-        return psyConsultantPackageMapper.updatePsyConsultantPackage(psyConsultantPackage);
+        int i = psyConsultantPackageMapper.updatePsyConsultantPackage(psyConsultantPackage);
+
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -92,7 +123,12 @@ public class PsyConsultantPackageServiceImpl implements IPsyConsultantPackageSer
     @Override
     public int deletePsyConsultantPackageByPackageIds(Long[] packageIds)
     {
-        return psyConsultantPackageMapper.deletePsyConsultantPackageByPackageIds(packageIds);
+        int i = psyConsultantPackageMapper.deletePsyConsultantPackageByPackageIds(packageIds);
+        
+        //批量删除缓存
+        redisCache.deleteMultiCache(CacheConstants.PACKAGE_BY_ID_KEY,Arrays.asList(packageIds));
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -102,9 +138,13 @@ public class PsyConsultantPackageServiceImpl implements IPsyConsultantPackageSer
      * @return 结果
      */
     @Override
+    @CacheEvict(cacheNames = CacheConstants.PACKAGE_BY_ID_KEY, key = "#packageId")
     public int deletePsyConsultantPackageByPackageId(Long packageId)
     {
-        return psyConsultantPackageMapper.deletePsyConsultantPackageByPackageId(packageId);
+        int i = psyConsultantPackageMapper.deletePsyConsultantPackageByPackageId(packageId);
+
+        refreshIdList();
+        return i;
     }
 
 
@@ -147,6 +187,47 @@ public class PsyConsultantPackageServiceImpl implements IPsyConsultantPackageSer
                 throw new ServiceException("该套餐包含的课程券已达到发行上限, 无法继续发行.");
             }
         }
-        
+    }
+
+
+    //刷新缓存
+    @Override
+    public void refreshCacheByIdList(List<Long> idList){
+        redisCache.deleteMultiCache(CacheConstants.PACKAGE_BY_ID_KEY,idList);
+        for (Long id : idList) {
+            self.selectPsyConsultantPackageByPackageId(id);
+        }
+        refreshIdList();
+    }
+
+    @Override
+    public void refreshCacheById(Long id){
+        refreshCacheByIdList(Arrays.asList(id));
+    }
+
+    @Override
+    public void refreshCacheAll(){
+        //获取完整id清单
+        List<Long> courseIdList = psyConsultantPackageMapper.selectList(new LambdaQueryWrapper<PsyConsultantPackage>()
+                .select(PsyConsultantPackage::getPackageId)
+                .orderByDesc(PsyConsultantPackage::getCreateTime)).stream().map(p -> p.getPackageId()).collect(Collectors.toList());
+
+        //刷新缓存
+        refreshCacheByIdList(courseIdList);
+        refreshIdList();
+    }
+
+    //刷新该对象 各种类型下的id清单
+    @Override
+    public void refreshIdList(){
+        //完整对象清单
+        List<PsyConsultantPackage> allCourseList = psyConsultantPackageMapper.selectList(new LambdaQueryWrapper<PsyConsultantPackage>()
+                .select(PsyConsultantPackage::getPackageId)
+                .orderByDesc(PsyConsultantPackage::getCreateTime));
+
+        //id清单放入缓存
+        ////完整id清单
+        List<Long> allIdList = allCourseList.stream().map(p -> p.getPackageId()).collect(Collectors.toList());
+        redisCache.setCacheList(CacheConstants.PACKAGE_ID_LIST + "::" + "all",allIdList);
     }
 }

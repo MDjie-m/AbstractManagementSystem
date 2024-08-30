@@ -105,7 +105,7 @@ public class ConsultantCourseController extends BaseController {
     /**
      * 根据类型  查询课程列表
      */
-    @ApiOperation(value = "查询团队督导(组织)列表")
+    @ApiOperation(value = "查询课程列表")
     @PostMapping("/cache")
     public TableDataInfo listByType(@RequestBody QueryListByTypeReq req)
     {
@@ -364,7 +364,7 @@ public class ConsultantCourseController extends BaseController {
     }
 
     /**
-     * 查询我的课程列表
+     * 查询与课程的关联信息
      */
     @PostMapping("/getCourseRatelaInfo")
     @ApiOperation("查询与课程的关联信息")

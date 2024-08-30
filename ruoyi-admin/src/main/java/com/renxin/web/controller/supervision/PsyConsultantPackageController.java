@@ -71,7 +71,10 @@ public class PsyConsultantPackageController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody PsyConsultantPackage psyConsultantPackage)
     {
-        return toAjax(psyConsultantPackageService.insertPsyConsultantPackage(psyConsultantPackage));
+        int i = psyConsultantPackageService.insertPsyConsultantPackage(psyConsultantPackage);
+
+        psyConsultantPackageService.selectPsyConsultantPackageByPackageId(psyConsultantPackage.getPackageId());
+        return toAjax(i);
     }
 
     /**
@@ -82,7 +85,10 @@ public class PsyConsultantPackageController extends BaseController
     @PutMapping("/edit")
     public AjaxResult edit(@RequestBody PsyConsultantPackage psyConsultantPackage)
     {
-        return toAjax(psyConsultantPackageService.updatePsyConsultantPackage(psyConsultantPackage));
+        int i = psyConsultantPackageService.updatePsyConsultantPackage(psyConsultantPackage);
+
+        psyConsultantPackageService.selectPsyConsultantPackageByPackageId(psyConsultantPackage.getPackageId());
+        return toAjax(i);
     }
 
     /**
@@ -95,4 +101,16 @@ public class PsyConsultantPackageController extends BaseController
     {
         return toAjax(psyConsultantPackageService.deletePsyConsultantPackageByPackageIds(packageIds));
     }
+
+    /**
+     * 刷新课套餐存
+     */
+    //@PreAuthorize("@ss.hasPermi('course:course:list')")
+    @GetMapping("/refreshCacheAll")
+    public AjaxResult refreshCacheAll()
+    {
+        psyConsultantPackageService.refreshCacheAll();
+        return AjaxResult.success();
+    }
+    
 }

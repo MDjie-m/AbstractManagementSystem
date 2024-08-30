@@ -289,7 +289,7 @@ export const userType = [
 // 数据类型
 export const dataType = [
   { label: '团队督导', value: 'teamSup' },
-  { label: '咨询师信息', value: 'consultantInfo' },
+  { label: '咨询师', value: 'consultant' },
   { label: '套餐', value: 'package' },
   { label: '课程', value: 'course' },
   { label: '测评', value: 'gauge' },

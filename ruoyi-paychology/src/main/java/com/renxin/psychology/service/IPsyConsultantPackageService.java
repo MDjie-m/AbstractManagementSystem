@@ -1,6 +1,9 @@
 package com.renxin.psychology.service;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.renxin.course.domain.CourCourse;
 import com.renxin.psychology.domain.PsyConsultantPackage;
 
 /**
@@ -9,7 +12,7 @@ import com.renxin.psychology.domain.PsyConsultantPackage;
  * @author renxin
  * @date 2024-06-26
  */
-public interface IPsyConsultantPackageService 
+public interface IPsyConsultantPackageService extends IService<PsyConsultantPackage>
 {
     /**
      * 查询咨询师成长套餐
@@ -61,4 +64,13 @@ public interface IPsyConsultantPackageService
 
     //校验套餐是否支持购买
     public void checkConsultantPackageOrder(PsyConsultantPackage psyConsultantPackage);
+
+    //刷新byId缓存
+    void refreshCacheByIdList(List<Long> idList);
+    void refreshCacheById(Long id);
+    void refreshCacheAll();
+    //刷新id清单缓存
+    void refreshIdList();
+    
+    
 }

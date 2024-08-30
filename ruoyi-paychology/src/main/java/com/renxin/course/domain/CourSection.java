@@ -82,4 +82,7 @@ public class CourSection extends BaseEntity
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date lastLearnTime;
     
+    //是否已购 0未购 1已购
+    private Integer isBuy;
+    
 }

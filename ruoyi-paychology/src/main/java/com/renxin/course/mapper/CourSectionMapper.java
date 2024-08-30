@@ -1,6 +1,8 @@
 package com.renxin.course.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.renxin.course.domain.CourSection;
+import com.renxin.psychology.domain.PsyConsultantPackage;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  * @author renxin
  * @date 2023-03-14
  */
-public interface CourSectionMapper 
+public interface CourSectionMapper extends BaseMapper<CourSection>
 {
     /**
      * 查询章节

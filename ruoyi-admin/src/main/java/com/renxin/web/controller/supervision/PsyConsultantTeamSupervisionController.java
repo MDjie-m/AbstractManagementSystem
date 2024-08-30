@@ -132,8 +132,7 @@ public class PsyConsultantTeamSupervisionController extends BaseController
     {
         return toAjax(psyConsultantTeamSupervisionService.deletePsyConsultantTeamSupervisionByIds(ids));
     }
-
-
+    
     /**
      * 刷新团督缓存
      */

@@ -2,6 +2,8 @@ package com.renxin.course.service.impl;
 
 import java.util.List;
 
+import com.renxin.common.exception.ServiceException;
+import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.CourSection;
 import com.renxin.course.mapper.CourSectionMapper;
 import com.renxin.course.service.ICourCourseService;
@@ -78,11 +80,18 @@ public class CourSectionServiceImpl implements ICourSectionService
      * @return 结果
      */
     @Override
-    public int updateCourSection(CourSection courSection)
+    public int updateCourSection(CourSection section)
     {
-        int i = courSectionMapper.updateCourSection(courSection);
-        
-        courCourseService.refreshCacheById(courSection.getCourseId());
+        CourCourse course = courCourseService.getBaseMapper().selectById(section.getCourseId());
+        if (course.getPayType() == 0 && section.getType() == 2){
+            throw new ServiceException("付费课程的章节不可修改为[免费], 可以设为[付费]或[试听]");
+        }
+        if (course.getPayType() == 1 && section.getType() != 2){
+            throw new ServiceException("免费课程的章节必须为[免费]");
+        }
+        int i = courSectionMapper.updateCourSection(section);
+
+        courCourseService.refreshCacheById(section.getCourseId());
         return i;
     }
 

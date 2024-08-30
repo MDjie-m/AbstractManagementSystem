@@ -84,6 +84,7 @@ public class CourCourseController extends BaseController
     {
         try {
             int res = courCourseService.insertCourCourse(courCourse);
+            
             courCourseService.selectCourCourseById(courCourse.getId());
             return AjaxResult.success(res);
         } catch (Exception e) {

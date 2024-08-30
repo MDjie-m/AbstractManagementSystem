@@ -56,7 +56,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where package_id = #{packageId}
     </select>
         
-    <insert id="insertPsyConsultantPackage" parameterType="PsyConsultantPackage">
+    <insert id="insertPsyConsultantPackage" parameterType="PsyConsultantPackage"  useGeneratedKeys="true" keyProperty="packageId">
         insert into psy_consultant_package
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="packageId != null">package_id,</if>
@@ -128,7 +128,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deletePsyConsultantPackageByPackageId" parameterType="Long">
-        delete from psy_consultant_package where package_id = #{packageId}
+        update psy_consultant_package
+        set del_flag = 1
+        where package_id = #{packageId}
     </delete>
 
     <delete id="deletePsyConsultantPackageByPackageIds" parameterType="String">

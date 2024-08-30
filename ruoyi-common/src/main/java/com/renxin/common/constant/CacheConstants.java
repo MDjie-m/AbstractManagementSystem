@@ -72,4 +72,37 @@ public class CacheConstants
      * 课程byId redis key
      */
     public static final String COURSE_BY_ID_KEY = "course_by_id";
+
+    /**
+     * 套餐id清单 redis key
+     */
+    public static final String PACKAGE_ID_LIST = "package_id_list";
+
+    /**
+     * 套餐byId redis key
+     */
+    public static final String PACKAGE_BY_ID_KEY = "package_by_id";
+
+    /**
+     * 测评id清单 redis key
+     */
+    public static final String GAUGE_ID_LIST = "gauge_id_list";
+
+    /**
+     * 测评byId redis key
+     */
+    public static final String GAUGE_BY_ID_KEY = "gauge_by_id";
+
+    /**
+     * 咨询师id清单 redis key
+     */
+    public static final String CONSULTANT_ID_LIST = "consultant_id_list";
+
+    /**
+     * 咨询师byId redis key
+     */
+    public static final String CONSULTANT_BY_ID_KEY = "consultant_by_id";
+
+
+    
 }

@@ -46,20 +46,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCourSectionDetailList" resultType="com.renxin.course.domain.CourSection">
         select
             sec.id, sec.section_id, sec.topic, sec.duration, sec.type, sec.content, sec.course_id, sec.content_type ,
+            CASE
+                WHEN #{isBuy} = 1 OR sec.type IN (1, 2) THEN sec.content_url
+                ELSE NULL
+            END AS content_url
             <if test="userId != null  and userId != ''">
-                CASE
-                WHEN re.id IS NOT NULL THEN sec.content_url
-                ELSE ''
-                END AS content_url,
-                re.end_time as endTime , 
-                re.finish_status, 
-                re.last_learn_time 
+               ,
+                re.end_time as endTime ,
+                re.finish_status,
+                re.last_learn_time
             </if>
-            <if test="userId == null  or userId == ''">
-                sec.content_url
-            </if>
-            
-            
         from cour_section sec
         <if test="userId != null  and userId != ''">
             left join 

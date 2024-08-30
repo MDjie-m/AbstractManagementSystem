@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.core.redis.RedisCache;
@@ -18,6 +19,7 @@ import com.renxin.course.domain.CourSection;
 import com.renxin.course.domain.CourUserCourseSection;
 import com.renxin.course.domain.dto.CourseQueryDTO;
 import com.renxin.course.mapper.CourCourseMapper;
+import com.renxin.course.mapper.CourSectionMapper;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.service.ICourSectionService;
 import com.renxin.course.service.ICourUserCourseSectionService;
@@ -55,6 +57,9 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
     private CourCourseMapper courCourseMapper;
 
     @Autowired
+    private CourSectionMapper sectionMapper;
+
+    @Autowired
     private ICourSectionService courSectionService;
 
     @Autowired
@@ -81,8 +86,7 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
         
         CourSection courSection = CourSection.builder()
                 .courseId(id)
-                .userId(-1L)//无用户
-                .userType(-1)//无用户, 不查询与本用户的关联信息
+                .isBuy(0)//不展示课程链接
                 .build();
         List<CourSection> sectionList = courSectionService.selectCourSectionDetailList(courSection);
         courCourse.setSectionList(sectionList);
@@ -140,6 +144,21 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
     {
         req.setUpdateTime(DateUtils.getNowDate());
         int i = courCourseMapper.updateCourCourse(req);
+        
+        //根据课程是否免费, 同步章节是否免费
+        if (req.getPayType() == 0){//付费课程
+            //将其下的"免费"章节, 修改为"试听"
+            sectionMapper.update(null,new LambdaUpdateWrapper<CourSection>()
+                    .set(CourSection::getType,1)
+                    .eq(CourSection::getCourseId,req.getId())
+                    .eq(CourSection::getType,2));
+        }
+        else if (req.getPayType() == 1) {//免费课程
+            //将其下的所有章节, 修改为"免费"
+            sectionMapper.update(null,new LambdaUpdateWrapper<CourSection>()
+                    .set(CourSection::getType,2));
+        }
+            
         refreshIdList();
         return i;
     }
@@ -269,13 +288,23 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
     @Override
     public RelateInfo getCourseRelateInfo(CourCourse req){
         RelateInfo relateInfo = new RelateInfo();
-        
+        //是否已购
         PsyConsultantOrder orderReq = new PsyConsultantOrder();
         orderReq.setPayConsultantId(req.getUserId()+"");
         orderReq.setServerType("4");//课程
         orderReq.setServerId(req.getId()+"");
         List<PsyConsultantOrder> orderList = consultantOrderService.selectPsyConsultantOrderList(orderReq);
         relateInfo.setIsBuy(orderList.size() > 0 ? CourConstant.COURSE_BUY : CourConstant.COURSE_NOT_BUY);
+
+        //章节信息
+        CourSection courSectionReq = CourSection.builder()
+                .courseId(req.getId())
+                .isBuy(relateInfo.getIsBuy())
+                .userId(req.getUserId())
+                .userType(req.getUserType())
+                .build();
+        List<CourSection> sectionList = courSectionService.selectCourSectionDetailList(courSectionReq);
+        relateInfo.setSectionList(sectionList);
         
         return relateInfo;
     }
