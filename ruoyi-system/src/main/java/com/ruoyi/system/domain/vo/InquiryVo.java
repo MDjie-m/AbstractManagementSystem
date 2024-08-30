@@ -18,4 +18,36 @@ public class InquiryVo extends SysProductVO{
 
     /** 反馈状态 */
     private int feedbackStatus;
+
+    public Long getInquiryId() {
+        return inquiryId;
+    }
+
+    public void setInquiryId(Long inquiryId) {
+        this.inquiryId = inquiryId;
+    }
+
+    public Date getInquiryDate() {
+        return inquiryDate;
+    }
+
+    public void setInquiryDate(Date inquiryDate) {
+        this.inquiryDate = inquiryDate;
+    }
+
+    public Date getResponseDate() {
+        return responseDate;
+    }
+
+    public void setResponseDate(Date responseDate) {
+        this.responseDate = responseDate;
+    }
+
+    public int getFeedbackStatus() {
+        return feedbackStatus;
+    }
+
+    public void setFeedbackStatus(int feedbackStatus) {
+        this.feedbackStatus = feedbackStatus;
+    }
 }

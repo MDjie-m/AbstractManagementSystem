@@ -166,6 +166,6 @@ public class SysInquiryServiceImpl implements ISysInquiryService
      */
     @Override
     public List<InquiryVo> selectInquiryResult(SysInquiryDTO sysInquiryDTO) {
-        return null;
+        return sysInquiryMapper.selectInquiryResultLatest(sysInquiryDTO);
     }
 }
