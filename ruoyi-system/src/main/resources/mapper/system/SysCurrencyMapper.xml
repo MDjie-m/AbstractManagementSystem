@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysCurrencyMapper">
+    
+    <resultMap type="SysCurrency" id="SysCurrencyResult">
+        <result property="currencyId"    column="currency_id"    />
+        <result property="update"    column="update"    />
+        <result property="currency"    column="currency"    />
+    </resultMap>
+
+    <sql id="selectSysCurrencyVo">
+        select currency_id, update, currency from sys_currency
+    </sql>
+
+    <select id="selectSysCurrencyList" parameterType="SysCurrency" resultMap="SysCurrencyResult">
+        <include refid="selectSysCurrencyVo"/>
+        <where>  
+            <if test="update != null "> and update = #{update}</if>
+            <if test="currency != null "> and currency = #{currency}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysCurrencyByCurrencyId" parameterType="Long" resultMap="SysCurrencyResult">
+        <include refid="selectSysCurrencyVo"/>
+        where currency_id = #{currencyId}
+    </select>
+    <select id="getCurrency" resultType="java.lang.Double">
+        select currency
+        from sys_currency
+        ORDER BY `update` DESC LIMIT 1
+    </select>
+
+    <insert id="insertSysCurrency" parameterType="SysCurrency" useGeneratedKeys="true" keyProperty="currencyId">
+        insert into sys_currency
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="update != null">update,</if>
+            <if test="currency != null">currency,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="update != null">#{update},</if>
+            <if test="currency != null">#{currency},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysCurrency" parameterType="SysCurrency">
+        update sys_currency
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="update != null">update = #{update},</if>
+            <if test="currency != null">currency = #{currency},</if>
+        </trim>
+        where currency_id = #{currencyId}
+    </update>
+
+    <delete id="deleteSysCurrencyByCurrencyId" parameterType="Long">
+        delete from sys_currency where currency_id = #{currencyId}
+    </delete>
+
+    <delete id="deleteSysCurrencyByCurrencyIds" parameterType="String">
+        delete from sys_currency where currency_id in 
+        <foreach item="currencyId" collection="array" open="(" separator="," close=")">
+            #{currencyId}
+        </foreach>
+    </delete>
+</mapper>

@@ -3,6 +3,7 @@ package com.ruoyi.system.mapper;
 import java.util.Date;
 import java.util.List;
 import com.ruoyi.system.domain.SysCurrency;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 汇率Mapper接口
@@ -10,6 +11,7 @@ import com.ruoyi.system.domain.SysCurrency;
  * @author ruoyi
  * @date 2024-08-28
  */
+@Mapper
 public interface SysCurrencyMapper 
 {
     /**
@@ -60,5 +62,5 @@ public interface SysCurrencyMapper
      */
     public int deleteSysCurrencyByCurrencyIds(Long[] currencyIds);
 
-    public SysCurrency getCurrency();
+    public Double getCurrency();
 }

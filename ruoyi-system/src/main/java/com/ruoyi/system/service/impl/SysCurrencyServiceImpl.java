@@ -99,7 +99,7 @@ public class SysCurrencyServiceImpl implements ISysCurrencyService
      * @return 结果
      */
     @Override
-    public  SysCurrency getCurrency(){
+    public  Double getCurrency(){
         return sysCurrencyMapper.getCurrency();
     }
 
