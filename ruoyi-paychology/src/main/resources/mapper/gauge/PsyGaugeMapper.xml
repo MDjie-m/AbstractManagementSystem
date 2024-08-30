@@ -26,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="gaugeDes"    column="gauge_des"    />
         <result property="listShowPicture"    column="list_show_picture"    />
+        <result property="delFlag"    column="del_flag"    />
 
     </resultMap>
 
@@ -130,11 +131,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deletePsyGaugeById" >
-        delete from psy_gauge where id = #{id}
+        update psy_gauge
+        set del_flag = 1
+        where id = #{id}
     </delete>
 
     <delete id="deletePsyGaugeByIds" parameterType="String">
-        delete from psy_gauge where id in 
+        update psy_gauge
+        set del_flag = 1
+        where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

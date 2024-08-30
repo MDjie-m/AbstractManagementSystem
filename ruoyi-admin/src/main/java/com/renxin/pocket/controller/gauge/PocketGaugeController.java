@@ -1,11 +1,16 @@
 package com.renxin.pocket.controller.gauge;
 
 import com.renxin.common.annotation.RateLimiter;
+import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.common.core.redis.RedisCache;
+import com.renxin.common.domain.RelateInfo;
 import com.renxin.common.enums.GaugeStatus;
+import com.renxin.common.utils.PageUtils;
+import com.renxin.course.domain.CourCourse;
 import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.gauge.constant.GaugeConstant;
 import com.renxin.gauge.domain.PsyGauge;
@@ -15,12 +20,15 @@ import com.renxin.gauge.service.IPsyGaugeQuestionsResultService;
 import com.renxin.gauge.service.IPsyGaugeService;
 import com.renxin.gauge.service.IPsyOrderService;
 import com.renxin.gauge.vo.GaugeVO;
+import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.request.QueryListByTypeReq;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +45,9 @@ import java.util.stream.Collectors;
 @Api(value = "pocketGaugeController" ,tags = {"测评量表api"})
 public class PocketGaugeController extends BaseController
 {
+    @Resource
+    private RedisCache redisCache;
+
     @Autowired
     private IPsyGaugeService psyGaugeService;
 
@@ -60,6 +71,22 @@ public class PocketGaugeController extends BaseController
         List<PsyGauge> list = psyGaugeService.selectPsyGaugeList(psyGauge);
         return getDataTable(list);
     }
+
+    /**
+     * 根据类型  查询测评列表
+     */
+    @ApiOperation(value = "根据类型  查询测评列表")
+    @PostMapping("/cache")
+    public TableDataInfo listByType(@RequestBody QueryListByTypeReq req)
+    {
+        String listType = req.getListType();
+        List<Long> idList = redisCache.getCacheList(CacheConstants.GAUGE_ID_LIST + "::" + listType);
+        List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.GAUGE_BY_ID_KEY , PageUtils.paginate(idList));
+
+        return getDataTable(cacheList, idList.size());
+    }
+    
+    
     /**
      * 获取心理测评支付信息
      */
@@ -120,12 +147,12 @@ public class PocketGaugeController extends BaseController
     @PostMapping(value = "/getInfo")
     @ApiOperation("查询量表详细信息")
     @RateLimiter
-    public AjaxResult getInfo(@RequestParam(value = "id") Long id, HttpServletRequest request)
+    public AjaxResult getInfo(@RequestParam(value = "id") Long id)
     {
-        LoginDTO loginUser = pocketTokenService.getLoginUser(request);
-        Long userId = loginUser.getUserId();
+        //LoginDTO loginUser = pocketTokenService.getLoginUser(request);
+        //Long userId = loginUser.getUserId();
         PsyGauge psyGauge = psyGaugeService.selectPsyGaugeById(id);
-        GaugeVO gaugeVO = new GaugeVO();
+       /* GaugeVO gaugeVO = new GaugeVO();
         BeanUtils.copyProperties(psyGauge, gaugeVO);
         List<PsyOrder> psyOrder = psyOrderService.getPsyOrder(userId, id);
 
@@ -164,9 +191,9 @@ public class PocketGaugeController extends BaseController
         if (gaugeVO.getNum() != null) {
             int num = psyOrderService.getOrderNumByGaugeId(id);
             gaugeVO.setNum(gaugeVO.getNum() + num);
-        }
+        }*/
 
-        return AjaxResult.success(gaugeVO);
+        return AjaxResult.success(psyGauge);
     }
 
     /**
@@ -183,4 +210,18 @@ public class PocketGaugeController extends BaseController
         return AjaxResult.success(list);
     }
 
+    /**
+     * 查询与测评的关联信息
+     */
+    @PostMapping("/getGaugeRelateInfo")
+    @ApiOperation("查询与测评的关联信息")
+    public AjaxResult getGaugeRelateInfo(@RequestBody PsyGauge gaugeReq, HttpServletRequest request)
+    {
+        Long userId = pocketTokenService.getUserId(request);
+        gaugeReq.setUserId(userId);
+
+        RelateInfo relateInfo = psyGaugeService.getGaugeRelateInfo(gaugeReq);
+        return AjaxResult.success(relateInfo);
+    }
+    
 }

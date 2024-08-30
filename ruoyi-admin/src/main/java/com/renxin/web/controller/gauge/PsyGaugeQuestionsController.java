@@ -80,7 +80,9 @@ public class PsyGaugeQuestionsController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody PsyGaugeQuestions psyGaugeQuestions)
     {
-        return toAjax(psyGaugeQuestionsService.insertPsyGaugeQuestions(psyGaugeQuestions));
+        int i = psyGaugeQuestionsService.insertPsyGaugeQuestions(psyGaugeQuestions);
+        psyGaugeQuestionsService.selectPsyGaugeQuestionsById(psyGaugeQuestions.getId());
+        return toAjax(i);
     }
 
     /**
@@ -91,7 +93,9 @@ public class PsyGaugeQuestionsController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody PsyGaugeQuestions psyGaugeQuestions)
     {
-        return toAjax(psyGaugeQuestionsService.updatePsyGaugeQuestions(psyGaugeQuestions));
+        int i = psyGaugeQuestionsService.updatePsyGaugeQuestions(psyGaugeQuestions);
+        psyGaugeQuestionsService.selectPsyGaugeQuestionsById(psyGaugeQuestions.getId());
+        return toAjax(i);
     }
 
     /**
@@ -103,5 +107,17 @@ public class PsyGaugeQuestionsController extends BaseController
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(psyGaugeQuestionsService.deletePsyGaugeQuestionsByIds(ids));
+    }
+
+
+    /**
+     * 刷新测评问题缓存
+     */
+    //@PreAuthorize("@ss.hasPermi('course:course:list')")
+    @GetMapping("/refreshCacheAll")
+    public AjaxResult refreshCacheAll()
+    {
+        psyGaugeQuestionsService.refreshCacheAll();
+        return AjaxResult.success();
     }
 }

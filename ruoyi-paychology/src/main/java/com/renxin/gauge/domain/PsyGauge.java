@@ -3,6 +3,7 @@ package com.renxin.gauge.domain;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
@@ -78,6 +79,10 @@ public class PsyGauge extends BaseEntity
 
     @Excel(name = "列表展示图片")
     private String listShowPicture;
+
+    @TableLogic
+    private Integer delFlag;
+    private Long userId;
     
     private List<Long> idList;
 

@@ -1,6 +1,10 @@
 package com.renxin.gauge.service;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.renxin.common.domain.RelateInfo;
+import com.renxin.course.domain.CourCourse;
 import com.renxin.gauge.domain.PsyGauge;
 
 /**
@@ -9,7 +13,7 @@ import com.renxin.gauge.domain.PsyGauge;
  * @author renxin
  * @date 2022-08-30
  */
-public interface IPsyGaugeService 
+public interface IPsyGaugeService  extends IService<PsyGauge>
 {
     /**
      * 查询心理测评
@@ -58,4 +62,14 @@ public interface IPsyGaugeService
      * @return 结果
      */
     public int deletePsyGaugeById(Long id);
+
+    //查询与测评的关联信息
+    public RelateInfo getGaugeRelateInfo(PsyGauge gaugeReq);
+
+    //刷新byId缓存
+    void refreshCacheByIdList(List<Long> idList);
+    void refreshCacheById(Long id);
+    void refreshCacheAll();
+    //刷新id清单缓存
+    void refreshIdList();
 }

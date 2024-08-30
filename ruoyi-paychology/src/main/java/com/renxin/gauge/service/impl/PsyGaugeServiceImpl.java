@@ -1,10 +1,25 @@
 package com.renxin.gauge.service.impl;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.renxin.common.constant.CacheConstants;
+import com.renxin.common.core.redis.RedisCache;
+import com.renxin.common.domain.RelateInfo;
+import com.renxin.common.enums.GaugeStatus;
 import com.renxin.common.utils.DateUtils;
+import com.renxin.course.domain.CourCourse;
+import com.renxin.course.mapper.CourCourseMapper;
+import com.renxin.course.service.ICourCourseService;
+import com.renxin.gauge.constant.GaugeConstant;
 import com.renxin.gauge.domain.*;
 import com.renxin.gauge.mapper.*;
+import com.renxin.gauge.service.IPsyGaugeQuestionsResultService;
+import com.renxin.gauge.service.IPsyOrderService;
+import com.renxin.gauge.vo.GaugeVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -13,6 +28,8 @@ import org.springframework.stereotype.Service;
 import com.renxin.gauge.service.IPsyGaugeService;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+
 /**
  * 心理测评Service业务层处理
  * 
@@ -20,8 +37,16 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2022-08-30
  */
 @Service
-public class PsyGaugeServiceImpl implements IPsyGaugeService 
+public class PsyGaugeServiceImpl extends ServiceImpl<PsyGaugeMapper, PsyGauge> 
+        implements IPsyGaugeService 
 {
+
+    @Autowired
+    private IPsyGaugeService self; // 注入自身
+
+    @Resource
+    private RedisCache redisCache;
+    
     @Autowired
     private PsyGaugeMapper psyGaugeMapper;
 
@@ -37,6 +62,12 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
     @Autowired
     private PsyGaugeScoreSettingMapper psyGaugeScoreSettingMapper;
 
+    @Autowired
+    private IPsyGaugeQuestionsResultService psyGaugeQuestionsResultService;
+    
+    @Autowired
+    private IPsyOrderService psyOrderService;
+
     /**
      * 查询心理测评
      * 
@@ -44,8 +75,7 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
      * @return 心理测评
      */
     @Override
-    @Cacheable(value = "selectPsyGaugeByIdCache", key = "#id",
-            unless = "#result == null")
+    @Cacheable(value = CacheConstants.GAUGE_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyGauge selectPsyGaugeById(Long id)
     {
         return psyGaugeMapper.selectPsyGaugeById(id);
@@ -58,8 +88,6 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
      * @return 心理测评
      */
     @Override
-    /*@Cacheable(value = "selectPsyGaugeListCache", key = "#psyGauge.idList",
-            unless = "#result == null||#result.isEmpty()")*/
     public List<PsyGauge> selectPsyGaugeList(PsyGauge psyGauge)
     {
         return psyGaugeMapper.selectPsyGaugeList(psyGauge);
@@ -112,7 +140,7 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
 
         }
 
-
+        refreshIdList();
         return result;
     }
 
@@ -145,16 +173,14 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
      * @return 结果
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = "selectPsyGaugeListCache", allEntries = true),
-                    @CacheEvict(cacheNames = "selectPsyGaugeByIdCache", key = "#psyGauge.id"),
-            }
-    )
+    @CacheEvict(cacheNames = CacheConstants.GAUGE_BY_ID_KEY, key = "#psyGauge.id")
     public int updatePsyGauge(PsyGauge psyGauge)
     {
         psyGauge.setUpdateTime(DateUtils.getNowDate());
-        return psyGaugeMapper.updatePsyGauge(psyGauge);
+        int i = psyGaugeMapper.updatePsyGauge(psyGauge);
+        
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -164,15 +190,13 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
      * @return 结果
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = "selectPsyGaugeListCache", allEntries = true),
-                    @CacheEvict(cacheNames = "selectPsyGaugeByIdCache", allEntries = true),
-            }
-    )
     public int deletePsyGaugeByIds(Long[] ids)
     {
-        return psyGaugeMapper.deletePsyGaugeByIds(ids);
+        int i = psyGaugeMapper.deletePsyGaugeByIds(ids);
+        //批量删除缓存
+        redisCache.deleteMultiCache(CacheConstants.GAUGE_BY_ID_KEY, Arrays.asList(ids));
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -182,14 +206,112 @@ public class PsyGaugeServiceImpl implements IPsyGaugeService
      * @return 结果
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(cacheNames = "selectPsyGaugeListCache", allEntries = true),
-                    @CacheEvict(cacheNames = "selectPsyGaugeByIdCache", key = "#psyGauge.id"),
-            }
-    )
+    @CacheEvict(cacheNames = CacheConstants.GAUGE_BY_ID_KEY, key = "#id")
     public int deletePsyGaugeById(Long id)
     {
-        return psyGaugeMapper.deletePsyGaugeById(id);
+        int i = psyGaugeMapper.deletePsyGaugeById(id);
+        refreshIdList();
+        return i;
+    }
+
+    //查询与测评的关联信息
+    @Override
+    public RelateInfo getGaugeRelateInfo(PsyGauge gaugeReq){
+        Long userId = gaugeReq.getUserId();
+        Long id = gaugeReq.getId();
+       // GaugeVO gaugeVO = new GaugeVO();
+        RelateInfo gaugeVO = new RelateInfo();
+        
+        List<PsyOrder> psyOrder = psyOrderService.getPsyOrder(userId, id);
+        // 未完成测试，待测试 orderId 优先级最高
+        // 全部测试完成，查看报告 orderId
+        // 再次购买
+        if (psyOrder.size() > 0) {
+            Optional<PsyOrder> first = psyOrder.stream().filter(order -> order.getGaugeStatus() == GaugeStatus.UNFINISHED.getValue()).findFirst();
+            if (first.isPresent()) {
+                gaugeVO.setOrderId(first.get().getId());
+                gaugeVO.setOrderNo(first.get().getOrderId());
+                gaugeVO.setIsCompleted(GaugeStatus.UNFINISHED.getValue());
+            } else {
+                gaugeVO.setOrderId(psyOrder.get(0).getId());
+                gaugeVO.setOrderNo(psyOrder.get(0).getOrderId());
+                gaugeVO.setIsCompleted(psyOrder.get(0).getGaugeStatus());
+            }
+
+            gaugeVO.setIsBuy(GaugeConstant.GAUGE_IS_BUY);
+        } else {
+            gaugeVO.setIsBuy(GaugeConstant.GAUGE_NOT_BUY);
+            gaugeVO.setIsCompleted(GaugeStatus.UNFINISHED.getValue());
+        }
+
+        gaugeVO.setSize(psyOrder.size());
+        PsyGaugeQuestionsResult psyGaugeQuestionsResult = new PsyGaugeQuestionsResult();
+        psyGaugeQuestionsResult.setUserId(userId);
+        psyGaugeQuestionsResult.setGaugeId(id);
+        if (gaugeVO.getOrderId() != null) {
+            psyGaugeQuestionsResult.setOrderId(gaugeVO.getOrderId());
+        }
+        List<PsyGaugeQuestionsResult> psyGaugeQuestionsResultList = psyGaugeQuestionsResultService.selectPsyGaugeQuestionsResultList(psyGaugeQuestionsResult);
+        // 将多选题的答案选项分组归并
+//        Map<Integer, Long> result  = psyGaugeQuestionsResultList.stream().collect(Collectors.groupingBy(PsyGaugeQuestionsResult::getQuestionsId, Collectors.counting()));
+        gaugeVO.setFinishedNum(psyGaugeQuestionsResultList.size());
+        if (gaugeVO.getNum() != null) {
+            int num = psyOrderService.getOrderNumByGaugeId(id);
+            gaugeVO.setNum(gaugeVO.getNum() + num);
+        }
+        return gaugeVO;
+        
+    }
+
+    //刷新缓存
+    @Override
+    public void refreshCacheByIdList(List<Long> idList){
+        redisCache.deleteMultiCache(CacheConstants.GAUGE_BY_ID_KEY,idList);
+        for (Long id : idList) {
+            self.selectPsyGaugeById(id);
+        }
+        refreshIdList();
+    }
+
+    @Override
+    public void refreshCacheById(Long id){
+        refreshCacheByIdList(Arrays.asList(id));
+    }
+
+    @Override
+    public void refreshCacheAll(){
+        //获取完整id清单
+        List<Long> courseIdList = psyGaugeMapper.selectList(new LambdaQueryWrapper<PsyGauge>()
+                .select(PsyGauge::getId)
+                .orderByDesc(PsyGauge::getCreateTime)).stream().map(p -> p.getId()).collect(Collectors.toList());
+
+        //刷新缓存
+        refreshCacheByIdList(courseIdList);
+        refreshIdList();
+    }
+
+    //刷新该对象 各种类型下的id清单
+    @Override
+    public void refreshIdList(){
+        //完整对象清单
+        List<PsyGauge> allGaugeList = psyGaugeMapper.selectList(new LambdaQueryWrapper<PsyGauge>()
+                .select(PsyGauge::getId,PsyGauge::getGaugeClass)
+                .orderByDesc(PsyGauge::getCreateTime));
+
+        //id清单放入缓存
+        ////完整id清单
+        List<Long> allIdList = allGaugeList.stream().map(p -> p.getId()).collect(Collectors.toList());
+        redisCache.setCacheList(CacheConstants.GAUGE_ID_LIST + "::" + "all",allIdList);
+
+        ////各个类型的id清单
+        Map<Integer, List<Long>> listMap =  allGaugeList.stream()
+                .collect(Collectors.groupingBy(
+                        PsyGauge::getGaugeClass,
+                        Collectors.mapping(PsyGauge::getId, Collectors.toList())
+                ));
+        for (Map.Entry<Integer, List<Long>> entry : listMap.entrySet()) {
+            redisCache.setCacheList(CacheConstants.GAUGE_ID_LIST + "::" + "gaugeClass" + entry.getKey(), entry.getValue());
+        }
+
     }
 }

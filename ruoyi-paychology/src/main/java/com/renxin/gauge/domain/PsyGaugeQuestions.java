@@ -6,6 +6,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 心理测评问题对象 psy_gauge_questions
  * 
@@ -59,6 +61,8 @@ public class PsyGaugeQuestions extends BaseEntity
         this.selectType = selectType;
         this.selectTypeName = this.selectType == 0 ? "单选" : "多选";
     }
+    
+    private List<PsyGaugeQuestionsOptions> optionList;
 
     @Override
     public String toString() {

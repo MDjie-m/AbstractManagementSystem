@@ -1,6 +1,9 @@
 package com.renxin.gauge.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.renxin.course.domain.CourSection;
 import com.renxin.gauge.domain.PsyGauge;
 
 /**
@@ -9,7 +12,7 @@ import com.renxin.gauge.domain.PsyGauge;
  * @author renxin
  * @date 2022-08-30
  */
-public interface PsyGaugeMapper 
+public interface PsyGaugeMapper extends BaseMapper<PsyGauge>
 {
     /**
      * 查询心理测评

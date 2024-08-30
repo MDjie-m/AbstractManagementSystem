@@ -94,6 +94,16 @@ public class CacheConstants
     public static final String GAUGE_BY_ID_KEY = "gauge_by_id";
 
     /**
+     * 测评问题id清单 redis key
+     */
+    public static final String QUESTION_ID_LIST = "question_id_list";
+
+    /**
+     * 测评问题byId redis key
+     */
+    public static final String QUESTION_BY_ID_KEY = "question_by_id";
+
+    /**
      * 咨询师id清单 redis key
      */
     public static final String CONSULTANT_ID_LIST = "consultant_id_list";

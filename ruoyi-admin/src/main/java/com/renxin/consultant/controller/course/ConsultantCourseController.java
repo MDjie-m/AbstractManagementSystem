@@ -366,7 +366,7 @@ public class ConsultantCourseController extends BaseController {
     /**
      * 查询与课程的关联信息
      */
-    @PostMapping("/getCourseRatelaInfo")
+    @PostMapping("/getCourseRelateInfo")
     @ApiOperation("查询与课程的关联信息")
     public AjaxResult getCourseRatelaInfo(@RequestBody CourCourse courCourse, HttpServletRequest request)
     {

@@ -92,6 +92,7 @@ public class PsyGaugeController extends BaseController
         psyGauge.setCreateBy(getUsername());
         try {
             int res = psyGaugeService.insertPsyGauge(psyGauge);
+            psyGaugeService.selectPsyGaugeById(psyGauge.getId());
             return AjaxResult.success(res);
         } catch (Exception e) {
             return AjaxResult.error(500, "新增心理测评失败");
@@ -109,6 +110,7 @@ public class PsyGaugeController extends BaseController
         psyGauge.setUpdateBy(getUsername());
         try {
             int res = psyGaugeService.updatePsyGauge(psyGauge);
+            psyGaugeService.selectPsyGaugeById(psyGauge.getId());
             return AjaxResult.success(res);
         } catch (Exception e) {
             return AjaxResult.error(500, "新增心理测评失败");
@@ -130,4 +132,16 @@ public class PsyGaugeController extends BaseController
             return AjaxResult.error(500, "新增心理测评失败");
         }
     }
+
+    /**
+     * 刷新测评缓存
+     */
+    //@PreAuthorize("@ss.hasPermi('course:course:list')")
+    @GetMapping("/refreshCacheAll")
+    public AjaxResult refreshCacheAll()
+    {
+        psyGaugeService.refreshCacheAll();
+        return AjaxResult.success();
+    }
+    
 }

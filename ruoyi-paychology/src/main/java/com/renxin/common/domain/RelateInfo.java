@@ -26,4 +26,15 @@ public class RelateInfo implements Serializable
     //章节清单
     private List<CourSection> sectionList;
 
+    /** 测评订单ID */
+    private Long orderId;
+    private String orderNo;
+    /** 测评已回答的问题数量 */
+    private Integer finishedNum;
+    /** 测评是否已购买 */
+    private Integer isCompleted;
+    private Integer size;
+    /** 测评次数 */
+    private Integer num;
+
 }

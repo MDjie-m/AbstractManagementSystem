@@ -2,6 +2,8 @@ package com.renxin.gauge.service;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.renxin.gauge.domain.PsyGauge;
 import com.renxin.gauge.domain.PsyGaugeQuestions;
 import com.renxin.gauge.vo.PsyQuestionVO;
 
@@ -11,7 +13,7 @@ import com.renxin.gauge.vo.PsyQuestionVO;
  * @author renxin
  * @date 2022-09-06
  */
-public interface IPsyGaugeQuestionsService 
+public interface IPsyGaugeQuestionsService  extends IService<PsyGaugeQuestions>
 {
     /**
      * 查询心理测评问题
@@ -73,4 +75,12 @@ public interface IPsyGaugeQuestionsService
      * @return
      */
     List<PsyQuestionVO> wrongs(Long orderId, Long gaugeId);
+
+    //刷新byId缓存
+    void refreshCacheByIdList(List<Long> idList);
+    void refreshCacheById(Long id);
+    void refreshCacheAll();
+    //刷新id清单缓存
+    void refreshIdList();
+    
 }
