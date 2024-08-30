@@ -126,7 +126,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </otherwise>
         </choose>
         <where>
-
             <if test="flag == false">
                     <!--如果他为false，说明是采购员或者管理员，需要供应商名字查询 -->
                 <if test="supplierName != null  and supplierName != ''"> and b.supplier_name_cn like concat('%', #{supplierName}, '%')</if>
@@ -224,9 +223,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     and a.del_flag=0
                 </otherwise>
             </choose>
-
+            <if test="quoted">and ssp.time = (select max(sub_ssp.time) from sys_supplier_price sub_ssp
+                where sub_ssp.product_id=a.product_id)
+            </if>
         </where>
-        <if test="quoted">group by ssp.product_id order by ssp.time desc</if>
     </select>
 
 <!--    单独根据产品Id查产品详情，但是要注意供应商只能查自己的详情，采购员只能查自己负责的详情，管理员查所有-->
