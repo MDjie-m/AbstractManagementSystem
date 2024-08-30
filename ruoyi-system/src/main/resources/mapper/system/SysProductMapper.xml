@@ -493,12 +493,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
 
-    <select id="selectProductNamesByParam" resultType="java.lang.String">
-    SELECT product_Name
-    FROM sys_product
-    WHERE quote_status = '1'
-      <if test="supplierId != null  and supplierId != ''">and supplier_id = #{supplierId}</if>
-        <if test="productName != null  and productName != ''">AND product_Name LIKE CONCAT('%', #{productName}, '%')</if>
+    <select id="selectProductNamesByParam" resultType="com.ruoyi.system.domain.vo.SysProductVO">
+        <include refid="selectSysProductVo"/>
+        WHERE quote_status = '1'
+        <if test="supplierId != null  and supplierId != ''">and supplier_id = #{supplierId}</if>
+        <if test="productId != null  and productId != ''">AND product_id  = #{productId}</if>
     </select>
 
     <select id="selectPriceByProductId" resultType="com.ruoyi.system.domain.SysSupplierPrice">

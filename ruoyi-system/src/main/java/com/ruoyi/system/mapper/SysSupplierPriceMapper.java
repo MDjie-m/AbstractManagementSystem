@@ -1,5 +1,6 @@
 package com.ruoyi.system.mapper;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -66,11 +67,21 @@ public interface SysSupplierPriceMapper
     public int deleteSysSupplierPriceBySupplierPriceIds(String[] supplierPriceIds);
 
     public List<SysSupplierPrice> productPriceStatistics(
-            @Param("supplierNames") List<String> supplierNames,
-            @Param("productName") String productName,
+            @Param("supplierIds") List<String> supplierIds,
+            @Param("productId") String productId,
             @Param("startDate") String startDate,
             @Param("endDate") String endDate);
 
     List<SupplierProductVo> getSuppliersByProductName(
-            @Param("productName") String productName);
+            @Param("productId") String productId,
+            @Param("classification")Integer classification,
+            @Param("startDate")Date startDate,
+            @Param("endDate")Date endDate);
+
+
+    Integer getQuoteRows(String productId);
+
+    Integer getCnSupplierRows(String productId);
+
+    Integer getSupplierRows(String productId);
 }

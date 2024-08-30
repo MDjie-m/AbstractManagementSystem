@@ -1,20 +1,16 @@
 package com.ruoyi.system.service.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.utils.uuid.UUID;
-import com.ruoyi.system.domain.SysProduct;
-import com.ruoyi.system.domain.SysSupplier;
+import com.ruoyi.system.domain.SysInquiry;
+import com.ruoyi.system.domain.dto.SysProDuctDTO;
+import com.ruoyi.system.domain.vo.*;
 import com.ruoyi.system.domain.vo.AsticVo;
 import com.ruoyi.system.domain.vo.PriceDetailVo;
-import com.ruoyi.system.domain.vo.PriceVo;
-import com.ruoyi.system.domain.vo.SupplierProductVo;
+import com.ruoyi.system.mapper.SysInquiryMapper;
 import com.ruoyi.system.mapper.SysProductMapper;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysSupplierPriceMapper;
@@ -34,6 +30,8 @@ public class SysSupplierPriceServiceImpl implements ISysSupplierPriceService
     private SysSupplierPriceMapper sysSupplierPriceMapper;
     @Autowired
     private SysProductMapper sysProductMapper;
+    @Autowired
+    private SysInquiryMapper sysInquiryMapper;
 
 
     /**
@@ -69,8 +67,27 @@ public class SysSupplierPriceServiceImpl implements ISysSupplierPriceService
     @Override
     public int insertSysSupplierPrice(SysSupplierPrice sysSupplierPrice)
     {
-        sysSupplierPrice.setSupplierPriceId(UUID.randomUUID().toString());
-        sysProductMapper.updateSysProductStatus(sysSupplierPrice.getProductId());
+        String productId = sysSupplierPrice.getProductId();
+        SysInquiry sysInquiry = sysInquiryMapper.selectAllByProductId(productId);
+        Integer inquiryStatus = sysProductMapper.getSysProductByProductId(productId).getInquiryStatus();
+        if ( inquiryStatus != 1 ||(inquiryStatus == 1 && sysInquiry.getFeedbackStatus() == 2)){
+            //询价状态 未询价 供应商主动报价
+            sysSupplierPrice.setSupplierPriceId(UUID.randomUUID().toString());
+            sysProductMapper.updateSysProductStatus(productId);//更新产品表中quote_status字段为已报价
+        }else {
+            //询价状态 已询价 供应商接受询价后再报价
+            sysSupplierPrice.setSupplierPriceId(UUID.randomUUID().toString());
+            //询价后报价 报价表新增数据同时更新询价表
+            sysInquiry.setInquiryDate(sysSupplierPrice.getTime());
+            sysInquiry.setPriceRmb(sysSupplierPrice.getPriceRmb());
+            sysInquiry.setRMBQuoteUnit(sysSupplierPrice.getRMBQuoteUnit());
+            sysInquiry.setPriceUsd(sysSupplierPrice.getPriceUsd());
+            sysInquiry.setUnitprice(sysSupplierPrice.getUnitprice());
+            sysInquiry.setUnitpriceUnit(sysSupplierPrice.getUnitpriceUnit());
+            sysInquiry.setFeedbackStatus(1);
+            sysInquiryMapper.updateSysInquiry(sysInquiry);
+            sysProductMapper.updateSysProductStatus(productId);
+    }
         return sysSupplierPriceMapper.insertSysSupplierPrice(sysSupplierPrice);
     }
 
@@ -112,10 +129,10 @@ public class SysSupplierPriceServiceImpl implements ISysSupplierPriceService
 
     @Override
     public List<AsticVo> productPriceStatistics(
-            List<String> supplierNames, String productName, String startDate, String endDate) {
+            List<String> supplierIds, String productId, String startDate, String endDate) {
         List<AsticVo> list = new ArrayList();
         // 调用Mapper方法获取所有匹配的报价
-        List<SysSupplierPrice> allQuotes = sysSupplierPriceMapper.productPriceStatistics(supplierNames, productName, startDate, endDate);
+        List<SysSupplierPrice> allQuotes = sysSupplierPriceMapper.productPriceStatistics(supplierIds, productId, startDate, endDate);
         // 使用Stream API或传统循环来构建Map
         Map<String, List<SysSupplierPrice>> resultMap = new LinkedHashMap<>(); // 使用LinkedHashMap保持插入顺序
         for (SysSupplierPrice quote : allQuotes) {
@@ -148,19 +165,33 @@ public class SysSupplierPriceServiceImpl implements ISysSupplierPriceService
      * @return 结果
      */
     @Override
-    public List<String> quoteableProducts(String supplierId ,  String productName){
-        return sysProductMapper.selectProductNamesByParam(supplierId, productName);
+    public List<QuoteVo> quoteableProducts(String supplierId, String productId) {
+        List<QuoteVo> vvolist = new ArrayList<>();
+        List<SysProductVO> pvoList = sysProductMapper.selectProductNamesByParam(supplierId, productId);
+        for (SysProductVO sysProductVO : pvoList) {
+            QuoteVo quoteVo = new QuoteVo();
+            quoteVo.setProductVO(sysProductVO);
+            Integer quoteRows = sysSupplierPriceMapper.getQuoteRows(sysProductVO.getProductId());
+            Integer cnSupplierRows = sysSupplierPriceMapper.getCnSupplierRows(sysProductVO.getProductId());
+            Integer supplierRows = sysSupplierPriceMapper.getSupplierRows(sysProductVO.getProductId());
+            quoteVo.setQuoteRows(quoteRows);
+            quoteVo.setCnSupplierRows(cnSupplierRows);
+            quoteVo.setSupplierRows(supplierRows);
+            quoteVo.setTotalRows(cnSupplierRows + supplierRows);
+            vvolist.add(quoteVo);
+        }
+        return vvolist;
     }
 
     /**
      * 根据产品名称返回对此产品报价的供应商列表
-     * @param productName 产品名称
+     * @param productId 产品id
      *  @return 结果
      */
     @Override
-    public List<SupplierProductVo> quoteSupplier(String productName) {
+    public List<SupplierProductVo> quoteSupplier(String productId,Integer classification,Date startDate, Date endDate) {
         List<SupplierProductVo> resultList = new ArrayList<>();
-        List<SupplierProductVo> supplierProductVoList = sysSupplierPriceMapper.getSuppliersByProductName(productName);
+        List<SupplierProductVo> supplierProductVoList = sysSupplierPriceMapper.getSuppliersByProductName(productId,classification,startDate,endDate);
         // supplierProductVoList 包含所有已报价商品供应商相关数据
         //1.按照供应商名称进行分组
         Map<String, List<SupplierProductVo>> groupedBySupplier = supplierProductVoList.stream()
