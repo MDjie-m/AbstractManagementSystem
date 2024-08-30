@@ -161,7 +161,7 @@ public class SysSupplierController extends BaseController
      */
     @Log(title = "供应商", businessType = BusinessType.INSERT)
     @PostMapping("/add")
-    public AjaxResult noPermissionsadd(@RequestBody SysSupplier sysSupplier)
+    public AjaxResult noPermissionsAdd(@RequestBody SysSupplier sysSupplier)
     {
         return sysSupplierService.insertSysSupplier(sysSupplier);
     }
