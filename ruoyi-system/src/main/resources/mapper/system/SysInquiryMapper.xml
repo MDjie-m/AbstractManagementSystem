@@ -23,6 +23,96 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectSysInquiryVo">
         select inquiry_id, buyer_id, product_id, inquiry_date, response_date, feedback_status, price_RMB, price_USD, del_flag, remark from sys_inquiry
     </sql>
+    <select id="selectInquiryResultLatest" resultType="com.ruoyi.system.domain.vo.InquiryVo">
+        select si.inquiry_id as inquiryId,si.inquiry_date as inquiryDate,si.response_date as responseDate,
+               si.feedback_status as feedbackStatus,si.price_RMB as priceRmb,si.RMB_quote_unit as RMBQuoteUnit,
+               a.product_id AS productId,a.supplier_id AS supplierId,a.domestic_imported_type AS domesticImportedType,
+               a.specifications as specifications,a.product_model as productModel,a.warehouse_address as warehouseAddress,
+               a.origin as origin,a.mark as mark
+        <if test="flag == false">,ss.supplier_name_cn as supplierNameCn,ss.supplier_name_en as supplierNameEn,ss.supplier_name_own as supplierNameOwn</if>
+        from sys_product a
+        join  sys_inquiry si on si.product_id = a.product_id
+        <if test="flag == false">left join sys_supplier ss on a.supplier_id=ss.supplier_id</if>
+        <where>
+            <if test="flag == false">
+                <!--如果他为false，说明是采购员或者管理员，需要供应商名字查询 -->
+                <if test="supplierName != null  and supplierName != ''"> and ss.supplier_name_cn like concat('%', #{supplierName}, '%')</if>
+                <if test="supplierName != null  and supplierName != ''"> and ss.supplier_name_en like concat('%', #{supplierName}, '%')</if>
+                <if test="supplierName != null  and supplierName != ''"> and ss.supplier_name_own like concat('%', #{supplierName}, '%')</if>
+            </if>
+            <if test="supplierId != null  and supplierId != ''"> and supplier_id = #{supplierId}</if>
+            <if test="buyerId!=null"> and buyer_id = #{buyerId}</if>
+            <if test="startInventory != null">and inventory &gt;= #{startInventory}</if>
+            <if test="endInventory != null">and inventory &lt;= #{endInventory}</if>
+            <if test="inventoryUnit != null  and inventoryUnit != ''">and inventory_unit = #{inventoryUnit}</if>
+            <if test="minStartBatch != null">and start_batch &gt;= #{minStartBatch}</if>
+            <if test="maxStartBatch != null">and start_batch &lt;= #{maxStartBatch}</if>
+            <if test="batchUnit != null  and batchUnit != ''">and batch_unit = #{batchUnit}</if>
+            <if test="origins != null and !origins.isEmpty()">
+                AND origin IN
+                <foreach collection="origins" item="origin" open="(" close=")" separator=",">
+                    #{origin}
+                </foreach>
+            </if>
+            <if test="cnPrimaryCategorys != null and !cnPrimaryCategorys.isEmpty()">
+                AND cn_primary_category IN
+                <foreach collection="cnPrimaryCategorys" item="cnPrimary" open="(" close=")" separator=",">
+                    #{cnPrimary}
+                </foreach>
+            </if>
+            <if test="cnSecondaryCategorys != null and !cnSecondaryCategorys.isEmpty()">
+                AND cn_secondary_category IN
+                <foreach collection="cnSecondaryCategorys" item="cnSecondary" open="(" close=")" separator=",">
+                    #{cnSecondary}
+                </foreach>
+            </if>
+            <if test="cnTertiaryCategorys != null and !cnTertiaryCategorys.isEmpty()">
+                AND cn_tertiary_category IN
+                <foreach collection="cnTertiaryCategorys" item="cnTertiary" open="(" close=")" separator=",">
+                    #{cnTertiary}
+                </foreach>
+            </if>
+            <if test="cnQuaternaryCategorys != null and !cnQuaternaryCategorys.isEmpty()">
+                AND cn_quaternary_category IN
+                <foreach collection="cnQuaternaryCategorys" item="cnQuaternary" open="(" close=")" separator=",">
+                    #{cnQuaternary}
+                </foreach>
+            </if>
+            <if test="cnFifthCategorys != null and !cnFifthCategorys.isEmpty()">
+                AND cn_fifth_category IN
+                <foreach collection="cnFifthCategorys" item="cnFifth" open="(" close=")" separator=",">
+                    #{cnFifth}
+                </foreach>
+            </if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="domesticImportedType != null "> and domestic_imported_type = #{domesticImportedType}</if>
+            <if test="quotationFlag != null "> and quotation_flag = #{quotationFlag}</if>
+            <if test="sample != null">and sample=#{sample}</if>
+            <if test="specifications == '抄码'">and specifications = '抄码'</if>
+            <if test="specifications == '非抄码'">and specifications != '抄码'</if>
+            <if test="status != null">and status=#{status}</if>
+            <if test="storageMode !=null">and storage_mode=#{storageMode}</if>
+            <if test="warehouseAddress!=null and warehouseAddress!=''">and warehouse_address like concat('%', #{warehouseAddress}, '%')</if>
+            <if test="mainProduct != null">and main_product=#{mainProduct}</if>
+            <if test="quoteStatus !=null">and quote_status=#{quoteStatus}</if>
+            <if test="inquiryStatus !=null">and inquiry_status=#{inquiryStatus}</if>
+            <if test="inquiryListFlag !=null">and inquiry_list_flag=#{inquiryListFlag}</if>
+            <if test="quoteListFlag !=null">and quote_list_flag=#{quoteListFlag}</if>
+            <if test="mark != null and mark != ''">and mark like concat('%', #{mark}, '%')</if>
+            <if test="feedbackStatus != null">and si.feedback_status=#{feedbackStatus}</if>
+            <if test="startInquiryDate != null">and si.inquiry_date &gt;=#{startInquiryDate}</if>
+            <if test="endInquiryDate != null">and si.inquiry_date &lt;=#{endInquiryDate}</if>
+            and si.del_flag=0
+            <if test="history == false">
+                and si.inquiry_date = (
+                SELECT MAX(sub_si.inquiry_date)
+                FROM sys_inquiry sub_si
+                WHERE sub_si.product_id = a.product_id
+                )
+            </if>
+        </where>
+        order by si.inquiry_id
+    </select>
 
     <select id="selectSysInquiryList" parameterType="SysInquiry" resultMap="SysInquiryResult">
         <include refid="selectSysInquiryVo"/>

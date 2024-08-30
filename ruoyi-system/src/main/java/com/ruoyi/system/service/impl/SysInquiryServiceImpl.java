@@ -166,6 +166,13 @@ public class SysInquiryServiceImpl implements ISysInquiryService
      */
     @Override
     public List<InquiryVo> selectInquiryResult(SysInquiryDTO sysInquiryDTO) {
-        return null;
+        if(sysInquiryDTO.isHistory()){
+            sysInquiryDTO.setHistory(true);
+//            return sysInquiryMapper.selectInquiryResultHistory(sysInquiryDTO);
+            return sysInquiryMapper.selectInquiryResultLatest(sysInquiryDTO);
+        }else {
+            //条件为假就只查最新的询价数据
+            return sysInquiryMapper.selectInquiryResultLatest(sysInquiryDTO);
+        }
     }
 }

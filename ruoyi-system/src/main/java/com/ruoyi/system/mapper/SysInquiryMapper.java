@@ -3,6 +3,8 @@ package com.ruoyi.system.mapper;
 import java.util.List;
 import com.ruoyi.system.domain.SysInquiry;
 import com.ruoyi.system.domain.SysSupplierPrice;
+import com.ruoyi.system.domain.dto.SysInquiryDTO;
+import com.ruoyi.system.domain.vo.InquiryVo;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -71,4 +73,5 @@ public interface SysInquiryMapper
 
     SysInquiry selectAllByProductId(@Param("productId") String productId);
 
+    List<InquiryVo> selectInquiryResultLatest(SysInquiryDTO sysInquiryDTO);
 }
