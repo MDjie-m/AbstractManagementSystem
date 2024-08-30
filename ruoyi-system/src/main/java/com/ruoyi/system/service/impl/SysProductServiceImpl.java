@@ -40,7 +40,7 @@ public class SysProductServiceImpl implements ISysProductService {
     @Override
     public SysProductVO selectSysProductByProductId(SysProDuctDTO sysProDuctDTO)
     {
-//        SysProductVO sysProductVo = sysProductMapper.selectSysProductByProductId(sysProDuctDTO);//有bug，离谱，后面再看
+//        SysProductVO sysProductVo = sysProductMapper.selectSysProductByProductId(sysProDuctDTO);//有bug，离谱，后面再看.奇怪隔了一天来看bug没了
         SysProductVO sysProductVo = sysProductMapper.getSysProductByProductId(sysProDuctDTO.getProductId());
         //查产品详情就没有查供应商名称，后续有需要可以查，这里目前只去查了最新的报价
         if(!Objects.isNull(sysProductVo)){
