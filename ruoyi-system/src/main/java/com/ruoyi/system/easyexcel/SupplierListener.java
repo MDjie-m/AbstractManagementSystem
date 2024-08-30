@@ -271,7 +271,7 @@ public class SupplierListener implements ReadListener<SysSupplier> {
             arrayList.forEach((list) -> {
                 log.error("{}", list);
             });
-            arrayList.add("有疑问请联系管理员!" + "\n");
+            arrayList.add("有疑问请联系管理员!");
             throw new ExcelException(arrayList +"其余数据成功导入");
         }
         // 存在表头异常
