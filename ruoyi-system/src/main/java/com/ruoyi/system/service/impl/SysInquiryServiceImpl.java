@@ -7,7 +7,9 @@ import java.util.Objects;
 
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.SysSupplierPrice;
+import com.ruoyi.system.domain.dto.SysInquiryDTO;
 import com.ruoyi.system.domain.dto.SysProDuctDTO;
+import com.ruoyi.system.domain.vo.InquiryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.SysInquiryMapper;
@@ -155,5 +157,15 @@ public class SysInquiryServiceImpl implements ISysInquiryService
         }
         sysInquiryMapper.updateInquiryStatus(productIds);//批量变更询价状态
         return "成功添加"+i+"条询价记录。";
+    }
+
+    /**
+     * 查询询价结果列表
+     * @param sysInquiryDTO 询价dto
+     * @return list
+     */
+    @Override
+    public List<InquiryVo> selectInquiryResult(SysInquiryDTO sysInquiryDTO) {
+        return null;
     }
 }
