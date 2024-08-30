@@ -494,7 +494,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <select id="selectProductNamesByParam" resultType="com.ruoyi.system.domain.vo.SysProductVO">
-        <include refid="selectSysProductVo"/>
+        select product_id AS productId,supplier_id AS supplierId,supplier_name AS supplierName,primary_category AS primaryCategory,
+        primary_category_name AS primaryCategoryName,secondary_category AS secondaryCategory,secondary_category_name AS secondaryCategoryName,
+        tertiary_category AS tertiaryCategory,tertiary_category_name AS tertiaryCategoryName,quaternary_category AS quaternaryCategory,
+        quaternary_category_name AS quaternaryCategoryName,fifth_category AS fifthCategory,fifth_category_name AS fifthCategoryName,
+        cn_primary_category AS cnPrimaryCategory,cn_primary_category_name AS cnPrimaryCategoryName,cn_secondary_category AS cnSecondaryCategory,
+        cn_secondary_category_name AS cnSecondaryCategoryName,cn_tertiary_category AS cnTertiaryCategory,cn_tertiary_category_name AS cnTertiaryCategoryName,
+        cn_quaternary_category AS cnQuaternaryCategory,cn_quaternary_category_name AS cnQuaternaryCategoryName,
+        cn_fifth_category AS cnFifthCategory,cn_fifth_category_name AS cnFifthCategoryName,
+        tag_id AS tagId,tag_name AS tagName,product_image AS productImage,product_video AS productVideo,
+        product_name AS productName,domestic_imported_type AS domesticImportedType,
+        product_model AS productModel,quotation_flag AS quotationFlag,sample AS sample,
+        specifications AS specifications,inventory AS inventory,inventory_unit as inventoryUnit,
+        status AS status,production_date AS productionDate,shelf_life AS shelfLife,origin AS origin,
+        storage_mode AS storageMode,warehouse_address AS warehouseAddress,main_product AS mainProduct,
+        del_flag AS delFlag,quote_status AS quoteStatus,inquiry_status AS inquiryStatus,buyer_id AS buyerId,
+        inquiry_list_flag AS inquiryListFlag,quote_list_flag AS quoteListFlag,remark AS remark,
+        mark AS mark,start_batch AS startBatch,batch_unit AS batchUnit,create_time as createTime,update_time as updateTime
+        from sys_product
         WHERE quote_status = '1'
         <if test="supplierId != null  and supplierId != ''">and supplier_id = #{supplierId}</if>
         <if test="productId != null  and productId != ''">AND product_id  = #{productId}</if>

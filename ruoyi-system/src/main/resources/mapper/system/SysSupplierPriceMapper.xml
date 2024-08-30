@@ -150,15 +150,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <select id="productPriceStatistics" resultMap="SysSupplierPriceResult">
-        select ssp.supplier_price_id, ssp .supplier_id, ssp.product_id, ss.supplier_name_cn , ssp.supplier_name_en, ssp.product_name,
-        ssp.unitprice, ssp.unitprice_unit, ssp.price_RMB, ssp.RMB_quote_unit, ssp.price_USD, ssp.USD_quote_unit ,ssp.currency,ssp.time, ssp.user_id, ssp.remarks, ssp.del_flag,
-        from sys_supplier_price ssp
-        left join sys_supplier ss on ss.supplier_id = ssp.supplier_id
-        WHERE product_id = #{productId}
-        AND del_flag = 0;
+        SELECT
+        ssp.supplier_price_id,
+        ssp.supplier_id,
+        ssp.product_id,
+        ss.supplier_name_cn,
+        ssp.supplier_name_en,
+        ssp.product_name,
+        ssp.unitprice,
+        ssp.unitprice_unit,
+        ssp.price_RMB,
+        ssp.RMB_quote_unit,
+        ssp.price_USD,
+        ssp.USD_quote_unit,
+        ssp.currency,
+        ssp.time,
+        ssp.user_id,
+        ssp.remarks,
+        ssp.del_flag
+        FROM sys_supplier_price ssp
+        LEFT JOIN sys_supplier ss ON ss.supplier_id = ssp.supplier_id
+        WHERE ssp.product_id = #{productId}
+        AND del_flag = 0
         AND (time BETWEEN #{startDate} AND #{endDate})
         <if test="supplierIds != null and !supplierIds.isEmpty()">
-            AND supplier_id IN
+            AND ss.supplier_id IN
             <foreach item="supplier_id" collection="supplierIds" open="(" separator="," close=")">
                 #{supplier_id}
             </foreach>
