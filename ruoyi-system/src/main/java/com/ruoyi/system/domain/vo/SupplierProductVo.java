@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class SupplierProductVo {
-    //产品名称
-    private String productName;
     // 供应商名称
     private String supplierName;
     //产品类别
@@ -28,9 +26,7 @@ public class SupplierProductVo {
     public SupplierProductVo() {
     }
 
-
-    public SupplierProductVo(String productName, String supplierName, Integer classification, String specifications, Date priceDate, Double rmb, String rmbQuoteUnit, String quote, String inspectionRate, String auditRate) {
-        this.productName = productName;
+    public SupplierProductVo(String supplierName, Integer classification, String specifications, Date priceDate, Double rmb, String rmbQuoteUnit, String quote, String inspectionRate, String auditRate) {
         this.supplierName = supplierName;
         this.classification = classification;
         this.specifications = specifications;
@@ -150,21 +146,5 @@ public class SupplierProductVo {
 
     public String toString() {
         return "SupplierProductVo{supplierName = " + supplierName + ", classification = " + classification + ", specifications = " + specifications + ", priceDate = " + priceDate + ", rmb = " + rmb + ", rmbQuoteUnit = " + rmbQuoteUnit + ", quote = " + quote + ", inspectionRate = " + inspectionRate + ", auditRate = " + auditRate + "}";
-    }
-
-    /**
-     * 获取
-     * @return productName
-     */
-    public String getProductName() {
-        return productName;
-    }
-
-    /**
-     * 设置
-     * @param productName
-     */
-    public void setProductName(String productName) {
-        this.productName = productName;
     }
 }
