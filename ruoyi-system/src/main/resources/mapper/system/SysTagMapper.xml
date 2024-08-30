@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysTagMapper">
+    
+    <resultMap type="SysTag" id="SysTagResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysTagVo">
+        select id, name, del_flg, remark from sys_tag
+    </sql>
+
+    <select id="selectSysTagList" parameterType="SysTag" resultMap="SysTagResult">
+        <include refid="selectSysTagVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="delFlg != null "> and del_flg = #{delFlg}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysTagById" parameterType="Long" resultMap="SysTagResult">
+        <include refid="selectSysTagVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysTag" parameterType="SysTag" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_tag
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="delFlg != null">del_flg,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="delFlg != null">#{delFlg},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysTag" parameterType="SysTag">
+        update sys_tag
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="delFlg != null">del_flg = #{delFlg},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysTagById" parameterType="Long">
+        delete from sys_tag where id = #{id}
+    </delete>
+
+    <delete id="deleteSysTagByIds" parameterType="String">
+        delete from sys_tag where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

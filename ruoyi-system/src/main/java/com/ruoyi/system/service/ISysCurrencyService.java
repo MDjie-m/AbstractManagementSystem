@@ -66,5 +66,5 @@ public interface ISysCurrencyService
      *
      * @return 结果
      */
-    public  SysCurrency getCurrency();
+    public  Double getCurrency();
 }

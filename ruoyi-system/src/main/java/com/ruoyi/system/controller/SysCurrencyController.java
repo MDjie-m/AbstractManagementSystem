@@ -1,5 +1,6 @@
 package com.ruoyi.system.controller;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +35,19 @@ public class SysCurrencyController extends BaseController
 {
     @Autowired
     private ISysCurrencyService sysCurrencyService;
+
+
+    /**
+     * 查询最新汇率
+     */
+//    @PreAuthorize("@ss.hasPermi('system:currency:list')")
+    @GetMapping("/getCurrency")
+    public AjaxResult getCurrency()
+    {
+        Double currency = sysCurrencyService.getCurrency();
+        return success(currency);
+    }
+
 
     /**
      * 查询汇率列表
@@ -103,8 +117,4 @@ public class SysCurrencyController extends BaseController
         return toAjax(sysCurrencyService.deleteSysCurrencyByCurrencyIds(currencyIds));
     }
 
-    @GetMapping(value = "/getCurrency")
-    public AjaxResult getCurrency(){
-        return AjaxResult.success(sysCurrencyService.getCurrency());
-    }
 }
