@@ -54,14 +54,14 @@ public class SysInquiryController extends BaseController
         //然后判断roleid是管理员还是供应商还是采购员，三个都不一样的，不能根据名称判断，因为名称可能被修改
         List<SysProductVO> list = null;
         sysProDuctDTO.setFlag(false);
+        PageHelper.startPage(sysProDuctDTO.getPageNum()==null?1:sysProDuctDTO.getPageNum(),
+                sysProDuctDTO.getPageSize()==null?1:sysProDuctDTO.getPageSize());
         if(roleId==1){
             //说明是管理员，则查所有产品信息。如果供应商id为null且buyerid为null说明查所有
-            PageHelper.startPage(sysProDuctDTO.getPageNum(),sysProDuctDTO.getPageSize());
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }else if (roleId==2){
             //说明是采购员，如果供应商id为null且buyerid有具体值说明查采购员自己管理的产品
             sysProDuctDTO.setBuyerId(SecurityUtils.getUserId());
-            PageHelper.startPage(sysProDuctDTO.getPageNum(),sysProDuctDTO.getPageSize());
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }
         //多了个询价次数，因此要再查一下询价次数

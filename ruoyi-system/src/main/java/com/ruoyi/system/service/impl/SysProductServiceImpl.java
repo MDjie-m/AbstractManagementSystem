@@ -67,21 +67,6 @@ public class SysProductServiceImpl implements ISysProductService {
     public List<SysProductVO> selectSysProductList(SysProDuctDTO sysProDuctDTO)
     {
         List<SysProductVO> list = sysProductMapper.selectSysProductList(sysProDuctDTO);
-        if(sysProDuctDTO.isQuoted()){//如果是点击报价界面的已报价，那就说明要查询最新的报价价格。
-            list = list.stream()
-                    .filter(sysProductVo -> {
-                        SysSupplierPrice sysSupplierPrice = sysProductMapper.selectPriceByProductId(sysProductVo.getProductId());
-                        // 赋值单价和单位、报价和单位的操作在过滤时进行
-                        if (sysSupplierPrice != null) {
-                            sysProductVo.setPriceRmb(sysSupplierPrice.getPriceRmb());
-                            sysProductVo.setRMBQuoteUnit(sysSupplierPrice.getRMBQuoteUnit());
-                            sysProductVo.setUnitprice(sysSupplierPrice.getUnitprice());
-                            sysProductVo.setUnitpriceUnit(sysSupplierPrice.getUnitpriceUnit());
-                        }
-                        return sysSupplierPrice != null;
-                    })
-                    .collect(Collectors.toList());
-        }
         return list;
     }
 

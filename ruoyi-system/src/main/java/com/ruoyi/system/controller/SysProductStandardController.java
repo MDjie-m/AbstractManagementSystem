@@ -38,7 +38,8 @@ public class SysProductStandardController extends BaseController
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody SysProductStandardDTO sysProductStandardDTO)
     {
-        PageHelper.startPage(sysProductStandardDTO.getPageNum(),sysProductStandardDTO.getPageSize());
+        PageHelper.startPage(sysProductStandardDTO.getPageNum()==null?1:sysProductStandardDTO.getPageNum(),
+                                    sysProductStandardDTO.getPageSize()==null?1:sysProductStandardDTO.getPageSize());
         List<SysProductStandard> list = sysProductStandardService.selectSysProductStandardList(sysProductStandardDTO);
         return getDataTable(list);
     }
