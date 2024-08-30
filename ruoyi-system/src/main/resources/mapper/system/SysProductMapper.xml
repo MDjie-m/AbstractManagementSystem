@@ -58,9 +58,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                storage_mode AS storageMode,warehouse_address AS warehouseAddress,main_product AS mainProduct,
                del_flag AS delFlag,quote_status AS quoteStatus,inquiry_status AS inquiryStatus,buyer_id AS buyerId,
                inquiry_list_flag AS inquiryListFlag,quote_list_flag AS quoteListFlag,remark AS remark,
-               mark AS mark,unitprice AS unitprice,unitprice_unit AS unitpriceUnit,
-               start_batch AS startBatch,batch_unit AS batchUnit,create_time as createTime,update_time as updateTime
-               from sys_product
+               mark AS mark,start_batch AS startBatch,batch_unit AS batchUnit,create_time as createTime,update_time as updateTime
+        <if test="quoted">,ssp.price_RMB as priceRmb,ssp.RMB_quote_unit as RMBQuoteUnit,
+            ssp.unitprice as unitprice,ssp.unitprice_unit as unitpriceUnit</if>
+               from sys_product a
+        <if test="quoted">join sys_supplier_price ssp on ssp.product_id=a.product_id</if>
     </sql>
 
     <sql id="selectSysProductVoAndSupplierName">
@@ -113,14 +115,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 a.storage_mode AS storageMode,a.warehouse_address AS warehouseAddress,a.main_product AS mainProduct,
                 a.del_flag AS delFlag,a.quote_status AS quoteStatus,a.inquiry_status AS inquiryStatus,a.buyer_id AS buyerId,
                 a.inquiry_list_flag AS inquiryListFlag,a.quote_list_flag AS quoteListFlag,a.remark AS remark,
-                a.mark AS mark,a.unitprice AS unitprice,a.unitprice_unit AS unitpriceUnit,
-                a.start_batch AS startBatch,a.batch_unit AS batchUnit,a.create_time as createTime,a.update_time as updateTime,
-                b.supplier_name_cn as supplierNameCn,b.supplier_name_en as supplierNameEn,b.supplier_name_own as supplierNameOwn
+                a.mark AS mark,a.start_batch AS startBatch,a.batch_unit AS batchUnit,a.create_time as createTime,
+                a.update_time as updateTime,b.supplier_name_cn as supplierNameCn,b.supplier_name_en as supplierNameEn,
+                b.supplier_name_own as supplierNameOwn
+                <if test="quoted">,ssp.price_RMB as priceRmb,ssp.RMB_quote_unit as RMBQuoteUnit,
+                       ssp.unitprice as unitprice,ssp.unitprice_unit as unitpriceUnit</if>
                 FROM sys_product a
+                <if test="quoted">join sys_supplier_price ssp on ssp.product_id=a.product_id</if>
                 LEFT JOIN sys_supplier b ON a.supplier_id = b.supplier_id
             </otherwise>
         </choose>
         <where>
+
             <if test="flag == false">
                     <!--如果他为false，说明是采购员或者管理员，需要供应商名字查询 -->
                 <if test="supplierName != null  and supplierName != ''"> and b.supplier_name_cn like concat('%', #{supplierName}, '%')</if>
@@ -218,7 +224,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     and a.del_flag=0
                 </otherwise>
             </choose>
+
         </where>
+        <if test="quoted">group by ssp.product_id order by ssp.time desc</if>
     </select>
 
 <!--    单独根据产品Id查产品详情，但是要注意供应商只能查自己的详情，采购员只能查自己负责的详情，管理员查所有-->

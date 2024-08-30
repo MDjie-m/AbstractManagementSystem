@@ -56,20 +56,21 @@ public class SysProductController extends BaseController
         //然后判断roleid是管理员还是供应商还是采购员，三个都不一样的，不能根据名称判断，因为名称可能被修改
         List<SysProductVO> list = null;
         sysProDuctDTO.setFlag(false);
+        PageHelper.startPage(sysProDuctDTO.getPageNum()==null?1:sysProDuctDTO.getPageNum(),
+                sysProDuctDTO.getPageSize()==null?1:sysProDuctDTO.getPageSize());
         if(roleId==1){
             //说明是管理员，则查所有产品信息。如果供应商id为null且buyerid为null说明查所有
-            PageHelper.startPage(sysProDuctDTO.getPageNum(),sysProDuctDTO.getPageSize());
+//            PageHelper.startPage(sysProDuctDTO.getPageNum()==null?1:sysProDuctDTO.getPageNum(),
+//                    sysProDuctDTO.getPageSize()==null?1:sysProDuctDTO.getPageSize());
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }else if (roleId==2){
             //说明是采购员，如果供应商id为null且buyerid有具体值说明查采购员自己管理的产品
             sysProDuctDTO.setBuyerId(SecurityUtils.getUserId());
-            PageHelper.startPage(sysProDuctDTO.getPageNum(),sysProDuctDTO.getPageSize());
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }else if (roleId==6){
             sysProDuctDTO.setFlag(true);
             //说明是供应商，根据供应商的id查他自己的产品信息,供应商Id为他自己的供应商id，采购员id为null说明是供应商查他自己的产品。
             sysProDuctDTO.setSupplierId(SecurityUtils.getLoginUser().getUser().getSupplierId());
-            PageHelper.startPage(sysProDuctDTO.getPageNum(),sysProDuctDTO.getPageSize());
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }
         return getDataTable(list);

@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain.vo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ruoyi.system.domain.SysProduct;
 
 import java.math.BigDecimal;
@@ -9,6 +10,7 @@ public class SysProductVO extends SysProduct {
     private String supplierNameEn;
     private String supplierNameOwn;
     private Double priceRmb;//报价的人民币价格
+    @JsonProperty("RMBQuoteUnit")
     private String RMBQuoteUnit;//人民币报价单位
     private Double priceUsd;//报价的美元价格
 

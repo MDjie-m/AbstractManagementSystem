@@ -152,6 +152,12 @@ public class SupplierListener implements ReadListener<SysSupplier> {
             if (sysUserMapper.checkUserNameUnique(data.getPrincipalTelephone()) != null) {
                 arrayList.add("第" + row + "行" + "负责人电话已经被注册为用户!");
             }
+            if (sysUserMapper.checkEmailUnique(data.getLegalPersonEmail()) != null ) {
+                arrayList.add("第" + row + "行" + "法人邮箱已经被其他用户使用!");
+            }
+            if (sysUserMapper.checkEmailUnique(data.getPrincipalEmail()) != null ) {
+                arrayList.add("第" + row + "行" + "负责人邮箱已经被其他用户使用!");
+            }
             if(i == arrayList.size()){
                 count = count + 2;
                 // 设置供应商UUID
@@ -265,6 +271,7 @@ public class SupplierListener implements ReadListener<SysSupplier> {
             arrayList.forEach((list) -> {
                 log.error("{}", list);
             });
+            arrayList.add("有疑问请联系管理员!");
             throw new ExcelException(arrayList +"其余数据成功导入");
         }
         // 存在表头异常

@@ -89,131 +89,142 @@ public class SysSupplierServiceImpl implements ISysSupplierService
      */
     @Transactional
     @Override
-    public AjaxResult insertSysSupplier(SysSupplier sysSupplier)
-    {
+    public AjaxResult insertSysSupplier(SysSupplier sysSupplier) {
+        List<String> arryList = new ArrayList<>();
         // 根据法人手机号判断供应商是否已经存在
-        if(sysSupplierMapper.checkLegalPersonTelephoneUnique(sysSupplier.getLegalPersonTelephone()) == null) {
-            // 判断法人手机号是否已经被注册为用户
-            if (userMapper.checkUserNameUnique(sysSupplier.getLegalPersonTelephone()) == null) {
-                // 判断负责人手机号是否已经被注册为用户
-                if (userMapper.checkUserNameUnique(sysSupplier.getPrincipalTelephone()) == null) {
-                    // 设置供应商id
-                    sysSupplier.setSupplierId(UUID.randomUUID().toString());
-                    // 设置供应商入驻时间
-                    sysSupplier.setEntryDate(new Date());
-                    // 设置数据创建时间
-                    sysSupplier.setCreateTime(new Date());
-
-                    String supplierId = sysSupplier.getSupplierId();
-                    String legalPersonTelephone = sysSupplier.getLegalPersonTelephone();
-                    String principalTelephone = sysSupplier.getPrincipalTelephone();
-                    String nickName = sysSupplier.getSupplierNameCn();
-                    String legalPassword = legalPersonTelephone.substring(legalPersonTelephone.length() - 6);
-                    String principalPassword = principalTelephone.substring(principalTelephone.length() - 6);
-                    String legalPersonEmail = sysSupplier.getLegalPersonEmail();
-                    String principalEmail = sysSupplier.getPrincipalEmail();
-
-                    // 设置返回值
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("legalPersonUserName",legalPersonTelephone);
-                    jsonObject.put("legalPersonPassword",legalPassword);
-                    jsonObject.put("principalUserName",principalTelephone);
-                    jsonObject.put("principalPassword",principalPassword);
-
-                    // 主账号用户对象
-                    SysUser user = new SysUser();
-                    // 用户名为法人手机号
-                    user.setUserName(legalPersonTelephone);
-                    // 用户昵称为公司中文名称
-                    user.setNickName(nickName);
-                    // 用户密码,使用法人手机号后六位
-                    user.setPassword(SecurityUtils.encryptPassword(legalPassword));
-                    // 用户角色为5-供应商/商家,6-供应商,7-商家
-                    if (sysSupplier.getLabel() == 0) {
-                        user.setUserType("5");
-                    } else if (sysSupplier.getLabel() == 1) {
-                        user.setUserType("6");
-                    } else if (sysSupplier.getLabel() == 2) {
-                        user.setUserType("7");
-                    }
-                    // 用户邮箱为法人邮箱
-                    user.setEmail(legalPersonEmail);
-                    // 手机号码为法人手机号
-                    user.setPhonenumber(legalPersonTelephone);
-                    // 账号状态 0-正常
-                    user.setStatus("0");
-                    // 删除标志 0-存在
-                    user.setDelFlag("0");
-                    // 是否为子账号 0-否
-                    user.setSubAccountFlag(0);
-                    // 绑定供应商id
-                    user.setSupplierId(supplierId);
-                    // 注册主账号
-                    int i = userMapper.insertUser(user);
-                    if (i <= 0) {
-                        return AjaxResult.error("注册主账号失败!");
-                    }
-
-                    // 负责人用户对象
-                    SysUser userChild = new SysUser();
-                    // 用户名为负责人手机号
-                    userChild.setUserName(principalTelephone);
-                    // 用户昵称为公司中文名称
-                    userChild.setNickName(nickName);
-                    // 用户密码,使用负责人手机号后六位
-                    userChild.setPassword(SecurityUtils.encryptPassword(principalPassword));
-                    // 用户角色与主账号保持一致
-                    userChild.setUserType(user.getUserType());
-                    // 用户邮箱为负责人邮箱
-                    userChild.setEmail(principalEmail);
-                    // 手机号码为负责人手机号
-                    userChild.setPhonenumber(principalTelephone);
-                    // 账号状态 0-正常
-                    userChild.setStatus("0");
-                    // 删除标志 0-存在
-                    userChild.setDelFlag("0");
-                    // 是否为子账号 1-是
-                    userChild.setSubAccountFlag(1);
-                    // 子账号的父级id
-                    userChild.setParentUserId(String.valueOf(user.getUserId()));
-                    i = userMapper.insertUser(userChild);
-                    if (i <= 0) {
-                        return AjaxResult.error("子账号注册失败!");
-                    }
-
-                    // 新增用户与角色管理
-                    List<SysUserRole> list = new ArrayList<SysUserRole>();
-                    SysUserRole ur = new SysUserRole();
-                    ur.setUserId(user.getUserId());
-                    ur.setRoleId(Long.valueOf(user.getUserType()));
-                    list.add(ur);
-                    SysUserRole ur1 = new SysUserRole();
-                    ur1.setUserId(userChild.getUserId());
-                    ur1.setRoleId(Long.valueOf(userChild.getUserType()));
-                    list.add(ur1);
-                    i = userRoleMapper.batchUserRole(list);
-                    if (i <= 0) {
-                        return AjaxResult.error("新增用户与角色管理失败!");
-                    }
-
-                    // 新增供应商
-                    int rows = sysSupplierMapper.insertSysSupplier(sysSupplier);
-                    // 添加产品
-                    insertSysProduct(sysSupplier);
-                    if (rows > 0) {
-                        return AjaxResult.success(jsonObject);
-                    } else {
-                        return AjaxResult.error();
-                    }
-                }
-                else {
-                    return AjaxResult.error("负责人联系方式已被注册为用户!");
-                }
-            } else {
-                return AjaxResult.error("法人联系方式已被注册为用户!");
-            }
+        if (sysSupplierMapper.checkLegalPersonTelephoneUnique(sysSupplier.getLegalPersonTelephone()) != null) {
+            arryList.add("法人联系方式已被注册为供应商");
+        }
+        // 判断法人手机号是否已经被注册为用户
+        if (userMapper.checkUserNameUnique(sysSupplier.getLegalPersonTelephone()) != null) {
+            arryList.add("法人联系方式已被注册为用户");
+        }
+        // 判断法人邮箱唯一性
+        if (userMapper.checkEmailUnique(sysSupplier.getLegalPersonEmail()) != null) {
+            arryList.add("法人邮箱已经被其他用户使用");
+        }
+        // 判断负责人手机号是否已经被注册为用户
+        if (userMapper.checkUserNameUnique(sysSupplier.getPrincipalTelephone()) != null) {
+            arryList.add("负责人联系方式已经被注册为用户");
+        }
+        // 判断负责人邮箱唯一性
+        if (userMapper.checkEmailUnique(sysSupplier.getPrincipalEmail()) != null) {
+            arryList.add("负责人邮箱已经被其他用户使用");
+        }
+        // 返回错误信息
+        if (!arryList.isEmpty()) {
+            arryList.add(0, "入驻失败"+"错误信息为");
+            arryList.add("对以上信息存在疑问请联系管理员");
+            return AjaxResult.error(arryList.toString());
         } else {
-            return AjaxResult.error("此联系方式已被注册为供应商!");
+            // 设置供应商uuid
+            sysSupplier.setSupplierId(UUID.randomUUID().toString());
+            // 设置供应商入驻时间
+            sysSupplier.setEntryDate(new Date());
+            // 设置数据创建时间
+            sysSupplier.setCreateTime(new Date());
+
+            String supplierId = sysSupplier.getSupplierId();
+            String legalPersonTelephone = sysSupplier.getLegalPersonTelephone();
+            String principalTelephone = sysSupplier.getPrincipalTelephone();
+            String nickName = sysSupplier.getSupplierNameCn();
+            String legalPassword = legalPersonTelephone.substring(legalPersonTelephone.length() - 6);
+            String principalPassword = principalTelephone.substring(principalTelephone.length() - 6);
+            String legalPersonEmail = sysSupplier.getLegalPersonEmail();
+            String principalEmail = sysSupplier.getPrincipalEmail();
+
+            // 设置返回值
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("legalPersonUserName", legalPersonTelephone);
+            jsonObject.put("legalPersonPassword", legalPassword);
+            jsonObject.put("principalUserName", principalTelephone);
+            jsonObject.put("principalPassword", principalPassword);
+
+            // 主账号用户对象
+            SysUser user = new SysUser();
+            // 用户名为法人手机号
+            user.setUserName(legalPersonTelephone);
+            // 用户昵称为公司中文名称
+            user.setNickName(nickName);
+            // 用户密码,使用法人手机号后六位
+            user.setPassword(SecurityUtils.encryptPassword(legalPassword));
+            // 用户角色为5-供应商/商家,6-供应商,7-商家
+            if (sysSupplier.getLabel() == 0) {
+                user.setUserType("5");
+            } else if (sysSupplier.getLabel() == 1) {
+                user.setUserType("6");
+            } else if (sysSupplier.getLabel() == 2) {
+                user.setUserType("7");
+            }
+            // 用户邮箱为法人邮箱
+            user.setEmail(legalPersonEmail);
+            // 手机号码为法人手机号
+            user.setPhonenumber(legalPersonTelephone);
+            // 账号状态 0-正常
+            user.setStatus("0");
+            // 删除标志 0-存在
+            user.setDelFlag("0");
+            // 是否为子账号 0-否
+            user.setSubAccountFlag(0);
+            // 绑定供应商id
+            user.setSupplierId(supplierId);
+            // 注册主账号
+            int i = userMapper.insertUser(user);
+            if (i <= 0) {
+                return AjaxResult.error("注册主账号失败!");
+            }
+
+            // 负责人用户对象
+            SysUser userChild = new SysUser();
+            // 用户名为负责人手机号
+            userChild.setUserName(principalTelephone);
+            // 用户昵称为公司中文名称
+            userChild.setNickName(nickName);
+            // 用户密码,使用负责人手机号后六位
+            userChild.setPassword(SecurityUtils.encryptPassword(principalPassword));
+            // 用户角色与主账号保持一致
+            userChild.setUserType(user.getUserType());
+            // 用户邮箱为负责人邮箱
+            userChild.setEmail(principalEmail);
+            // 手机号码为负责人手机号
+            userChild.setPhonenumber(principalTelephone);
+            // 账号状态 0-正常
+            userChild.setStatus("0");
+            // 删除标志 0-存在
+            userChild.setDelFlag("0");
+            // 是否为子账号 1-是
+            userChild.setSubAccountFlag(1);
+            // 子账号的父级id
+            userChild.setParentUserId(String.valueOf(user.getUserId()));
+            i = userMapper.insertUser(userChild);
+            if (i <= 0) {
+                return AjaxResult.error("子账号注册失败!");
+            }
+
+            // 新增用户与角色管理
+            List<SysUserRole> list = new ArrayList<SysUserRole>();
+            SysUserRole ur = new SysUserRole();
+            ur.setUserId(user.getUserId());
+            ur.setRoleId(Long.valueOf(user.getUserType()));
+            list.add(ur);
+            SysUserRole ur1 = new SysUserRole();
+            ur1.setUserId(userChild.getUserId());
+            ur1.setRoleId(Long.valueOf(userChild.getUserType()));
+            list.add(ur1);
+            i = userRoleMapper.batchUserRole(list);
+            if (i <= 0) {
+                return AjaxResult.error("新增用户与角色管理失败!");
+            }
+
+            // 新增供应商
+            int rows = sysSupplierMapper.insertSysSupplier(sysSupplier);
+            // 添加产品
+            insertSysProduct(sysSupplier);
+            if (rows > 0) {
+                return AjaxResult.success(jsonObject);
+            } else {
+                return AjaxResult.error("入驻失败!");
+            }
         }
     }
 
