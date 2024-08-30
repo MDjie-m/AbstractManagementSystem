@@ -3,6 +3,7 @@ package com.ruoyi.system.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -54,6 +55,7 @@ public class SysSupplierPrice extends BaseEntity
     private Double priceRmb;
 
     /** 人民币报价单位 */
+    @JsonProperty("RMBQuoteUnit")
     @Excel(name = "人民币报价单位")
     private String RMBQuoteUnit;
 
@@ -62,6 +64,7 @@ public class SysSupplierPrice extends BaseEntity
     private Double priceUsd;
 
     /** 美金报价单位 */
+    @JsonProperty("USDQuoteUnit")
     @Excel(name = "美金报价单位")
     private String USDQuoteUnit;
 

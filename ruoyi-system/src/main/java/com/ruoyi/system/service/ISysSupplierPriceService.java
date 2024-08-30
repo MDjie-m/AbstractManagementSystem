@@ -1,11 +1,14 @@
 package com.ruoyi.system.service;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.ruoyi.system.domain.SysSupplierPrice;
 import com.ruoyi.system.domain.vo.AsticVo;
+import com.ruoyi.system.domain.vo.QuoteVo;
 import com.ruoyi.system.domain.vo.SupplierProductVo;
+import com.ruoyi.system.domain.vo.SysProductVO;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 供应商报价Service接口
@@ -64,7 +67,7 @@ public interface ISysSupplierPriceService
     public int deleteSysSupplierPriceBySupplierPriceId(String supplierPriceId);
 
     public List<AsticVo> productPriceStatistics(
-            List<String> supplierNames, String productName, String startDate, String endDate);
+            List<String> supplierIds, String productId, String startDate, String endDate);
 
     /**
      * 查询可报价产品列表
@@ -72,12 +75,12 @@ public interface ISysSupplierPriceService
      * @param supplierId 供应商id productName 产品名称
      * @return 结果
      */
-    public List<String> quoteableProducts(String supplierId ,  String productName);
+    public List<QuoteVo> quoteableProducts(String supplierId , String productId);
 
     /**
      * 根据产品名称返回对此产品报价的供应商列表
-     * @param productName 产品名称
+     * @param productId 产品id
      *  @return 结果
      */
-    public List<SupplierProductVo> quoteSupplier(String productName);
+    public List<SupplierProductVo> quoteSupplier(String productId, Integer classification,Date startDate, Date endDate);
 }

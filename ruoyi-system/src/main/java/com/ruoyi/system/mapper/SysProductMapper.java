@@ -6,6 +6,7 @@ import java.util.Map;
 import com.ruoyi.system.domain.SysProduct;
 import com.ruoyi.system.domain.SysSupplierPrice;
 import com.ruoyi.system.domain.dto.SysProDuctDTO;
+import com.ruoyi.system.domain.vo.QuoteVo;
 import com.ruoyi.system.domain.vo.SysProductVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -75,8 +76,8 @@ public interface SysProductMapper
      */
     public int deleteSysProductByProductIds(@Param("productIds") List<String> productIds);
 
-    public List<String> selectProductNamesByParam(
-            @Param("supplierId")String supplierId , @Param("productName")String productName);
+    public List<SysProductVO> selectProductNamesByParam(
+            @Param("supplierId")String supplierId , @Param("productId")String productId);
 
     /**
      * 修改产品状态为1-已报价

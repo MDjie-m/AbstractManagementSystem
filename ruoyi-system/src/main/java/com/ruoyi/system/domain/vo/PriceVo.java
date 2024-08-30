@@ -5,25 +5,25 @@ import java.util.Date;
 import java.util.List;
 
 public class PriceVo {
-    private List<String> supplierNames;
-    private String productName;
+    private List<String> supplierIds;
+    private String productId;
     private String startDate;
     private String endDate;
 
-    public List<String> getSupplierNames() {
-        return supplierNames;
+    public List<String> getSupplierIds() {
+        return supplierIds;
     }
 
-    public void setSupplierNames(List<String> supplierNames) {
-        this.supplierNames = supplierNames;
+    public void setSupplierIds(List<String> supplierIds) {
+        this.supplierIds = supplierIds;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public String getStartDate() {
