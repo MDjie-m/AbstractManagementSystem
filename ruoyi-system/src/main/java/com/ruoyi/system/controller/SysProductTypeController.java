@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.annotation.Anonymous;
+import com.ruoyi.system.domain.dto.SubTypeDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -113,15 +114,13 @@ public class SysProductTypeController extends BaseController
      * 根据父级id查询其子分类(侧边栏)
      */
     @Anonymous
-    @GetMapping("/getSubType")
-    public AjaxResult getSubType(String parentCode,
-                                 @RequestParam(required = false) Integer depth ,
-                                 Integer classification)
+    @PostMapping("/getSubType")
+    public AjaxResult getSubType(@RequestBody SubTypeDTO dto)
     {
-        if (depth == null){
-            depth = 1;
+        if (dto.getDepth() == null){
+            dto.setDepth(1);
         }
-        List<Map<String,Object>> list = sysProductTypeService.listTreeByMap(parentCode,depth,classification);
+        List<Map<String,Object>> list = sysProductTypeService.listTreeByMap(dto.getParentCode(),dto.getDepth(),dto.getClassification());
         return success(list);
     }
 }
