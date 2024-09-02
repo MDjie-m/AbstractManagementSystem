@@ -1,6 +1,7 @@
 package com.ruoyi.system.controller;
 
 import java.util.List;
+import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 
 import com.github.pagehelper.PageHelper;
@@ -67,9 +68,10 @@ public class SysInquiryController extends BaseController
             list = sysProductService.selectSysProductList(sysProDuctDTO);
         }
         //多了个询价次数，因此要再查一下询价次数
-        assert list != null;
-        for (SysProductVO sysProductVO : list) {
-            sysProductVO.setInquiryTimes(sysInquiryService.selectInquiryTimes(sysProductVO.getProductId()));
+        if(!Objects.isNull(list)){
+            for (SysProductVO sysProductVO : list) {
+                sysProductVO.setInquiryTimes(sysInquiryService.selectInquiryTimes(sysProductVO.getProductId()));
+            }
         }
         return getDataTable(list);
     }
