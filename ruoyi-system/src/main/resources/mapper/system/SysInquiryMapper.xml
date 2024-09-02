@@ -26,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectInquiryResultLatest" resultType="com.ruoyi.system.domain.vo.InquiryVo">
         select si.inquiry_id as inquiryId,si.inquiry_date as inquiryDate,si.response_date as responseDate,
                si.feedback_status as feedbackStatus,si.price_RMB as priceRmb,si.RMB_quote_unit as RMBQuoteUnit,
-               a.product_id AS productId,a.supplier_id AS supplierId,a.domestic_imported_type AS domesticImportedType,
+               a.product_id AS productId,a.product_name as productName,a.supplier_id AS supplierId,a.domestic_imported_type AS domesticImportedType,
                a.specifications as specifications,a.product_model as productModel,a.warehouse_address as warehouseAddress,
                a.origin as origin,a.mark as mark
         <if test="flag == false">,ss.supplier_name_cn as supplierNameCn,ss.supplier_name_en as supplierNameEn,ss.supplier_name_own as supplierNameOwn</if>
