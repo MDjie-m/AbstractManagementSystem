@@ -58,7 +58,7 @@ public class ConsultantPackageController extends BaseController
     {
         String listType = req.getListType();
         List<Long> idList = redisCache.getCacheList(CacheConstants.PACKAGE_ID_LIST + "::" + listType);
-        List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.PACKAGE_BY_ID_KEY , PageUtils.paginate(idList));
+        List<PsyConsultantPackage> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.PACKAGE_BY_ID_KEY , PageUtils.paginate(idList));
 
         return getDataTable(cacheList, idList.size());
     }

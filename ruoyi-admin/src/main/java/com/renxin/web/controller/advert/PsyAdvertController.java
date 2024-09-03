@@ -9,12 +9,18 @@ import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.common.enums.BusinessType;
 import com.renxin.common.utils.poi.ExcelUtil;
+import com.renxin.course.service.ICourCourseService;
+import com.renxin.gauge.service.IPsyGaugeQuestionsService;
+import com.renxin.gauge.service.IPsyGaugeService;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.service.IPsyConsultService;
+import com.renxin.psychology.service.IPsyConsultantPackageService;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
@@ -31,11 +37,36 @@ public class PsyAdvertController extends BaseController
 {
     @Autowired
     private IPsyAdvertService psyAdvertService;
-
-
     @Autowired
     private IPsyConsultantTeamSupervisionService teamSupervisionService;
+    @Autowired
+    private ICourCourseService courCourseService;
+    @Autowired
+    private IPsyConsultantPackageService psyConsultantPackageService;
+    @Autowired
+    private IPsyGaugeService psyGaugeService;
+    @Autowired
+    private IPsyGaugeQuestionsService psyGaugeQuestionsService;
+    @Resource
+    private IPsyConsultService psyConsultService;
 
+//    @Autowired
+//    private IPsyConsultantTeamSupervisionService teamSupervisionService;
+
+    @GetMapping(value = "/refreshAll")
+    public AjaxResult refreshAll()
+    {
+        teamSupervisionService.refreshCacheAll();
+        courCourseService.refreshCacheAll();
+        psyConsultantPackageService.refreshCacheAll();
+        psyGaugeService.refreshCacheAll();
+        psyGaugeQuestionsService.refreshCacheAll();
+        psyConsultService.refreshCacheAll();
+
+        return AjaxResult.success();
+    }
+    
+    
     /**
      * 查询各类型的对象清单
      */

@@ -62,6 +62,15 @@
           v-hasPermi="['system:advert:add']"
         >新增</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="refreshCacheAll"
+        >全量刷新缓存</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -187,7 +196,7 @@
 </template>
 
 <script>
-import { listAdvert, getAdvert, delAdvert, addAdvert, updateAdvert } from "@/api/advert/advert";
+import { listAdvert, getAdvert, delAdvert, addAdvert, updateAdvert ,refreshCacheAll } from "@/api/advert/advert";
 import advertItemList from "@/views/components/advert/advertItemList";
 import draggable from "vuedraggable";
 
@@ -320,6 +329,13 @@ export default {
         this.title = "修改页面广告";
       });
     },
+
+    refreshCacheAll(){
+      refreshCacheAll().then(response => {
+        this.$modal.msgSuccess("刷新成功");
+      });
+    },
+
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {

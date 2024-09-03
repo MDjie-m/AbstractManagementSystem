@@ -96,7 +96,7 @@ public class ConsultantOrderController extends BaseController
     @RateLimiter
     public AjaxResult getOrderList(@RequestBody PsyConsultantOrder req,HttpServletRequest request) {
         Long consultId = consultantTokenService.getConsultId(request);
-        req.setPayConsultantId(consultId+"");
+        req.setPayConsultantId(consultId);
         req.setIsConsultantReq(true);
         startPage();
         List<PsyConsultantOrder> orderList = psyConsultantOrderService.selectPsyConsultantOrderList(req);
@@ -136,7 +136,7 @@ public class ConsultantOrderController extends BaseController
             return error("用户信息异常,请登录后重试");
         }
 
-        consultantOrder.setPayConsultantId(consultId+"");
+        consultantOrder.setPayConsultantId(consultId);
         String out_trade_no = "";
 
         //BigDecimal amount = consultantOrder.getPayAmount(); //单位：元

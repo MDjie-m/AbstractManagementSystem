@@ -44,6 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ,
             con.user_name as consultUserName,
             con.avatar as consultAvatar,
+            con.img as consultImg,
             con.tabs as consultTabs,
             con.info as consultInfo,
             con.detail as consultDetail,
@@ -97,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             cf.price  as price,
             con.user_name as consultUserName,
             con.avatar as consultAvatar,
+            con.img as consultImg,
             con.tabs as consultTabs,
             con.info as consultInfo,
             con.detail as consultDetail,
@@ -106,7 +108,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
             con.mode as consultMode,
             con.qualification as consultQualification,
-            con.way_str as consultWayStr
+            con.way_str as consultWayStr,
+            con.create_time
         from
             psy_consult con
             left join psy_consult_work wk on con.id = wk.consult_id and wk.status = 0 and wk.live != "[]"
@@ -119,7 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="consultGenre != null  and consultGenre != ''"> and con.genre like concat('%',#{consultGenre},'%')</if>
 
         <if test="waitDays != null  and waitDays != ''"> and wk.day >= CURDATE() AND day &lt; CURDATE() + INTERVAL #{waitDays} DAY</if>
-
+        order by con.create_time desc 
     </select>
     
     <select id="selectPsyConsultantTeamSupervisionById" parameterType="Long" resultMap="PsyConsultantTeamSupervisionResult">
@@ -128,6 +131,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ,
         con.user_name as consultUserName,
         con.avatar as consultAvatar,
+        con.img as consultImg,
         con.tabs as consultTabs,
         con.info as consultInfo,
         con.detail as consultDetail,

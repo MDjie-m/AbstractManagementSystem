@@ -83,7 +83,7 @@ public class PsyConsultPartnerController extends BaseController
     }
 
     /**
-     * 修改咨询师入驻申请
+     * 审批通过
      */
     @PreAuthorize("@ss.hasPermi('psychology:partner:account')")
     @Log(title = "咨询师账户开通", businessType = BusinessType.UPDATE)

@@ -135,7 +135,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     public void reservationServerBatch(List<PsyConsultantSchedule> consultantScheduleList){
         //校验剩余可用次数
         PsyConsultantOrder order = consultantOrderService.selectPsyConsultantOrderByOrderNo(consultantScheduleList.get(0).getOrderId() + "");
-        String chargeConsultantId = order.getChargeConsultantId();
+        Long chargeConsultantId = order.getChargeConsultantId();
         Integer usedNum = order.getUsedNum();//已用次数
         Integer surplusNum = order.getSurplusNum();//剩余次数
         

@@ -209,7 +209,7 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
                 consultantOrder.setOrderNo(wechatPay.getOutTradeNo());
                 consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_CREATED);
                 consultantOrder.setPayAmount(wechatPay.getAmount());
-                consultantOrder.setPayConsultantId(wechatPay.getConsultId()+"");
+                consultantOrder.setPayConsultantId(wechatPay.getConsultId());
                 consultantOrder.setPayConsultantName(nickName);
                 consultantOrder.setServerId(wechatPay.getSupServerId());
                 consultantOrder.setServerType(wechatPay.getSupServerType());

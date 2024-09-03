@@ -1,6 +1,8 @@
 package com.renxin.psychology.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.gauge.domain.PsyGauge;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultServe;
 import com.renxin.psychology.request.*;
@@ -11,7 +13,7 @@ import com.renxin.psychology.vo.PsyConsultWorkVO;
 
 import java.util.List;
 
-public interface IPsyConsultService {
+public interface IPsyConsultService extends IService<PsyConsult> {
 
     PsyConsultInfoDTO getConsultInfoByServe(Long cId, Long sId);
 
@@ -59,5 +61,12 @@ public interface IPsyConsultService {
      * @return
      */
     PsyConsultVO queryConsultantDetail(VisitorDetailReq req);
-
+    
+    //刷新byId缓存
+    void refreshCacheByIdList(List<Long> idList);
+    void refreshCacheById(Long id);
+    void refreshCacheAll();
+    //刷新id清单缓存
+    void refreshIdList();
+    
 }

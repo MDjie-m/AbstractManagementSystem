@@ -14,6 +14,7 @@ import com.renxin.psychology.request.PsyRefConsultServeReq;
 import com.renxin.psychology.service.IPsyConsultConfigService;
 import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.vo.PsyConsultVO;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -114,7 +115,8 @@ public class PsyConsultController extends BaseController
     @PostMapping("/refConsultServe")
     public AjaxResult refConsultServe(@RequestBody PsyRefConsultServeReq req)
     {
-        return psyConsultService.refConsultServe(req);
+        AjaxResult ajaxResult = psyConsultService.refConsultServe(req);
+        return ajaxResult;
     }
 
     @PreAuthorize("@ss.hasPermi('psychology:consult:edit')")
@@ -138,7 +140,9 @@ public class PsyConsultController extends BaseController
         if (!SecurityUtils.isAdmin(getUserId())) {
             return error("必须是超级管理员才可以添加咨询师");
         }
-        return psyConsultService.add(psyConsult);
+        AjaxResult add = psyConsultService.add(psyConsult);
+        psyConsultService.getOne(psyConsult.getId());
+        return add;
     }
 
     /**
@@ -149,7 +153,9 @@ public class PsyConsultController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody PsyConsultVO psyConsult)
     {
-        return psyConsultService.update(psyConsult);
+        AjaxResult update = psyConsultService.update(psyConsult);
+        psyConsultService.getOne(psyConsult.getId());
+        return update;
     }
 
     /**
@@ -182,4 +188,17 @@ public class PsyConsultController extends BaseController
         psyConsultService.addAllRelation();
         return AjaxResult.success();
     }
+
+    /**
+     * 刷新咨询师缓存
+     */
+    @ApiOperation("刷新咨询师缓存")
+    //@PreAuthorize("@ss.hasPermi('system:supervision:query')")
+    @GetMapping(value = "/refreshCacheAll")
+    public AjaxResult refreshCacheAll()
+    {
+        psyConsultService.refreshCacheAll();
+        return AjaxResult.success();
+    }
+    
 }

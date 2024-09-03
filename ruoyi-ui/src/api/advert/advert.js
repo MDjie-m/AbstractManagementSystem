@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+//
+export function refreshCacheAll() {
+  return request({
+    url: '/system/advert/refreshAll',
+    method: 'get'
+  })
+}
+
 // 查询页面广告列表
 export function listAdvert(query) {
   return request({

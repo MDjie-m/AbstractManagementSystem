@@ -185,6 +185,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 </foreach>
             </if>
         </where>
+        order by create_time desc 
     </select>
     
     <select id="queryById" resultType="com.renxin.psychology.domain.PsyConsult">
@@ -193,16 +194,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             con.email, con.phonenumber, con.sex, con.tabs, con.way, con.way_str,con.wx_card, con.zx_word, con.zx_style, con.notice, con.experience, con.info, 
             con.detail, con.serve, con.work_num, con.work_time, con.work_hours, con.del_flag, con.is_show, con.status,
             con.qualification, con.index_qualification, con.create_by, con.create_time, con.update_by, con.update_time,
-               con.level,con.service_object,
-               
-           equi.team_sup_num as teamSupNum,
-           equi.person_sup_num  as personSupNum,
-           equi.person_exp_num as personExpNum,
-           equi.course_num as courseNum
-
+            con.level,con.service_object
         from
             psy_consult con 
-        left join psy_consultant_package_equity equi on con.id = equi.consultant_id and equi.del_flag = 0
 
         where con.id = #{id}
 

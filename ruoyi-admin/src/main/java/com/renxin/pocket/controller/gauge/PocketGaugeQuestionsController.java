@@ -73,7 +73,7 @@ public class PocketGaugeQuestionsController extends BaseController
     {
         String listType = req.getListType();
         List<Long> idList = redisCache.getCacheList(CacheConstants.QUESTION_ID_LIST + "::" + listType);
-        List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.QUESTION_BY_ID_KEY , PageUtils.paginate(idList));
+        List<PsyGaugeQuestions> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.QUESTION_BY_ID_KEY , PageUtils.paginate(idList));
 
         return getDataTable(cacheList, idList.size());
     }

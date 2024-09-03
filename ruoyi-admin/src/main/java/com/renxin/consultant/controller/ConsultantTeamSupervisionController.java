@@ -96,7 +96,7 @@ public class ConsultantTeamSupervisionController extends BaseController
     public AjaxResult getTeamRelateInfo(@RequestBody PsyConsultantTeamSupervision req, HttpServletRequest request)
     {
         Long consultId = consultantTokenService.getConsultId(request);
-        req.setConsultantId(consultId+"");
+        req.setConsultantId(consultId);
         RelateInfo teamRelateInfo = psyConsultantTeamSupervisionService.getTeamRelateInfo(req);
         return AjaxResult.success(teamRelateInfo);
     }

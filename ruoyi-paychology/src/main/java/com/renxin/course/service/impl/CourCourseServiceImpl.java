@@ -29,6 +29,7 @@ import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.mapper.PsyConsultantTeamSupervisionMapper;
 import com.renxin.psychology.service.IPsyConsultantOrderService;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -44,6 +45,7 @@ import javax.annotation.Resource;
  * @date 2023-03-14
  */
 @Service
+@Slf4j
 public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCourse> 
         implements ICourCourseService
 {
@@ -79,6 +81,7 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
     @Cacheable(value = CacheConstants.COURSE_BY_ID_KEY, key = "#id", unless = "#result == null")
     public CourCourse selectCourCourseById(Long id)
     {
+        log.info("--------------------------------连接MySQL查询课程:" + id);
         CourCourse courCourse = courCourseMapper.selectCourCourseById(id);
         if (ObjectUtils.isEmpty(courCourse)){
             return null;
@@ -156,7 +159,8 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
         else if (req.getPayType() == 1) {//免费课程
             //将其下的所有章节, 修改为"免费"
             sectionMapper.update(null,new LambdaUpdateWrapper<CourSection>()
-                    .set(CourSection::getType,2));
+                    .set(CourSection::getType,2)
+                    .eq(CourSection::getCourseId,req.getId()));
         }
             
         refreshIdList();
@@ -290,7 +294,7 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
         RelateInfo relateInfo = new RelateInfo();
         //是否已购
         PsyConsultantOrder orderReq = new PsyConsultantOrder();
-        orderReq.setPayConsultantId(req.getUserId()+"");
+        orderReq.setPayConsultantId(req.getUserId());
         orderReq.setServerType("4");//课程
         orderReq.setServerId(req.getId()+"");
         List<PsyConsultantOrder> orderList = consultantOrderService.selectPsyConsultantOrderList(orderReq);
@@ -343,6 +347,8 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
         List<CourCourse> allCourseList = courCourseMapper.selectList(new LambdaQueryWrapper<CourCourse>()
                 .select(CourCourse::getId,CourCourse::getType)
                 .orderByDesc(CourCourse::getCreateTime));
+        
+        //todo 删除原先的所有idList
 
         //id清单放入缓存
         ////完整id清单
@@ -360,7 +366,5 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
         }
         
     }
-
-
     
 }

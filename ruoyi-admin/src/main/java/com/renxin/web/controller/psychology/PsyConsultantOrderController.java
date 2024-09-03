@@ -137,7 +137,7 @@ public class PsyConsultantOrderController extends BaseController
             return error("用户信息异常,请登录后重试");
         }
 
-        consultantOrder.setPayConsultantId(consultId+"");
+        consultantOrder.setPayConsultantId(consultId);
         String out_trade_no = "";
 
         //BigDecimal amount = consultantOrder.getPayAmount(); //单位：元

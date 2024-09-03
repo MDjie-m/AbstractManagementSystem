@@ -6,14 +6,17 @@ import com.renxin.advert.service.IPsyAdvertService;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.course.service.ICourCourseService;
+import com.renxin.gauge.service.IPsyGaugeQuestionsService;
+import com.renxin.gauge.service.IPsyGaugeService;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.service.IPsyConsultService;
+import com.renxin.psychology.service.IPsyConsultantPackageService;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,6 +32,7 @@ public class ConsultantAdvertController extends BaseController
 {
     @Autowired
     private IPsyAdvertService psyAdvertService;
+   
 
     /**
      * 查询各类型的对象清单
@@ -63,7 +67,7 @@ public class ConsultantAdvertController extends BaseController
         return AjaxResult.success(psyAdvertService.selectPsyAdvertByAdvertNo(psyAdvert.getAdvertNo()));
     }
 
-   
+
     
     
 }

@@ -56,7 +56,7 @@ public class PsyConsultantTeamSupervision extends BaseEntity implements Serializ
 
     /** 督导师 */
     @Excel(name = "督导师")
-    private String consultantId;
+    private Long consultantId;
 
     /** 0:招募中 1:已开始 2:已结束 3:暂停 */
     @Excel(name = "0:招募中 1:已开始 2:已结束 3:暂停")
@@ -102,6 +102,9 @@ public class PsyConsultantTeamSupervision extends BaseEntity implements Serializ
     /** 督导师 - 头像 */
     @TableField(exist = false)
     private String consultAvatar;
+    /** 督导师 - 列表图片 */
+    @TableField(exist = false)
+    private String consultImg;
     /** 督导师 - 标签 */
     @TableField(exist = false)
     private String consultTabs;

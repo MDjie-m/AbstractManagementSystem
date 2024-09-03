@@ -101,14 +101,14 @@ public class CourCourseController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody CourCourse courCourse)
     {
-        try {
+        /*try {*/
             int res = courCourseService.updateCourCourse(courCourse);
 
             courCourseService.selectCourCourseById(courCourse.getId());
             return AjaxResult.success(res);
-        } catch (Exception e) {
+       /* } catch (Exception e) {
             return AjaxResult.error(500, "修改课程失败");
-        }
+        }*/
     }
 
     /**

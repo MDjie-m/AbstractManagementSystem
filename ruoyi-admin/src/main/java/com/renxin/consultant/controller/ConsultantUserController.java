@@ -2,17 +2,22 @@ package com.renxin.consultant.controller;
 
 
 import com.renxin.common.annotation.RateLimiter;
+import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.dto.ConsultDTO;
 import com.renxin.common.core.domain.dto.ConsultLoginDTO;
 import com.renxin.common.core.domain.entity.SysDictType;
+import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.common.core.redis.RedisCache;
+import com.renxin.common.utils.PageUtils;
 import com.renxin.consultant.common.dcloud.CloudFunctions;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.request.PsyConsultServeConfigReq;
+import com.renxin.psychology.request.QueryListByTypeReq;
 import com.renxin.psychology.service.IPsyConsultConfigService;
 import com.renxin.psychology.service.IPsyConsultServeConfigService;
 import com.renxin.psychology.service.IPsyConsultServeService;
@@ -22,6 +27,7 @@ import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.system.service.ISysDictDataService;
 import com.renxin.system.service.ISysDictTypeService;
 import com.renxin.web.controller.common.CommonCosController;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +60,11 @@ public class ConsultantUserController extends BaseController {
     
     @Resource
     private IPsyConsultServeConfigService serveConfigService;
-    
-    
+
+    @Resource
+    private RedisCache redisCache;
+
+
     @PostMapping("/login")
     @RateLimiter
     public AjaxResult login(@RequestBody ConsultLoginDTO consultLoginDTO)
@@ -94,6 +103,20 @@ public class ConsultantUserController extends BaseController {
     }
 
     /**
+     * 根据类型  查询咨询师列表
+     */
+    @ApiOperation(value = "查询咨询师列表")
+    @PostMapping("/cache")
+    public TableDataInfo listByType(@RequestBody QueryListByTypeReq req)
+    {
+        String listType = req.getListType();
+        List<Long> idList = redisCache.getCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + listType);
+        List<PsyConsult> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.CONSULTANT_BY_ID_KEY , PageUtils.paginate(idList));
+
+        return getDataTable(cacheList, idList.size());
+    }
+
+    /**
      * 查询指定咨询师的服务清单
      * @param req
      * @param request
@@ -127,5 +150,7 @@ public class ConsultantUserController extends BaseController {
         List<SysDictType> sysDictTypeList = dictTypeService.selectDictTypeDataList(null);
         return AjaxResult.success(sysDictTypeList);
     }
+    
+    
 
 }

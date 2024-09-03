@@ -109,9 +109,10 @@ public class ConsultantCourseController extends BaseController {
     @PostMapping("/cache")
     public TableDataInfo listByType(@RequestBody QueryListByTypeReq req)
     {
+        startPage();
         String listType = req.getListType();
         List<Long> idList = redisCache.getCacheList(CacheConstants.COURSE_ID_LIST + "::" + listType);
-        List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.COURSE_BY_ID_KEY , PageUtils.paginate(idList));
+        List<CourCourse> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.COURSE_BY_ID_KEY , PageUtils.paginate(idList));
 
         return getDataTable(cacheList, idList.size());
     }

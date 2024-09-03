@@ -1,6 +1,7 @@
 package com.renxin.psychology.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BasePlusEntity;
@@ -139,6 +140,7 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     private String experience;
 
     /** 删除标志（0代表存在 1代表删除） */
+    @TableLogic
     private String delFlag;
 
     /** 移动端（0代表显示 1代表隐藏） */

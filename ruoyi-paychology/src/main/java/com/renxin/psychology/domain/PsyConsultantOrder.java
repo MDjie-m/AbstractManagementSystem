@@ -56,7 +56,7 @@ public class PsyConsultantOrder extends BaseEntity
 
     /** 支付咨询者id */
     @Excel(name = "支付咨询师id")
-    private String payConsultantId;
+    private Long payConsultantId;
 
     /** 支付咨询者名称 */
     @Excel(name = "支付咨询师名称")
@@ -99,7 +99,7 @@ public class PsyConsultantOrder extends BaseEntity
     @TableField(exist = false)
     private Integer surplusNum;//剩余服务次数
     @TableField(exist = false)
-    private String chargeConsultantId;//收费咨询师id
+    private Long chargeConsultantId;//收费咨询师id
     @TableField(exist = false)
     private String chargeConsultantName;//收费咨询师name
     @TableField(exist = false)

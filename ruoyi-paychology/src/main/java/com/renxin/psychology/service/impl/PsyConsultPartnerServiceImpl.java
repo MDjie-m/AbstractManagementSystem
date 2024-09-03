@@ -113,10 +113,6 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     public Long consultantDraft(Long consultantId)
     {
         PartnerDTO one = getInfoByConsultId(consultantId);
-        //状态修为"审核中"
-        if (ConsultConstant.PARTNER_STATUS_1.equals(one.getStatus())){
-            throw new ServiceException("入驻申请已在审核中",123);
-        }
         
         if (one == null) {
             Long  id = IDhelper.getNextId();
@@ -131,7 +127,9 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
             //partner.setPhone(consultant.getPhonenumber());
             psyConsultPartnerMapper.insert(partner);
             return id;
-        }else{
+        } else if (ConsultConstant.PARTNER_STATUS_1.equals(one.getStatus())){
+            throw new ServiceException("入驻申请已在审核中",123);
+        } else {
             return one.getId();
         }
     }
@@ -161,7 +159,6 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
                 throw new ServiceException("入驻申请已在审核中或已审核结束");
             }
         }
-        
         return psyConsultPartnerMapper.updateById(entity);
     }
 
@@ -193,6 +190,11 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult createUser(Long id) {
         PsyConsultPartner partner = psyConsultPartnerMapper.selectById(id);
+        if (ObjectUtils.isNotEmpty(partner.getConsultId())){
+            return updateConsultant(partner);
+        }
+        
+        
         List<PsyConsultPartnerItem> items = partnerItemService.getListById(id);
         if (!ConsultConstant.PARTNER_STATUS_2.equals(partner.getStatus()) && !ConsultConstant.PARTNER_STATUS_3.equals(partner.getStatus())
                 && !ConsultConstant.PARTNER_STATUS_5.equals(partner.getStatus())) {
@@ -220,10 +222,10 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         PsyConsultVO vo = new PsyConsultVO();
 
         // 公众号id
-        PsyUser user = psyUserService.selectPsyUserById(partner.getUserId());
-        if (user != null && StringUtils.isNotBlank(user.getWxOpenid())) {
-            vo.setOpenId(user.getWxOpenid());
-        }
+//        PsyUser user = psyUserService.selectPsyUserById(partner.getUserId());
+//        if (user != null && StringUtils.isNotBlank(user.getWxOpenid())) {
+//            vo.setOpenId(user.getWxOpenid());
+//        }
 
         // 学历/简介
         List<String> infoList = new ArrayList<>();
@@ -284,6 +286,96 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         contract.setStartTime(date);
         contract.setEndTime(ca.getTime());
         contractService.add(contract);
+
+        return result;
+    }
+
+    //审批通过, 修改咨询师信息
+    public AjaxResult updateConsultant(PsyConsultPartner partner) {
+        List<PsyConsultPartnerItem> items = partnerItemService.getListById(partner.getId());
+        if (!ConsultConstant.PARTNER_STATUS_2.equals(partner.getStatus())) {
+            return AjaxResult.error("单据状态异常");
+        }
+
+       // String pwd = configService.selectConfigByKey("sys.user.initPassword");
+       // String fm = "登录地址：http://admin.ssgpsy.com/ \n登录账号：{} \n初始密码：{}";
+
+        Long consultId = partner.getConsultId();
+        String userName = consultService.getAvailableUserName(partner.getName());
+
+        partner.setConsultId(consultId);
+        partner.setConsultName(userName);
+        partner.setStatus(ConsultConstant.PARTNER_STATUS_2);
+        save(partner);
+
+        PsyConsultVO vo = new PsyConsultVO();
+
+        // 公众号id
+        /*PsyUser user = psyUserService.selectPsyUserById(partner.getUserId());
+        if (user != null && StringUtils.isNotBlank(user.getWxOpenid())) {
+            vo.setOpenId(user.getWxOpenid());
+        }*/
+
+        // 学历/简介
+        List<String> infoList = new ArrayList<>();
+        items.stream().filter(a -> a.getType() == 1).forEach(i -> {
+            infoList.add(i.getParam1() + i.getParam2() + i.getParam3());
+        });
+        vo.setInfo(String.join(",", infoList));
+
+        // 受训经历
+        List<ExperienceDTO> experiences = new ArrayList<>();
+        items.stream().filter(a -> a.getType() == 4).forEach(i -> {
+            ExperienceDTO experience = new ExperienceDTO();
+            List<String> time = new ArrayList<>();
+            experience.setInfo(i.getParam1());
+            time.add(i.getStartTime());
+            time.add(i.getEndTime());
+            experience.setTime(time);
+            experiences.add(experience);
+        });
+        experiences.sort(Comparator.comparing(item -> item.getTime().get(0)));
+        vo.setExperience(JSON.toJSONString(experiences));
+
+        vo.setId(consultId);
+        vo.setUserName(userName);
+        vo.setStatus("1");
+        vo.setSex(partner.getSex() == 1 ? "男" : "女");
+        vo.setNickName(partner.getName());
+        vo.setEmail(partner.getEmail());
+        vo.setPhonenumber(partner.getPhone());
+        vo.setProvince(partner.getProvince());
+        vo.setCity(partner.getCity());
+        vo.setLang(partner.getLang());
+        vo.setQualification(items.stream().filter(a -> a.getType() == 2).map(PsyConsultPartnerItem::getParam1).collect(Collectors.joining(",")));
+        vo.setGenre(partner.getGenre());
+        vo.setWorkHours(partner.getWorkHours());
+        //AjaxResult result = consultService.add(vo);
+        AjaxResult result = consultService.update(vo);
+        if ((int) result.get("code") != 200) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return result;
+        }
+
+//        result.put("fm", StrUtil.format(fm, userName, pwd));
+//
+//        // 合约创建
+//        PsyConsultContract contract = new PsyConsultContract();
+//        contract.setId(IDhelper.getNextId());
+//        contract.setConsultId(consultId);
+//        contract.setConsultName(vo.getNickName());
+//        contract.setName("口袋心理平台入驻协议");
+//        contract.setStatus(ConsultConstant.CONTRACT_STATUS_1);
+//        contract.setType(partner.getType());
+//        contract.setMoney(partner.getMoney());
+//        contract.setRatio(partner.getRatio());
+//        Date date = new Date();
+//        Calendar ca = Calendar.getInstance();
+//        ca.setTime(date);
+//        ca.add(Calendar.YEAR, 1);
+//        contract.setStartTime(date);
+//        contract.setEndTime(ca.getTime());
+//        contractService.add(contract);
 
         return result;
     }

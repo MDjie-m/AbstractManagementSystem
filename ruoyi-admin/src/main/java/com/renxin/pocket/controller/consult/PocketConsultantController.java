@@ -1,16 +1,22 @@
 package com.renxin.pocket.controller.consult;
 
 import com.renxin.common.annotation.RateLimiter;
+import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.common.core.redis.RedisCache;
+import com.renxin.common.utils.PageUtils;
 import com.renxin.psychology.domain.PsyConsult;
+import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.request.PsyConsultReq;
 import com.renxin.psychology.request.PsyConsultServeConfigReq;
+import com.renxin.psychology.request.QueryListByTypeReq;
 import com.renxin.psychology.service.IPsyConsultColumnService;
 import com.renxin.psychology.service.IPsyConsultServeConfigService;
 import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.vo.PsyConsultColumnVO;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,6 +33,9 @@ import java.util.List;
 @RequestMapping("/pocket/consult")
 public class PocketConsultantController extends BaseController
 {
+    @Resource
+    private RedisCache redisCache;
+    
     @Resource
     private IPsyConsultService psyConsultService;
 
@@ -46,6 +55,20 @@ public class PocketConsultantController extends BaseController
         startPage();
         List<PsyConsult> list = psyConsultService.search(req);
         return getDataTable(list);
+    }
+
+    /**
+     * 根据类型  查询咨询师列表
+     */
+    @ApiOperation(value = "查询咨询师列表")
+    @PostMapping("/cache")
+    public TableDataInfo listByType(@RequestBody QueryListByTypeReq req)
+    {
+        String listType = req.getListType();
+        List<Long> idList = redisCache.getCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + listType);
+        List<PsyConsult> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.CONSULTANT_BY_ID_KEY , PageUtils.paginate(idList));
+
+        return getDataTable(cacheList, idList.size());
     }
 
     @PostMapping(value = "/getConsultWorksById/{id}")

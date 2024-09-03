@@ -421,8 +421,8 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     @Transactional(rollbackFor = Exception.class)
     public PsyConsultantOrder createConsultantOrder(PsyConsultantOrder consultantOrder)  {
         String nickName = consultService.getOne(Long.valueOf(consultantOrder.getPayConsultantId())).getNickName();
-        consultantOrder.setCreateBy(consultantOrder.getPayConsultantId());
-        consultantOrder.setUpdateBy(consultantOrder.getPayConsultantId());
+        consultantOrder.setCreateBy(consultantOrder.getPayConsultantId()+"");
+        consultantOrder.setUpdateBy(consultantOrder.getPayConsultantId()+"");
         consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_CREATED);
         String payId = UUID.randomUUID().toString();// 当前使用随机生成的支付ID，后续使用第三方支付平台返回的
         consultantOrder.setPayId(payId);

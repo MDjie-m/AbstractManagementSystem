@@ -82,7 +82,7 @@ public class CourSectionServiceImpl implements ICourSectionService
     @Override
     public int updateCourSection(CourSection section)
     {
-        CourCourse course = courCourseService.getBaseMapper().selectById(section.getCourseId());
+        CourCourse course = courCourseService.selectCourCourseById(section.getCourseId());
         if (course.getPayType() == 0 && section.getType() == 2){
             throw new ServiceException("付费课程的章节不可修改为[免费], 可以设为[付费]或[试听]");
         }

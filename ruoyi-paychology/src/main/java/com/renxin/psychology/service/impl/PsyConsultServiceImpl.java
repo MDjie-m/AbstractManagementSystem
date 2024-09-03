@@ -5,12 +5,18 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.constant.UserConstants;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.entity.SysUser;
+import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.event.publish.ConsultServePublisher;
 import com.renxin.common.utils.*;
 import com.renxin.common.vo.DateLimitUtilVO;
+import com.renxin.gauge.domain.PsyGauge;
+import com.renxin.gauge.mapper.PsyGaugeMapper;
+import com.renxin.gauge.service.IPsyGaugeService;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.*;
 import com.renxin.psychology.dto.PsyConsultInfoDTO;
@@ -26,6 +32,8 @@ import com.renxin.system.service.ISysUserService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -39,7 +47,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class PsyConsultServiceImpl implements IPsyConsultService {
+public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyConsult> 
+        implements IPsyConsultService {
+
+    @Autowired
+    private IPsyConsultService self; // 注入自身
+
+    @Resource
+    private RedisCache redisCache;
 
     @Resource
     private PsyConsultMapper psyConsultMapper;
@@ -207,6 +222,7 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     }
 
     @Override
+    @Cacheable(value = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyConsultVO getOne(Long id) {
         PsyConsultVO consultVO = BeanUtil.toBean(psyConsultMapper.queryById(id), PsyConsultVO.class);
         //查询工作时长
@@ -244,6 +260,7 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
             newConsultant.setId(IDhelper.getNextId());
             newConsultant.setPhonenumber(phone);
         psyConsultMapper.insert(newConsultant);
+        refreshIdList();
         return newConsultant;
 
     }
@@ -276,7 +293,6 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
         }
         
         wp.in(ObjectUtils.isNotEmpty(req.getIdList()),PsyConsult::getId,req.getIdList());
-
         return psyConsultMapper.selectList(wp);
     }
 
@@ -323,23 +339,22 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult add(PsyConsultVO req) {
         // 新增用户
-        SysUser user = convertToUser(req);
-        user.setPassword(SecurityUtils.encryptPassword(configService.selectConfigByKey("sys.user.initPassword")));
-
-        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(user.getUserName())))
-        {
-            return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
-        }
-        else if (StringUtils.isNotEmpty(user.getPhonenumber())
-                && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
-        {
-            return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
-        }
-        else if (StringUtils.isNotEmpty(user.getEmail())
-                && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
-        {
-            return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
-        }
+        //SysUser user = convertToUser(req);
+        //user.setPassword(SecurityUtils.encryptPassword(configService.selectConfigByKey("sys.user.initPassword")));
+//        if (UserConstants.NOT_UNIQUE.equals(userService.checkUserNameUnique(user.getUserName())))
+//        {
+//            return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
+//        }
+//        else if (StringUtils.isNotEmpty(user.getPhonenumber())
+//                && UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
+//        {
+//            return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
+//        }
+//        else if (StringUtils.isNotEmpty(user.getEmail())
+//                && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
+//        {
+//            return AjaxResult.error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+//        }
 
         // 初始化id
         if (req.getId() == null) {
@@ -347,14 +362,18 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
         }
 
         // 新增用户
-        userService.insertUser(user);
-        req.setUserId(user.getUserId());
+//        userService.insertUser(user);
+//        req.setUserId(user.getUserId());
 
         converToStr(req);
-        return AjaxResult.success(psyConsultMapper.insert(BeanUtil.toBean(req, PsyConsult.class)));
+        int insert = psyConsultMapper.insert(BeanUtil.toBean(req, PsyConsult.class));
+        
+        refreshIdList();
+        return AjaxResult.success(insert);
     }
 
     @Override
+    @CacheEvict(cacheNames = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#id")
     public void updateNum(Long id, int num) {
         PsyConsultVO one = getOne(id);
         int i = one.getWorkNum() + num;
@@ -364,56 +383,45 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#req.id")
     public void updateByApp(PsyConsultVO req) {
         psyConsultMapper.updateById(BeanUtil.toBean(req, PsyConsult.class));
+        refreshIdList();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#req.id")
     public AjaxResult update(PsyConsultVO req) {
 
-        SysUser sysUser = userService.selectUserByUserName(req.getUserName());
-        if (StringUtils.isNotEmpty(req.getPhonenumber()) && !req.getPhonenumber().equals(sysUser.getPhonenumber())) {
-            sysUser.setPhonenumber(req.getPhonenumber());
-            if (UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(sysUser))) {
-                return AjaxResult.error("修改用户'" + req.getUserName() + "'失败，手机号码已存在");
-            }
-        }
-        else if (StringUtils.isNotEmpty(req.getEmail()) && !req.getEmail().equals(sysUser.getEmail()))
-        {
-            sysUser.setEmail(req.getEmail());
-            if (UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(sysUser))) {
-                return AjaxResult.error("修改用户'" + req.getUserName() + "'失败，邮箱账号已存在");
-            }
-        }
-        sysUser.setSex(req.getSex());
-        sysUser.setAvatar(req.getAvatar());
-        sysUser.setUpdateBy(SecurityUtils.getUsername());
-        sysUser.setStatus(req.getStatus());
-        userService.updateUserProfile(sysUser);
+//        SysUser sysUser = userService.selectUserByUserName(req.getUserName());
+//        if (StringUtils.isNotEmpty(req.getPhonenumber()) && !req.getPhonenumber().equals(sysUser.getPhonenumber())) {
+//            sysUser.setPhonenumber(req.getPhonenumber());
+//            if (UserConstants.NOT_UNIQUE.equals(userService.checkPhoneUnique(sysUser))) {
+//                return AjaxResult.error("修改用户'" + req.getUserName() + "'失败，手机号码已存在");
+//            }
+//        }
+//        else if (StringUtils.isNotEmpty(req.getEmail()) && !req.getEmail().equals(sysUser.getEmail()))
+//        {
+//            sysUser.setEmail(req.getEmail());
+//            if (UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(sysUser))) {
+//                return AjaxResult.error("修改用户'" + req.getUserName() + "'失败，邮箱账号已存在");
+//            }
+//        }
+//        sysUser.setSex(req.getSex());
+//        sysUser.setAvatar(req.getAvatar());
+//        sysUser.setUpdateBy(SecurityUtils.getUsername());
+//        sysUser.setStatus(req.getStatus());
+//        userService.updateUserProfile(sysUser);
 
         converToStr(req);
         int i = psyConsultMapper.updateById(BeanUtil.toBean(req, PsyConsult.class));
-        
+
+        refreshIdList();
         refreshRelateCache(req.getId());
         return AjaxResult.success(i);
     }
     
-    //刷新相关联的其他对象缓存
-    private void refreshRelateCache(Long id){
-        //本人担任督导师 - 团督id清单
-        List<Long> supTeamIdList = teamSupervisionService.getBaseMapper().selectList(new LambdaQueryWrapper<PsyConsultantTeamSupervision>()
-                .select(PsyConsultantTeamSupervision::getId)
-                .eq(PsyConsultantTeamSupervision::getConsultantId, id)).stream().map(p -> p.getId()).collect(Collectors.toList());
-        teamSupervisionService.refreshCacheByIdList(supTeamIdList);
-        
-        //本人已报名加入 - 团督id清单
-        List<Long> memberTeamIdList = memberService.getBaseMapper().selectList(new LambdaQueryWrapper<PsyConsultantSupervisionMember>()
-                .select(PsyConsultantSupervisionMember::getTeamSupervisionId)
-                .eq(PsyConsultantSupervisionMember::getMemberId, id)).stream().map(p -> p.getId()).collect(Collectors.toList());
-        teamSupervisionService.refreshCacheByIdList(memberTeamIdList);
-
-    }
 
     private SysUser convertToUser(PsyConsultVO req) {
         SysUser user = new SysUser();
@@ -470,13 +478,21 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteAll(Long[] ids) {
-        return psyConsultMapper.tombstonedByIds(ids);
+        int i = psyConsultMapper.tombstonedByIds(ids);
+        //批量删除缓存
+        redisCache.deleteMultiCache(CacheConstants.CONSULTANT_BY_ID_KEY, Arrays.asList(ids));
+        refreshIdList();
+        return i;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#id")
     public int delete(Long id) {
-        return psyConsultMapper.deleteById(id);
+        int i = psyConsultMapper.deleteById(id);
+        
+        refreshIdList();
+        return i;
     }
 
     /**
@@ -512,6 +528,8 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
         }
         //更新[咨询师表]中, 各咨询师的"关联服务数量"
         psyConsultMapper.refreshServerNum();
+        
+        refreshCacheAll();
     }
     
     //查询指定咨询师的顾客清单
@@ -522,7 +540,7 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
             psyConsult.setServerName(psyConsult.getServerName().split("-")[1]);
             //统计该咨询师的已付款下单次数
             PsyConsultantOrder orderReq = new PsyConsultantOrder();
-                orderReq.setPayConsultantId(req.getConsultId()+"");
+                orderReq.setPayConsultantId(req.getConsultId());
                 orderReq.setPayStatus("2");//已支付
             List<PsyConsultantOrder> orderList = consultantOrderService.selectPsyConsultantOrderList(orderReq);
             if (ObjectUtils.isNotEmpty(orderList)){
@@ -581,10 +599,91 @@ public class PsyConsultServiceImpl implements IPsyConsultService {
                     }
                 }
             }
-            
-            
         }
         psyConsultVO.setScheduleList(scheduleList);
         return psyConsultVO;
     }
+
+    //刷新相关联的其他对象缓存
+    private void refreshRelateCache(Long id){
+        //本人担任督导师 - 团督id清单
+        List<Long> supTeamIdList = teamSupervisionService.getBaseMapper().selectList(new LambdaQueryWrapper<PsyConsultantTeamSupervision>()
+                .select(PsyConsultantTeamSupervision::getId)
+                .eq(PsyConsultantTeamSupervision::getConsultantId, id)).stream().map(p -> p.getId()).collect(Collectors.toList());
+        teamSupervisionService.refreshCacheByIdList(supTeamIdList);
+
+        //本人已报名加入 - 团督id清单
+        List<Long> memberTeamIdList = memberService.getBaseMapper().selectList(new LambdaQueryWrapper<PsyConsultantSupervisionMember>()
+                .select(PsyConsultantSupervisionMember::getTeamSupervisionId)
+                .eq(PsyConsultantSupervisionMember::getMemberId, id)).stream().map(p -> p.getId()).collect(Collectors.toList());
+        teamSupervisionService.refreshCacheByIdList(memberTeamIdList);
+
+    }
+
+
+    //刷新缓存
+    @Override
+    public void refreshCacheByIdList(List<Long> idList){
+        redisCache.deleteMultiCache(CacheConstants.CONSULTANT_BY_ID_KEY,idList);
+        for (Long id : idList) {
+            self.getOne(id);
+        }
+        refreshIdList();
+    }
+
+    @Override
+    public void refreshCacheById(Long id){
+        refreshCacheByIdList(Arrays.asList(id));
+    }
+
+    @Override
+    public void refreshCacheAll(){
+        //获取完整id清单
+        List<Long> courseIdList = psyConsultMapper.selectList(new LambdaQueryWrapper<PsyConsult>()
+                .select(PsyConsult::getId)
+                .orderByDesc(PsyConsult::getCreateTime)).stream().map(p -> p.getId()).collect(Collectors.toList());
+
+        //刷新缓存
+        refreshCacheByIdList(courseIdList);
+        refreshIdList();
+    }
+
+    //刷新该对象 各种类型下的id清单
+    @Override
+    public void refreshIdList(){
+        //完整对象清单
+        List<PsyConsult> allConsultantList = psyConsultMapper.selectList(new LambdaQueryWrapper<PsyConsult>()
+                .select(PsyConsult::getId)
+                .eq(PsyConsult::getStatus,0)
+                .eq(PsyConsult::getIsShow,0)
+                .orderByDesc(PsyConsult::getCreateTime));
+
+        //id清单放入缓存
+        ////完整id清单
+        List<Long> allIdList = allConsultantList.stream().map(p -> p.getId()).collect(Collectors.toList());
+        redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "all",allIdList);
+        
+        PsyConsultantTeamSupervision teamReq = new PsyConsultantTeamSupervision();
+        ////支持个人督导的id清单
+        teamReq.setTeamType(2);
+        List<PsyConsultantTeamSupervision> personSupList = teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq);
+        List<Long> personSupIdList = personSupList.stream().map(p -> p.getConsultantId()).collect(Collectors.toList());
+        redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "personSup",personSupIdList);
+        ////支持个人体验的id清单
+        teamReq.setTeamType(3);
+        List<PsyConsultantTeamSupervision> personExpList = teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq);
+        List<Long> personExpIdList = personExpList.stream().map(p -> p.getConsultantId()).collect(Collectors.toList());
+        redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "personExp",personExpIdList);
+        
+        /*Map<Integer, List<Long>> listMap =  allConsultantList.stream()
+                .collect(Collectors.groupingBy(
+                        PsyGauge::getGaugeClass,
+                        Collectors.mapping(PsyGauge::getId, Collectors.toList())
+                ));
+        for (Map.Entry<Integer, List<Long>> entry : listMap.entrySet()) {
+            redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "gaugeClass" + entry.getKey(), entry.getValue());
+        }*/
+
+    }
+    
 }

@@ -100,7 +100,7 @@ public class PsyConsultServeConfig extends BasePlusEntity implements Serializabl
 
     //咨询师id
     @TableField(exist = false)
-    private String consultantId;
+    private Long consultantId;
     //咨询师name
     @TableField(exist = false)
     private String consultantName;

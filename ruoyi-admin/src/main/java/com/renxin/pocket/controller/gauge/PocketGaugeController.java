@@ -81,7 +81,7 @@ public class PocketGaugeController extends BaseController
     {
         String listType = req.getListType();
         List<Long> idList = redisCache.getCacheList(CacheConstants.GAUGE_ID_LIST + "::" + listType);
-        List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.GAUGE_BY_ID_KEY , PageUtils.paginate(idList));
+        List<PsyGauge> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.GAUGE_BY_ID_KEY , PageUtils.paginate(idList));
 
         return getDataTable(cacheList, idList.size());
     }

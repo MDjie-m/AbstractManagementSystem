@@ -12,6 +12,8 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.time.Duration;
+
 /**
  * redis配置
  *
@@ -47,6 +49,7 @@ public class RedisConfig {
 
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
+                //.entryTtl(Duration.ZERO); // 设置缓存永久有效;
 
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(config)

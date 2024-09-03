@@ -212,7 +212,7 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         PsyConsultantOrder order = consultantOrderService.selectPsyConsultantOrderByOrderNo(orderNo);
         //套餐详情
         PsyConsultantPackage consultantPackage = packageService.selectPsyConsultantPackageByPackageId(Long.valueOf(order.getServerId()));
-        String payConsultantId = order.getPayConsultantId();
+        Long payConsultantId = order.getPayConsultantId();
         ArrayList<PsyCoupon> couponList = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
