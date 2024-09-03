@@ -83,6 +83,7 @@ public class SysUser extends BaseEntity
     private String userDetailsId;
 
     /** 有效期 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "有效期", width = 30, dateFormat = "yyyy-MM-dd", type = Type.ALL)
     private Date expirationDate;
 
