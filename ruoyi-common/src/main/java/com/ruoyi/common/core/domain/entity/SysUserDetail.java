@@ -45,9 +45,13 @@ public class SysUserDetail extends BaseEntity
     @Excel(name = "省份")
     private String province;
 
-    /** 市、区 */
-    @Excel(name = "市、区")
-    private String cityArea;
+    /** 市 */
+    @Excel(name = "市")
+    private String city;
+
+    /** 区 */
+    @Excel(name = "区")
+    private String area;
 
     /** 家庭地址 */
     @Excel(name = "家庭地址")
@@ -73,6 +77,26 @@ public class SysUserDetail extends BaseEntity
     /** 0-未删除，1-已删除 */
     @Excel(name = "0-未删除，1-已删除")
     private Long delFlag;
+
+    public SysUserDetail() {
+    }
+
+    public SysUserDetail( String userDetailsId, String userNameCn, String userNameEn, String userNameOwn, String country, String province, String city, String area, String detailedAddress, String principalProductType, String principalProduct, String companyCid, String identificationNumber, Long delFlag) {
+        this.userDetailsId = userDetailsId;
+        this.userNameCn = userNameCn;
+        this.userNameEn = userNameEn;
+        this.userNameOwn = userNameOwn;
+        this.country = country;
+        this.province = province;
+        this.city = city;
+        this.area = area;
+        this.detailedAddress = detailedAddress;
+        this.principalProductType = principalProductType;
+        this.principalProduct = principalProduct;
+        this.companyCid = companyCid;
+        this.identificationNumber = identificationNumber;
+        this.delFlag = delFlag;
+    }
 
     public void setUserDetailsId(String userDetailsId) 
     {
@@ -124,22 +148,9 @@ public class SysUserDetail extends BaseEntity
         this.province = province;
     }
 
-    public String getProvince() 
+    public String getProvince()
     {
         return province;
-    }
-    public void setCityArea(String cityArea) 
-    {
-        this.cityArea = cityArea;
-    }
-
-    public String getCityArea() 
-    {
-        return cityArea;
-    }
-    public void setDetailedAddress(String detailedAddress) 
-    {
-        this.detailedAddress = detailedAddress;
     }
 
     public String getDetailedAddress() 
@@ -200,8 +211,6 @@ public class SysUserDetail extends BaseEntity
             .append("userNameEn", getUserNameEn())
             .append("userNameOwn", getUserNameOwn())
             .append("country", getCountry())
-            .append("province", getProvince())
-            .append("cityArea", getCityArea())
             .append("detailedAddress", getDetailedAddress())
             .append("principalProductType", getPrincipalProductType())
             .append("principalProduct", getPrincipalProduct())
@@ -210,5 +219,37 @@ public class SysUserDetail extends BaseEntity
             .append("delFlag", getDelFlag())
             .append("remark", getRemark())
             .toString();
+    }
+
+    /**
+     * 获取
+     * @return city
+     */
+    public String getCity() {
+        return city;
+    }
+
+    /**
+     * 设置
+     * @param city
+     */
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    /**
+     * 获取
+     * @return area
+     */
+    public String getArea() {
+        return area;
+    }
+
+    /**
+     * 设置
+     * @param area
+     */
+    public void setArea(String area) {
+        this.area = area;
     }
 }

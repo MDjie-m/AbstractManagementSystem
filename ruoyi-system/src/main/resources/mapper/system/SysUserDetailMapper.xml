@@ -11,7 +11,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="userNameOwn"    column="user_name_own"    />
         <result property="country"    column="country"    />
         <result property="province"    column="province"    />
-        <result property="cityArea"    column="city_area"    />
+        <result property="city"    column="city"    />
+        <result property="area"    column="area"    />
         <result property="detailedAddress"    column="detailed_address"    />
         <result property="principalProductType"    column="principal_product_type"    />
         <result property="principalProduct"    column="principal_product"    />
@@ -22,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysUserDetailVo">
-        select user_details_id, user_name_cn, user_name_en, user_name_own, country, province, city_area, detailed_address, principal_product_type, principal_product, company_cid, identification_number, del_flag, remark from sys_user_detail
+        select user_details_id, user_name_cn, user_name_en, user_name_own, country, province, city,area, detailed_address, principal_product_type, principal_product, company_cid, identification_number, del_flag, remark from sys_user_detail
     </sql>
 
     <select id="selectSysUserDetailList" parameterType="SysUserDetail" resultMap="SysUserDetailResult">
@@ -57,7 +58,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userNameOwn != null">user_name_own,</if>
             <if test="country != null">country,</if>
             <if test="province != null">province,</if>
-            <if test="cityArea != null">city_area,</if>
+            <if test="city != null">city,</if>
+            <if test="area != null">area,</if>
             <if test="detailedAddress != null">detailed_address,</if>
             <if test="principalProductType != null and principalProductType != ''">principal_product_type,</if>
             <if test="principalProduct != null and principalProduct != ''">principal_product,</if>
@@ -73,7 +75,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userNameOwn != null">#{userNameOwn},</if>
             <if test="country != null">#{country},</if>
             <if test="province != null">#{province},</if>
-            <if test="cityArea != null">#{cityArea},</if>
+            <if test="city != null">#{city},</if>
+            <if test="area != null">#{area},</if>
             <if test="detailedAddress != null">#{detailedAddress},</if>
             <if test="principalProductType != null and principalProductType != ''">#{principalProductType},</if>
             <if test="principalProduct != null and principalProduct != ''">#{principalProduct},</if>
@@ -92,7 +95,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userNameOwn != null">user_name_own,</if>
             <if test="country != null">country,</if>
             <if test="province != null">province,</if>
-            <if test="cityArea != null">city_area,</if>
+            <if test="city != null">city,</if>
+            <if test="area != null">area,</if>
             <if test="detailedAddress != null">detailed_address,</if>
             <if test="principalProductType != null and principalProductType != ''">principal_product_type,</if>
             <if test="principalProduct != null and principalProduct != ''">principal_product,</if>
@@ -108,7 +112,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userNameOwn != null">#{userNameOwn},</if>
             <if test="country != null">#{country},</if>
             <if test="province != null">#{province},</if>
-            <if test="cityArea != null">#{cityArea},</if>
+            <if test="city != null">#{city},</if>
+            <if test="area != null">#{area},</if>
             <if test="detailedAddress != null">#{detailedAddress},</if>
             <if test="principalProductType != null and principalProductType != ''">#{principalProductType},</if>
             <if test="principalProduct != null and principalProduct != ''">#{principalProduct},</if>
@@ -127,7 +132,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userNameOwn != null">user_name_own = #{userNameOwn},</if>
             <if test="country != null">country = #{country},</if>
             <if test="province != null">province = #{province},</if>
-            <if test="cityArea != null">city_area = #{cityArea},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="area != null">area = #{area},</if>
             <if test="detailedAddress != null">detailed_address = #{detailedAddress},</if>
             <if test="principalProductType != null and principalProductType != ''">principal_product_type = #{principalProductType},</if>
             <if test="principalProduct != null and principalProduct != ''">principal_product = #{principalProduct},</if>
