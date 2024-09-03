@@ -42,7 +42,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="userNameOwn"  column="user_name_own"   />
 		<result property="country" column="country"   />
 		<result property="province"  column="province"   />
-		<result property="cityArea" column="city_area"   />
+		<result property="city" column="city"   />
+		<result property="area" column="area"   />
 		<result property="detailedAddress"  column="detailed_address"   />
 		<result property="principalProductType"    column="principal_product_type"      />
 		<result property="principalProduct"    column="principal_product" />
@@ -57,6 +58,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="ancestors" column="ancestors"   />
         <result property="orderNum"  column="order_num"   />
         <result property="leader"    column="leader"      />
+        <result property="phone"    column="phone"      />
+        <result property="email"    column="dept_email"      />
         <result property="status"    column="dept_status" />
     </resultMap>
 	
@@ -72,9 +75,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<sql id="selectUserVo">
         select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
 			   u.sub_account_flag  , u.supplier_id  , u.user_details_id  , u.expiration_date  , u.parent_user_id , u.position,
-        d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.status as dept_status,
+        d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone,  d.email as dept_email,  d.status as dept_status,
         r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status,
-	 ud.user_name_cn,ud.user_name_en,ud.user_name_own,ud.country,ud.province,ud.city_area,ud.detailed_address,ud.principal_product_type,ud.principal_product,ud.company_cid,ud.identification_number,ud.remark
+	 ud.user_name_cn,ud.user_name_en,ud.user_name_own,ud.country,ud.province,ud.city,ud.area,ud.detailed_address,ud.principal_product_type,ud.principal_product,ud.company_cid,ud.identification_number,ud.remark
         from sys_user u
 		    left join sys_dept d on u.dept_id = d.dept_id
 		    left join sys_user_role ur on u.user_id = ur.user_id
@@ -87,7 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select u.user_id  , u.dept_id , u.nick_name , u.user_name , u.email, u.avatar, u.phonenumber, u.sex, u.status, u.del_flag , u.login_ip , u.login_date , u.create_by , u.create_time , u.remark,
 		       u.sub_account_flag  , u.supplier_id  , u.user_details_id  , u.expiration_date  ,u.parent_user_id , u.position,
 		       d.dept_name , d.leader,
-		ud.user_name_cn  , ud.user_name_en  , ud.user_name_own , ud.country , ud.province , ud.city_area , ud.detailed_address ,
+		ud.user_name_cn  , ud.user_name_en  , ud.user_name_own , ud.country , ud.province , ud.city , ud.area , ud.detailed_address ,
 		ud.principal_product_type   , ud.principal_product   , ud.company_cid  , ud.identification_number  , ud.remark
 		from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
