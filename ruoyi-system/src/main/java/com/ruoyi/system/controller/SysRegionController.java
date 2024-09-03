@@ -18,7 +18,7 @@ public class SysRegionController extends BaseController {
      * 查询国家
      * @return 国家
      */
-    @PostMapping("/country")
+    @GetMapping("/country")
     @Anonymous
     public AjaxResult getCountry()
     {
@@ -30,7 +30,7 @@ public class SysRegionController extends BaseController {
      * @param id 国家id
      * @return 省份(州)
      */
-    @PostMapping("/state")
+    @GetMapping("/state")
     @Anonymous
     public AjaxResult getState(@RequestParam Integer id)
     {
@@ -42,9 +42,9 @@ public class SysRegionController extends BaseController {
      * @param id 省份(州)id
      * @return 区(市)
      */
-    @PostMapping("/city")
+    @GetMapping("/city")
     @Anonymous
-    public AjaxResult getCity(Integer id)
+    public AjaxResult getCity(@RequestParam Integer id)
     {
         return success(sysRegionService.selectAllCities(id));
     }
@@ -54,9 +54,9 @@ public class SysRegionController extends BaseController {
      * @param id 区(市)id
      * @return 县
      */
-    @PostMapping("/region")
+    @GetMapping("/region")
     @Anonymous
-    public AjaxResult getRegion(Integer id)
+    public AjaxResult getRegion(@RequestParam Integer id)
     {
         return success(sysRegionService.selectAllRegions(id));
     }
