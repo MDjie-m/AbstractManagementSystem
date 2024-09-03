@@ -361,9 +361,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <!--  批量删除供应商  -->
-    <update id="deleteSysProductBySupplierIds" parameterType="String">
+    <update id="deleteSysSupplierBySupplierIds" parameterType="String">
         update sys_supplier
         set delete_flag = 1
+        where supplier_id in
+        <foreach item="supplierId" collection="array" open="(" separator="," close=")">
+            #{supplierId}
+        </foreach>
+    </update>
+
+    <!--  批量删除供应商产品  -->
+    <update id="deleteSysProductBySupplierIds" parameterType="String">
+        update sys_product
+        set del_flag = 1
         where supplier_id in
         <foreach item="supplierId" collection="array" open="(" separator="," close=")">
             #{supplierId}
