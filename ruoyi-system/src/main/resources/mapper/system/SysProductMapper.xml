@@ -492,6 +492,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{productId}
         </foreach>
     </update>
+    <update id="updateProductStatus">
+        update sys_product set quote_status=0,inquiry_status=0
+    </update>
 
     <select id="selectProductNamesByParam" resultType="com.ruoyi.system.domain.vo.SysProductVO">
         select product_id AS productId,supplier_id AS supplierId,supplier_name AS supplierName,primary_category AS primaryCategory,

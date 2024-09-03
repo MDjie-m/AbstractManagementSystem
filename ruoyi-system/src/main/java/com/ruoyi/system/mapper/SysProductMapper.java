@@ -100,4 +100,6 @@ public interface SysProductMapper
     int updateInquiryListStatus(SysProDuctDTO sysProDuctDTO);
 
     SysProductVO getSysProductByProductId(String productId);
+
+    int updateProductStatus();
 }
