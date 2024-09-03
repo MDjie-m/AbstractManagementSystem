@@ -13,6 +13,7 @@ import com.renxin.course.domain.CourCourse;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.vo.CourseListVO;
 import com.renxin.gauge.domain.PsyGauge;
+import com.renxin.gauge.service.IPsyGaugeQuestionsService;
 import com.renxin.gauge.service.IPsyGaugeService;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultant;
@@ -28,8 +29,12 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,6 +68,27 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
     
     @Autowired
     private IPsyConsultantPackageService packageService;
+    
+    @Autowired
+    private IPsyGaugeQuestionsService psyGaugeQuestionsService;
+    
+    //项目启动时执行一次
+    @EventListener
+    public void handleContextRefresh(ContextRefreshedEvent event) {
+        // 当 Spring 上下文完全初始化后，调用刷新缓存的方法
+        refreshAllBusinessCache();
+    }
+    
+    //刷新全部业务数据缓存
+    //@PostConstruct //项目启动时自动执行一次
+    public void refreshAllBusinessCache(){
+        teamSupervisionService.refreshCacheAll();
+        courCourseService.refreshCacheAll();
+        packageService.refreshCacheAll();
+        gaugeService.refreshCacheAll();
+        psyGaugeQuestionsService.refreshCacheAll();
+        consultService.refreshCacheAll();
+    }
 
     /**
      * 查询各类型的对象清单

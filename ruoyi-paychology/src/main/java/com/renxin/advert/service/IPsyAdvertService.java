@@ -66,4 +66,8 @@ public interface IPsyAdvertService
      * 查询各类型的对象清单
      */
     public AjaxResult queryObjectByIds(PsyAdvert req);
+    
+    
+    //刷新全部业务数据缓存
+    public void refreshAllBusinessCache();
 }

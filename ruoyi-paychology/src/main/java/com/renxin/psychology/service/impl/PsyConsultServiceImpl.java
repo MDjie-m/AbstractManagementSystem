@@ -29,6 +29,7 @@ import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import com.renxin.system.service.ISysConfigService;
 import com.renxin.system.service.ISysUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Slf4j
 public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyConsult> 
         implements IPsyConsultService {
 
@@ -224,6 +226,8 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     @Override
     @Cacheable(value = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyConsultVO getOne(Long id) {
+        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                + "--------------------------------连接MySQL查询咨询师:" + id);
         PsyConsultVO consultVO = BeanUtil.toBean(psyConsultMapper.queryById(id), PsyConsultVO.class);
         //查询工作时长
         PsyWorkTimeRes psyWorkTimeRes = scheduleService.querySumTime(id);

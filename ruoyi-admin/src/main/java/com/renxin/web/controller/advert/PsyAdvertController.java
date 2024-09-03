@@ -37,35 +37,15 @@ public class PsyAdvertController extends BaseController
 {
     @Autowired
     private IPsyAdvertService psyAdvertService;
-    @Autowired
-    private IPsyConsultantTeamSupervisionService teamSupervisionService;
-    @Autowired
-    private ICourCourseService courCourseService;
-    @Autowired
-    private IPsyConsultantPackageService psyConsultantPackageService;
-    @Autowired
-    private IPsyGaugeService psyGaugeService;
-    @Autowired
-    private IPsyGaugeQuestionsService psyGaugeQuestionsService;
-    @Resource
-    private IPsyConsultService psyConsultService;
 
-//    @Autowired
-//    private IPsyConsultantTeamSupervisionService teamSupervisionService;
-
+    
+    //刷新全部业务数据缓存
     @GetMapping(value = "/refreshAll")
-    public AjaxResult refreshAll()
+    public AjaxResult refreshAllBusinessCache()
     {
-        teamSupervisionService.refreshCacheAll();
-        courCourseService.refreshCacheAll();
-        psyConsultantPackageService.refreshCacheAll();
-        psyGaugeService.refreshCacheAll();
-        psyGaugeQuestionsService.refreshCacheAll();
-        psyConsultService.refreshCacheAll();
-
+        psyAdvertService.refreshAllBusinessCache();
         return AjaxResult.success();
     }
-    
     
     /**
      * 查询各类型的对象清单

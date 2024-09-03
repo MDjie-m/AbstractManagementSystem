@@ -24,6 +24,7 @@ import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.mapper.PsyConsultantOrderMapper;
 import com.renxin.psychology.mapper.PsyConsultantSupervisionMemberMapper;
 import com.renxin.psychology.service.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ import javax.annotation.Resource;
  * @date 2024-06-26
  */
 @Service
+@Slf4j
 public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyConsultantTeamSupervisionMapper, PsyConsultantTeamSupervision> 
         implements IPsyConsultantTeamSupervisionService 
 {
@@ -88,6 +90,8 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
     @Cacheable(value = CacheConstants.TEAM_SUP_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyConsultantTeamSupervision selectPsyConsultantTeamSupervisionById(Long id)
     {
+        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                + "--------------------------------连接MySQL查询团督:" + id);
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(id);
 
         //查询成员信息

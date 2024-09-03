@@ -19,6 +19,7 @@ import com.renxin.gauge.mapper.*;
 import com.renxin.gauge.service.IPsyGaugeQuestionsResultService;
 import com.renxin.gauge.service.IPsyOrderService;
 import com.renxin.gauge.vo.GaugeVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -37,6 +38,7 @@ import javax.annotation.Resource;
  * @date 2022-08-30
  */
 @Service
+@Slf4j
 public class PsyGaugeServiceImpl extends ServiceImpl<PsyGaugeMapper, PsyGauge> 
         implements IPsyGaugeService 
 {
@@ -78,6 +80,8 @@ public class PsyGaugeServiceImpl extends ServiceImpl<PsyGaugeMapper, PsyGauge>
     @Cacheable(value = CacheConstants.GAUGE_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyGauge selectPsyGaugeById(Long id)
     {
+        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                + "--------------------------------连接MySQL查询测评:" + id);
         return psyGaugeMapper.selectPsyGaugeById(id);
     }
 

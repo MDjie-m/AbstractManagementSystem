@@ -45,11 +45,11 @@ public class PsyConsultPartner extends BasePlusEntity implements Serializable
     private Integer step;
 
     /** 申请类型 */
-    private Integer type;
+//    private Integer type;
 
-    @Excel(name = "申请类型")
+/*    @Excel(name = "申请类型")
     @TableField(exist = false)
-    private String typeName;
+    private String typeName;*/
 
     /** 姓名 */
     @Excel(name = "姓名")

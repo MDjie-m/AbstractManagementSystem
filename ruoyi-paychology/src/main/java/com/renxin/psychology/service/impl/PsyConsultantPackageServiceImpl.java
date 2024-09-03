@@ -17,6 +17,7 @@ import com.renxin.course.mapper.CourCourseMapper;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.psychology.domain.PsyCouponTemplate;
 import com.renxin.psychology.service.IPsyCouponTemplateService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -35,6 +36,7 @@ import javax.annotation.Resource;
  * @date 2024-06-26
  */
 @Service
+@Slf4j
 public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPackageMapper, PsyConsultantPackage> 
         implements IPsyConsultantPackageService 
 {
@@ -61,6 +63,8 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
     @Cacheable(value = CacheConstants.PACKAGE_BY_ID_KEY, key = "#packageId", unless = "#result == null")
     public PsyConsultantPackage selectPsyConsultantPackageByPackageId(Long packageId)
     {
+        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                + "--------------------------------连接MySQL查询套餐:" + packageId);
         PsyConsultantPackage pack = psyConsultantPackageMapper.selectPsyConsultantPackageByPackageId(packageId);
         return pack;
     }

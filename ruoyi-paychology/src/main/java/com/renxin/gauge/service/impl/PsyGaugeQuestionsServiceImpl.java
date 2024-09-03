@@ -15,6 +15,7 @@ import com.renxin.gauge.service.IPsyGaugeQuestionsOptionsService;
 import com.renxin.gauge.service.IPsyGaugeQuestionsService;
 import com.renxin.gauge.service.IPsyGaugeService;
 import com.renxin.gauge.vo.PsyQuestionVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
  * @date 2022-09-06
  */
 @Service
+@Slf4j
 public class PsyGaugeQuestionsServiceImpl extends ServiceImpl<PsyGaugeQuestionsMapper, PsyGaugeQuestions>
         implements IPsyGaugeQuestionsService {
 
@@ -60,6 +62,8 @@ public class PsyGaugeQuestionsServiceImpl extends ServiceImpl<PsyGaugeQuestionsM
     @Override
     @Cacheable(value = CacheConstants.QUESTION_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyGaugeQuestions selectPsyGaugeQuestionsById(Long id) {
+        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                + "--------------------------------连接MySQL查询问题:" + id);
         PsyGaugeQuestions question = psyGaugeQuestionsMapper.selectPsyGaugeQuestionsById(id);
 
         //查询选项清单

@@ -276,7 +276,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         contract.setConsultName(vo.getNickName());
         contract.setName("口袋心理平台入驻协议");
         contract.setStatus(ConsultConstant.CONTRACT_STATUS_1);
-        contract.setType(partner.getType());
+        //contract.setType(partner.getType());
         contract.setMoney(partner.getMoney());
         contract.setRatio(partner.getRatio());
         Date date = new Date();
@@ -432,7 +432,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
                 dto.setItems(partnerItemService.getListById(dto.getId()));
             }
 
-            dto.setTypeName(getTypeName(dto.getType()));
+           // dto.setTypeName(getTypeName(dto.getType()));
             dto.setStatusName(getStatusName(dto.getStatus()));
         }
 
@@ -468,7 +468,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
 
 
         list.forEach(item -> {
-            item.setTypeName(getTypeName(item.getType()));
+           // item.setTypeName(getTypeName(item.getType()));
             item.setStatusName(getStatusName(item.getStatus()));
         });
 
