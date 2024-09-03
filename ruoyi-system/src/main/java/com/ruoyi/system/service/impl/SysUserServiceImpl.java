@@ -306,6 +306,7 @@ public class SysUserServiceImpl implements ISysUserService
         userPostMapper.deleteUserPostByUserId(userId);
         // 新增用户与岗位管理
         insertUserPost(user);
+        detailMapper.updateSysUserDetail(user.getUserDetail());
         return userMapper.updateUser(user);
     }
 
