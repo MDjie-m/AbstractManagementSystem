@@ -50,9 +50,13 @@
     </resultMap>
 
     <!--  查询所有国家  -->
-    <select id="selectAllCountries" resultMap="country">
+    <select id="selectAllCountries" resultMap="country" parameterType="com.ruoyi.system.domain.regions.SysCountries">
         select *
         from sys_countries
+        <where>
+            <if test="id != null and id != ''">id = #{id}</if>
+            <if test="cname != null and cname != ''"> and cname = #{cname}</if>
+        </where>
     </select>
 
     <!--  根据国家id查询省份(州)  -->

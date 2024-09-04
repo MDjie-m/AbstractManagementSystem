@@ -21,8 +21,8 @@ public class SysRegionServiceImpl implements ISysRegionService {
      * @return 国家
      */
     @Override
-    public List<SysCountries> selectAllCountries() {
-        return sysRegionMapper.selectAllCountries();
+    public List<SysCountries> selectAllCountries(SysCountries sysCountries) {
+        return sysRegionMapper.selectAllCountries(sysCountries);
     }
 
     /**

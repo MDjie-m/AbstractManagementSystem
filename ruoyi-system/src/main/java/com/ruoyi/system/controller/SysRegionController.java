@@ -3,9 +3,9 @@ package com.ruoyi.system.controller;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.system.domain.regions.SysCountries;
 import com.ruoyi.system.service.impl.SysRegionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,11 +18,11 @@ public class SysRegionController extends BaseController {
      * 查询国家
      * @return 国家
      */
-    @GetMapping("/country")
+    @PostMapping("/country")
     @Anonymous
-    public AjaxResult getCountry()
+    public AjaxResult getCountry(@RequestBody SysCountries sysCountries)
     {
-        return success(sysRegionService.selectAllCountries());
+        return success(sysRegionService.selectAllCountries(sysCountries));
     }
 
     /**
