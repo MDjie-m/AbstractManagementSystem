@@ -16,22 +16,22 @@ public interface ISysRegionService {
 
     /**
      * 根据国家id查询省份(州)信息
-     * @param id 国家id
+     * @param sysStates 国家id
      * @return 省份(州)
      */
-    public List<SysStates> selectAllStates(Integer id);
+    public List<SysStates> selectAllStates(SysStates sysStates);
 
     /**
      * 根据省份(州)id查询区(市)信息
-     * @param id 省份(州)id
+     * @param sysCities 省份(州)id
      * @return 区(市)
      */
-    public List<SysCities> selectAllCities(Integer id);
+    public List<SysCities> selectAllCities(SysCities sysCities);
 
     /**
      * 根据区(市)id查询县id
-     * @param id 区(市)id
+     * @param sysRegions 区(市)id
      * @return 县
      */
-    public List<SysRegions> selectAllRegions(Integer id);
+    public List<SysRegions> selectAllRegions(SysRegions sysRegions);
 }

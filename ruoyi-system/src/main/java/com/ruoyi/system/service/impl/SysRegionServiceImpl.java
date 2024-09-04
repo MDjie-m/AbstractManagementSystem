@@ -27,31 +27,31 @@ public class SysRegionServiceImpl implements ISysRegionService {
 
     /**
      * 查询省份(州)
-     * @param id 国家id
+     * @param sysStates 国家id
      * @return 省份(州)
      */
     @Override
-    public List<SysStates> selectAllStates(Integer id) {
-        return sysRegionMapper.selectAllStates(id);
+    public List<SysStates> selectAllStates(SysStates sysStates) {
+        return sysRegionMapper.selectAllStates(sysStates);
     }
 
     /**
      * 查询区(市)
-     * @param id 省份(州)id
+     * @param sysCities 省份(州)id
      * @return 区(市)
      */
     @Override
-    public List<SysCities> selectAllCities(Integer id) {
-        return sysRegionMapper.selectAllCities(id);
+    public List<SysCities> selectAllCities(SysCities sysCities) {
+        return sysRegionMapper.selectAllCities(sysCities);
     }
 
     /**
      * 查询县
-     * @param id 区(市)id
+     * @param sysRegions 区(市)id
      * @return 县
      */
     @Override
-    public List<SysRegions> selectAllRegions(Integer id) {
-        return sysRegionMapper.selectAllRegions(id);
+    public List<SysRegions> selectAllRegions(SysRegions sysRegions) {
+        return sysRegionMapper.selectAllRegions(sysRegions);
     }
 }

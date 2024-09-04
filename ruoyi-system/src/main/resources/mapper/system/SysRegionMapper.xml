@@ -60,24 +60,33 @@
     </select>
 
     <!--  根据国家id查询省份(州)  -->
-    <select id="selectAllStates" resultMap="state">
+    <select id="selectAllStates" resultMap="state" parameterType="com.ruoyi.system.domain.regions.SysStates">
         select *
         from sys_states
-        where country_id = #{id}
+        <where>
+            <if test="countryId != null and countryId != ''">country_id = #{countryId}</if>
+            <if test="cname != null and cname != ''"> and cname = #{cname}</if>
+        </where>
     </select>
     
     <!--  根据省份(州)查询区(市)  -->
     <select id="selectAllCities" resultMap="city">
         select *
         from sys_cities
-        where state_id = #{id}
+        <where>
+            <if test="stateId != null and stateId != ''">state_id = #{stateId}</if>
+            <if test="cname != null and cname != ''"> and cname = #{cname}</if>
+        </where>
     </select>
 
     <!--  根据查询区(市)查询县  -->
     <select id="selectAllRegions" resultMap="region">
         select *
         from sys_regions
-        where city_id = #{id}
+        <where>
+            <if test="cityId != null and cityId != ''">city_id = #{cityId}</if>
+            <if test="cname != null and cname != ''"> and cname = #{cname}</if>
+        </where>
     </select>
 
 </mapper>
