@@ -14,7 +14,7 @@ public interface SysRegionMapper {
      * 查询所有国家
      * @return 国家
      */
-    public List<SysCountries> selectAllCountries();
+    public List<SysCountries> selectAllCountries(SysCountries sysCountries);
 
     /**
      * 根据国家id查询省份(州)信息
