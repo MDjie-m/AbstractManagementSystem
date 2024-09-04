@@ -3,7 +3,10 @@ package com.ruoyi.system.controller;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.system.domain.regions.SysCities;
 import com.ruoyi.system.domain.regions.SysCountries;
+import com.ruoyi.system.domain.regions.SysRegions;
+import com.ruoyi.system.domain.regions.SysStates;
 import com.ruoyi.system.service.impl.SysRegionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,38 +30,38 @@ public class SysRegionController extends BaseController {
 
     /**
      * 查询省份(州)
-     * @param id 国家id
+     * @param sysStates 国家id
      * @return 省份(州)
      */
-    @GetMapping("/state")
+    @PostMapping("/state")
     @Anonymous
-    public AjaxResult getState(@RequestParam Integer id)
+    public AjaxResult getState(@RequestBody SysStates sysStates)
     {
-        return success(sysRegionService.selectAllStates(id));
+        return success(sysRegionService.selectAllStates(sysStates));
     }
 
     /**
      * 查询区(市)
-     * @param id 省份(州)id
+     * @param sysCities 省份(州)id
      * @return 区(市)
      */
-    @GetMapping("/city")
+    @PostMapping("/city")
     @Anonymous
-    public AjaxResult getCity(@RequestParam Integer id)
+    public AjaxResult getCity(@RequestBody SysCities sysCities)
     {
-        return success(sysRegionService.selectAllCities(id));
+        return success(sysRegionService.selectAllCities(sysCities));
     }
 
     /**
      * 查询县
-     * @param id 区(市)id
+     * @param sysRegions 区(市)id
      * @return 县
      */
-    @GetMapping("/region")
+    @PostMapping("/region")
     @Anonymous
-    public AjaxResult getRegion(@RequestParam Integer id)
+    public AjaxResult getRegion(@RequestBody SysRegions sysRegions)
     {
-        return success(sysRegionService.selectAllRegions(id));
+        return success(sysRegionService.selectAllRegions(sysRegions));
     }
 
 }
