@@ -20,9 +20,11 @@ public class PsyConsultServeConfigReq extends BaseValObj implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
+    //查询未关联服务
     @ApiModelProperty(value = "关联咨询师")
     private Long nId;
 
+    //查询已关联服务
     @JsonProperty("cId")
     @ApiModelProperty(value = "关联咨询师")
     private Long cId;

@@ -227,4 +227,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        <!-- <if test="pay != null  and pay != ''"> and od.pay = #{pay}</if>-->
     
     </select>
+
+    <select id="queryConsultantListByServiceObject"
+            resultType="com.renxin.psychology.domain.PsyConsult">
+        select
+        con.id 
+        <!-- cf.price  as price,
+        con.user_name as consultUserName,
+        con.avatar as consultAvatar,
+        con.img as consultImg,
+        con.tabs as consultTabs,
+        con.info as consultInfo,
+        con.detail as consultDetail,
+        con.experience as consultExperience,
+        con.genre as consultGenre,
+        con.level as consultLevel,
+
+        con.mode as consultMode,
+        con.qualification as consultQualification,
+        con.way_str as consultWayStr,
+        con.create_time -->
+        from
+        psy_consult con
+        left join psy_consult_work wk on con.id = wk.consult_id and wk.status = 0 and wk.live != "[]"
+        left join psy_consult_serve ser on ser.consult_id = con.id
+        left join psy_consult_server_config cf on ser.serve_id = cf.id
+        where con.del_flag = 0 and con.status = 0 and con.is_show = 0
+        <!--  and cf.type = 1 -->
+        <if test="serviceObject != null  and serviceObject != ''"> and cf.service_object = #{serviceObject} </if>
+
+      <!--  <if test="consultTabs != null  and consultTabs != ''"> and con.tabs like concat('%',#{consultTabs},'%')</if>
+        <if test="consultGenre != null  and consultGenre != ''"> and con.genre like concat('%',#{consultGenre},'%')</if>
+
+        <if test="waitDays != null  and waitDays != ''"> and wk.day >= CURDATE() AND day &lt; CURDATE() + INTERVAL #{waitDays} DAY</if>-->
+        order by con.create_time desc
+    </select>
+    
+    
 </mapper>

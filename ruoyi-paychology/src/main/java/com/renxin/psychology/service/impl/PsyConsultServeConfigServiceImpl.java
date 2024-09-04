@@ -18,6 +18,7 @@ import com.renxin.psychology.request.PsyConsultServeConfigReq;
 import com.renxin.psychology.request.PsyRefConsultServeReq;
 import com.renxin.psychology.service.IPsyConsultServeConfigService;
 import com.renxin.psychology.service.IPsyConsultServeService;
+import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.vo.PsyConsultServeConfigVO;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +47,9 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
 
     @Resource
     private PsyConsultServeConfigMapper psyConsultServeConfigMapper;
+    
+    @Resource
+    private IPsyConsultService consultService;
 
     @Override
     public PsyConsultServeConfigVO getOne(Long id) {
@@ -102,13 +106,16 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
         /*for (PsyConsultServeConfig entity : entities) {
             entity.setServiceObject(ComUtil.listToString(entity.getServiceObjectList()));
         }*/
-        return this.saveBatch(entities);
+        boolean b = this.saveBatch(entities);
+        //--
+        return b;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateBatch(List<PsyConsultServeConfig> entities) {
-        return this.updateBatchById(entities);
+        boolean b = this.updateBatchById(entities);
+        return b;
     }
 
     @Override
@@ -160,7 +167,11 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
         }
         
         //req.setServiceObject(ComUtil.listToString(req.getServiceObjectList()));
-        return psyConsultServeConfigMapper.updateById(BeanUtil.toBean(req, PsyConsultServeConfig.class));
+        int i = psyConsultServeConfigMapper.updateById(BeanUtil.toBean(req, PsyConsultServeConfig.class));
+
+        //刷新关联的咨询师缓存
+        consultService.refreshCacheByIdList(getConsultantIdListByConfigId(req.getId()));
+        return i;
     }
 
     @Override
@@ -202,6 +213,7 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
         return this.updateBatch(ids);
     }
 
+    //更新销售量
     @Override
     public void updateNum(Long id) {
         PsyConsultServeConfig one = psyConsultServeConfigMapper.selectById(id);
@@ -215,12 +227,27 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteAll(Long[] ids) {
-        return psyConsultServeConfigMapper.tombstonedByIds(ids);
+        //int i = psyConsultServeConfigMapper.tombstonedByIds(ids);
+        for (Long id : ids) {
+            delete(id);
+        }
+        return ids.length;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int delete(Long id) {
-        return psyConsultServeConfigMapper.deleteById(id);
+        int i = psyConsultServeConfigMapper.deleteById(id);
+        //刷新关联的咨询师缓存
+        consultService.refreshCacheByIdList(getConsultantIdListByConfigId(id));
+        return i;
+    }
+    
+    //获取与该服务关联的咨询师id清单
+    private List<Long> getConsultantIdListByConfigId(Long configId){
+        PsyConsultServe req = new PsyConsultServe();
+        List<PsyConsultServe> list = psyConsultServeService.getList(req);
+        List<Long> idList = list.stream().map(p -> p.getConsultId()).collect(Collectors.toList());
+        return idList;
     }
 }

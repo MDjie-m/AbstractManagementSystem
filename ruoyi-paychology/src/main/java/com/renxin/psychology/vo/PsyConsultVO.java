@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -148,5 +149,12 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     private List<PsyConsultantSchedule> scheduleList;
     
     private List<Long> idList;
+    
+    //最低来访者咨询价格
+    private BigDecimal minConsultPrice;
+    //最低个督价格
+    private BigDecimal minPersonSupPrice;
+    //最低个人体验价格
+    private BigDecimal minPersonExpPrice;
     
 }

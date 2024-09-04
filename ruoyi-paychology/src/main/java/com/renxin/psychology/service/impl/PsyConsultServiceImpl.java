@@ -100,6 +100,9 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     @Resource
     private IPsyConsultantSupervisionMemberService memberService;
 
+    @Resource
+    private IPsyConsultService consultService;
+
     @Override
     public List<PsyConsultWorkVO> getConsultWorksById(Long id) {
         PsyWorkReq req = new PsyWorkReq();
@@ -233,6 +236,32 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         PsyWorkTimeRes psyWorkTimeRes = scheduleService.querySumTime(id);
         BeanUtils.copyProperties(psyWorkTimeRes,consultVO);
 
+        //获取该咨询师的服务清单
+        PsyConsultServeConfigReq serveConfigReq = new PsyConsultServeConfigReq();
+            serveConfigReq.setCId(id);
+        List<PsyConsultServeConfig> serverList = serveConfigService.getList(serveConfigReq);
+        //查询最低来访者咨询价格
+        consultVO.setMinConsultPrice(
+                serverList.stream()
+                        .filter(config -> "1".equals(config.getServiceObject())) 
+                        .map(PsyConsultServeConfig::getPrice) // 提取 price
+                        .filter(price -> price != null) // 过滤掉 null 的价格
+                        .min(BigDecimal::compareTo).orElse(null));
+        //查询最低个督价格
+        consultVO.setMinPersonSupPrice(
+                serverList.stream()
+                        .filter(config -> "2".equals(config.getServiceObject())) 
+                        .map(PsyConsultServeConfig::getPrice) // 提取 price
+                        .filter(price -> price != null) // 过滤掉 null 的价格
+                        .min(BigDecimal::compareTo).orElse(null));
+        //查询最低个人体验价格
+        consultVO.setMinPersonExpPrice(
+                serverList.stream()
+                        .filter(config -> "3".equals(config.getServiceObject()))
+                        .map(PsyConsultServeConfig::getPrice) // 提取 price
+                        .filter(price -> price != null) // 过滤掉 null 的价格
+                        .min(BigDecimal::compareTo).orElse(null));
+
         return consultVO;
     }
 
@@ -297,7 +326,25 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         }
         
         wp.in(ObjectUtils.isNotEmpty(req.getIdList()),PsyConsult::getId,req.getIdList());
-        return psyConsultMapper.selectList(wp);
+        List<PsyConsult> consultList = psyConsultMapper.selectList(wp);
+       /* String listType = req.getListType();
+        PsyConsultServeConfigReq serveConfigReq = new PsyConsultServeConfigReq();
+        
+        for (PsyConsult psyConsult : consultList) {
+            serveConfigReq.setCId(psyConsult.getId());
+            //获取该咨询师的服务清单
+            List<PsyConsultServeConfig> serverList = serveConfigService.getList(serveConfigReq);
+            if ("personSup".equals(listType)){
+                //查询最低个督价格
+                psyConsult.setPrice(
+                        serverList.stream()
+                        .filter(config -> "2".equals(config.getServiceObject())) // 过滤出 serviceObject 为 2 的对象
+                        .map(PsyConsultServeConfig::getPrice) // 提取 price
+                        .filter(price -> price != null) // 过滤掉 null 的价格
+                        .min(BigDecimal::compareTo).orElse(null));
+            }
+        }*/
+        return consultList;
     }
 
     @Override
@@ -513,7 +560,9 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
             wp.eq(PsyConsult::getDelFlag, "0");
         List<PsyConsult> consultantList = psyConsultMapper.selectList(wp);//咨询师清单
         List<PsyConsultServeConfig> serverList = serveConfigService.getList(new PsyConsultServeConfigReq());//服务清单
-
+        consultantList = consultantList.stream()
+                .filter(config -> ObjectUtils.isNotEmpty(config.getLevel()) && ObjectUtils.isNotEmpty(config.getServiceObject()))
+                .collect(Collectors.toList());
         for (PsyConsult constant : consultantList) {
             ArrayList<Long> serverConfigIdList = new ArrayList<>();
             for (PsyConsultServeConfig serveConfig : serverList) {
@@ -667,16 +716,29 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         List<Long> allIdList = allConsultantList.stream().map(p -> p.getId()).collect(Collectors.toList());
         redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "all",allIdList);
         
-        PsyConsultantTeamSupervision teamReq = new PsyConsultantTeamSupervision();
+        ////支持来访者咨询的id清单
+        /*List<PsyConsult> consultList = psyConsultMapper.selectList(new LambdaQueryWrapper<PsyConsult>()
+                .select(PsyConsult::getId)
+                .eq(PsyConsult::getIsShow, 0)
+                .eq(PsyConsult::getStatus, 0)
+                .like(PsyConsult::getServiceObject, "1")
+        );*/
+        PsyConsult consultReq = new PsyConsult();
+        consultReq.setServiceObject("1");//服务来访者
+        List<PsyConsult> consultList = psyConsultMapper.queryConsultantListByServiceObject(consultReq);
+        List<Long> consultIdList = consultList.stream().map(p -> p.getId()).distinct().collect(Collectors.toList());
+        redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "consult",consultIdList);
+        
         ////支持个人督导的id清单
+        PsyConsultantTeamSupervision teamReq = new PsyConsultantTeamSupervision();
         teamReq.setTeamType(2);
         List<PsyConsultantTeamSupervision> personSupList = teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq);
-        List<Long> personSupIdList = personSupList.stream().map(p -> p.getConsultantId()).collect(Collectors.toList());
+        List<Long> personSupIdList = personSupList.stream().map(p -> p.getConsultantId()).distinct().collect(Collectors.toList());
         redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "personSup",personSupIdList);
         ////支持个人体验的id清单
         teamReq.setTeamType(3);
         List<PsyConsultantTeamSupervision> personExpList = teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq);
-        List<Long> personExpIdList = personExpList.stream().map(p -> p.getConsultantId()).collect(Collectors.toList());
+        List<Long> personExpIdList = personExpList.stream().map(p -> p.getConsultantId()).distinct().collect(Collectors.toList());
         redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "personExp",personExpIdList);
         
         /*Map<Integer, List<Long>> listMap =  allConsultantList.stream()

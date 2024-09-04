@@ -191,5 +191,4 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     @TableField(exist = false)
     private List<Long> idList;
     
-    
 }

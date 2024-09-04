@@ -36,4 +36,7 @@ public class PsyAdminConsultReq implements Serializable
 
     private List<Long> idList;
 
+    private String listType;
+    
+
 }

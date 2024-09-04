@@ -77,7 +77,7 @@ spring:
 #    database: 26
 #    password: dK2FNsDZ4mxmnkN
 #    
-    host: 127.0.0.1
+    host: 8.153.65.114
 #    # 端口，默认为6379
     port: 6379
 #    # 数据库索引

@@ -16,6 +16,7 @@ import com.renxin.consultant.common.dcloud.CloudFunctions;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultServeConfig;
+import com.renxin.psychology.request.PsyAdminConsultReq;
 import com.renxin.psychology.request.PsyConsultServeConfigReq;
 import com.renxin.psychology.request.QueryListByTypeReq;
 import com.renxin.psychology.service.IPsyConsultConfigService;
@@ -109,9 +110,15 @@ public class ConsultantUserController extends BaseController {
     @PostMapping("/cache")
     public TableDataInfo listByType(@RequestBody QueryListByTypeReq req)
     {
+        startPage();
         String listType = req.getListType();
         List<Long> idList = redisCache.getCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + listType);
         List<PsyConsult> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.CONSULTANT_BY_ID_KEY , PageUtils.paginate(idList));
+        
+     /*   PsyAdminConsultReq consultantReq = new PsyAdminConsultReq();
+        consultantReq.setListType(listType);
+        consultantReq.setIdList(idList);
+        List<PsyConsult> list = psyConsultService.getList(consultantReq);*/
 
         return getDataTable(cacheList, idList.size());
     }
