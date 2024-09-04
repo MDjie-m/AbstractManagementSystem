@@ -152,9 +152,9 @@ public class SysInquiryController extends BaseController
      * 删除
      */
     @PreAuthorize("@ss.hasPermi('system:inquiry:remove')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{inquiryIds}")
-    public AjaxResult remove(@PathVariable String[] inquiryIds)
+    @Log(title = "询价", businessType = BusinessType.DELETE)
+	@PostMapping("/inquiryIds")
+    public AjaxResult remove(@RequestBody String[] inquiryIds)
     {
         return toAjax(sysInquiryService.deleteSysInquiryByInquiryIds(inquiryIds));
     }

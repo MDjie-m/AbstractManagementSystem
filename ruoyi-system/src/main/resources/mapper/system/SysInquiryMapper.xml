@@ -133,7 +133,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where inquiry_id = #{inquiryId}
     </select>
     <select id="selectInquiryTimes" resultType="java.lang.Integer">
-        select count(product_id) from sys_inquiry where product_id=#{productId}
+        select count(product_id) from sys_inquiry where product_id=#{productId} and del_flag=0
     </select>
     <select id="findLatestQuote" resultType="com.ruoyi.system.domain.SysSupplierPrice" parameterType="String">
         select unitprice as unitprice,unitprice_unit as unitpriceUnit, price_RMB as priceRmb,RMB_quote_unit as RMBQuoteUnit,
@@ -219,10 +219,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from sys_inquiry where inquiry_id = #{inquiryId}
     </delete>
 
-    <delete id="deleteSysInquiryByInquiryIds" parameterType="String">
-        delete from sys_inquiry where inquiry_id in 
+    <update id="deleteSysInquiryByInquiryIds" parameterType="String">
+        update sys_inquiry set del_flag=1,update_time=sysdate() where inquiry_id in
         <foreach item="inquiryId" collection="array" open="(" separator="," close=")">
             #{inquiryId}
         </foreach>
-    </delete>
+    </update>
 </mapper>
