@@ -8,6 +8,8 @@ import com.renxin.common.utils.OrderIdUtils;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.framework.web.service.ConsultantTokenService;
+import com.renxin.gauge.domain.PsyGauge;
+import com.renxin.gauge.service.IPsyGaugeService;
 import com.renxin.psychology.domain.*;
 import com.renxin.psychology.mapper.PsyCouponMapper;
 import com.renxin.psychology.request.ReceiveFreeCouponReq;
@@ -66,6 +68,9 @@ public class PsyCouponServiceImpl implements IPsyCouponService
 
     @Resource
     private IPsyConsultServeService consultServeService;
+    
+    @Resource
+    private IPsyGaugeService gaugeService;
 
 
     /**
@@ -89,7 +94,8 @@ public class PsyCouponServiceImpl implements IPsyCouponService
     @Override
     public List<PsyCoupon> selectPsyCouponList(PsyCoupon psyCoupon)
     {
-        psyCoupon.setOrderServerType(ObjectUtils.isEmpty(psyCoupon.getOrderServerType()) ? null : "2"+psyCoupon.getOrderServerType());
+        String userType = ObjectUtils.isNotEmpty(psyCoupon.getUserId()) ? "1" : "2";
+        psyCoupon.setOrderServerType(ObjectUtils.isEmpty(psyCoupon.getOrderServerType()) ? null : userType + psyCoupon.getOrderServerType());
         //未指定服务id, 直接查询清单返回
         if (ObjectUtils.isEmpty(psyCoupon.getOrderServerId())){
             List<PsyCoupon> psyCouponList = psyCouponMapper.selectPsyCouponList(psyCoupon);
@@ -99,25 +105,43 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         //指定服务id, 则需校验各个券是否可用, 及使用之后的价格
         BigDecimal originalPrice = new BigDecimal(0); //价格
         //根据不同[服务类型和id]获取服务原价格
+        String orderServerId = psyCoupon.getOrderServerId();
         switch (psyCoupon.getOrderServerType()) {
-            //团队督导
+            // 11.倾诉
+            // 12.咨询  
+            case "1"+PsyConstants.POCKET_ORDER_CONSULT_NUM:
+                PsyConsultServeConfig serverDetailConsult = consultServeService.getServerDetailByRelationId(orderServerId);
+                originalPrice = serverDetailConsult.getPrice();
+                break;
+            // 13.测评
+            case "1"+PsyConstants.POCKET_ORDER_GAUGE_NUM:
+                PsyGauge psyGauge = gaugeService.selectPsyGaugeById(Long.valueOf(orderServerId));
+                originalPrice = psyGauge.getPrice();
+                break;
+            // 14.来访者课程
+            case "1"+PsyConstants.POCKET_ORDER_COURSE_NUM:
+                CourCourse pocketCourse = courCourseService.selectCourCourseById(Long.valueOf(orderServerId));
+                originalPrice = pocketCourse.getPrice();
+                break;
+            
+            //21.团队督导
             case "2"+PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
-                PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(psyCoupon.getOrderServerId()));
+                PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(orderServerId));
                 originalPrice = team.getPrice();
                 break;
-
+            //22.个督
             case "2"+PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM:
-                PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(psyCoupon.getOrderServerId());
-                originalPrice = serverDetail.getPrice();
+                PsyConsultServeConfig serverDetailSup = consultServeService.getServerDetailByRelationId(orderServerId);
+                originalPrice = serverDetailSup.getPrice();
                 break;
-
+            //23.个人体验
             case "2"+PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM:
-                PsyConsultServeConfig serverDetailExp = consultServeService.getServerDetailByRelationId(psyCoupon.getOrderServerId());
+                PsyConsultServeConfig serverDetailExp = consultServeService.getServerDetailByRelationId(orderServerId);
                 originalPrice = serverDetailExp.getPrice();
                 break;
-
+            //24.咨询师课程
             case "2"+PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
-                CourCourse courCourse = courCourseService.selectCourCourseById(Long.valueOf(psyCoupon.getOrderServerId()));
+                CourCourse courCourse = courCourseService.selectCourCourseById(Long.valueOf(orderServerId));
                 originalPrice = courCourse.getPrice();
                 break;
 
@@ -125,13 +149,14 @@ public class PsyCouponServiceImpl implements IPsyCouponService
                 throw new ServiceException("没有相应的服务类型, 请检查orderServerType为1~4之间的整数");
         }
         
-        //查询本咨询师拥有的  本类型的可用优惠券清单
+        //查询本人拥有的  本类型的可用优惠券清单
         psyCoupon.setIsUsable(0);
         psyCoupon.setIsExpire(0);
         List<PsyCoupon> psyCouponList = psyCouponMapper.selectPsyCouponList(psyCoupon);
 
         //逐条对比判断 是否可用于本次支付, 并计算优惠后的价格
         for (PsyCoupon coupon : psyCouponList) {
+            //原价达到了门槛
             if (originalPrice.compareTo(coupon.getUseThresholdPrice())>0){
                 coupon.setIsQualify(true);
                 if (coupon.getCouponType() == 1){//抵扣券
@@ -359,25 +384,44 @@ public class PsyCouponServiceImpl implements IPsyCouponService
             
             //根据服务类型生成编号
             Integer serverType = couponTemplate.getServerType();
-            switch (serverType%10 + ""){
+            String userType = couponTemplate.getUserType() + "";
+            switch ( serverType + ""){
+                //来访者咨询
+                case 1 + PsyConstants.POCKET_ORDER_CONSULT_NUM:
+                    coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.POCKET_ORDER_CONSULT + PsyConstants.COUPON_NO, null));
+                    break;
+                //来访者测评
+                case 1 + PsyConstants.POCKET_ORDER_GAUGE_NUM:
+                    coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.POCKET_ORDER_GAUGE + PsyConstants.COUPON_NO, null));
+                    break;
+                //来访者课程
+                case 1 + PsyConstants.POCKET_ORDER_COURSE_NUM:
+                    coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.POCKET_ORDER_COURSE + PsyConstants.COUPON_NO, null));
+                    break;
+                
                 //团队督导
-                case PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
+                case 2 + PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
                     coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_TEAM_SUP + PsyConstants.COUPON_NO, null));
                     break;
-                case PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM:
+                //个督
+                case 2 + PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM:
                     coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_SUP + PsyConstants.COUPON_NO, null));
                     break;
-                case PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM:
+                //个人体验
+                case 2 + PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM:
                     coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_EXP + PsyConstants.COUPON_NO, null));
                     break;
-                case PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
+                //咨询师课程
+                case 2 + PsyConstants.CONSULTANT_ORDER_COURSE_NUM:
                     coupon.setCouponNo(OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_COURSE + PsyConstants.COUPON_NO, null));
                     break;
+                    
                 default:
                     throw new ServiceException(temId + "优惠券模版领取异常, 没有相应的服务类型.");
             }
             coupon.setTemplateId(temId);
             coupon.setConsultantId(req.getConsultId());
+            coupon.setUserId(req.getUserId());
             coupon.setIsUsable(0);
             coupon.setCreateTime(new Date());
             coupon.setExpireDate(LocalDate.now().plusDays(couponTemplate.getValidityDay()).format(formatter));

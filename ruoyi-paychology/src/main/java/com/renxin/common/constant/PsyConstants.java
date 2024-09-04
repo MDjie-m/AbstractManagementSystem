@@ -21,11 +21,21 @@ public class PsyConstants {
     public static final String CONSULTANT_ORDER_COURSE_NUM = "4"; //课程
     public static final String CONSULTANT_ORDER_PACKAGE_NUM = "5"; //套餐
 
+    //来访者订单类型
+    //public static final String POCKET_ORDER_SPEAK = "QS"; //倾诉
+    public static final String POCKET_ORDER_CONSULT = "ZX"; //咨询
+    public static final String POCKET_ORDER_GAUGE = "CP"; //测评
+    public static final String POCKET_ORDER_COURSE = "LFZKC"; //课程
+
+    //public static final String POCKET_ORDER_SPEAK_NUM = "1"; //倾诉
+    public static final String POCKET_ORDER_CONSULT_NUM = "2"; //咨询
+    public static final String POCKET_ORDER_GAUGE_NUM = "3"; //测评
+    public static final String POCKET_ORDER_COURSE_NUM = "4"; //课程
+
     //优惠券
     public static final String COUPON_NO = "YHQ"; //优惠券
     
     //用户类型
-
     public static final Integer USER_CONSULTED = 1; //来访者
     public static final Integer USER_CONSULTANT = 2; //咨询师
     public static final Integer USER_ADMIN_ = 3; //管理员

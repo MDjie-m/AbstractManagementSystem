@@ -22,6 +22,8 @@ public class ReceiveFreeCouponReq extends BaseValObj implements Serializable
 
     /** 咨询师id */
     private Long consultId;
+    
+    private Long userId;
 
     /** 优惠券id 逗号分隔 */
     private String couponTemplateIdStr;

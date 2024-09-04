@@ -44,8 +44,8 @@ public class PsyCouponTemplate extends BaseEntity
     @Excel(name = "券类型  1.抵扣券   2.折扣券")
     private Integer couponType;
 
-    /** 服务类型  11.团督  12.个督  13.体验  14.咨询师课程    21.倾诉  22.咨询  23.测评  24.来访者课程   */
-    @Excel(name = "服务类型  11.团督  12.个督  13.体验  14.咨询师课程    21.倾诉  22.咨询  23.测评  24.来访者课程  ")
+    /** 服务类型  11.倾诉  12.咨询  13.测评  14.来访者课程    21.团督  22.个督  23.体验  24.咨询师课程    */
+    @Excel(name = "服务类型  11.倾诉  12.咨询  13.测评  14.来访者课程    21.团督  22.个督  23.体验  24.咨询师课程   ")
     private Integer serverType;
 
     /** 最大抵扣金额 */

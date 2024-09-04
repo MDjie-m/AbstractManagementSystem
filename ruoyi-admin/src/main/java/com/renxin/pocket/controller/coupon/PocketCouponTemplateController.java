@@ -1,17 +1,14 @@
-package com.renxin.consultant.controller;
+package com.renxin.pocket.controller.coupon;
 
 
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.page.TableDataInfo;
-import com.renxin.common.utils.poi.ExcelUtil;
 import com.renxin.psychology.domain.PsyCouponTemplate;
 import com.renxin.psychology.service.IPsyCouponTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -21,8 +18,8 @@ import java.util.List;
  * @date 2024-08-02
  */
 @RestController
-@RequestMapping("/consultant/couponTemplate")
-public class ConsultantCouponTemplateController extends BaseController
+@RequestMapping("/pocket/couponTemplate")
+public class PocketCouponTemplateController extends BaseController
 {
     @Autowired
     private IPsyCouponTemplateService psyCouponTemplateService;
@@ -35,7 +32,7 @@ public class ConsultantCouponTemplateController extends BaseController
     public TableDataInfo list(@RequestBody PsyCouponTemplate psyCouponTemplate)
     {
         startPage();
-        psyCouponTemplate.setUserType(2);//咨询师
+        psyCouponTemplate.setUserType(1);//来访者
         List<PsyCouponTemplate> list = psyCouponTemplateService.selectPsyCouponTemplateList(psyCouponTemplate);
         return getDataTable(list);
     }
