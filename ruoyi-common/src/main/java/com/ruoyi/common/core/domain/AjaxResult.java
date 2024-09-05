@@ -61,7 +61,18 @@ public class AjaxResult extends HashMap<String, Object>
 
     /**
      * 返回成功消息
-     * 
+     *
+     * @return 成功消息
+     */
+    public static <T> AjaxResult ok(T data)
+    {
+        return new AjaxResult(HttpStatus.SUCCESS,"操作成功",data);
+    }
+
+
+    /**
+     * 返回成功消息
+     *
      * @return 成功消息
      */
     public static AjaxResult success()

@@ -49,6 +49,9 @@ public class TokenService
 
     protected static final long MILLIS_MINUTE = 60 * MILLIS_SECOND;
 
+    //过期时间一个月
+//    protected static final long EXPIRE_TIME = 60 * MILLIS_SECOND*60*24*30;
+
     private static final Long MILLIS_MINUTE_TEN = 20 * 60 * 1000L;
 
     @Autowired
