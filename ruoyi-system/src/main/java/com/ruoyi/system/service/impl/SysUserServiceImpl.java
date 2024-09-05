@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
+
+import com.ruoyi.common.core.domain.entity.SysUserDetail;
+import com.ruoyi.system.mapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +25,6 @@ import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.domain.SysUserRole;
-import com.ruoyi.system.mapper.SysPostMapper;
-import com.ruoyi.system.mapper.SysRoleMapper;
-import com.ruoyi.system.mapper.SysUserMapper;
-import com.ruoyi.system.mapper.SysUserPostMapper;
-import com.ruoyi.system.mapper.SysUserRoleMapper;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysUserService;
@@ -64,6 +62,9 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Autowired
     protected Validator validator;
+
+    @Autowired
+    private  SysUserDetailMapper detailMapper;
 
     /**
      * 根据条件分页查询用户列表
@@ -261,11 +262,16 @@ public class SysUserServiceImpl implements ISysUserService
     public int insertUser(SysUser user)
     {
         // 新增用户信息
+        user.setUserDetailsId(Long.toString(user.getUserId()));
         int rows = userMapper.insertUser(user);
         // 新增用户岗位关联
         insertUserPost(user);
         // 新增用户与角色管理
         insertUserRole(user);
+        //当添加user数据时将部门内容存入userdetail表中
+        SysUserDetail userDetail = user.getUserDetail();
+        userDetail.setUserDetailsId(user.getUserDetailsId());
+        detailMapper.insertSysUserDetail(userDetail);
         return rows;
     }
 
@@ -300,6 +306,7 @@ public class SysUserServiceImpl implements ISysUserService
         userPostMapper.deleteUserPostByUserId(userId);
         // 新增用户与岗位管理
         insertUserPost(user);
+        detailMapper.updateSysUserDetail(user.getUserDetail());
         return userMapper.updateUser(user);
     }
 
@@ -466,6 +473,7 @@ public class SysUserServiceImpl implements ISysUserService
         {
             checkUserAllowed(new SysUser(userId));
             checkUserDataScope(userId);
+            detailMapper.deleteSysUserDetailByUserDetailsId(selectUserById(userId).getUserDetailsId());
         }
         // 删除用户与角色关联
         userRoleMapper.deleteUserRole(userIds);

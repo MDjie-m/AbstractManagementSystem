@@ -3,6 +3,10 @@ package com.ruoyi.common.core.domain.entity;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.*;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.annotation.Sensitive;
+import com.ruoyi.common.enums.DesensitizedType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -30,7 +34,7 @@ public class SysUser extends BaseEntity
     private Long deptId;
 
     /** 用户账号 */
-    @Excel(name = "登录名称")
+    @Excel(name = "登录账号")
     private String userName;
 
     /** 用户昵称 */
@@ -39,10 +43,12 @@ public class SysUser extends BaseEntity
 
     /** 用户邮箱 */
     @Excel(name = "用户邮箱")
+    @Sensitive(desensitizedType = DesensitizedType.EMAIL)
     private String email;
 
     /** 手机号码 */
     @Excel(name = "手机号码", cellType = ColumnType.TEXT)
+    @Sensitive(desensitizedType = DesensitizedType.PHONE)
     private String phonenumber;
 
     /** 用户性别 */
@@ -53,6 +59,7 @@ public class SysUser extends BaseEntity
     private String avatar;
 
     /** 密码 */
+    @Sensitive(desensitizedType = DesensitizedType.PASSWORD)
     private String password;
 
     /** 帐号状态（0正常 1停用） */
@@ -61,6 +68,32 @@ public class SysUser extends BaseEntity
 
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;
+
+    /** 是否为子账号（0,代表否 1 代表是子账号） */
+    @Excel(name = "是否为子账号", readConverterExp = "0=否,1=是")
+    private Integer subAccountFlag;
+
+    /** 供应商id */
+    @Excel(name = "供应商id")
+    private String supplierId;
+
+
+    /** 用户详情id */
+    @Excel(name = "用户详情id" ,type = Type.EXPORT)
+    private String userDetailsId;
+
+    /** 有效期 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "有效期", width = 30, dateFormat = "yyyy-MM-dd", type = Type.ALL)
+    private Date expirationDate;
+
+    /** 直接上级用户id */
+    @Excel(name = "直接上级用户id")
+    private String parentUserId;
+
+    /** 类别职位 */
+    @Excel(name = "类别职位")
+    private String position;
 
     /** 最后登录IP */
     @Excel(name = "最后登录IP", type = Type.EXPORT)
@@ -77,6 +110,23 @@ public class SysUser extends BaseEntity
     })
     private SysDept dept;
 
+    /** 用户详情对象 */
+    @Excels({
+            @Excel(name = "中文姓名", targetAttr = "userNameCn", type = Type.ALL),
+            @Excel(name = "英文姓名", targetAttr = "userNameEn", type = Type.ALL),
+            @Excel(name = "本国姓名", targetAttr = "userNameOwn", type = Type.ALL),
+            @Excel(name = "国家", targetAttr = "country", type = Type.ALL),
+            @Excel(name = "省份", targetAttr = "province", type = Type.ALL),
+            @Excel(name = "市、区", targetAttr = "city", type = Type.ALL),
+            @Excel(name = "区", targetAttr = "area", type = Type.ALL),
+            @Excel(name = "家庭地址", targetAttr = "detailedAddress", type = Type.ALL),
+            @Excel(name = "负责品类", targetAttr = "principalProductType", type = Type.ALL),
+            @Excel(name = "负责产品", targetAttr = "principalProduct", type = Type.ALL),
+            @Excel(name = "公司工号", targetAttr = "companyCid", type = Type.ALL),
+            @Excel(name = "身份证号", targetAttr = "identificationNumber", type = Type.ALL)
+    })
+    private SysUserDetail userDetail;
+
     /** 角色对象 */
     private List<SysRole> roles;
 
@@ -88,6 +138,50 @@ public class SysUser extends BaseEntity
 
     /** 角色ID */
     private Long roleId;
+    private String userType;
+
+    public SysUser( Long userId, Long deptId, String userName, String nickName, String userType,
+                    String email, String phonenumber, String sex, String avatar, String password,
+                    String status, String delFlag, Integer subAccountFlag, String supplierId,
+                    String userDetailsId, Date expirationDate, String parentUserId, String position,
+                    String loginIp, Date loginDate, SysDept dept, List<SysRole> roles, Long[] roleIds,
+                    Long[] postIds, Long roleId,SysUserDetail userDetail) {
+        this.userId = userId;
+        this.deptId = deptId;
+        this.userName = userName;
+        this.nickName = nickName;
+        this.userType = userType;
+        this.email = email;
+        this.phonenumber = phonenumber;
+        this.sex = sex;
+        this.avatar = avatar;
+        this.password = password;
+        this.status = status;
+        this.delFlag = delFlag;
+        this.subAccountFlag = subAccountFlag;
+        this.supplierId = supplierId;
+        this.userDetailsId = userDetailsId;
+        this.expirationDate = expirationDate;
+        this.parentUserId = parentUserId;
+        this.position = position;
+        this.loginIp = loginIp;
+        this.loginDate = loginDate;
+        this.dept = dept;
+        this.roles = roles;
+        this.roleIds = roleIds;
+        this.postIds = postIds;
+        this.roleId = roleId;
+        this.userType = userType;
+        this.userDetail = userDetail;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 
     public SysUser()
     {
@@ -257,6 +351,16 @@ public class SysUser extends BaseEntity
         this.dept = dept;
     }
 
+    public SysUserDetail getUserDetail()
+    {
+        return userDetail;
+    }
+
+    public void setUserDetail(SysUserDetail userDetail)
+    {
+        this.userDetail = userDetail;
+    }
+
     public List<SysRole> getRoles()
     {
         return roles;
@@ -319,6 +423,103 @@ public class SysUser extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .append("dept", getDept())
+            .append("userDetail", getUserDetail())
             .toString();
+    }
+
+    /**
+     * 获取
+     * @return subAccountFlag
+     */
+    public Integer getSubAccountFlag() {
+        return subAccountFlag;
+    }
+
+    /**
+     * 设置
+     * @param subAccountFlag
+     */
+    public void setSubAccountFlag(Integer subAccountFlag) {
+        this.subAccountFlag = subAccountFlag;
+    }
+
+    /**
+     * 获取
+     * @return supplierId
+     */
+    public String getSupplierId() {
+        return supplierId;
+    }
+
+    /**
+     * 设置
+     * @param supplierId
+     */
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    /**
+     * 获取
+     * @return userDetailsId
+     */
+    public String getUserDetailsId() {
+        return userDetailsId;
+    }
+
+    /**
+     * 设置
+     * @param userDetailsId
+     */
+    public void setUserDetailsId(String userDetailsId) {
+        this.userDetailsId = userDetailsId;
+    }
+
+    /**
+     * 获取
+     * @return expirationDate
+     */
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    /**
+     * 设置
+     * @param expirationDate
+     */
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    /**
+     * 获取
+     * @return parentUserId
+     */
+    public String getParentUserId() {
+        return parentUserId;
+    }
+
+    /**
+     * 设置
+     * @param parentUserId
+     */
+    public void setParentUserId(String parentUserId) {
+        this.parentUserId = parentUserId;
+    }
+
+    /**
+     * 获取
+     * @return position
+     */
+    public String getPosition() {
+        return position;
+    }
+
+    /**
+     * 设置
+     * @param position
+     */
+    public void setPosition(String position) {
+        this.position = position;
     }
 }

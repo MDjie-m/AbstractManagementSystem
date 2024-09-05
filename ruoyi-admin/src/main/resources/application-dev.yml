@@ -1,0 +1,5 @@
+# 本机配置，使用这个环境请在application中spring下的profiles:active: druid后面加上 ",dev"
+staticFile:
+  # 注意本机是http 不是https，，这里是访问获取导入模板接口时拼接用到的前缀路径
+  rootPath: 'http://localhost:8080'
+

@@ -1,0 +1,204 @@
+package com.ruoyi.system.service.impl;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.uuid.UUID;
+import com.ruoyi.system.domain.SysSupplierPrice;
+import com.ruoyi.system.domain.dto.SysProDuctDTO;
+import com.ruoyi.system.domain.vo.SysProductVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.ruoyi.system.mapper.SysProductMapper;
+import com.ruoyi.system.domain.SysProduct;
+import com.ruoyi.system.service.ISysProductService;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * 产品Service业务层处理
+ * 
+ * @author tyc
+ * @date 2024-08-23
+ */
+@Service
+public class SysProductServiceImpl implements ISysProductService {
+    private static final Logger log = LoggerFactory.getLogger(SysProductServiceImpl.class);
+
+    @Autowired
+    private SysProductMapper sysProductMapper;
+
+    /**
+     * 查询产品
+     * 
+     * @param sysProDuctDTO 产品
+     * @return 产品
+     */
+    @Override
+    public SysProductVO selectSysProductByProductId(SysProDuctDTO sysProDuctDTO)
+    {
+//        SysProductVO sysProductVo = sysProductMapper.selectSysProductByProductId(sysProDuctDTO);//有bug，离谱，后面再看.奇怪隔了一天来看bug没了
+        SysProductVO sysProductVo = sysProductMapper.getSysProductByProductId(sysProDuctDTO.getProductId());
+        //查产品详情就没有查供应商名称，后续有需要可以查，这里目前只去查了最新的报价
+        if(!Objects.isNull(sysProductVo)){
+            SysSupplierPrice sysSupplierPrice = sysProductMapper.selectPriceByProductId(sysProductVo.getProductId());
+            // 赋值单价和单位、报价和单位的操作
+            if (sysSupplierPrice != null) {
+                sysProductVo.setPriceRmb(sysSupplierPrice.getPriceRmb());
+                sysProductVo.setRMBQuoteUnit(sysSupplierPrice.getRMBQuoteUnit());
+                sysProductVo.setUnitprice(sysSupplierPrice.getUnitprice());
+                sysProductVo.setUnitpriceUnit(sysSupplierPrice.getUnitpriceUnit());
+            }
+        }
+        return sysProductVo;
+    }
+
+    /**
+     * 查询产品列表
+     * 
+     * @param sysProDuctDTO 产品
+     * @return 产品
+     */
+    @Override
+    @Transactional
+    public List<SysProductVO> selectSysProductList(SysProDuctDTO sysProDuctDTO)
+    {
+        List<SysProductVO> list = sysProductMapper.selectSysProductList(sysProDuctDTO);
+        return list;
+    }
+
+    /**
+     * 新增产品
+     * 
+     * @param sysProduct 产品
+     * @return 结果
+     */
+    @Override
+    public int insertSysProduct(SysProduct sysProduct)
+    {
+        sysProduct.setProductId(UUID.randomUUID().toString());
+        return sysProductMapper.insertSysProduct(sysProduct);
+    }
+
+    /**
+     * 修改产品
+     * 
+     * @param sysProduct 产品
+     * @return 结果
+     */
+    @Override
+    public int updateSysProduct(SysProduct sysProduct)
+    {
+        return sysProductMapper.updateSysProduct(sysProduct);
+    }
+
+    /**
+     * 批量删除产品
+     * 
+     * @param productIds 需要删除的产品主键
+     * @return 结果
+     */
+    @Override
+    public int deleteSysProductByProductIds(List<String> productIds)
+    {
+        return sysProductMapper.deleteSysProductByProductIds(productIds);
+    }
+
+    /**
+     * 删除产品信息
+     * 
+     * @param productId 产品主键
+     * @return 结果
+     */
+    @Override
+    public int deleteSysProductByProductId(String productId)
+    {
+        return sysProductMapper.deleteSysProductByProductId(productId);
+    }
+
+    /**
+     * 导入产品数据
+     *
+     * @param productList     产品数据列表
+     * @param isUpdateSupport 是否更新支持，如果已存在，则进行更新数据
+     * @return
+     */
+    @Override
+    public String importProduct(List<SysProduct> productList, Boolean isUpdateSupport) {
+//        if (StringUtils.isNull(productList) || productList.size() == 0) {
+//            throw new ServiceException("导入产品数据不能为空！");
+//        }
+//        int successNum = 0;
+//        int failureNum = 0;
+        StringBuilder successMsg = new StringBuilder();
+//        StringBuilder failureMsg = new StringBuilder();
+//        for (SysProduct sysProduct : productList) {
+//            try {
+//                // 验证
+//                List<SysProduct> list = sysProductMapper.selectSysProductList(sysProduct);
+//                if (list.isEmpty()) {
+//                    sysProduct.setProductId(UUID.randomUUID().toString());
+//                    sysProductMapper.insertSysProduct(sysProduct);
+//                    successNum++;
+//                    successMsg.append("<br/>" + successNum + "、产品 " + sysProduct.getProductName() + " 导入成功");
+//                } else if (isUpdateSupport) {
+//                    sysProductMapper.updateSysProduct(sysProduct);
+//                    successNum++;
+//                    successMsg.append("<br/>" + successNum + "、产品 " + sysProduct.getProductName() + " 更新成功");
+//                } else {
+//                    failureNum++;
+//                    failureMsg.append("<br/>" + failureNum + "、产品 " + sysProduct.getProductName() + " 已存在");
+//                }
+//            } catch (Exception e) {
+//                failureNum++;
+//                String msg = "<br/>" + failureNum + "、产品 " + sysProduct.getProductName() + " 导入失败：";
+//                failureMsg.append(msg + e.getMessage());
+//                log.error(msg, e);
+//            }
+//        }
+//        if (failureNum > 0) {
+//            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+//            throw new ServiceException(failureMsg.toString());
+//        } else {
+//            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+//        }
+        return successMsg.toString();
+    }
+
+    /**
+     * 修改产品状态前端切换状态
+     *
+     * @param productId 产品id
+     * @param quotationFlag 产品是否可报价的当前的状态
+     * @return 结果
+     */
+    @Override
+    public int updateStatus(String productId,Integer quotationFlag) {
+        return sysProductMapper.updateStatus(productId,quotationFlag);
+    }
+
+    /**
+     * 修改产品报价清单的状态
+     *
+     * @param sysProDuctDTO 产品dto
+     * @return 结果
+     */
+    @Override
+    public int updateQuoteListStatus(SysProDuctDTO sysProDuctDTO) {
+        return sysProductMapper.updateQuoteListStatus(sysProDuctDTO);
+    }
+
+    /**
+     * 修改产品询价清单的状态
+     *
+     * @param sysProDuctDTO 产品dto
+     * @return 结果
+     */
+    @Override
+    public int updateInquiryListStatus(SysProDuctDTO sysProDuctDTO) {
+        return sysProductMapper.updateInquiryListStatus(sysProDuctDTO);
+    }
+}

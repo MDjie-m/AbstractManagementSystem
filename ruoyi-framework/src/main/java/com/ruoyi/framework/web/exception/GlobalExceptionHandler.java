@@ -1,6 +1,8 @@
 package com.ruoyi.framework.web.exception;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.ruoyi.common.exception.easyexcel.ExcelException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -142,4 +144,10 @@ public class GlobalExceptionHandler
     {
         return AjaxResult.error("演示模式，不允许操作");
     }
+
+    /**
+     * Excel异常
+     */
+    @ExceptionHandler(ExcelException.class)
+    public AjaxResult handleExcelNullException(ExcelException e) { return AjaxResult.warn(e.getString());}
 }

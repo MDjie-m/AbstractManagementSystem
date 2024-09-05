@@ -23,10 +23,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"     column="update_by"    />
         <result property="updateTime"   column="update_time"  />
         <result property="remark"       column="remark"       />
+        <result property="userType"     column="user_type"       />
+		<result property="subAccountFlag"   column="sub_account_flag"  />
+		<result property="supplierId"     column="supplier_id"    />
+		<result property="userDetailsId"   column="user_details_id"  />
+		<result property="expirationDate"       column="expiration_date"       />
+		<result property="parentUserId"     column="parent_user_id"       />
+		<result property="position"     column="position"       />
         <association property="dept"    javaType="SysDept"         resultMap="deptResult" />
+		<association property="userDetail"    javaType="SysUserDetail"         resultMap="detailResult" />
         <collection  property="roles"   javaType="java.util.List"  resultMap="RoleResult" />
     </resultMap>
-	
+
+	<resultMap id="detailResult" type="sysUserDetail">
+		<id property="userDetailsId"   column="user_details_id"   />
+		<result property="userNameCn"    column="user_name_cn"     />
+		<result property="userNameEn"  column="user_name_en"   />
+		<result property="userNameOwn"  column="user_name_own"   />
+		<result property="country" column="country"   />
+		<result property="province"  column="province"   />
+		<result property="city" column="city"   />
+		<result property="area" column="area"   />
+		<result property="detailedAddress"  column="detailed_address"   />
+		<result property="principalProductType"    column="principal_product_type"      />
+		<result property="principalProduct"    column="principal_product" />
+		<result property="companyCid"    column="company_cid"      />
+		<result property="identificationNumber"    column="identification_number" />
+	</resultMap>
+
     <resultMap id="deptResult" type="SysDept">
         <id     property="deptId"    column="dept_id"     />
         <result property="parentId"  column="parent_id"   />
@@ -34,6 +58,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="ancestors" column="ancestors"   />
         <result property="orderNum"  column="order_num"   />
         <result property="leader"    column="leader"      />
+        <result property="phone"    column="phone"      />
+        <result property="email"    column="dept_email"      />
         <result property="status"    column="dept_status" />
     </resultMap>
 	
@@ -47,18 +73,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 	
 	<sql id="selectUserVo">
-        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, 
-        d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.status as dept_status,
-        r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
+        select u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
+			   u.sub_account_flag  , u.supplier_id  , u.user_details_id  , u.expiration_date  , u.parent_user_id , u.position,
+        d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone,  d.email as dept_email,  d.status as dept_status,
+        r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status,
+	 ud.user_name_cn,ud.user_name_en,ud.user_name_own,ud.country,ud.province,ud.city,ud.area,ud.detailed_address,ud.principal_product_type,ud.principal_product,ud.company_cid,ud.identification_number,ud.remark
         from sys_user u
 		    left join sys_dept d on u.dept_id = d.dept_id
 		    left join sys_user_role ur on u.user_id = ur.user_id
 		    left join sys_role r on r.role_id = ur.role_id
+            left join sys_user_detail  ud on ud.user_details_id = u.user_details_id
     </sql>
     
-    <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
-		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+    <select id="selectUserList" parameterType="SysUser"
+			resultMap="SysUserResult" >
+		select u.user_id  , u.dept_id , u.nick_name , u.user_name , u.email, u.avatar, u.phonenumber, u.sex, u.status, u.del_flag , u.login_ip , u.login_date , u.create_by , u.create_time , u.remark,
+		       u.sub_account_flag  , u.supplier_id  , u.user_details_id  , u.expiration_date  ,u.parent_user_id , u.position,
+		       d.dept_name , d.leader,
+		ud.user_name_cn  , ud.user_name_en  , ud.user_name_own , ud.country , ud.province , ud.city , ud.area , ud.detailed_address ,
+		ud.principal_product_type   , ud.principal_product   , ud.company_cid  , ud.identification_number  , ud.remark
+		from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
+		left join sys_user_detail ud on u.user_details_id = ud.user_details_id
 		where u.del_flag = '0'
 		<if test="userId != null and userId != 0">
 			AND u.user_id = #{userId}
@@ -141,6 +177,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
 		select user_id, email from sys_user where email = #{email} and del_flag = '0' limit 1
 	</select>
+
+	<!--  获取最新的用户id	-->
+	<select id="getNewId" resultType="long">
+		select user_id
+		from sys_user
+		where del_flag = '0'
+		order by user_id desc
+		limit 1;
+	</select>
 	
 	<insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
  		insert into sys_user(
@@ -156,6 +201,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="status != null and status != ''">status,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
  			<if test="remark != null and remark != ''">remark,</if>
+ 			<if test="userType != null and userType != ''">user_type,</if>
+	     	<if test="subAccountFlag != null ">sub_account_flag,</if>
+	     	<if test="supplierId != null and supplierId != ''">supplier_id,</if>
+	     	<if test="userDetailsId != null and userDetailsId != ''">user_details_id,</if>
+	     	<if test="expirationDate != null " >expiration_date,</if>
+	     	<if test="parentUserId != null and parentUserId != ''">parent_user_id,</if>
+	     	<if test="position != null and position != ''">position,</if>
  			create_time
  		)values(
  			<if test="userId != null and userId != ''">#{userId},</if>
@@ -170,8 +222,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="status != null and status != ''">#{status},</if>
  			<if test="createBy != null and createBy != ''">#{createBy},</if>
  			<if test="remark != null and remark != ''">#{remark},</if>
+ 			<if test="userType != null and userType != ''">#{userType},</if>
+		    <if test="subAccountFlag != null ">#{subAccountFlag},</if>
+		    <if test="supplierId != null and supplierId != ''">#{supplierId},</if>
+		    <if test="userDetailsId != null and userDetailsId != ''">#{userDetailsId},</if>
+		    <if test="expirationDate != null">#{expirationDate},</if>
+		    <if test="parentUserId != null and parentUserId != ''">#{parentUserId},</if>
+		    <if test="position != null and position != ''">#{position},</if>
  			sysdate()
  		)
+	</insert>
+
+	<!--  供应商导入时批量添加用户 	-->
+	<insert id="saveSysUser">
+		insert into sys_user(
+		dept_id,user_name,nick_name,email,avatar,phonenumber,
+		password,status,create_by,remark,user_type,sub_account_flag,
+		supplier_id,user_details_id,expiration_date,parent_user_id,
+		position,create_time
+		) values
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.deptId},#{item.userName},#{item.nickName},#{item.email},
+			 #{item.avatar},#{item.phonenumber},#{item.password},#{item.status},
+			 #{item.createBy},#{item.remark},#{item.userType},#{item.subAccountFlag},
+			 #{item.supplierId},#{item.userDetailsId},#{item.expirationDate},
+			 #{item.parentUserId},#{item.position},sysdate())
+		</foreach>
 	</insert>
 	
 	<update id="updateUser" parameterType="SysUser">

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysRegionMapper">
+    
+    <resultMap id="country" type="SysCountries">
+        <id property="id" column="id"/>
+        <result property="continentId" column="continent_id" />
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="fullName" column="full_name"/>
+        <result property="cname" column="cname"/>
+        <result property="fullCname" column="full_cname"/>
+        <result property="lowerName" column="lower_name"/>
+        <result property="mobilePrefix" column="mobile_prefix"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <resultMap id="state" type="SysStates">
+        <id property="id" column="id"/>
+        <result property="countryId" column="country_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="cname" column="cname"/>
+        <result property="lowerName" column="lower_name"/>
+        <result property="codeFull" column="code_full"/>
+        <result property="mobilePrefix" column="mobile_prefix"/>
+        <result property="areaId" column="area_id"/>
+    </resultMap>
+
+    <resultMap id="city" type="SysCities">
+        <id property="id" column="id"/>
+        <result property="stateId" column="state_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="cname" column="cname"/>
+        <result property="lowerName" column="lower_name"/>
+        <result property="codeFull" column="code_full"/>
+    </resultMap>
+
+    <resultMap id="region" type="SysRegions" >
+        <id property="id" column="id"/>
+        <result property="cityId" column="city_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="cname" column="cname"/>
+        <result property="lowerName" column="lower_name"/>
+        <result property="codeFull" column="code_full"/>
+    </resultMap>
+
+    <!--  查询所有国家  -->
+    <select id="selectAllCountries" resultMap="country" parameterType="com.ruoyi.system.domain.regions.SysCountries">
+        select *
+        from sys_countries
+        <where>
+            <if test="id != null and id != ''">id = #{id}</if>
+            <if test="cname != null and cname != ''"> and cname = #{cname}</if>
+        </where>
+    </select>
+
+    <!--  根据国家id查询省份(州)  -->
+    <select id="selectAllStates" resultMap="state" parameterType="com.ruoyi.system.domain.regions.SysStates">
+        select *
+        from sys_states
+        <where>
+            <if test="countryId != null and countryId != ''">country_id = #{countryId}</if>
+            <if test="cname != null and cname != ''"> and cname = #{cname}</if>
+        </where>
+    </select>
+    
+    <!--  根据省份(州)查询区(市)  -->
+    <select id="selectAllCities" resultMap="city">
+        select *
+        from sys_cities
+        <where>
+            <if test="stateId != null and stateId != ''">state_id = #{stateId}</if>
+            <if test="cname != null and cname != ''"> and cname = #{cname}</if>
+        </where>
+    </select>
+
+    <!--  根据查询区(市)查询县  -->
+    <select id="selectAllRegions" resultMap="region">
+        select *
+        from sys_regions
+        <where>
+            <if test="cityId != null and cityId != ''">city_id = #{cityId}</if>
+            <if test="cname != null and cname != ''"> and cname = #{cname}</if>
+        </where>
+    </select>
+
+</mapper>
