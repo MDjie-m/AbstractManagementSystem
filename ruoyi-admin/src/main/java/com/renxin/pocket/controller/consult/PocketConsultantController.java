@@ -89,6 +89,7 @@ public class PocketConsultantController extends BaseController
         return AjaxResult.success(psyConsultService.getOne(id));
     }
 
+    
     @PostMapping(value = "/serve/{id}")
     @RateLimiter
     public AjaxResult getServe(@PathVariable("id") Long id)
@@ -96,6 +97,7 @@ public class PocketConsultantController extends BaseController
         PsyConsultServeConfigReq req = new PsyConsultServeConfigReq();
         req.setCId(id);
         req.setStatus("0");
+        req.setServiceObject("1");//面向来访者
         return AjaxResult.success(psyConsultServeConfigService.getList(req));
     }
 

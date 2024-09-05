@@ -13,10 +13,15 @@
         <result property="wxOpenid" column="wx_openid"/>
         <result property="createTime" column="create_time"/>
         <result property="integral" column="integral"/>
+        <result property="isNewPeople" column="is_new_people"/>
+        <result property="deviceId" column="device_id"/>
+        <result property="deviceBrand" column="device_brand"/>
+        <result property="deviceModel" column="device_model"/>
+        <result property="lastLoginIp" column="last_login_ip"/>
     </resultMap>
 
     <sql id="selectPsyUserVo">
-        select id, name, phone, avatar, status, wx_openid, integral, create_time
+        select id, name, phone, avatar, status, wx_openid, integral, create_time , is_new_people , device_id , device_brand, device_model, last_login_ip
         from psy_user
     </sql>
 
@@ -33,6 +38,7 @@
 
     <select id="selectPsyUserById"  resultMap="PsyUserResult">
         select user.id, user.name, user.phone, user.avatar, user.status, user.wx_openid, user.integral, user.create_time , user.sex,
+               user.is_new_people , user.device_id , user.device_brand, user.device_model, user.last_login_ip, 
                label.user_fill_label as userFillLabel, label.consultant_fill_label as consultantFillLabel, label.admin_fill_label as adminFillLabel
         from psy_user user
         left join psy_user_label label on label.user_id = user.id
@@ -71,6 +77,11 @@
             <if test="status != null">status = #{status},</if>
             <if test="wxOpenid != null">wx_openid = #{wxOpenid},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="isNewPeople != null">is_new_people = #{isNewPeople},</if>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="deviceBrand != null">device_brand = #{deviceBrand},</if>
+            <if test="deviceModel != null">device_model = #{deviceModel},</if>
+            <if test="lastLoginIp != null">last_login_ip = #{lastLoginIp},</if>
         </trim>
         where id = #{id}
     </update>
@@ -96,6 +107,11 @@
             <if test="avatar != null">avatar,</if>
             <if test="status != null">status,</if>
             <if test="wxOpenid != null">wx_openid,</if>
+            <if test="isNewPeople != null">is_new_people,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="deviceBrand != null">device_brand,</if>
+            <if test="deviceModel != null">device_model,</if>
+            <if test="lastLoginIp != null">last_login_ip,</if>
             create_time,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -104,6 +120,11 @@
             <if test="avatar != null">#{avatar},</if>
             <if test="status != null">#{status},</if>
             <if test="wxOpenid != null">#{wxOpenid},</if>
+            <if test="isNewPeople != null">#{isNewPeople},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="deviceBrand != null">#{deviceBrand},</if>
+            <if test="deviceModel != null">#{deviceModel},</if>
+            <if test="lastLoginIp != null">#{lastLoginIp},</if>
             #{createTime},
         </trim>
         ON DUPLICATE KEY UPDATE create_time = now()
@@ -111,7 +132,7 @@
     </insert>
 
     <select id="queryUserByAccount" resultType="com.renxin.psychology.domain.PsyUser">
-        select id, name, phone, avatar, status, wx_openid, create_time
+        select id, name, phone, avatar, status, wx_openid, create_time, is_new_people , device_id , device_brand, device_model, last_login_ip
         from psy_user
         where wx_openid = #{account} or phone = #{account}
         limit 1

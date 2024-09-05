@@ -56,5 +56,6 @@ public class CourseOrderVO {
     @ApiModelProperty("课程章节完成数量")
     private String  finishNum;
 
-
+    private BigDecimal originalPrice;//原价
+    private String couponNo;//使用优惠券编号
 }

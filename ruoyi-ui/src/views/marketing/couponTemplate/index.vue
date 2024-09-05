@@ -79,6 +79,7 @@
 
     <el-table v-loading="loading" :data="templateList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="id" align="center" prop="id" />
       <el-table-column label="面向用户类型" align="center" prop="userType" >
         <template slot-scope="scope">
           <dict-tag :options="dict.type.user_type" :value="scope.row.userType"/>

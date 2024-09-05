@@ -72,6 +72,12 @@ public class PsyCouponServiceImpl implements IPsyCouponService
     @Resource
     private IPsyGaugeService gaugeService;
 
+    @Autowired
+    private IPsyUserService psyUserService;
+
+    @Resource
+    private IPsyConsultService psyConsultService;
+
 
     /**
      * 查询用户-优惠券发行
@@ -161,7 +167,7 @@ public class PsyCouponServiceImpl implements IPsyCouponService
                 coupon.setIsQualify(true);
                 if (coupon.getCouponType() == 1){//抵扣券
                     BigDecimal payAmount = originalPrice.subtract(coupon.getMaxDeductionPrice());
-                    if (payAmount.compareTo(BigDecimal.ZERO) < 0) {
+                    if (payAmount.compareTo(BigDecimal.ZERO) <= 0) {
                         coupon.setPayAmount(BigDecimal.ZERO);
                     }else {
                         coupon.setPayAmount(payAmount);
@@ -367,6 +373,7 @@ public class PsyCouponServiceImpl implements IPsyCouponService
 
 
     //领取免费优惠券
+    @Transactional(rollbackFor = Exception.class)
     public void receiveFreeCoupon(ReceiveFreeCouponReq req){
         List<Long> couponTemplateIdList = Arrays.stream(req.getCouponTemplateIdStr().split(","))
                 .map(Long::valueOf)
@@ -384,7 +391,6 @@ public class PsyCouponServiceImpl implements IPsyCouponService
             
             //根据服务类型生成编号
             Integer serverType = couponTemplate.getServerType();
-            String userType = couponTemplate.getUserType() + "";
             switch ( serverType + ""){
                 //来访者咨询
                 case 1 + PsyConstants.POCKET_ORDER_CONSULT_NUM:
@@ -429,6 +435,18 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         }
         psyCouponMapper.insertPsyCouponList(couponList);
         
+        //修改"新用户"标识
+        if (ObjectUtils.isNotEmpty(req.getUserId())){
+            PsyUser psyUser = new PsyUser();
+                psyUser.setId(req.getUserId());
+                psyUser.setIsNewPeople(1);//老用户
+            psyUserService.updatePsyUser(psyUser);
+        }else if (ObjectUtils.isNotEmpty(req.getConsultId())){
+            PsyConsult psyConsult = new PsyConsult();
+                psyConsult.setId(req.getConsultId());
+                psyConsult.setIsNewPeople(1);//老用户
+            psyConsultService.updateById(psyConsult);
+        }
         
     }
     

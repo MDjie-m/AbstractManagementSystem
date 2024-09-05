@@ -41,11 +41,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="memo1"    column="memo1"    />
         <result property="reason"    column="reason"    />
         <result property="phone"    column="phone"    />
+        <result property="originalPrice"    column="original_price"    />
+        <result property="couponNo"    column="coupon_no"    />
     </resultMap>
 
     <sql id="selectPsyConsultOrderVo">
         select a.id, a.order_no, a.consult_id, a.ref_consult_id, a.ref_consult_name, a.consult_name, a.serve_id, a.serve_name, a.user_id, a.nick_name, a.amount, num, a.buy_num, a.del_flag,
-               a.status, a.create_by, a.create_time, a.update_by, a.update_time, a.pay, a.source, a.channel, a.pay_time, a.pay_status, a.order_time, b.phone, a.remark, a.memo1, a.reason, a.consult_type
+               a.status, a.create_by, a.create_time, a.update_by, a.update_time, a.pay, a.source, a.channel, a.pay_time, a.pay_status, a.order_time, b.phone, a.remark, a.memo1, a.reason, a.consult_type,
+               a.original_price,a.coupon_no
         from psy_consult_order a
             left join psy_user b on a.user_id = b.id
     </sql>
@@ -73,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select a.id, a.order_no, a.consult_id, a.consult_name, a.ref_consult_id, a.ref_consult_name, a.serve_id, a.serve_name, a.user_id,a.remark,a.memo1,a.reason,
         a.nick_name, a.amount, a.num, a.buy_num, a.del_flag, a.status, a.create_by, a.order_time,a.pay_status,
         a.create_time, a.update_by, a.update_time, a.pay, a.source, a.channel, a.pay_time, b.avatar,
+        a.original_price, a.coupon_no,
         s.mode, s.mode_name, s.num serve_num ,s.type, s.type_name, s.info, s.price, s.time, s.bound, s.bound_name, s.end,
         CASE
         WHEN a.STATUS = '0' THEN '待付款'
@@ -99,6 +103,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select a.id, a.order_no, a.consult_id, a.consult_name, a.ref_consult_id, a.ref_consult_name, a.serve_id, a.serve_name, a.user_id,a.remark,a.memo1,a.reason,
                a.nick_name, a.amount, a.num, a.buy_num, a.del_flag, a.status, a.create_by, a.order_time,
                a.create_time, a.update_by, a.update_time, b.avatar,b.wx_card, a.pay, a.source, a.channel, a.pay_time,a.pay_status,c.phone,
+               a.original_price, a.coupon_no,
                CASE
                    WHEN a.STATUS = '0' THEN '待付款'
                    WHEN a.STATUS = '1' THEN '进行中'

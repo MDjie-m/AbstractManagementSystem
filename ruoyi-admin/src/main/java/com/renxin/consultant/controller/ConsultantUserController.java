@@ -32,6 +32,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,6 +79,14 @@ public class ConsultantUserController extends BaseController {
             consultDTO.setConsultId(psyConsult.getId());
             consultDTO.setPhone( psyConsult.getPhonenumber());
             String token= consultantTokenService.createToken(consultDTO,360000);
+            
+            //更新设备信息
+            psyConsult.setDeviceId(consultLoginDTO.getDeviceId());
+            psyConsult.setDeviceBrand(consultLoginDTO.getDeviceBrand());
+            psyConsult.setDeviceModel(consultLoginDTO.getDeviceModel());
+            psyConsult.setLastLoginIp(consultLoginDTO.getLastLoginIp());
+            psyConsultService.updateById(psyConsult);
+            
             return AjaxResult.success(Constants.TOKEN_PREFIX + token);
         } catch (Exception e) {
             log.error("login error",e);

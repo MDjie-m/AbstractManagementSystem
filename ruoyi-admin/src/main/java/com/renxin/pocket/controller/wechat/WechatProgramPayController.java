@@ -9,6 +9,7 @@ import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.enums.LimitType;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.OrderIdUtils;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourCourse;
@@ -22,18 +23,21 @@ import com.renxin.pocket.controller.wechat.constant.WechatUrlConstants;
 import com.renxin.pocket.controller.wechat.dto.WechatPayDTO;
 import com.renxin.pocket.controller.wechat.utils.WechatPayV3Utils;
 import com.renxin.psychology.constant.ConsultConstant;
+import com.renxin.psychology.domain.PsyConsultServeConfig;
+import com.renxin.psychology.domain.PsyCoupon;
 import com.renxin.psychology.domain.PsyUser;
-import com.renxin.psychology.service.IPsyConsultOrderService;
-import com.renxin.psychology.service.IPsyConsultWorkService;
-import com.renxin.psychology.service.IPsyUserService;
+import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.wechat.service.WechatPayV3ApiService;
 import com.renxin.wechat.vo.WechatPayVO;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,11 +82,17 @@ public class WechatProgramPayController extends BaseController {
     private WechatPayV3ApiService wechatPayV3ApiService;
 
     @Resource
-    private ICourCourseService iCourCourseService;
+    private ICourCourseService courCourseService;
 
     @Resource
-    private IPsyGaugeService iPsyGaugeService;
+    private IPsyConsultServeService consultServeService;
 
+    @Resource
+    private IPsyGaugeService gaugeService;
+    
+    @Autowired
+    private IPsyCouponService couponService;
+    
     @Value("${wechat.appid}")
     private String WECHAT_MP_APPID;
 
@@ -98,28 +108,28 @@ public class WechatProgramPayController extends BaseController {
      */
     @PostMapping("/wechatPay")
     @RateLimiter(limitType = LimitType.IP)
+    @Transactional(rollbackFor = Exception.class)
     public AjaxResult wechatPay(@RequestBody WechatPayDTO wechatPayDTO, HttpServletRequest request) {
         //@TODO demo中先写死的一些参数
 
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
         Long userId = loginUser.getUserId();//用户id
-
-
+        wechatPayDTO.setUserId(userId);
+        
         String out_trade_no = null;
-
-        BigDecimal amount = wechatPayDTO.getAmount(); //单位：元
+       // BigDecimal amount = wechatPayDTO.getAmount(); //单位：元
+        BigDecimal amount = calcAmount(wechatPayDTO);//计算优惠券后金额
         String content = "支付demo-课程金"; //先写死一个商品描述
 
         switch (wechatPayDTO.getModule()) {
             case CourConstant.MODULE_COURSE:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.ORDER_COURSE, userId); //创建商户订单号
-                CourCourse courCourse = iCourCourseService.selectCourCourseById(wechatPayDTO.getCourseId());
+                CourCourse courCourse = courCourseService.selectCourCourseById(wechatPayDTO.getCourseId());
                 content = courCourse.getName() + "-" + courCourse.getAuthor();
-
                 break;
             case GaugeConstant.MODULE_GAUGE:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.ORDER_GAUGE, userId); //创建商户订单号
-                PsyGauge psyGauge = iPsyGaugeService.selectPsyGaugeById(wechatPayDTO.getGaugeId());
+                PsyGauge psyGauge = gaugeService.selectPsyGaugeById(wechatPayDTO.getGaugeId());
                 content = psyGauge.getTitle();
                 break;
             case ConsultConstant.MODULE_CONSULT:
@@ -151,7 +161,11 @@ public class WechatProgramPayController extends BaseController {
         WechatPayVO vo = BeanUtil.toBean(wechatPayDTO, WechatPayVO.class);
         vo.setOutTradeNo(out_trade_no);
         vo.setUserId(userId);
-        wechatPayV3ApiService.wechatPay(vo);
+        wechatPayV3ApiService.wechatPay(vo);//生成订单
+        //若应付金额为0, 无需发起支付
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return AjaxResult.success("订单应付金额为0, 无需发起支付");
+        }
 
         // 根据用户ID从用户表中查询openid
         PsyUser user = psyUserService.selectPsyUserById(userId);
@@ -195,6 +209,92 @@ public class WechatProgramPayController extends BaseController {
         result.put("signType", "RSA"); //加密方式 固定RSA
         result.put("out_trade_no", out_trade_no); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
         return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS ,result);
+    }
+    
+    //计算优惠后金额
+    private BigDecimal calcAmount(WechatPayDTO req){
+        String module = req.getModule();
+        String orderServerType = "";
+        String orderServerId = "";
+        if (module.equals(ConsultConstant.MODULE_CONSULT)){ 
+            orderServerType = "1" + PsyConstants.POCKET_ORDER_CONSULT_NUM; 
+            orderServerId = req.getOrderServerId();
+        }
+        if (module.equals(GaugeConstant.MODULE_GAUGE)){
+            orderServerType = "1" + PsyConstants.POCKET_ORDER_GAUGE_NUM;
+            orderServerId = req.getGaugeId()+"";
+        }
+        if (module.equals(CourConstant.MODULE_COURSE)){
+            orderServerType = "1" + PsyConstants.POCKET_ORDER_COURSE_NUM;
+            orderServerId = req.getCourseId()+"";
+        }
+
+        BigDecimal originalPrice = new BigDecimal(0); //原价格
+        BigDecimal analysePrice = new BigDecimal(0); //测评解析服务价格
+        
+        //根据不同[服务类型和id]获取服务原价格
+        switch (orderServerType) {
+            // 11.倾诉
+            // 12.咨询  
+            case "1" + PsyConstants.POCKET_ORDER_CONSULT_NUM:
+                PsyConsultServeConfig serverDetailConsult = consultServeService.getServerDetailByRelationId(orderServerId);
+                originalPrice = serverDetailConsult.getPrice();
+                break;
+            // 13.测评
+            case "1" + PsyConstants.POCKET_ORDER_GAUGE_NUM:
+                PsyGauge psyGauge = gaugeService.selectPsyGaugeById(Long.valueOf(orderServerId));
+                originalPrice = psyGauge.getPrice();
+                if ("Y".equals(req.getIsUseGaugeAnalyse())){//购买测评解析服务
+                    analysePrice = psyGauge.getAnalysePrice() ;
+                }
+                break;
+            // 14.来访者课程
+            case "1" + PsyConstants.POCKET_ORDER_COURSE_NUM:
+                CourCourse pocketCourse = courCourseService.selectCourCourseById(Long.valueOf(orderServerId));
+                originalPrice = pocketCourse.getPrice();
+                break;
+            default:
+                throw new ServiceException("没有相符的模块, 请检查module");
+        }
+        
+        //若不使用优惠券
+        if (ObjectUtils.isEmpty(req.getCouponNo())){
+            req.setOriginalPrice(originalPrice.add(analysePrice));
+            req.setAmount(originalPrice.add(analysePrice));
+            return originalPrice;
+        }
+        
+        
+        PsyCoupon coupon = couponService.selectPsyCouponByCouponNo(req.getCouponNo());
+        if (coupon.getIsExpire() != 0 || coupon.getIsUsable() != 0){
+            throw new ServiceException("优惠券已过期或已使用");
+        }
+        
+        //原价达到了优惠券门槛
+        BigDecimal payAmount = BigDecimal.ZERO;
+        if (originalPrice.compareTo(coupon.getUseThresholdPrice())>0){
+            coupon.setIsQualify(true);
+            if (coupon.getCouponType() == 1){//抵扣券
+                payAmount = originalPrice.subtract(coupon.getMaxDeductionPrice());
+                if (payAmount.compareTo(BigDecimal.ZERO) <= 0) {
+                    payAmount = BigDecimal.ZERO;
+                    //throw new ServiceException("优惠后无需付款",300);
+                }
+            }
+            else if (coupon.getCouponType() == 2){//折扣券
+                payAmount = originalPrice.multiply(coupon.getDiscountRate());
+            }
+        }else{
+            throw new ServiceException("未达到该优惠券的使用门槛");
+        }
+        
+        BigDecimal totalAmount = payAmount.add(analysePrice);
+        /*if (totalAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ServiceException("优惠后无需付款",300);
+        }*/
+        req.setOriginalPrice(originalPrice.add(analysePrice));
+        req.setAmount(totalAmount);
+        return totalAmount;
     }
  
     /**

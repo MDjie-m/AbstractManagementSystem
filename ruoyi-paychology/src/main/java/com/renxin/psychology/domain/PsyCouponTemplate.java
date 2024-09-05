@@ -75,6 +75,6 @@ public class PsyCouponTemplate extends BaseEntity
     private String isFreeGet;
     
     @TableField(exist = false)
-    private List<String> idList;
+    private List<Long> idList;
 
 }

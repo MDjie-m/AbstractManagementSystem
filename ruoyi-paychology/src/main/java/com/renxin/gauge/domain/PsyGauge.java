@@ -49,6 +49,8 @@ public class PsyGauge extends BaseEntity
     /** 价格 */
     @Excel(name = "价格")
     private BigDecimal price;
+    //解析服务价格
+    private BigDecimal analysePrice;
 
     /** 价格 */
     @Excel(name = "比率")

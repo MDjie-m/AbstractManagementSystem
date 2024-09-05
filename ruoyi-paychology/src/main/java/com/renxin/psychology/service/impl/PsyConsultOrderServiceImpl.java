@@ -494,7 +494,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
             req.setPayStatus(ConsultConstant.PAY_STATUE_PAID);
             req.setPayTime(new Date());
         } else {
-            req.setPay(serve.getPrice());
+            //req.setPay(serve.getPrice());
             req.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_CREATED);
             req.setPayStatus(ConsultConstant.PAY_STATUE_PENDING);
         }

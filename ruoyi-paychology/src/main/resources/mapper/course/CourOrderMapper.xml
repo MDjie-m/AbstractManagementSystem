@@ -12,14 +12,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="userId"    column="user_id"    />
         <result property="amount"    column="amount"    />
         <result property="courseId"    column="course_id"    />
+        <result property="originalPrice"    column="original_price"    />
+        <result property="couponNo"    column="coupon_no"    />
     </resultMap>
 
     <sql id="selectCourOrderVo">
-        select id, order_id, create_time, status, user_id, amount, course_id from cour_order
+        select id, order_id, create_time, status, user_id, amount, course_id,
+               original_price, coupon_no from cour_order
     </sql>
 
     <select id="selectCourOrderList" parameterType="CourOrder" resultMap="CourOrderResult">
-        select co.id,  co.order_id,  co.create_time,  co.status,  co.user_id,  co.amount,  co.course_id, cc.url, cc.name, cc.author
+        select co.id,  co.order_id,  co.create_time,  co.status,  co.user_id,  co.amount,  co.course_id,
+               co.original_price, co.coupon_no,
+               cc.url, cc.name, cc.author
         from cour_order  co
         left join cour_course  cc
         on co.course_id = cc.id
@@ -51,6 +56,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userId != null and userId != ''">user_id,</if>
             <if test="amount != null">amount,</if>
             <if test="courseId != null and courseId != ''">course_id,</if>
+            <if test="originalPrice != null">original_price,</if>
+            <if test="couponNo != null">coupon_no,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderId != null and orderId != ''">#{orderId},</if>
@@ -59,6 +66,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userId != null and userId != ''">#{userId},</if>
             <if test="amount != null">#{amount},</if>
             <if test="courseId != null and courseId != ''">#{courseId},</if>
+            <if test="originalPrice != null">#{originalPrice},</if>
+            <if test="couponNo != null">#{couponNo},</if>
          </trim>
     </insert>
 
@@ -71,6 +80,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userId != null and userId != ''">user_id = #{userId},</if>
             <if test="amount != null">amount = #{amount},</if>
             <if test="courseId != null and courseId != ''">course_id = #{courseId},</if>
+            <if test="originalPrice != null and originalPrice != ''">original_price = #{originalPrice},</if>
+            <if test="couponNo != null and couponNo != ''">coupon_no = #{couponNo},</if>
         </trim>
         <trim prefix="where" prefixOverrides="and">
             <if test="id != null">and id = #{id}</if>
@@ -90,7 +101,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <select id="getOrderDetailById"  resultType="com.renxin.course.vo.OrderVO">
-        select co.id, co.order_id, co.status, co.user_id, co.amount as amount, co.course_id, pop.pay_status , pop.amount as pay_amount
+        select co.id, co.order_id, co.status, co.user_id, co.amount as amount, co.course_id,
+               co.original_price as originalPrice, co.coupon_no as couponNo,
+               pop.pay_status , pop.amount as pay_amount
         from cour_order co
         left join psy_order_pay pop
         on co.id = pop.order_id
@@ -98,7 +111,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="queryOrderList" parameterType="com.renxin.course.domain.dto.OrderQueryDTO" resultType="com.renxin.course.vo.OrderQueryVO">
-        select co.id, co.order_id as orderId, co.status, co.user_id, pu.name as userName, co.amount, co.create_time as createTime,  co.course_id, cc.name as courseName
+        select co.id, co.order_id as orderId, co.status, co.user_id, pu.name as userName, co.amount, co.create_time as createTime,
+                co.original_price as originalPrice, co.coupon_no as couponNo,
+               co.original_price, co.coupon_no
         from cour_order co
         left join psy_user pu
         on co.user_id = pu.id
@@ -133,6 +148,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         co.order_id AS orderNo,
         co.id,
         co.course_id,
+        co.original_price, co.coupon_no,
         SUM(cs.duration) AS total_duration,
         COUNT(cs.id) AS section_num,
         finished_sections.finish_num

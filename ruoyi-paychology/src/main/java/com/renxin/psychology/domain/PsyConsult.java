@@ -149,6 +149,21 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     /** 状态（0正常 1停用） */
     @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
+    
+    //是否新用户(未领取新人礼包) 0是 1否
+    private Integer isNewPeople; 
+
+    //设备id
+    private String deviceId;
+    
+    //设备品牌
+    private String deviceBrand;
+    
+    //设备型号
+    private String deviceModel;
+    
+    //最后登录ip
+    private String lastLoginIp; 
 
     // 今日可约
     @TableField(exist = false)

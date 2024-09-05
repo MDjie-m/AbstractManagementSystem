@@ -15,15 +15,9 @@ import com.renxin.course.vo.CourseListVO;
 import com.renxin.gauge.domain.PsyGauge;
 import com.renxin.gauge.service.IPsyGaugeQuestionsService;
 import com.renxin.gauge.service.IPsyGaugeService;
-import com.renxin.psychology.domain.PsyConsult;
-import com.renxin.psychology.domain.PsyConsultant;
-import com.renxin.psychology.domain.PsyConsultantPackage;
-import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.domain.*;
 import com.renxin.psychology.request.PsyAdminConsultReq;
-import com.renxin.psychology.service.IPsyConsultService;
-import com.renxin.psychology.service.IPsyConsultantPackageService;
-import com.renxin.psychology.service.IPsyConsultantService;
-import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
+import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultVO;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +65,9 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
     
     @Autowired
     private IPsyGaugeQuestionsService psyGaugeQuestionsService;
+    
+    @Autowired
+    private IPsyCouponTemplateService couponTemplateService;
     
     //项目启动时执行一次
     @EventListener
@@ -126,6 +123,11 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
                 packageReq.setPackageIdList(idListLong);
                 List<PsyConsultantPackage> list5 = packageService.selectPsyConsultantPackageList(packageReq);
                 return AjaxResult.success(list5);
+            case "couponTemplate":
+                PsyCouponTemplate couponTemplateReq = new PsyCouponTemplate();
+                couponTemplateReq.setIdList(idListLong);
+                List<PsyCouponTemplate> list6 = couponTemplateService.selectPsyCouponTemplateList(couponTemplateReq);
+                return AjaxResult.success(list6);
             default:
                 return AjaxResult.success();
                 

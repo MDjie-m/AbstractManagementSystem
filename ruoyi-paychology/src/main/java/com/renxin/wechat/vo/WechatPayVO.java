@@ -27,4 +27,12 @@ public class WechatPayVO implements Serializable {
 
     private String supServerType;//督导服务类型
     private String supServerId;//督导服务id
+
+
+    private BigDecimal originalPrice;//原价
+    private String orderServerType;//下单服务类型
+    private String orderServerId;//下单服务id
+    private String couponNo;//使用优惠券编号
+    private String isUseGaugeAnalyse;//是否使用测评解析  Y是  N否
+
 }

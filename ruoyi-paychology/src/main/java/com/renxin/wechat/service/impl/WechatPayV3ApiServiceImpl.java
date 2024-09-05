@@ -99,6 +99,8 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
             courOrder.setOrderId(wechatPay.getOutTradeNo());
             courOrder.setStatus(CourConstant.COUR_ORDER_STATUE_CREATED);
             courOrder.setAmount(wechatPay.getAmount());
+            courOrder.setOriginalPrice(wechatPay.getOriginalPrice());
+            courOrder.setCouponNo(wechatPay.getCouponNo());
             courOrder.setUserId(wechatPay.getUserId());
             courOrder.setCourseId(wechatPay.getCourseId());
             CourOrder newCourOrder = courOrderService.generateCourOrder(courOrder);
@@ -128,6 +130,9 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
                     .gaugeStatus(GaugeStatus.UNFINISHED.getValue())
                     .gaugeId(wechatPay.getGaugeId())
                     .userId(wechatPay.getUserId())
+                    .originalPrice(wechatPay.getOriginalPrice())
+                    .couponNo(wechatPay.getCouponNo())
+                    .isUseGaugeAnalyse(wechatPay.getIsUseGaugeAnalyse())
                     .build();
             psyOrder.setCreateBy(nickName);
 
@@ -159,6 +164,8 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
             // 创建时才需要更新总价
             // psyConsultOrderVO.setAmount(wechatPay.getAmount());
             psyConsultOrderVO.setPay(wechatPay.getAmount());
+            psyConsultOrderVO.setOriginalPrice(wechatPay.getOriginalPrice());
+            psyConsultOrderVO.setCouponNo(wechatPay.getCouponNo());
             psyConsultOrderVO.setServeId(wechatPay.getServeId());
             psyConsultOrderVO.setUserId(wechatPay.getUserId());
             psyConsultOrderVO.setNickName(nickName);
@@ -299,6 +306,7 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
         }
     }
 
+    //支付完成回调
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void wechatPayNotify(String outTradeNo, String payId) {

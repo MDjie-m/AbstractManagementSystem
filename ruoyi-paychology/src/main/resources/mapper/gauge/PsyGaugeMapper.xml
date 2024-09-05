@@ -27,11 +27,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="gaugeDes"    column="gauge_des"    />
         <result property="listShowPicture"    column="list_show_picture"    />
         <result property="delFlag"    column="del_flag"    />
+        <result property="analysePrice"    column="analyse_price"    />
 
     </resultMap>
 
     <sql id="selectPsyGaugeVo">
-        select id, title, subtitle, head_picture, introduce, gauge_class, gauge_num, price, num, gauge_ratio, gauge_score, wrong, radar, type,create_by, create_time, update_by, update_time, remark,gauge_des,list_show_picture  from psy_gauge
+        select id, title, subtitle, head_picture, introduce, gauge_class, gauge_num, price, num, gauge_ratio, gauge_score, wrong, radar, 
+               type,create_by, create_time, update_by, update_time, remark,gauge_des,list_show_picture, analyse_price  from psy_gauge
     </sql>
 
     <select id="selectPsyGaugeList" parameterType="com.renxin.gauge.domain.PsyGauge" resultMap="PsyGaugeResult">
@@ -51,6 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="num != null "> and num = #{num}</if>
             <if test="type != null "> and type = #{type}</if>
             <if test="gaugeDes != null "> and gauge_des = #{gaugeDes}</if>
+            <if test="analysePrice != null "> and analyse_price = #{analysePrice}</if>
             <if test="idList != null and idList.size > 0">
                 and id in
                 <foreach collection="idList" open="(" close=")" separator="," item="id">
@@ -84,6 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="gaugeDes != null">gauge_des,</if>
             <if test="listShowPicture != null">list_show_picture,</if>
+            <if test="analysePrice != null">analyse_price,</if>
 
 
          </trim>
@@ -104,6 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="gaugeDes != null">#{gaugeDes},</if>
             <if test="listShowPicture != null">#{listShowPicture},</if>
+            <if test="analysePrice != null">#{analysePrice},</if>
          </trim>
     </insert>
 
@@ -126,6 +131,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="gaugeDes != null">gauge_des = #{gaugeDes},</if>
             <if test="listShowPicture != null">list_show_picture = #{listShowPicture},</if>
+            <if test="analysePrice != null">analyse_price = #{analysePrice},</if>
         </trim>
         where id = #{id}
     </update>

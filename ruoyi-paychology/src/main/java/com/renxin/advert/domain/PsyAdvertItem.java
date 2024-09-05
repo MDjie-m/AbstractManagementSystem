@@ -48,7 +48,7 @@ public class PsyAdvertItem extends BaseEntity
 
     /** 携带参数 */
     @Excel(name = "携带参数")
-    private Long param;
+    private String param;
 
     /** 关联对象id */
     @Excel(name = "关联对象id")

@@ -293,4 +293,5 @@ export const dataType = [
   { label: '套餐', value: 'package' },
   { label: '课程', value: 'course' },
   { label: '测评', value: 'gauge' },
+  { label: '优惠券模版', value: 'couponTemplate' },
 ];

@@ -55,8 +55,12 @@ public class CourOrder extends BaseEntity
     @Excel(name = "课程ID")
     private Long courseId;
 
+    private BigDecimal originalPrice;//原价
+    private String couponNo;//使用优惠券编号
+    
     /** 课程信息 */
     @Excel(name = "课程信息")
     private CourCourse courseInfo;
+
   
 }

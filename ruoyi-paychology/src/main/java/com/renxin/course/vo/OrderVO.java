@@ -51,4 +51,7 @@ public class OrderVO {
     /** 支付金额 */
     @ApiModelProperty("支付金额")
     private BigDecimal payAmount;
+
+    private BigDecimal originalPrice;//原价
+    private String couponNo;//使用优惠券编号
 }

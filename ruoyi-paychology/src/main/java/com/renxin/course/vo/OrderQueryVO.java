@@ -35,4 +35,6 @@ public class OrderQueryVO implements Serializable {
     /** 课程名称 */
     @Excel(name = "课程名称")
     private String courseName;
+    private BigDecimal originalPrice;//原价
+    private String couponNo;//使用优惠券编号
 }

@@ -17,6 +17,9 @@
         <result property="sex" column="sex"/>
         <result property="age" column="age"/>
         <result property="mobile" column="mobile"/>
+        <result property="originalPrice"    column="original_price"    />
+        <result property="couponNo"    column="coupon_no"    />
+        <result property="isUseGaugeAnalyse"    column="is_use_gauge_analyse"    />
     </resultMap>
 
     <sql id="selectPsyOrderVo">
@@ -32,7 +35,10 @@
                sex,
                age,
                mobile,
-               score
+               score,
+               original_price,
+               coupon_no,
+               is_use_gauge_analyse
         from psy_order
     </sql>
 
@@ -80,6 +86,12 @@
             <if test="createTime != null">create_time,</if>
             <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="userId != null">user_id,</if>
+            <if test="sex != null">sex,</if>
+            <if test="age != null">age,</if>
+            <if test="mobile != null">mobile,</if>
+            <if test="originalPrice != null">original_price,</if>
+            <if test="couponNo != null">coupon_no,</if>
+            <if test="isUseGaugeAnalyse != null">is_use_gauge_analyse,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderId != null and orderId != ''">#{orderId},</if>
@@ -90,6 +102,12 @@
             <if test="createTime != null">#{createTime},</if>
             <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="userId != null">#{userId},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="age != null">#{age},</if>
+            <if test="mobile != null">#{mobile},</if>
+            <if test="originalPrice != null">#{originalPrice},</if>
+            <if test="couponNo != null">#{couponNo},</if>
+            <if test="isUseGaugeAnalyse != null">#{isUseGaugeAnalyse},</if>
         </trim>
     </insert>
 
@@ -109,6 +127,9 @@
             <if test="sex != null">sex = #{sex},</if>
             <if test="age != null">age = #{age},</if>
             <if test="mobile != null and mobile != ''">mobile = #{mobile},</if>
+            <if test="originalPrice != null and originalPrice != ''">original_price = #{originalPrice},</if>
+            <if test="couponNo != null and couponNo != ''">coupon_no = #{couponNo},</if>
+            <if test="isUseGaugeAnalyse != null and isUseGaugeAnalyse != ''">is_use_gauge_analyse = #{isUseGaugeAnalyse},</if>
         </trim>
 
         <trim prefix="where" prefixOverrides="and">
@@ -134,6 +155,7 @@
     <select id="queryOrderPage" resultType="com.renxin.gauge.domain.PsyOrder">
         select po.id, po.order_id as orderId, po.gauge_id as gaugeId, gauge.title as gaugeTitle,po.mobile,po.sex,po.age,
                po.order_status as orderStatus, po.amount, po.gauge_status as gaugeStatus, po.create_time as createTime, po.create_by as createBy,
+               po.original_price as originalPrice, po.coupon_no as couponNo, po.is_use_gauge_analyse as isUseGaugeAnalyse,
                gauge.gauge_des as gaugeDes, gauge.type as gaugeType, gauge.gauge_num,gauge.head_picture as headPicture, gauge.subtitle as gaugeSubtitle,
                (select count(id) from psy_gauge_questions_result where order_id = po.id) as finishedNum
         from psy_order po left join psy_gauge gauge ON po.gauge_id = gauge.id
@@ -164,7 +186,9 @@
     </select>
 
     <select id="queryOrderList" resultType="com.renxin.gauge.domain.PsyOrder">
-        select po.id,po.order_id,po.gauge_id,po.order_status,po.amount,po.gauge_status,po.create_time,po.create_by,po.user_id,po.mobile,po.sex,po.age,
+        select po.id,po.order_id,po.gauge_id,po.order_status,po.amount,po.gauge_status,po.create_time,po.create_by,po.user_id,
+               po.mobile,po.sex,po.age,
+               po.original_price as originalPrice, po.coupon_no as couponNo, po.is_use_gauge_analyse as isUseGaugeAnalyse,
                gauge.title as gaugeTitle,pu.name as userName
         from psy_order po inner join psy_gauge gauge ON po.gauge_id = gauge.id
         left join psy_user pu ON po.user_id = pu.id

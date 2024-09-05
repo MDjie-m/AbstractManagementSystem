@@ -127,7 +127,7 @@ public class WxAuthorizeController {
         PsyUser queryUser = new PsyUser();
             queryUser.setWxOpenid(openId);
         List<PsyUser> queryUserList = psyUserService.selectPsyUserList(queryUser);
-        
+        PsyUser psyUser = queryUserList.get(0);
         //若openId已有相应的用户, 则直接使用该用户
         if (ObjectUtils.isNotEmpty(queryUserList)){
             BeanUtils.copyProperties(queryUserList.get(0),loginDTO);
@@ -145,6 +145,13 @@ public class WxAuthorizeController {
                 loginDTO.setUserId(newUser.getId());
             token = pocketTokenService.createToken(loginDTO, 360000);
         }
+
+        //更新设备信息
+        psyUser.setDeviceId(params.get("deviceId"));
+        psyUser.setDeviceBrand(params.get("deviceBrand"));
+        psyUser.setDeviceModel(params.get("deviceModel"));
+        psyUser.setLastLoginIp(params.get("lastLoginIp"));
+        psyUserService.updatePsyUser(psyUser);
 
         return AjaxResult.success(Constants.TOKEN_PREFIX +  token);
     }

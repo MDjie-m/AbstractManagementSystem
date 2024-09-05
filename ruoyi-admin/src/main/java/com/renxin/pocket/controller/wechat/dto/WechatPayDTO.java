@@ -20,6 +20,7 @@ public class WechatPayDTO implements Serializable {
     private Integer time;
 
     private BigDecimal amount;
+    private BigDecimal originalPrice;//原价
 
     private String module;
     private String outTradeNo;
@@ -28,4 +29,9 @@ public class WechatPayDTO implements Serializable {
     private String payConsultId;//付费咨询师id
     private String supServerType;//督导服务类型
     private String supServerId;//督导服务id
+    
+    private String orderServerType;//下单服务类型
+    private String orderServerId;//下单服务id
+    private String couponNo;//使用优惠券编号
+    private String isUseGaugeAnalyse;//是否使用测评解析  Y是  N否
 }

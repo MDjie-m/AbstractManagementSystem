@@ -157,6 +157,10 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
     @Override
     public List<PsyConsultantTeamSupervision> selectPsyConsultantTeamSupervisionList(PsyConsultantTeamSupervision req)
     {
+        if (ObjectUtils.isNotEmpty(req.getIdList())){
+            List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.TEAM_SUP_BY_ID_KEY, req.getIdList());
+            return cacheList;
+        }
         Integer teamType = req.getTeamType();//督导类型
         List<PsyConsultantTeamSupervision> teamList = new ArrayList<>();
         //查询"团队督导"时, 从team表获取数据

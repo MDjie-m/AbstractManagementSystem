@@ -55,7 +55,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectPsyCouponByCouponNo" parameterType="String" resultMap="PsyCouponResult">
-        <include refid="selectPsyCouponVo"/>
+        select
+            cou.coupon_no, cou.template_id, cou.user_id, cou.consultant_id, cou.is_usable, cou.create_time, cou.expire_date ,
+            tem.coupon_name , tem.max_deduction_price , tem.server_type, tem.discount_rate, tem.use_threshold_price , tem.coupon_type,
+            CASE
+                WHEN cou.expire_date &lt; CURDATE() THEN 1
+                ELSE 0
+                END AS isExpire
+        from psy_coupon cou
+        left join
+             psy_coupon_template tem on cou.template_id = tem.id
         where coupon_no = #{couponNo}
     </select>
         

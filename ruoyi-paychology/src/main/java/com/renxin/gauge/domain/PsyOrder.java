@@ -73,6 +73,9 @@ public class PsyOrder extends BaseEntity
     @Excel(name = "量表副标题")
     private String gaugeSubtitle;
 
+    private BigDecimal originalPrice;//原价
+    private String couponNo;//使用优惠券编号
+    private String isUseGaugeAnalyse;//是否使用测评解析  Y是  N否
 
 
     /**
