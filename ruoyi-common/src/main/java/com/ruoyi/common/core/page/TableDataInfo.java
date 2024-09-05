@@ -43,6 +43,7 @@ public class TableDataInfo implements Serializable
         this.total = total;
     }
 
+
     public long getTotal()
     {
         return total;

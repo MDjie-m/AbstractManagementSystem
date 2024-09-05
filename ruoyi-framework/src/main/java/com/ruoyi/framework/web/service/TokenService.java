@@ -52,7 +52,7 @@ public class TokenService
     //过期时间一个月
 //    protected static final long EXPIRE_TIME = 60 * MILLIS_SECOND*60*24*30;
 
-    private static final Long MILLIS_MINUTE_TEN = 20 * 60 * 1000L;
+    private static final Long MILLIS_MINUTE_TEN = 5*60 * 60 * 1000L;
 
     @Autowired
     private RedisCache redisCache;

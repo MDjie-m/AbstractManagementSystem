@@ -42,7 +42,10 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-billiard</artifactId>
+        </dependency>
         <!-- 核心模块-->
         <dependency>
             <groupId>com.ruoyi</groupId>

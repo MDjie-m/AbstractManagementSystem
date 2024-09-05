@@ -6,7 +6,7 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://localhost:3306/ry-vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://localhost:3306/billiard_room_dev?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
                 password: Dev@123
             # 从库数据源
@@ -17,11 +17,11 @@ spring:
                 username: 
                 password: 
             # 初始连接数
-            initialSize: 5
+            initialSize: 30
             # 最小连接池数量
-            minIdle: 10
+            minIdle: 60
             # 最大连接池数量
-            maxActive: 20
+            maxActive: 2000
             # 配置获取连接等待超时的时间
             maxWait: 60000
             # 配置连接超时时间
