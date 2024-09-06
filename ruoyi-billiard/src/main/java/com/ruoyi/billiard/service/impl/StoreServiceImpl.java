@@ -1,8 +1,17 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.billiard.domain.StoreTutor;
+import com.ruoyi.billiard.domain.StoreUser;
+import com.ruoyi.billiard.mapper.StoreTutorMapper;
+import com.ruoyi.billiard.mapper.StoreUserMapper;
+import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.StoreMapper;
@@ -22,6 +31,14 @@ public class StoreServiceImpl implements IStoreService
 {
     @Resource
     private StoreMapper storeMapper;
+
+    @Resource
+    private StoreUserMapper storeUserMapper;
+
+    @Resource
+    private StoreTutorMapper storeTutorMapper;
+
+
 
     /**
      * 查询门店
@@ -81,8 +98,10 @@ public class StoreServiceImpl implements IStoreService
      * @return 结果
      */
     @Override
-    public int deleteStoreByStoreIds(Long[] storeIds)
-    {
+    public int deleteStoreByStoreIds(Long[] storeIds) {
+
+        AssertUtil.isTrue(!storeUserMapper.existsIn(StoreUser::getStoreId, Arrays.asList(storeIds)), "门店还有员工，不能删除.");
+        AssertUtil.isTrue(!storeTutorMapper.existsIn(StoreTutor::getStoreId, Arrays.asList(storeIds)), "门店还有教练，不能删除.");
         return storeMapper.deleteStoreByStoreIds(storeIds);
     }
 
@@ -96,5 +115,10 @@ public class StoreServiceImpl implements IStoreService
     public int deleteStoreByStoreId(Long storeId)
     {
         return storeMapper.deleteStoreByStoreId(storeId);
+    }
+
+    @Override
+    public List<Store> selectAll() {
+        return storeMapper.selectList(new LambdaQueryWrapper<>());
     }
 }

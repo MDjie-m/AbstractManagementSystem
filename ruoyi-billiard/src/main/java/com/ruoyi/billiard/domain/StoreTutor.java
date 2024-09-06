@@ -8,25 +8,23 @@ import lombok.EqualsAndHashCode;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
-import java.util.List;
-
 /**
- * 门店员工对象 t_store_user
- *
+ * 门店助教对象 t_store_tutor
+ * 
  * @author ruoyi
  * @date 2024-09-06
  */
-@TableName("t_store_user")
+@TableName("t_store_tutor")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class StoreUser extends BaseEntity
+public class StoreTutor extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 员工id */
 
-    @TableId("store_user_id")
-    private Long storeUserId;
+    @TableId("store_tutor_id")
+    private Long storeTutorId;
 
     /** 姓名 */
     @Excel(name = "姓名")
@@ -46,6 +44,18 @@ public class StoreUser extends BaseEntity
     @TableField("user_img")
     private String userImg;
 
+    /** 性别 */
+    @Excel(name = "性别")
+
+    @TableField("sex")
+    private String sex;
+
+    /** 助教等级(1=助教，2=教练，3=总教) */
+    @Excel(name = "助教等级(1=助教，2=教练，3=总教)")
+
+    @TableField("level")
+    private Long level;
+
     /** 门店状态（0正常 1停用） */
     @Excel(name = "门店状态", readConverterExp = "0=正常,1=停用")
 
@@ -53,6 +63,7 @@ public class StoreUser extends BaseEntity
     private Long status;
 
     /** 删除标志（0代表存在 2代表删除） */
+    @Excel(name = "删除标志", readConverterExp = "0=代表存在,2=代表删除")
 
     @TableField("del_flag")
     private String delFlag;
@@ -63,18 +74,22 @@ public class StoreUser extends BaseEntity
     @TableField("login_user_id")
     private Long loginUserId;
 
-    /** 用户性别 */
-    @Excel(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
-    @TableField("sex")
-    private String sex;
-
-    @TableField(exist = false)
-    private List<Long> roleIds;
+    /** $column.columnComment */
+    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
 
     @TableField("store_id")
     private Long storeId;
 
-    @TableField(exist = false)
-    private String storeName;
+
+
+
+
+
+
+
+
+
+
+
 
 }

@@ -53,6 +53,7 @@
           <image-preview :src="scope.row.userImg" :width="50" :height="50"/>
         </template>
       </el-table-column>
+      <el-table-column label="所属门店" align="center" prop="storeName" />
       <el-table-column label="角色" align="center" prop="roleIds"  >
         <template slot-scope="scope">
           <dict-tag :options="roleOptions" :value="scope.row.roleIds"/>
@@ -116,6 +117,17 @@
         <el-form-item label="头像" prop="userImg">
           <image-upload v-model="form.userImg" :limit="1"/>
         </el-form-item>
+        <el-form-item label="门店">
+          <el-select v-model="form.storeId"  placeholder="请选择门店">
+            <el-option
+              v-for="item in storeOptions"
+              :key="item.storeId"
+              :label="item.storeName"
+              :value="item.storeId"
+              :disabled="item.delFlag != 0"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="角色">
           <el-select v-model="form.roleIds" multiple placeholder="请选择角色">
             <el-option
@@ -144,6 +156,7 @@
 import { listUser, getUser, delUser, addUser, updateUser } from "@/api/billiard/user";
 import {listAllRole} from "@/api/system/role";
 import {resetUserPwd} from "@/api/system/user";
+import {listAllStore} from "@/api/billiard/store";
 
 export default {
   dicts: ['sys_normal_disable', 'sys_user_sex'],
@@ -157,6 +170,7 @@ export default {
       // 非单个禁用
       single: true,
       roleOptions: [],
+      storeOptions:[],
       // 非多个禁用
       multiple: true,
       // 显示搜索条件
@@ -187,6 +201,9 @@ export default {
         realName: [
           { required: true, message: "姓名不能为空", trigger: "blur" }
         ],
+        storeId: [
+          { required: true, message: "门店不能为空", trigger: "blur" }
+        ],
         mobile: [
           { required: true, message: "手机号不能为空", trigger: "blur" }
         ],
@@ -211,6 +228,7 @@ export default {
   created() {
     this.getList();
     this.queryRoles();
+    this.queryStores();
   },
   methods: {
     /** 查询门店员工列表 */
@@ -235,6 +253,7 @@ export default {
         mobile: null,
         roleIds:[],
         sex:null,
+        storeId:null,
         userImg: null,
         status: null,
         delFlag: null,
@@ -291,6 +310,13 @@ export default {
       })
 
 
+    },
+    queryStores(){
+      return   listAllStore().then(response => {
+        this.storeOptions = (response.data||[]).map(p=>{
+          return Object.assign({label:p.storeName,value:p.storeId,raw:{listClass:'primary'}},p);
+        });
+      });
     },
     queryRoles(){
      return   listAllRole().then(response => {

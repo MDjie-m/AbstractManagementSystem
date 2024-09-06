@@ -108,7 +108,7 @@ public class StoreUserServiceImpl implements IStoreUserService
         sysUserService.insertUser(sysUser);
         storeUser.setStoreUserId(IdUtils.singleNextId());
         storeUser.setLoginUserId(sysUser.getUserId());
-        int res= storeUserMapper.insertStoreUser(storeUser);
+        int res= storeUserMapper.insert(storeUser);
         return  res;
 
     }

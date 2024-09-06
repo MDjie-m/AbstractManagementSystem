@@ -3,6 +3,7 @@ package com.ruoyi.billiard.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.common.core.domain.ResultVo;
 import com.ruoyi.common.core.page.PageResVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,12 @@ public class StoreController extends BaseController
         startPage();
         List<Store> list = storeService.selectStoreList(store);
         return PageResVo.success(list);
+    }
+    @GetMapping("/list/all")
+    public ResultVo<List<Store>> listAll( )
+    {
+        List<Store> list = storeService.selectAll();
+        return ResultVo.success(list);
     }
 
     /**

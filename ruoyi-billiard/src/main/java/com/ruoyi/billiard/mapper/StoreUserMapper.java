@@ -30,13 +30,7 @@ public interface StoreUserMapper  extends MyBaseMapper<StoreUser>
      */
     public List<StoreUser> selectStoreUserList(StoreUser storeUser);
 
-    /**
-     * 新增门店员工
-     * 
-     * @param storeUser 门店员工
-     * @return 结果
-     */
-    public int insertStoreUser(StoreUser storeUser);
+
 
     /**
      * 修改门店员工

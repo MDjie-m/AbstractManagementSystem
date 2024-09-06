@@ -58,4 +58,8 @@ public interface IStoreService
      * @return 结果
      */
     public int deleteStoreByStoreId(Long storeId);
+
+    List<Store> selectAll();
+
+
 }

@@ -18,10 +18,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="loginUserId"    column="login_user_id"    />
         <result property="remark"    column="remark"    />
+        <result property="storeName"    column="store_name"    />
     </resultMap>
 
     <sql id="selectStoreUserVo">
-        select store_user_id, real_name,sex, mobile, user_img, status, del_flag, create_by, create_time, update_by, update_time, login_user_id, remark from t_store_user
+        select a.* ,b.store_name
+        from t_store_user a  left join  t_store b on a.store_id=b.store_id
     </sql>
 
     <select id="selectStoreUserList" parameterType="StoreUser" resultMap="StoreUserResult">
@@ -51,38 +53,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </select>
-
-    <insert id="insertStoreUser" parameterType="StoreUser">
-        insert into t_store_user
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="storeUserId != null">store_user_id,</if>
-            <if test="realName != null and realName != ''">real_name,</if>
-            <if test="mobile != null and mobile != ''">mobile,</if>
-            <if test="userImg != null and userImg != ''">user_img,</if>
-            <if test="status != null">status,</if>
-            <if test="delFlag != null">del_flag,</if>
-            <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="loginUserId != null">login_user_id,</if>
-            <if test="remark != null">remark,</if>
-         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="storeUserId != null">#{storeUserId},</if>
-            <if test="realName != null and realName != ''">#{realName},</if>
-            <if test="mobile != null and mobile != ''">#{mobile},</if>
-            <if test="userImg != null and userImg != ''">#{userImg},</if>
-            <if test="status != null">#{status},</if>
-            <if test="delFlag != null">#{delFlag},</if>
-            <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="loginUserId != null">#{loginUserId},</if>
-            <if test="remark != null">#{remark},</if>
-         </trim>
-    </insert>
 
     <update id="updateStoreUser" parameterType="StoreUser">
         update t_store_user

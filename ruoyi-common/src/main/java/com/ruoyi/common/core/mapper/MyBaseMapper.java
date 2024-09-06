@@ -29,7 +29,11 @@ public interface MyBaseMapper<T> extends BaseMapper<T> {
         queryWrapper.eq(  condition,val);
       return this.exists( queryWrapper);
     }
-
+    default <V> boolean   existsIn(SFunction<T ,?> condition, List<V> val){
+        LambdaQueryWrapper<T> queryWrapper=   new LambdaQueryWrapper<>();
+        queryWrapper.in(  condition,val);
+        return this.exists( queryWrapper);
+    }
     default <V> boolean   existsWithDelFlag(SFunction< T, ?> condition, V val){
         LambdaQueryWrapper<T> queryWrapper=   new LambdaQueryWrapper<>();
         queryWrapper.eq(  condition,val);
