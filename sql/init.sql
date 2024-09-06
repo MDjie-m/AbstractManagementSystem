@@ -139,6 +139,7 @@ create table  t_order_desk_time
         primary key,
     order_id             bigint                          not null comment '订单编号' ,
     desk_id      bigint                                not null comment '球桌编码',
+    from_desk_id bigint null comment '转桌之前的Id',
     start_time        datetime                                  not null comment '开始时间',
     end_time        datetime                                   not null comment '结束时间',
     total_time int  not null comment '总时间分钟（开始时间去掉秒，结束时间多一秒加1分钟算）',
@@ -170,3 +171,52 @@ create table  t_order_tutor_time
 )
     comment '订单计时';
 
+create table  t_goods
+(
+    goods_id      bigint                                not null comment '商品编码'
+        primary key,
+    store_id             bigint                          not null comment '门店Id' ,
+    goods_name      nvarchar(64)                                not null comment '商品名称',
+    barcode      nvarchar(64)                                  null comment '商品条码',
+    category_id       int not null                                  null comment '商品分类',
+    type int not null  comment '类型：0=售卖商品,1=店内其他物资',
+    price decimal(10,2)  not null comment '价格',
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+)
+    comment '商品';
+
+
+
+create table  t_stock
+(
+    stock_id      bigint                                not null comment '商品编码'
+        primary key,
+    goods_id             bigint                          not null comment '门店Id' ,
+    goods_name      nvarchar(64)                                not null comment '商品名称',
+    total      bigint                                null comment '商品条码',
+    last_check_point_id      bigint                                null comment '最近一次盘点日志ID',
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+)
+    comment '库存';
+
+create table  t_stock_log
+(
+    stock_log_id      bigint                                not null comment '商品编码'
+        primary key,
+    stock_id             bigint                          not null comment '库存id' ,
+    change_count      bigint                                not null comment '变化数量(有+-符号)',
+    change_type      int                                 null comment '变化类型：0=入库，1=出库，2=盘点',
+    before_count  bigint not null comment '变化前数量',
+    current_count  bigint not null comment '变化前后当前数量',
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+)
+    comment '库存';
