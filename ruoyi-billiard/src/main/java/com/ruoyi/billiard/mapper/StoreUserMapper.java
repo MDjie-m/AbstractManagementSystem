@@ -2,6 +2,9 @@ package com.ruoyi.billiard.mapper;
 
 import java.util.List;
 import com.ruoyi.billiard.domain.StoreUser;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
+import com.ruoyi.common.core.mapper.MyBaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 门店员工Mapper接口
@@ -9,7 +12,7 @@ import com.ruoyi.billiard.domain.StoreUser;
  * @author ruoyi
  * @date 2024-09-05
  */
-public interface StoreUserMapper 
+public interface StoreUserMapper  extends MyBaseMapper<StoreUser>
 {
     /**
      * 查询门店员工
@@ -58,4 +61,8 @@ public interface StoreUserMapper
      * @return 结果
      */
     public int deleteStoreUserByStoreUserIds(Long[] storeUserIds);
+
+    List<Long> selectRoleIds(Long loginUserId);
+
+    List<KeyValueVo<Long,Long>> selectRoleIdsByUserIds(@Param("ids") List<Long> ids);
 }

@@ -146,10 +146,22 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归属部门" prop="deptId">
-              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />
+            <el-form-item label="用户性别">
+              <el-select v-model="form.sex" placeholder="请选择性别">
+                <el-option
+                  v-for="dict in dict.type.sys_user_sex"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="归属部门" prop="deptId">-->
+<!--              <treeselect v-model="form.deptId" :options="deptOptions" :show-count="true" placeholder="请选择归属部门" />-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
         </el-row>
         <el-row>
           <el-col :span="12">
@@ -175,19 +187,8 @@
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row>
-          <el-col :span="12">
-            <el-form-item label="用户性别">
-              <el-select v-model="form.sex" placeholder="请选择性别">
-                <el-option
-                  v-for="dict in dict.type.sys_user_sex"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
           <el-col :span="12">
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
@@ -199,21 +200,19 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="岗位">
-              <el-select v-model="form.postIds" multiple placeholder="请选择岗位">
-                <el-option
-                  v-for="item in postOptions"
-                  :key="item.postId"
-                  :label="item.postName"
-                  :value="item.postId"
-                  :disabled="item.status == 1"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="12">-->
+<!--            <el-form-item label="岗位">-->
+<!--              <el-select v-model="form.postIds" multiple placeholder="请选择岗位">-->
+<!--                <el-option-->
+<!--                  v-for="item in postOptions"-->
+<!--                  :key="item.postId"-->
+<!--                  :label="item.postName"-->
+<!--                  :value="item.postId"-->
+<!--                  :disabled="item.status == 1"-->
+<!--                ></el-option>-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
           <el-col :span="12">
             <el-form-item label="角色">
               <el-select v-model="form.roleIds" multiple placeholder="请选择角色">

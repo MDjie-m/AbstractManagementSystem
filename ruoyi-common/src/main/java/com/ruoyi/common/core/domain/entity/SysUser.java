@@ -4,8 +4,11 @@ import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.*;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -20,7 +23,15 @@ import com.ruoyi.common.xss.Xss;
  * 
  * @author ruoyi
  */
+/**
+ * 用户信息对象 sys_user
+ *
+ * @author ruoyi
+ * @date 2024-09-06
+ */
 @TableName("sys_user")
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class SysUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -29,17 +40,19 @@ public class SysUser extends BaseEntity
     @Excel(name = "用户序号", type = Type.EXPORT, cellType = ColumnType.NUMERIC, prompt = "用户编号")
     @TableId("user_id")
     private Long userId;
-
+    @TableField("dept_id")
     /** 部门ID */
     @Excel(name = "部门编号", type = Type.IMPORT)
     private Long deptId;
 
     /** 用户账号 */
     @Excel(name = "登录名称")
+    @TableField("user_name")
     private String userName;
 
     /** 用户昵称 */
     @Excel(name = "用户名称")
+    @TableField("nick_name")
     private String nickName;
 
     /** 用户邮箱 */
@@ -53,6 +66,10 @@ public class SysUser extends BaseEntity
     /** 用户性别 */
     @Excel(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
     private String sex;
+    /** 用户类型（00门店用户,01=助教） */
+    @Excel(name = "用户类型", readConverterExp = "0=0门店用户,01=助教")
+    @TableField("user_type")
+    private String userType;
 
     /** 用户头像 */
     private String avatar;
@@ -65,14 +82,17 @@ public class SysUser extends BaseEntity
     private String status;
 
     /** 删除标志（0代表存在 2代表删除） */
+    @TableField("del_flag")
     private String delFlag;
 
     /** 最后登录IP */
     @Excel(name = "最后登录IP", type = Type.EXPORT)
+    @TableField("login_ip")
     private String loginIp;
 
     /** 最后登录时间 */
     @Excel(name = "最后登录时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Type.EXPORT)
+    @TableField("login_date")
     private Date loginDate;
 
     /** 部门对象 */
@@ -80,18 +100,23 @@ public class SysUser extends BaseEntity
         @Excel(name = "部门名称", targetAttr = "deptName", type = Type.EXPORT),
         @Excel(name = "部门负责人", targetAttr = "leader", type = Type.EXPORT)
     })
+    @TableField(exist = false)
     private SysDept dept;
 
     /** 角色对象 */
+    @TableField(exist = false)
     private List<SysRole> roles;
 
     /** 角色组 */
+    @TableField(exist = false)
     private Long[] roleIds;
 
     /** 岗位组 */
+    @TableField(exist = false)
     private Long[] postIds;
 
     /** 角色ID */
+    @TableField(exist = false)
     private Long roleId;
 
     public SysUser()

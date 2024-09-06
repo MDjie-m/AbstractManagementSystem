@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="storeUserId"    column="store_user_id"    />
         <result property="realName"    column="real_name"    />
         <result property="mobile"    column="mobile"    />
+        <result property="sex"    column="sex"    />
         <result property="userImg"    column="user_img"    />
         <result property="status"    column="status"    />
         <result property="delFlag"    column="del_flag"    />
@@ -20,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectStoreUserVo">
-        select store_user_id, real_name, mobile, user_img, status, del_flag, create_by, create_time, update_by, update_time, login_user_id, remark from t_store_user
+        select store_user_id, real_name,sex, mobile, user_img, status, del_flag, create_by, create_time, update_by, update_time, login_user_id, remark from t_store_user
     </sql>
 
     <select id="selectStoreUserList" parameterType="StoreUser" resultMap="StoreUserResult">
@@ -37,6 +38,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectStoreUserByStoreUserId" parameterType="Long" resultMap="StoreUserResult">
         <include refid="selectStoreUserVo"/>
         where store_user_id = #{storeUserId}
+    </select>
+    <select id="selectRoleIds" resultType="java.lang.Long">
+        select role_id
+        from sys_user_role where user_id=#{loginUserId};
+    </select>
+    <select id="selectRoleIdsByUserIds" resultType="com.ruoyi.common.core.domain.model.KeyValueVo">
+
+        select user_id as `key`,role_id as value
+        from sys_user_role where user_id in
+         <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
     </select>
 
     <insert id="insertStoreUser" parameterType="StoreUser">

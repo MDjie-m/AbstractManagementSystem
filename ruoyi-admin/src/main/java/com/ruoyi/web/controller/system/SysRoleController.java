@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.core.domain.ResultVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -62,6 +64,11 @@ public class SysRoleController extends BaseController
         startPage();
         List<SysRole> list = roleService.selectRoleList(role);
         return getDataTable(list);
+    }
+    @GetMapping("/list/all")
+    public ResultVo<List<SysRole>> listAll()
+    {
+        return ResultVo.success(roleService.selectRoleAll());
     }
 
     @Log(title = "角色管理", businessType = BusinessType.EXPORT)

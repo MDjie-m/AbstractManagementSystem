@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
+
+import com.ruoyi.common.utils.AssertUtil;
+import com.ruoyi.common.utils.MessageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -260,6 +263,8 @@ public class SysUserServiceImpl implements ISysUserService
     @Transactional
     public int insertUser(SysUser user)
     {
+        AssertUtil.isTrue(!userMapper.exists(SysUser::getUserName,user.getUserName()),
+                StringUtils.format("{}账户名已存在.",user.getUserName()));
         // 新增用户信息
         int rows = userMapper.insertUser(user);
         // 新增用户岗位关联
@@ -292,6 +297,10 @@ public class SysUserServiceImpl implements ISysUserService
     public int updateUser(SysUser user)
     {
         Long userId = user.getUserId();
+
+        AssertUtil.isTrue(!userMapper.existsExcludeId(SysUser::getUserName,user.getUserName(),
+                        SysUser::getUserId,user.getUserId()),
+                StringUtils.format("{}账户名已存在.",user.getUserName()));
         // 删除用户与角色关联
         userRoleMapper.deleteUserRoleByUserId(userId);
         // 新增用户与角色管理

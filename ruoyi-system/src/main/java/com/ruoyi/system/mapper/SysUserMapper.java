@@ -1,6 +1,8 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+
+import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Param;
 import com.ruoyi.common.core.domain.entity.SysUser;
 
@@ -9,7 +11,7 @@ import com.ruoyi.common.core.domain.entity.SysUser;
  * 
  * @author ruoyi
  */
-public interface SysUserMapper
+public interface SysUserMapper extends MyBaseMapper<SysUser>
 {
     /**
      * 根据条件分页查询用户列表

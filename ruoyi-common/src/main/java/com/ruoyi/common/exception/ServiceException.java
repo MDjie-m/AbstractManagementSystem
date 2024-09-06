@@ -1,5 +1,7 @@
 package com.ruoyi.common.exception;
 
+import java.util.Objects;
+
 /**
  * 业务异常
  * 
@@ -43,7 +45,22 @@ public final class ServiceException extends RuntimeException
         this.message = message;
         this.code = code;
     }
-
+    public ServiceException(String message, ExceptionCodeEnum code)
+    {
+        if(Objects.isNull(code)){
+            code=ExceptionCodeEnum.FAILED;
+        }
+        this.message = message;
+        this.code = code.getCode();
+    }
+    public ServiceException( ExceptionCodeEnum code)
+    {
+        if(Objects.isNull(code)){
+            code=ExceptionCodeEnum.FAILED;
+        }
+        this.message = code.getMessage();
+        this.code = code.getCode();
+    }
     public String getDetailMessage()
     {
         return detailMessage;
