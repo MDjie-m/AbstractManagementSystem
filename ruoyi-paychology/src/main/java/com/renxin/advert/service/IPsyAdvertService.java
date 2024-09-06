@@ -21,6 +21,8 @@ public interface IPsyAdvertService
      * @return 页面广告
      */
     public PsyAdvert selectPsyAdvertByAdvertNo(String advertNo);
+    
+    //public List<PsyAdvert> queryByPage(String queryByPage);
 
     /**
      * 查询页面广告列表

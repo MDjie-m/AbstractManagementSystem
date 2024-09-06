@@ -60,6 +60,7 @@ public class PocketCouponController extends BaseController
     {
         Long userId = pocketTokenService.getUserId(request);
         req.setUserId(userId);
+        req.setIsCanGetChargeCoupon("N");
         psyCouponService.receiveFreeCoupon(req);
         return AjaxResult.success();
     }

@@ -56,6 +56,7 @@ public class ConsultantCouponController extends BaseController
     {
         Long consultId = consultantTokenService.getConsultId(request);
         req.setConsultId(consultId);
+        req.setIsCanGetChargeCoupon("N");
         psyCouponService.receiveFreeCoupon(req);
         return AjaxResult.success();
     }

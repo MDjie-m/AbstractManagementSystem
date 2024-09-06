@@ -303,6 +303,15 @@ public class RedisCache
 
         redisTemplate.delete(hKeys);
     }
+    
+    public void deleteStartWith(final String keyStart){
+        Set keys = redisTemplate.keys(keyStart + "*");
+        if (ObjectUtils.isNotEmpty(keys)){
+            redisTemplate.delete(keys);
+        }
+       
+    }
+    
 
     /**
      * 删除Hash中的某条数据

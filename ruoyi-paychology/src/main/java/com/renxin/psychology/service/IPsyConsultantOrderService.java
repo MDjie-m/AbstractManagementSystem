@@ -79,6 +79,18 @@ public interface IPsyConsultantOrderService
 
     /** 支付成功回调 */
     void paySuccessCallback(String outTradeNo, String payId);
-    
+
+    /**
+     * 获取超时的订单清单
+     * @param num
+     * @return
+     */
+    List<PsyConsultantOrder> getCancelList(Integer num);
+
+    /**
+     * 取消订单
+     * @param req
+     */
+    void cancelOrder(PsyConsultantOrder req);
     
 }

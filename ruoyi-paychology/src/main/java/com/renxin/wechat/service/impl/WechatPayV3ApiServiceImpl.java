@@ -23,6 +23,7 @@ import com.renxin.psychology.domain.PsyConsultPay;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.dto.OrderDTO;
+import com.renxin.psychology.request.ReceiveFreeCouponReq;
 import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.user.domain.PsyUserIntegralRecord;
@@ -31,6 +32,7 @@ import com.renxin.wechat.service.WechatPayV3ApiService;
 import com.renxin.wechat.vo.WechatPayVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,6 +88,9 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
     @Resource
     private ICourUserCourseSectionService userCourseSectionService;
 
+    @Autowired
+    private IPsyCouponService psyCouponService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void wechatPay(WechatPayVO wechatPay) {
@@ -104,7 +109,7 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
             courOrder.setUserId(wechatPay.getUserId());
             courOrder.setCourseId(wechatPay.getCourseId());
             CourOrder newCourOrder = courOrderService.generateCourOrder(courOrder);
-
+            psyCouponService.useCoupon(wechatPay.getCouponNo());
             // TODO: 定时将未支付的订单取消任务
 //            orderCancelTask.setOrderId(newCourOrder.getId());
 //            orderCancelTask.setModule(wechatPay.getModule());
@@ -135,8 +140,8 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
                     .isUseGaugeAnalyse(wechatPay.getIsUseGaugeAnalyse())
                     .build();
             psyOrder.setCreateBy(nickName);
-
             PsyOrder newPsyOrder = psyOrderService.generatePsyOrder(psyOrder);
+            psyCouponService.useCoupon(wechatPay.getCouponNo());
 
             // TODO: 定时将未支付的订单取消任务
 //            orderCancelTask.setOrderId(newPsyOrder.getId());
@@ -179,6 +184,7 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
                 psyConsultOrderVO.setAmount(wechatPay.getAmount());
                 psyConsultOrderService.add(psyConsultOrderVO);
             }
+            psyCouponService.useCoupon(wechatPay.getCouponNo());
 
             // TODO: 定时将未支付的订单取消任务
 //            orderCancelTask.setId(id);
@@ -346,6 +352,15 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
             if (OrderStatus.CREATE.getValue() == psyOrder.getOrderStatus()) {
                 psyOrder.setOrderStatus(OrderStatus.FINISHED.getValue());
                 psyOrderService.updatePsyOrder(psyOrder);
+                
+                //若购买了解析服务, 则领取优惠券
+                if ("Y".equals(psyOrder.getIsUseGaugeAnalyse())){
+                    ReceiveFreeCouponReq couponReq = new ReceiveFreeCouponReq();
+                    couponReq.setUserId(psyOrder.getUserId());
+                    couponReq.setCouponTemplateIdStr("10000");//pocket测评解析券
+                    couponReq.setIsCanGetChargeCoupon("Y");//可领取收费权
+                    psyCouponService.receiveFreeCoupon(couponReq);
+                }
 
                 // TODO: 修改支付对象状态为已支付
                 PsyOrderPay orderPay = new PsyOrderPay();
@@ -489,6 +504,5 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
                 }
             }
         }
-        
     }
 }

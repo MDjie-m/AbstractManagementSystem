@@ -33,7 +33,7 @@ public interface IPsyCouponService
      */
     public List<PsyCoupon> selectPsyCouponList(PsyCoupon psyCoupon);
     
-    //领取免费优惠券
+    //领取优惠券
     public void receiveFreeCoupon(ReceiveFreeCouponReq req);
     
     
@@ -83,6 +83,9 @@ public interface IPsyCouponService
     
     //消耗优惠券
     public void useCoupon(String no);
+    
+    //归还优惠券
+    public void returnCoupon(String no);
     
     
 }

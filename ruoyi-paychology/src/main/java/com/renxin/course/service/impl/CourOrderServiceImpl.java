@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourOrder;
@@ -14,6 +15,7 @@ import com.renxin.course.service.ICourOrderService;
 import com.renxin.course.vo.CourseOrderVO;
 import com.renxin.course.vo.OrderQueryVO;
 import com.renxin.course.vo.OrderVO;
+import com.renxin.psychology.domain.PsyConsultantOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -204,4 +206,5 @@ public class CourOrderServiceImpl implements ICourOrderService
     public List<CourseOrderVO> getOrderListByUserId(Long userId,Integer status) {
         return courOrderMapper.getOrderListByUserId(userId,status);
     }
+    
 }

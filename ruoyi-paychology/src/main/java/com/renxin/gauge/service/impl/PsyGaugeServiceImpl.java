@@ -1,5 +1,6 @@
 package com.renxin.gauge.service.impl;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import com.renxin.gauge.mapper.*;
 import com.renxin.gauge.service.IPsyGaugeQuestionsResultService;
 import com.renxin.gauge.service.IPsyOrderService;
 import com.renxin.gauge.vo.GaugeVO;
+import com.renxin.system.service.ISysConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +72,9 @@ public class PsyGaugeServiceImpl extends ServiceImpl<PsyGaugeMapper, PsyGauge>
     @Autowired
     private IPsyOrderService psyOrderService;
 
+    @Resource
+    private ISysConfigService configService;
+
     /**
      * 查询心理测评
      * 
@@ -110,6 +115,8 @@ public class PsyGaugeServiceImpl extends ServiceImpl<PsyGaugeMapper, PsyGauge>
 
         Date date=DateUtils.getNowDate();
         psyGauge.setCreateTime(date);
+        BigDecimal analysePrice = new BigDecimal(configService.selectConfigByKey("analyse.price"));
+        psyGauge.setAnalysePrice(analysePrice);
         int result= psyGaugeMapper.insertPsyGauge(psyGauge);
 
         //新增问题
@@ -302,6 +309,9 @@ public class PsyGaugeServiceImpl extends ServiceImpl<PsyGaugeMapper, PsyGauge>
                 .select(PsyGauge::getId,PsyGauge::getGaugeClass)
                 .orderByDesc(PsyGauge::getCreateTime));
 
+        //删除原先的所有idList
+        redisCache.deleteStartWith(CacheConstants.GAUGE_ID_LIST);
+        
         //id清单放入缓存
         ////完整id清单
         List<Long> allIdList = allGaugeList.stream().map(p -> p.getId()).collect(Collectors.toList());

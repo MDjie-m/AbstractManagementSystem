@@ -349,8 +349,9 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
                 .select(CourCourse::getId,CourCourse::getType)
                 .orderByDesc(CourCourse::getCreateTime));
         
-        //todo 删除原先的所有idList
-
+        //删除原先的所有idList
+        redisCache.deleteStartWith(CacheConstants.COURSE_ID_LIST);
+        
         //id清单放入缓存
         ////完整id清单
         List<Long> allIdList = allCourseList.stream().map(p -> p.getId()).collect(Collectors.toList());

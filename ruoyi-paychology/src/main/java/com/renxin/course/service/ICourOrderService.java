@@ -32,6 +32,7 @@ public interface ICourOrderService
      */
     public CourOrder selectCourOrderByOrderId(String orderId);
 
+
     /**
      * 查询课程订单列表
      * 
@@ -107,4 +108,6 @@ public interface ICourOrderService
     List<OrderQueryVO> queryOrderList(OrderQueryDTO orderQueryDTO);
 
     List<CourseOrderVO> getOrderListByUserId(Long userId,Integer status);
+
+
 }

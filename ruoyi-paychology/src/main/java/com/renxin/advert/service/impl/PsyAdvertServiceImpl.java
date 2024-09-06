@@ -156,7 +156,7 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
 
         return advert;
     }
-
+    
     /**
      * 查询页面广告列表
      * 
@@ -225,10 +225,13 @@ public class PsyAdvertServiceImpl implements IPsyAdvertService
      * @return 结果
      */
     @Override
-    @CacheEvict(cacheNames = "selectPsyAdvertByAdvertNoCache", allEntries = true)
     public int deletePsyAdvertByAdvertNos(String[] advertNos)
     {
-        return psyAdvertMapper.deletePsyAdvertByAdvertNos(advertNos);
+        //psyAdvertMapper.deletePsyAdvertByAdvertNos(advertNos)
+        for (String advertNo : advertNos) {
+            deletePsyAdvertByAdvertNo(advertNo);
+        }
+        return advertNos.length;
     }
 
     /**

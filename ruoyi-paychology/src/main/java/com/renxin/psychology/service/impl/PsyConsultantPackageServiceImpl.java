@@ -229,6 +229,9 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
                 .select(PsyConsultantPackage::getPackageId)
                 .orderByDesc(PsyConsultantPackage::getCreateTime));
 
+        //删除原先的所有idList
+        //redisCache.deleteStartWith(CacheConstants.PACKAGE_ID_LIST);
+        
         //id清单放入缓存
         ////完整id清单
         List<Long> allIdList = allCourseList.stream().map(p -> p.getPackageId()).collect(Collectors.toList());

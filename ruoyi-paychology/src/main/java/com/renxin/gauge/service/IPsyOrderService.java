@@ -1,6 +1,8 @@
 package com.renxin.gauge.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.renxin.common.core.domain.dto.LoginDTO;
+import com.renxin.gauge.domain.PsyGauge;
 import com.renxin.gauge.domain.PsyOrder;
 import com.renxin.gauge.dto.OrderQueryDTO;
 
@@ -12,7 +14,7 @@ import java.util.List;
  * @author renxin
  * @date 2022-10-12
  */
-public interface IPsyOrderService 
+public interface IPsyOrderService extends IService<PsyOrder>
 {
     /**
      * 查询心理测评订单信息

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 领取免费优惠券请求体
+ * 领取优惠券请求体
  * 
  * @author renxin
  * @date 2023-06-26
@@ -28,6 +28,8 @@ public class ReceiveFreeCouponReq extends BaseValObj implements Serializable
     /** 优惠券id 逗号分隔 */
     private String couponTemplateIdStr;
 
+    //是否可领收费券
+    private String isCanGetChargeCoupon;
     
 
 }

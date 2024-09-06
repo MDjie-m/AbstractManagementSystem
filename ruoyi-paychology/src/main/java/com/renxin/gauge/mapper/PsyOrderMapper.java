@@ -1,6 +1,8 @@
 package com.renxin.gauge.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.renxin.common.core.domain.dto.LoginDTO;
+import com.renxin.gauge.domain.PsyGauge;
 import com.renxin.gauge.domain.PsyOrder;
 import com.renxin.gauge.dto.OrderQueryDTO;
 import org.apache.ibatis.annotations.Param;
@@ -15,7 +17,7 @@ import java.util.List;
  * @author renxin
  * @date 2022-10-12
  */
-public interface PsyOrderMapper 
+public interface PsyOrderMapper extends BaseMapper<PsyOrder>
 {
     /**
      * 查询心理测评订单信息

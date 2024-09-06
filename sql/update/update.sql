@@ -233,3 +233,10 @@ ALTER TABLE `psy_consultant_package`
     ADD COLUMN `person_sup_coupon_template_id` BIGINT NULL DEFAULT NULL COMMENT '个人督导 抵扣券模版id' AFTER `person_sup_num`,
     ADD COLUMN `person_exp_coupon_template_id` BIGINT NOT NULL DEFAULT 0 COMMENT '个人体验 抵扣券模版id' AFTER `person_exp_num`,
     ADD COLUMN `course_coupon_template_id` BIGINT NULL DEFAULT NULL COMMENT '课程 抵扣券模版id' AFTER `course_num`;
+
+UPDATE psy_gauge SET analyse_price = 29.9 WHERE 1=1;
+INSERT INTO `psy_coupon_template` (`id`, `user_type`, `coupon_name`, `total_num`, `used_num`, `coupon_type`, `server_type`, `max_deduction_price`, 
+                                   `discount_rate`, `validity_day`, `template_status`, `del_flag`, `create_by`, `create_time`, `update_by`, `update_time`,
+                                   `use_threshold_price`, `remark`, `is_free_get`) 
+                                   VALUES (10000, 1, 'pocket测评解析券', 9999999, NULL, 1, 13, 29.90, NULL, 9999, 1, '0', NULL, '2024-09-06 10:05:46', NULL, NULL, 
+                                           0.00, NULL, 'N');

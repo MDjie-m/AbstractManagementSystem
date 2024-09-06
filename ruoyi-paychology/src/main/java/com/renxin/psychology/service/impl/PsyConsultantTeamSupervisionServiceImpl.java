@@ -496,6 +496,9 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
                 .select(PsyConsultantTeamSupervision::getId)
                 .orderByDesc(PsyConsultantTeamSupervision::getCreateTime));
 
+        //删除原先的所有idList
+        //redisCache.deleteStartWith(CacheConstants.TEAM_SUP_ID_LIST);
+        
         //id清单放入缓存
         ////完整id清单
         List<Long> allIdList = allTeamList.stream().map(p -> p.getId()).collect(Collectors.toList());

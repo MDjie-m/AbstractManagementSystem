@@ -333,8 +333,7 @@ public class ConsultantOrderController extends BaseController
         consultantScheduleService.reservationServerBatch(consultantScheduleList);
         return AjaxResult.success();
     }
-
-
+    
     /**
      * 咨询
      */
@@ -343,5 +342,24 @@ public class ConsultantOrderController extends BaseController
     public AjaxResult doConsult(@PathVariable("id") Long id, @PathVariable("workId") Long workId, @PathVariable("time") Integer time)
     {
         return AjaxResult.success(psyConsultOrderService.doConsult(id, workId, time));
+    }
+
+    /**
+     * 取消咨询师端订单
+     *
+     * 用于换取openid 正式使用时openid可以直接从用户信息中获取 不需要在此接口中获取
+     * @return 小程序支付所需参数
+     */
+    @PostMapping("/cancelOrder")
+    @RateLimiter(limitType = LimitType.IP)
+    public AjaxResult cancelOrder(@RequestBody PsyConsultantOrder req, HttpServletRequest request) {
+        Long consultId = consultantTokenService.getConsultId(request);
+        req.setPayConsultantId(consultId);
+        if (consultId == -1) {
+            return error("用户信息异常,请登录后重试");
+        }
+        
+        psyConsultantOrderService.cancelOrder(req);
+        return AjaxResult.success();
     }
 }

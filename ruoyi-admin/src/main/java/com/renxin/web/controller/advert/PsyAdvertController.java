@@ -99,7 +99,9 @@ public class PsyAdvertController extends BaseController
     @PostMapping("/add")
     public AjaxResult add(@RequestBody PsyAdvert psyAdvert)
     {
-        return toAjax(psyAdvertService.insertPsyAdvert(psyAdvert));
+        int i = psyAdvertService.insertPsyAdvert(psyAdvert);
+        psyAdvertService.selectPsyAdvertByAdvertNo(psyAdvert.getAdvertNo());
+        return toAjax(i);
     }
 
     /**
@@ -109,7 +111,9 @@ public class PsyAdvertController extends BaseController
     @PostMapping("/edit")
     public AjaxResult edit(@RequestBody PsyAdvert psyAdvert)
     {
-        return toAjax(psyAdvertService.updatePsyAdvert(psyAdvert));
+        int i = psyAdvertService.updatePsyAdvert(psyAdvert);
+        psyAdvertService.selectPsyAdvertByAdvertNo(psyAdvert.getAdvertNo());
+        return toAjax(i);
     }
 
     /**

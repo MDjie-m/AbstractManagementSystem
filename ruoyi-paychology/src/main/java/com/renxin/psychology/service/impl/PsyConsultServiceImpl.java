@@ -711,6 +711,9 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
                 .eq(PsyConsult::getIsShow,0)
                 .orderByDesc(PsyConsult::getCreateTime));
 
+        //删除原先的所有idList
+        redisCache.deleteStartWith(CacheConstants.CONSULTANT_ID_LIST);
+        
         //id清单放入缓存
         ////完整id清单
         List<Long> allIdList = allConsultantList.stream().map(p -> p.getId()).collect(Collectors.toList());

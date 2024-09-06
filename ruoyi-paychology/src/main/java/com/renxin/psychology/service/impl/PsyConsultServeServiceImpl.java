@@ -6,6 +6,7 @@ import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.mapper.PsyConsultServeMapper;
 import com.renxin.psychology.request.PsyRefConsultServeReq;
 import com.renxin.psychology.service.IPsyConsultServeService;
+import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.vo.PsyConsultServeVO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -14,12 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PsyConsultServeServiceImpl implements IPsyConsultServeService {
 
     @Resource
     private PsyConsultServeMapper psyConsultServeMapper;
+    
+    @Resource
+    private IPsyConsultService consultService;
 
     @Override
     public List<PsyConsultServe> getList(PsyConsultServe req) {
@@ -63,8 +69,13 @@ public class PsyConsultServeServiceImpl implements IPsyConsultServeService {
             ref.setServeId(a);
             refs.add(ref);
         });
-
-        return psyConsultServeMapper.batchServeRef(refs);
+        int i = psyConsultServeMapper.batchServeRef(refs);
+        
+        //获取受影响的consultId清单, 刷新咨询师缓存
+        List<Long> consultIdList = refs.stream().map(p -> p.getConsultId()).distinct().collect(Collectors.toList());
+        consultService.refreshCacheByIdList(consultIdList);
+        
+        return i;
     }
 
     @Override
@@ -73,13 +84,20 @@ public class PsyConsultServeServiceImpl implements IPsyConsultServeService {
         LambdaQueryWrapper<PsyConsultServe> wp = new LambdaQueryWrapper<>();
         wp.eq(PsyConsultServe::getServeId, serve.getServeId());
         wp.eq(PsyConsultServe::getConsultId, serve.getConsultId());
-        return psyConsultServeMapper.delete(wp);
+        int delete = psyConsultServeMapper.delete(wp);
+
+        //刷新咨询师缓存
+        consultService.refreshCacheById(serve.getConsultId());
+        return delete;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteAll() {
         return psyConsultServeMapper.deleteAll();
+        //PsyConsultServiceImpl
+        //清空旧的关联关系
+        //serveService.deleteAll();
     }
 
 

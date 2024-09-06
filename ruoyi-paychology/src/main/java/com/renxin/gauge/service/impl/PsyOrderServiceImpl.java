@@ -4,10 +4,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.gauge.constant.GaugeConstant;
+import com.renxin.gauge.domain.PsyGauge;
 import com.renxin.gauge.dto.OrderQueryDTO;
+import com.renxin.gauge.mapper.PsyGaugeMapper;
 import org.springframework.stereotype.Service;
 import com.renxin.gauge.mapper.PsyOrderMapper;
 import com.renxin.gauge.domain.PsyOrder;
@@ -23,7 +26,8 @@ import javax.annotation.Resource;
  * @date 2022-10-12
  */
 @Service
-public class PsyOrderServiceImpl implements IPsyOrderService {
+public class PsyOrderServiceImpl extends ServiceImpl<PsyOrderMapper, PsyOrder> 
+        implements IPsyOrderService {
     @Resource
     private PsyOrderMapper psyOrderMapper;
 
@@ -159,7 +163,7 @@ public class PsyOrderServiceImpl implements IPsyOrderService {
         psyOrder.setCreateTime(DateUtils.getNowDate());
         Long code = psyOrderMapper.insertPsyOrder(psyOrder);
         if (code == 1) {
-            return selectPsyOrderByOrderId(psyOrder.getId().toString());
+            return selectPsyOrderById(psyOrder.getId());
         }
         return null;
     }

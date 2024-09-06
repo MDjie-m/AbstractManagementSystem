@@ -216,9 +216,6 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
 
     /**
      * 查询订单列表
-     * 
-     * @param psyConsultantOrder 团队督导(组织)订单
-     * @return 团队督导(组织)订单
      */
     @Override
     public List<PsyConsultantOrder> selectPsyConsultantOrderList(PsyConsultantOrder req)
@@ -414,7 +411,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
 
 
     /**
-     * 创建[待付款订单]及[支付对象]
+     * 创建[待付款订单]及[支付对象] - 创建订单
      * @param consultantOrder
      */
     @Override
@@ -456,6 +453,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             PsyConsultantTeamSupervision team = teamSupervisionService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
             //consultantOrder.setServerName(team.getTitle()+"-第"+team.getPeriodNo()+"期");
              newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
+            couponService.useCoupon(consultantOrder.getCouponNo());//消耗优惠券
             //内部生成支付对象
             /*PsyOrderPay orderPay = new PsyOrderPay();
             orderPay.setConsultantOrderId(Integer.valueOf(newOrder.getId()));
@@ -475,6 +473,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //Long id = consultantOrder.getOrderId() != null ? consultantOrder.getOrderId() : IDhelper.getNextId();
             //consultantOrder.setServerName("个人督导服务");
              newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
+            couponService.useCoupon(consultantOrder.getCouponNo());//消耗优惠券
         } else if (PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)) {
             //计算券后价格
             if(ObjectUtils.isNotEmpty(couponNo)) {
@@ -484,6 +483,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //Long id = consultantOrder.getOrderId() != null ? consultantOrder.getOrderId() : IDhelper.getNextId();
             //consultantOrder.setServerName("个人体验服务");
              newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
+            couponService.useCoupon(consultantOrder.getCouponNo());//消耗优惠券
         } else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)) {
             //计算券后价格
             if(ObjectUtils.isNotEmpty(couponNo)) {
@@ -493,6 +493,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             // 购买课程
             //consultantOrder.setServerName("购买课程");
              newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
+            couponService.useCoupon(consultantOrder.getCouponNo());//消耗优惠券
         } else if (PsyConstants.CONSULTANT_ORDER_PACKAGE_NUM.equals(serverType)) {
             if(ObjectUtils.isNotEmpty(couponNo)) {
                 throw new ServiceException("套餐不可使用优惠券购买");
@@ -590,6 +591,45 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             }
         }
         
+    }
+
+    /**
+     * 获取超时的订单清单
+     * @param num
+     * @return
+     */
+    @Override
+    public List<PsyConsultantOrder> getCancelList(Integer num){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, -num);
+        Date time = calendar.getTime();
+
+        PsyConsultantOrder req = new PsyConsultantOrder();
+        req.setCreateTimeEnd(time);
+        req.setStatus("0");//待付款
+        List<PsyConsultantOrder> cancelList = psyConsultantOrderMapper.selectPsyConsultantOrderList(req);
+        return cancelList;
+    }
+
+    /**
+     * 取消订单
+     * @param req
+     */
+    public void cancelOrder(PsyConsultantOrder req){
+        PsyConsultantOrder order = psyConsultantOrderMapper.selectPsyConsultantOrderByOrderNo(req.getOrderNo());
+        if (!req.getPayConsultantId().equals(order.getPayConsultantId())){
+            throw new ServiceException("并非该订单的付款人, 无法取消订单");
+        }
+        if (!order.getStatus().equals("0")){
+            throw new ServiceException("该订单已付款或已取消, 无法再次取消");
+        }
+
+        order.setStatus("3");//已取消
+        order.setUpdateBy(req.getPayConsultantId()+"");
+        order.setUpdateTime(new Date());
+        //取消订单
+        consultantOrderService.updatePsyConsultantOrder(order);
+        couponService.returnCoupon(order.getCouponNo());//归还优惠券
     }
     
 }

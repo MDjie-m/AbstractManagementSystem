@@ -28,7 +28,7 @@ public class PsyConsultantOrder extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    private String id;
+    private Long id;
     
     /** 流水编号 */
     @Excel(name = "流水编号")
@@ -125,5 +125,9 @@ public class PsyConsultantOrder extends BaseEntity
     @TableField(exist = false)
     private CourCourse courseDetail;
 
+    /** 创建时间止 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(exist = false)
+    private Date createTimeEnd;
 
 }

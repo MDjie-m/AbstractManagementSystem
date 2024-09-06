@@ -366,13 +366,27 @@ public class PsyCouponServiceImpl implements IPsyCouponService
     //消耗优惠券
     @Override
     public void useCoupon(String couponNo){
+        if (ObjectUtils.isEmpty(couponNo)){
+            return;
+        }
         PsyCoupon psyCoupon = psyCouponMapper.selectPsyCouponByCouponNo(couponNo);
         psyCoupon.setIsUsable(1);//已消耗
         psyCouponMapper.updatePsyCoupon(psyCoupon);
     }
 
+    //归还优惠券
+    @Override
+    public void returnCoupon(String couponNo){
+        if (ObjectUtils.isEmpty(couponNo)){
+            return;
+        }
+        PsyCoupon psyCoupon = psyCouponMapper.selectPsyCouponByCouponNo(couponNo);
+        psyCoupon.setIsUsable(0);//未使用
+        psyCouponMapper.updatePsyCoupon(psyCoupon);
+    }
 
-    //领取免费优惠券
+
+    //领取优惠券
     @Transactional(rollbackFor = Exception.class)
     public void receiveFreeCoupon(ReceiveFreeCouponReq req){
         List<Long> couponTemplateIdList = Arrays.stream(req.getCouponTemplateIdStr().split(","))
@@ -384,7 +398,7 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         for (Long temId : couponTemplateIdList) {
             //查询相应模版
             PsyCouponTemplate couponTemplate = couponTemplateService.selectPsyCouponTemplateById(temId);
-            if (!"Y".equals(couponTemplate.getIsFreeGet())){
+            if (!"Y".equals(couponTemplate.getIsFreeGet()) && !"Y".equals(req.getIsCanGetChargeCoupon())){
                 throw new ServiceException(couponTemplate.getCouponName() + "-该优惠券不支持免费领取");
             }
             PsyCoupon coupon = new PsyCoupon();

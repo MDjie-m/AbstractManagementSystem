@@ -75,6 +75,9 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
 
     @Resource
     private IPsyConsultServeConfigService psyConsultServeConfigService;
+    
+    @Resource
+    private IPsyCouponService couponService;
 
     @Override
     public List<PsyOrderLog> getLogs(String orderNo) {
@@ -415,6 +418,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         // psyConsultService.updateNum(order.getConsultId(), -1);
         doLog(order.getOrderNo(), PsyConstants.ORDER_LOG_CANCEL, createBy, PsyConstants.ORDER_LOG_MESSAGE_CANCEL);
         psyConsultOrderMapper.updateById(order);
+        couponService.returnCoupon(order.getCouponNo());//归还优惠券        
     }
 
     @Override

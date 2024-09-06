@@ -83,7 +83,8 @@ public class PsyGaugeQuestionsServiceImpl extends ServiceImpl<PsyGaugeQuestionsM
      */
     @Override
     public List<PsyGaugeQuestions> selectPsyGaugeQuestionsList(PsyGaugeQuestions psyGaugeQuestions) {
-        return psyGaugeQuestionsMapper.selectPsyGaugeQuestionsList(psyGaugeQuestions);
+        List<PsyGaugeQuestions> questionsList = psyGaugeQuestionsMapper.selectPsyGaugeQuestionsList(psyGaugeQuestions);
+        return questionsList;
     }
 
     /**
@@ -200,12 +201,19 @@ public class PsyGaugeQuestionsServiceImpl extends ServiceImpl<PsyGaugeQuestionsM
     @Override
     public void refreshCacheAll(){
         //获取完整id清单
-        List<Long> courseIdList = psyGaugeQuestionsMapper.selectList(new LambdaQueryWrapper<PsyGaugeQuestions>()
+       /* List<Long> courseIdList = psyGaugeQuestionsMapper.selectList(new LambdaQueryWrapper<PsyGaugeQuestions>()
                 .select(PsyGaugeQuestions::getId)
                 .orderByDesc(PsyGaugeQuestions::getCreateTime)).stream().map(p -> p.getId()).collect(Collectors.toList());
 
         //刷新缓存
-        refreshCacheByIdList(courseIdList);
+        refreshCacheByIdList(courseIdList);*/
+        List<PsyGaugeQuestions> questionsList = psyGaugeQuestionsMapper.selectPsyGaugeQuestionsList(new PsyGaugeQuestions());
+        List<PsyGaugeQuestionsOptions> optionsList = questionsOptionsService.selectPsyGaugeQuestionsOptionsList(new PsyGaugeQuestionsOptions());
+        for (PsyGaugeQuestions question : questionsList) {
+            question.setOptionList(optionsList.stream().filter(p -> p.getGaugeQuestionsId().equals(question.getId())).collect(Collectors.toList()));
+        }
+        questionsList.forEach(p -> redisCache.setCacheObject(CacheConstants.QUESTION_BY_ID_KEY+"::"+p.getId(),p));
+
         refreshIdList();
     }
 
@@ -217,6 +225,9 @@ public class PsyGaugeQuestionsServiceImpl extends ServiceImpl<PsyGaugeQuestionsM
                 .select(PsyGaugeQuestions::getId,PsyGaugeQuestions::getGaugeId)
                 .orderByDesc(PsyGaugeQuestions::getCreateTime));
 
+        //删除原先的所有idList
+        redisCache.deleteStartWith(CacheConstants.QUESTION_ID_LIST);
+        
         //id清单放入缓存
         ////完整id清单
         List<Long> allIdList = allGaugeList.stream().map(p -> p.getId()).collect(Collectors.toList());
