@@ -20,10 +20,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="loginUserId"    column="login_user_id"    />
         <result property="remark"    column="remark"    />
         <result property="storeId"    column="store_id"    />
+        <result property="storeName"    column="store_name"    />
+        <result property="aptitude"    column="aptitude"    />
+
     </resultMap>
 
     <sql id="selectStoreTutorVo">
-        select store_tutor_id, real_name, mobile, user_img, sex, level, status, del_flag, create_by, create_time, update_by, update_time, login_user_id, remark, store_id from t_store_tutor
+        select a.*,b.store_name
+        from t_store_tutor  a left join   t_store b on a.store_id=b.store_id
     </sql>
 
     <select id="selectStoreTutorList" parameterType="StoreTutor" resultMap="StoreTutorResult">
@@ -100,6 +104,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="loginUserId != null">login_user_id = #{loginUserId},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="storeId != null">store_id = #{storeId},</if>
+            <if test="aptitude != null">aptitude = #{aptitude},</if>
+
         </trim>
         where store_tutor_id = #{storeTutorId}
     </update>

@@ -108,6 +108,8 @@ public class StoreUserServiceImpl implements IStoreUserService
         sysUserService.insertUser(sysUser);
         storeUser.setStoreUserId(IdUtils.singleNextId());
         storeUser.setLoginUserId(sysUser.getUserId());
+        storeUser.setCreateBy(SecurityUtils.getUsername());
+        storeUser.setUpdateBy(storeUser.getUpdateBy());
         int res= storeUserMapper.insert(storeUser);
         return  res;
 
@@ -125,12 +127,18 @@ public class StoreUserServiceImpl implements IStoreUserService
         AssertUtil.isTrue(!storeUserMapper.existsWithDelFlagExcludeId(StoreUser::getMobile,storeUser.getMobile(),
                         StoreUser::getStoreUserId,storeUser.getStoreUserId()),
                 "手机号已被其他用户使用");
-        storeUser.setUpdateTime(DateUtils.getNowDate());
+
         SysUser user=sysUserService.selectUserById(storeUser.getLoginUserId());
         user.setSex(storeUser.getSex());
         user.setNickName(storeUser.getRealName());
         user.setPhonenumber(storeUser.getMobile());
         user.setUserName(storeUser.getMobile());
+        user.setUpdateBy(SecurityUtils.getUsername());
+        user.setRoleIds(storeUser.getRoleIds().toArray(new Long[0]));
+        sysUserService.updateUser(user);
+
+        storeUser.setUpdateTime(DateUtils.getNowDate());
+        storeUser.setUpdateBy(SecurityUtils.getUsername());
         return storeUserMapper.updateById(storeUser);
     }
 

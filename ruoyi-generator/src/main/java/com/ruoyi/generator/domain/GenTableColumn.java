@@ -1,17 +1,27 @@
 package com.ruoyi.generator.domain;
 
 import javax.validation.constraints.NotBlank;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.utils.StringUtils;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 代码生成业务字段表 gen_table_column
  * 
  * @author ruoyi
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class GenTableColumn extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
+
+
+    @TableField(exist = false)
+    private Integer index;
 
     /** 编号 */
     private Long columnId;

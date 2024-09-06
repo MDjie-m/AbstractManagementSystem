@@ -3,6 +3,8 @@ package com.ruoyi.generator.domain;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import com.ruoyi.common.constant.GenConstants;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -276,6 +278,11 @@ public class GenTable extends BaseEntity
     public void setColumns(List<GenTableColumn> columns)
     {
         this.columns = columns;
+        if(CollectionUtils.isNotEmpty(columns)){
+            for (int i = 0; i < columns.size(); i++) {
+                columns.get(i).setIndex(i);
+            }
+        }
     }
 
     public String getOptions()

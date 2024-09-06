@@ -3,6 +3,7 @@ package ${packageName}.mapper;
 import java.util.List;
 import ${packageName}.domain.${ClassName};
 import com.ruoyi.common.core.mapper.MyBaseMapper;
+import org.apache.ibatis.annotations.Mapper
 #if($table.sub)
 import ${packageName}.domain.${subClassName};
 #end
@@ -13,6 +14,7 @@ import ${packageName}.domain.${subClassName};
  * @author ${author}
  * @date ${datetime}
  */
+@Mapper
 public interface ${ClassName}Mapper extends MyBaseMapper<${ClassName}>
 {
     /**

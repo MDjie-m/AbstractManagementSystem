@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 门店助教对象 t_store_tutor
  * 
@@ -20,6 +22,12 @@ import com.ruoyi.common.core.domain.BaseEntity;
 public class StoreTutor extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
+
+    @TableField(exist = false)
+    private List<Long> roleIds;
+
+    @TableField(exist = false)
+    private String  storeName;
 
     /** 员工id */
 
@@ -60,7 +68,7 @@ public class StoreTutor extends BaseEntity
     @Excel(name = "门店状态", readConverterExp = "0=正常,1=停用")
 
     @TableField("status")
-    private Long status;
+    private Integer status;
 
     /** 删除标志（0代表存在 2代表删除） */
     @Excel(name = "删除标志", readConverterExp = "0=代表存在,2=代表删除")
@@ -74,11 +82,16 @@ public class StoreTutor extends BaseEntity
     @TableField("login_user_id")
     private Long loginUserId;
 
-    /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    /**门店*/
+    @Excel(name = "门店")
 
     @TableField("store_id")
     private Long storeId;
+
+    /**资质*/
+    @TableField("aptitude")
+    private String aptitude;
+
 
 
 

@@ -3,6 +3,7 @@ package com.ruoyi.billiard.mapper;
 import java.util.List;
 import com.ruoyi.billiard.domain.StoreTutor;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 门店助教Mapper接口
@@ -10,6 +11,7 @@ import com.ruoyi.common.core.mapper.MyBaseMapper;
  * @author ruoyi
  * @date 2024-09-06
  */
+@Mapper
 public interface StoreTutorMapper extends MyBaseMapper<StoreTutor>
 {
     /**
