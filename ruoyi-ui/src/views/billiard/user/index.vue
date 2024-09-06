@@ -2,6 +2,7 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="姓名" prop="realName">
+
         <el-input
           v-model="queryParams.realName"
           placeholder="请输入姓名"
@@ -96,53 +97,104 @@
     />
 
     <!-- 添加或修改门店员工对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="姓名" prop="realName">
-          <el-input v-model="form.realName" placeholder="请输入姓名"  maxlength="20"/>
-        </el-form-item>
-        <el-form-item label="用户性别">
-          <el-select v-model="form.sex" placeholder="请选择性别">
-            <el-option
-              v-for="dict in dict.type.sys_user_sex"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="手机号" prop="mobile">
-          <el-input v-model="form.mobile" placeholder="请输入手机号" maxlength="13" />
-        </el-form-item>
-        <el-form-item label="头像" prop="userImg">
-          <image-upload v-model="form.userImg" :limit="1"/>
-        </el-form-item>
-        <el-form-item label="门店">
-          <el-select v-model="form.storeId"  placeholder="请选择门店">
-            <el-option
-              v-for="item in storeOptions"
-              :key="item.storeId"
-              :label="item.storeName"
-              :value="item.storeId"
-              :disabled="item.delFlag != 0"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="角色">
-          <el-select v-model="form.roleIds" multiple placeholder="请选择角色">
-            <el-option
-              v-for="item in roleOptions"
-              :key="item.roleId"
-              :label="item.roleName"
-              :value="item.roleId"
-              :disabled="item.status == 1"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" maxlength="200" />
-        </el-form-item>
-        <span>账户默认账号为:E手机号,默认密码:手机号</span>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="姓名" prop="realName">
+              <el-input v-model="form.realName" placeholder="请输入姓名"  maxlength="20"/>
+            </el-form-item>
+
+          </el-col>
+          <el-col :span="12">
+
+            <el-form-item label="用户性别" >
+              <el-select v-model="form.sex" placeholder="请选择性别" style="width: 100%">
+                <el-option
+                  v-for="dict in dict.type.sys_user_sex"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="手机号" prop="mobile">
+              <el-input v-model="form.mobile" placeholder="请输入手机号" maxlength="11"   />
+            </el-form-item>
+
+
+          </el-col>
+          <el-col :span="12">
+
+            <el-form-item label="门店">
+              <el-select v-model="form.storeId"  placeholder="请选择门店" style="width: 100%">
+                <el-option
+                  v-for="item in storeOptions"
+                  :key="item.storeId"
+                  :label="item.storeName"
+                  :value="item.storeId"
+                  :disabled="item.delFlag != 0"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="角色">
+              <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 100%">
+                <el-option
+                  v-for="item in roleOptions"
+                  :key="item.roleId"
+                  :label="item.roleName"
+                  :value="item.roleId"
+                  :disabled="item.status == 1"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+
+
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" maxlength="200" />
+            </el-form-item>
+
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="头像" prop="userImg">
+              <image-upload v-model="form.userImg" :limit="1"/>
+            </el-form-item>
+
+
+          </el-col>
+
+        </el-row>
+
+        <el-row>
+          <el-col :span="24">
+
+            <span>账户默认账号为:手机号,默认密码:手机号</span>
+
+          </el-col>
+        </el-row>
+
+
+
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -205,7 +257,16 @@ export default {
           { required: true, message: "门店不能为空", trigger: "blur" }
         ],
         mobile: [
-          { required: true, message: "手机号不能为空", trigger: "blur" }
+          { required: true, message: "手机号不能为空", trigger: "blur" },
+          { validator:function(rule,value,callback){
+              if(!/^(1)\d{10}$/.test(value) ){
+                callback(new Error("请输入正确的手机号"));
+              }else{
+                //校验通过
+                callback();
+              }
+            }, trigger: 'blur'
+          },
         ],
         userImg: [
           { required: true, message: "头像不能为空", trigger: "blur" }
