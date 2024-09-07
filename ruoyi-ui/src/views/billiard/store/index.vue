@@ -189,7 +189,6 @@ export default {
     };
   },
   created() {
-    this.getList();
   },
   methods: {
     /** 查询门店列表 */

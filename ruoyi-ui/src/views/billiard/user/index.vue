@@ -1,241 +1,238 @@
 <template>
-  <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="姓名" prop="realName">
+  <StoreContainer  @onStoreChanged="onStoreChanged">
+    <div class="container-div">
+      <div class=" col-sm-12 search-collapse" v-show="showSearch">
+        <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+          <el-form-item label="姓名" prop="realName">
 
-        <el-input
-          v-model="queryParams.realName"
-          placeholder="请输入姓名"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="手机号" prop="mobile">
-        <el-input
-          v-model="queryParams.mobile"
-          placeholder="请输入手机号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+            <el-input
+              v-model="queryParams.realName"
+              placeholder="请输入姓名"
+              clearable
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+          <el-form-item label="手机号" prop="mobile">
+            <el-input
+              v-model="queryParams.mobile"
+              placeholder="请输入手机号"
+              clearable
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
 
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['billiard:user:add']"
-        >新增</el-button>
-      </el-col>
-
-      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
-    </el-row>
-
-    <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
-      <el-table-column label="编号" align="center" prop="storeUserId" />
-      <el-table-column label="姓名" align="center" prop="realName" />
-      <el-table-column label="性别" align="center" prop="sex"  >
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_user_sex" key :value="scope.row.sex"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="手机号" align="center" prop="mobile" />
-      <el-table-column label="头像" align="center" prop="userImg" width="100">
-        <template slot-scope="scope">
-          <image-preview :src="scope.row.userImg" :width="50" :height="50"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="所属门店" align="center" prop="storeName" />
-      <el-table-column label="角色" align="center" prop="roleIds"  >
-        <template slot-scope="scope">
-          <dict-tag :options="roleOptions" :value="scope.row.roleIds"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" align="center" prop="status">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.store_user_status" :value="scope.row.status"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
-
-      <el-table-column label="创建/更新" align="center" prop="updateTime" width="200">
-        <template slot-scope="scope">
-          <div>
-            <span>{{scope.row.createBy}}&nbsp;</span>
-            <span>{{ parseTime(scope.row.createTime ) }}</span>
-          </div>
-          <div>
-              <span>{{scope.row.updateBy}} &nbsp;</span>
-            <span>{{ parseTime(scope.row.updateTime ) }}</span>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['billiard:user:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-key"
-            @click="handleResetPwd(scope.row)"
-            v-hasPermi="['billiard:user:edit']"
-          >重置密码</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['billiard:user:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-
-    <!-- 添加或修改门店员工对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="姓名" prop="realName">
-              <el-input v-model="form.realName" placeholder="请输入姓名"  maxlength="20"/>
-            </el-form-item>
-
-          </el-col>
-          <el-col :span="12">
-
-            <el-form-item label="用户性别" >
-              <el-select v-model="form.sex" placeholder="请选择性别" style="width: 100%">
-                <el-option
-                  v-for="dict in dict.type.sys_user_sex"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="手机号" prop="mobile">
-              <el-input v-model="form.mobile" placeholder="请输入手机号" maxlength="11"   />
-            </el-form-item>
-
-
-          </el-col>
-          <el-col :span="12">
-
-            <el-form-item label="门店"  prop="storeId">
-              <el-select v-model="form.storeId"  placeholder="请选择门店" style="width: 100%">
-                <el-option
-                  v-for="item in storeOptions"
-                  :key="item.storeId"
-                  :label="item.storeName"
-                  :value="item.storeId"
-                  :disabled="item.delFlag != 0"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="状态" prop="status">
-              <el-select v-model="form.status"  placeholder="请选择状态" style="width: 100%">
-                <el-option
-                  v-for="dict in dict.type.store_user_status"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-
-
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 100%">
-                <el-option
-                  v-for="item in roleOptions"
-                  :key="item.roleId"
-                  :label="item.roleName"
-                  :value="item.roleId"
-                  :disabled="item.status == 1"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-
-
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="24">
-
-            <el-form-item label="备注" prop="remark">
-              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" maxlength="200" />
-            </el-form-item>
-
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="头像" prop="userImg">
-              <image-upload v-model="form.userImg" :limit="1"/>
-            </el-form-item>
-
-
-          </el-col>
-
-        </el-row>
-
-        <el-row>
-          <el-col :span="24">
-
-            <span>账户默认账号为:手机号,默认密码:手机号</span>
-
-          </el-col>
-        </el-row>
-
-
-
-
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
       </div>
-    </el-dialog>
-  </div>
+      <div class="col-sm-12 select-table table-striped">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            plain
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+            v-hasPermi="['billiard:user:add']"
+          >新增</el-button>
+        </el-col>
+
+        <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+      </el-row>
+
+      <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
+        <el-table-column label="编号" align="center" prop="storeUserId" />
+        <el-table-column label="姓名" align="center" prop="realName" />
+        <el-table-column label="性别" align="center" prop="sex"  >
+          <template slot-scope="scope">
+            <dict-tag :options="dict.type.sys_user_sex" key :value="scope.row.sex"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="手机号" align="center" prop="mobile" />
+        <el-table-column label="头像" align="center" prop="userImg" width="100">
+          <template slot-scope="scope">
+            <image-preview :src="scope.row.userImg" :width="50" :height="50"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="所属门店" align="center" prop="storeName" />
+        <el-table-column label="角色" align="center" prop="roleIds"  >
+          <template slot-scope="scope">
+            <dict-tag :options="roleOptions" :value="scope.row.roleIds"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" align="center" prop="status">
+          <template slot-scope="scope">
+            <dict-tag :options="dict.type.store_user_status" :value="scope.row.status"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="备注" align="center" prop="remark" />
+
+        <el-table-column label="创建/更新" align="center" prop="updateTime" width="200">
+          <template slot-scope="scope">
+            <div>
+              <span>{{scope.row.createBy}}&nbsp;</span>
+              <span>{{ parseTime(scope.row.createTime ) }}</span>
+            </div>
+            <div>
+                <span>{{scope.row.updateBy}} &nbsp;</span>
+              <span>{{ parseTime(scope.row.updateTime ) }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-edit"
+              @click="handleUpdate(scope.row)"
+              v-hasPermi="['billiard:user:edit']"
+            >修改</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-key"
+              @click="handleResetPwd(scope.row)"
+              v-hasPermi="['billiard:user:edit']"
+            >重置密码</el-button>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)"
+              v-hasPermi="['billiard:user:remove']"
+            >删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+      </div>
+      <!-- 添加或修改门店员工对话框 -->
+      <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="姓名" prop="realName">
+                <el-input v-model="form.realName" placeholder="请输入姓名"  maxlength="20"/>
+              </el-form-item>
+
+            </el-col>
+            <el-col :span="12">
+
+              <el-form-item label="用户性别" >
+                <el-select v-model="form.sex" placeholder="请选择性别" style="width: 100%">
+                  <el-option
+                    v-for="dict in dict.type.sys_user_sex"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="手机号" prop="mobile">
+                <el-input v-model="form.mobile" placeholder="请输入手机号" maxlength="11"   />
+              </el-form-item>
+
+
+            </el-col>
+            <el-col :span="12">
+
+              <el-form-item label="门店"  prop="storeId">
+                <el-tag>       {{ storeInfo?storeInfo.storeName:''}}</el-tag>
+
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="状态" prop="status">
+                <el-select v-model="form.status"  placeholder="请选择状态" style="width: 100%">
+                  <el-option
+                    v-for="dict in dict.type.store_user_status"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+
+
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="角色">
+                <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 100%">
+                  <el-option
+                    v-for="item in roleOptions"
+                    :key="item.roleId"
+                    :label="item.roleName"
+                    :value="item.roleId"
+                    :disabled="item.status == 1"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+
+
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="24">
+
+              <el-form-item label="备注" prop="remark">
+                <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" maxlength="200" />
+              </el-form-item>
+
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="头像" prop="userImg">
+                <image-upload v-model="form.userImg" :limit="1"/>
+              </el-form-item>
+
+
+            </el-col>
+
+          </el-row>
+
+          <el-row>
+            <el-col :span="24">
+
+              <span>账户默认账号为:手机号,默认密码:手机号</span>
+
+            </el-col>
+          </el-row>
+
+
+
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </el-dialog>
+    </div>
+  </StoreContainer>
 </template>
 
 <script>
@@ -243,12 +240,15 @@ import { listUser, getUser, delUser, addUser, updateUser } from "@/api/billiard/
 import {listAllRole} from "@/api/system/role";
 import {resetUserPwd} from "@/api/system/user";
 import {listAllStore} from "@/api/billiard/store";
+import StoreContainer from '@/views/billiard/component/storeContainer.vue'
 
 export default {
+  components: { StoreContainer },
   dicts: ['sys_normal_disable', 'sys_user_sex','store_user_status'],
   name: "StoreUser",
   data() {
     return {
+      storeInfo:null,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -313,11 +313,15 @@ export default {
     };
   },
   created() {
-    this.getList();
     this.queryRoles();
     this.queryStores();
   },
   methods: {
+    onStoreChanged(store){
+      this.storeInfo=store;
+      this.queryParams.storeId=store?.storeId||-1;
+      this.getList();
+    },
     /** 查询门店员工列表 */
     getList() {
       this.loading = true;
@@ -390,12 +394,13 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
+      if(!this.storeInfo?.storeId){
+        return        this.$modal.msgWarning("请选择门店");
+      }
       this.reset();
-      this.queryRoles().then(res=>{
         this.open = true;
+        this.form.storeId=this.storeInfo?.storeId;
         this.title = "添加门店员工";
-      })
-
 
     },
     queryStores(){

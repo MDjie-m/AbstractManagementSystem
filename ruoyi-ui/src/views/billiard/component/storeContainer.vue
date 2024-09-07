@@ -37,6 +37,11 @@ import { listAllStore } from '@/api/billiard/store'
 
 export default {
   emits:["onStoreChanged"],
+  computed: {
+    store() {
+      return this.$store.getters.store
+    }
+  },
   data(){
     return {
       isAdminPage:false,
@@ -50,13 +55,13 @@ export default {
       },
     }
   },
-  created() {
-    this.queryStores();
-     this.isAdminPage = this.$route.path.toLocaleLowerCase().endsWith("admin");
+  mounted() {
+     this.isAdminPage = this.$route.path.toLocaleLowerCase().includes("/admin/");
     if(this.isAdminPage){
       this.queryStores();
     }else {
-      this.$emit("onStoreChanged",  Object.assign({},this.$store.getters.store))
+      console.log('storeInfo',JSON.stringify(this.store))
+      this.$emit("onStoreChanged",  Object.assign({},this.store))
     }
 
   },

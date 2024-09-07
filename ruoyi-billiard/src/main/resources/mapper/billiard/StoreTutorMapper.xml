@@ -40,7 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="level != null "> and level = #{level}</if>
             <if test="status != null "> and status = #{status}</if>
             <if test="loginUserId != null "> and login_user_id = #{loginUserId}</if>
-            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="storeId != null "> and a.store_id = #{storeId}</if>
         </where>
     </select>
     

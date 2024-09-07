@@ -1,5 +1,7 @@
 <template>
-  <div class="app-container">
+  <StoreContainer  @onStoreChanged="onStoreChanged">
+    <div class="container-div">
+      <div class=" col-sm-12 search-collapse" v-show="showSearch">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="姓名" prop="realName">
         <el-input
@@ -32,7 +34,8 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
+      </div>
+      <div class="col-sm-12 select-table table-striped">
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -126,7 +129,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
+      </div>
     <!-- 添加或修改门店助教对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
@@ -175,15 +178,8 @@
         <el-row >
           <el-col :span="12">
             <el-form-item label="门店"  prop="storeId">
-              <el-select v-model="form.storeId"  placeholder="请选择门店" style="width: 100%">
-                <el-option
-                  v-for="item in storeOptions"
-                  :key="item.storeId"
-                  :label="item.storeName"
-                  :value="item.storeId"
-                  :disabled="item.delFlag != 0"
-                ></el-option>
-              </el-select>
+              <el-tag>       {{ storeInfo?storeInfo.storeName:''}}</el-tag>
+
             </el-form-item>
           </el-col>
 
@@ -262,6 +258,7 @@
       </div>
     </el-dialog>
   </div>
+    </StoreContainer>
 </template>
 
 <script>
@@ -269,12 +266,15 @@ import { listTutor, getTutor, delTutor, addTutor, updateTutor } from "@/api/bill
 import { listAllStore } from '@/api/billiard/store'
 import { listAllRole } from '@/api/system/role'
 import { resetUserPwd } from '@/api/system/user'
+import StoreContainer from '@/views/billiard/component/storeContainer.vue'
 
 export default {
   name: "Tutor",
+  components: { StoreContainer },
   dicts: ['store_user_status', 'sys_user_sex','sys_user_sex','store_tutor'],
   data() {
     return {
+      storeInfo:null,
       roleOptions: [],
       storeOptions:[],
       // 遮罩层
@@ -352,11 +352,15 @@ export default {
     };
   },
   created() {
-    this.getList();
     this.queryStores();
     this.queryRoles();
   },
   methods: {
+    onStoreChanged(store){
+      this.storeInfo=store;
+      this.queryParams.storeId=store?.storeId||-1;
+      this.getList();
+    },
     /** 重置密码按钮操作 */
     handleResetPwd(row) {
       this.$prompt('请输入"' + row.realName + '"的新密码', "提示", {
@@ -444,7 +448,11 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
+      if(!this.storeInfo?.storeId){
+        return  this.$modal.msgWarning("请选择门店");
+      }
       this.reset();
+      this.form.storeId=this.storeInfo?.storeId;
       this.open = true;
       this.title = "添加门店助教";
     },

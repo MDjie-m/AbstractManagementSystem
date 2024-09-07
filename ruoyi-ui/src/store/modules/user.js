@@ -8,7 +8,7 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    store:{},
+    store:null,
     permissions: []
   },
 
@@ -66,7 +66,8 @@ const user = {
           } else {
             commit('SET_ROLES', ['ROLE_DEFAULT'])
           }
-          commit('SET_STORE', user.store||{})
+          console.log('setStore', res.store )
+          commit('SET_STORE', res.store )
           commit('SET_ID', user.userId)
           commit('SET_NAME', user.userName)
           commit('SET_AVATAR', avatar)
