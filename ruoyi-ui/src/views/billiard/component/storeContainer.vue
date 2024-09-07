@@ -60,8 +60,7 @@ export default {
     if(this.isAdminPage){
       this.queryStores();
     }else {
-      console.log('storeInfo',JSON.stringify(this.store))
-      this.$emit("onStoreChanged",  Object.assign({},this.store))
+      this.handleNodeClick(   Object.assign({},this.store))
     }
 
   },
@@ -82,7 +81,13 @@ export default {
         this.storeOptions = (response.data||[]).map(p=>{
           return Object.assign({label:p.storeName,value:p.storeId,raw:{listClass:'primary'}},p);
         });
-        this.handleNodeClick(this.storeOptions[0]);
+        let findStore;
+        if(this.store?.storeId){
+          findStore=this.originalStoreList.find(p=>p.storeId===this.store?.storeId);
+        }
+          this.handleNodeClick(findStore??this.storeOptions[0]);
+
+
       });
     },
     filterNode(value, data) {
