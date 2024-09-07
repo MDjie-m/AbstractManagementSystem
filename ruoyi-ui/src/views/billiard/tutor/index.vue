@@ -21,12 +21,15 @@
       </el-form-item>
 
       <el-form-item label="教练等级" prop="level">
-        <el-input
-          v-model="queryParams.level"
-          placeholder="请输入助教等级"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+
+        <el-select v-model="queryParams.level" placeholder="请选择助教等级"   clearable  >
+          <el-option
+            v-for="dict in dict.type.store_tutor"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item>
@@ -51,8 +54,7 @@
     </el-row>
 
     <el-table v-loading="loading" :data="tutorList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="助教编号" align="center" prop="storeTutorId" />
+      <el-table-column label="ID" align="center" prop="storeTutorId" />
       <el-table-column label="姓名" align="center" prop="realName" />
       <el-table-column label="手机号" align="center" prop="mobile" />
       <el-table-column label="头像" align="center" prop="userImg" width="100">
@@ -162,7 +164,7 @@
           </el-col>
 
           <el-col :span="12">
-            <el-form-item label="助教等级" prop="level">
+            <el-form-item label="教练等级" prop="level">
               <el-select v-model="form.level" placeholder="请选择助教等级"    style="width: 100%">
                 <el-option
                   v-for="dict in dict.type.store_tutor"
