@@ -151,7 +151,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="球桌名" prop="deskName">
-                  <el-input v-model="form.deskName" placeholder="请输入球桌名" />
+                  <el-input v-model="form.deskName" placeholder="请输入球桌名"  maxlength="30"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
