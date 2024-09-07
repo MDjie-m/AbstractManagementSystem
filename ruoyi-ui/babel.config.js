@@ -1,4 +1,8 @@
 module.exports = {
+  plugins: [
+    '@babel/plugin-transform-optional-chaining',  //可选链 ?.
+    '@babel/plugin-transform-nullish-coalescing-operator'  //空值合并 ??
+  ],
   presets: [
     // https://github.com/vuejs/vue-cli/tree/master/packages/@vue/babel-preset-app
     '@vue/cli-plugin-babel/preset'

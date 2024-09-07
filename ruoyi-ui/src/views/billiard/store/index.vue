@@ -32,7 +32,19 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          v-hasPermi="['billiard:store:add']"
+        >新增</el-button>
+      </el-col>
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+    </el-row>
 
     <el-table v-loading="loading" :data="storeList" @selection-change="handleSelectionChange">
       <el-table-column label="Id" align="center" prop="storeId" />
@@ -45,7 +57,7 @@
       </el-table-column>
       <el-table-column label="门店状态" align="center" prop="status">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.store_state" :value="scope.row.status"/>
+          <dict-tag :options="dict.type.store_state" :value="parseInt(scope.row.status)"/>
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />

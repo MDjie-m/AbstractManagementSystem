@@ -64,7 +64,9 @@ create table  t_store_desk
     desk_num int not null comment '编号',
     desk_type int not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
     place_type int not null comment '位置：0=大厅，1=包厢',
-    store_id BIGINT not null  comment '门店',
+    store_id bigint not null  comment '门店',
+    light_device_id      bigint                                  null comment '灯光id',
+    camera_device_id     bigint                                null comment '摄像头设备id',
     price decimal(10,2) not null  comment '价格/分钟',
     status        int                                   not null comment '状态：0=空闲，1=计时中，2=暂停,3=已停止',
     create_by     varchar(64) default ''                null comment '创建者',
@@ -219,4 +221,24 @@ create table  t_stock_log
     update_by     varchar(64) default ''                null comment '更新者',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 )
-    comment '库存';
+    comment '库存日志';
+DROP TABLE IF EXISTS t_device;
+create table  t_device
+(
+    device_id      bigint                                not null comment '商品编码'
+        primary key,
+    store_id             bigint                          not null comment '门店' ,
+    device_name        varchar(64)     charset utf8mb4                             not null comment '设备名称',
+    device_serial_num        varchar(64)     charset utf8mb4                                    null comment '设备编码',
+    device_type        int                                 not null comment '设备类型：0=摄像头,1=灯光',
+    extend_data   json  null comment 'json扩展配置',
+    status      int                                 null comment '变化类型：0=未知，1=在线，2=掉线',
+
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    comment '设备信息';
+create unique index t_store_desk__uindex_num
+    on t_store_desk (store_id, desk_num);

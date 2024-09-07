@@ -36,6 +36,8 @@
     "url": "https://gitee.com/y_project/RuoYi-Vue.git"
   },
   "dependencies": {
+    "@babel/plugin-transform-nullish-coalescing-operator": "^7.24.7",
+    "@babel/plugin-transform-optional-chaining": "^7.24.8",
     "@riophae/vue-treeselect": "0.4.0",
     "axios": "0.28.1",
     "clipboard": "2.0.8",

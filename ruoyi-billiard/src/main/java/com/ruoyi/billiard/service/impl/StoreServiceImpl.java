@@ -4,12 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.StoreTutor;
 import com.ruoyi.billiard.domain.StoreUser;
+import com.ruoyi.billiard.mapper.StoreDeskMapper;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
 import com.ruoyi.billiard.mapper.StoreUserMapper;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,8 @@ public class StoreServiceImpl implements IStoreService
     @Resource
     private StoreTutorMapper storeTutorMapper;
 
+    @Resource
+    private StoreDeskMapper storeDeskMapper;
 
 
     /**
@@ -75,6 +80,8 @@ public class StoreServiceImpl implements IStoreService
     {
         store.setStoreId(IdUtils.singleNextId());
         store.setCreateTime(DateUtils.getNowDate());
+        store.setCreateBy(SecurityUtils.getUsername());
+        store.setUpdateBy(SecurityUtils.getUsername());
         return storeMapper.insert(store);
     }
 
@@ -99,9 +106,9 @@ public class StoreServiceImpl implements IStoreService
      */
     @Override
     public int deleteStoreByStoreIds(Long[] storeIds) {
-
         AssertUtil.isTrue(!storeUserMapper.existsIn(StoreUser::getStoreId, Arrays.asList(storeIds)), "门店还有员工，不能删除.");
         AssertUtil.isTrue(!storeTutorMapper.existsIn(StoreTutor::getStoreId, Arrays.asList(storeIds)), "门店还有教练，不能删除.");
+        AssertUtil.isTrue(!storeDeskMapper.existsIn(StoreDesk::getStoreId, Arrays.asList(storeIds)), "门店还有球桌，不能删除.");
         return storeMapper.deleteStoreByStoreIds(storeIds);
     }
 

@@ -1,5 +1,6 @@
 package com.ruoyi.framework.config;
 
+import java.math.BigDecimal;
 import java.util.TimeZone;
 
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -28,7 +29,8 @@ public class ApplicationConfig
     public Jackson2ObjectMapperBuilderCustomizer jacksonObjectMapperCustomization()
     {
         return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder.timeZone(TimeZone.getDefault())
-                .serializerByType(Long.class, ToStringSerializer.instance);
+                .serializerByType(Long.class, ToStringSerializer.instance)
+                .serializerByType(BigDecimal.class,ToPlainTextString.instance);
     }
 
 

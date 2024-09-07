@@ -36,7 +36,7 @@ public class BaseEntity implements Serializable
     private Date createTime;
 
     /** 更新者 */
-    @TableField("create_by")
+    @TableField("update_by")
     private String updateBy;
 
     /** 更新时间 */

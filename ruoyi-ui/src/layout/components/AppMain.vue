@@ -33,6 +33,8 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .fixed-header + .app-main {
