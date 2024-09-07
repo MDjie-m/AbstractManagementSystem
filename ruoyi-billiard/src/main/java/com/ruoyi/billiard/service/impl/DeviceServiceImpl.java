@@ -1,7 +1,12 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
+import com.ruoyi.billiard.domain.DeskDeviceRelation;
+import com.ruoyi.billiard.domain.StoreUser;
+import com.ruoyi.billiard.mapper.DeskDeviceRelationMapper;
+import com.ruoyi.billiard.service.IDeskDeviceRelationService;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -13,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.DeviceMapper;
 import com.ruoyi.billiard.domain.Device;
 import com.ruoyi.billiard.service.IDeviceService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 设备信息Service业务层处理
@@ -25,6 +31,8 @@ public class DeviceServiceImpl implements IDeviceService
 {
     @Autowired
     private DeviceMapper deviceMapper;
+    @Autowired
+    private DeskDeviceRelationMapper  deskDeviceRelationMapper;
 
     /**
      * 查询设备信息
@@ -94,8 +102,11 @@ public class DeviceServiceImpl implements IDeviceService
      * @return 结果
      */
     @Override
+    @Transactional
     public int deleteDeviceByDeviceIds(Long[] deviceIds)
     {
+        AssertUtil.isTrue(!deskDeviceRelationMapper.existsIn(DeskDeviceRelation::getDeviceId, Arrays.asList(deviceIds)), "设备已绑定，不能删除.");
+
         return deviceMapper.deleteDeviceByDeviceIds(deviceIds);
     }
 
@@ -108,6 +119,7 @@ public class DeviceServiceImpl implements IDeviceService
     @Override
     public int deleteDeviceByDeviceId(Long deviceId)
     {
+
         return deviceMapper.deleteDeviceByDeviceId(deviceId);
     }
 }

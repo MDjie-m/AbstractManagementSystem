@@ -1,5 +1,9 @@
 package com.ruoyi.framework.config;
 
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.core.injector.DefaultSqlInjector;
+import com.baomidou.mybatisplus.core.injector.ISqlInjector;
+import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.ruoyi.common.config.CustomizedSqlInjector;
 import com.ruoyi.common.utils.StringUtils;
@@ -27,9 +31,10 @@ import javax.sql.DataSource;
 public class MyBatisPlusConfig
 {
     @Bean
-    public CustomizedSqlInjector customizedSqlInjector() {
+    public ISqlInjector customizedSqlInjector() {
         return new CustomizedSqlInjector();
     }
+
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor()
@@ -41,6 +46,7 @@ public class MyBatisPlusConfig
         interceptor.addInnerInterceptor(optimisticLockerInnerInterceptor());
         // 阻断插件
         interceptor.addInnerInterceptor(blockAttackInnerInterceptor());
+
         return interceptor;
     }
 
@@ -90,6 +96,12 @@ public class MyBatisPlusConfig
         sessionFactory.setTypeAliasesPackage(typeAliasesPackage);
         sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(mapperLocations));
         sessionFactory.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
+        GlobalConfig globalConfig = GlobalConfigUtils.defaults();
+        GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
+        globalConfig.setDbConfig(dbConfig);
+        //【看到了吗？我在这呢！】
+        globalConfig.setSqlInjector(new CustomizedSqlInjector());
+        sessionFactory.setGlobalConfig(globalConfig);
 
         return sessionFactory.getObject();
     }
