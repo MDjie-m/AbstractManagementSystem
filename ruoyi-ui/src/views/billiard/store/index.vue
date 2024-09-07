@@ -1,5 +1,6 @@
 <template>
-  <div class="app-container">
+  <div class="container-div">
+    <div class=" col-sm-12 search-collapse" v-show="showSearch">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="门店名称" prop="storeName">
         <el-input
@@ -32,6 +33,8 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+    </div>
+    <div class="col-sm-12 select-table table-striped">
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -89,6 +92,7 @@
       @pagination="getList"
     />
 
+    </div>
     <!-- 添加或修改门店对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">

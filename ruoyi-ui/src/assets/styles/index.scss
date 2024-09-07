@@ -132,6 +132,7 @@ aside {
 .container-div {
   padding: 10px 28px;
   height: 100%;
+  flex: 1;
   background-color: rgb(243, 243, 244);
 }
 .search-collapse{
@@ -141,8 +142,9 @@ aside {
   width: 100%;
   background: #fff;
   border-radius: 6px;
+  box-sizing: border-box;
 
-  padding : 13px;
+  padding: 13px 13px 0;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, .2);
 }
 .components-container {
@@ -152,6 +154,7 @@ aside {
 
 .pagination-container {
   margin-top: 30px;
+  box-sizing: border-box;
 }
 
 .text-center {

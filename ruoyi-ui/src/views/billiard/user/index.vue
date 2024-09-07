@@ -407,7 +407,7 @@ export default {
     },
     queryRoles(){
      return   listAllRole().then(response => {
-        this.roleOptions = (response.data||[]).map(p=>{
+        this.roleOptions = (response.data||[]).filter(p=>p.roleId!=1).map(p=>{
           return Object.assign({label:p.roleName,value:p.roleId,raw:{listClass:'primary'}},p);
         });
       });
