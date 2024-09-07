@@ -6,6 +6,7 @@ import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 球桌Mapper接口
@@ -65,4 +66,6 @@ public interface StoreDeskMapper extends MyBaseMapper<StoreDesk>
     public int deleteStoreDeskByDeskIds(Long[] deskIds);
 
     Store selectStoreByLoginUserId(Long loginUserId);
+
+    Integer checkDeviceBind( @Param("deviceId")Long deviceId,@Param("deskId") Long deskId);
 }

@@ -272,11 +272,27 @@ create table  t_goods_category
     goods_category_id      bigint                                not null comment 'ID'
         primary key,
     goods_category_name       varchar(64)     charset utf8mb4                             not null comment '商品分类名称',
-
+    store_id bigint not null  comment '门店',
     sort       int                          not null comment '排序',
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
-    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    remark        nvarchar(500)                          null comment '备注'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     comment '商品分类';
+
+create table  t_desk_device_relation
+(
+    desk_device_relation_id      bigint                 auto_increment               not null comment 'ID'
+        primary key,
+    desk_id bigint not null  comment '桌子id',
+    device_id bigint not null  comment '设备id',
+
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    remark        nvarchar(500)                          null comment '备注'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    comment '桌子设备关联关系';

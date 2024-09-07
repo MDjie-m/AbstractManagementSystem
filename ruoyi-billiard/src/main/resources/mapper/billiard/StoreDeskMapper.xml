@@ -21,10 +21,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="lightDeviceId"    column="light_device_id"    />
         <result property="cameraDeviceId"    column="camera_device_id"    />
         <result property="storeName"    column="store_name"    />
+        <result property="lightName"    column="lightName"    />
+        <result property="cameraName"    column="cameraName"    />
     </resultMap>
 
     <sql id="selectStoreDeskVo">
-        select   a.*,b.store_name from t_store_desk a join  t_store b on a.store_id=b.store_id
+        select   a.*,b.store_name ,c.device_name as lightName,d.device_name as cameraName
+        from t_store_desk a join  t_store b on a.store_id=b.store_id
+        left join  t_device c on  c.device_id=a.light_device_id
+        left join  t_device d on  d.device_id=a.camera_device_id
     </sql>
 
     <select id="selectStoreDeskList" parameterType="StoreDesk" resultMap="StoreDeskResult">
@@ -49,6 +54,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectStoreByLoginUserId" resultType="com.ruoyi.billiard.domain.Store">
         select a.*
         from t_store a join t_store_user b  on  a.store_id=b.store_id where b.login_user_id=#{loginUserId};
+    </select>
+    <select id="checkDeviceBind" resultType="java.lang.Integer">
+        select  1 from t_desk_device_relation a where (  desk_id=#{deviceId})
+        <if test="deskId != null"> and  desk_id not in (#{deskId}) </if>
+
     </select>
 
     <insert id="insertStoreDesk" parameterType="StoreDesk">

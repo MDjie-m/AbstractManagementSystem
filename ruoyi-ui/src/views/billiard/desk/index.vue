@@ -103,8 +103,8 @@
           </el-table-column>
 
           <el-table-column label="备注" align="center" prop="remark" />
-          <el-table-column label="灯光设备" align="center" prop="lightDeviceId" />
-          <el-table-column label="摄像头设备" align="center" prop="cameraDeviceId" />
+          <el-table-column label="灯光设备" align="center" prop="lightName" />
+          <el-table-column label="摄像头设备" align="center" prop="cameraName" />
           <el-table-column label="创建/更新" align="center" prop="updateTime" width="200">
             <template slot-scope="scope">
               <div>
@@ -151,7 +151,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="球桌名" prop="deskName">
-                  <el-input v-model="form.deskName" placeholder="请输入球桌名" />
+                  <el-input v-model="form.deskName" placeholder="请输入球桌名"  maxlength="30"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -210,14 +210,26 @@
               <el-col :span="12">
                 <el-form-item label="摄像头" prop="cameraDeviceId">
                   <el-select v-model="form.cameraDeviceId"   class="with100" >
-
+                    <el-option
+                      v-for="dict in cameraList"
+                      :key="dict.deviceId"
+                      :disabled="dict.deskId&&  dict.deskId!==form.deskId"
+                      :label=" dict.deskId&& dict.deskId!==form.deskId?`${dict.deviceName}(已绑定)`:dict.deviceName"
+                      :value="dict.deviceId"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="灯光" prop="cameraDeviceId">
                   <el-select v-model="form.lightDeviceId" type="textarea" placeholder="请输入内容" class="with100" >
-
+                    <el-option
+                      v-for="dict in lightList"
+                      :key="dict.deviceId"
+                      :disabled="dict.deskId&&  dict.deskId!==form.deskId"
+                      :label="dict.deskId&&  dict.deskId!==form.deskId?`${dict.deviceName}(已绑定)`:dict.deviceName"
+                      :value="dict.deviceId"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -238,6 +250,7 @@
 
 
 
+
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -254,6 +267,7 @@
 import { listDesk, getDesk, delDesk, addDesk, updateDesk } from "@/api/billiard/desk";
 import { listAllStore } from '@/api/billiard/store'
 import StoreContainer from '@/views/billiard/component/storeContainer.vue'
+import { listAllDevice } from '@/api/billiard/device'
 
 export default {
   name: "Desk",
@@ -277,6 +291,9 @@ export default {
       total: 0,
       // 球桌表格数据
       deskList: [],
+      deviceList:[],
+      lightList:[],
+      cameraList:[],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -340,6 +357,7 @@ export default {
       this.storeInfo=store;
       this.queryParams.storeId=store?.storeId||-1;
       this.getList();
+      this.getAllDevices();
     },
     queryStores(){
       return   listAllStore().then(response => {
@@ -355,6 +373,16 @@ export default {
         this.deskList = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+    },
+    getAllDevices() {
+      listAllDevice({storeId: this.storeInfo?.storeId||-1}).then(response => {
+        this.deviceList = (response.data||[]).map(p=>{
+          p.label=`${p.deviceName}`;
+          return p;
+        });
+        this.lightList=this.deviceList.filter(p=>p.deviceType===1);
+        this.cameraList=this.deviceList.filter(p=>p.deviceType===0);
       });
     },
     // 取消按钮
@@ -405,6 +433,7 @@ export default {
         return        this.$modal.msgWarning("请选择门店");
       }
       this.reset();
+      this.getAllDevices();
       this.form.storeId=this.storeInfo?.storeId;
       this.form.status=0;
       this.open = true;
@@ -413,6 +442,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+      this.getAllDevices();
       const deskId = row.deskId || this.ids
       getDesk(deskId).then(response => {
         this.form = response.data;

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.DeskDeviceRelationMapper">
+    
+    <resultMap type="DeskDeviceRelation" id="DeskDeviceRelationResult">
+        <result property="deskDeviceRelationId"    column="desk_device_relation_id"    />
+        <result property="deskId"    column="desk_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectDeskDeviceRelationVo">
+        select desk_device_relation_id, desk_id, device_id, create_by, create_time, update_by, update_time, remark from t_desk_device_relation
+    </sql>
+
+    <select id="selectDeskDeviceRelationList" parameterType="DeskDeviceRelation" resultMap="DeskDeviceRelationResult">
+        <include refid="selectDeskDeviceRelationVo"/>
+        <where>  
+            <if test="deskId != null "> and desk_id = #{deskId}</if>
+            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+        </where>
+    </select>
+    
+    <select id="selectDeskDeviceRelationByDeskDeviceRelationId" parameterType="Long" resultMap="DeskDeviceRelationResult">
+        <include refid="selectDeskDeviceRelationVo"/>
+        where desk_device_relation_id = #{deskDeviceRelationId}
+    </select>
+
+    <insert id="insertDeskDeviceRelation" parameterType="DeskDeviceRelation" useGeneratedKeys="true" keyProperty="deskDeviceRelationId">
+        insert into t_desk_device_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deskId != null">desk_id,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deskId != null">#{deskId},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDeskDeviceRelation" parameterType="DeskDeviceRelation">
+        update t_desk_device_relation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deskId != null">desk_id = #{deskId},</if>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where desk_device_relation_id = #{deskDeviceRelationId}
+    </update>
+
+    <delete id="deleteDeskDeviceRelationByDeskDeviceRelationId" parameterType="Long">
+        delete from t_desk_device_relation where desk_device_relation_id = #{deskDeviceRelationId}
+    </delete>
+
+    <delete id="deleteDeskDeviceRelationByDeskDeviceRelationIds" parameterType="String">
+        delete from t_desk_device_relation where desk_device_relation_id in 
+        <foreach item="deskDeviceRelationId" collection="array" open="(" separator="," close=")">
+            #{deskDeviceRelationId}
+        </foreach>
+    </delete>
+    <delete id="delByDeskId">
+        delete  from t_desk_device_relation where desk_id=#{deskId}
+    </delete>
+</mapper>

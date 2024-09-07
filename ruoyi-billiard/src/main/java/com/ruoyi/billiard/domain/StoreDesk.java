@@ -77,7 +77,6 @@ public class StoreDesk extends BaseEntity
 
     /** 摄像头设备id */
     @Excel(name = "摄像头设备id")
-
     @TableField("camera_device_id")
     private Long cameraDeviceId;
 
@@ -86,7 +85,11 @@ public class StoreDesk extends BaseEntity
     @TableField(exist = false)
     private String storeName;
 
+    @TableField(exist = false)
+    private String lightName;
 
+    @TableField(exist = false)
+    private String cameraName;
 
 
 

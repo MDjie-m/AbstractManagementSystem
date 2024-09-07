@@ -207,3 +207,8 @@ aside {
 .with100{
   width: 100%;
 }
+.custom-form{
+  .el-input,.el-select{
+    width: 100%!important;
+  }
+}

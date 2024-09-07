@@ -1,15 +1,23 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.billiard.domain.DeskDeviceRelation;
 import com.ruoyi.billiard.domain.Store;
+import com.ruoyi.billiard.service.IDeskDeviceRelationService;
+import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.StoreDeskMapper;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.service.IStoreDeskService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 球桌Service业务层处理
@@ -18,10 +26,13 @@ import com.ruoyi.billiard.service.IStoreDeskService;
  * @date 2024-09-07
  */
 @Service
-public class StoreDeskServiceImpl implements IStoreDeskService 
+public class StoreDeskServiceImpl implements IStoreDeskService
 {
     @Autowired
     private StoreDeskMapper storeDeskMapper;
+
+    @Autowired
+    private IDeskDeviceRelationService deskDeviceRelationService;
 
     /**
      * 查询球桌
@@ -54,11 +65,24 @@ public class StoreDeskServiceImpl implements IStoreDeskService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertStoreDesk(StoreDesk storeDesk)
     {
+
+        checkDevice( storeDesk.getCameraDeviceId(),null,"摄像头已绑定到其他桌");
+        checkDevice( storeDesk.getLightDeviceId(),null,"摄像头已绑定到其他桌");
+        deskDeviceRelationService.bindDevice(storeDesk.getDeskId(),
+                Arrays.asList(storeDesk.getCameraDeviceId(), storeDesk.getLightDeviceId()));
+
         storeDesk.setCreateTime(DateUtils.getNowDate());
         storeDesk.setDeskId(IdUtils.singleNextId());
         return storeDeskMapper.insertStoreDesk(storeDesk);
+    }
+    private  void checkDevice( Long deviceId,Long deskId,String msg){
+        if(Objects.isNull(deviceId)){
+            return;
+        }
+        AssertUtil.isTrue(Objects.isNull( storeDeskMapper.checkDeviceBind( deviceId,deskId)),msg);
     }
 
     /**
@@ -68,8 +92,14 @@ public class StoreDeskServiceImpl implements IStoreDeskService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateStoreDesk(StoreDesk storeDesk)
     {
+        deskDeviceRelationService.bindDevice(storeDesk.getDeskId(),
+                Arrays.asList(storeDesk.getCameraDeviceId(), storeDesk.getLightDeviceId()));
+        storeDeskMapper.updateStoreDesk(storeDesk);
+        checkDevice( storeDesk.getCameraDeviceId(),storeDesk.getDeskId(),"摄像头已绑定到其他桌");
+        checkDevice( storeDesk.getLightDeviceId(),storeDesk.getDeskId(),"摄像头已绑定到其他桌");
         storeDesk.setUpdateTime(DateUtils.getNowDate());
         storeDesk.setStatus(null);
         return storeDeskMapper.updateStoreDesk(storeDesk);

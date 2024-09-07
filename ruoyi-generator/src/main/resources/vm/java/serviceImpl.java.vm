@@ -7,6 +7,8 @@ import com.ruoyi.common.utils.DateUtils;
 #break
 #end
 #end
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 #if($table.sub)
@@ -67,10 +69,20 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
     @Override
     public int insert${ClassName}(${ClassName} ${className})
     {
+        ${className}.setCreateBy(SecurityUtils.getUsername());
+        ${className}.setUpdateBy(SecurityUtils.getUsername());
 #foreach ($column in $columns)
 #if($column.javaField == 'createTime')
         ${className}.setCreateTime(DateUtils.getNowDate());
 #end
+    #if($column.isPk())
+        #if($column.javaField.length() > 2 && $column.javaField.substring(1,2).matches("[A-Z]"))
+            #set($AttrName=$column.javaField)
+        #else
+            #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+        #end
+        ${className}.set${AttrName}(IdUtils.singleNextId());
+    #end
 #end
 #if($table.sub)
         int rows = ${className}Mapper.insert${ClassName}(${className});
@@ -95,6 +107,7 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
     {
 #foreach ($column in $columns)
 #if($column.javaField == 'updateTime')
+        ${className}.setUpdateBy(SecurityUtils.getUsername());
         ${className}.setUpdateTime(DateUtils.getNowDate());
 #end
 #end
