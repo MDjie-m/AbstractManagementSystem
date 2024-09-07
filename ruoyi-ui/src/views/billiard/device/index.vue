@@ -61,6 +61,12 @@
               <dict-tag :options="dict.type.store_device_type" :value="scope.row.deviceType"/>
             </template>
           </el-table-column>
+          <el-table-column label="是否绑球桌" align="center" >
+            <template slot-scope="scope" >
+              <template v-if="scope.row.deskId"> <el-tag type="success">是</el-tag></template>
+              <template v-else> <el-tag type="info">否</el-tag></template>
+            </template>
+          </el-table-column>
           <el-table-column label="设备状态" align="center" prop="status" >
             <template slot-scope="scope">
               <dict-tag :options="dict.type.store_device_status" :value="scope.row.status"/>
