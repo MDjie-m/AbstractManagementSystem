@@ -23,6 +23,7 @@ create table  t_store_user
     real_name    nvarchar(60)         not null comment '姓名',
     mobile  nvarchar(30)        not null comment '手机号',
     user_img     nvarchar(200)                          not null comment '头像',
+    sex char(1)   null comment '性别（0=男，1=女，2=未知）',
     status        int                                   not null comment '门店状态（0正常 1停用）',
     del_flag      char        default '0'               null comment '删除标志（0代表存在 2代表删除）',
     store_id BIGINT not null  comment '门店',
@@ -42,6 +43,7 @@ create table  t_store_tutor
     real_name    nvarchar(60)         not null comment '姓名',
     mobile  nvarchar(30)        not null comment '手机号',
     user_img     nvarchar(200)                          not null comment '头像',
+    sex char(1)   null comment '性别（0=男，1=女，2=未知）',
     level int not null  comment '助教等级',
     status        int                                   not null comment '门店状态（0正常 1停用）',
     del_flag      char        default '0'               null comment '删除标志（0代表存在 2代表删除）',
@@ -54,6 +56,26 @@ create table  t_store_tutor
     remark        nvarchar(500)                          null comment '备注'
 )
     comment '门店助教';
+
+
+create table  t_member
+(
+    member_id      bigint                                not null comment 'ID'
+        primary key,
+    real_name    nvarchar(60)         not null comment '姓名',
+    mobile  nvarchar(30)        not null comment '手机号',
+    sex char(1)   null comment '性别（0=男，1=女，2=未知）',
+    level int not null  comment '会员等级',
+    status        int                                   not null comment '门店状态（0正常 1停用）',
+    del_flag      char        default '0'               null comment '删除标志（0代表存在 2代表删除）',
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    store_id BIGINT not null  comment '门店',
+    remark        nvarchar(500)                          null comment '备注'
+)
+    comment '门店会员';
 
 
 create table  t_store_desk
@@ -173,12 +195,14 @@ create table  t_order_tutor_time
 )
     comment '订单计时';
 
+drop table  if exists t_goods;
 create table  t_goods
 (
     goods_id      bigint                                not null comment '商品编码'
         primary key,
     store_id             bigint                          not null comment '门店Id' ,
     goods_name      nvarchar(64)                                not null comment '商品名称',
+    sort       int                          not null comment '排序',
     barcode      nvarchar(64)                                  null comment '商品条码',
     category_id       int not null                                  null comment '商品分类',
     type int not null  comment '类型：0=售卖商品,1=店内其他物资',
@@ -242,3 +266,17 @@ create table  t_device
     comment '设备信息';
 create unique index t_store_desk__uindex_num
     on t_store_desk (store_id, desk_num);
+DROP TABLE IF EXISTS t_goods_category;
+create table  t_goods_category
+(
+    goods_category_id      bigint                                not null comment 'ID'
+        primary key,
+    goods_category_name       varchar(64)     charset utf8mb4                             not null comment '商品分类名称',
+
+    sort       int                          not null comment '排序',
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    comment '商品分类';
