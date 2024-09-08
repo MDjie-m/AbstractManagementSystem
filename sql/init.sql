@@ -1,7 +1,7 @@
 drop table  if exists t_store;
 create table  t_store
 (
-    store_id      bigint                                not null comment '门店id'
+    store_id      bigint                 auto_increment                not null comment '门店id'
         primary key,
     store_name    nvarchar(60)         not null comment '门店名称',
     store_address nvarchar(200)        not null comment '门店地址',
