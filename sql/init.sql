@@ -57,25 +57,45 @@ create table  t_store_tutor
 )
     comment '门店助教';
 
-
+drop table  if exists  t_member;
 create table  t_member
 (
     member_id      bigint                                not null comment 'ID'
         primary key,
     real_name    nvarchar(60)         not null comment '姓名',
     mobile  nvarchar(30)        not null comment '手机号',
+    current_amount DECIMAL(20,2) not null default 0 comment '当前金额',
+    total_amount DECIMAL(20,2) not null default 0 comment '历史总金额',
     sex char(1)   null comment '性别（0=男，1=女，2=未知）',
-    level int not null  comment '会员等级',
+    store_id BIGINT not null  comment '门店',
+    level_id int not null   comment '会员等级',
     status        int                                   not null comment '门店状态（0正常 1停用）',
     del_flag      char        default '0'               null comment '删除标志（0代表存在 2代表删除）',
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    store_id BIGINT not null  comment '门店',
+
     remark        nvarchar(500)                          null comment '备注'
 )
     comment '门店会员';
+drop table  if exists  t_member_level;
+create table  t_member_level
+(
+    member_level_id      bigint             auto_increment                    not null comment 'ID'
+        primary key,
+    level_name    nvarchar(60)         not null comment '会员等级',
+    discount  decimal(4,2)      not null comment '折扣力度',
+    start_amount decimal (20,2) not null comment '开始金额',
+    end_amount decimal (20,2) not null comment '结束金额',
+    store_id decimal (20,2) not null comment '门店',
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    remark        nvarchar(500)                          null comment '备注'
+)
+    comment '门店会员等级';
 
 
 create table  t_store_desk
@@ -104,10 +124,12 @@ create table  t_order
     order_id      bigint                                not null comment '订单id' primary key,
     order_no varchar(60) not null  comment '订单编码',
     order_type int not null  comment '类型：1=球桌费用，2=会员充值，3=商品购买,4=陪练费用，5=教学费用',
-    total_amount_due decimal(10,2)  not null comment '应付总金额 ',
-    total_discount_amount decimal(10,2) null  comment '折扣金额',
-    total_amount decimal(10,2) null  comment '实际支付金额',
+    total_amount_due decimal(20,2)  not null comment '应付总金额 ',
+    total_discount_amount decimal(20,2) null  comment '折扣金额',
+    total_amount decimal(20,2) null  comment '实际支付金额',
+    discount_value decimal(4,2) null comment '当前折扣百分比',
     pay_type int null  comment '支付方式：0=扫码，1=现金，2=会员',
+    member_id bigint null comment '支付会员id',
     remark        nvarchar(500)                          null comment '备注',
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
