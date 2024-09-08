@@ -19,6 +19,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="loginUserId"    column="login_user_id"    />
         <result property="remark"    column="remark"    />
         <result property="storeName"    column="store_name"    />
+        <result property="createById" column="create_by_id"/>
+        <result property="updateById" column="update_by_id"/>
     </resultMap>
 
     <sql id="selectStoreUserVo">
@@ -70,6 +72,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="loginUserId != null">login_user_id = #{loginUserId},</if>
             <if test="remark != null">remark = #{remark},</if>
+            <if test="updateById != null">update_by_id =#{updateById},</if>
+            <if test="createById != null">create_by_id =#{createById},</if>
         </trim>
         where store_user_id = #{storeUserId}
     </update>

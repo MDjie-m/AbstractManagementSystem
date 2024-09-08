@@ -16,10 +16,25 @@
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="remark"    column="remark"    />
+        <result property="createById" column="create_by_id"/>
+        <result property="updateById" column="update_by_id"/>
     </resultMap>
 
     <sql id="selectStoreVo">
-        select store_id, store_name, store_address, store_img, status, del_flag, create_by, create_time, update_by, update_time, remark from t_store
+        select store_id,
+               store_name,
+               store_address,
+               store_img,
+               status,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark,
+               update_by_id,
+               create_by_id
+        from t_store
     </sql>
 
     <select id="selectStoreList" parameterType="Store" resultMap="StoreResult">
@@ -51,6 +66,8 @@
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
+            <if test="updateById != null">update_by_id,</if>
+            <if test="createById != null">create_by_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="storeId != null">#{storeId},</if>
@@ -64,6 +81,8 @@
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
+            <if test="updateById != null">#{updateById},</if>
+            <if test="createById != null">#{createById},</if>
         </trim>
     </insert>
 
@@ -80,6 +99,8 @@
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
+            <if test="updateById != null">update_by_id =#{updateById},</if>
+            <if test="createById != null">create_by_id =#{createById},</if>
         </trim>
         where store_id = #{storeId}
     </update>

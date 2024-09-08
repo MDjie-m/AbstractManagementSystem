@@ -114,9 +114,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService
         }
         storeTutor.setStoreTutorId(IdUtils.singleNextId());
         storeTutor.setLoginUserId(sysUser.getUserId());
-        storeTutor.setCreateTime(DateUtils.getNowDate());
-        storeTutor.setCreateBy(SecurityUtils.getUsername());
-        storeTutor.setUpdateBy(storeTutor.getUpdateBy());
+        SecurityUtils.fillCreateUser(storeTutor);
         return storeTutorMapper.insertStoreTutor(storeTutor);
     }
 
@@ -142,8 +140,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService
         user.setRoleIds(storeTutor.getRoleIds() );
         sysUserService.updateUser(user);
 
-        storeTutor.setUpdateTime(DateUtils.getNowDate());
-        storeTutor.setUpdateBy(SecurityUtils.getUsername());
+        SecurityUtils.fillUpdateUser(storeTutor);
         return storeTutorMapper.updateStoreTutor(storeTutor);
     }
 

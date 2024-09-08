@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 商品对象 t_goods
@@ -18,7 +18,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 @TableName("t_goods")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Goods extends BaseEntity
+public class Goods extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
 

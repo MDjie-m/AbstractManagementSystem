@@ -23,6 +23,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="storeName"    column="store_name"    />
         <result property="lightName"    column="lightName"    />
         <result property="cameraName"    column="cameraName"    />
+        <result property="createById" column="create_by_id"/>
+        <result property="updateById" column="update_by_id"/>
     </resultMap>
 
     <sql id="selectStoreDeskVo">
@@ -79,6 +81,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark,</if>
             <if test="lightDeviceId != null">light_device_id,</if>
             <if test="cameraDeviceId != null">camera_device_id,</if>
+            <if test="updateById != null">update_by_id,</if>
+            <if test="createById != null">create_by_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="deskId != null">#{deskId},</if>
@@ -96,6 +100,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">#{remark},</if>
             <if test="lightDeviceId != null">#{lightDeviceId},</if>
             <if test="cameraDeviceId != null">#{cameraDeviceId},</if>
+            <if test="updateById != null">#{updateById},</if>
+            <if test="createById != null">#{createById},</if>
          </trim>
     </insert>
 
@@ -116,6 +122,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark = #{remark},</if>
             <if test="lightDeviceId != null">light_device_id = #{lightDeviceId},</if>
             <if test="cameraDeviceId != null">camera_device_id = #{cameraDeviceId},</if>
+            <if test="updateById != null">update_by_id =#{updateById},</if>
+            <if test="createById != null">create_by_id =#{createById},</if>
         </trim>
         where desk_id = #{deskId}
     </update>

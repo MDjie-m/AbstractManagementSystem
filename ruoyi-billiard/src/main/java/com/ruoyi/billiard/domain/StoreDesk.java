@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 
 /**
  * 球桌对象 t_store_desk
@@ -18,7 +18,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 @TableName("t_store_desk")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class StoreDesk extends BaseEntity
+public class StoreDesk extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
 

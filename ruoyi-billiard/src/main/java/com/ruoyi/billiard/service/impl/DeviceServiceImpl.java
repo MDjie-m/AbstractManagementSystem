@@ -70,10 +70,8 @@ public class DeviceServiceImpl implements IDeviceService
         if(StringUtils.isNotEmpty(device.getDeviceSerialNum())){
            AssertUtil.isTrue(! deviceMapper.exists(Device::getDeviceSerialNum,device.getDeviceSerialNum()),"设备编码重复");
         }
+        SecurityUtils.fillCreateUser(device);
         device.setDeviceId(IdUtils.singleNextId());
-        device.setCreateTime(DateUtils.getNowDate());
-        device.setCreateBy(SecurityUtils.getUsername());
-        device.setUpdateBy(SecurityUtils.getUsername());
         return deviceMapper.insertDevice(device);
     }
 
@@ -90,8 +88,7 @@ public class DeviceServiceImpl implements IDeviceService
             AssertUtil.isTrue(!  deviceMapper.existsExcludeId(Device::getDeviceSerialNum,  device.getDeviceSerialNum(),
                     Device::getDeviceId, device.getDeviceId()),"设备编码重复");
         }
-        device.setCreateBy(SecurityUtils.getUsername());
-        device.setUpdateTime(DateUtils.getNowDate());
+        SecurityUtils.fillUpdateUser(device);
         return deviceMapper.updateDevice(device);
     }
 

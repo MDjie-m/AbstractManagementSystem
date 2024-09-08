@@ -62,10 +62,8 @@ public class DeskDeviceRelationServiceImpl implements IDeskDeviceRelationService
     @Override
     public int insertDeskDeviceRelation(DeskDeviceRelation deskDeviceRelation)
     {
-        deskDeviceRelation.setCreateBy(SecurityUtils.getUsername());
-        deskDeviceRelation.setUpdateBy(SecurityUtils.getUsername());
-        deskDeviceRelation.setDeskDeviceRelationId(IdUtils.singleNextId());
-        deskDeviceRelation.setCreateTime(DateUtils.getNowDate());
+
+        SecurityUtils.fillCreateUser(deskDeviceRelation);
         return deskDeviceRelationMapper.insertDeskDeviceRelation(deskDeviceRelation);
     }
 
@@ -78,8 +76,7 @@ public class DeskDeviceRelationServiceImpl implements IDeskDeviceRelationService
     @Override
     public int updateDeskDeviceRelation(DeskDeviceRelation deskDeviceRelation)
     {
-        deskDeviceRelation.setUpdateBy(SecurityUtils.getUsername());
-        deskDeviceRelation.setUpdateTime(DateUtils.getNowDate());
+        SecurityUtils.fillUpdateUser(deskDeviceRelation);
         return deskDeviceRelationMapper.updateDeskDeviceRelation(deskDeviceRelation);
     }
 

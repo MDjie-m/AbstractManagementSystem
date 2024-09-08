@@ -1,3 +1,4 @@
+drop table  if exists t_store;
 create table  t_store
 (
     store_id      bigint                                not null comment '门店id'
@@ -11,11 +12,12 @@ create table  t_store
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
     remark        varchar(500)                          null comment '备注'
 )
     comment '门店';
-
+drop table  if exists t_store_user;
 create table  t_store_user
 (
     store_user_id      bigint                                not null comment '员工id'
@@ -32,10 +34,12 @@ create table  t_store_user
     update_by     varchar(64) default ''                null comment '更新者',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     login_user_id bigint  not null comment '登录账户id',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
     remark        nvarchar(500)                          null comment '备注'
 )
     comment '门店员工';
-
+drop table  if exists t_store_tutor;
 create table  t_store_tutor
 (
     store_tutor_id      bigint                                not null comment '员工id'
@@ -53,6 +57,8 @@ create table  t_store_tutor
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     store_id BIGINT not null  comment '门店',
     login_user_id bigint  not null comment '登录账户id',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
     remark        nvarchar(500)                          null comment '备注'
 )
     comment '门店助教';
@@ -76,7 +82,8 @@ create table  t_member
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
     remark        nvarchar(500)                          null comment '备注'
 )
     comment '门店会员';
@@ -94,11 +101,13 @@ create table  t_member_level
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
     remark        nvarchar(500)                          null comment '备注'
 )
     comment '门店会员等级';
 
-
+drop table  if exists  t_store_desk;
 create table  t_store_desk
 (
     desk_id      bigint                                not null comment '球桌编码'
@@ -116,9 +125,12 @@ create table  t_store_desk
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
     remark        nvarchar(500)                          null comment '备注'
 )
 comment '球桌';
+
 drop table  if exists t_order;
 create table  t_order
 (
@@ -135,6 +147,8 @@ create table  t_order
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 ) comment '订单';
 
@@ -153,6 +167,8 @@ create table  t_order_goods
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 ) comment '购买商品';
 drop table  if exists t_order_member_deduct;
@@ -165,7 +181,9 @@ create table  t_order_member_deduct
      create_by     varchar(64) default ''                null comment '创建者',
      create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
      update_by     varchar(64) default ''                null comment '更新者',
-     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+     create_by_id     bigint                 null comment '创建者Id',
+     update_by_id     bigint             null comment '更新者Id'
 ) comment '会员付款记录';
 drop table  if exists t_order_recharge;
 create table  t_order_recharge
@@ -179,9 +197,11 @@ create table  t_order_recharge
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
-    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id'
 ) comment '会员充值';
-
+drop table  if exists t_order_desk_time;
 create table  t_order_desk_time
 (
     order_desk_time_id      bigint                                not null comment '球桌编码'
@@ -197,7 +217,11 @@ create table  t_order_desk_time
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
-    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
+    remark        nvarchar(500)                          null comment '备注'
 )
     comment '订单计时';
 drop table  if exists t_order_tutor_time;
@@ -216,13 +240,16 @@ create table  t_order_tutor_time
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
-    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
+    remark        nvarchar(500)                          null comment '备注'
 )
     comment '订单教练计时';
 
 
 
-
+drop table  if exists t_stock;
 create table  t_stock
 (
     stock_id      bigint                                not null comment '商品编码'
@@ -234,10 +261,14 @@ create table  t_stock
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
-    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
+    remark        nvarchar(500)                          null comment '备注'
 )
     comment '库存';
 
+drop table  if exists t_stock_log;
 create table  t_stock_log
 (
     stock_log_id      bigint                                not null comment '商品编码'
@@ -250,7 +281,10 @@ create table  t_stock_log
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
-    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
+    remark        nvarchar(500)                          null comment '备注'
 )
     comment '库存日志';
 
@@ -269,11 +303,15 @@ create table  t_device
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
-    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
+    remark        nvarchar(500)                          null comment '备注'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     comment '设备信息';
 create unique index t_store_desk__uindex_num
     on t_store_desk (store_id, desk_num);
+
 DROP TABLE IF EXISTS t_goods_category;
 create table  t_goods_category
 (
@@ -286,6 +324,8 @@ create table  t_goods_category
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
     remark        nvarchar(500)                          null comment '备注'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     comment '商品分类';
@@ -302,14 +342,16 @@ create table  t_goods
     category_id       bigint not null                                  null comment '商品分类',
     sell tinyint not null  comment  '是否上架销售',
     price decimal(10,2)  not null comment '价格',
-    remark        nvarchar(500)                          null comment '备注',
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
-    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
+    remark        nvarchar(500)                          null comment '备注'
 )
     comment '商品';
-
+drop table  if exists t_desk_device_relation;
 create table  t_desk_device_relation
 (
     desk_device_relation_id      bigint                 auto_increment               not null comment 'ID'
@@ -321,6 +363,8 @@ create table  t_desk_device_relation
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                 null comment '创建者Id',
+    update_by_id     bigint             null comment '更新者Id',
     remark        nvarchar(500)                          null comment '备注'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     comment '桌子设备关联关系';

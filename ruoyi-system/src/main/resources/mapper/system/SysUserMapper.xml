@@ -142,18 +142,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select user_id, email from sys_user where email = #{email} and del_flag = '0' limit 1
 	</select>
 	<select id="selectUserByMobile" resultType="com.ruoyi.common.core.domain.entity.SysUser">
-		select  * from (
-		select b.*
-		from t_store_user a join sys_user b on a.login_user_id=b.user_id
-		where   a.mobile=#{mobile}
-		<if test="storeId != null  ">and a.store_id=#{storeId} </if>
-		union all
-		select b.*
-		from  t_store_tutor  a join sys_user b on a.login_user_id=b.user_id
-		where   a.mobile=#{mobile}
-		<if test="storeId != null  ">and a.store_id=#{storeId} </if>
-		)c limit 1
-	</select>
+        select * from (
+        select b.*
+        from t_store_user a join sys_user b on a.login_user_id=b.user_id
+        where a.mobile=#{mobile}
+        <if test="storeId != null  ">and a.store_id=#{storeId}</if>
+        union all
+        select b.*
+        from t_store_tutor a join sys_user b on a.login_user_id=b.user_id
+        where a.mobile=#{mobile}
+        <if test="storeId != null  ">and a.store_id=#{storeId}</if>
+        union all
+        select a.* from sys_user a where a.user_name=#{mobile}
+        )c limit 1
+    </select>
 
 	<insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
  		insert into sys_user(

@@ -3,6 +3,8 @@ package com.ruoyi.common.utils;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.ruoyi.common.core.domain.MyBaseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -173,6 +175,20 @@ public class SecurityUtils
     {
         return roles.stream().filter(StringUtils::hasText)
                 .anyMatch(x -> Constants.SUPER_ADMIN.equals(x) || PatternMatchUtils.simpleMatch(x, role));
+    }
+
+    public static <T extends MyBaseEntity>   void  fillCreateUser(T entity){
+        LoginUser user=getLoginUser();
+        entity.setCreateBy(user.getRealName());
+        entity.setCreateById(user.getUserId());
+        entity.setCreateTime(DateUtils.getNowDate());
+        fillUpdateUser(entity);
+    }
+    public static <T extends MyBaseEntity>   void  fillUpdateUser(T entity){
+        LoginUser user=getLoginUser();
+        entity.setUpdateBy(user.getRealName());
+        entity.setUpdateById(user.getUserId());
+        entity.setUpdateTime(DateUtils.getNowDate());
     }
 
 }

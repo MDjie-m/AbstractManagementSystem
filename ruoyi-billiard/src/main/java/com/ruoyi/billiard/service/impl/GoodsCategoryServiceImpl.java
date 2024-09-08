@@ -70,10 +70,8 @@ public class GoodsCategoryServiceImpl implements IGoodsCategoryService
         AssertUtil.isTrue(!goodsCategoryMapper.exists( goodsCategoryMapper.query().eq(GoodsCategory::getGoodsCategoryName,goodsCategory.getGoodsCategoryName())
                 .eq(GoodsCategory::getStoreId,goodsCategory.getStoreId())),"商品分类名称重复.");
 
-        goodsCategory.setCreateBy(SecurityUtils.getUsername());
-        goodsCategory.setUpdateBy(SecurityUtils.getUsername());
+        SecurityUtils.fillCreateUser(goodsCategory);
         goodsCategory.setGoodsCategoryId(IdUtils.singleNextId());
-        goodsCategory.setCreateTime(DateUtils.getNowDate());
         return goodsCategoryMapper.insertGoodsCategory(goodsCategory);
     }
 

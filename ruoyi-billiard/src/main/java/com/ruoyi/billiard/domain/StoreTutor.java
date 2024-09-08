@@ -3,10 +3,11 @@ package com.ruoyi.billiard.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
 @TableName("t_store_tutor")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class StoreTutor extends BaseEntity
+public class StoreTutor extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
 

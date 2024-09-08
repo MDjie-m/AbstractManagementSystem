@@ -113,8 +113,7 @@ public class StoreUserServiceImpl implements IStoreUserService
         }
         storeUser.setStoreUserId(IdUtils.singleNextId());
         storeUser.setLoginUserId(sysUser.getUserId());
-        storeUser.setCreateBy(SecurityUtils.getUsername());
-        storeUser.setUpdateBy(storeUser.getUpdateBy());
+        SecurityUtils.fillCreateUser(storeUser);
 
 
         int res= storeUserMapper.insert(storeUser);
@@ -144,8 +143,7 @@ public class StoreUserServiceImpl implements IStoreUserService
         user.setRoleIds(storeUser.getRoleIds() );
         sysUserService.updateUser(user);
 
-        storeUser.setUpdateTime(DateUtils.getNowDate());
-        storeUser.setUpdateBy(SecurityUtils.getUsername());
+        SecurityUtils.fillUpdateUser(storeUser);
         return storeUserMapper.updateById(storeUser);
     }
 

@@ -3,6 +3,7 @@ package com.ruoyi.billiard.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -19,7 +20,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeskDeviceRelation extends BaseEntity
+public class DeskDeviceRelation extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
 

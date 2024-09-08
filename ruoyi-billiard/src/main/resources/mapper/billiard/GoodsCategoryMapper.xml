@@ -5,27 +5,42 @@
 <mapper namespace="com.ruoyi.billiard.mapper.GoodsCategoryMapper">
 
     <resultMap type="GoodsCategory" id="GoodsCategoryResult">
-        <result property="goodsCategoryId"    column="goods_category_id"    />
-        <result property="goodsCategoryName"    column="goods_category_name"    />
-        <result property="storeId"    column="store_id"    />
-        <result property="sort"    column="sort"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
+        <result property="goodsCategoryId" column="goods_category_id"/>
+        <result property="goodsCategoryName" column="goods_category_name"/>
+        <result property="storeId" column="store_id"/>
+        <result property="sort" column="sort"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="createById" column="create_by_id"/>
+        <result property="updateById" column="update_by_id"/>
     </resultMap>
 
     <sql id="selectGoodsCategoryVo">
-        select goods_category_id, goods_category_name, store_id, sort, create_by, create_time, update_by, update_time, remark from t_goods_category
+        select goods_category_id,
+               goods_category_name,
+               store_id,
+               sort,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark,
+               update_by_id,
+               create_by_id
+        from t_goods_category
     </sql>
 
     <select id="selectGoodsCategoryList" parameterType="GoodsCategory" resultMap="GoodsCategoryResult">
         <include refid="selectGoodsCategoryVo"/>
         <where>
-            <if test="goodsCategoryName != null  and goodsCategoryName != ''"> and goods_category_name like concat('%', #{goodsCategoryName}, '%')</if>
-            <if test="storeId != null "> and store_id = #{storeId}</if>
-            <if test="sort != null "> and sort = #{sort}</if>
+            <if test="goodsCategoryName != null  and goodsCategoryName != ''">and goods_category_name like concat('%',
+                #{goodsCategoryName}, '%')
+            </if>
+            <if test="storeId != null ">and store_id = #{storeId}</if>
+            <if test="sort != null ">and sort = #{sort}</if>
         </where>
     </select>
 
@@ -46,6 +61,8 @@
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
+            <if test="updateById != null">update_by_id,</if>
+            <if test="createById != null">create_by_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="goodsCategoryId != null">#{goodsCategoryId},</if>
@@ -57,13 +74,17 @@
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
+            <if test="updateById != null">#{updateById},</if>
+            <if test="createById != null">#{createById},</if>
         </trim>
     </insert>
 
     <update id="updateGoodsCategory" parameterType="GoodsCategory">
         update t_goods_category
         <trim prefix="SET" suffixOverrides=",">
-            <if test="goodsCategoryName != null and goodsCategoryName != ''">goods_category_name = #{goodsCategoryName},</if>
+            <if test="goodsCategoryName != null and goodsCategoryName != ''">goods_category_name =
+                #{goodsCategoryName},
+            </if>
             <if test="storeId != null">store_id = #{storeId},</if>
             <if test="sort != null">sort = #{sort},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
@@ -71,12 +92,16 @@
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
+            <if test="updateById != null">update_by_id =#{updateById},</if>
+            <if test="createById != null">create_by_id =#{createById},</if>
         </trim>
         where goods_category_id = #{goodsCategoryId}
     </update>
 
     <delete id="deleteGoodsCategoryByGoodsCategoryId" parameterType="Long">
-        delete from t_goods_category where goods_category_id = #{goodsCategoryId}
+        delete
+        from t_goods_category
+        where goods_category_id = #{goodsCategoryId}
     </delete>
 
     <delete id="deleteGoodsCategoryByGoodsCategoryIds" parameterType="String">

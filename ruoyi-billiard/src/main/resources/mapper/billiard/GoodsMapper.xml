@@ -5,39 +5,42 @@
 <mapper namespace="com.ruoyi.billiard.mapper.GoodsMapper">
 
     <resultMap type="Goods" id="GoodsResult">
-        <result property="goodsId"    column="goods_id"    />
-        <result property="storeId"    column="store_id"    />
-        <result property="goodsName"    column="goods_name"    />
-        <result property="goodsImg"    column="goods_img"    />
-        <result property="sort"    column="sort"    />
-        <result property="barcode"    column="barcode"    />
-        <result property="categoryId"    column="category_id"    />
-        <result property="categoryName"    column="goods_category_name"    />
-
-        <result property="sell"    column="sell"    />
-        <result property="price"    column="price"    />
-        <result property="remark"    column="remark"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
+        <result property="goodsId" column="goods_id"/>
+        <result property="storeId" column="store_id"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="goodsImg" column="goods_img"/>
+        <result property="sort" column="sort"/>
+        <result property="barcode" column="barcode"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="goods_category_name"/>
+        <result property="sell" column="sell"/>
+        <result property="price" column="price"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createById" column="create_by_id"/>
+        <result property="updateById" column="update_by_id"/>
     </resultMap>
 
     <sql id="selectGoodsVo">
-        select   a.*,b.goods_category_name from t_goods a left join  t_goods_category b on a.category_id=b.goods_category_id
+        select a.*, b.goods_category_name
+        from t_goods a
+                 left join t_goods_category b on a.category_id = b.goods_category_id
     </sql>
 
     <select id="selectGoodsList" parameterType="Goods" resultMap="GoodsResult">
         <include refid="selectGoodsVo"/>
         <where>
-            <if test="storeId != null "> and a.store_id = #{storeId}</if>
-            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
-            <if test="goodsImg != null  and goodsImg != ''"> and goods_img = #{goodsImg}</if>
-            <if test="sort != null "> and sort = #{sort}</if>
-            <if test="barcode != null  and barcode != ''"> and barcode like concat('%', #{barcode}, '%')</if>
-            <if test="categoryId != null "> and category_id = #{categoryId}</if>
-            <if test="sell != null "> and sell = #{sell}</if>
-            <if test="price != null "> and price = #{price}</if>
+            <if test="storeId != null ">and a.store_id = #{storeId}</if>
+            <if test="goodsName != null  and goodsName != ''">and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="goodsImg != null  and goodsImg != ''">and goods_img = #{goodsImg}</if>
+            <if test="sort != null ">and sort = #{sort}</if>
+            <if test="barcode != null  and barcode != ''">and barcode like concat('%', #{barcode}, '%')</if>
+            <if test="categoryId != null ">and category_id = #{categoryId}</if>
+            <if test="sell != null ">and sell = #{sell}</if>
+            <if test="price != null ">and price = #{price}</if>
         </where>
     </select>
 
@@ -63,6 +66,8 @@
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="updateById != null">update_by_id,</if>
+            <if test="createById != null">create_by_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="goodsId != null">#{goodsId},</if>
@@ -79,6 +84,8 @@
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateById != null">#{updateById},</if>
+            <if test="createById != null">#{createById},</if>
         </trim>
     </insert>
 
@@ -98,12 +105,16 @@
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateById != null">update_by_id =#{updateById},</if>
+            <if test="createById != null">create_by_id =#{createById},</if>
         </trim>
         where goods_id = #{goodsId}
     </update>
 
     <delete id="deleteGoodsByGoodsId" parameterType="Long">
-        delete from t_goods where goods_id = #{goodsId}
+        delete
+        from t_goods
+        where goods_id = #{goodsId}
     </delete>
 
     <delete id="deleteGoodsByGoodsIds" parameterType="String">

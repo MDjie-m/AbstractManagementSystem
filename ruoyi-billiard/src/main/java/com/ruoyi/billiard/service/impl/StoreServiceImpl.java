@@ -79,9 +79,7 @@ public class StoreServiceImpl implements IStoreService
     public int insertStore(Store store)
     {
         store.setStoreId(IdUtils.singleNextId());
-        store.setCreateTime(DateUtils.getNowDate());
-        store.setCreateBy(SecurityUtils.getUsername());
-        store.setUpdateBy(SecurityUtils.getUsername());
+        SecurityUtils.fillCreateUser(store);
         return storeMapper.insert(store);
     }
 
@@ -94,7 +92,7 @@ public class StoreServiceImpl implements IStoreService
     @Override
     public int updateStore(Store store)
     {
-        store.setUpdateTime(DateUtils.getNowDate());
+        SecurityUtils.fillUpdateUser(store);
         return storeMapper.updateStore(store);
     }
 

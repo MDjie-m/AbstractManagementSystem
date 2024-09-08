@@ -69,12 +69,8 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
     @Override
     public int insert${ClassName}(${ClassName} ${className})
     {
-        ${className}.setCreateBy(SecurityUtils.getUsername());
-        ${className}.setUpdateBy(SecurityUtils.getUsername());
+        SecurityUtils.fillCreateUser(${className});
 #foreach ($column in $columns)
-#if($column.javaField == 'createTime')
-        ${className}.setCreateTime(DateUtils.getNowDate());
-#end
     #if($column.isPk())
         #if($column.javaField.length() > 2 && $column.javaField.substring(1,2).matches("[A-Z]"))
             #set($AttrName=$column.javaField)
@@ -105,12 +101,8 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
     @Override
     public int update${ClassName}(${ClassName} ${className})
     {
-#foreach ($column in $columns)
-#if($column.javaField == 'updateTime')
-        ${className}.setUpdateBy(SecurityUtils.getUsername());
-        ${className}.setUpdateTime(DateUtils.getNowDate());
-#end
-#end
+        SecurityUtils.fillUpdateUser(${className});
+
 #if($table.sub)
         ${className}Mapper.delete${subClassName}By${subTableFkClassName}(${className}.get${pkColumn.capJavaField}());
         insert${subClassName}(${className});
@@ -169,11 +161,13 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service
             List<${subClassName}> list = new ArrayList<${subClassName}>();
             for (${subClassName} ${subclassName} : ${subclassName}List)
             {
+                SecurityUtils.fillCreateUser(${subclassName});
                 ${subclassName}.set${subTableFkClassName}(${pkColumn.javaField});
                 list.add(${subclassName});
             }
             if (list.size() > 0)
             {
+
                 ${className}Mapper.batch${subClassName}(list);
             }
         }

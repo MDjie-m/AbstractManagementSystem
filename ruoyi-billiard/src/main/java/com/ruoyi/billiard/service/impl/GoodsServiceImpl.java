@@ -60,10 +60,9 @@ public class GoodsServiceImpl implements IGoodsService
     {
         AssertUtil.isTrue(!goodsMapper.exists( goodsMapper.query().eq(Goods::getGoodsName,goods.getGoodsName())
                 .eq(Goods::getStoreId,goods.getStoreId())),"商品名称重复.");
-        goods.setCreateBy(SecurityUtils.getUsername());
-        goods.setUpdateBy(SecurityUtils.getUsername());
+
         goods.setGoodsId(IdUtils.singleNextId());
-        goods.setCreateTime(DateUtils.getNowDate());
+        SecurityUtils.fillCreateUser(goods);
         return goodsMapper.insertGoods(goods);
     }
 
@@ -78,8 +77,7 @@ public class GoodsServiceImpl implements IGoodsService
     {
         AssertUtil.isTrue(!goodsMapper.exists( goodsMapper.query().eq(Goods::getGoodsName,goods.getGoodsName())
                 .eq(Goods::getStoreId,goods.getStoreId()).notIn(Goods::getGoodsId,goods.getGoodsId())),"商品名称重复.");
-        goods.setUpdateBy(SecurityUtils.getUsername());
-        goods.setUpdateTime(DateUtils.getNowDate());
+        SecurityUtils.fillUpdateUser(goods);
         return goodsMapper.updateGoods(goods);
     }
 

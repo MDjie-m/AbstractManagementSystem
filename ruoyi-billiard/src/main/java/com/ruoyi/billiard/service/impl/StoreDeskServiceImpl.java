@@ -69,10 +69,8 @@ public class StoreDeskServiceImpl implements IStoreDeskService
     @Transactional(rollbackFor = Exception.class)
     public int insertStoreDesk(StoreDesk storeDesk)
     {
-        storeDesk.setCreateTime(DateUtils.getNowDate());
         storeDesk.setDeskId(IdUtils.singleNextId());
-        storeDesk.setCreateBy(SecurityUtils.getUsername());
-        storeDesk.setUpdateBy(storeDesk.getCreateBy());
+        SecurityUtils.fillCreateUser(storeDesk);
         checkDevice( storeDesk.getCameraDeviceId(),null,"摄像头已绑定到其他桌");
         checkDevice( storeDesk.getLightDeviceId(),null,"摄像头已绑定到其他桌");
         deskDeviceRelationService.bindDevice(storeDesk.getDeskId(),
@@ -103,7 +101,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService
         storeDeskMapper.updateStoreDesk(storeDesk);
         checkDevice( storeDesk.getCameraDeviceId(),storeDesk.getDeskId(),"摄像头已绑定到其他桌");
         checkDevice( storeDesk.getLightDeviceId(),storeDesk.getDeskId(),"摄像头已绑定到其他桌");
-        storeDesk.setUpdateTime(DateUtils.getNowDate());
+        SecurityUtils.fillUpdateUser(storeDesk);
         storeDesk.setStatus(null);
         return storeDeskMapper.updateStoreDesk(storeDesk);
     }

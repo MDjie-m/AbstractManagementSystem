@@ -3,10 +3,10 @@ package com.ruoyi.billiard.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 商品分类对象 t_goods_category
@@ -17,7 +17,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 @TableName("t_goods_category")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class GoodsCategory extends BaseEntity
+public class GoodsCategory extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
 
