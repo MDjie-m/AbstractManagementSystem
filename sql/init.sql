@@ -195,24 +195,6 @@ create table  t_order_tutor_time
 )
     comment '订单计时';
 
-drop table  if exists t_goods;
-create table  t_goods
-(
-    goods_id      bigint                                not null comment '商品编码'
-        primary key,
-    store_id             bigint                          not null comment '门店Id' ,
-    goods_name      nvarchar(64)                                not null comment '商品名称',
-    sort       int                          not null comment '排序',
-    barcode      nvarchar(64)                                  null comment '商品条码',
-    category_id       int not null                                  null comment '商品分类',
-    type int not null  comment '类型：0=售卖商品,1=店内其他物资',
-    price decimal(10,2)  not null comment '价格',
-    create_by     varchar(64) default ''                null comment '创建者',
-    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by     varchar(64) default ''                null comment '更新者',
-    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
-)
-    comment '商品';
 
 
 
@@ -281,6 +263,26 @@ create table  t_goods_category
     remark        nvarchar(500)                          null comment '备注'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     comment '商品分类';
+drop table  if exists t_goods;
+create table  t_goods
+(
+    goods_id      bigint                                not null comment '商品编码'
+        primary key,
+    store_id             bigint                          not null comment '门店Id' ,
+    goods_name      nvarchar(64)                                not null comment '商品名称',
+    goods_img nvarchar(500) not null comment '商品图片',
+    sort       int                          not null comment '排序',
+    barcode      nvarchar(64)                                  null comment '商品条码',
+    category_id       bigint not null                                  null comment '商品分类',
+    sell tinyint not null  comment  '是否上架销售',
+    price decimal(10,2)  not null comment '价格',
+    remark        nvarchar(500)                          null comment '备注',
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+)
+    comment '商品';
 
 create table  t_desk_device_relation
 (

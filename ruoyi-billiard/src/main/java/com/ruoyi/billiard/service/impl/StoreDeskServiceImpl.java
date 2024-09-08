@@ -10,6 +10,7 @@ import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.service.IDeskDeviceRelationService;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,14 +69,16 @@ public class StoreDeskServiceImpl implements IStoreDeskService
     @Transactional(rollbackFor = Exception.class)
     public int insertStoreDesk(StoreDesk storeDesk)
     {
-
+        storeDesk.setCreateTime(DateUtils.getNowDate());
+        storeDesk.setDeskId(IdUtils.singleNextId());
+        storeDesk.setCreateBy(SecurityUtils.getUsername());
+        storeDesk.setUpdateBy(storeDesk.getCreateBy());
         checkDevice( storeDesk.getCameraDeviceId(),null,"摄像头已绑定到其他桌");
         checkDevice( storeDesk.getLightDeviceId(),null,"摄像头已绑定到其他桌");
         deskDeviceRelationService.bindDevice(storeDesk.getDeskId(),
                 Arrays.asList(storeDesk.getCameraDeviceId(), storeDesk.getLightDeviceId()));
 
-        storeDesk.setCreateTime(DateUtils.getNowDate());
-        storeDesk.setDeskId(IdUtils.singleNextId());
+
         return storeDeskMapper.insertStoreDesk(storeDesk);
     }
     private  void checkDevice( Long deviceId,Long deskId,String msg){

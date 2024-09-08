@@ -1,0 +1,94 @@
+package com.ruoyi.billiard.domain;
+
+import java.math.BigDecimal;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import com.ruoyi.common.annotation.Excel;
+import com.ruoyi.common.core.domain.BaseEntity;
+
+/**
+ * 商品对象 t_goods
+ *
+ * @author ruoyi
+ * @date 2024-09-08
+ */
+@TableName("t_goods")
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class Goods extends BaseEntity
+{
+    private static final long serialVersionUID = 1L;
+
+    /** 商品编码 */
+
+    @TableId("goods_id")
+    private Long goodsId;
+
+    /** 门店Id */
+    @Excel(name = "门店Id")
+
+    @TableField("store_id")
+    private Long storeId;
+
+    /** 商品名称 */
+    @Excel(name = "商品名称")
+
+    @TableField("goods_name")
+    private String goodsName;
+
+    /** 商品图片 */
+    @Excel(name = "商品图片")
+
+    @TableField("goods_img")
+    private String goodsImg;
+
+    /** 排序 */
+    @Excel(name = "排序")
+
+    @TableField("sort")
+    private Integer sort;
+
+    /** 商品条码 */
+    @Excel(name = "商品条码")
+
+    @TableField("barcode")
+    private String barcode;
+
+    /** 商品分类 */
+    @Excel(name = "商品分类")
+
+    @TableField("category_id")
+    private Long categoryId;
+
+
+    @TableField(exist = false)
+    private String  categoryName;
+
+
+    /** 是否上架销售 */
+    @Excel(name = "是否上架销售")
+
+    @TableField("sell")
+    private Boolean sell;
+
+    /** 价格 */
+    @Excel(name = "价格")
+
+    @TableField("price")
+    private BigDecimal price;
+
+
+
+
+
+
+
+
+
+
+
+
+}

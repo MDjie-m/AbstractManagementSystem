@@ -18,6 +18,10 @@ public interface MyBaseMapper<T> extends BaseMapper<T> {
      */
     int insertBatch(@Param("list") List<T> list);
 
+    default  LambdaQueryWrapper<T> query(){
+        return  new LambdaQueryWrapper<>();
+    }
+
     /**
      * 自定义批量更新，条件为主键
      * 如果要自动填充，@Param(xx) xx参数名必须是 list/collection/array 3个的其中之一
@@ -29,13 +33,7 @@ public interface MyBaseMapper<T> extends BaseMapper<T> {
         queryWrapper.eq(  condition,val);
       return this.exists( queryWrapper);
     }
-    default <V> boolean   exists(List<SFunction<T ,?>>  conditions, V... vals){
-        LambdaQueryWrapper<T> queryWrapper=   new LambdaQueryWrapper<>();
-        for (int i = 0; i < conditions.size(); i++) {
-            queryWrapper.eq(  conditions.get(i),vals[i]);
-        }
-        return this.exists( queryWrapper);
-    }
+
     default <V> boolean   existsIn(SFunction<T ,?> condition, List<V> val){
         LambdaQueryWrapper<T> queryWrapper=   new LambdaQueryWrapper<>();
         queryWrapper.in(  condition,val);
