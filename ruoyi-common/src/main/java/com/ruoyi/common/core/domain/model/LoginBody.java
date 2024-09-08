@@ -1,10 +1,15 @@
 package com.ruoyi.common.core.domain.model;
 
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+
 /**
  * 用户登录对象
  * 
  * @author ruoyi
  */
+@Data
 public class LoginBody
 {
     /**
@@ -16,6 +21,9 @@ public class LoginBody
      * 用户密码
      */
     private String password;
+
+    @NotNull(groups = {ICashierSystemValidate.class},message = "门店标识不能为空")
+    private Long storeId;
 
     /**
      * 验证码
@@ -65,5 +73,9 @@ public class LoginBody
     public void setUuid(String uuid)
     {
         this.uuid = uuid;
+    }
+
+    public  static interface ICashierSystemValidate{
+
     }
 }

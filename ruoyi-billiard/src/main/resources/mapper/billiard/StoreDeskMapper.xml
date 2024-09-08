@@ -52,7 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where desk_id = #{deskId}
     </select>
     <select id="selectStoreByLoginUserId" resultType="com.ruoyi.billiard.domain.Store">
-        select a.*
+        select distinct a.*
         from t_store a join t_store_user b  on  a.store_id=b.store_id where b.login_user_id=#{loginUserId};
     </select>
     <select id="checkDeviceBind" resultType="java.lang.Integer">

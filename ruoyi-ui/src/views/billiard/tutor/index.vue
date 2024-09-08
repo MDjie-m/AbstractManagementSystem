@@ -320,6 +320,19 @@ export default {
         realName: [
           { required: true, message: "姓名不能为空", trigger: "blur" }
         ],
+        roleIds:[
+          { required: true, message: "角色不能为空", trigger: "blur" },
+          {
+            validator: function(rule, value, callback) {
+              if ((value??[]).length===0) {
+                callback(new Error("角色不能为空"));
+              } else {
+                //校验通过
+                callback();
+              }
+            }, trigger: 'blur'
+          }
+        ],
         mobile: [
           { required: true, message: "手机号不能为空", trigger: "blur" },
           { validator:function(rule,value,callback){

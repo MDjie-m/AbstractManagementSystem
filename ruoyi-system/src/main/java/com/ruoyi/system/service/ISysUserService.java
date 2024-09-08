@@ -2,6 +2,8 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.lang.Nullable;
 
 /**
  * 用户 业务层
@@ -41,6 +43,8 @@ public interface ISysUserService
      * @return 用户对象信息
      */
     public SysUser selectUserByUserName(String userName);
+
+    public SysUser selectUserByMobile(  String mobile,@Nullable Long storeId);
 
     /**
      * 通过用户ID查询用户
@@ -127,6 +131,8 @@ public interface ISysUserService
      * @return 结果
      */
     public int updateUser(SysUser user);
+
+    public int addUserRoles(Long userId,List<Long> roleIds);
 
     /**
      * 用户授权角色

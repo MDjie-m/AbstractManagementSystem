@@ -61,5 +61,5 @@ public interface IStoreDeskService
      */
     public int deleteStoreDeskByDeskId(Long deskId);
 
-    Store getByLoginUserId(Long loginUserId);
+    List<Store> getByLoginUserId(Long loginUserId);
 }

@@ -45,6 +45,8 @@ public interface SysUserMapper extends MyBaseMapper<SysUser>
      */
     public SysUser selectUserByUserName(String userName);
 
+    public SysUser selectUserByMobile(@Param("mobile") String mobile,@Param("storeId") Long storeId);
+
     /**
      * 通过用户ID查询用户
      * 

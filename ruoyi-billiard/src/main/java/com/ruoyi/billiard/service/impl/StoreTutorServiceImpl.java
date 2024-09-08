@@ -1,12 +1,10 @@
 package com.ruoyi.billiard.service.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import com.ruoyi.billiard.domain.StoreUser;
 import com.ruoyi.billiard.mapper.StoreUserMapper;
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.utils.ArrayUtil;
@@ -17,6 +15,7 @@ import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.service.ISysUserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.compress.utils.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
@@ -92,22 +91,27 @@ public class StoreTutorServiceImpl implements IStoreTutorService
     @Override
     public int insertStoreTutor(StoreTutor storeTutor)
     {
-        AssertUtil.isTrue(!storeUserMapper.existsWithDelFlag(StoreUser::getMobile,storeTutor.getMobile()),
-                "手机号已被其他用户使用");
+        AssertUtil.isTrue(!storeTutorMapper.exists( storeTutorMapper.query().eq(StoreTutor::getMobile,storeTutor.getMobile())
+                        .eq(StoreTutor::getStoreId,storeTutor.getStoreId())),   "手机号已被其他用户使用");
         storeTutor.setCreateTime(DateUtils.getNowDate());
 
 
-        SysUser sysUser=new SysUser();
-        sysUser.setAvatar(storeTutor.getUserImg());
-        sysUser.setDeptId(100L);
-        sysUser.setUserName(storeTutor.getMobile());
-        sysUser.setPhonenumber(storeTutor.getMobile());
-        sysUser.setNickName(storeTutor.getRealName());
-        sysUser.setPassword(SecurityUtils.encryptPassword(storeTutor.getMobile()));
-        sysUser.setRoleIds(storeTutor.getRoleIds().toArray(new Long[0]));
-        sysUser.setSex(storeTutor.getSex());
-        sysUser.setCreateBy(SecurityUtils.getUsername());
-        sysUserService.insertUser(sysUser);
+        SysUser sysUser =   sysUserService.selectUserByMobile(storeTutor.getMobile(),null);
+        if(Objects.isNull(sysUser)) {
+            sysUser = new SysUser();
+            sysUser.setAvatar(storeTutor.getUserImg());
+            sysUser.setDeptId(100L);
+            sysUser.setUserName(storeTutor.getMobile());
+            sysUser.setPhonenumber(storeTutor.getMobile());
+            sysUser.setNickName(storeTutor.getRealName());
+            sysUser.setPassword(SecurityUtils.encryptPassword(storeTutor.getMobile()));
+            sysUser.setRoleIds(storeTutor.getRoleIds() );
+            sysUser.setSex(storeTutor.getSex());
+            sysUser.setCreateBy(SecurityUtils.getUsername());
+            sysUserService.insertUser(sysUser);
+        } else {
+            sysUserService.addUserRoles(sysUser.getUserId(),storeTutor.getRoleIds());
+        }
         storeTutor.setStoreTutorId(IdUtils.singleNextId());
         storeTutor.setLoginUserId(sysUser.getUserId());
         storeTutor.setCreateTime(DateUtils.getNowDate());
@@ -125,18 +129,17 @@ public class StoreTutorServiceImpl implements IStoreTutorService
     @Override
     public int updateStoreTutor(StoreTutor storeTutor)
     {
-        AssertUtil.isTrue(!storeUserMapper.existsWithDelFlagExcludeId(StoreUser::getMobile,storeTutor.getMobile(),
-                    StoreUser::getStoreUserId,storeTutor.getStoreTutorId()),
-            "手机号已被其他用户使用");
+        AssertUtil.isTrue(!storeTutorMapper.exists( storeTutorMapper.query().eq(StoreTutor::getMobile,storeTutor.getMobile())
+                .eq(StoreTutor::getStoreId,storeTutor.getStoreId()).notIn(StoreTutor::getStoreTutorId,storeTutor.getStoreTutorId())),
+                "手机号已被其他用户使用");
 
         SysUser user=sysUserService.selectUserById(storeTutor.getLoginUserId());
         user.setSex(storeTutor.getSex());
-        user.setNickName(storeTutor.getRealName());
         user.setPhonenumber(storeTutor.getMobile());
         user.setUserName(storeTutor.getMobile());
         user.setUpdateTime(DateUtils.getNowDate());
         user.setUpdateBy(SecurityUtils.getUsername());
-        user.setRoleIds(storeTutor.getRoleIds().toArray(new Long[0]));
+        user.setRoleIds(storeTutor.getRoleIds() );
         sysUserService.updateUser(user);
 
         storeTutor.setUpdateTime(DateUtils.getNowDate());

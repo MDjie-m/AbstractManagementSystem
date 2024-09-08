@@ -65,7 +65,7 @@ public interface StoreDeskMapper extends MyBaseMapper<StoreDesk>
      */
     public int deleteStoreDeskByDeskIds(Long[] deskIds);
 
-    Store selectStoreByLoginUserId(Long loginUserId);
+    List<Store> selectStoreByLoginUserId(Long loginUserId);
 
     Integer checkDeviceBind( @Param("deviceId")Long deviceId,@Param("deskId") Long deskId);
 }

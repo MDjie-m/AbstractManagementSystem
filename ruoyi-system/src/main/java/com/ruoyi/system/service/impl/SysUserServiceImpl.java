@@ -2,11 +2,14 @@ package com.ruoyi.system.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.Validator;
 
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.MessageUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +78,7 @@ public class SysUserServiceImpl implements ISysUserService
      * @return 用户信息集合信息
      */
     @Override
-    @DataScope(deptAlias = "d", userAlias = "u")
+   // @DataScope(deptAlias = "d", userAlias = "u")
     public List<SysUser> selectUserList(SysUser user)
     {
         return userMapper.selectUserList(user);
@@ -88,7 +91,7 @@ public class SysUserServiceImpl implements ISysUserService
      * @return 用户信息集合信息
      */
     @Override
-    @DataScope(deptAlias = "d", userAlias = "u")
+   // @DataScope(deptAlias = "d", userAlias = "u")
     public List<SysUser> selectAllocatedList(SysUser user)
     {
         return userMapper.selectAllocatedList(user);
@@ -101,7 +104,7 @@ public class SysUserServiceImpl implements ISysUserService
      * @return 用户信息集合信息
      */
     @Override
-    @DataScope(deptAlias = "d", userAlias = "u")
+   // @DataScope(deptAlias = "d", userAlias = "u")
     public List<SysUser> selectUnallocatedList(SysUser user)
     {
         return userMapper.selectUnallocatedList(user);
@@ -117,6 +120,11 @@ public class SysUserServiceImpl implements ISysUserService
     public SysUser selectUserByUserName(String userName)
     {
         return userMapper.selectUserByUserName(userName);
+    }
+
+    @Override
+    public SysUser selectUserByMobile(String mobile, Long storeId) {
+        return userMapper.selectUserByMobile(mobile,storeId);
     }
 
     /**
@@ -260,7 +268,7 @@ public class SysUserServiceImpl implements ISysUserService
      * @return 结果
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int insertUser(SysUser user)
     {
         AssertUtil.isTrue(!userMapper.exists(SysUser::getUserName,user.getUserName()),
@@ -293,7 +301,7 @@ public class SysUserServiceImpl implements ISysUserService
      * @return 结果
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int updateUser(SysUser user)
     {
         Long userId = user.getUserId();
@@ -310,6 +318,17 @@ public class SysUserServiceImpl implements ISysUserService
         // 新增用户与岗位管理
         insertUserPost(user);
         return userMapper.updateUser(user);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int addUserRoles(Long userId,List<Long> roleIds) {
+        SysUser sysUser=this.selectUserById(userId);
+        Set<Long> newRoleIds= Optional.ofNullable(sysUser.getRoles()).orElse(Lists.newArrayList()).stream()
+                .map(SysRole::getRoleId).collect(Collectors.toSet());
+        newRoleIds.addAll(roleIds);
+        sysUser.setRoleIds( new ArrayList<>(newRoleIds));
+        return updateUser(sysUser);
     }
 
     /**
@@ -395,7 +414,7 @@ public class SysUserServiceImpl implements ISysUserService
      */
     public void insertUserRole(SysUser user)
     {
-        this.insertUserRole(user.getUserId(), user.getRoleIds());
+        this.insertUserRole(user.getUserId(), user.getRoleIds().toArray(new Long[0]));
     }
 
     /**

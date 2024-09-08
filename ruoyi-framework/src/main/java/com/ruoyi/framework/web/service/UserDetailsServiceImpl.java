@@ -1,8 +1,11 @@
 package com.ruoyi.framework.web.service;
 
+import com.ruoyi.common.core.domain.entity.UserExtend;
+import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +17,8 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.service.ISysUserService;
+
+import java.util.Objects;
 
 /**
  * 用户验证处理
@@ -37,7 +42,14 @@ public class UserDetailsServiceImpl implements UserDetailsService
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
-        SysUser user = userService.selectUserByUserName(username);
+        Authentication authentication = AuthenticationContextHolder.getContext();
+        SysUser user ;
+        if(Objects.nonNull(authentication.getDetails()) && authentication.getDetails() instanceof UserExtend) {
+            Long storeId = ((UserExtend) authentication.getDetails()).getStoreId();
+            user = userService.selectUserByMobile(username, storeId);
+        }else {
+            user = userService.selectUserByUserName(username);
+        }
         if (StringUtils.isNull(user))
         {
             log.info("登录用户：{} 不存在.", username);

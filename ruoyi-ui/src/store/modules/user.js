@@ -8,7 +8,7 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    store:null,
+    stores:[],
     permissions: []
   },
 
@@ -29,7 +29,7 @@ const user = {
       state.roles = roles
     },
     SET_STORE: (state, store) => {
-      state.store = store
+      state.stores = store
     },
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions
@@ -66,8 +66,8 @@ const user = {
           } else {
             commit('SET_ROLES', ['ROLE_DEFAULT'])
           }
-          console.log('setStore', res.store )
-          commit('SET_STORE', res.store )
+          console.log('setStore', res.stores )
+          commit('SET_STORE', res.stores )
           commit('SET_ID', user.userId)
           commit('SET_NAME', user.userName)
           commit('SET_AVATAR', avatar)

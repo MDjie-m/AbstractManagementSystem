@@ -133,7 +133,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService
     }
 
     @Override
-    public Store getByLoginUserId(Long loginUserId) {
+    public   List<Store> getByLoginUserId(Long loginUserId) {
         return storeDeskMapper.selectStoreByLoginUserId(loginUserId);
     }
 }

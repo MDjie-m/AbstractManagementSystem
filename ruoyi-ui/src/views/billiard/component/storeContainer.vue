@@ -38,8 +38,8 @@ import { listAllStore } from '@/api/billiard/store'
 export default {
   emits:["onStoreChanged"],
   computed: {
-    store() {
-      return this.$store.getters.store
+    stores() {
+      return this.$store.getters.stores||[]
     }
   },
   data(){
@@ -60,7 +60,11 @@ export default {
     if(this.isAdminPage){
       this.queryStores();
     }else {
-      this.handleNodeClick(   Object.assign({},this.store))
+      if(this.stores.length>1){
+        this.storeOptions=this.stores.map(p=>Object.assign({},p));
+        this.isAdminPage=true;
+      }
+      this.handleNodeClick(   Object.assign({},this.stores[0]))
     }
 
   },
@@ -82,8 +86,8 @@ export default {
           return Object.assign({label:p.storeName,value:p.storeId,raw:{listClass:'primary'}},p);
         });
         let findStore;
-        if(this.store?.storeId){
-          findStore=this.originalStoreList.find(p=>p.storeId===this.store?.storeId);
+        if(this.stores[0]?.storeId){
+          findStore=this.originalStoreList.find(p=>p.storeId===this.stores[0]?.storeId);
         }
           this.handleNodeClick(findStore??this.storeOptions[0]);
 

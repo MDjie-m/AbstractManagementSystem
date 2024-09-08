@@ -118,7 +118,10 @@ public class LoginUser implements UserDetails
     {
         this.token = token;
     }
-
+    public String getRealName()
+    {
+        return user.getNickName();
+    }
     @JSONField(serialize = false)
     @Override
     public String getPassword()

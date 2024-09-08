@@ -57,7 +57,7 @@ public class SysDeptServiceImpl implements ISysDeptService
     @Override
     public List<TreeSelect> selectDeptTreeList(SysDept dept)
     {
-        List<SysDept> depts = SpringUtils.getAopProxy(this).selectDeptList(dept);
+        List<SysDept> depts = SpringUtils.getBean(ISysDeptService.class).selectDeptList(dept);
         return buildDeptTreeSelect(depts);
     }
 

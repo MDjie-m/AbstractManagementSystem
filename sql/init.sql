@@ -70,7 +70,8 @@ create table  t_member
     store_id BIGINT not null  comment '门店',
     level_id int not null   comment '会员等级',
     status        int                                   not null comment '门店状态（0正常 1停用）',
-    del_flag      char        default '0'               null comment '删除标志（0代表存在 2代表删除）',
+    del_flag      char        default '0'               null comment '删
+除标志（0代表存在 2代表删除）',
     create_by     varchar(64) default ''                null comment '创建者',
     create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by     varchar(64) default ''                null comment '更新者',

@@ -109,7 +109,7 @@ public class SysUser extends BaseEntity
 
     /** 角色组 */
     @TableField(exist = false)
-    private Long[] roleIds;
+    private List<Long> roleIds;
 
     /** 岗位组 */
     @TableField(exist = false)
@@ -297,12 +297,12 @@ public class SysUser extends BaseEntity
         this.roles = roles;
     }
 
-    public Long[] getRoleIds()
+    public List<Long> getRoleIds()
     {
         return roleIds;
     }
 
-    public void setRoleIds(Long[] roleIds)
+    public void setRoleIds(List<Long> roleIds)
     {
         this.roleIds = roleIds;
     }

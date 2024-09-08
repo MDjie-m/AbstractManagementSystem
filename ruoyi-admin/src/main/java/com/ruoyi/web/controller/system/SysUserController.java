@@ -125,7 +125,7 @@ public class SysUserController extends BaseController
     public AjaxResult add(@Validated @RequestBody SysUser user)
     {
         deptService.checkDeptDataScope(user.getDeptId());
-        roleService.checkRoleDataScope(user.getRoleIds());
+        roleService.checkRoleDataScope(user.getRoleIds().toArray(new Long[0]));
         if (!userService.checkUserNameUnique(user))
         {
             return error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
@@ -154,7 +154,7 @@ public class SysUserController extends BaseController
         userService.checkUserAllowed(user);
         userService.checkUserDataScope(user.getUserId());
         deptService.checkDeptDataScope(user.getDeptId());
-        roleService.checkRoleDataScope(user.getRoleIds());
+        roleService.checkRoleDataScope(user.getRoleIds().toArray(new Long[0]));
         if (!userService.checkUserNameUnique(user))
         {
             return error("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
@@ -170,7 +170,6 @@ public class SysUserController extends BaseController
         user.setUpdateBy(getUsername());
         return toAjax(userService.updateUser(user));
     }
-
     /**
      * 删除用户
      */

@@ -1,11 +1,10 @@
 package com.ruoyi.billiard.service.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.utils.ArrayUtil;
@@ -91,25 +90,33 @@ public class StoreUserServiceImpl implements IStoreUserService
     @Transactional(rollbackFor = Exception.class)
     public int insertStoreUser(StoreUser storeUser)
     {
-        AssertUtil.isTrue(!storeUserMapper.existsWithDelFlag(StoreUser::getMobile,storeUser.getMobile()),
+        AssertUtil.isTrue(!storeUserMapper.exists( storeUserMapper.query().eq(StoreUser::getMobile,storeUser.getMobile())
+                        .eq(StoreUser::getStoreId,storeUser.getStoreId())),
                 "手机号已被其他用户使用");
         storeUser.setCreateTime(DateUtils.getNowDate());
 
-
-        SysUser sysUser=new SysUser();
-        sysUser.setAvatar(storeUser.getUserImg());
-        sysUser.setDeptId(100L);
-        sysUser.setUserName(storeUser.getMobile());
-        sysUser.setPhonenumber(storeUser.getMobile());
-        sysUser.setNickName(storeUser.getRealName());
-        sysUser.setPassword(SecurityUtils.encryptPassword(storeUser.getMobile()));
-        sysUser.setRoleIds(storeUser.getRoleIds().toArray(new Long[0]));
-        sysUser.setSex(storeUser.getSex());
-        sysUserService.insertUser(sysUser);
+        SysUser sysUser =   sysUserService.selectUserByMobile(storeUser.getMobile(),null);
+        if(Objects.isNull(sysUser)){
+            sysUser=new SysUser();
+            sysUser.setAvatar(storeUser.getUserImg());
+            sysUser.setDeptId(100L);
+            sysUser.setUserName(storeUser.getMobile());
+            sysUser.setPhonenumber(storeUser.getMobile());
+            sysUser.setNickName(storeUser.getRealName());
+            sysUser.setPassword(SecurityUtils.encryptPassword(storeUser.getMobile()));
+            sysUser.setRoleIds(storeUser.getRoleIds() );
+            sysUser.setSex(storeUser.getSex());
+            sysUserService.insertUser(sysUser);
+        }
+        else {
+            sysUserService.addUserRoles(sysUser.getUserId(),storeUser.getRoleIds());
+        }
         storeUser.setStoreUserId(IdUtils.singleNextId());
         storeUser.setLoginUserId(sysUser.getUserId());
         storeUser.setCreateBy(SecurityUtils.getUsername());
         storeUser.setUpdateBy(storeUser.getUpdateBy());
+
+
         int res= storeUserMapper.insert(storeUser);
         return  res;
 
@@ -124,17 +131,17 @@ public class StoreUserServiceImpl implements IStoreUserService
     @Override
     public int updateStoreUser(StoreUser storeUser)
     {
-        AssertUtil.isTrue(!storeUserMapper.existsWithDelFlagExcludeId(StoreUser::getMobile,storeUser.getMobile(),
-                        StoreUser::getStoreUserId,storeUser.getStoreUserId()),
+        AssertUtil.isTrue(!storeUserMapper.exists( storeUserMapper.query().eq(StoreUser::getMobile,storeUser.getMobile())
+                        .eq(StoreUser::getStoreId,storeUser.getStoreId())
+                        .notIn(StoreUser::getStoreUserId,storeUser.getStoreUserId())),
                 "手机号已被其他用户使用");
 
         SysUser user=sysUserService.selectUserById(storeUser.getLoginUserId());
         user.setSex(storeUser.getSex());
         user.setNickName(storeUser.getRealName());
         user.setPhonenumber(storeUser.getMobile());
-        user.setUserName(storeUser.getMobile());
         user.setUpdateBy(SecurityUtils.getUsername());
-        user.setRoleIds(storeUser.getRoleIds().toArray(new Long[0]));
+        user.setRoleIds(storeUser.getRoleIds() );
         sysUserService.updateUser(user);
 
         storeUser.setUpdateTime(DateUtils.getNowDate());
