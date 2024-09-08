@@ -230,6 +230,7 @@ create table  t_stock_log
     update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 )
     comment '库存日志';
+
 DROP TABLE IF EXISTS t_device;
 create table  t_device
 (
