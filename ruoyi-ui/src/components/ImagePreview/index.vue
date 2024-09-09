@@ -3,7 +3,7 @@
     :src="`${realSrc}`"
     fit="cover"
     :style="`width:${realWidth};height:${realHeight};`"
-    :preview-src-list="realSrcList"
+    :preview-src-list="preview?realSrcList:null"
   >
     <div slot="error" class="image-slot">
       <i class="el-icon-picture-outline"></i>
@@ -20,6 +20,10 @@ export default {
     src: {
       type: String,
       default: ""
+    },
+    preview: {
+      type: Boolean,
+      default: true
     },
     width: {
       type: [Number, String],

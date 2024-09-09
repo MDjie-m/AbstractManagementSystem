@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.StockLogMapper">
+    
+    <resultMap type="StockLog" id="StockLogResult">
+        <result property="stockLogId"    column="stock_log_id"    />
+        <result property="stockId"    column="stock_id"    />
+        <result property="changeCount"    column="change_count"    />
+        <result property="changeType"    column="change_type"    />
+        <result property="beforeCount"    column="before_count"    />
+        <result property="currentCount"    column="current_count"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createById"    column="create_by_id"    />
+        <result property="updateById"    column="update_by_id"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectStockLogVo">
+        select stock_log_id,
+               stock_id,
+               change_count,
+               change_type,
+               before_count,
+               current_count,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               create_by_id,
+               update_by_id,
+               remark
+        from t_stock_log
+    </sql>
+
+    <select id="selectStockLogList" parameterType="StockLog" resultMap="StockLogResult">
+        <include refid="selectStockLogVo"/>
+        <where>  
+            <if test="stockId != null "> and stock_id = #{stockId}</if>
+            <if test="changeCount != null "> and change_count = #{changeCount}</if>
+            <if test="changeType != null "> and change_type = #{changeType}</if>
+            <if test="beforeCount != null "> and before_count = #{beforeCount}</if>
+            <if test="currentCount != null "> and current_count = #{currentCount}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectStockLogByStockLogId" parameterType="Long" resultMap="StockLogResult">
+        <include refid="selectStockLogVo"/>
+        where stock_log_id = #{stockLogId}
+    </select>
+
+
+    <delete id="deleteStockLogByStockLogId" parameterType="Long">
+        delete from t_stock_log where stock_log_id = #{stockLogId}
+    </delete>
+
+    <delete id="deleteStockLogByStockLogIds" parameterType="String">
+        delete from t_stock_log where stock_log_id in 
+        <foreach item="stockLogId" collection="array" open="(" separator="," close=")">
+            #{stockLogId}
+        </foreach>
+    </delete>
+</mapper>
