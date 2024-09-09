@@ -89,4 +89,7 @@ public class OrderDTO extends BaseValObj implements Serializable
 
     private PsyConsultOrderServe serve;
 
+    private BigDecimal originalPrice;//原价
+    private String couponNo;//使用优惠券编号
+
 }

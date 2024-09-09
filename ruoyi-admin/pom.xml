@@ -87,6 +87,11 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.tencentcloudapi.wemeet</groupId>
+            <artifactId>wemeet-openapi-sdk</artifactId>
+            <version>v1.0.1</version>
+        </dependency>
 
     </dependencies>
 

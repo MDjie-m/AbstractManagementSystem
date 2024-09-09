@@ -126,13 +126,16 @@ public class WxAuthorizeController {
         LoginDTO loginDTO = new LoginDTO();
         PsyUser queryUser = new PsyUser();
             queryUser.setWxOpenid(openId);
+        System.out.println("********************************************");
+        System.out.println(openId);
         List<PsyUser> queryUserList = psyUserService.selectPsyUserList(queryUser);
-        PsyUser psyUser = queryUserList.get(0);
+        PsyUser psyUser = new PsyUser();
         //若openId已有相应的用户, 则直接使用该用户
         if (ObjectUtils.isNotEmpty(queryUserList)){
             BeanUtils.copyProperties(queryUserList.get(0),loginDTO);
                 loginDTO.setUserId(queryUserList.get(0).getId());
             token = pocketTokenService.createToken(loginDTO, 360000);
+            psyUser = queryUserList.get(0);
         }else{
         //否则先添加用户后使用
             PsyUser newUser = new PsyUser();
@@ -144,8 +147,9 @@ public class WxAuthorizeController {
                 loginDTO.setLoginType(LoginType.WX);
                 loginDTO.setUserId(newUser.getId());
             token = pocketTokenService.createToken(loginDTO, 360000);
+            psyUser = psyUserService.selectPsyUserById(newUser.getId());
         }
-
+         
         //更新设备信息
         psyUser.setDeviceId(params.get("deviceId"));
         psyUser.setDeviceBrand(params.get("deviceBrand"));

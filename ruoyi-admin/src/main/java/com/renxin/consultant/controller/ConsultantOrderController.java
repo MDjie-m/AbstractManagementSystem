@@ -1,30 +1,47 @@
 package com.renxin.consultant.controller;
 
+import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.constant.PsyConstants;
+import com.renxin.common.constant.RespMessageConstants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.enums.LimitType;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.OrderIdUtils;
+import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourCourse;
+import com.renxin.course.domain.CourOrder;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.framework.web.service.ConsultantTokenService;
+import com.renxin.gauge.constant.GaugeConstant;
+import com.renxin.gauge.domain.PsyOrder;
+import com.renxin.pocket.controller.wechat.constant.WechatMCHConstants;
+import com.renxin.pocket.controller.wechat.constant.WechatUrlConstants;
+import com.renxin.pocket.controller.wechat.dto.WechatPayDTO;
+import com.renxin.pocket.controller.wechat.utils.WechatPayV3Utils;
+import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.*;
+import com.renxin.psychology.dto.OrderDTO;
 import com.renxin.psychology.service.*;
+import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.wechat.service.WechatPayV3ApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 心理咨询师Controller
@@ -66,6 +83,19 @@ public class ConsultantOrderController extends BaseController
 
     @Resource
     private IPsyConsultOrderService psyConsultOrderService;
+    
+    @Resource
+    private IPsyConsultService consultService;
+
+    @Resource
+    public WechatPayV3Utils wechatPayV3Utils;
+
+    @Value("${wechat.appid}")
+    private String WECHAT_MP_APPID;
+
+    @Value("${wechat.secret}")
+    private String secret;
+
 
    /* @ApiOperation(value = "查询订单信息")
     @GetMapping(value = "/getOrderInfo/{id}")
@@ -232,29 +262,31 @@ public class ConsultantOrderController extends BaseController
                 throw new ServiceException("没有相应的服务类型, 请检查ServerType为1~5之间的整数");
         }
 
+        //发起支付
         // 将订单、支付单放入事务中
         String attach = "订单号: " + out_trade_no; //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
             consultantOrder.setOrderNo(out_trade_no);
             consultantOrder.setServerName(serverName);
             consultantOrder.setOriginalPrice(originalPrice);
         PsyConsultantOrder newOrder = psyConsultantOrderService.createConsultantOrder(consultantOrder);
+        String content = "咨询师端订单demoo"; 
 
-        return AjaxResult.success(newOrder);
+        //return AjaxResult.success(newOrder);
 
-       /* Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);// 1天
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
         JSONObject params = new JSONObject();
-        params.put("appid", WechatConstants.WECHAT_MP_APPID); //小程序appid
-        params.put("mchid", WechatConstants.WECHAT_MCH_ID); //商户号
+        params.put("appid", WECHAT_MP_APPID); //小程序appid
+        params.put("mchid", WechatMCHConstants.WECHAT_MCH_ID); //商户号
         params.put("description", content); //商品描述
         params.put("out_trade_no", out_trade_no); //商户订单号
         params.put("time_expire", sdf.format(calendar.getTime())); //交易结束时间 选填 时间到了之后将不能再支付 遵循rfc3339标准格式
         params.put("attach", attach); //附加数据 选填 在查询API和支付通知中原样返回 可作为自定义参数使用
         params.put("notify_url", WechatUrlConstants.CONSULTANT_PAY_V3_NOTIFY); //支付结果异步通知接口
         JSONObject amount_json = new JSONObject();
-        amount_json.put("total", Integer.parseInt(amount_fee(amount))); //支付金额 单位：分
+        amount_json.put("total", Integer.parseInt(amount_fee(newOrder.getPayAmount()))); //支付金额 单位：分
         params.put("amount", amount_json); //订单金额信息
         JSONObject payer = new JSONObject();
         //payer.put("openid", openid); //用户在小程序侧的openid
@@ -267,7 +299,7 @@ public class ConsultantOrderController extends BaseController
         StringBuilder sb = new StringBuilder();
         //返回给小程序拉起微信支付的参数
         Map<String, String> result = new HashMap<>();
-        result.put("appId", WechatConstants.WECHAT_MP_APPID); //小程序appid
+        result.put("appId", WECHAT_MP_APPID); //小程序appid
         sb.append(result.get("appId")).append("\n");
         result.put("timeStamp", (new Date().getTime() / 1000) + ""); //时间戳
         sb.append(result.get("timeStamp")).append("\n");
@@ -278,7 +310,7 @@ public class ConsultantOrderController extends BaseController
         result.put("paySign", wechatPayV3Utils.signRSA(sb.toString())); //签名
         result.put("signType", "RSA"); //加密方式 固定RSA
         result.put("out_trade_no", out_trade_no); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
-        return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS ,result);*/
+        return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS ,result);
     }
 
     /**
@@ -361,5 +393,66 @@ public class ConsultantOrderController extends BaseController
         
         psyConsultantOrderService.cancelOrder(req);
         return AjaxResult.success();
+    }
+
+
+    /**
+     * 支付咨询师端指定订单
+     */
+    @PostMapping("/payOrder")
+    @RateLimiter(limitType = LimitType.IP)
+    @Transactional(rollbackFor = Exception.class)
+    public AjaxResult payOrder(@RequestBody WechatPayDTO req, HttpServletRequest request) {
+        Long consultId = consultantTokenService.getConsultId(request);
+
+        //查询订单应付金额
+        BigDecimal amount = BigDecimal.valueOf(9999);
+        PsyConsultantOrder consultantOrder = psyConsultantOrderService.selectPsyConsultantOrderByOrderNo(req.getOutTradeNo());
+
+        // 根据用户ID从用户表中查询openid
+        PsyConsultVO consultant = consultService.getOne(consultId);
+        String openid = consultant.getOpenId();
+
+        String content = "咨询师端订单demo"; //先写死一个商品描述 // 将订单、支付单放入事务中
+        String attach = "订单号: " + req.getOutTradeNo(); //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 1);// 1天
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+
+        JSONObject params = new JSONObject();
+        params.put("appid", WECHAT_MP_APPID); //小程序appid
+        params.put("mchid", WechatMCHConstants.WECHAT_MCH_ID); //商户号
+        params.put("description", content); //商品描述
+        params.put("out_trade_no", req.getOutTradeNo()); //商户订单号
+        params.put("time_expire", sdf.format(calendar.getTime())); //交易结束时间 选填 时间到了之后将不能再支付 遵循rfc3339标准格式
+        params.put("attach", attach); //附加数据 选填 在查询API和支付通知中原样返回 可作为自定义参数使用
+        params.put("notify_url", WechatUrlConstants.PAY_V3_NOTIFY); //支付结果异步通知接口
+        JSONObject amount_json = new JSONObject();
+        amount_json.put("total", Integer.parseInt(amount_fee(amount))); //支付金额 单位：分
+        params.put("amount", amount_json); //订单金额信息
+        JSONObject payer = new JSONObject();
+        payer.put("openid", openid); //用户在小程序侧的openid
+        params.put("payer", payer); //支付者信息
+        JSONObject res = wechatPayV3Utils.sendPost(WechatUrlConstants.PAY_V3_JSAPI, params); //发起请求
+        if (res == null || StringUtils.isEmpty(res.getString("prepay_id"))) {
+            //@TODO 支付发起失败可以将订单数据回滚
+            return error("支付发起失败");
+        }
+        StringBuilder sb = new StringBuilder();
+        //返回给小程序拉起微信支付的参数
+        Map<String, String> result = new HashMap<>();
+        result.put("appId", WECHAT_MP_APPID); //小程序appid
+        sb.append(result.get("appId")).append("\n");
+        result.put("timeStamp", (new Date().getTime() / 1000) + ""); //时间戳
+        sb.append(result.get("timeStamp")).append("\n");
+        result.put("nonceStr", RandomStringUtils.randomAlphanumeric(32)); //32位随机字符串
+        sb.append(result.get("nonceStr")).append("\n");
+        result.put("package", "prepay_id=" + res.getString("prepay_id")); //预支付id 格式为 prepay_id=xxx
+        sb.append(result.get("package")).append("\n");
+        result.put("paySign", wechatPayV3Utils.signRSA(sb.toString())); //签名
+        result.put("signType", "RSA"); //加密方式 固定RSA
+        result.put("out_trade_no", req.getOutTradeNo()); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
+
+        return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS, result);
     }
 }

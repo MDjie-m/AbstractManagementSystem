@@ -12,6 +12,7 @@ import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.enums.LimitType;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.OrderIdUtils;
+import com.renxin.common.utils.bean.BeanUtils;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.CourOrder;
@@ -115,7 +116,7 @@ public class WechatProgramPayController extends BaseController {
 
 
     /**
-     * 发起微信小程序支付
+     * 发起微信小程序支付 - 创建订单
      * <p>
      * 用于换取openid 正式使用时openid可以直接从用户信息中获取 不需要在此接口中获取
      *
@@ -177,6 +178,7 @@ public class WechatProgramPayController extends BaseController {
         vo.setOutTradeNo(out_trade_no);
         vo.setUserId(userId);
         wechatPayV3ApiService.wechatPay(vo);//创建订单
+        
         //若应付金额为0, 无需发起支付, 直接执行回调
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             wechatPayV3ApiService.wechatPayNotify(out_trade_no, null);
@@ -224,6 +226,7 @@ public class WechatProgramPayController extends BaseController {
         result.put("paySign", wechatPayV3Utils.signRSA(sb.toString())); //签名
         result.put("signType", "RSA"); //加密方式 固定RSA
         result.put("out_trade_no", out_trade_no); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
+        
         return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS, result);
     }
 
@@ -448,10 +451,6 @@ public class WechatProgramPayController extends BaseController {
 
     /**
      * 取消来访端订单
-     * <p>
-     * 用于换取openid 正式使用时openid可以直接从用户信息中获取 不需要在此接口中获取
-     *
-     * @return 小程序支付所需参数
      */
     @PostMapping("/cancelOrder")
     @RateLimiter(limitType = LimitType.IP)
@@ -466,7 +465,7 @@ public class WechatProgramPayController extends BaseController {
                 if (!userId.equals(courOrder.getUserId())){
                     throw new ServiceException("并非该订单的付款人, 无法取消订单");
                 }
-                if (!courOrder.getStatus().equals("0")){
+                if (courOrder.getStatus() != 0){
                     throw new ServiceException("该订单已付款或已取消, 无法再次取消");
                 }
                 courOrder.setStatus(2);//已取消
@@ -483,7 +482,7 @@ public class WechatProgramPayController extends BaseController {
                 if (!userId.equals(psyOrder.getUserId())){
                     throw new ServiceException("并非该订单的付款人, 无法取消订单");
                 }
-                if (!psyOrder.getOrderStatus().equals("1")){
+                if (psyOrder.getOrderStatus() != 1){
                     throw new ServiceException("该订单已付款或已取消, 无法再次取消");
                 }
                 psyOrder.setOrderStatus(3);//已取消
@@ -494,7 +493,7 @@ public class WechatProgramPayController extends BaseController {
                 couponService.returnCoupon(psyOrder.getCouponNo());//归还优惠券
                 break;
                 
-       /*     case ConsultConstant.MODULE_CONSULT:
+            case ConsultConstant.MODULE_CONSULT:
                 OrderDTO consultOrder = psyConsultOrderService.getOrderDetailByNo(req.getOutTradeNo());
                 if (!userId.equals(consultOrder.getUserId())){
                     throw new ServiceException("并非该订单的付款人, 无法取消订单");
@@ -503,15 +502,92 @@ public class WechatProgramPayController extends BaseController {
                     throw new ServiceException("该订单已付款或已取消, 无法再次取消");
                 }
                 consultOrder.setStatus("3");//已取消
-                //courOrder.setUpdateBy(req.getPayConsultantId()+"");
-                //courOrder.setUpdateTime(new Date());
+                consultOrder.setUpdateBy(userId+"");
+                consultOrder.setUpdateTime(new Date());
                 //取消订单
-                psyConsultOrderService.update(psyOrder);
+                PsyConsultOrderVO orderVO = new PsyConsultOrderVO();
+                BeanUtils.copyProperties(consultOrder,orderVO);
+                psyConsultOrderService.update(orderVO);
                 couponService.returnCoupon(consultOrder.getCouponNo());//归还优惠券
-                
-                break;*/
-            
+                break;
         }
         return AjaxResult.success();
+    }
+
+    /**
+     * 支付来访端指定订单
+     */
+    @PostMapping("/payOrder")
+    @RateLimiter(limitType = LimitType.IP)
+    @Transactional(rollbackFor = Exception.class)
+    public AjaxResult payOrder(@RequestBody WechatPayDTO req, HttpServletRequest request) {
+        Long userId = pocketTokenService.getUserId(request);
+        req.setUserId(userId);
+
+        //查询订单应付金额
+        BigDecimal amount = BigDecimal.valueOf(9999);
+        switch (req.getModule()) {
+            case CourConstant.MODULE_COURSE:
+                CourOrder courOrder = courOrderService.selectCourOrderByOrderId(req.getOutTradeNo());
+                amount = courOrder.getAmount();
+                break;
+
+            case GaugeConstant.MODULE_GAUGE:
+                PsyOrder psyOrder = gaugeOrderService.getBaseMapper().selectOne(new LambdaQueryWrapper<PsyOrder>()
+                        .eq(PsyOrder::getOrderId, req.getOutTradeNo()));
+                amount = psyOrder.getAmount();
+                break;
+
+            case ConsultConstant.MODULE_CONSULT:
+                OrderDTO consultOrder = psyConsultOrderService.getOrderDetailByNo(req.getOutTradeNo());
+                amount = consultOrder.getAmount();
+                break;
+        }
+
+        // 根据用户ID从用户表中查询openid
+        PsyUser user = psyUserService.selectPsyUserById(userId);
+        String openid = user.getWxOpenid();
+
+        String content = "支付demo-课程金"; //先写死一个商品描述 // 将订单、支付单放入事务中
+        String attach = "订单号: " + req.getOutTradeNo(); //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 1);// 1天
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+
+        JSONObject params = new JSONObject();
+        params.put("appid", WECHAT_MP_APPID); //小程序appid
+        params.put("mchid", WechatMCHConstants.WECHAT_MCH_ID); //商户号
+        params.put("description", content); //商品描述
+        params.put("out_trade_no", req.getOutTradeNo()); //商户订单号
+        params.put("time_expire", sdf.format(calendar.getTime())); //交易结束时间 选填 时间到了之后将不能再支付 遵循rfc3339标准格式
+        params.put("attach", attach); //附加数据 选填 在查询API和支付通知中原样返回 可作为自定义参数使用
+        params.put("notify_url", WechatUrlConstants.PAY_V3_NOTIFY); //支付结果异步通知接口
+        JSONObject amount_json = new JSONObject();
+        amount_json.put("total", Integer.parseInt(amount_fee(amount))); //支付金额 单位：分
+        params.put("amount", amount_json); //订单金额信息
+        JSONObject payer = new JSONObject();
+        payer.put("openid", openid); //用户在小程序侧的openid
+        params.put("payer", payer); //支付者信息
+        JSONObject res = wechatPayV3Utils.sendPost(WechatUrlConstants.PAY_V3_JSAPI, params); //发起请求
+        if (res == null || StringUtils.isEmpty(res.getString("prepay_id"))) {
+            //@TODO 支付发起失败可以将订单数据回滚
+            return error("支付发起失败");
+        }
+        StringBuilder sb = new StringBuilder();
+        //返回给小程序拉起微信支付的参数
+        Map<String, String> result = new HashMap<>();
+        result.put("appId", WECHAT_MP_APPID); //小程序appid
+        sb.append(result.get("appId")).append("\n");
+        result.put("timeStamp", (new Date().getTime() / 1000) + ""); //时间戳
+        sb.append(result.get("timeStamp")).append("\n");
+        result.put("nonceStr", RandomStringUtils.randomAlphanumeric(32)); //32位随机字符串
+        sb.append(result.get("nonceStr")).append("\n");
+        result.put("package", "prepay_id=" + res.getString("prepay_id")); //预支付id 格式为 prepay_id=xxx
+        sb.append(result.get("package")).append("\n");
+        result.put("paySign", wechatPayV3Utils.signRSA(sb.toString())); //签名
+        result.put("signType", "RSA"); //加密方式 固定RSA
+        result.put("out_trade_no", req.getOutTradeNo()); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
+        
+        return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS, result);
     }
 }
