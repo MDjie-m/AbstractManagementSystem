@@ -84,7 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceName != null and deviceName != ''">device_name = #{deviceName},</if>
             <if test="deviceSerialNum != null">device_serial_num = #{deviceSerialNum},</if>
             <if test="deviceType != null">device_type = #{deviceType},</if>
-            <if test="extendData != null">extend_data = #{extendData},</if>
+            <if test="extendData != null">extend_data = #{extendData,jdbcType=OTHER,typeHandler=com.ruoyi.common.config.GenericTypeHandler},</if>
             <if test="status != null">status = #{status},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>

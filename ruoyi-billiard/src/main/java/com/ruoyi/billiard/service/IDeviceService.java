@@ -58,4 +58,6 @@ public interface IDeviceService
      * @return 结果
      */
     public int deleteDeviceByDeviceId(Long deviceId);
+
+    Integer lightSubMsg(Long deviceId);
 }

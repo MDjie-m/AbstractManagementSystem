@@ -80,12 +80,16 @@ public class MyBatisPlusConfig
     }
     @Value("${mybatis-plus.mapperLocations}")
     private String mapperLocations;
+    @Value("${mybatis-plus.type-handlers-package}")
+    private String typeHandlersPackage;
 
     @Value("${mybatis-plus.typeAliasesPackage}")
     private String typeAliasesPackage;
 
     @Value("${mybatis-plus.configLocation}")
     private String configLocation;
+//    @Value("${mybatis-plus.configLocation}")
+//    private MyBatisPlusConfig myBatisPlusConfig;
 
     // spring boot
     @Bean
@@ -94,8 +98,11 @@ public class MyBatisPlusConfig
         final MybatisSqlSessionFactoryBean sessionFactory = new MybatisSqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setTypeAliasesPackage(typeAliasesPackage);
+        sessionFactory.setTypeHandlersPackage(typeHandlersPackage);
+
         sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(mapperLocations));
         sessionFactory.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
+
         GlobalConfig globalConfig = GlobalConfigUtils.defaults();
         GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
         globalConfig.setDbConfig(dbConfig);

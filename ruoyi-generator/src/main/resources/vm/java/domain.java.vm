@@ -29,6 +29,9 @@ import com.ruoyi.common.core.domain.TreeEntity;
 @TableName("$tableName")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ${ClassName} extends ${Entity}
 {
     private static final long serialVersionUID = 1L;

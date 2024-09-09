@@ -123,7 +123,18 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <el-divider v-if="form.deviceType===1">设备自定义设置</el-divider>
+        <div v-if="form.deviceType===1">
+          <el-form-item label="订阅主题" prop="subTopic">
+            <el-input v-model="form.extendData.subTopic" placeholder="请输入订阅主题" maxlength="100" />
+          </el-form-item>
+          <el-form-item label="发送主题" prop="pubTopic">
+            <el-input v-model="form.extendData.pubTopic" placeholder="请输入发送主题" maxlength="100" />
+          </el-form-item>
+        </div>
       </el-form>
+
+
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
@@ -171,7 +182,13 @@ export default {
         status: null,
       },
       // 表单参数
-      form: {},
+      form: {
+        extendData:{
+          subTopic:null,
+          pubTopic:null
+        },
+      },
+
       storeInfo:null,
       // 表单校验
       rules: {
@@ -225,12 +242,15 @@ export default {
         deviceName: null,
         deviceSerialNum: null,
         deviceType: null,
-        extendData: null,
         status: null,
         createBy: null,
         createTime: null,
         updateBy: null,
-        updateTime: null
+        updateTime: null,
+        extendData:{
+          subTopic:null,
+          pubTopic:null
+        },
       };
       this.resetForm("form");
     },

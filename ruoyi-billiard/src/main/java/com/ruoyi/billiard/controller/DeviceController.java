@@ -98,6 +98,15 @@ public class DeviceController extends BaseController
     {
         return ResultVo.success(deviceService.updateDevice(device));
     }
+    /**
+     * 修改设备信息
+     */
+    @PreAuthorize("@ss.hasPermi('billiard:device:edit')")
+    @PutMapping   (value = "/{deviceId}/light/sub")
+    public  ResultVo<Integer> lightSub( @PathVariable("deviceId") Long deviceId)
+    {
+        return ResultVo.success(deviceService.lightSubMsg(deviceId));
+    }
 
     /**
      * 删除设备信息
