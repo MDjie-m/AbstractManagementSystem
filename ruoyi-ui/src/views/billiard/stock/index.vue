@@ -153,7 +153,7 @@
         </div>
       </el-dialog>
 
-      <el-dialog title="库存操作记录" :visible.sync="openLog" width="800px" append-to-body>
+      <el-dialog :title="`[${log.goodsName}]库存操作记录`" :visible.sync="openLog" width="900px" append-to-body>
         <el-table v-loading="logLoading" :data="log.list" @selection-change="handleSelectionChange">
           <el-table-column label="序号" width="50">
             <template v-slot:default="scope">
@@ -161,14 +161,15 @@
             </template>
           </el-table-column>
           <el-table-column label="操作前数量" align="center" prop="beforeCount"/>
+          <el-table-column label="操作数量" align="center" prop="changeCount"/>
           <el-table-column label="操作后数量" align="center" prop="currentCount"/>
-          <el-table-column label="变化数量" align="center" prop="changeCount"/>
+
           <el-table-column label="操作方式" align="center" prop="changeType">
             <template slot-scope="scope">
               <dict-tag :options="dict.type.stock_change_type" :value="scope.row.changeType"/>
             </template>
           </el-table-column>
-          <el-table-column label="备注" align="center" prop="remark"/>
+          <el-table-column label="备注" width="150" align="center" prop="remark"/>
           <el-table-column label="操作人" align="center" prop="createBy"/>
           <el-table-column label="操作时间" align="center" prop="createTime" width="200">
             <template slot-scope="scope">
@@ -235,6 +236,7 @@ export default {
         total:0,
         pageNum:0,
         pageSize:10,
+        goodsName:null,
       },
       logQueryParams:{
         pageNum: 1,
@@ -355,7 +357,7 @@ export default {
       this.log.list=0;
       this.queryParams.pageNum=1;
       this.logQueryParams.stockId=item.stockId;
-
+      this.log.goodsName=item.goodsName;
       this.openLog=true;
 
       this.getLogList();
