@@ -159,7 +159,6 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
         sendSwitchLightMsg(deviceId, exceptState);
         Integer queryStatus = null;
         for (int i = 0; i < 18; i++) {
-
             queryStatus = deviceMapper.selectCustomStatus(deviceId);
             if (Objects.equals(queryStatus, val)) {
                 break;
