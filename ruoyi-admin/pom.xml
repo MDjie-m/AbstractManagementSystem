@@ -11,6 +11,7 @@
     <packaging>jar</packaging>
     <artifactId>ruoyi-admin</artifactId>
 
+
     <description>
         web服务入口
     </description>
@@ -92,6 +93,35 @@
             <artifactId>wemeet-openapi-sdk</artifactId>
             <version>v1.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>cos_api</artifactId>
+            <version>5.6.97</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>cos-sts_api</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        
+        
+      <!--  <dependency>
+            <groupId>com.tencent.cloud</groupId>
+            <artifactId>cos-sts-java</artifactId>
+            <version>3.2.1</version> &lt;!&ndash; 使用最新版本 &ndash;&gt;
+        </dependency>-->
+    <!--    <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>sts-api</artifactId>
+            <version>3.2.1</version> &lt;!&ndash; 或者最新版本 &ndash;&gt;
+        </dependency>-->
+       
+      <!--  <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>java-sts-sdk</artifactId>
+            <version>3.0.0</version> &lt;!&ndash; 使用最新版本 &ndash;&gt;
+        </dependency>-->
 
     </dependencies>
 

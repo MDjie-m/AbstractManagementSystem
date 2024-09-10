@@ -267,6 +267,12 @@
                 <enabled>true</enabled>
             </releases>
         </repository>
+        <repository>
+            <id>qcloud-maven-repo</id>
+            <url>https://mirrors.cloud.tencent.com/repository/maven</url>
+        </repository>
+        
+        
     </repositories>
 
     <pluginRepositories>

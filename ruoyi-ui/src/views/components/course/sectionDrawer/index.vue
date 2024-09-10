@@ -136,7 +136,7 @@
           </el-row>
 
           <el-form-item label="内容链接" prop="contentUrl">
-            <file-upload
+            <file-upload-sts
               v-model="form.contentUrl"
               :limit="1"
               :fileType="fileTypes"
@@ -163,9 +163,11 @@
 
 <script>
 import { listSection, getSection, delSection, addSection, updateSection } from "@/api/course/section";
+import FileUploadSts from "@/components/FileUploadSts";
 
 export default {
   name: "SectionDrawer",
+  components: {FileUploadSts},
   dicts: ['course_section_type', 'course_section_content_type'],
   props: ['drawOpen', 'drawCourse'],
   data() {

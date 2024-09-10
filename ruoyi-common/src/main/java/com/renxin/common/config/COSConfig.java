@@ -25,4 +25,6 @@ public class COSConfig
     private String zxBucket;
 
     private String gaugeBucket;
+    
+    private String region;
 }

@@ -235,6 +235,7 @@ cos:
   bucket: ssg-1316267898
   zxBucket: zx-1316267898
   gaugeBucket: gauge-1316267898
+  region: ap-beijing
 
 # 正式
 #wx:

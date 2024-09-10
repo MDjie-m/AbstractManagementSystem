@@ -1,0 +1,362 @@
+<template>
+  <div class="upload-file">
+    <el-upload
+      :action="uploadFileUrl"
+      :before-upload="handleBeforeUpload"
+      :file-list="fileList"
+      :limit="limit"
+      :on-error="handleUploadError"
+      :on-exceed="handleExceed"
+      :on-success="handleUploadSuccess"
+      :show-file-list="false"
+      :headers="headers"
+      class="upload-file-uploader"
+      ref="fileUpload"
+      v-show="fileList.length == 0"
+    >
+      <!-- 上传按钮 -->
+      <el-button size="mini" type="primary" @click="getCredential">选取文件</el-button>
+      <!-- 上传提示 -->
+      <div class="el-upload__tip" slot="tip" v-if="showTip">
+        请上传
+        <template v-if="fileSize"> 大小不超过 <b style="color: #f56c6c">{{ fileSize }}MB</b> </template>
+        <template v-if="fileType"> 格式为 <b style="color: #f56c6c">{{ fileType.join("/") }}</b> </template>
+        的文件
+      </div>
+    </el-upload>
+
+    <!-- 文件列表 -->
+    <transition-group class="upload-file-list el-upload-list el-upload-list--text" name="el-fade-in-linear" tag="ul">
+      <li
+        :key="file.url"
+        class="el-upload-list__item ele-upload-list__item-content"
+        v-for="(file, index) in fileList"
+        title="点击打开链接播放">
+        <el-link :href="`${file.url}`" :underline="false" target="_blank">
+        <!-- <el-link :href="`${baseUrl}${file.url}`" :underline="false" target="_blank"> -->
+          <span class="el-icon-document"> {{ getFileName(file.name) }} </span>
+        </el-link>
+        <div class="ele-upload-list__item-content-action">
+          <el-link :underline="false" @click="handleDelete(index)" type="danger">删除</el-link>
+        </div>
+      </li>
+    </transition-group>
+  </div>
+</template>
+
+<script>
+// 引入腾讯云COS SDK
+import COS from "cos-js-sdk-v5";
+import { getToken } from "@/utils/auth";
+import { deleteFile, getCredential } from "@/api/upload"
+
+export default {
+  name: "FileUploadSts",
+  props: {
+    // 值
+    value: [String, Object, Array],
+    // 数量限制
+    limit: {
+      type: Number,
+      default: 1,
+    },
+    // 大小限制(MB)
+    fileSize: {
+      type: Number,
+      default: 1024,
+    },
+    // 文件类型, 例如['png', 'jpg', 'jpeg']
+    fileType: {
+      type: Array,
+      default: () => ["doc", "xls", "ppt", "txt", "pdf"],
+    },
+    // 是否显示提示
+    isShowTip: {
+      type: Boolean,
+      default: true
+    },
+    extraData: {
+      type: Object
+    }
+  },
+  data() {
+    return {
+      number: 0,
+      sessionToken: '',
+      tmpSecretId: '',
+      tmpSecretKey: '',
+      bucketName: '',
+      region: '',
+      uploadList: [],
+      baseUrl: process.env.VUE_APP_BASE_API,
+      uploadFileUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
+      headers: {
+        Authorization: "Bearer " + getToken(),
+        module: this.extraData.module || 'zx',
+        type: this.extraData.type || 'other'
+      },
+      fileList: [],
+    };
+  },
+  watch: {
+    value: {
+      handler(val) {
+        if (val) {
+          let temp = 1;
+          // 首先将值转为数组
+          const list = Array.isArray(val) ? val : this.value.split(',');
+          // 然后将数组转为对象数组
+          this.fileList = list.map(item => {
+            if (typeof item === "string") {
+              item = { name: item, url: item };
+            }
+            item.uid = item.uid || new Date().getTime() + temp++;
+            return item;
+          });
+        } else {
+          this.fileList = [];
+          return [];
+        }
+      },
+      deep: true,
+      immediate: true
+    }
+  },
+  computed: {
+    // 是否显示提示
+    showTip() {
+      return this.isShowTip && (this.fileType || this.fileSize);
+    },
+  },
+  methods: {
+    /*getCredential(){
+      getCredential().then(res => {
+          console.log("********************",res)
+          if (res.code == 200){
+              this.sessionToken = res.data.credentials.sessionToken;
+              this.tmpSecretId = res.data.credentials.tmpSecretId;
+              this.tmpSecretKey = res.data.credentials.tmpSecretKey;
+          }else{
+            this.$message({
+              type: 'warning',
+              message: '获取临时秘钥失败'
+            });
+          }
+      })
+    },*/
+
+    async getCredential() {
+      try {
+        const res = await getCredential(this.headers);
+        console.log("********************", res)
+        if (res.code == 200) {
+          this.sessionToken = res.data.credentials.sessionToken;
+          this.tmpSecretId = res.data.credentials.tmpSecretId;
+          this.tmpSecretKey = res.data.credentials.tmpSecretKey;
+          this.bucketName = res.msg.split("::")[0];
+          this.region = res.msg.split("::")[1];
+          this.initializeCOS(); // Initialize COS instance with the credentials
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '获取临时秘钥失败'
+          });
+        }
+      } catch (error) {
+        this.$message({
+          type: 'warning',
+          message: '获取临时秘钥失败'
+        });
+      }
+    },
+
+    initializeCOS() {
+      this.cosInstance = new COS({
+        getAuthorization: (options, callback) => {
+          const expiredTime = parseInt(Date.now() / 1000) + 7200; // Unix 时间戳 (秒)
+          callback({
+            TmpSecretId: this.tmpSecretId,
+            TmpSecretKey: this.tmpSecretKey,
+            XCosSecurityToken: this.sessionToken,
+            ExpiredTime: expiredTime // 10位 Unix 时间戳
+          });
+        }
+      });
+    },
+
+    uploadFileToCOS(file) {
+      const fileName = `${file.name}`; // Customize your directory structure
+      const time = require('moment')().format('YYYYMMDDHHmmss') + Math.random().toString(36).substr(2, 4);
+      const stsFileName = this.headers.type + "_" + time + "_" + fileName;
+
+      this.cosInstance.putObject({
+        Bucket: this.bucketName, /* Bucket 名称 */
+        Region: this.region, /* 区域名称 */
+        Key: stsFileName, /* 文件名称 */
+        Body: file, /* 文件对象 */
+        Headers: {  // 添加 headers
+          'Access-Control-Allow-Origin': 'http://localhost:28088',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
+      }, (err, data) => {
+        if (err) {
+          this.handleUploadError(err);
+        } else {
+          const url = `https://${data.Location}`;
+          this.handleUploadSuccess({ code: 200, fileName: file.name, url }, file);
+        }
+      });
+    },
+
+    // 上传前校检格式和大小
+    handleBeforeUpload(file) {
+      // 校检文件类型
+      if (this.fileType) {
+        let fileExtension = "";
+        if (file.name.lastIndexOf(".") > -1) {
+          fileExtension = file.name.slice(file.name.lastIndexOf(".") + 1);
+        }
+        const isTypeOk = this.fileType.some((type) => {
+          if (file.type.indexOf(type) > -1) return true;
+          if (fileExtension && fileExtension.indexOf(type) > -1) return true;
+          return false;
+        });
+        if (!isTypeOk) {
+          this.$modal.msgError(`文件格式不正确, 请上传${this.fileType.join("/")}格式文件!`);
+          return false;
+        }
+      }
+      // 校检文件大小
+      if (this.fileSize) {
+        const isLt = file.size / 1024 / 1024 < this.fileSize;
+        if (!isLt) {
+          this.$modal.msgError(`上传文件大小不能超过 ${this.fileSize} MB!`);
+          return false;
+        }
+      }
+      this.$modal.loading("正在上传文件，请稍候...");
+      this.number++;
+      this.uploadFileToCOS(file);
+      return false; // Prevent default upload
+    },
+
+
+    handleUploadError(err) {
+      this.$modal.msgError("上传失败，请重试");
+      this.$modal.closeLoading();
+      this.number--;
+    },
+    handleUploadSuccess(res, file) {
+      if (res.code === 200) {
+        this.uploadList.push({ name: res.fileName, url: res.url });
+        this.uploadedSuccessfully();
+      } else {
+        this.number--;
+        this.$modal.closeLoading();
+        this.$modal.msgError(res.msg);
+        this.handleDelete(file);
+        this.uploadedSuccessfully();
+      }
+    },
+
+    // 文件个数超出
+    handleExceed() {
+      this.$modal.msgError(`上传文件数量不能超过 ${this.limit} 个!`);
+    },
+    // 上传失败
+    /*handleUploadError(err) {
+      this.$modal.msgError("上传失败，请重试");
+      this.$modal.closeLoading()
+    },*/
+    // 上传成功回调
+    /*handleUploadSuccess(res, file) {
+      if (res.code === 200) {
+        this.uploadList.push({ name: res.fileName, url: res.url });
+        this.uploadedSuccessfully();
+      } else {
+        this.number--;
+        this.$modal.closeLoading();
+        this.$modal.msgError(res.msg);
+        this.$refs.fileUpload.handleRemove(file);
+        this.uploadedSuccessfully();
+      }
+    },*/
+    // 删除文件
+    handleDelete(index) {
+
+      this.$confirm('此操作将永久删除该文件, 文件链接将失效，是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let fileName = this.getFileName(this.fileList[index].url)
+        deleteFile(fileName, this.extraData.module).then(res => {
+          this.$emit('deleteFile')
+          this.$message({
+            type: 'success',
+            message: '删除成功，请保存操作!'
+          });
+
+          this.fileList.splice(index, 1);
+          this.$emit("input", this.listToString(this.fileList));
+        }).catch(() => {})
+
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
+    // 上传结束处理
+    uploadedSuccessfully() {
+      if (this.number > 0 && this.uploadList.length === this.number) {
+        this.fileList = this.fileList.concat(this.uploadList);
+        this.uploadList = [];
+        this.number = 0;
+        this.$emit("input", this.listToString(this.fileList));
+        this.$modal.closeLoading();
+      }
+    },
+    // 获取文件名称
+    getFileName(name) {
+      if (name.lastIndexOf("/") > -1) {
+        return decodeURI(name.slice(name.lastIndexOf("/") + 1));
+      } else {
+        return "";
+      }
+    },
+    // 对象转成指定字符串分隔
+    listToString(list, separator) {
+      let strs = "";
+      separator = separator || ",";
+      for (let i in list) {
+        strs += list[i].url + separator;
+      }
+      return strs != '' ? strs.substr(0, strs.length - 1) : '';
+    }
+  }
+};
+</script>
+
+<style scoped lang="scss">
+.upload-file-uploader {
+  margin-bottom: 5px;
+}
+.upload-file-list .el-upload-list__item {
+  border: 1px solid #e4e7ed;
+  line-height: 2;
+  margin-bottom: 10px;
+  position: relative;
+}
+.upload-file-list .ele-upload-list__item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: inherit;
+}
+.ele-upload-list__item-content-action .el-link {
+  margin-right: 10px;
+}
+</style>

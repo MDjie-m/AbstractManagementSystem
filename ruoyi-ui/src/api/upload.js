@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 登录方法
+// 删除文件
 export function deleteFile(fileName, module) {
   return request({
     url: `/common/upload/delete?fileKey=${fileName}&module=${module}`,
@@ -18,5 +18,14 @@ export function uploadFile(data, module, type) {
       'type': type,
     },
     data: data
+  })
+}
+
+// 获取cos临时密钥
+export function getCredential(headData) {
+  return request({
+    url: '/common/getCredential',
+    method: 'get',
+    headers: headData
   })
 }
