@@ -412,17 +412,7 @@ export default {
         this.check.loading = false
       ])
     },
-    reloadCheckList() {
-      let oldFillCount = {}
-      this.check.list.forEach(p => {
-        oldFillCount[p.stockId] = p.changeCount
-      })
-      this.getCheckList().then(() => {
-        this.check.list.forEach(p => {
-          p.changeCount =  oldFillCount[p.stockId]
-        })
-      })
-    },
+
     submitCheckList() {
       let list = this.check.list.filter(p => p.changeCount !== 0)
       if (list.length === 0) {
@@ -432,7 +422,8 @@ export default {
         let msgList = res.data || []
         if (msgList.length === 0) {
           this.check.open = false
-          this.$modal.msgSuccess('盘点成功')
+          this.$modal.msgSuccess('盘点成功');
+          this.getList();
           return
         }
         this.$message({
@@ -442,9 +433,9 @@ export default {
           type: 'error'
 
         })
-        this.reloadCheckList()
+        this.getCheckList()
       }).catch(p => {
-        this.reloadCheckList()
+        this.getCheckList()
       })
     },
     /** 新增按钮操作 */

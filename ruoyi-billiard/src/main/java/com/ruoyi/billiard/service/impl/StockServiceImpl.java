@@ -21,6 +21,7 @@ import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -190,7 +191,7 @@ public class StockServiceImpl implements IStockService {
         List<String> msgList = Lists.newArrayList();
         for (StockLog stockLog : checkList) {
             try {
-                editStock(stockLog);
+                SpringUtils.getBean(StockServiceImpl.class).editStock(stockLog);
             } catch (ServiceException e) {
                 if (Objects.equals(e.getCode(), ExceptionCodeEnum.CHECK_STOCK_ERROR.getCode())) {
                     msgList.add(StringUtils.format("商品:【{}】{}", stockLog.getGoodsName(), e.getMessage()));
