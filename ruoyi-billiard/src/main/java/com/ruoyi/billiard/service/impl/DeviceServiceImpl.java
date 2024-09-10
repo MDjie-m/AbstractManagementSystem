@@ -174,7 +174,6 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
     @SneakyThrows
     public void lightStatusCheckJob(Long sleepTime) {
         List<Device> lights = this.deviceMapper.selectDeviceList(Device.builder().deviceType(DeviceType.LIGHT.getValue()).build());
-
         lights.forEach(p -> {
             LightDeviceExtendData lightDeviceExtendData = p.toCustomExtendData(LightDeviceExtendData.class);
             if (Objects.isNull(lightDeviceExtendData) || StringUtils.isEmpty(lightDeviceExtendData.getPubTopic())) {
@@ -182,16 +181,17 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
             }
             mqttService.sendMsg(lightDeviceExtendData.getPubTopic(), LightMQTTMsgType.INFO.getValue(), "{  \"type\":\"info\"}");
         });
-        Date now = new Date();
+
         Thread.sleep(sleepTime);
+        Date now = new Date();
         lights = this.deviceMapper.selectList(deviceMapper.query().in(Device::getDeviceId, lights.stream().map(Device::getDeviceId).collect(Collectors.toList())));
         for (Device light : lights) {
-
-            if (light.getLastReportTime().getTime() < now.getTime() - sleepTime * 1000L) {
-                light.setStatus(2);
-            } else {
+            if (Objects.isNull(light.getLastReportTime())) {
+                light.setStatus(0);
+            } else if (light.getLastReportTime().getTime() > now.getTime() - sleepTime * 1000L) {
                 light.setStatus(1);
-                light.setLastReportTime(now);
+            } else {
+                light.setStatus(2);
             }
         }
         deviceMapper.updateBatch(lights);
