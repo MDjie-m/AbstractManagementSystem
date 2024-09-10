@@ -59,4 +59,6 @@ public interface IStockService
      * @return 结果
      */
     public int deleteStockByStockId(Long stockId);
+
+    List<String> checkStock(List<StockLog> list);
 }

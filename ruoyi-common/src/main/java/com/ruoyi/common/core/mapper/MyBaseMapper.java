@@ -2,6 +2,7 @@ package com.ruoyi.common.core.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -21,6 +22,11 @@ public interface MyBaseMapper<T> extends BaseMapper<T> {
     default  LambdaQueryWrapper<T> query(){
         return  new LambdaQueryWrapper<>();
     }
+
+    default  LambdaUpdateWrapper<T> updateWrapper(){
+        return  new LambdaUpdateWrapper<>();
+    }
+
 
     /**
      * 自定义批量更新，条件为主键

@@ -13,6 +13,7 @@ public enum ExceptionCodeEnum {
     FORBIDDEN(403, "没有相关权限"),
     NOT_FOUND(404, "没有找到相关数据"),
     ERROR(500, "系统异常"),
+    CHECK_STOCK_ERROR(501, "库存盘点异常"),
             ;
 
     private final Integer code;

@@ -14,6 +14,13 @@ export function listStoreGoods(storeId) {
     method: 'get',
   })
 }
+export function checkStock(data) {
+  return request({
+    url: `/billiard/stock/check`,
+    method: 'post',
+    data:data
+  })
+}
 export function listStockLogList(query) {
   return request({
     url: `/billiard/stock/log/list`,

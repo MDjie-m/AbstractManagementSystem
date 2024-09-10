@@ -48,7 +48,7 @@
               type="success"
               icon="el-icon-edit"
               size="mini"
-              @click="handleAdd(ChangeType.Check,'盘点')"
+              @click="handleCheckStock(ChangeType.Check,'盘点')"
               v-hasPermi="['billiard:stock:edit']"
             >盘点
             </el-button>
@@ -58,13 +58,15 @@
 
         <el-table v-loading="loading" :data="stockList" @selection-change="handleSelectionChange">
           <el-table-column label="商品" align="center" prop="goodsName">
-              <template slot-scope="scope">
-                <div style="display: flex;flex-direction: row;align-items: center;justify-content: left;padding-left: 40px">
-                  <image-preview :src="scope.row.goodsImg" :width="50" :height="50"/>
-                  <div style="margin-left: 10px">{{scope.row.goodsName}}</div>
-                </div>
+            <template slot-scope="scope">
+              <div
+                style="display: flex;flex-direction: row;align-items: center;justify-content: left;padding-left: 40px"
+              >
+                <image-preview :src="scope.row.goodsImg" :width="50" :height="50"/>
+                <div style="margin-left: 10px">{{ scope.row.goodsName }}</div>
+              </div>
 
-              </template>
+            </template>
           </el-table-column>
           <el-table-column label="当前库存数量" align="center" prop="total"/>
           <el-table-column label="入库数量" align="center" prop="totalIn"/>
@@ -91,14 +93,14 @@
                 v-hasPermi="['billiard:goods:edit']"
               >查看记录
               </el-button>
-                <el-button
-                  size="mini"
-                  type="text"
-                  icon="el-icon-plus"
-                  @click="handleAdd(ChangeType.In,'入库', scope.row.goodsId)"
-                  v-hasPermi="['billiard:stock:edit']"
-                >入库
-                </el-button>
+              <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-plus"
+                @click="handleAdd(ChangeType.In,'入库', scope.row.goodsId)"
+                v-hasPermi="['billiard:stock:edit']"
+              >入库
+              </el-button>
               <el-button
                 size="mini"
                 type="text"
@@ -133,8 +135,8 @@
               >
                 <template>
                   <div style="display:flex;flex-direction: row;   align-items: center ; justify-content: left">
-                   <image-preview :src="dict.goodsImg" :width="25" :height="25" :preview="false"/>
-                    <div style="margin-left: 10px">{{dict.goodsName}}</div>
+                    <image-preview :src="dict.goodsImg" :width="25" :height="25" :preview="false"/>
+                    <div style="margin-left: 10px">{{ dict.goodsName }}</div>
                   </div>
                 </template>
               </el-option>
@@ -157,7 +159,7 @@
         <el-table v-loading="logLoading" :data="log.list" @selection-change="handleSelectionChange">
           <el-table-column label="序号" width="50">
             <template v-slot:default="scope">
-              {{logQueryParams.pageSize * (logQueryParams.pageNum - 1) + (scope.$index + 1)}}
+              {{ logQueryParams.pageSize * (logQueryParams.pageNum - 1) + (scope.$index + 1) }}
             </template>
           </el-table-column>
           <el-table-column label="操作前数量" align="center" prop="beforeCount"/>
@@ -188,6 +190,51 @@
           @pagination="getLogList"
         />
       </el-dialog>
+
+      <el-dialog title="库存盘点" :visible.sync="check.open" width="1200px" append-to-body>
+        <el-table v-loading="check.loading" :data="check.list" @selection-change="handleSelectionChange">
+          <el-table-column label="序号" width="50">
+            <template v-slot:default="scope">
+              {{ logQueryParams.pageSize * (logQueryParams.pageNum - 1) + (scope.$index + 1) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="商品" align="center" prop="goodsName">
+            <template slot-scope="scope">
+              <div
+                style="display: flex;flex-direction: row;align-items: center;justify-content: left;padding-left: 40px"
+              >
+                <image-preview :src="scope.row.goodsImg" :width="50" :height="50"/>
+                <div style="margin-left: 10px">{{ scope.row.goodsName }}</div>
+              </div>
+
+            </template>
+          </el-table-column>
+          <el-table-column label="当前库存" align="center" prop="total" width="100"/>
+          <el-table-column label="变更" align="center" prop="changeCount" width="220">
+            <template slot-scope="scope">
+              <!--              <el-input-number v-model="scope.row.changeCount" placeholder="请输入数量"-->
+              <!--                               :min="-Math.abs(scope.row.total)" :max="999999"-->
+              <!--                               :step="1"   />-->
+              <el-input-number v-model="scope.row.changeCount" placeholder="请输入数量"
+                               :min="-99999" :max="999999"
+                               :step="1"
+              />
+            </template>
+          </el-table-column>
+
+          <el-table-column label="备注" align="center" prop="changeCount">
+            <template slot-scope="scope">
+              <div>
+                <el-input type="textarea" v-model="scope.row.remark" :rows="1" maxlength="200"/>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitCheckList">确 定</el-button>
+          <el-button @click="()=>check.open=false">取 消</el-button>
+        </div>
+      </el-dialog>
     </div>
   </StoreContainer>
 </template>
@@ -204,7 +251,7 @@ import {
   delStock,
   listStoreGoods,
   changeStock,
-  listStockLogList
+  listStockLogList, checkStock
 } from '@/api/billiard/stock'
 import StoreContainer from '@/views/billiard/component/storeContainer.vue'
 
@@ -215,6 +262,11 @@ export default {
   data() {
     return {
       ChangeType: ChangeType,
+      check: {
+        loading: true,
+        open: false,
+        list: []
+      },
       storeInfo: null,
       // 遮罩层
       loading: true,
@@ -231,17 +283,17 @@ export default {
       // 库存表格数据
       stockList: [],
       goodsList: [],
-      log:{
-        list:[],
-        total:0,
-        pageNum:0,
-        pageSize:10,
-        goodsName:null,
+      log: {
+        list: [],
+        total: 0,
+        pageNum: 0,
+        pageSize: 10,
+        goodsName: null
       },
-      logQueryParams:{
+      logQueryParams: {
         pageNum: 1,
         pageSize: 10,
-        stockId:0,
+        stockId: 0
       },
       // 弹出层标题
       title: '',
@@ -261,8 +313,8 @@ export default {
       },
       // 表单参数
       form: {},
-      openLog:false,
-      logLoading:false,
+      openLog: false,
+      logLoading: false,
       // 表单校验
       rules: {
         goodsId: [
@@ -294,7 +346,7 @@ export default {
       })
     },
     getLogList() {
-      this.logLoading = true;
+      this.logLoading = true
       listStockLogList(this.logQueryParams).then(response => {
         this.log.list = response.rows
         this.log.total = response.total
@@ -339,12 +391,68 @@ export default {
       this.single = selection.length !== 1
       this.multiple = !selection.length
     },
+    handleCheckStock(goodsId) {
+
+      this.check.open = true
+      this.getCheckList()
+
+    },
+    getCheckList() {
+      this.check.loading = true
+      return listStock({ stockId: this.storeInfo?.stockId ?? -1, pageNum: 1, pageSize: 999999999 }).then(response => {
+        let list = response.rows || []
+        list.forEach(p => {
+          p.changeCount = 0
+          p.changeType = ChangeType.Check
+          p.remark = ''
+        })
+        this.check.list = list
+        this.check.loading = false
+      }).finally(p => [
+        this.check.loading = false
+      ])
+    },
+    reloadCheckList() {
+      let oldFillCount = {}
+      this.check.list.forEach(p => {
+        oldFillCount[p.stockId] = p.changeCount
+      })
+      this.getCheckList().then(() => {
+        this.check.list.forEach(p => {
+          p.changeCount =  oldFillCount[p.stockId]
+        })
+      })
+    },
+    submitCheckList() {
+      let list = this.check.list.filter(p => p.changeCount !== 0)
+      if (list.length === 0) {
+        return this.$modal.msgWarning('没有需要盘点的商品')
+      }
+      checkStock(list).then(res => {
+        let msgList = res.data || []
+        if (msgList.length === 0) {
+          this.check.open = false
+          this.$modal.msgSuccess('盘点成功')
+          return
+        }
+        this.$message({
+          dangerouslyUseHTMLString: true,
+          message: `<div>${msgList.join('</div><div>')}</div>`,
+          duration: 3000,
+          type: 'error'
+
+        })
+        this.reloadCheckList()
+      }).catch(p => {
+        this.reloadCheckList()
+      })
+    },
     /** 新增按钮操作 */
     handleAdd(type, title, goodsId) {
-      if(!this.storeInfo?.storeId){
-        return  this.$modal.msgWarning("请选择门店");
+      if (!this.storeInfo?.storeId) {
+        return this.$modal.msgWarning('请选择门店')
       }
-      this.getGoodsList();
+      this.getGoodsList()
       this.reset()
       this.form.changeType = type
       this.form.goodsId = goodsId
@@ -352,15 +460,15 @@ export default {
 
       this.title = title
     },
-    handleViewLog(item){
-      this.log.total=0;
-      this.log.list=0;
-      this.queryParams.pageNum=1;
-      this.logQueryParams.stockId=item.stockId;
-      this.log.goodsName=item.goodsName;
-      this.openLog=true;
+    handleViewLog(item) {
+      this.log.total = 0
+      this.log.list = 0
+      this.queryParams.pageNum = 1
+      this.logQueryParams.stockId = item.stockId
+      this.log.goodsName = item.goodsName
+      this.openLog = true
 
-      this.getLogList();
+      this.getLogList()
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
