@@ -61,7 +61,12 @@ public interface IDeviceService
 
     Integer lightSubMsg(Long deviceId);
 
-    void lightStatusCheckJob();
+    /**
+     *
+     * @param time 多少秒
+     * @return
+     */
+    void lightStatusCheckJob(Long time);
 
     Boolean switchLight(Long deviceId,Boolean isOpen);
 }

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -170,8 +171,10 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
     }
 
     @Override
-    public void lightStatusCheckJob() {
+    @SneakyThrows
+    public void lightStatusCheckJob(Long sleepTime) {
         List<Device> lights = this.deviceMapper.selectDeviceList(Device.builder().deviceType(DeviceType.LIGHT.getValue()).build());
+
         lights.forEach(p -> {
             LightDeviceExtendData lightDeviceExtendData = p.toCustomExtendData(LightDeviceExtendData.class);
             if (Objects.isNull(lightDeviceExtendData) || StringUtils.isEmpty(lightDeviceExtendData.getPubTopic())) {
@@ -179,6 +182,21 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
             }
             mqttService.sendMsg(lightDeviceExtendData.getPubTopic(), LightMQTTMsgType.INFO.getValue(), "{  \"type\":\"info\"}");
         });
+        Date now = new Date();
+        Thread.sleep(sleepTime);
+        lights = this.deviceMapper.selectList(deviceMapper.query().in(Device::getDeviceId, lights.stream().map(Device::getDeviceId).collect(Collectors.toList())));
+        for (Device light : lights) {
+
+            if (light.getLastReportTime().getTime() < now.getTime() - sleepTime * 1000L) {
+                light.setStatus(2);
+            } else {
+                light.setStatus(1);
+                light.setLastReportTime(now);
+            }
+        }
+        deviceMapper.updateBatch(lights);
+
+
     }
 
 
@@ -198,9 +216,9 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
             if (StringUtils.isNotEmpty(extendData.getSubTopic())) {
                 mqttService.subDevice(p.getStoreId(), p.getDeviceId(), extendData.getSubTopic(), this);
             }
-            if (StringUtils.isNotEmpty(extendData.getPubTopic())) {
-                setLightReportSetting(extendData.getPubTopic());
-            }
+//            if (StringUtils.isNotEmpty(extendData.getPubTopic())) {
+//                setLightReportSetting(extendData.getPubTopic());
+//            }
         } catch (Exception e) {
             log.error("设备订阅消息失败,id:{}", p.getDeviceId(), e);
             return true;
