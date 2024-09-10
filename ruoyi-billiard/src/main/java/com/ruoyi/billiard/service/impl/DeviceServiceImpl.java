@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ruoyi.billiard.domain.DeskDeviceRelation;
 import com.ruoyi.billiard.domain.StoreUser;
 import com.ruoyi.billiard.domain.dto.LightDeviceExtendData;
+import com.ruoyi.billiard.enums.DeviceStatus;
 import com.ruoyi.billiard.enums.DeviceType;
 import com.ruoyi.billiard.enums.LightMQTTMsgType;
 import com.ruoyi.billiard.mapper.DeskDeviceRelationMapper;
@@ -187,11 +188,11 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
         lights = this.deviceMapper.selectList(deviceMapper.query().in(Device::getDeviceId, lights.stream().map(Device::getDeviceId).collect(Collectors.toList())));
         for (Device light : lights) {
             if (Objects.isNull(light.getLastReportTime())) {
-                light.setStatus(0);
+                light.setStatus(DeviceStatus.UNKNOWN.getValue());
             } else if (light.getLastReportTime().getTime() > now.getTime() - sleepTime * 1000L) {
-                light.setStatus(1);
+                light.setStatus(DeviceStatus.ONLINE.getValue());
             } else {
-                light.setStatus(2);
+                light.setStatus(DeviceStatus.OFFLINE.getValue());
             }
         }
         deviceMapper.updateBatch(lights);
