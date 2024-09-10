@@ -44,6 +44,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectDeviceVo"/>
         where device_id = #{deviceId}
     </select>
+    <select id="selectCustomStatus" resultType="java.lang.Integer">
+        select custom_status
+        from t_device where device_id=#{deviceId};
+    </select>
 
     <insert id="insertDevice" parameterType="Device">
         insert into t_device

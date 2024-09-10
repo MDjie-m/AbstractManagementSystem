@@ -149,11 +149,25 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
     }
 
     @Override
+    @SneakyThrows
     public Boolean switchLight(Long deviceId, Boolean isOpen) {
         Device device = deviceMapper.selectById(deviceId);
         AssertUtil.notNullOrEmpty(device, "设备不存在");
         AssertUtil.isTrue(Objects.equals(device.getDeviceType(), DeviceType.LIGHT.getValue()), "不是灯光设备");
-        return sendSwitchLightMsg(deviceId, Boolean.TRUE.equals(isOpen));
+        boolean exceptState = Boolean.TRUE.equals(isOpen);
+        Integer val = exceptState ? 1 : 0;
+        sendSwitchLightMsg(deviceId, exceptState);
+        Integer queryStatus = null;
+        for (int i = 0; i < 18; i++) {
+
+            queryStatus = deviceMapper.selectCustomStatus(deviceId);
+            if (Objects.equals(queryStatus, val)) {
+                break;
+            }
+            Thread.sleep(60);
+        }
+        AssertUtil.isTrue(Objects.equals(val, queryStatus), "操作失败");
+        return true;
     }
 
     @Override

@@ -64,4 +64,6 @@ public interface DeviceMapper extends MyBaseMapper<Device>
     public int deleteDeviceByDeviceIds(Long[] deviceIds);
 
     void updateLastReportTime(@Param("deviceId") Long deviceId,@Param("time") String time);
+
+    Integer selectCustomStatus(@Param("deviceId") Long deviceId);
 }

@@ -117,7 +117,7 @@ public class DeviceController extends BaseController
     public  ResultVo<Boolean> lightSub( @PathVariable("deviceId") Long deviceId,Boolean open)
     {
         ResultVo<Boolean>  res= ResultVo.success(deviceService.switchLight(deviceId,open));
-        Thread.sleep(1000L);
+
         return  res;
     }
     /**
