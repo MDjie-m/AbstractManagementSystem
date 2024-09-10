@@ -60,4 +60,8 @@ public interface IDeviceService
     public int deleteDeviceByDeviceId(Long deviceId);
 
     Integer lightSubMsg(Long deviceId);
+
+    void lightStatusCheckJob();
+
+    Boolean switchLight(Long deviceId,Boolean isOpen);
 }

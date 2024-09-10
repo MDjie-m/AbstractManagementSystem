@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.core.domain.ResultVo;
 import com.ruoyi.common.core.page.PageResVo;
+import lombok.SneakyThrows;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -107,7 +108,18 @@ public class DeviceController extends BaseController
     {
         return ResultVo.success(deviceService.lightSubMsg(deviceId));
     }
-
+    /**
+     * 开关灯
+     */
+    @PreAuthorize("@ss.hasPermi('billiard:device:edit')")
+    @PutMapping   (value = "/{deviceId}/light/switch")
+    @SneakyThrows
+    public  ResultVo<Boolean> lightSub( @PathVariable("deviceId") Long deviceId,Boolean open)
+    {
+        ResultVo<Boolean>  res= ResultVo.success(deviceService.switchLight(deviceId,open));
+        Thread.sleep(1000L);
+        return  res;
+    }
     /**
      * 删除设备信息
      */

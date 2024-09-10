@@ -4,6 +4,7 @@ import java.util.List;
 import com.ruoyi.billiard.domain.Device;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 设备信息Mapper接口
@@ -61,4 +62,6 @@ public interface DeviceMapper extends MyBaseMapper<Device>
      * @return 结果
      */
     public int deleteDeviceByDeviceIds(Long[] deviceIds);
+
+    void updateLastReportTime(@Param("deviceId") Long deviceId,@Param("time") String time);
 }

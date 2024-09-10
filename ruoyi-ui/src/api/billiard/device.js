@@ -8,6 +8,7 @@ export function listDevice(query) {
     params: query
   })
 }
+
 export function listAllDevice(query) {
   return request({
     url: '/billiard/device/list/all',
@@ -15,6 +16,7 @@ export function listAllDevice(query) {
     params: query
   })
 }
+
 // 查询设备信息详细
 export function getDevice(deviceId) {
   return request({
@@ -46,5 +48,13 @@ export function delDevice(deviceId) {
   return request({
     url: '/billiard/device/' + deviceId,
     method: 'delete'
+  })
+}
+
+export function switchLight(deviceId, isOpen) {
+  return request({
+    url: `/billiard/device/${deviceId}/light/switch`,
+    method: 'put',
+    params: { open: isOpen }
   })
 }

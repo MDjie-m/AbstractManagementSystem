@@ -20,6 +20,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deskId"    column="desk_id"    />
         <result property="createById"    column="create_by_id"    />
         <result property="updateById"    column="update_by_id"    />
+        <result property="lastReportTime"    column="last_report_time"    />
+        <result property="customStatus"    column="custom_status"    />
     </resultMap>
 
     <sql id="selectDeviceVo">
@@ -59,6 +61,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time,</if>
             <if test="updateById != null">update_by_id,</if>
             <if test="createById != null">create_by_id,</if>
+            <if test="lastReportTime != null">last_report_time,</if>
+            <if test="customStatus != null">custom_status ,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="deviceId != null">#{deviceId},</if>
@@ -74,6 +78,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">#{updateTime},</if>
             <if test="updateById != null">#{updateById},</if>
             <if test="createById != null">#{createById},</if>
+            <if test="lastReportTime != null">#{lastReportTime},</if>
+            <if test="customStatus != null"> #{customStatus},</if>
          </trim>
     </insert>
 
@@ -84,7 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deviceName != null and deviceName != ''">device_name = #{deviceName},</if>
             <if test="deviceSerialNum != null">device_serial_num = #{deviceSerialNum},</if>
             <if test="deviceType != null">device_type = #{deviceType},</if>
-            <if test="extendData != null">extend_data = #{extendData,jdbcType=OTHER,typeHandler=com.ruoyi.common.config.GenericTypeHandler},</if>
+            <if test="extendData != null">extend_data = #{extendData},</if>
             <if test="status != null">status = #{status},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
@@ -92,8 +98,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="updateById != null">update_by_id =#{updateById},</if>
             <if test="createById != null">create_by_id =#{createById},</if>
+            <if test="lastReportTime != null">last_report_time=#{lastReportTime},</if>
+            <if test="customStatus != null">custom_status=#{customStatus},</if>
+
         </trim>
         where device_id = #{deviceId}
+    </update>
+    <update id="updateLastReportTime">
+        update  t_device set last_report_time=#{time}, status=1 where  device_id=#{deviceId}
     </update>
 
     <delete id="deleteDeviceByDeviceId" parameterType="Long">

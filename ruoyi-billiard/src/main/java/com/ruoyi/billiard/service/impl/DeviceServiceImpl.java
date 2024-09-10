@@ -1,21 +1,28 @@
 package com.ruoyi.billiard.service.impl;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ruoyi.billiard.domain.DeskDeviceRelation;
 import com.ruoyi.billiard.domain.StoreUser;
 import com.ruoyi.billiard.domain.dto.LightDeviceExtendData;
 import com.ruoyi.billiard.enums.DeviceType;
+import com.ruoyi.billiard.enums.LightMQTTMsgType;
 import com.ruoyi.billiard.mapper.DeskDeviceRelationMapper;
 import com.ruoyi.billiard.service.IDeskDeviceRelationService;
 import com.ruoyi.billiard.service.IMQTTService;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,11 +109,8 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
                     Device::getDeviceId, device.getDeviceId()), "设备编码重复");
         }
         SecurityUtils.fillUpdateUser(device);
-        subLightMQTT(device);
         int res = deviceMapper.updateDevice(device);
-        if (res > 0) {
-            AssertUtil.isTrue(subLightMQTT(device), "订阅主题填写错误");
-        }
+        subLightMQTT(device);
         return res;
     }
 
@@ -144,6 +148,27 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
         return subLightMQTT(device) ? 1 : 0;
     }
 
+    @Override
+    public Boolean switchLight(Long deviceId, Boolean isOpen) {
+        Device device = deviceMapper.selectById(deviceId);
+        AssertUtil.notNullOrEmpty(device, "设备不存在");
+        AssertUtil.isTrue(Objects.equals(device.getDeviceType(), DeviceType.LIGHT.getValue()), "不是灯光设备");
+        return sendSwitchLightMsg(deviceId, Boolean.TRUE.equals(isOpen));
+    }
+
+    @Override
+    public void lightStatusCheckJob() {
+        List<Device> lights = this.deviceMapper.selectDeviceList(Device.builder().deviceType(DeviceType.LIGHT.getValue()).build());
+        lights.forEach(p -> {
+            LightDeviceExtendData lightDeviceExtendData = p.toCustomExtendData(LightDeviceExtendData.class);
+            if (Objects.isNull(lightDeviceExtendData) || StringUtils.isEmpty(lightDeviceExtendData.getPubTopic())) {
+                return;
+            }
+            mqttService.sendMsg(lightDeviceExtendData.getPubTopic(), LightMQTTMsgType.INFO.getValue(), "{  \"type\":\"info\"}");
+        });
+    }
+
+
     @PostConstruct
     public void initMQTT() {
         mqttService.connect();
@@ -153,14 +178,15 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
 
     private boolean subLightMQTT(Device p) {
         try {
-
-
             LightDeviceExtendData extendData = p.toLightData();
             if (Objects.isNull(extendData)) {
                 return true;
             }
             if (StringUtils.isNotEmpty(extendData.getSubTopic())) {
                 mqttService.subDevice(p.getStoreId(), p.getDeviceId(), extendData.getSubTopic(), this);
+            }
+            if (StringUtils.isNotEmpty(extendData.getPubTopic())) {
+                setLightReportSetting(extendData.getPubTopic());
             }
         } catch (Exception e) {
             log.error("设备订阅消息失败,id:{}", p.getDeviceId(), e);
@@ -170,7 +196,42 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
     }
 
     @Override
-    public void lightMQTTCallback(Long storeId, Long deviceId, String msg) {
+    public void lightMQTTCallback(int msgId, Long storeId, Long deviceId, String msg) {
+        deviceMapper.updateLastReportTime(deviceId, DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, new Date()));
 
+        JSONObject resJson = JSON.parseObject(msg);
+        if (Objects.nonNull(resJson) && resJson.containsKey("key")) {
+            deviceMapper.update(null, deviceMapper.updateWrapper().set(Device::getCustomStatus, resJson.getInteger("key"))
+                    .eq(Device::getDeviceId, deviceId));
+        }
+    }
+
+    @SneakyThrows
+    public boolean sendSwitchLightMsg(Long deviceId, Boolean open) {
+        String msg = String.format("{\"type\":\"event\",\"key\":%s}", open ? 1 : 0);
+        sendLightMsg(deviceId, LightMQTTMsgType.SWITCH, msg);
+        sendLightMsg(deviceId, LightMQTTMsgType.INFO, "{  \"type\":\"info\"}");
+        return true;
+    }
+
+    @SneakyThrows
+    public boolean setLightReportSetting(String topic) {
+        //设置60秒上报一次
+        String msg = "{  \"type\":\"setting\",  \"timerEnable\":1,  \"timerInterval\":60 }";
+        mqttService.sendMsg(topic, LightMQTTMsgType.SETTING.getValue(), msg);
+        return true;
+    }
+
+    private boolean sendLightMsg(Long deviceId, LightMQTTMsgType type, String msg) {
+        Device device = deviceMapper.selectById(deviceId);
+        AssertUtil.notNullOrEmpty(device, "设备不存在");
+        AssertUtil.isTrue(Objects.equals(DeviceType.LIGHT.getValue(), device.getDeviceType()), "不是灯光设备");
+        LightDeviceExtendData lightDeviceExtendData = device.toCustomExtendData(LightDeviceExtendData.class);
+        if (Objects.isNull(lightDeviceExtendData) || StringUtils.isEmpty(lightDeviceExtendData.getPubTopic())) {
+            throw new ServiceException("灯光自定义配置不争取");
+        }
+        mqttService.sendMsg(lightDeviceExtendData.getPubTopic(), type.getValue(), msg);
+
+        return true;
     }
 }

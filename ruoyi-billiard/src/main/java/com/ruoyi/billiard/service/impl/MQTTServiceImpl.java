@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -65,7 +66,7 @@ public class MQTTServiceImpl implements IMQTTService, MqttCallback {
         // 注意：持久会话恢复的前提是客户端使用固定的 Client ID 再次连接，如果 Client ID 是动态的，那么连接成功后将会创建一个新的持久会话。
         options.setCleanSession(cleanSession);
         // 禁用Paho的自动重连，自己控制
-        options.setAutomaticReconnect(false);
+        options.setAutomaticReconnect(true);
         if (username != null && !username.isEmpty()) {
             options.setUserName(username);
             options.setPassword(password.toCharArray());
@@ -77,21 +78,31 @@ public class MQTTServiceImpl implements IMQTTService, MqttCallback {
     @Override
     public void subDevice(Long storeId, Long deviceId, String subTopic, DeviceCallbackEvent event) {
         ///${appId}/${deviceKey}/${deviceMAC}/subscribe
-
+        checkLostContent();
         client.subscribe(subTopic);
+        log.info("主题订阅成功:{}", subTopic);
         DEVICE_MAP.put(subTopic, new MQTTDevice(storeId, deviceId, subTopic, event));
     }
 
     @SneakyThrows
     @Override
-    public void sendMsg(String pubTopic, String msg) {
+    public void sendMsg(String pubTopic, int msgType, String msg) {
         // 消息发布所需参数 /${appId}/${deviceKey}/${deviceMAC}/publish
 
+        checkLostContent();
         MqttMessage message = new MqttMessage(msg.getBytes());
+        message.setId(msgType);
         message.setQos(qos);
         client.publish(pubTopic, message);
 
         log.info("---MQTT published:{}", msg);
+    }
+
+    private void checkLostContent() {
+        if (client != null && !client.isConnected()) {
+            this.reconnectAttempts = 0;
+            reconnect();
+        }
     }
 
 
@@ -108,9 +119,10 @@ public class MQTTServiceImpl implements IMQTTService, MqttCallback {
     public void connectionLost(Throwable cause) {
         log.info("---MQTT Connection lost! " + cause.getMessage());
         // 这里可以重新连接MQTT服务器
-        reconnect();
+        // reconnect();
+        log.error("MQTT掉线:", cause);
         DEVICE_MAP.values().forEach(item -> {
-            subDevice(item.getStoreId(), item.getDeviceId(),item.getSubTopic(), item.getEvent());
+            subDevice(item.getStoreId(), item.getDeviceId(), item.getSubTopic(), item.getEvent());
         });
     }
 
@@ -141,27 +153,36 @@ public class MQTTServiceImpl implements IMQTTService, MqttCallback {
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         // 当消息到达时调用
         String msg = new String(message.getPayload());
-        log.info("---Message arrived. Topic: " + topic + " Message: " + msg);
-        SpringUtils.getBean(MQTTServiceImpl.class).callbackRun(topic, msg);
+        log.info("---Message arrived. Topic: {},MsgId:{},Msg:{}", topic, message.getId(), msg);
+        SpringUtils.getBean(MQTTServiceImpl.class).callbackRun(topic, message.getId(), msg);
         // 处理消息的逻辑
     }
 
     //执行回调
     @Async
-    public void callbackRun(String topic, String msg) {
-        if (DEVICE_MAP.containsKey(topic)) {
-            MQTTDevice mqttDevice = DEVICE_MAP.get(topic);
-            mqttDevice.getEvent().lightMQTTCallback(mqttDevice.getStoreId(), mqttDevice.getDeviceId(), msg);
-        } else {
-            log.warn("---MQTT 设备不存在：{}", topic);
+    public void callbackRun(String topic, int msgId, String msg) {
+        try {
+            if (DEVICE_MAP.containsKey(topic)) {
+                MQTTDevice mqttDevice = DEVICE_MAP.get(topic);
+                mqttDevice.getEvent().lightMQTTCallback(msgId, mqttDevice.getStoreId(), mqttDevice.getDeviceId(), msg);
+            } else {
+                log.warn("---MQTT 设备不存在：{}", topic);
+            }
+        } catch (Exception e) {
+            log.error("MQTT消息回调处理异常：", e);
         }
     }
 
     @Override
     @SneakyThrows
     public void deliveryComplete(IMqttDeliveryToken token) {
-        // 当消息被完全传送出去后调用
-        log.info("---MQTT Delivery complete:{}",new String(token.getMessage().getPayload()));
+        try {
+            // 当消息被完全传送出去后调用
+            log.info("---MQTT Delivery complete:{}", Objects.isNull(token.getMessage()) ? null : new String(token.getMessage().getPayload()));
+        } catch (Exception e) {
+            log.error("MQTT消息送达异常", e);
+        }
+
         // 可以在这里处理一些发送完成后的清理工作
     }
 
@@ -179,6 +200,6 @@ public class MQTTServiceImpl implements IMQTTService, MqttCallback {
 
     @FunctionalInterface
     public static interface DeviceCallbackEvent {
-        void lightMQTTCallback(Long storeId, Long deviceId, String msg);
+        void lightMQTTCallback(int msgId, Long storeId, Long deviceId, String msg);
     }
 }

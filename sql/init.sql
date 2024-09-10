@@ -278,7 +278,7 @@ create unique index t_stock_goods_id_uindex
 drop table if exists t_stock_log;
 create table t_stock_log
 (
-    stock_log_id  bigint            auto_increment                     not null comment '商品编码'
+    stock_log_id  bigint auto_increment                 not null comment '商品编码'
         primary key,
     stock_id      bigint                                not null comment '库存id',
     change_count  bigint                                not null comment '变化数量(有+-符号)',
@@ -306,7 +306,8 @@ create table t_device
     device_type       int                                   not null comment '设备类型：0=摄像头,1=灯光',
     extend_data       json                                  null comment 'json扩展配置',
     status            int                                   null comment '变化类型：0=未知，1=在线，2=掉线',
-
+    custom_status            int                                   null comment '各种设备自定义状态：灯光（1=开，0=关）',
+    last_report_time  datetime                              null comment '最后上报时间',
     create_by         varchar(64) default ''                null comment '创建者',
     create_time       timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by         varchar(64) default ''                null comment '更新者',

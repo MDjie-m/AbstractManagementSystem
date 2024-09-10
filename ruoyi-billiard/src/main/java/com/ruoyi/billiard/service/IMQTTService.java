@@ -11,5 +11,5 @@ public interface IMQTTService {
     void subDevice(Long storeId, Long deviceId, String subTopic, MQTTServiceImpl.DeviceCallbackEvent event);
 
     @SneakyThrows
-    void sendMsg(String pubTopic, String msg);
+    void sendMsg(String pubTopic,int msgType, String msg);
 }

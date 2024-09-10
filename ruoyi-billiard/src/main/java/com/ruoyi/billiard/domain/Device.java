@@ -12,6 +12,7 @@ import com.ruoyi.common.annotation.Excel;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -90,6 +91,15 @@ public class Device extends MyBaseEntity {
 
     @TableField(exist = false)
     private Long deskId;
+
+    @TableField("last_report_time")
+    private Date lastReportTime;
+
+    /**
+     * 各种设备自定义状态：灯光（1=开，0=关）
+     */
+    @TableField("custom_status")
+    private Integer customStatus;
 
     @Nullable
     public <T> T toCustomExtendData(@NonNull Class<T> cls) {

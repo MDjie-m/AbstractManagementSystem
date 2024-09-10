@@ -69,7 +69,14 @@
           </el-table-column>
           <el-table-column label="设备状态" align="center" prop="status" >
             <template slot-scope="scope">
-              <dict-tag :options="dict.type.store_device_status" :value="scope.row.status"/>
+              <div style="display: flex;flex-direction: row;align-items: center;justify-content: center">
+                <dict-tag :options="dict.type.store_device_status" :value="scope.row.status"/>
+                <el-tooltip :content="scope.row.customStatus?'灯光已打开':'灯光已关闭'">
+                <svg-icon v-if="scope.row.deviceType===1" :icon-class="scope.row.customStatus?'light':'light_close'"  style="margin-left: 10px"  />
+                </el-tooltip>
+              </div>
+
+
             </template>
           </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -88,6 +95,17 @@
                 @click="handleDelete(scope.row)"
                 v-hasPermi="['billiard:device:remove']"
               >删除</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-switch-button"
+                @click="handleSwitchLight(scope.row)"
+                v-if="scope.row.deviceType===1"
+                v-hasPermi="['billiard:device:edit'] "
+              >{{ scope.row.customStatus?'关灯':'开灯'}}</el-button>
+
+
+
             </template>
           </el-table-column>
         </el-table>
@@ -145,7 +163,7 @@
 </template>
 
 <script>
-import { listDevice, getDevice, delDevice, addDevice, updateDevice } from "@/api/billiard/device";
+import { listDevice, getDevice, delDevice, addDevice, updateDevice, switchLight } from '@/api/billiard/device'
 import StoreContainer from '@/views/billiard/component/storeContainer.vue'
 
 export default {
@@ -309,6 +327,16 @@ export default {
           }
         }
       });
+    },
+    handleSwitchLight(row){
+      this.loading=true;
+      switchLight(row.deviceId,!row.customStatus).then(p=>{
+        this.loading=false;
+        this.getList();
+      }).catch(()=>{
+        this.loading=false;
+      });
+
     },
     /** 删除按钮操作 */
     handleDelete(row) {
