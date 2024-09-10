@@ -76,4 +76,7 @@ public class StoreUser extends MyBaseEntity
     @TableField(exist = false)
     private String storeName;
 
+    @TableField(exist = false)
+    private String account;
+
 }

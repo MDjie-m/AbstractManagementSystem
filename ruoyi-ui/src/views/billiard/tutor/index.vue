@@ -56,7 +56,6 @@
     <el-table v-loading="loading" :data="tutorList" @selection-change="handleSelectionChange">
       <el-table-column label="ID" align="center" prop="storeTutorId" />
       <el-table-column label="姓名" align="center" prop="realName" />
-      <el-table-column label="手机号" align="center" prop="mobile" />
       <el-table-column label="头像" align="center" prop="userImg" width="100">
         <template slot-scope="scope">
           <image-preview :src="scope.row.userImg" :width="50" :height="50"/>
@@ -65,6 +64,11 @@
       <el-table-column label="性别" align="center" prop="sex">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.sex"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="手机号" align="center" prop="mobile">
+        <template slot-scope="scope">
+          <div> {{scope.row.mobile}} <span v-if="scope.row.mobile!==scope.row.account">({{scope.row.account}})</span></div>
         </template>
       </el-table-column>
       <el-table-column label="教练等级" align="center" prop="level">
@@ -247,7 +251,13 @@
           </el-col>
         </el-row>
 
-
+        <el-row v-if="form.storeUserId">
+          <el-col :span="24">
+            <el-form-item label="账号" >
+              {{form.account}}
+            </el-form-item>
+          </el-col>
+        </el-row>
 
 
 

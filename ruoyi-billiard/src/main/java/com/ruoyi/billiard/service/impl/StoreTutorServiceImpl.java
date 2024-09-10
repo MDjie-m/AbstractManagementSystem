@@ -26,13 +26,12 @@ import javax.annotation.Resource;
 
 /**
  * 门店助教Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2024-09-06
  */
 @Service
-public class StoreTutorServiceImpl implements IStoreTutorService 
-{
+public class StoreTutorServiceImpl implements IStoreTutorService {
     @Autowired
     private StoreTutorMapper storeTutorMapper;
 
@@ -45,15 +44,14 @@ public class StoreTutorServiceImpl implements IStoreTutorService
 
     /**
      * 查询门店助教
-     * 
+     *
      * @param storeTutorId 门店助教主键
      * @return 门店助教
      */
     @Override
-    public StoreTutor selectStoreTutorByStoreTutorId(Long storeTutorId)
-    {
-        StoreTutor user= storeTutorMapper.selectById(storeTutorId);
-        if(Objects.nonNull(user)){
+    public StoreTutor selectStoreTutorByStoreTutorId(Long storeTutorId) {
+        StoreTutor user = storeTutorMapper.selectById(storeTutorId);
+        if (Objects.nonNull(user)) {
             user.setRoleIds(storeUserMapper.selectRoleIds(user.getLoginUserId()));
         }
         return user;
@@ -61,57 +59,64 @@ public class StoreTutorServiceImpl implements IStoreTutorService
 
     /**
      * 查询门店助教列表
-     * 
+     *
      * @param storeTutor 门店助教
      * @return 门店助教
      */
     @Override
-    public List<StoreTutor> selectStoreTutorList(StoreTutor storeTutor)
-    {
+    public List<StoreTutor> selectStoreTutorList(StoreTutor storeTutor) {
 
-        List<StoreTutor>  users= storeTutorMapper.selectStoreTutorList(storeTutor);
-        if(CollectionUtils.isEmpty(users)){
-            return  users;
+        List<StoreTutor> users = storeTutorMapper.selectStoreTutorList(storeTutor);
+        if (CollectionUtils.isEmpty(users)) {
+            return users;
         }
-        List<KeyValueVo<Long, Long>> roleIds=  storeUserMapper.selectRoleIdsByUserIds(users.stream()
+        List<KeyValueVo<Long, Long>> roleIds = storeUserMapper.selectRoleIdsByUserIds(users.stream()
                 .map(StoreTutor::getLoginUserId).collect(Collectors.toList()));
-        Map<Long,List<Long>> roleIdMap=   ArrayUtil.groupByValue(roleIds,KeyValueVo::getKey,KeyValueVo::getValue);
-        users.forEach(u->{
+        Map<Long, List<Long>> roleIdMap = ArrayUtil.groupByValue(roleIds, KeyValueVo::getKey, KeyValueVo::getValue);
+        users.forEach(u -> {
             u.setRoleIds(roleIdMap.getOrDefault(u.getLoginUserId(), Lists.newArrayList()));
         });
-        return  users;
+        return users;
     }
 
     /**
      * 新增门店助教
-     * 
+     *
      * @param storeTutor 门店助教
      * @return 结果
      */
     @Override
-    public int insertStoreTutor(StoreTutor storeTutor)
-    {
-        AssertUtil.isTrue(!storeTutorMapper.exists( storeTutorMapper.query().eq(StoreTutor::getMobile,storeTutor.getMobile())
-                        .eq(StoreTutor::getStoreId,storeTutor.getStoreId())),   "手机号已被其他用户使用");
+    public int insertStoreTutor(StoreTutor storeTutor) {
+        AssertUtil.isTrue(!storeTutorMapper.exists(storeTutorMapper.query().eq(StoreTutor::getMobile, storeTutor.getMobile())
+                .eq(StoreTutor::getStoreId, storeTutor.getStoreId())), "手机号已被其他用户使用");
         storeTutor.setCreateTime(DateUtils.getNowDate());
 
+        //手机号重复加字母
+        List<String> nameSubList = Lists.newArrayList();
+        nameSubList.add("");
+        nameSubList.addAll(Arrays.asList("ABCDEFGHIGKLMNOPQRSTUVWXYZ".split("")));
 
-        SysUser sysUser =   sysUserService.selectUserByMobile(storeTutor.getMobile(),null);
-        if(Objects.isNull(sysUser)) {
-            sysUser = new SysUser();
-            sysUser.setAvatar(storeTutor.getUserImg());
-            sysUser.setDeptId(100L);
-            sysUser.setUserName(storeTutor.getMobile());
-            sysUser.setPhonenumber(storeTutor.getMobile());
-            sysUser.setNickName(storeTutor.getRealName());
-            sysUser.setPassword(SecurityUtils.encryptPassword(storeTutor.getMobile()));
-            sysUser.setRoleIds(storeTutor.getRoleIds() );
-            sysUser.setSex(storeTutor.getSex());
-            sysUser.setCreateBy(SecurityUtils.getUsername());
-            sysUserService.insertUser(sysUser);
-        } else {
-            sysUserService.addUserRoles(sysUser.getUserId(),storeTutor.getRoleIds());
+        String nameSub = "";
+        for (String s : nameSubList) {
+            nameSub = s;
+            SysUser sysUser = sysUserService.selectUserByUserName(storeTutor.getMobile() + nameSub);
+            if (Objects.isNull(sysUser)) {
+                break;
+            }
         }
+
+        SysUser sysUser = new SysUser();
+        sysUser.setAvatar(storeTutor.getUserImg());
+        sysUser.setDeptId(100L);
+        sysUser.setUserName(storeTutor.getMobile()+nameSub);
+        sysUser.setPhonenumber(storeTutor.getMobile());
+        sysUser.setNickName(storeTutor.getRealName());
+        sysUser.setPassword(SecurityUtils.encryptPassword(storeTutor.getMobile()));
+        sysUser.setRoleIds(storeTutor.getRoleIds());
+        sysUser.setSex(storeTutor.getSex());
+        sysUser.setCreateBy(SecurityUtils.getUsername());
+        sysUserService.insertUser(sysUser);
+
         storeTutor.setStoreTutorId(IdUtils.singleNextId());
         storeTutor.setLoginUserId(sysUser.getUserId());
         SecurityUtils.fillCreateUser(storeTutor);
@@ -120,24 +125,22 @@ public class StoreTutorServiceImpl implements IStoreTutorService
 
     /**
      * 修改门店助教
-     * 
+     *
      * @param storeTutor 门店助教
      * @return 结果
      */
     @Override
-    public int updateStoreTutor(StoreTutor storeTutor)
-    {
-        AssertUtil.isTrue(!storeTutorMapper.exists( storeTutorMapper.query().eq(StoreTutor::getMobile,storeTutor.getMobile())
-                .eq(StoreTutor::getStoreId,storeTutor.getStoreId()).notIn(StoreTutor::getStoreTutorId,storeTutor.getStoreTutorId())),
+    public int updateStoreTutor(StoreTutor storeTutor) {
+        AssertUtil.isTrue(!storeTutorMapper.exists(storeTutorMapper.query().eq(StoreTutor::getMobile, storeTutor.getMobile())
+                        .eq(StoreTutor::getStoreId, storeTutor.getStoreId()).notIn(StoreTutor::getStoreTutorId, storeTutor.getStoreTutorId())),
                 "手机号已被其他用户使用");
 
-        SysUser user=sysUserService.selectUserById(storeTutor.getLoginUserId());
+        SysUser user = sysUserService.selectUserById(storeTutor.getLoginUserId());
         user.setSex(storeTutor.getSex());
         user.setPhonenumber(storeTutor.getMobile());
-        user.setUserName(storeTutor.getMobile());
         user.setUpdateTime(DateUtils.getNowDate());
         user.setUpdateBy(SecurityUtils.getUsername());
-        user.setRoleIds(storeTutor.getRoleIds() );
+        user.setRoleIds(storeTutor.getRoleIds());
         sysUserService.updateUser(user);
 
         SecurityUtils.fillUpdateUser(storeTutor);
@@ -146,25 +149,23 @@ public class StoreTutorServiceImpl implements IStoreTutorService
 
     /**
      * 批量删除门店助教
-     * 
+     *
      * @param storeTutorIds 需要删除的门店助教主键
      * @return 结果
      */
     @Override
-    public int deleteStoreTutorByStoreTutorIds(Long[] storeTutorIds)
-    {
+    public int deleteStoreTutorByStoreTutorIds(Long[] storeTutorIds) {
         return storeTutorMapper.deleteStoreTutorByStoreTutorIds(storeTutorIds);
     }
 
     /**
      * 删除门店助教信息
-     * 
+     *
      * @param storeTutorId 门店助教主键
      * @return 结果
      */
     @Override
-    public int deleteStoreTutorByStoreTutorId(Long storeTutorId)
-    {
+    public int deleteStoreTutorByStoreTutorId(Long storeTutorId) {
         return storeTutorMapper.deleteStoreTutorByStoreTutorId(storeTutorId);
     }
 }

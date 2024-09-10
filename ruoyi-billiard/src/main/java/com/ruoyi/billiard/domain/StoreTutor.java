@@ -93,17 +93,7 @@ public class StoreTutor extends MyBaseEntity
     @TableField("aptitude")
     private String aptitude;
 
-
-
-
-
-
-
-
-
-
-
-
-
+    @TableField(exist = false)
+    private String account;
 
 }

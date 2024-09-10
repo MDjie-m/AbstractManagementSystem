@@ -49,7 +49,7 @@ public class StoreUserServiceImpl implements IStoreUserService {
      */
     @Override
     public StoreUser selectStoreUserByStoreUserId(Long storeUserId) {
-        StoreUser user = storeUserMapper.selectById(storeUserId);
+        StoreUser user = storeUserMapper.selectStoreUserByStoreUserId(storeUserId);
         if (Objects.nonNull(user)) {
             user.setRoleIds(storeUserMapper.selectRoleIds(user.getLoginUserId()));
         }
@@ -89,23 +89,31 @@ public class StoreUserServiceImpl implements IStoreUserService {
         AssertUtil.isTrue(!storeUserMapper.exists(storeUserMapper.query().eq(StoreUser::getMobile, storeUser.getMobile())
                         .eq(StoreUser::getStoreId, storeUser.getStoreId())),
                 "手机号已被其他用户使用");
-        storeUser.setCreateTime(DateUtils.getNowDate());
+        //手机号重复加字母
+        List<String> nameSubList = Lists.newArrayList();
+        nameSubList.add("");
+        nameSubList.addAll(Arrays.asList("ABCDEFGHIGKLMNOPQRSTUVWXYZ".split("")));
 
-        SysUser sysUser = sysUserService.selectUserByMobile(storeUser.getMobile(), null);
-        if (Objects.isNull(sysUser)) {
-            sysUser = new SysUser();
-            sysUser.setAvatar(storeUser.getUserImg());
-            sysUser.setDeptId(100L);
-            sysUser.setUserName(storeUser.getMobile());
-            sysUser.setPhonenumber(storeUser.getMobile());
-            sysUser.setNickName(storeUser.getRealName());
-            sysUser.setPassword(SecurityUtils.encryptPassword(storeUser.getMobile()));
-            sysUser.setRoleIds(storeUser.getRoleIds());
-            sysUser.setSex(storeUser.getSex());
-            sysUserService.insertUser(sysUser);
-        } else {
-            sysUserService.addUserRoles(sysUser.getUserId(), storeUser.getRoleIds());
+        String nameSub = "";
+        for (String s : nameSubList) {
+            nameSub = s;
+            SysUser sysUser = sysUserService.selectUserByUserName(storeUser.getMobile() + nameSub);
+            if (Objects.isNull(sysUser)) {
+                break;
+            }
         }
+
+        SysUser sysUser = new SysUser();
+        sysUser.setAvatar(storeUser.getUserImg());
+        sysUser.setDeptId(100L);
+        sysUser.setUserName(storeUser.getMobile() + nameSub);
+        sysUser.setPhonenumber(storeUser.getMobile());
+        sysUser.setNickName(storeUser.getRealName());
+        sysUser.setPassword(SecurityUtils.encryptPassword(storeUser.getMobile()));
+        sysUser.setRoleIds(storeUser.getRoleIds());
+        sysUser.setSex(storeUser.getSex());
+        sysUser.setCreateBy(SecurityUtils.getUsername());
+        sysUserService.insertUser(sysUser);
         storeUser.setStoreUserId(IdUtils.singleNextId());
         storeUser.setLoginUserId(sysUser.getUserId());
         SecurityUtils.fillCreateUser(storeUser);

@@ -51,7 +51,11 @@
             <dict-tag :options="dict.type.sys_user_sex" key :value="scope.row.sex"/>
           </template>
         </el-table-column>
-        <el-table-column label="手机号" align="center" prop="mobile" />
+        <el-table-column label="手机号" align="center" prop="mobile">
+          <template slot-scope="scope">
+            <div> {{scope.row.mobile}} <span v-if="scope.row.mobile!==scope.row.account">({{scope.row.account}})</span></div>
+          </template>
+        </el-table-column>
         <el-table-column label="头像" align="center" prop="userImg" width="100">
           <template slot-scope="scope">
             <image-preview :src="scope.row.userImg" :width="50" :height="50"/>
@@ -213,11 +217,17 @@
             </el-col>
 
           </el-row>
-
+          <el-row v-if="form.storeUserId">
+            <el-col :span="24">
+              <el-form-item label="账号" >
+                 {{form.account}}
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-row>
             <el-col :span="24">
 
-              <span>账户默认账号为:手机号,默认密码:手机号</span>
+              <span>账户默认账号为手机号，如过在系统内有重复会在后面增加一个字母,初始密码为手机号</span>
 
             </el-col>
           </el-row>

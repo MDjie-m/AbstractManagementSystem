@@ -21,11 +21,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="storeName"    column="store_name"    />
         <result property="createById" column="create_by_id"/>
         <result property="updateById" column="update_by_id"/>
+        <result property="account" column="user_name"/>
     </resultMap>
 
     <sql id="selectStoreUserVo">
-        select a.* ,b.store_name
+        select a.* ,b.store_name,c.user_name
         from t_store_user a  left join  t_store b on a.store_id=b.store_id
+        left join sys_user c on a.login_user_id=c.user_id
     </sql>
 
     <select id="selectStoreUserList" parameterType="StoreUser" resultMap="StoreUserResult">
@@ -43,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectStoreUserByStoreUserId" parameterType="Long" resultMap="StoreUserResult">
         <include refid="selectStoreUserVo"/>
-        where store_user_id = #{storeUserId}
+        where a.store_user_id = #{storeUserId}
     </select>
     <select id="selectRoleIds" resultType="java.lang.Long">
         select role_id
