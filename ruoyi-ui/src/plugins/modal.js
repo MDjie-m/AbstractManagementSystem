@@ -12,8 +12,12 @@ export default {
     Message.error(content)
   },
   // 成功消息
-  msgSuccess(content) {
-    Message.success(content)
+  msgSuccess(content, duration = 1000) {
+    Message({
+      message: content,
+      type: 'success',
+      duration: duration
+    });
   },
   // 警告消息
   msgWarning(content) {

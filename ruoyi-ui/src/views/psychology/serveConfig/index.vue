@@ -217,6 +217,9 @@
         <el-form-item label="售价" prop="price">
           <el-input-number v-model="form.price" :precision="2" :max="999999"/>
         </el-form-item>
+        <el-form-item label="咨询师分成比例" prop="consultantRatio">
+          <el-input-number v-model="form.consultantRatio" :precision="2" :max="1" :min="0"  :step="0.1"/>
+        </el-form-item>
         <el-form-item label="排序" prop="zindex">
           <el-input-number v-model="form.zindex" step-strictly :max="9999"/>
         </el-form-item>
@@ -325,6 +328,9 @@ export default {
         price: [
           { required: true, message: "售价不能为空", trigger: "blur" }
         ],
+        consultantRatio: [
+          { required: true, message: "咨询师分成比例不能为空", trigger: "blur" }
+        ],
         bound: [
           { required: true, message: "限购人群不能为空", trigger: "change" }
         ],
@@ -382,6 +388,7 @@ export default {
         name: null,
         info: null,
         price: null,
+        consultantRatio: 0,
         time: 50,
         num: 1,
         zindex: 999,

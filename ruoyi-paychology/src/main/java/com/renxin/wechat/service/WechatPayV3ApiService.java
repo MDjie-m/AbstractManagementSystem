@@ -11,5 +11,7 @@ public interface WechatPayV3ApiService {
     void wechatPayNotify(String outTradeNo, String payId);
     
     void wechatConsultantPayNotify(String outTradeNo, String payId);
+    
+    void updatePayParam(WechatPayVO wechatPay);
 
 }

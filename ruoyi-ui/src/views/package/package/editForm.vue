@@ -6,6 +6,10 @@
         <el-input v-model="form.productName" placeholder="请输入套餐名称" />
       </el-form-item>
 
+      <el-form-item label="简介" prop="blurb">
+        <el-input v-model="form.blurb" placeholder="请输入简介" />
+      </el-form-item>
+
       <el-form-item label="套餐产品图片" prop="productPicUrl">
         <my-cropper v-model="form.productPicUrl" sizeTip="宽172px 高172px" :extraData="extraData" :width="172" :height="172"/>
       </el-form-item>
@@ -157,13 +161,14 @@ export default {
   methods: {
     init(data) {
       this.form = JSON.parse(JSON.stringify(data));
-      this.open = true
-    },
-    initData(data) {
-      this.form = data
       console.log(this.form)
       this.open = true
     },
+/*    initData(data) {
+      this.form = data
+      console.log(this.form)
+      this.open = true
+    },*/
     //获取优惠券模版清单
     async getCouponList() {
       const res = await listTemplate({"templateStatus":"0"});

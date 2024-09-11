@@ -229,8 +229,8 @@ aliyun:
     templateCode: SMS_202813583
 
 cos:
-  secretId: AKIDe8NM9oEYHlyud5JK5cuzotjIchaIk5B3
-  secretKey: sXHo43lDQN7amjPE0dBpHWWIsDJAsMba
+  secretId: AKIDNmz64621IbkiT1NXkx57xseEaoBSbbR4
+  secretKey: VmtnX6Uk2mS4Wm9VjnjbO4voiVCnDVjt
   appId: 1316267898
   bucket: ssg-1316267898
   zxBucket: zx-1316267898

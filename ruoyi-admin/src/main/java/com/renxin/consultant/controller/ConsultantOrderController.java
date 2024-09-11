@@ -1,7 +1,9 @@
 package com.renxin.consultant.controller;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.constant.RespMessageConstants;
@@ -159,6 +161,7 @@ public class ConsultantOrderController extends BaseController
      */
     @PostMapping("/create")
     @RateLimiter(limitType = LimitType.IP)
+    @Transactional(rollbackFor = Exception.class)
     public AjaxResult create(@RequestBody PsyConsultantOrder consultantOrder, HttpServletRequest request) {
         Long consultId = consultantTokenService.getConsultId(request);
         String payConsultId = consultId+""; //付费咨询师id
@@ -269,10 +272,12 @@ public class ConsultantOrderController extends BaseController
             consultantOrder.setServerName(serverName);
             consultantOrder.setOriginalPrice(originalPrice);
         PsyConsultantOrder newOrder = psyConsultantOrderService.createConsultantOrder(consultantOrder);
-        String content = "咨询师端订单demoo"; 
-
-        //return AjaxResult.success(newOrder);
-
+        if (newOrder.getPayAmount().compareTo(BigDecimal.ZERO) == 0){
+            return AjaxResult.success("应付金额为0, 无需发起支付");
+        }
+        
+        
+    /*    String content = "咨询师端订单demoo";
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);// 1天
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
@@ -310,7 +315,13 @@ public class ConsultantOrderController extends BaseController
         result.put("paySign", wechatPayV3Utils.signRSA(sb.toString())); //签名
         result.put("signType", "RSA"); //加密方式 固定RSA
         result.put("out_trade_no", out_trade_no); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
-        return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS ,result);
+
+        String payParam = JSON.toJSONString(result);
+        newOrder.setPayParam(payParam);
+        psyConsultantOrderService.updatePsyConsultantOrder(newOrder);
+        
+        return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS ,result);*/
+        return AjaxResult.success();
     }
 
     /**

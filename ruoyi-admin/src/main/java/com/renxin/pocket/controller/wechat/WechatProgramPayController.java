@@ -1,6 +1,7 @@
 package com.renxin.pocket.controller.wechat;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.renxin.common.annotation.RateLimiter;
@@ -226,6 +227,9 @@ public class WechatProgramPayController extends BaseController {
         result.put("paySign", wechatPayV3Utils.signRSA(sb.toString())); //签名
         result.put("signType", "RSA"); //加密方式 固定RSA
         result.put("out_trade_no", out_trade_no); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
+        
+        vo.setPayParam(JSON.toJSONString(result));
+        wechatPayV3ApiService.updatePayParam(vo);
         
         return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS, result);
     }
@@ -526,68 +530,27 @@ public class WechatProgramPayController extends BaseController {
 
         //查询订单应付金额
         BigDecimal amount = BigDecimal.valueOf(9999);
+        String payParamJson = "";
         switch (req.getModule()) {
             case CourConstant.MODULE_COURSE:
                 CourOrder courOrder = courOrderService.selectCourOrderByOrderId(req.getOutTradeNo());
-                amount = courOrder.getAmount();
+                payParamJson = courOrder.getPayParam();
                 break;
 
             case GaugeConstant.MODULE_GAUGE:
                 PsyOrder psyOrder = gaugeOrderService.getBaseMapper().selectOne(new LambdaQueryWrapper<PsyOrder>()
+                        .select(PsyOrder::getId,PsyOrder::getOrderId,PsyOrder::getPayParam)
                         .eq(PsyOrder::getOrderId, req.getOutTradeNo()));
-                amount = psyOrder.getAmount();
+                payParamJson = psyOrder.getPayParam();
                 break;
 
             case ConsultConstant.MODULE_CONSULT:
                 OrderDTO consultOrder = psyConsultOrderService.getOrderDetailByNo(req.getOutTradeNo());
-                amount = consultOrder.getAmount();
+                payParamJson = consultOrder.getPayParam();
                 break;
         }
 
-        // 根据用户ID从用户表中查询openid
-        PsyUser user = psyUserService.selectPsyUserById(userId);
-        String openid = user.getWxOpenid();
-
-        String content = "支付demo-课程金"; //先写死一个商品描述 // 将订单、支付单放入事务中
-        String attach = "订单号: " + req.getOutTradeNo(); //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, 1);// 1天
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-
-        JSONObject params = new JSONObject();
-        params.put("appid", WECHAT_MP_APPID); //小程序appid
-        params.put("mchid", WechatMCHConstants.WECHAT_MCH_ID); //商户号
-        params.put("description", content); //商品描述
-        params.put("out_trade_no", req.getOutTradeNo()); //商户订单号
-        params.put("time_expire", sdf.format(calendar.getTime())); //交易结束时间 选填 时间到了之后将不能再支付 遵循rfc3339标准格式
-        params.put("attach", attach); //附加数据 选填 在查询API和支付通知中原样返回 可作为自定义参数使用
-        params.put("notify_url", WechatUrlConstants.PAY_V3_NOTIFY); //支付结果异步通知接口
-        JSONObject amount_json = new JSONObject();
-        amount_json.put("total", Integer.parseInt(amount_fee(amount))); //支付金额 单位：分
-        params.put("amount", amount_json); //订单金额信息
-        JSONObject payer = new JSONObject();
-        payer.put("openid", openid); //用户在小程序侧的openid
-        params.put("payer", payer); //支付者信息
-        JSONObject res = wechatPayV3Utils.sendPost(WechatUrlConstants.PAY_V3_JSAPI, params); //发起请求
-        if (res == null || StringUtils.isEmpty(res.getString("prepay_id"))) {
-            //@TODO 支付发起失败可以将订单数据回滚
-            return error("支付发起失败");
-        }
-        StringBuilder sb = new StringBuilder();
-        //返回给小程序拉起微信支付的参数
-        Map<String, String> result = new HashMap<>();
-        result.put("appId", WECHAT_MP_APPID); //小程序appid
-        sb.append(result.get("appId")).append("\n");
-        result.put("timeStamp", (new Date().getTime() / 1000) + ""); //时间戳
-        sb.append(result.get("timeStamp")).append("\n");
-        result.put("nonceStr", RandomStringUtils.randomAlphanumeric(32)); //32位随机字符串
-        sb.append(result.get("nonceStr")).append("\n");
-        result.put("package", "prepay_id=" + res.getString("prepay_id")); //预支付id 格式为 prepay_id=xxx
-        sb.append(result.get("package")).append("\n");
-        result.put("paySign", wechatPayV3Utils.signRSA(sb.toString())); //签名
-        result.put("signType", "RSA"); //加密方式 固定RSA
-        result.put("out_trade_no", req.getOutTradeNo()); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
-        
-        return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS, result);
+        Map<String, String> payParamMap = JSON.parseObject(payParamJson, Map.class);
+        return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS,payParamMap );
     }
 }

@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="PsyConsultantPackage" id="PsyConsultantPackageResult">
         <result property="packageId"    column="package_id"    />
         <result property="productName"    column="product_name"    />
+        <result property="blurb"    column="blurb"    />
         <result property="productPicUrl"    column="product_pic_url"    />
         <result property="detailPicUrl"    column="detail_pic_url"    />
         <result property="teamSupNum"    column="team_sup_num"    />
@@ -30,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select package_id, product_name, product_pic_url, detail_pic_url,  status, del_flag, create_by, create_time,
                update_by, update_time,
                team_sup_num , person_sup_num, person_exp_num, course_num,price,
-               team_sup_coupon_template_id,person_sup_coupon_template_id,person_exp_coupon_template_id,course_coupon_template_id
+               team_sup_coupon_template_id,person_sup_coupon_template_id,person_exp_coupon_template_id,course_coupon_template_id,blurb
            from psy_consultant_package
     </sql>
 
@@ -78,6 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="personSupCouponTemplateId != null">person_sup_coupon_template_id,</if>
             <if test="personExpCouponTemplateId != null">person_exp_coupon_template_id,</if>
             <if test="courseCouponTemplateId != null">course_coupon_template_id,</if>
+            <if test="blurb != null">blurb,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="packageId != null">#{packageId},</if>
@@ -99,6 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="personSupCouponTemplateId != null">#{personSupCouponTemplateId},</if>
             <if test="personExpCouponTemplateId != null">#{personExpCouponTemplateId},</if>
             <if test="courseCouponTemplateId != null">#{courseCouponTemplateId},</if>
+            <if test="blurb != null">#{blurb},</if>
          </trim>
     </insert>
 
@@ -123,6 +126,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="personSupCouponTemplateId != null">person_sup_coupon_template_id = #{personSupCouponTemplateId},</if>
             <if test="personExpCouponTemplateId != null">person_exp_coupon_template_id = #{personExpCouponTemplateId},</if>
             <if test="courseCouponTemplateId != null">course_coupon_template_id = #{courseCouponTemplateId},</if>
+            <if test="blurb != null">blurb = #{blurb},</if>
         </trim>
         where package_id = #{packageId}
     </update>

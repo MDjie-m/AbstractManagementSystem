@@ -37,7 +37,8 @@ public class PsyConsultServeConfigVO extends BaseValObj implements Serializable
 
     /** 价格 */
     private BigDecimal price;
-
+    //咨询师分成比例
+    private BigDecimal consultantRatio;
     /** 时长 */
     private Integer time;
 

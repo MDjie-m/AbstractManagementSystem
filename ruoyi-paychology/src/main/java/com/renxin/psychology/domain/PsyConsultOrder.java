@@ -118,6 +118,7 @@ public class PsyConsultOrder extends BasePlusEntity implements Serializable
 
     @Excel(name = "转介原因")
     private String reason;
+    private String payParam;//支付参数
 
     private BigDecimal originalPrice;//原价
     private String couponNo;//使用优惠券编号

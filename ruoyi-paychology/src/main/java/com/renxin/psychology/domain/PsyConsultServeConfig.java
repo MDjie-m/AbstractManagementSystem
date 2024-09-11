@@ -51,6 +51,8 @@ public class PsyConsultServeConfig extends BasePlusEntity implements Serializabl
     /** 价格 */
     @Excel(name = "价格")
     private BigDecimal price;
+    //咨询师分成比例
+    private BigDecimal consultantRatio;
 
     /** 时长 */
     @Excel(name = "时长")

@@ -14,11 +14,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="courseId"    column="course_id"    />
         <result property="originalPrice"    column="original_price"    />
         <result property="couponNo"    column="coupon_no"    />
+        <result property="payParam"    column="pay_param"    />
     </resultMap>
 
     <sql id="selectCourOrderVo">
         select id, order_id, create_time, status, user_id, amount, course_id,
-               original_price, coupon_no from cour_order
+               original_price, coupon_no, pay_param from cour_order
     </sql>
 
     <select id="selectCourOrderList" parameterType="CourOrder" resultMap="CourOrderResult">
@@ -82,6 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="courseId != null and courseId != ''">course_id = #{courseId},</if>
             <if test="originalPrice != null and originalPrice != ''">original_price = #{originalPrice},</if>
             <if test="couponNo != null and couponNo != ''">coupon_no = #{couponNo},</if>
+            <if test="payParam != null and payParam != ''">pay_param = #{payParam},</if>
         </trim>
         <trim prefix="where" prefixOverrides="and">
             <if test="id != null">and id = #{id}</if>
@@ -102,8 +104,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getOrderDetailById"  resultType="com.renxin.course.vo.OrderVO">
         select co.id, co.order_id, co.status, co.user_id, co.amount as amount, co.course_id,
-               co.original_price as originalPrice, co.coupon_no as couponNo,
-               pop.pay_status , pop.amount as pay_amount
+               co.original_price as originalPrice, co.coupon_no as couponNo, co.pay_param as payParam,
+               pop.pay_status , pop.amount as pay_amount 
         from cour_order co
         left join psy_order_pay pop
         on co.id = pop.order_id

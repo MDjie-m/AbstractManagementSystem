@@ -97,4 +97,6 @@ public class PsyConsultOrderVO extends BaseValObj implements Serializable
     private BigDecimal originalPrice;//原价
     private String couponNo;//使用优惠券编号
 
+    private String payParam;//支付参数
+
 }

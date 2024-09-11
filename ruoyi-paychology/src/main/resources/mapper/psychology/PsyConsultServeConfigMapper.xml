@@ -26,11 +26,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="consultantRatio"    column="consultant_ratio"    />
     </resultMap>
     
 
     <select id="getList" parameterType="PsyConsultServeConfig" resultMap="PsyConsultServeConfigResult">
-        select cf.id, cf.mode, cf.type, cf.name, cf.info, cf.price, cf.time, cf.num,
+        select cf.id, cf.mode, cf.type, cf.name, cf.info, cf.price, cf.time, cf.num,cf.consultant_ratio,
             (SELECT COUNT(id) from psy_consult_order WHERE
             serve_id = cf.id and pay_status = '2'
                 <if test="cId != null  and cId != ''">

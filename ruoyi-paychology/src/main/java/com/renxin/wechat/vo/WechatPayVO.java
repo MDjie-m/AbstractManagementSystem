@@ -22,8 +22,8 @@ public class WechatPayVO implements Serializable {
     private Integer time;
 
     private String module;
-
     private String outTradeNo;
+    private String payParam;//支付参数
 
     private String supServerType;//督导服务类型
     private String supServerId;//督导服务id

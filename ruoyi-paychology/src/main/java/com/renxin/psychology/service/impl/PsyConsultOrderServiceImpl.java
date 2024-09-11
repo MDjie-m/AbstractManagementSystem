@@ -174,17 +174,21 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
     }
 
     private void setNames(PsyConsultOrder entity) {
-        switch (entity.getConsultType()) {
-            case ConsultConstant.CONSULT_TYPE_1:
-                entity.setConsultTypeName("咨询");
-                break;
-            case ConsultConstant.CONSULT_TYPE_2:
-                entity.setConsultTypeName("倾听");
-                break;
-            case ConsultConstant.CONSULT_TYPE_3:
-                entity.setConsultTypeName("督导");
-                break;
+        
+        if (ObjectUtils.isNotEmpty(entity.getConsultType())){
+            switch (entity.getConsultType()) {
+                case ConsultConstant.CONSULT_TYPE_1:
+                    entity.setConsultTypeName("咨询");
+                    break;
+                case ConsultConstant.CONSULT_TYPE_2:
+                    entity.setConsultTypeName("倾听");
+                    break;
+                case ConsultConstant.CONSULT_TYPE_3:
+                    entity.setConsultTypeName("督导");
+                    break;
+            }
         }
+        
         switch (entity.getStatus()) {
             case ConsultConstant.CONSULT_ORDER_STATUE_CREATED:
                 entity.setStatusName("待付款");

@@ -326,6 +326,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         }
         
         wp.in(ObjectUtils.isNotEmpty(req.getIdList()),PsyConsult::getId,req.getIdList());
+        wp.eq(ObjectUtils.isNotEmpty(req.getLevel()), PsyConsult::getLevel, req.getLevel());
         List<PsyConsult> consultList = psyConsultMapper.selectList(wp);
        /* String listType = req.getListType();
         PsyConsultServeConfigReq serveConfigReq = new PsyConsultServeConfigReq();

@@ -26,11 +26,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="payType"    column="pay_type"    />
         <result property="originalPrice"    column="original_price"    />
         <result property="couponNo"    column="coupon_no"    />
+        <result property="payParam"    column="pay_param"    />
     </resultMap>
 
     <sql id="selectPsyConsultantOrderVo">
         select id, order_no, server_id, server_type, server_name, status, pay_consultant_id, pay_consultant_name, pay_amount, pay_datetime, pay_status, 
-               remark, del_flag, create_by, create_time, update_by, update_time,pay_id, pay_type,original_price,coupon_no
+               remark, del_flag, create_by, create_time, update_by, update_time,pay_id, pay_type,original_price,coupon_no, pay_param
         from psy_consultant_order
     </sql>
 
@@ -88,6 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payType != null">pay_type,</if>
             <if test="originalPrice != null">original_price,</if>
             <if test="couponNo != null">coupon_no,</if>
+            <if test="payParam != null">pay_param,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
@@ -110,6 +112,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payType != null">#{payType},</if>
             <if test="originalPrice != null">#{originalPrice},</if>
             <if test="couponNo != null">#{couponNo},</if>
+            <if test="payParam != null">#{payParam},</if>
          </trim>
     </insert>
 
@@ -134,6 +137,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payType != null">pay_type = #{payType},</if>
             <if test="originalPrice != null">original_price = #{originalPrice},</if>
             <if test="couponNo != null">coupon_no = #{couponNo},</if>
+            <if test="payParam != null">pay_param = #{payParam},</if>
         </trim>
         where order_no = #{orderNo}
     </update>

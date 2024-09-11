@@ -108,11 +108,11 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
      * @return 结果
      */
     @Override
-    @CacheEvict(cacheNames = CacheConstants.PACKAGE_BY_ID_KEY, key = "#req.id")
-    public int updatePsyConsultantPackage(PsyConsultantPackage psyConsultantPackage)
+    @CacheEvict(cacheNames = CacheConstants.PACKAGE_BY_ID_KEY, key = "#req.packageId")
+    public int updatePsyConsultantPackage(PsyConsultantPackage req)
     {
-        psyConsultantPackage.setUpdateTime(DateUtils.getNowDate());
-        int i = psyConsultantPackageMapper.updatePsyConsultantPackage(psyConsultantPackage);
+        req.setUpdateTime(DateUtils.getNowDate());
+        int i = psyConsultantPackageMapper.updatePsyConsultantPackage(req);
 
         refreshIdList();
         return i;

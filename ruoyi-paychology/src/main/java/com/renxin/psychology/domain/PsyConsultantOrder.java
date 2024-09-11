@@ -86,6 +86,7 @@ public class PsyConsultantOrder extends BaseEntity
     private String delFlag;
 
     private String payId;
+    private String payParam;
     // 咨询服务
     private Long workId;
     private Integer time;

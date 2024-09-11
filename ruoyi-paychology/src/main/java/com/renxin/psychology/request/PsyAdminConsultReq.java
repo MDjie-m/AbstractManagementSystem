@@ -38,5 +38,7 @@ public class PsyAdminConsultReq implements Serializable
 
     private String listType;
     
+    private Integer level;
+    
 
 }

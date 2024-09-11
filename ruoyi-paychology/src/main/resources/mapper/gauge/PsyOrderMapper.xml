@@ -20,6 +20,7 @@
         <result property="originalPrice"    column="original_price"    />
         <result property="couponNo"    column="coupon_no"    />
         <result property="isUseGaugeAnalyse"    column="is_use_gauge_analyse"    />
+        <result property="payParam"    column="pay_param"    />
     </resultMap>
 
     <sql id="selectPsyOrderVo">
@@ -38,7 +39,8 @@
                score,
                original_price,
                coupon_no,
-               is_use_gauge_analyse
+               is_use_gauge_analyse,
+               pay_param
         from psy_order
     </sql>
 
@@ -130,6 +132,7 @@
             <if test="originalPrice != null and originalPrice != ''">original_price = #{originalPrice},</if>
             <if test="couponNo != null and couponNo != ''">coupon_no = #{couponNo},</if>
             <if test="isUseGaugeAnalyse != null and isUseGaugeAnalyse != ''">is_use_gauge_analyse = #{isUseGaugeAnalyse},</if>
+            <if test="payParam != null and payParam != ''">pay_param = #{payParam},</if>
         </trim>
 
         <trim prefix="where" prefixOverrides="and">
@@ -215,6 +218,7 @@
         <trim prefix="SET" suffixOverrides=",">
             <if test="score != null">score = #{score},</if>
             <if test="resultUrl != null and resultUrl != ''">result_url = #{proposal},</if>
+            <if test="payParam != null and payParam != ''">pay_param = #{payParam},</if>
         </trim>
 
         <trim prefix="where" prefixOverrides="and">

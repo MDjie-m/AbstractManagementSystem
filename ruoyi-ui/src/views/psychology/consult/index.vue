@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="78px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="90px">
       <el-form-item label="姓名" prop="userId">
         <el-input
           v-model="queryParams.userName"
@@ -19,6 +19,18 @@
           />
         </el-select>
       </el-form-item>
+
+      <el-form-item label="咨询师级别" prop="level">
+        <el-select v-model="queryParams.level" clearable>
+          <el-option
+            v-for="dict in levelList"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="创建时间" prop="dateLimit">
         <el-date-picker
           v-model="timeVal"
@@ -181,6 +193,7 @@ import serveRef from "./serveRef";
 import accountRef from "../account/index";
 import addressRef from "../address/index";
 import { checkPermi } from "@/utils/permission";
+import {levelList} from "@/utils/constants";
 
 export default {
   name: "Consult",
@@ -193,6 +206,7 @@ export default {
       consultId: '',
       // 选中数组
       statusList: this.$constants.comListStatus,
+      levelList: this.$constants.levelList,
       ids: [],
       cIds: [],
       // 非单个禁用

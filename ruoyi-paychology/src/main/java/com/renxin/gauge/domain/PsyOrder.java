@@ -76,6 +76,7 @@ public class PsyOrder extends BaseEntity
     private BigDecimal originalPrice;//原价
     private String couponNo;//使用优惠券编号
     private String isUseGaugeAnalyse;//是否使用测评解析  Y是  N否
+    private String payParam;//支付参数
 
 
     /**

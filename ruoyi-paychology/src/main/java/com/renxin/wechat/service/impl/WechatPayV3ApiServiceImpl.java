@@ -8,13 +8,17 @@ import com.renxin.common.enums.OrderPayStatus;
 import com.renxin.common.enums.OrderStatus;
 import com.renxin.common.event.publish.IntegralPublisher;
 import com.renxin.common.utils.IDhelper;
+import com.renxin.common.utils.OrderIdUtils;
 import com.renxin.course.constant.CourConstant;
+import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.CourOrder;
 import com.renxin.course.service.ICourOrderService;
 import com.renxin.course.service.ICourUserCourseSectionService;
 import com.renxin.gauge.constant.GaugeConstant;
+import com.renxin.gauge.domain.PsyGauge;
 import com.renxin.gauge.domain.PsyOrder;
 import com.renxin.gauge.domain.PsyOrderPay;
+import com.renxin.gauge.service.IPsyGaugeService;
 import com.renxin.gauge.service.IPsyOrderPayService;
 import com.renxin.gauge.service.IPsyOrderService;
 import com.renxin.psychology.constant.ConsultConstant;
@@ -32,6 +36,7 @@ import com.renxin.wechat.service.WechatPayV3ApiService;
 import com.renxin.wechat.vo.WechatPayVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -505,4 +510,34 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
             }
         }
     }
+
+    @Resource
+    private IPsyOrderService gaugeOrderService;
+    
+    //维护订单的支付参数
+    @Override
+    public void updatePayParam(WechatPayVO req){
+        String orderNo = req.getOutTradeNo();
+        String payParam = req.getPayParam();
+        switch (req.getModule()) {
+            case CourConstant.MODULE_COURSE:
+                CourOrder courOrder = courOrderService.selectCourOrderByOrderId(orderNo);
+                    courOrder.setPayParam(payParam);
+                courOrderService.updateCourOrder(courOrder);
+                break;
+            case GaugeConstant.MODULE_GAUGE:
+                PsyOrder gaugeOrder = gaugeOrderService.selectPsyOrderByOrderId(orderNo);
+                    gaugeOrder.setPayParam(payParam);
+                gaugeOrderService.updatePsyOrder(gaugeOrder);
+                break;
+            case ConsultConstant.MODULE_CONSULT:
+                OrderDTO consultOrder = psyConsultOrderService.getOrderDetailByNo(orderNo);
+                    consultOrder.setPayParam(payParam);
+                PsyConsultOrderVO orderVO = new PsyConsultOrderVO();
+                BeanUtils.copyProperties(consultOrder, orderVO);
+                psyConsultOrderService.update(orderVO);
+                break;
+        }
+    }
+    
 }
