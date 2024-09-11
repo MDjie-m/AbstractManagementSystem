@@ -1,11 +1,11 @@
 <template>
   <section class="app-main">
- {{$route.meta}}
+    {{ $route.meta }}
     <el-button @click="onDeviceTest">dd</el-button>
     <transition name="fade-transform" mode="out-in">
-        <router-view v-if="!$route.meta.link" :key="key" />
+      <router-view v-if="!$route.meta.link" :key="key"/>
     </transition>
-    <iframe-toggle />
+    <iframe-toggle/>
   </section>
 </template>
 
@@ -14,7 +14,7 @@ import iframeToggle from "./IframeToggle/index"
 
 export default {
   name: 'AppMain',
-  components: { iframeToggle },
+  components: {iframeToggle},
   computed: {
     cachedViews() {
       return this.$store.state.tagsView.cachedViews
@@ -22,11 +22,31 @@ export default {
     key() {
       return this.$route.path
     }
-  },methods:{
-    onDeviceTest(){
-       let obj={abc :"测试"}
-       let res=   window.DeviceMethod.callMethd(JSON.stringify(obj));
-       this.$modal.msgWarning(res)
+  }, methods: {
+    onDeviceTest() {
+      let obj = {deskNo: 1, open: true}
+      let type = "lightSwitch";
+      let msgId = "1111";
+
+
+
+      let res = window.DeviceMethod?.callMethd(type, JSON.stringify(obj), msgId);
+      let promise = new Promise((resolve => {
+        this.$modal.msgWarning("Call Run");
+        this.$registerPCMethod(type+msgId,resolve)
+      })).finally(()=>{
+        this.$removePCMethod(type+msgId)
+      });
+
+
+
+      // this.$registerPCMethod(type+msgId,p=>{
+      //   this.$modal.msgWarning(type+p);
+      //   this.$removePCMethod( type+msgId);
+      // })
+
+      //    this.$registerPCMethod(type,)
+
     }
   }
 }

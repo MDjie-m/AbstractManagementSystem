@@ -64,10 +64,13 @@ Vue.use(VueMeta)
 DictData.install()
 Vue.prototype.$eventBus = new Vue();
 
-const PcCallMethods = {};
+window.PcCallMethods = {abc:()=>{
+  Vue.prototype.$modal.msgWarning("hahahahah")
+  }};
 Vue.prototype.$registerPCMethod = (methodName, func) => {
   if (PcCallMethods[methodName]) {
-    throw new Error("方法名重复，无法注册")
+     Vue.prototype.$modal.msgWarning("方法名重复，无法注册");
+     return  false;
   }
   PcCallMethods[methodName] = func;
   return true;
@@ -76,10 +79,13 @@ Vue.prototype.$removePCMethod = (methodName) => {
   delete PcCallMethods[methodName]
 }
 window.onPCCall = function (type, msg) {
-  let failRes = {code: 500, msg: "未找到方法"};
+  let failRes = {code: 500, msg: `未找到[${type}]方法:`+Object.keys(PcCallMethods)};
+ // Vue.prototype.$modal.msgSuccess("调用 成功")
   if (!PcCallMethods[type]) {
+    Vue.prototype.$modal.msgSuccess("调用 失败"+JSON.stringify(failRes))
     return JSON.stringify(failRes);
   }
+  Vue.prototype.$modal.msgSuccess("调用 成功=======")
   return PcCallMethods[type](msg)
 }
 /**
