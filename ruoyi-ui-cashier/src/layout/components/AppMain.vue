@@ -1,9 +1,9 @@
 <template>
   <section class="app-main">
+ {{$route.meta}}
+    <el-button @click="onDeviceTest">dd</el-button>
     <transition name="fade-transform" mode="out-in">
-      <keep-alive :include="cachedViews">
         <router-view v-if="!$route.meta.link" :key="key" />
-      </keep-alive>
     </transition>
     <iframe-toggle />
   </section>
@@ -21,6 +21,12 @@ export default {
     },
     key() {
       return this.$route.path
+    }
+  },methods:{
+    onDeviceTest(){
+       let obj={abc :"测试"}
+       let res=   window.DeviceMethod.callMethd(JSON.stringify(obj));
+       this.$modal.msgWarning(res)
     }
   }
 }

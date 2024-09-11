@@ -7,7 +7,6 @@
 
 <script>
 import ThemePicker from "@/components/ThemePicker";
-
 export default {
   name: "App",
   components: { ThemePicker },

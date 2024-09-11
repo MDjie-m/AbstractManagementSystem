@@ -63,7 +63,7 @@ public interface SysMenuMapper
      * @param userId 用户ID
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuTreeByUserId(Long userId);
+    public List<SysMenu> selectMenuTreeByUserId(@Param("userId")Long userId,@Param("category")Integer category);
 
     /**
      * 根据角色ID查询菜单树信息

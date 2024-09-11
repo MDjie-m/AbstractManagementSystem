@@ -5,9 +5,10 @@
     <div :class="{hasTagsView:needTagsView,sidebarHide:sidebar.hide}" class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
         <navbar/>
-        <tags-view v-if="needTagsView"/>
+
       </div>
       <app-main/>
+
       <right-panel>
         <settings/>
       </right-panel>

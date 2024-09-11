@@ -12,13 +12,13 @@ import store from './store'
 import router from './router'
 import directive from './directive' // directive
 import plugins from './plugins' // plugins
-import { download } from '@/utils/request'
+import {download} from '@/utils/request'
 
 import './assets/icons' // icon
 import './permission' // permission control
-import { getDicts } from "@/api/system/dict/data";
-import { getConfigKey } from "@/api/system/config";
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
+import {getDicts} from "@/api/system/dict/data";
+import {getConfigKey} from "@/api/system/config";
+import {parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree} from "@/utils/ruoyi";
 // 分页组件
 import Pagination from "@/components/Pagination";
 // 自定义表格工具组件
@@ -62,7 +62,26 @@ Vue.use(directive)
 Vue.use(plugins)
 Vue.use(VueMeta)
 DictData.install()
+Vue.prototype.$eventBus = new Vue();
 
+const PcCallMethods = {};
+Vue.prototype.$registerPCMethod = (methodName, func) => {
+  if (PcCallMethods[methodName]) {
+    throw new Error("方法名重复，无法注册")
+  }
+  PcCallMethods[methodName] = func;
+  return true;
+}
+Vue.prototype.$removePCMethod = (methodName) => {
+  delete PcCallMethods[methodName]
+}
+window.onPCCall = function (type, msg) {
+  let failRes = {code: 500, msg: "未找到方法"};
+  if (!PcCallMethods[type]) {
+    return JSON.stringify(failRes);
+  }
+  return PcCallMethods[type](msg)
+}
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

@@ -5,6 +5,9 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -14,6 +17,8 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 
  * @author ruoyi
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class SysMenu extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -65,6 +70,10 @@ public class SysMenu extends BaseEntity
 
     /** 菜单图标 */
     private String icon;
+    /**
+     * 菜单分类(0=后台,1=收银,2=app)
+     */
+    private Integer menuCategory;
 
     /** 子菜单 */
     private List<SysMenu> children = new ArrayList<SysMenu>();

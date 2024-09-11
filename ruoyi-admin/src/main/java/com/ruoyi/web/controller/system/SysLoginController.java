@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.constant.LoginSystem;
+import com.ruoyi.common.enums.MenuCategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,7 +102,14 @@ public class SysLoginController
     public AjaxResult getRouters()
     {
         Long userId = SecurityUtils.getUserId();
-        List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId);
+        List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId, MenuCategory.BACKEND);
+        return AjaxResult.success(menuService.buildMenus(menus));
+    }
+    @GetMapping("getCashierRouters")
+    public AjaxResult getCashierRouters()
+    {
+        Long userId = SecurityUtils.getUserId();
+        List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId, MenuCategory.CASHIER);
         return AjaxResult.success(menuService.buildMenus(menus));
     }
 }
