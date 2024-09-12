@@ -192,6 +192,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     #{item}
                 </foreach>
             </if>
+            <if test="ableWaitDay != null and ableWaitDay != ''">
+                and id in 
+                (
+                    SELECT DISTINCT consult_id
+                    FROM psy_consult_work
+                    WHERE `day` BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL ${ableWaitDay} DAY)
+                        AND (live IS NOT NULL AND live != '[]' and live != used)
+                )
+            </if>
         </where>
         order by create_time desc 
     </select>

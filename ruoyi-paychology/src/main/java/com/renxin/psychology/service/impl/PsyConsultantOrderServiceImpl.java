@@ -523,9 +523,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     @Transactional(rollbackFor = Exception.class)
     public void paySuccessCallback(String outTradeNo, String payId) {
         PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
-        if (!consultantOrder.getPayId().equals(payId)){
+        /*if (!consultantOrder.getPayId().equals(payId)){
             throw new ServiceException("payId不相符, 请确认已付款成功");
-        }
+        }*/
 
         if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_TEAM_SUP)) {
             //团队督导 , 更新订单状态

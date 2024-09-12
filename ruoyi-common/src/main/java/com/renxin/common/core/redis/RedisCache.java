@@ -181,6 +181,9 @@ public class RedisCache
         // 清空原有列表
         redisTemplate.delete(key);
         // 添加新的
+        if (ObjectUtils.isEmpty(dataList)){
+           return 0;
+        }
         Long count = redisTemplate.opsForList().rightPushAll(key, dataList);
         return count == null ? 0 : count;
     }

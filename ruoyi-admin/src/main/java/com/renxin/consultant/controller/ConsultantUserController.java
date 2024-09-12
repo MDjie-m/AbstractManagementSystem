@@ -16,6 +16,7 @@ import com.renxin.consultant.common.dcloud.CloudFunctions;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultServeConfig;
+import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.request.PsyAdminConsultReq;
 import com.renxin.psychology.request.PsyConsultServeConfigReq;
 import com.renxin.psychology.request.QueryListByTypeReq;

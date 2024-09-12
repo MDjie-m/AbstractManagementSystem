@@ -20,6 +20,7 @@ import com.renxin.psychology.service.IPsyConsultServeConfigService;
 import com.renxin.psychology.service.IPsyConsultServeService;
 import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.vo.PsyConsultServeConfigVO;
+import com.renxin.psychology.vo.PsyConsultVO;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,13 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
             DateLimitUtilVO dateLimit = NewDateUtil.getDateLimit(req.getDateLimit());
             req.setStartTime(dateLimit.getStartTime());
             req.setEndTime(dateLimit.getEndTime());
+        }
+        
+        //查询consultant未关联的服务清单时, 筛选level与serviceObject相符
+        if (ObjectUtils.isNotEmpty(req.getNId())){
+            PsyConsultVO one = consultService.getOne(req.getNId());
+            req.setLevel(one.getLevel());
+            req.setServiceObject(one.getServiceObject());
         }
 
         List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getList(req);

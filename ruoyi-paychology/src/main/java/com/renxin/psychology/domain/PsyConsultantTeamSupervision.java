@@ -96,9 +96,12 @@ public class PsyConsultantTeamSupervision extends BaseEntity implements Serializ
     private Integer teamType;
 
 
-    /** 督导师 - 姓名 */
+    /** 督导师 - 登录名 */
     @TableField(exist = false)
     private String consultUserName;
+    /** 督导师 - 姓名 */
+    @TableField(exist = false)
+    private String consultNickName;
     /** 督导师 - 头像 */
     @TableField(exist = false)
     private String consultAvatar;

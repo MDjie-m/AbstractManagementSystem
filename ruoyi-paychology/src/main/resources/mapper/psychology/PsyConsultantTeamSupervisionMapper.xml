@@ -43,6 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <include refid="selectPsyConsultantTeamSupervisionVo"/>
             ,
             con.user_name as consultUserName,
+            con.nick_name as consultNickName,
             con.avatar as consultAvatar,
             con.img as consultImg,
             con.tabs as consultTabs,
@@ -97,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             DISTINCT con.id  as consultantId,
             cf.price  as price,
             con.user_name as consultUserName,
+            con.nick_name as consultNickName,
             con.avatar as consultAvatar,
             con.img as consultImg,
             con.tabs as consultTabs,
@@ -131,6 +133,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectPsyConsultantTeamSupervisionVo"/>
         ,
         con.user_name as consultUserName,
+        con.nick_name as consultNickName,
         con.avatar as consultAvatar,
         con.img as consultImg,
         con.tabs as consultTabs,

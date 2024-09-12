@@ -61,7 +61,7 @@ public class PsyConsultServeServiceImpl implements IPsyConsultServeService {
     }
 
     @Override
-    public int batchServeRef(PsyRefConsultServeReq req) {
+    public int batchServeRef(PsyRefConsultServeReq req,Boolean isRefreshConsultant) {
         List<PsyConsultServe> refs = new ArrayList<>();
         req.getIds().forEach(a -> {
             PsyConsultServe ref = new PsyConsultServe();
@@ -72,9 +72,10 @@ public class PsyConsultServeServiceImpl implements IPsyConsultServeService {
         int i = psyConsultServeMapper.batchServeRef(refs);
         
         //获取受影响的consultId清单, 刷新咨询师缓存
-        List<Long> consultIdList = refs.stream().map(p -> p.getConsultId()).distinct().collect(Collectors.toList());
-        consultService.refreshCacheByIdList(consultIdList);
-        
+        if (isRefreshConsultant){
+            List<Long> consultIdList = refs.stream().map(p -> p.getConsultId()).distinct().collect(Collectors.toList());
+            consultService.refreshCacheByIdList(consultIdList);
+        }
         return i;
     }
 

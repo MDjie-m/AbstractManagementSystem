@@ -370,7 +370,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         }
 
         Boolean execute = transactionTemplate.execute(e -> {
-            if (psyConsultServeConfigService.refConsultServe(req) == 0 || psyConsultServeService.batchServeRef(req) == 0) {
+            if (psyConsultServeConfigService.refConsultServe(req) == 0 || psyConsultServeService.batchServeRef(req,true) == 0) {
                 return Boolean.FALSE;
             }
 
@@ -567,8 +567,14 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         for (PsyConsult constant : consultantList) {
             ArrayList<Long> serverConfigIdList = new ArrayList<>();
             for (PsyConsultServeConfig serveConfig : serverList) {
+                if (ObjectUtils.isEmpty(serveConfig.getLevel()) || ObjectUtils.isEmpty(serveConfig.getServiceObject()) 
+                    || !"0".equals(serveConfig.getStatus())){
+                    continue;
+                }
+                
                 //判断[级别]与[服务对象]都相符
-                if (constant.getLevel().equals(serveConfig.getLevel()) && constant.getServiceObject().contains(serveConfig.getServiceObject())){
+                if (ObjectUtils.isNotEmpty(constant.getLevel()) && constant.getLevel().equals(serveConfig.getLevel()) 
+                        && ObjectUtils.isNotEmpty(constant.getServiceObject()) && constant.getServiceObject().contains(serveConfig.getServiceObject())){
                     serverConfigIdList.add(serveConfig.getId());
                 }
             }
@@ -577,7 +583,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
                 PsyRefConsultServeReq addReq = new PsyRefConsultServeReq();
                     addReq.setConsultId(constant.getId());
                     addReq.setIds(serverConfigIdList);
-                serveService.batchServeRef(addReq);
+                serveService.batchServeRef(addReq,false);
             }
         }
         //更新[咨询师表]中, 各咨询师的"关联服务数量"
@@ -719,31 +725,38 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         ////完整id清单
         List<Long> allIdList = allConsultantList.stream().map(p -> p.getId()).collect(Collectors.toList());
         redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "all",allIdList);
+
+        ////最近7天可约的id清单. 用以求交集
+        PsyConsultVO consultVO = new PsyConsultVO();
+        consultVO.setAbleWaitDay(7);
+        List<PsyConsult> last7DayList = psyConsultMapper.getList(consultVO);
+        List<Long> last7DayIdList = last7DayList.stream().map(p -> p.getId()).distinct().collect(Collectors.toList());
+        //redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "last7day",last7DayIdList);
+        Set<Long> last7dayConsultSet = new HashSet<>(last7DayIdList);
+        Set<Long> last7dayPersonSupSet = new HashSet<>(last7DayIdList);
+        Set<Long> last7dayPersonExpSet = new HashSet<>(last7DayIdList);
         
         ////支持来访者咨询的id清单
-        /*List<PsyConsult> consultList = psyConsultMapper.selectList(new LambdaQueryWrapper<PsyConsult>()
-                .select(PsyConsult::getId)
-                .eq(PsyConsult::getIsShow, 0)
-                .eq(PsyConsult::getStatus, 0)
-                .like(PsyConsult::getServiceObject, "1")
-        );*/
         PsyConsult consultReq = new PsyConsult();
         consultReq.setServiceObject("1");//服务来访者
         List<PsyConsult> consultList = psyConsultMapper.queryConsultantListByServiceObject(consultReq);
         List<Long> consultIdList = consultList.stream().map(p -> p.getId()).distinct().collect(Collectors.toList());
-        redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "consult",consultIdList);
+        last7dayConsultSet.retainAll(new HashSet<>(consultIdList));
+        redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "consult",new ArrayList<Long>(last7dayConsultSet));
         
         ////支持个人督导的id清单
         PsyConsultantTeamSupervision teamReq = new PsyConsultantTeamSupervision();
         teamReq.setTeamType(2);
         List<PsyConsultantTeamSupervision> personSupList = teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq);
         List<Long> personSupIdList = personSupList.stream().map(p -> p.getConsultantId()).distinct().collect(Collectors.toList());
-        redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "personSup",personSupIdList);
+        last7dayPersonSupSet.retainAll(new HashSet<>(personSupIdList));
+        redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "personSup",new ArrayList<Long>(last7dayPersonSupSet));
         ////支持个人体验的id清单
         teamReq.setTeamType(3);
         List<PsyConsultantTeamSupervision> personExpList = teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq);
         List<Long> personExpIdList = personExpList.stream().map(p -> p.getConsultantId()).distinct().collect(Collectors.toList());
-        redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "personExp",personExpIdList);
+        last7dayPersonExpSet.retainAll(new HashSet<>(personSupIdList));
+        redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "personExp",new ArrayList<Long>(last7dayPersonExpSet));
         
         /*Map<Integer, List<Long>> listMap =  allConsultantList.stream()
                 .collect(Collectors.groupingBy(

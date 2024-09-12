@@ -341,7 +341,7 @@ public class ConsultantOrderController extends BaseController
      * @return
      */
     @PostMapping("/paySuccess/callback")
-    public Map<String, String> payCallback(HttpServletRequest request) {
+    public Map<String, String> payCallback(@RequestBody PsyConsultantOrder consultantOrder, HttpServletRequest request) {
         Map<String, String> result = new HashMap<>(2);
         /*JSONObject res = wechatPayV3Utils.getCallbackData(request);
 
@@ -354,7 +354,7 @@ public class ConsultantOrderController extends BaseController
         //@TODO 处理支付成功后的业务 例如 将订单状态修改为已支付 具体参数键值可参考文档 注意！！！ 微信可能会多次发送重复的通知 因此要判断业务是否已经处理过了 避免重复处理
 
         //psyConsultantOrderService.wechatConsultantPayNotify(res.getString("out_trade_no"), res.getString("transaction_id"));
-        psyConsultantOrderService.paySuccessCallback("TC202408051728127073", "ca3ea4f0-ffcc-4313-a64d-427c5875990d");
+        psyConsultantOrderService.paySuccessCallback(consultantOrder.getOrderNo(), null);
         result.put("code", "SUCCESS");
         result.put("message", "OK");
         return result;

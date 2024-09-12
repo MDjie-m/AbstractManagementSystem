@@ -15,7 +15,7 @@ public interface IPsyConsultServeService {
 
     int getRefCountByConsultId(Long id);
 
-    int batchServeRef(PsyRefConsultServeReq req);
+    int batchServeRef(PsyRefConsultServeReq req, Boolean isRefreshConsultant);
 
     List<PsyConsultServeVO> getServeRef(PsyConsultServe req);
 
