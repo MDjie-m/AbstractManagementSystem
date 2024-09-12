@@ -669,7 +669,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         //本人已报名加入 - 团督id清单
         List<Long> memberTeamIdList = memberService.getBaseMapper().selectList(new LambdaQueryWrapper<PsyConsultantSupervisionMember>()
                 .select(PsyConsultantSupervisionMember::getTeamSupervisionId)
-                .eq(PsyConsultantSupervisionMember::getMemberId, id)).stream().map(p -> p.getId()).collect(Collectors.toList());
+                .eq(PsyConsultantSupervisionMember::getMemberId, id)).stream().map(p -> p.getTeamSupervisionId()).collect(Collectors.toList());
         teamSupervisionService.refreshCacheByIdList(memberTeamIdList);
 
     }
