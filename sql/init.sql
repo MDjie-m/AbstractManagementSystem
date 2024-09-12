@@ -48,7 +48,7 @@ create table t_store_tutor
     mobile         nvarchar(30)                          not null comment '手机号',
     user_img       nvarchar(200)                         not null comment '头像',
     sex            char(1)                               null comment '性别（0=男，1=女，2=未知）',
-    level          int                                   not null comment '助教等级',
+    level          int                                   not null comment '等级(1=助教，2=教练，3=总教)',
     status         int                                   not null comment '门店状态（0正常 1停用）',
     del_flag       char        default '0'               null comment '删除标志（0代表存在 2代表删除）',
     create_by      varchar(64) default ''                null comment '创建者',
@@ -542,5 +542,49 @@ create table t_desk_image
   DEFAULT CHARSET = utf8mb4
     comment '球桌抓拍等';
 
+
+
+drop table if exists t_desk_price;
+create table t_desk_price
+(
+    desk_price_id bigint                                not null comment 'ID'
+        primary key,
+    store_id         bigint              not null                  not null comment '抓拍时间',
+    desk_type         int                                 not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
+    price              decimal(10,2)                                null comment '价格',
+
+    create_by            varchar(64) default ''                null comment '创建者',
+    create_time          timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by            varchar(64) default ''                null comment '更新者',
+    update_time          timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id         bigint                                null comment '创建者Id',
+    update_by_id         bigint                                null comment '更新者Id',
+    remark               nvarchar(500)                         null comment '备注'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    comment '球桌价格';
+
+
+
+
+drop table if exists t_tutor_price;
+create table t_tutor_price
+(
+    tutor_price_id bigint                                not null comment 'ID'
+        primary key,
+    store_id         bigint              not null                  not null comment '抓拍时间',
+    level          int                                 not null comment '等级(1=助教，2=教练，3=总教)',
+    price              decimal(10,2)                                null comment '价格',
+
+    create_by            varchar(64) default ''                null comment '创建者',
+    create_time          timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by            varchar(64) default ''                null comment '更新者',
+    update_time          timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id         bigint                                null comment '创建者Id',
+    update_by_id         bigint                                null comment '更新者Id',
+    remark               nvarchar(500)                         null comment '备注'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    comment '教练价格';
 
 
