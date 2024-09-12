@@ -2,7 +2,7 @@
   <div v-if="!item.hidden">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" class="custom-menu" :class="{'submenu-title-noDropdown':!isNest}">
+        <el-menu-item  :index="resolvePath(onlyOneChild.path)" class="custom-menu" :class="{'submenu-title-noDropdown':!isNest,'selected-menu':checkSelected(item)}">
           <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
         </el-menu-item>
       </app-link>
@@ -30,10 +30,16 @@ import { isExternal } from '@/utils/validate'
 import Item from './Item'
 import AppLink from './Link'
 import FixiOSBug from './FixiOSBug'
+import variables from "@/assets/styles/variables.scss";
 
 export default {
   name: 'SidebarItem',
   components: { Item, AppLink },
+  computed:{
+    variables() {
+      return variables;
+    },
+  },
   mixins: [FixiOSBug],
   props: {
     // route object
@@ -55,6 +61,19 @@ export default {
     return {}
   },
   methods: {
+    checkSelected(item){
+      console.log(111)
+      if(item.path===this.$route.path){
+        return true;
+      }
+      let children= (item.children||[]);
+      for (let child of children) {
+        if(child.path ===this.$route.path){
+          return  true
+        }
+      }
+      return  false
+    },
     hasOneShowingChild(children = [], parent) {
       if (!children) {
         children = [];
@@ -98,7 +117,8 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+
 .custom-menu{
   display: flex;
   flex-direction: column;

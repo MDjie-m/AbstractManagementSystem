@@ -10,7 +10,9 @@
   .sidebarHide {
     margin-left: 0!important;
   }
-
+  .selected-menu,.el-menu-item.is-active{
+    background-color: $base-menu-color-active!important;
+  }
   .sidebar-container {
     -webkit-transition: width .28s;
     transition: width 0.28s;

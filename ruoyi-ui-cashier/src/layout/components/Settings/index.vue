@@ -106,6 +106,7 @@ export default {
         return this.$store.state.settings.topNav
       },
       set(val) {
+
         this.$store.dispatch('settings/changeSetting', {
           key: 'topNav',
           value: val
@@ -123,7 +124,7 @@ export default {
       set(val) {
         this.$store.dispatch('settings/changeSetting', {
           key: 'tagsView',
-          value: val
+          value: false
         })
       }
     },
@@ -134,7 +135,7 @@ export default {
       set(val) {
         this.$store.dispatch('settings/changeSetting', {
           key: 'sidebarLogo',
-          value: val
+          value: false
         })
       }
     },
@@ -143,10 +144,7 @@ export default {
         return this.$store.state.settings.dynamicTitle
       },
       set(val) {
-        this.$store.dispatch('settings/changeSetting', {
-          key: 'dynamicTitle',
-          value: val
-        })
+
       }
     },
   },
