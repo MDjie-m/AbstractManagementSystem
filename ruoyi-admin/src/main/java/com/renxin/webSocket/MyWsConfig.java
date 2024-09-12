@@ -21,7 +21,7 @@ public class MyWsConfig implements WebSocketConfigurer {
     MyWsInterceptor myWsInterceptor;
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(myWsHandler,"/myWs1")
+        registry.addHandler(myWsHandler,"/message")
                 .addInterceptors(myWsInterceptor)
                 .setAllowedOrigins("*");
     }
