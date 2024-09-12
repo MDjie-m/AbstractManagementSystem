@@ -93,9 +93,7 @@ create table t_member_level
     member_level_id bigint auto_increment                 not null comment 'ID'
         primary key,
     level_name      nvarchar(60)                          not null comment '会员等级',
-    discount        decimal(4, 2)                         not null comment '折扣力度',
-    start_amount    decimal(20, 2)                        not null comment '开始金额',
-    end_amount      decimal(20, 2)                        not null comment '结束金额',
+    discount        decimal(4, 2)                         not null comment '折扣力度 95折就填写95',
     store_id        decimal(20, 2)                        not null comment '门店',
     create_by       varchar(64) default ''                null comment '创建者',
     create_time     timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
@@ -106,6 +104,23 @@ create table t_member_level
     remark          nvarchar(500)                         null comment '备注'
 )
     comment '门店会员等级';
+drop table if exists t_level_discount_permission;
+create table t_level_discount_permission
+(
+    level_discount_permission_id bigint                   not null comment 'ID'
+        primary key,
+    member_level_id  bigint                   not null comment '等级id',
+    value      int                         not null comment '打折类型：{1=球桌费用， 3=商品购买,4=陪练费用，5=教学费用} ',
+    discount        decimal(4, 2)                         not null comment '折扣力度',
+    create_by       varchar(64) default ''                null comment '创建者',
+    create_time     timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by       varchar(64) default ''                null comment '更新者',
+    update_time     timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id    bigint                                null comment '创建者Id',
+    update_by_id    bigint                                null comment '更新者Id',
+    remark          nvarchar(500)                         null comment '备注'
+)
+    comment '等级折扣范围';
 
 drop table if exists t_store_desk;
 create table t_store_desk
