@@ -128,4 +128,6 @@ public interface SysUserMapper extends MyBaseMapper<SysUser>
      * @return 结果
      */
     public SysUser checkEmailUnique(String email);
+
+    Long selectStoreIdByUserId(@Param("userId") Long userId);
 }

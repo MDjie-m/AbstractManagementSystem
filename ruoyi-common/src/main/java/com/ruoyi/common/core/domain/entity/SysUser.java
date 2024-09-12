@@ -119,6 +119,9 @@ public class SysUser extends BaseEntity
     @TableField(exist = false)
     private Long roleId;
 
+    @TableField(exist = false)
+    private Long storeId;
+
     public SysUser()
     {
 
@@ -129,15 +132,6 @@ public class SysUser extends BaseEntity
         this.userId = userId;
     }
 
-    public Long getUserId()
-    {
-        return userId;
-    }
-
-    public void setUserId(Long userId)
-    {
-        this.userId = userId;
-    }
 
     public boolean isAdmin()
     {
@@ -149,15 +143,7 @@ public class SysUser extends BaseEntity
         return userId != null && 1L == userId;
     }
 
-    public Long getDeptId()
-    {
-        return deptId;
-    }
 
-    public void setDeptId(Long deptId)
-    {
-        this.deptId = deptId;
-    }
 
     @Xss(message = "用户昵称不能包含脚本字符")
     @Size(min = 0, max = 30, message = "用户昵称长度不能超过30个字符")
@@ -166,10 +152,6 @@ public class SysUser extends BaseEntity
         return nickName;
     }
 
-    public void setNickName(String nickName)
-    {
-        this.nickName = nickName;
-    }
 
     @Xss(message = "用户账号不能包含脚本字符")
     @NotBlank(message = "用户账号不能为空")
@@ -179,10 +161,7 @@ public class SysUser extends BaseEntity
         return userName;
     }
 
-    public void setUserName(String userName)
-    {
-        this.userName = userName;
-    }
+
 
     @Email(message = "邮箱格式不正确")
     @Size(min = 0, max = 50, message = "邮箱长度不能超过50个字符")
@@ -191,10 +170,7 @@ public class SysUser extends BaseEntity
         return email;
     }
 
-    public void setEmail(String email)
-    {
-        this.email = email;
-    }
+
 
     @Size(min = 0, max = 11, message = "手机号码长度不能超过11个字符")
     public String getPhonenumber()
@@ -202,130 +178,7 @@ public class SysUser extends BaseEntity
         return phonenumber;
     }
 
-    public void setPhonenumber(String phonenumber)
-    {
-        this.phonenumber = phonenumber;
-    }
 
-    public String getSex()
-    {
-        return sex;
-    }
-
-    public void setSex(String sex)
-    {
-        this.sex = sex;
-    }
-
-    public String getAvatar()
-    {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar)
-    {
-        this.avatar = avatar;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    public void setPassword(String password)
-    {
-        this.password = password;
-    }
-
-    public String getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(String status)
-    {
-        this.status = status;
-    }
-
-    public String getDelFlag()
-    {
-        return delFlag;
-    }
-
-    public void setDelFlag(String delFlag)
-    {
-        this.delFlag = delFlag;
-    }
-
-    public String getLoginIp()
-    {
-        return loginIp;
-    }
-
-    public void setLoginIp(String loginIp)
-    {
-        this.loginIp = loginIp;
-    }
-
-    public Date getLoginDate()
-    {
-        return loginDate;
-    }
-
-    public void setLoginDate(Date loginDate)
-    {
-        this.loginDate = loginDate;
-    }
-
-    public SysDept getDept()
-    {
-        return dept;
-    }
-
-    public void setDept(SysDept dept)
-    {
-        this.dept = dept;
-    }
-
-    public List<SysRole> getRoles()
-    {
-        return roles;
-    }
-
-    public void setRoles(List<SysRole> roles)
-    {
-        this.roles = roles;
-    }
-
-    public List<Long> getRoleIds()
-    {
-        return roleIds;
-    }
-
-    public void setRoleIds(List<Long> roleIds)
-    {
-        this.roleIds = roleIds;
-    }
-
-    public Long[] getPostIds()
-    {
-        return postIds;
-    }
-
-    public void setPostIds(Long[] postIds)
-    {
-        this.postIds = postIds;
-    }
-
-    public Long getRoleId()
-    {
-        return roleId;
-    }
-
-    public void setRoleId(Long roleId)
-    {
-        this.roleId = roleId;
-    }
 
     @Override
     public String toString() {
@@ -351,4 +204,6 @@ public class SysUser extends BaseEntity
             .append("dept", getDept())
             .toString();
     }
+
+
 }

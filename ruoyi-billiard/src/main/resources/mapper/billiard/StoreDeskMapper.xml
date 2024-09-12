@@ -28,10 +28,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectStoreDeskVo">
-        select   a.*,b.store_name ,c.device_name as lightName,d.device_name as cameraName
+        select   a.*,b.store_name,f.price ,c.device_name as lightName,d.device_name as cameraName
         from t_store_desk a join  t_store b on a.store_id=b.store_id
         left join  t_device c on  c.device_id=a.light_device_id
         left join  t_device d on  d.device_id=a.camera_device_id
+        left join  t_desk_price f on  a.desk_type=f.desk_type and a.store_id=f.store_id
     </sql>
 
     <select id="selectStoreDeskList" parameterType="StoreDesk" resultMap="StoreDeskResult">
@@ -72,7 +73,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deskType != null">desk_type,</if>
             <if test="placeType != null">place_type,</if>
             <if test="storeId != null">store_id,</if>
-            <if test="price != null">price,</if>
             <if test="status != null">status,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -91,7 +91,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deskType != null">#{deskType},</if>
             <if test="placeType != null">#{placeType},</if>
             <if test="storeId != null">#{storeId},</if>
-            <if test="price != null">#{price},</if>
             <if test="status != null">#{status},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -113,7 +112,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="deskType != null">desk_type = #{deskType},</if>
             <if test="placeType != null">place_type = #{placeType},</if>
             <if test="storeId != null">store_id = #{storeId},</if>
-            <if test="price != null">price = #{price},</if>
             <if test="status != null">status = #{status},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>

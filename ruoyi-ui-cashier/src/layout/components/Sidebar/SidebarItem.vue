@@ -62,7 +62,6 @@ export default {
   },
   methods: {
     checkSelected(item){
-      console.log(111)
       if(item.path===this.$route.path){
         return true;
       }

@@ -193,9 +193,9 @@
 
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
-                <el-form-item label="价格" prop="price">
-                  <el-input-number v-model="form.price"  controls-position="left" :precision="2" :step="0.01" :max="100" :min="0.01"  ></el-input-number>元/分钟
+              <el-col :span="12" v-if="form.deskId">
+                <el-form-item label="价格" prop="price" >
+                   {{form.price}}元/分钟
                 </el-form-item>
               </el-col>
             </el-row>
@@ -340,9 +340,7 @@ export default {
         storeId: [
           { required: true, message: "门店不能为空", trigger: "change" }
         ],
-        price: [
-          { required: true, message: "价格不能为空", trigger: "blur" }
-        ],
+
         createTime: [
           { required: true, message: "创建时间不能为空", trigger: "blur" }
         ],
@@ -399,7 +397,6 @@ export default {
         deskType: null,
         placeType: null,
         storeId: null,
-        price: null,
         status: null,
         createBy: null,
         createTime: null,

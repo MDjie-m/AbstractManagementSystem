@@ -44,6 +44,8 @@ public interface ISysUserService
      */
     public SysUser selectUserByUserName(String userName);
 
+    Long selectUserStoreId(Long userId);
+
     public SysUser selectUserByMobile(  String mobile,@Nullable Long storeId);
 
     /**

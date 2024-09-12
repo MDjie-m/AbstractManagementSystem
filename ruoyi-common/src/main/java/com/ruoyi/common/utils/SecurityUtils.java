@@ -37,7 +37,17 @@ public class SecurityUtils
             throw new ServiceException("获取用户ID异常", HttpStatus.UNAUTHORIZED);
         }
     }
-
+    public static Long getStoreId()
+    {
+        try
+        {
+            return getLoginUser().getUser().getStoreId();
+        }
+        catch (Exception e)
+        {
+            throw new ServiceException("获取用户门店异常", HttpStatus.UNAUTHORIZED);
+        }
+    }
     /**
      * 获取部门ID
      **/

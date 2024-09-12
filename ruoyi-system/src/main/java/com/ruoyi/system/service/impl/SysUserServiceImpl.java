@@ -123,6 +123,11 @@ public class SysUserServiceImpl implements ISysUserService
     }
 
     @Override
+    public Long selectUserStoreId(Long userId) {
+        return userMapper.selectStoreIdByUserId(userId);
+    }
+
+    @Override
     public SysUser selectUserByMobile(String mobile, Long storeId) {
         return userMapper.selectUserByMobile(mobile,storeId);
     }

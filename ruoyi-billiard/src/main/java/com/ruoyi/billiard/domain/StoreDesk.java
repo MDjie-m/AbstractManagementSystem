@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
@@ -18,6 +17,9 @@ import com.ruoyi.common.core.domain.MyBaseEntity;
 @TableName("t_store_desk")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class StoreDesk extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -60,7 +62,7 @@ public class StoreDesk extends MyBaseEntity
     /** 价格/分钟 */
     @Excel(name = "价格/分钟")
 
-    @TableField("price")
+    @TableField(exist = false)
     private BigDecimal price;
 
     /** 状态：0=空闲，1=计时中，2=暂停,3=已停止 */

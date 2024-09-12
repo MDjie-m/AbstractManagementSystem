@@ -134,7 +134,6 @@ create table t_store_desk
     store_id         bigint                                not null comment '门店',
     light_device_id  bigint                                null comment '灯光id',
     camera_device_id bigint                                null comment '摄像头设备id',
-    price            decimal(10, 2)                        not null comment '价格/分钟',
     status           int                                   not null comment '状态：0=空闲，1=计时中，2=暂停,3=已停止',
     create_by        varchar(64) default ''                null comment '创建者',
     create_time      timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',

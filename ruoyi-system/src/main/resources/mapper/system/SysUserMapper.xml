@@ -156,8 +156,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select a.* from sys_user a where a.user_name=#{mobile}
         )c limit 1
     </select>
+    <select id="selectStoreIdByUserId" resultType="java.lang.Long">
+        select store_id
+        from (select store_id
+              from t_store_tutor
+              where login_user_id = #{userId}
+              union all
+              select store_id
+              from t_store_user
+              where login_user_id = #{userId}) a
+        limit 1
+    </select>
 
-	<insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
+    <insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
  		insert into sys_user(
  			<if test="userId != null and userId != 0">user_id,</if>
  			<if test="deptId != null and deptId != 0">dept_id,</if>
