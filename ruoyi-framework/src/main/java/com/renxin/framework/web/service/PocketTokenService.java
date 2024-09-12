@@ -84,6 +84,21 @@ public class PocketTokenService {
         }
         return null;
     }
+    
+    public LoginDTO getLoginUser(String token) {
+        if (StringUtils.isNotEmpty(token)) {
+            try {
+                Claims claims = parseToken(token);
+                // 解析对应的权限以及用户信息
+                String uuid = (String) claims.get(Constants.APP_LOGIN_USER_KEY);
+                String userKey = getTokenKey(uuid);
+                LoginDTO user = redisCache.getCacheObject(userKey);
+                return user;
+            } catch (Exception e) {
+            }
+        }
+        return null;
+    }
 
     /**
      * 设置用户身份信息
