@@ -1,7 +1,5 @@
 <template>
   <section class="app-main">
-    {{ $route.meta }}
-    <el-button @click="onDeviceTest">dd</el-button>
     <transition name="fade-transform" mode="out-in">
       <router-view v-if="!$route.meta.link" :key="key"/>
     </transition>
@@ -11,6 +9,7 @@
 
 <script>
 import iframeToggle from "./IframeToggle/index"
+import {callPCMethod} from "@/utils/pcCommunication";
 
 export default {
   name: 'AppMain',
@@ -26,20 +25,11 @@ export default {
     onDeviceTest() {
       let obj = {deskNo: 1, open: true}
       let type = "lightSwitch";
-      let msgId = "1111";
 
-
-
-      let res = window.DeviceMethod?.callMethd(type, JSON.stringify(obj), msgId);
-      let promise = new Promise((resolve => {
-        this.$modal.msgWarning("Call Run");
-        this.$registerPCMethod(type+msgId,resolve)
-      })).finally(()=>{
-        this.$removePCMethod(type+msgId)
-      });
-
-
-
+      callPCMethod(type,obj).then(val=>{
+        console.log("--returen:"+val)
+        this.$modal.msgSuccess("oOK:"+val)
+      })
       // this.$registerPCMethod(type+msgId,p=>{
       //   this.$modal.msgWarning(type+p);
       //   this.$removePCMethod( type+msgId);
