@@ -63,4 +63,7 @@ public class PsyConsultReq extends BaseValObj implements Serializable
     /** 0-and 1-or */
     private String nand;
 
+    //筛选最近几天内可约
+    private Integer ableWaitDay;
+
 }

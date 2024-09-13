@@ -72,10 +72,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     </if>
                 </otherwise>
             </choose>
+            <if test="ableWaitDay != null">
+                and id in
+                (
+                SELECT DISTINCT consult_id
+                FROM psy_consult_work
+                WHERE `day` BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL ${ableWaitDay} DAY)
+                AND (live IS NOT NULL AND live != '[]' and live != used)
+                )
+            </if>
             <if test="(time != null  and time != '') or (days != null and days.size() > 0)">
                 and id in (
                     SELECT consult_id FROM psy_consult_work WHERE `status` = 0 and consult_id = psy_consult.id
-                    <choose>
+                    <!--<choose>
                         <when test="time != null and time = '上午'">
                             and `time_start` <![CDATA[>=]]> '06:00' and `time_end` <![CDATA[<=]]> '12:00'
                         </when>
@@ -86,16 +95,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                             and `time_start` <![CDATA[>=]]> '18:00' and `time_end` <![CDATA[<=]]> '24:00'
                         </when>
                         <otherwise/>
-                    </choose>
-                    <if test="days != null and days.size() > 0">
+                    </choose>-->
+                <if test="time != null and time == '上午'">
+                    and times like concat('%',#{time},'%')
+                </if>
+                
+                <if test="days != null and days.size() > 0">
                         and `day` in
                         <foreach collection="days" index="index" item="item" open="(" separator="," close=")">
                             #{item,jdbcType=VARCHAR}
                         </foreach>
-                    </if>
-                    GROUP BY consult_id
+                </if>
+                GROUP BY consult_id
                 )
-             </if>
+            </if>
         </where>
         order by IF(isnull(new_price),1,0), new_price asc, IF(isnull(price),1,0), price asc, id asc
     </select>
