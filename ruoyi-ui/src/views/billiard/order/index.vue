@@ -375,16 +375,10 @@ import {
   getsAnEnumerationOfPaymentMethods
 } from "@/api/billiard/order";
 import StoreContainer from "@/views/billiard/component/storeContainer.vue";
-import item from "../../../layout/components/Sidebar/Item.vue";
 
 
 export default {
   name: "Order",
-  computed: {
-    item() {
-      return item
-    }
-  },
   components: {StoreContainer},
   dicts: ['order_tutor'],
   data() {
