@@ -11,6 +11,7 @@ import com.renxin.common.core.domain.dto.ConsultLoginDTO;
 import com.renxin.common.core.domain.entity.SysDictType;
 import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.common.core.redis.RedisCache;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.PageUtils;
 import com.renxin.consultant.common.dcloud.CloudFunctions;
 import com.renxin.framework.web.service.ConsultantTokenService;
@@ -20,10 +21,7 @@ import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.request.PsyAdminConsultReq;
 import com.renxin.psychology.request.PsyConsultServeConfigReq;
 import com.renxin.psychology.request.QueryListByTypeReq;
-import com.renxin.psychology.service.IPsyConsultConfigService;
-import com.renxin.psychology.service.IPsyConsultServeConfigService;
-import com.renxin.psychology.service.IPsyConsultServeService;
-import com.renxin.psychology.service.IPsyConsultService;
+import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultServeConfigVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.system.service.ISysDictDataService;
@@ -40,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/consultant/user")
@@ -63,6 +62,9 @@ public class ConsultantUserController extends BaseController {
     
     @Resource
     private IPsyConsultServeConfigService serveConfigService;
+    
+    @Resource
+    private IPsyConsultantAccountService accountService;
 
     @Resource
     private RedisCache redisCache;
@@ -81,6 +83,9 @@ public class ConsultantUserController extends BaseController {
             consultDTO.setPhone( psyConsult.getPhonenumber());
             String token= consultantTokenService.createToken(consultDTO,360000);
             
+            //若无账户则创建
+            accountService.createAccountIfNotExist(psyConsult.getId());
+            
             //更新设备信息
             psyConsult.setDeviceId(consultLoginDTO.getDeviceId());
             psyConsult.setDeviceBrand(consultLoginDTO.getDeviceBrand());
@@ -94,6 +99,38 @@ public class ConsultantUserController extends BaseController {
             return AjaxResult.error("login error");
         }
     }
+
+    @PostMapping("/getLoginCode")
+    public AjaxResult getLoginCode(@RequestBody ConsultLoginDTO req)
+    {
+        String code = UUID.randomUUID().toString().substring(0,6);
+        redisCache.setCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + req.getPhone(),code);
+        return AjaxResult.success(code);
+    }
+
+    @PostMapping("/loginByPhoneCode")
+    public AjaxResult loginByPhoneCode(@RequestBody ConsultLoginDTO req)
+    {
+        String code = redisCache.getCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + req.getPhone());
+        if (!req.getLoginCodeByPhone().equals(code)){
+            throw new ServiceException("验证码与手机号不相符");
+        }
+
+        PsyConsultVO consultReq = new PsyConsultVO();
+        PsyConsult byPhone = psyConsultService.getByPhone(req.getPhone());
+        if (ObjectUtils.isEmpty(byPhone)){
+            throw new ServiceException("该手机号无相符的咨询师");
+        }
+        
+        ConsultDTO consultDTO=new ConsultDTO();
+            consultDTO.setConsultId(byPhone.getId());
+            consultDTO.setPhone(byPhone.getPhonenumber());
+        String token= consultantTokenService.createToken(consultDTO,360000);
+
+        return AjaxResult.success(Constants.TOKEN_PREFIX + token);
+    }
+    
+    
 
     @PostMapping("/info")
     public AjaxResult getUserInfo(HttpServletRequest request)

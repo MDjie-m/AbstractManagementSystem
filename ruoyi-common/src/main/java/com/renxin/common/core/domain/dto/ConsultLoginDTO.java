@@ -22,6 +22,9 @@ public class ConsultLoginDTO  {
 
    //最后登录ip
    private String lastLoginIp;
+   
+   private String phone;
+   private String loginCodeByPhone;
 
 
 }

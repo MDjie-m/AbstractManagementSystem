@@ -60,4 +60,9 @@ public interface IPsyConsultantAccountService
      * @return 结果
      */
     public int deletePsyConsultantAccountByConsultantId(Long consultantId);
+
+    /**
+     * 创建账户
+     */
+    public void createAccountIfNotExist(Long consultantId);
 }

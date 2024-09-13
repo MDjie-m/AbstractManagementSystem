@@ -113,6 +113,10 @@ public class CacheConstants
      */
     public static final String CONSULTANT_BY_ID_KEY = "consultant_by_id";
 
+    /**
+     * 登录验证码 redis key
+     */
+    public static final String PHONE_LOGIN_CODE = "phone_login_code";
 
     
 }

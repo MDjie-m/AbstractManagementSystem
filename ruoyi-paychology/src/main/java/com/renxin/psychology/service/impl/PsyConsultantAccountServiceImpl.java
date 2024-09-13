@@ -1,10 +1,12 @@
 package com.renxin.psychology.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.psychology.domain.PsyConsultantAccount;
 import com.renxin.psychology.mapper.PsyConsultantAccountMapper;
 import com.renxin.psychology.service.IPsyConsultantAccountService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -97,5 +99,20 @@ public class PsyConsultantAccountServiceImpl implements IPsyConsultantAccountSer
     public int deletePsyConsultantAccountByConsultantId(Long consultantId)
     {
         return psyConsultantAccountMapper.deletePsyConsultantAccountByConsultantId(consultantId);
+    }
+
+    /**
+     * 创建账户
+     */
+    @Override
+    public void createAccountIfNotExist(Long consultantId){
+        PsyConsultantAccount account = psyConsultantAccountMapper.selectPsyConsultantAccountByConsultantId(consultantId);
+        
+        if (ObjectUtils.isEmpty(account)){
+            PsyConsultantAccount newAccount = new PsyConsultantAccount();
+            newAccount.setConsultantId(consultantId);
+            newAccount.setAmount(BigDecimal.ZERO);
+            psyConsultantAccountMapper.insertPsyConsultantAccount(newAccount);
+        }
     }
 }
