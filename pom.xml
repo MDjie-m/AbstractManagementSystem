@@ -33,6 +33,9 @@
         <jwt.version>0.9.1</jwt.version>
         <knife4j.version>3.0.3</knife4j.version>
         <swagger-annotations.version>1.5.22</swagger-annotations.version>
+        <dynamic-ds.version>3.5.1</dynamic-ds.version>
+        <mybatis-plus.version>3.5.6</mybatis-plus.version>
+        <lock4j.version>2.2.1</lock4j.version>
 
         <!-- 工作流配置 -->
         <activiti.version>6.0.0</activiti.version>
@@ -134,6 +137,31 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons.io.version}</version>
+            </dependency>
+
+            <!-- dynamic-datasource 多数据源 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${dynamic-ds.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-extension</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>lock4j-redisson-spring-boot-starter</artifactId>
+                <version>${lock4j.version}</version>
             </dependency>
 
             <!-- excel工具 -->
