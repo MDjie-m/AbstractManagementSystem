@@ -7,13 +7,21 @@
   flex: 1;
   overflow: hidden;
   flex-direction: column;
+  .el-tabs{
+    height: calc(100% - 60px);
+    position: relative;
+    ::v-deep.el-tabs__content{
+      height: 100%!important;
+    }
+  }
   .line-up-tabs{
-     height: calc(100% - 90px);
+
+    height:90%;overflow-y:auto;overflow-x:hidden;
   }
   .num-container{
     display: flex;
     gap: 10px;
-    min-height: 80%;
+    overflow-y: hidden;
     flex-wrap: wrap;
     .num-item{
       width: calc( (100% - 10px)/2);
@@ -22,6 +30,12 @@
       border-radius: 10px;
       align-items: center;
       padding : 10px;
+      &:hover{
+        background-color: $--color-primary;
+        .num-item-text{
+          color: #FFFFFF;
+        }
+      }
       &-text{
         flex: 1;
         padding-left: 20px;
@@ -41,6 +55,8 @@
 
   .line-up-footer{
      margin-top: auto;
+     padding-top: 20px;
+    background-color: #FFFFFF;
 
   }
 }
