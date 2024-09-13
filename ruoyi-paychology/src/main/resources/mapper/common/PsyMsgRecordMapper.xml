@@ -46,7 +46,17 @@
             <if test="param3 != null  and param3 != ''"> and param_3 = #{param3}</if>
             <if test="param4 != null  and param4 != ''"> and param_4 = #{param4}</if>
             <if test="param5 != null  and param5 != ''"> and param_5 = #{param5}</if>
+             
+             <if test="talkUserId1 != null and talkUserId1 != '' and talkUserType1 != null and talkUserType1 != ''
+                    and talkUserId2 != null and talkUserId2 != '' and talkUserType2 != null and talkUserType2 != ''">
+             and (
+                   ( send_user_id = #{talkUserId1} and send_user_type = #{talkUserType1} and receive_user_id = #{talkUserId2} and receive_user_type = #{talkUserType2} )
+                or ( send_user_id = #{talkUserId2} and send_user_type = #{talkUserType2} and receive_user_id = #{talkUserId1} and receive_user_type = #{talkUserType1} )
+                 )
+                 
+             </if>   
         </where>
+        order by send_time desc 
     </select>
 
     <select id="selectPsyMsgRecordById" parameterType="Long" resultMap="PsyMsgRecordResult">

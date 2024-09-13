@@ -1,24 +1,22 @@
-package com.renxin.consultant.controller;
+package com.renxin.pocket.controller.msg;
 
 
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.common.domain.PsyMsgRecord;
-import com.renxin.common.enums.BusinessType;
 import com.renxin.common.service.IPsyMsgRecordService;
-import com.renxin.common.utils.poi.ExcelUtil;
 import com.renxin.framework.web.service.ConsultantTokenService;
+import com.renxin.framework.web.service.PocketTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -28,18 +26,18 @@ import java.util.List;
  * @date 2024-09-11
  */
 @RestController
-@RequestMapping("/consultant/msgRecord")
-public class ConsultantMsgRecordController extends BaseController
+@RequestMapping("/pocket/msgRecord")
+public class PocketMsgRecordController extends BaseController
 {
     @Autowired
     private IPsyMsgRecordService psyMsgRecordService;
 
    /* @Autowired
     private SimpMessagingTemplate messagingTemplate;*/
-
-    @Resource
-    ConsultantTokenService consultantTokenService;
     
+    @Resource
+    private PocketTokenService pocketTokenService;
+
     /**
      * 查询消息记录列表
      */
@@ -47,13 +45,13 @@ public class ConsultantMsgRecordController extends BaseController
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody PsyMsgRecord req, HttpServletRequest request)
     {
-        Long consultId = consultantTokenService.getConsultId(request);
+        Long userId = pocketTokenService.getUserId(request);
         startPage();
 
         req.setTalkUserId1(req.getTalkUserId());
-        req.setTalkUserType1(req.getTalkUserType());//咨询师
-        req.setTalkUserId2(consultId);
-        req.setTalkUserType2(2);//咨询师
+        req.setTalkUserType1(req.getTalkUserType());
+        req.setTalkUserId2(userId);
+        req.setTalkUserType2(1);//来访者
         List<PsyMsgRecord> list = psyMsgRecordService.selectPsyMsgRecordList(req);
         return getDataTable(list);
     }
@@ -63,14 +61,14 @@ public class ConsultantMsgRecordController extends BaseController
      */
     //@PreAuthorize("@ss.hasPermi('system:record:add')")
     //@PostMapping("/sendMsg")
-    @MessageMapping("/chat.addUser")
+/*    @MessageMapping("/chat.addUser")
     public AjaxResult add(@RequestBody PsyMsgRecord psyMsgRecord, HttpServletRequest request)
     {
         Long consultId = consultantTokenService.getConsultId(request);
             psyMsgRecord.setSendUserId(consultId);
             psyMsgRecord.setSendUserType(2);//咨询师
         return toAjax(psyMsgRecordService.insertPsyMsgRecord(psyMsgRecord));
-    }
+    }*/
     
 
     /**
