@@ -27,6 +27,17 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="标签" prop="label" v-if="isTeamType()">
+        <el-select v-model="selectedLabelList" clearable multiple >
+          <el-option
+            v-for="item in teamSupLabelList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.label"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="期数" prop="periodNo" v-if="isTeamType()" disabled>
         第<el-input-number v-model="form.periodNo" :min="0" :step="1" :precision="0" disabled/> 期
       </el-form-item>
@@ -95,7 +106,7 @@
 
 <script>
 import {addTeam, editTeam} from "@/api/supervision/team";
-import {weekDay} from "@/utils/constants";
+import {teamSupLabel, weekDay} from "@/utils/constants";
 
 export default {
   name: "editForm",
@@ -112,7 +123,10 @@ export default {
       type: 'edit',// tryAdd
       supervisionType: this.$constants.supervisionType,
       weekDay: this.$constants.weekDay,
-      form: {},
+      teamSupLabelList: this.$constants.teamSupLabel,
+      selectedLabelList:[],
+      form: {
+      },
       // 上传
       extraData: {
         module: this.$constants['picModules'][2],
@@ -161,6 +175,10 @@ export default {
       data.consultAvatar = '';
       data.consultDetail = '';
       this.form = data;
+      if (this.form.label){
+        this.selectedLabelList = this.form.label.split(",");
+      }
+
 
      /* this.form.consultantId = data.consultantId;
       this.form.cycleNumber = data.cycleNumber;
@@ -185,6 +203,7 @@ export default {
       this.open = true
     },
 
+
     onChangeTime(val) {
       if (val && val.length > 0) {
         this.form.startTime = val[0] + ' 00:00:00'
@@ -201,6 +220,7 @@ export default {
     submitForm() {
       this.$refs["form"].validate(async valid => {
         if (valid) {
+          this.form.label = this.selectedLabelList.join(",");
           const that = this
           // 查询是否存在有效的合同
           /*const req = {

@@ -295,3 +295,10 @@ export const dataType = [
   { label: '测评', value: 'gauge' },
   { label: '优惠券模版', value: 'couponTemplate' },
 ];
+
+// 团督标签
+export const teamSupLabel = [
+  { label: '面向初学者', value: 'mxcxz' },
+  { label: '升阶课程', value: 'sjkc' },
+  { label: '名师课程', value: 'mskc' },
+];

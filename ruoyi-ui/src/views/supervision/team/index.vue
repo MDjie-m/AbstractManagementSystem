@@ -40,6 +40,17 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="督导标签" prop="teamType">
+        <el-select v-model="queryParams.label" placeholder="请选择督导标签" clearable>
+          <el-option
+            v-for="dict in dict.type.team_sup_label"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
 <!--      <el-form-item label="应付金额" class="amount">
         <el-input
           v-model="queryParams.lowAmount"
@@ -126,6 +137,7 @@
       </el-table-column>
       <el-table-column label="开课时间" align="center" prop="lectureStartTime" />
       <el-table-column label="下课时间" align="center" prop="lectureEndTime" />
+      <el-table-column label="标签" align="center" prop="label" />
       <el-table-column label="首次开课日期" align="center" prop="firstLectureDate" />
       <el-table-column label="创建时间" align="center" prop="createTime" />
 
@@ -188,7 +200,7 @@ export default {
     infoForm,
   },
   name: "team",
-  dicts: ['supervision_type','supervision_status','week_day'],
+  dicts: ['supervision_type','supervision_status','week_day', 'team_sup_label'],
   data() {
     var validatePrice = (rule, value, callback) => {
       // 保留两位小数

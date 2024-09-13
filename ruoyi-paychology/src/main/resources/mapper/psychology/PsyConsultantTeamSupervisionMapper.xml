@@ -29,12 +29,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="maxNumPeople" column="max_num_people" />
         <result property="price" column="price" />
         <result property="teamType" column="team_type" />
+        <result property="label" column="label" />
     </resultMap>
 
     <sql id="selectPsyConsultantTeamSupervisionVo">
         team.id, team.title, team.head_pic_url, team.special_pic_url, team.register_notice_pic_url, team.cycle, team.cycle_number, team.consultant_id, team.status, team.remark, team.del_flag,
         team.create_by, team.create_time, team.update_by, team.update_time,
-        team.period_no,team.week_day,team.lecture_start_time, team.lecture_end_time,team.first_lecture_date,team.max_num_people,team.price,team.team_type            
+        team.period_no,team.week_day,team.lecture_start_time, team.lecture_end_time,team.first_lecture_date,team.max_num_people,team.price,team.team_type  ,team.label          
         
     </sql>
 
@@ -75,7 +76,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="lectureEndTimeFinish != null  and lectureEndTimeFinish != ''"> and team.lecture_start_time &lt;= #{lectureEndTimeFinish}</if>
             <if test="minPrice != null  and minPrice != ''"> and team.price &gt;= #{minPrice}</if>
             <if test="maxPrice != null  and maxPrice != ''"> and team.price &lt;= #{maxPrice}</if>
-            
+            <if test="label != null  and label != ''"> and team.label like concat('%',#{label},'%')</if>
+
             <if test="consultTabs != null  and consultTabs != ''"> and con.tabs like concat('%',#{consultTabs},'%')</if>
             <if test="consultGenre != null  and consultGenre != ''"> and con.genre like concat('%',#{consultGenre},'%')</if>
             
@@ -173,6 +175,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="maxNumPeople != null">max_num_people,</if>
             <if test="price != null">price,</if>
             <if test="teamType != null">team_type,</if>
+            <if test="label != null">label,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -199,6 +202,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="maxNumPeople != null">#{maxNumPeople},</if>
             <if test="price != null">#{price},</if>
             <if test="teamType != null">#{teamType},</if>
+            <if test="label != null">#{label},</if>
          </trim>
     </insert>
 
@@ -228,6 +232,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="maxNumPeople != null">max_num_people = #{maxNumPeople},</if>
             <if test="price != null">price = #{price},</if>
             <if test="teamType != null">team_type = #{teamType},</if>
+            <if test="label != null">label = #{label},</if>
         </trim>
         where id = #{id}
     </update>

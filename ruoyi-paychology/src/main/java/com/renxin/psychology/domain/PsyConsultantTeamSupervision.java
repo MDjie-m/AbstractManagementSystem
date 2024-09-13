@@ -90,7 +90,9 @@ public class PsyConsultantTeamSupervision extends BaseEntity implements Serializ
 
     /** 入会价格 */
     private BigDecimal price;
-
+    //标签
+    private String label;
+    
     /** 督导类型  1.团体督导  2.个体督导  3.个人体验 */
     @TableField(exist = false)
     private Integer teamType;
