@@ -36,6 +36,7 @@
         <dynamic-ds.version>3.5.1</dynamic-ds.version>
         <mybatis-plus.version>3.5.6</mybatis-plus.version>
         <lock4j.version>2.2.1</lock4j.version>
+        <hutool.version>5.8.3</hutool.version>
 
         <!-- 工作流配置 -->
         <activiti.version>6.0.0</activiti.version>
@@ -72,6 +73,19 @@
                 <version>2.5.15</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- hutool 的依赖配置 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-bom</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
             </dependency>
 
             <!-- 阿里数据库连接池 -->
