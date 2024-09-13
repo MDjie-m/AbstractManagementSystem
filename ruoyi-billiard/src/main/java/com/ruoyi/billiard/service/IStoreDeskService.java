@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreDesk;
+import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 
 /**
  * 球桌Service接口
@@ -62,4 +63,7 @@ public interface IStoreDeskService
     public int deleteStoreDeskByDeskId(Long deskId);
 
     List<Store> getByLoginUserId(Long loginUserId);
+
+    CashierDeskDashboardResVo getDeskDashboard(Long storeId);
+
 }

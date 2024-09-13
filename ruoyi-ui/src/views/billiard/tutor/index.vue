@@ -87,7 +87,11 @@
           <dict-tag :options="dict.type.store_user_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
-
+      <el-table-column label="工作状态" align="center" prop="workStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.store_tutor_work_status" :value="scope.row.workStatus"/>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="创建/更新" align="center" prop="updateTime" width="200">
         <template slot-scope="scope">
@@ -220,9 +224,6 @@
             </el-form-item>
           </el-col>
 
-          <el-col :span="12">
-
-          </el-col>
         </el-row>
 
 
@@ -234,6 +235,16 @@
 
           </el-col>
         </el-row>
+        <el-row  v-if="form.storeTutorId">
+          <el-col :span="24" >
+            <el-form-item label="工作状态" prop="workStatus">
+              <dict-tag :options="dict.type.store_tutor_work_status" :value="form.workStatus"/>
+            </el-form-item>
+
+          </el-col>
+        </el-row>
+
+
         <el-row>
           <el-col :span="24">
 
@@ -283,7 +294,7 @@ import StoreContainer from '@/views/billiard/component/storeContainer.vue'
 export default {
   name: "Tutor",
   components: { StoreContainer },
-  dicts: ['store_user_status', 'sys_user_sex','sys_user_sex','store_tutor'],
+  dicts: ['store_user_status', 'sys_user_sex','sys_user_sex','store_tutor','store_tutor_work_status'],
   data() {
     return {
       storeInfo:null,

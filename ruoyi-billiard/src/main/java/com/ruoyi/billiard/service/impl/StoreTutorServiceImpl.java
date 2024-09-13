@@ -144,6 +144,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         sysUserService.updateUser(user);
 
         SecurityUtils.fillUpdateUser(storeTutor);
+        storeTutor.setWorkStatus(null);
         return storeTutorMapper.updateStoreTutor(storeTutor);
     }
 

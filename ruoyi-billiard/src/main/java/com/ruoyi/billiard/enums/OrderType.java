@@ -15,7 +15,7 @@ public enum OrderType implements IEnum {
     TEACHINGCOST(5, "教学费用"),
 
     ;
-    private final int value;
+    private final Integer value;
     private final String desc;
 
     public static List<Map<String, Object>> getValueMap() {

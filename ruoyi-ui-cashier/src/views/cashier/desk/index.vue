@@ -4,7 +4,48 @@
   <div class="page-container">
     <div class="left-panel">
       <div class="  section-container menu-container">
-        SDFSDF
+        <el-button @click="onSwitchLight(1)">开关灯({{ this.lightStatus }})</el-button>
+      </div>
+      <div class="  section-container menu-container">
+        <div class="menu-title">
+          概览
+        </div>
+        <div class="icon-container">
+          <div class="sub-item">
+            <el-badge :value="deskTotal.wait" :hidden="!deskTotal.wait" class="icon-tip" type="primary">
+              <svg-icon icon-class="clock_wait"/>
+            </el-badge>
+            <div class="sub-item-text">
+              空闲
+            </div>
+          </div>
+          <div class="sub-item">
+            <el-badge :value="deskTotal.busy" :hidden="!deskTotal.busy" class="icon-tip" type="primary">
+              <svg-icon icon-class="clock_busy"/>
+            </el-badge>
+            <div class="sub-item-text">
+              计费
+            </div>
+          </div>
+          <div class="sub-item">
+            <el-badge :value="deskTotal.stop"  :hidden="!deskTotal.stop"  class="icon-tip" type="primary">
+              <svg-icon icon-class="clock_stop"/>
+            </el-badge>
+            <div class="sub-item-text">
+              停止
+            </div>
+          </div>
+          <div class="sub-item">
+            <el-badge :value="deskTotal.light" :hidden="!deskTotal.light" class="icon-tip" type="primary">
+            <svg-icon icon-class="light_on"/>
+            </el-badge>
+            <div class="sub-item-text">
+              开灯
+            </div>
+          </div>
+
+        </div>
+
       </div>
       <div class="  section-container menu-container">
         SDFSDF
@@ -18,32 +59,32 @@
         <div>
           <el-row>
 
-              <el-tag
-                type="primary"
-                @click="onChooseAll"
-                :effect="queryParams.deskType===null &&queryParams.placeType===null?'dark':'plain'"
-              >
-                全部
-              </el-tag>
+            <el-tag
+              type="primary"
+              @click="onChooseAll"
+              :effect="queryParams.deskType===null &&queryParams.placeType===null?'dark':'plain'"
+            >
+              全部
+            </el-tag>
 
-              <el-tag v-for="dict in dict.type.store_desk_type"
-                      :key="dict.value+'deskType'"
-                      :label="dict.label"
-                      type="primary"
-                      @click="onChooseClick('deskType',dict.value)"
-                      :effect="parseInt(dict.value )===queryParams.deskType?'dark':'plain'"
-                      round>
-                {{ dict.label }}
-              </el-tag>
-              <el-tag v-for="dict in dict.type.store_desk_place"
-                      :key="dict.value+'deskPlace'"
-                      :label="dict.label"
-                      :effect="parseInt(dict.value)===queryParams.placeType?'dark':'plain'"
-                      @click="onChooseClick('placeType',dict.value)"
-                      type="primary"
-              >
-                {{ dict.label }}
-              </el-tag>
+            <el-tag v-for="dict in dict.type.store_desk_type"
+                    :key="dict.value+'deskType'"
+                    :label="dict.label"
+                    type="primary"
+                    @click="onChooseClick('deskType',dict.value)"
+                    :effect="parseInt(dict.value )===queryParams.deskType?'dark':'plain'"
+                    round>
+              {{ dict.label }}
+            </el-tag>
+            <el-tag v-for="dict in dict.type.store_desk_place"
+                    :key="dict.value+'deskPlace'"
+                    :label="dict.label"
+                    :effect="parseInt(dict.value)===queryParams.placeType?'dark':'plain'"
+                    @click="onChooseClick('placeType',dict.value)"
+                    type="primary"
+            >
+              {{ dict.label }}
+            </el-tag>
 
           </el-row>
 
@@ -55,7 +96,7 @@
             >
               全部
             </el-tag>
-            <el-tag v-for="dict in dict.type.stoer_desk_status"
+            <el-tag v-for="dict in dict.type.store_desk_status"
                     :key="dict.value+'status'"
                     :label="dict.label"
                     type="primary"
@@ -77,7 +118,6 @@
               <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
                        v-for="desk in deskList.filter(p=>  p.placeType === parseInt(placeItem.value))">
                 <div>
-                  {{ desk.selected }}---
                   <div class="desk-item-name"> {{ desk.deskName }}</div>
                   <div class="desk-item-num"> {{ desk.deskNum }}</div>
                   <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
@@ -184,7 +224,7 @@
         </el-row>
         <el-col :span="12">
           <el-form-item label="状态" prop="status">
-            <dict-tag :options="dict.type.stoer_desk_status" :value="form.status"/>
+            <dict-tag :options="dict.type.store_desk_status" :value="form.status"/>
           </el-form-item>
         </el-col>
         <el-row>
@@ -211,27 +251,22 @@
 
 
 import {listDesk} from "@/api/cashier/desk";
+import {callPCMethod} from "@/utils/pcCommunication";
 
 export default {
   name: "Desk",
-  dicts: ['stoer_desk_status', 'store_desk_type', 'store_desk_place'],
+  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
   data() {
     return {
+      lightStatus: null,
       currentDesk: null,
-      storeOptions: [],
-      storeInfo: null,
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
+      deskTotal: {
+        wait: 0,
+        busy: 0,
+        stop: 0,
+        light: 0
+      },
+
       // 球桌表格数据
       deskList: [],
 
@@ -299,6 +334,13 @@ export default {
     this.getList();
   },
   methods: {
+    onSwitchLight(deskNum) {
+      let req = {deskNum: deskNum, open: this.lightStatus ? false : true}
+      callPCMethod("light.switch", req).then(res => {
+        this.lightStatus = res.data;
+        this.$modal.msgSuccess(JSON.stringify(res))
+      })
+    },
     onDeskClick(item) {
       this.deskList.forEach(p => {
         if (p === item) {
@@ -329,10 +371,26 @@ export default {
 
     },
     filterDeskList() {
+      let deskTotal= {
+        wait: 0,
+        busy: 0,
+        stop: 0,
+        light: 0
+      };
+      //状态：0=空闲，1=计时中，2=暂停,3=已停止
       this.deskList = this.originalDeskList.filter(p => {
         let statusCondition = true;
         let deskTypeCondition = true;
         let placeCondition = true;
+        if(p.status===0){
+           deskTotal.wait+=1;
+        }
+        if(p.status===1){
+          deskTotal.busy+=1;
+        }
+        if(p.status===3){
+          deskTotal.stop+=1;
+        }
         if (this.queryParams.status !== null) {
           statusCondition = p.status === parseInt(this.queryParams.status)
         }
@@ -344,7 +402,7 @@ export default {
         }
         return statusCondition && placeCondition && deskTypeCondition
       });
-      console.log(this.deskList, 'ddd')
+      this.deskTotal=deskTotal
       return this.deskList;
     },
     /** 查询球桌列表 */
@@ -465,79 +523,5 @@ export default {
   }
 };
 </script>
-<style scoped lang="scss">
-@import '@/assets/styles/element-variables.scss';
-
-.el-tag {
-  margin-right: 10px;
-  margin-bottom: 10px;
-}
-.left-panel{
-  padding: 10px;
-}
-.menu-container{
-  padding: 10px;
-}
-
-.desk-box {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.desk-container {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-
-
-}
-
-.desk-item {
-  display: flex;
-  width: 110px;
-  min-height: 130px;
-  margin: 10px;
-  font-size: 14px;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: rgba(0, 0, 0, 0.8);
-  border-radius: 10px;
-
-  &:hover, &.selected {
-    background-color: $--color-primary;
-    border: 1px solid $--color-primary;
-    color: #FFFFFF;
-    cursor: pointer;
-  }
-
-  div + div {
-    margin-top: 10px;
-  }
-
-  &-name {
-    font-weight: bold;
-    font-size: 15px;
-  }
-
-  &-num {
-    font-weight: bold;
-    font-size: 15px;
-  }
-
-  &-price {
-    font-size: 12px;
-  }
-}
-
-.el-tag {
-  border-radius: 20px;
-  padding: 0px 10px;
-  min-width: 80px;
-  text-align: center;
-  letter-spacing: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-}
+<style scoped lang="scss" src="./index.scss">
 </style>

@@ -17,7 +17,7 @@ public enum OrderStatus implements IEnum{
     VOID(3,"作废"),
 
     ;
-    private final int value;
+    private final Integer value;
     private final String desc;
 
 

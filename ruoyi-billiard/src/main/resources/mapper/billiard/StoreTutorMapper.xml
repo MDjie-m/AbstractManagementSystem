@@ -25,6 +25,7 @@
         <result property="createById" column="create_by_id"/>
         <result property="updateById" column="update_by_id"/>
         <result property="account" column="user_name"/>
+        <result property="workStatus" column="work_status"/>
     </resultMap>
 
     <sql id="selectStoreTutorVo">
@@ -44,6 +45,8 @@
             <if test="status != null ">and status = #{status}</if>
             <if test="loginUserId != null ">and login_user_id = #{loginUserId}</if>
             <if test="storeId != null ">and a.store_id = #{storeId}</if>
+            <if test="workStatus != null ">and a.work_status = #{workStatus}</if>
+
         </where>
     </select>
 
@@ -72,6 +75,8 @@
             <if test="storeId != null">store_id,</if>
             <if test="updateById != null">update_by_id,</if>
             <if test="createById != null">create_by_id,</if>
+            <if test="workStatus != null">work_status,</if>
+
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="storeTutorId != null">#{storeTutorId},</if>
@@ -91,6 +96,8 @@
             <if test="storeId != null">#{storeId},</if>
             <if test="updateById != null">#{updateById},</if>
             <if test="createById != null">#{createById},</if>
+            <if test="workStatus != null">#{work_status}</if>
+
         </trim>
     </insert>
 
@@ -114,6 +121,7 @@
             <if test="aptitude != null">aptitude = #{aptitude},</if>
             <if test="updateById != null">update_by_id =#{updateById},</if>
             <if test="createById != null">create_by_id =#{createById},</if>
+            <if test="workStatus != null">work_status =#{workStatus},</if>
         </trim>
         where store_tutor_id = #{storeTutorId}
     </update>

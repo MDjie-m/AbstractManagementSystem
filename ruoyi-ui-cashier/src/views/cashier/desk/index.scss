@@ -1,0 +1,111 @@
+
+@import '@/assets/styles/element-variables.scss';
+@import '@/assets/styles/variables.scss';
+.el-tag {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.left-panel{
+  padding: 10px;
+}
+.menu-container{
+  padding: 10px;
+
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  .menu-title{
+    height: 20px;
+    color: $main-text-color;
+  }
+  .icon-container{
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    align-items: center;
+    >*{
+      flex: 1;
+    }
+    .sub-item{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+
+        ::v-deep.el-badge__content{
+         // font-size: 10px!important;
+          right: 8px!important;
+        }
+      .svg-icon{
+        font-size: 20px;
+      }
+      &-text{
+        color: $sub-text-color;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+.desk-box {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.desk-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+
+}
+
+.desk-item {
+  display: flex;
+  width: 110px;
+  min-height: 130px;
+  margin: 10px;
+  font-size: 14px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+
+  &:hover, &.selected {
+    background-color: $--color-primary;
+    border: 1px solid $--color-primary;
+    color: #FFFFFF;
+    cursor: pointer;
+  }
+
+  div + div {
+    margin-top: 10px;
+  }
+
+  &-name {
+    font-weight: bold;
+    font-size: 15px;
+  }
+
+  &-num {
+    font-weight: bold;
+    font-size: 15px;
+  }
+
+  &-price {
+    font-size: 12px;
+  }
+}
+
+.el-tag {
+  border-radius: 20px;
+  padding: 0px 10px;
+  min-width: 80px;
+  text-align: center;
+  letter-spacing: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}

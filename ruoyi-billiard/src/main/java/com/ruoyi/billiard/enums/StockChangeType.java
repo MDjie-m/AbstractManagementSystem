@@ -13,7 +13,7 @@ public enum StockChangeType implements IEnum{
     OUT(1,"出库"),
     CHECK(2,"盘点")
     ;
-    private final int value;
+    private final Integer value;
     private final String desc;
 
     public static StockChangeType valueOf(Integer val){

@@ -16,7 +16,7 @@ public enum PayType implements IEnum {
     MEMBER(2, "会员"),
 
     ;
-    private final int value;
+    private final Integer value;
     private final String desc;
 
 

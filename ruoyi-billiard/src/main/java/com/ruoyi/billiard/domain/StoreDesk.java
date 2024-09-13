@@ -65,11 +65,15 @@ public class StoreDesk extends MyBaseEntity
     @TableField(exist = false)
     private BigDecimal price;
 
-    /** 状态：0=空闲，1=计时中，2=暂停,3=已停止 */
-    @Excel(name = "状态：0=空闲，1=计时中，2=暂停,3=已停止")
+    /** 状态：0=空闲，1=计时中， 3=已停止 */
+    @Excel(name = "状态：0=空闲，1=计时中， 3=已停止")
 
     @TableField("status")
     private Integer status;
+
+    @TableField("enable")
+    private Boolean enable;
+
 
     /** 灯光id */
     @Excel(name = "灯光id")

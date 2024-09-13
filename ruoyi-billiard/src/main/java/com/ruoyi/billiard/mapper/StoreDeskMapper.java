@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreDesk;
+import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -68,4 +69,5 @@ public interface StoreDeskMapper extends MyBaseMapper<StoreDesk>
     List<Store> selectStoreByLoginUserId(Long loginUserId);
 
     Integer checkDeviceBind( @Param("deviceId")Long deviceId,@Param("deskId") Long deskId);
+
 }

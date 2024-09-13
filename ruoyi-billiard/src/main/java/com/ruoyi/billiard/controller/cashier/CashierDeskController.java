@@ -1,6 +1,7 @@
 package com.ruoyi.billiard.controller.cashier;
 
 import com.ruoyi.billiard.domain.StoreDesk;
+import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
@@ -27,7 +28,19 @@ public class CashierDeskController extends BaseController {
     public ResultVo<List<StoreDesk>> list(@Validated StoreDesk storeDesk) {
 
         storeDesk.setStoreId(getStoreId());
+        storeDesk.setEnable(Boolean.TRUE);
         List<StoreDesk> list = storeDeskService.selectStoreDeskList(storeDesk);
         return ResultVo.success(list);
     }
+
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @GetMapping("/dashboard")
+    public ResultVo<CashierDeskDashboardResVo> deskDashboard() {
+
+        CashierDeskDashboardResVo res = storeDeskService.getDeskDashboard(getStoreId());
+        ;
+        return ResultVo.success(res);
+    }
+
+
 }

@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.billiard.domain.DeskDeviceRelation;
 import com.ruoyi.billiard.domain.Store;
+import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.billiard.service.IDeskDeviceRelationService;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
@@ -98,11 +99,11 @@ public class StoreDeskServiceImpl implements IStoreDeskService
     {
         deskDeviceRelationService.bindDevice(storeDesk.getDeskId(),
                 Arrays.asList(storeDesk.getCameraDeviceId(), storeDesk.getLightDeviceId()));
-        storeDeskMapper.updateStoreDesk(storeDesk);
+        storeDesk.setStatus(null); 
         checkDevice( storeDesk.getCameraDeviceId(),storeDesk.getDeskId(),"摄像头已绑定到其他桌");
         checkDevice( storeDesk.getLightDeviceId(),storeDesk.getDeskId(),"摄像头已绑定到其他桌");
         SecurityUtils.fillUpdateUser(storeDesk);
-        storeDesk.setStatus(null);
+
         return storeDeskMapper.updateStoreDesk(storeDesk);
     }
 
@@ -133,5 +134,12 @@ public class StoreDeskServiceImpl implements IStoreDeskService
     @Override
     public   List<Store> getByLoginUserId(Long loginUserId) {
         return storeDeskMapper.selectStoreByLoginUserId(loginUserId);
+    }
+
+    @Override
+    public CashierDeskDashboardResVo getDeskDashboard(Long storeId) {
+
+        CashierDeskDashboardResVo resVo=new CashierDeskDashboardResVo();
+        return resVo;
     }
 }

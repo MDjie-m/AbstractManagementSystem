@@ -10,6 +10,6 @@ public enum DeviceStatus implements IEnum{
     ONLINE(1,"在线"),
     OFFLINE(2,"离线"),
     ;
-    private final int value;
+    private final Integer value;
     private final String desc;
 }

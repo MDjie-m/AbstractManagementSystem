@@ -25,6 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="cameraName"    column="cameraName"    />
         <result property="createById" column="create_by_id"/>
         <result property="updateById" column="update_by_id"/>
+        <result property="enable" column="enable"/>
     </resultMap>
 
     <sql id="selectStoreDeskVo">
@@ -45,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="storeId != null "> and a.store_id = #{storeId}</if>
             <if test="price != null "> and price = #{price}</if>
             <if test="status != null "> and a.status = #{status}</if>
+            <if test="enable != null "> and a.status = #{enable}</if>
             <if test="lightDeviceId != null "> and light_device_id = #{lightDeviceId}</if>
             <if test="cameraDeviceId != null "> and camera_device_id = #{cameraDeviceId}</if>
         </where>
@@ -63,6 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="deskId != null"> and  desk_id not in (#{deskId}) </if>
 
     </select>
+
 
     <insert id="insertStoreDesk" parameterType="StoreDesk">
         insert into t_store_desk
@@ -83,6 +86,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="cameraDeviceId != null">camera_device_id,</if>
             <if test="updateById != null">update_by_id,</if>
             <if test="createById != null">create_by_id,</if>
+            <if test="enable != null">enable,</if>
+
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="deskId != null">#{deskId},</if>
@@ -101,6 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="cameraDeviceId != null">#{cameraDeviceId},</if>
             <if test="updateById != null">#{updateById},</if>
             <if test="createById != null">#{createById},</if>
+            <if test="enable != null">#{enable},</if>
          </trim>
     </insert>
 
@@ -122,6 +128,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="cameraDeviceId != null">camera_device_id = #{cameraDeviceId},</if>
             <if test="updateById != null">update_by_id =#{updateById},</if>
             <if test="createById != null">create_by_id =#{createById},</if>
+            <if test="enable != null">enable =#{enable},</if>
+
         </trim>
         where desk_id = #{deskId}
     </update>

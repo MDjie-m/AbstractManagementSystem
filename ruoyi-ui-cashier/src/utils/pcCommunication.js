@@ -45,5 +45,5 @@ window.onPCCall = function (type, msg) {
     return JSON.stringify(failRes);
   }
   Vue.prototype.$modal.msgSuccess("调用 成功=======")
-  return PcCallMethods[type](msg)
+  return PcCallMethods[type](JSON.parse(msg))
 }
