@@ -12,9 +12,11 @@ import java.util.Map;
 @AllArgsConstructor
 public enum OrderStatus implements IEnum{
     CHARGING(0,"计费中"),
-    TOBESETTLED(1,"待结算"),
-    HAVEALREADYSETTLED(2,"已结算"),
+    WAIT_SETTLED(1,"待结算"),
+    SETTLED(2,"已结算"),
     VOID(3,"作废"),
+    SUSPEND(4,"挂起订单")
+
 
     ;
     private final Integer value;
