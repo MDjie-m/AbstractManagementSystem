@@ -269,7 +269,7 @@
               <div class="info-box-row">
                 <div class="info-box-row-middle">
                   <div class="info-box-title">总时间(分钟)：</div>
-                  <div class="info-box-row-left-content">{{ item.totalTime }}</div>
+                  <div class="info-box-row-left-content">{{ formatTotalTime(item.totalTime) }}</div>
                 </div>
                 <div class="info-box-row-middle">
                   <div class="info-box-title">价格/分钟：</div>
@@ -338,7 +338,7 @@
               <div class="info-box-row">
                 <div class="info-box-row-middle">
                   <div class="info-box-title">总时间分钟：</div>
-                  <div class="info-box-row-left-content">{{ item.totalTime }}</div>
+                  <div class="info-box-row-left-content">{{ formatTotalTime(item.totalTime) }}</div>
                 </div>
                 <div class="info-box-row-middle">
                   <div class="info-box-title">价格/分钟：</div>
@@ -592,7 +592,11 @@ export default {
     formatAmount(value) {
        if(!value) return '';
       return `￥${value}`;
-    }
+    },
+    formatTotalTime(value) {
+       if(!value) return '0分钟';
+      return `${value}分钟`;
+    },
   }
 };
 </script>
