@@ -8,6 +8,14 @@ export function listStore(query) {
     params: query
   })
 }
+
+// 查询所有门店列表
+export function listStoreAll() {
+  return request({
+    url: '/billiard/store/list/all',
+    method: 'get',
+  })
+}
 export function listAllStore() {
   return request({
     url: '/billiard/store/list/all',

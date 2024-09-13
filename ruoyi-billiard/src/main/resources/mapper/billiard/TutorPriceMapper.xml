@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.TutorPriceMapper">
+    
+    <resultMap type="TutorPrice" id="TutorPriceResult">
+        <result property="tutorPriceId"    column="tutor_price_id"    />
+        <result property="storeId"    column="store_id"    />
+        <result property="level"    column="level"    />
+        <result property="price"    column="price"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createById"    column="create_by_id"    />
+        <result property="updateById"    column="update_by_id"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectTutorPriceVo">
+        select tutor_price_id, store_id, level, price, create_by, create_time, update_by, update_time, create_by_id, update_by_id, remark from t_tutor_price
+    </sql>
+
+    <select id="selectTutorPriceList" parameterType="TutorPrice" resultMap="TutorPriceResult">
+        <include refid="selectTutorPriceVo"/>
+        <where>  
+            <if test="level != null "> and level = #{level}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectTutorPriceByTutorPriceId" parameterType="Long" resultMap="TutorPriceResult">
+        <include refid="selectTutorPriceVo"/>
+        where tutor_price_id = #{tutorPriceId}
+    </select>
+
+    <insert id="insertTutorPrice" parameterType="TutorPrice">
+        insert into t_tutor_price
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tutorPriceId != null">tutor_price_id,</if>
+            <if test="storeId != null">store_id,</if>
+            <if test="level != null">level,</if>
+            <if test="price != null">price,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createById != null">create_by_id,</if>
+            <if test="updateById != null">update_by_id,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tutorPriceId != null">#{tutorPriceId},</if>
+            <if test="storeId != null">#{storeId},</if>
+            <if test="level != null">#{level},</if>
+            <if test="price != null">#{price},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createById != null">#{createById},</if>
+            <if test="updateById != null">#{updateById},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTutorPrice" parameterType="TutorPrice">
+        update t_tutor_price
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storeId != null">store_id = #{storeId},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createById != null">create_by_id = #{createById},</if>
+            <if test="updateById != null">update_by_id = #{updateById},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where tutor_price_id = #{tutorPriceId}
+    </update>
+
+    <delete id="deleteTutorPriceByTutorPriceId" parameterType="Long">
+        delete from t_tutor_price where tutor_price_id = #{tutorPriceId}
+    </delete>
+
+    <delete id="deleteTutorPriceByTutorPriceIds" parameterType="String">
+        delete from t_tutor_price where tutor_price_id in 
+        <foreach item="tutorPriceId" collection="array" open="(" separator="," close=")">
+            #{tutorPriceId}
+        </foreach>
+    </delete>
+</mapper>

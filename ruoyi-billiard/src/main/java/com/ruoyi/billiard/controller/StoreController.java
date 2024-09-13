@@ -22,38 +22,32 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 门店Controller
- * 
+ *
  * @author ruoyi
  * @date 2024-09-05
  */
 @RestController
 @RequestMapping("/billiard/store")
-public class StoreController extends BaseController
-{
+public class StoreController extends BaseController {
     @Autowired
     private IStoreService storeService;
 
     /**
      * 查询门店列表
      */
-    /**
-     * 查询门店列表
-     */
     @PreAuthorize("@ss.hasPermi('billiard:store:list')")
     @GetMapping("/list")
-    public PageResVo<Store> list(Store store)
-    {
+    public PageResVo<Store> list(Store store) {
         startPage();
         List<Store> list = storeService.selectStoreList(store);
         return PageResVo.success(list);
     }
+
     @GetMapping("/list/all")
-    public ResultVo<List<Store>> listAll( )
-    {
+    public ResultVo<List<Store>> listAll() {
         List<Store> list = storeService.selectAll();
         return ResultVo.success(list);
     }
@@ -64,8 +58,7 @@ public class StoreController extends BaseController
     @PreAuthorize("@ss.hasPermi('billiard:store:export')")
     @Log(title = "门店", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, Store store)
-    {
+    public void export(HttpServletResponse response, Store store) {
         List<Store> list = storeService.selectStoreList(store);
         ExcelUtil<Store> util = new ExcelUtil<Store>(Store.class);
         util.exportExcel(response, list, "门店数据");
@@ -76,8 +69,7 @@ public class StoreController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('billiard:store:query')")
     @GetMapping(value = "/{storeId}")
-    public AjaxResult getInfo(@PathVariable("storeId") Long storeId)
-    {
+    public AjaxResult getInfo(@PathVariable("storeId") Long storeId) {
         return success(storeService.selectStoreByStoreId(storeId));
     }
 
@@ -87,8 +79,7 @@ public class StoreController extends BaseController
     @PreAuthorize("@ss.hasPermi('billiard:store:add')")
     @Log(title = "门店", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody Store store)
-    {
+    public AjaxResult add(@RequestBody Store store) {
         store.setCreateBy(getUsername());
         store.setUpdateBy(getUsername());
         return toAjax(storeService.insertStore(store));
@@ -100,8 +91,7 @@ public class StoreController extends BaseController
     @PreAuthorize("@ss.hasPermi('billiard:store:edit')")
     @Log(title = "门店", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody Store store)
-    {
+    public AjaxResult edit(@RequestBody Store store) {
         store.setUpdateBy(getUsername());
         return toAjax(storeService.updateStore(store));
     }
@@ -111,9 +101,8 @@ public class StoreController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('billiard:store:remove')")
     @Log(title = "门店", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{storeIds}")
-    public AjaxResult remove(@PathVariable Long[] storeIds)
-    {
+    @DeleteMapping("/{storeIds}")
+    public AjaxResult remove(@PathVariable Long[] storeIds) {
         return toAjax(storeService.deleteStoreByStoreIds(storeIds));
     }
 }

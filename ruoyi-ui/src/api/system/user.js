@@ -10,6 +10,14 @@ export function listUser(query) {
   })
 }
 
+// 查询所有用户列表
+export function listUserAll() {
+  return request({
+    url: '/system/user/listAll',
+    method: 'get',
+  })
+}
+
 // 查询用户详细
 export function getUser(userId) {
   return request({
