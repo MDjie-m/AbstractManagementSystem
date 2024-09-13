@@ -38,6 +38,15 @@ public class PsyMsgRecord extends BaseEntity
     @Excel(name = "接收人-用户类型 1来访者 2咨询师")
     private Integer receiveUserType;
 
+    //对话人id
+    private Long talkUserId;
+    /** 对话人-用户类型 1来访者 2咨询师 */
+    private Integer talkUserType;
+    
+    private Long talkUserId1;
+    private Integer talkUserType1;
+    private Long talkUserId2;
+    private Integer talkUserType2;
     /** 消息类型(1.文字 2.图片 3.音频 4.视频 5.富文本) */
     @Excel(name = "消息类型(1.文字 2.图片 3.音频 4.视频 5.富文本)")
     private Integer msgType;
@@ -47,7 +56,7 @@ public class PsyMsgRecord extends BaseEntity
     private String msg;
 
     /** 发送时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "发送时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date sendTime;
 

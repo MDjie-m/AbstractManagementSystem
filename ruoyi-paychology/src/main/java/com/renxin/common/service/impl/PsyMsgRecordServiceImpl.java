@@ -1,10 +1,22 @@
 package com.renxin.common.service.impl;
 
 
+import com.renxin.common.core.domain.dto.ConsultDTO;
+import com.renxin.common.core.domain.dto.LoginDTO;
+import com.renxin.common.domain.PersonInfo;
 import com.renxin.common.domain.PsyMsgRecord;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.mapper.PsyMsgRecordMapper;
 import com.renxin.common.service.IPsyMsgRecordService;
 import com.renxin.common.utils.DateUtils;
+import com.renxin.framework.web.service.ConsultantTokenService;
+import com.renxin.framework.web.service.PocketTokenService;
+import com.renxin.psychology.domain.PsyUser;
+import com.renxin.psychology.service.IPsyConsultService;
+import com.renxin.psychology.service.IPsyUserService;
+import com.renxin.psychology.vo.PsyConsultVO;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +33,15 @@ public class PsyMsgRecordServiceImpl implements IPsyMsgRecordService
 {
     @Autowired
     private PsyMsgRecordMapper psyMsgRecordMapper;
+
+    @Autowired
+    private ConsultantTokenService consultantTokenService;
+    @Autowired
+    private PocketTokenService pocketTokenService;
+    @Autowired
+    private IPsyConsultService consultService;
+    @Autowired
+    private IPsyUserService userService;
     
   /*  @Autowired
     private SimpMessagingTemplate messagingTemplate;
@@ -44,9 +65,44 @@ public class PsyMsgRecordServiceImpl implements IPsyMsgRecordService
      * @return 消息记录
      */
     @Override
-    public List<PsyMsgRecord> selectPsyMsgRecordList(PsyMsgRecord psyMsgRecord)
+    public List<PsyMsgRecord> selectPsyMsgRecordList(PsyMsgRecord req)
     {
-        return psyMsgRecordMapper.selectPsyMsgRecordList(psyMsgRecord);
+        List<PsyMsgRecord> recordList = psyMsgRecordMapper.selectPsyMsgRecordList(req);
+        //查询对话双方的perosonInfo
+        Long talkUserId1 = req.getTalkUserId1();
+        Long talkUserId2 = req.getTalkUserId2();
+        Integer talkUserType1 = req.getTalkUserType1();
+        Integer talkUserType2 = req.getTalkUserType2();
+        PersonInfo personInfo1 = getPersonInfo(talkUserId1, talkUserType1);
+        PersonInfo personInfo2 = getPersonInfo(talkUserId2, talkUserType2);
+
+        //填充sendBy
+        for (PsyMsgRecord msgRecord : recordList) {
+            if (msgRecord.getSendUserId().equals(talkUserId1)){
+                msgRecord.setSendBy(personInfo1);
+            }else{
+                msgRecord.setSendBy(personInfo2);
+            }
+        }
+        
+        return recordList;
+    }
+    
+    //获取用户基本信息
+    private PersonInfo getPersonInfo(Long userId, Integer userType){
+        PersonInfo personInfo = new PersonInfo();
+        if (1 == userType) {//来访者
+            PsyUser psyUser = userService.selectPsyUserById(userId);
+            BeanUtils.copyProperties(psyUser,personInfo);
+            personInfo.setUserType(1);
+        }else if(2 == userType) {//咨询师
+            PsyConsultVO consultant = consultService.getOne(userId);
+            personInfo.setId(consultant.getId());
+            personInfo.setAvatar(consultant.getAvatar());
+            personInfo.setName(consultant.getNickName());
+            personInfo.setUserType(2);
+        }
+        return personInfo;
     }
 
     /**

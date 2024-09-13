@@ -103,7 +103,9 @@ public class ConsultantUserController extends BaseController {
     @PostMapping("/getLoginCode")
     public AjaxResult getLoginCode(@RequestBody ConsultLoginDTO req)
     {
-        String code = UUID.randomUUID().toString().substring(0,6);
+        //String code = UUID.randomUUID().toString().substring(0,6);
+       // String code = "123456";
+        String code = String.valueOf((int)(Math.random() * 900000) + 100000);
         redisCache.setCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + req.getPhone(),code);
         return AjaxResult.success(code);
     }
