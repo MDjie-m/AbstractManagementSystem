@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.OrderTutorTimeMapper">
+    
+    <resultMap type="OrderTutorTime" id="OrderTutorTimeResult">
+        <result property="orderTutorTimeId"    column="order_tutor_time_id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="deskId"    column="desk_id"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="type"    column="type"    />
+        <result property="totalTime"    column="total_time"    />
+        <result property="price"    column="price"    />
+        <result property="totalAmount"    column="total_amount"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createById"    column="create_by_id"    />
+        <result property="updateById"    column="update_by_id"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectOrderTutorTimeVo">
+        select order_tutor_time_id, order_id, desk_id, start_time, end_time, type, total_time, price, total_amount, create_by, create_time, update_by, update_time, create_by_id, update_by_id, remark from t_order_tutor_time
+    </sql>
+
+    <select id="selectOrderTutorTimeList" parameterType="OrderTutorTime" resultMap="OrderTutorTimeResult">
+        <include refid="selectOrderTutorTimeVo"/>
+        <where>  
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="deskId != null "> and desk_id = #{deskId}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="totalTime != null "> and total_time = #{totalTime}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="totalAmount != null "> and total_amount = #{totalAmount}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectOrderTutorTimeByOrderTutorTimeId" parameterType="Long" resultMap="OrderTutorTimeResult">
+        <include refid="selectOrderTutorTimeVo"/>
+        where order_tutor_time_id = #{orderTutorTimeId}
+    </select>
+
+    <insert id="insertOrderTutorTime" parameterType="OrderTutorTime">
+        insert into t_order_tutor_time
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderTutorTimeId != null">order_tutor_time_id,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="deskId != null">desk_id,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="type != null">type,</if>
+            <if test="totalTime != null">total_time,</if>
+            <if test="price != null">price,</if>
+            <if test="totalAmount != null">total_amount,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createById != null">create_by_id,</if>
+            <if test="updateById != null">update_by_id,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderTutorTimeId != null">#{orderTutorTimeId},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="deskId != null">#{deskId},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="type != null">#{type},</if>
+            <if test="totalTime != null">#{totalTime},</if>
+            <if test="price != null">#{price},</if>
+            <if test="totalAmount != null">#{totalAmount},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createById != null">#{createById},</if>
+            <if test="updateById != null">#{updateById},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrderTutorTime" parameterType="OrderTutorTime">
+        update t_order_tutor_time
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="deskId != null">desk_id = #{deskId},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="totalTime != null">total_time = #{totalTime},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createById != null">create_by_id = #{createById},</if>
+            <if test="updateById != null">update_by_id = #{updateById},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where order_tutor_time_id = #{orderTutorTimeId}
+    </update>
+
+    <delete id="deleteOrderTutorTimeByOrderTutorTimeId" parameterType="Long">
+        delete from t_order_tutor_time where order_tutor_time_id = #{orderTutorTimeId}
+    </delete>
+
+    <delete id="deleteOrderTutorTimeByOrderTutorTimeIds" parameterType="String">
+        delete from t_order_tutor_time where order_tutor_time_id in 
+        <foreach item="orderTutorTimeId" collection="array" open="(" separator="," close=")">
+            #{orderTutorTimeId}
+        </foreach>
+    </delete>
+</mapper>
