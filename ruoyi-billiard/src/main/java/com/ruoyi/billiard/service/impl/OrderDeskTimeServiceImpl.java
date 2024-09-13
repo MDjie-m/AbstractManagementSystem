@@ -3,9 +3,12 @@ package com.ruoyi.billiard.service.impl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.billiard.domain.StoreDesk;
+import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,9 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService
 {
     @Autowired
     private OrderDeskTimeMapper orderDeskTimeMapper;
+
+    @Autowired
+    private IStoreDeskService storeDeskService;
 
     /**
      * 查询订单计时
@@ -106,6 +112,12 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService
     public List<OrderDeskTime> selectOrderDeskTimeListByOrderId(Long orderId) {
         LambdaQueryWrapper<OrderDeskTime> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(OrderDeskTime::getOrderId, orderId);
-        return Optional.ofNullable(orderDeskTimeMapper.selectList(wrapper)).orElse(Collections.emptyList());
+        List<OrderDeskTime> orderDeskTimes = Optional.ofNullable(orderDeskTimeMapper.selectList(wrapper)).orElse(Collections.emptyList());
+        return orderDeskTimes.stream().map(orderDeskTime -> {
+            Long deskId = orderDeskTime.getDeskId();
+            StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(deskId)).orElse(new StoreDesk());
+            orderDeskTime.setStoreDesk(storeDesk);
+            return orderDeskTime;
+        }).collect(Collectors.toList());
     }
 }

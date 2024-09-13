@@ -109,7 +109,9 @@ public class OrderGoods extends MyBaseEntity
     @TableField("update_by_id")
     private Long updateById;
 
-
+    /** 商品 */
+    @TableField(exist = false)
+    private Goods goods;
 
 
 
