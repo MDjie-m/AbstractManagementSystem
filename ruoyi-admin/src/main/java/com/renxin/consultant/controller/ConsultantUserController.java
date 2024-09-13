@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @RestController
@@ -59,10 +60,10 @@ public class ConsultantUserController extends BaseController {
 
     @Resource
     private IPsyConsultConfigService psyConsultConfigService;
-    
+
     @Resource
     private IPsyConsultServeConfigService serveConfigService;
-    
+
     @Resource
     private IPsyConsultantAccountService accountService;
 
@@ -72,69 +73,74 @@ public class ConsultantUserController extends BaseController {
 
     @PostMapping("/login")
     @RateLimiter
-    public AjaxResult login(@RequestBody ConsultLoginDTO consultLoginDTO)
-    {
+    public AjaxResult login(@RequestBody ConsultLoginDTO consultLoginDTO) {
         try {
-           String phoneNumber= new CloudFunctions().getPhoneNumber(consultLoginDTO);
-           //获取咨询师信息(若无则新增)
-            PsyConsult psyConsult=psyConsultService.getByPhoneOrInsert(phoneNumber);
-            ConsultDTO consultDTO=new ConsultDTO();
+            String phoneNumber = new CloudFunctions().getPhoneNumber(consultLoginDTO);
+            //获取咨询师信息(若无则新增)
+            PsyConsult psyConsult = psyConsultService.getByPhoneOrInsert(phoneNumber);
+            ConsultDTO consultDTO = new ConsultDTO();
             consultDTO.setConsultId(psyConsult.getId());
-            consultDTO.setPhone( psyConsult.getPhonenumber());
-            String token= consultantTokenService.createToken(consultDTO,360000);
-            
+            consultDTO.setPhone(psyConsult.getPhonenumber());
+            String token = consultantTokenService.createToken(consultDTO, 360000);
+
             //若无账户则创建
             accountService.createAccountIfNotExist(psyConsult.getId());
-            
+
             //更新设备信息
             psyConsult.setDeviceId(consultLoginDTO.getDeviceId());
             psyConsult.setDeviceBrand(consultLoginDTO.getDeviceBrand());
             psyConsult.setDeviceModel(consultLoginDTO.getDeviceModel());
             psyConsult.setLastLoginIp(consultLoginDTO.getLastLoginIp());
             psyConsultService.updateById(psyConsult);
-            
+
             return AjaxResult.success(Constants.TOKEN_PREFIX + token);
         } catch (Exception e) {
-            log.error("login error",e);
+            log.error("login error", e);
             return AjaxResult.error("login error");
         }
     }
 
-    @PostMapping("/getLoginCode")
-    public AjaxResult getLoginCode(@RequestBody ConsultLoginDTO req)
-    {
-        String code = UUID.randomUUID().toString().substring(0,6);
-        redisCache.setCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + req.getPhone(),code);
-        return AjaxResult.success(code);
+    @PostMapping("/sendSms")
+    public AjaxResult sendSms(@RequestBody ConsultLoginDTO req) {
+        Random random = new Random();
+        // 生成一个6位数，范围从100000到999999
+        int code = 100000 + random.nextInt(999999);
+        String smsCode=code+"";
+        //String code = UUID.randomUUID().toString().substring(0, 6);
+        boolean isSend = new CloudFunctions().sendSms(req.getPhone(),smsCode);
+        if(isSend){
+            redisCache.setCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + req.getPhone(), smsCode);
+            return AjaxResult.success("发送成功");
+        }else {
+            return AjaxResult.error("发送失败");
+        }
+
     }
 
-    @PostMapping("/loginByPhoneCode")
-    public AjaxResult loginByPhoneCode(@RequestBody ConsultLoginDTO req)
-    {
+    @PostMapping("/loginBySmsCode")
+    public AjaxResult loginBySmsCode(@RequestBody ConsultLoginDTO req) {
         String code = redisCache.getCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + req.getPhone());
-        if (!req.getLoginCodeByPhone().equals(code)){
+        System.out.println("code------------------"+code);
+        if (!req.getSmsCode().equals(code)) {
             throw new ServiceException("验证码与手机号不相符");
         }
 
-        PsyConsultVO consultReq = new PsyConsultVO();
-        PsyConsult byPhone = psyConsultService.getByPhone(req.getPhone());
-        if (ObjectUtils.isEmpty(byPhone)){
+        PsyConsult consultant = psyConsultService.getByPhone(req.getPhone());
+        if (ObjectUtils.isEmpty(consultant)) {
             throw new ServiceException("该手机号无相符的咨询师");
         }
-        
-        ConsultDTO consultDTO=new ConsultDTO();
-            consultDTO.setConsultId(byPhone.getId());
-            consultDTO.setPhone(byPhone.getPhonenumber());
-        String token= consultantTokenService.createToken(consultDTO,360000);
+
+        ConsultDTO consultDTO = new ConsultDTO();
+        consultDTO.setConsultId(consultant.getId());
+        consultDTO.setPhone(consultant.getPhonenumber());
+        String token = consultantTokenService.createToken(consultDTO, 360000);
 
         return AjaxResult.success(Constants.TOKEN_PREFIX + token);
     }
-    
-    
+
 
     @PostMapping("/info")
-    public AjaxResult getUserInfo(HttpServletRequest request)
-    {
+    public AjaxResult getUserInfo(HttpServletRequest request) {
         try {
             Long consultId = consultantTokenService.getConsultId(request);
             PsyConsultVO one = psyConsultService.getOne(consultId);
@@ -145,7 +151,7 @@ public class ConsultantUserController extends BaseController {
             one.setUpdateBy(null);
             return AjaxResult.success(one);
         } catch (Exception e) {
-            log.error("login error",e);
+            log.error("login error", e);
             return AjaxResult.error("login error");
         }
     }
@@ -155,12 +161,11 @@ public class ConsultantUserController extends BaseController {
      */
     @ApiOperation(value = "查询咨询师列表")
     @PostMapping("/cache")
-    public TableDataInfo listByType(@RequestBody QueryListByTypeReq req)
-    {
+    public TableDataInfo listByType(@RequestBody QueryListByTypeReq req) {
         startPage();
         String listType = req.getListType();
         List<Long> idList = redisCache.getCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + listType);
-        List<PsyConsult> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.CONSULTANT_BY_ID_KEY , PageUtils.paginate(idList));
+        List<PsyConsult> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.CONSULTANT_BY_ID_KEY, PageUtils.paginate(idList));
         
      /*   PsyAdminConsultReq consultantReq = new PsyAdminConsultReq();
         consultantReq.setListType(listType);
@@ -172,13 +177,13 @@ public class ConsultantUserController extends BaseController {
 
     /**
      * 查询指定咨询师的服务清单
+     *
      * @param req
      * @param request
      * @return
      */
     @PostMapping("/getUserServerList")
-    public AjaxResult getUserServerList(@RequestBody PsyConsultServeConfigReq req , HttpServletRequest request)
-    {
+    public AjaxResult getUserServerList(@RequestBody PsyConsultServeConfigReq req, HttpServletRequest request) {
         try {
             /*PsyConsultVO one = psyConsultService.getOne(req.getConsultantId());
             req.setLevel(one.getLevel());
@@ -186,25 +191,23 @@ public class ConsultantUserController extends BaseController {
                 req.setServiceObject(one.getServiceObject());
             }*/
             List<PsyConsultServeConfig> list = serveConfigService.getList(req);
-            
+
             return AjaxResult.success(list);
         } catch (Exception e) {
-            log.error("login error",e);
+            log.error("login error", e);
             return AjaxResult.error("login error");
         }
     }
-    
+
     /**
      * 获取字典清单
      */
     @PostMapping("/getDictTypeDataList")
     @RateLimiter
-    public AjaxResult getDictList()
-    {
+    public AjaxResult getDictList() {
         List<SysDictType> sysDictTypeList = dictTypeService.selectDictTypeDataList(null);
         return AjaxResult.success(sysDictTypeList);
     }
-    
-    
+
 
 }

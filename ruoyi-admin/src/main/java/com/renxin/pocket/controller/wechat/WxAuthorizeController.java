@@ -91,6 +91,7 @@ public class WxAuthorizeController {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             urlJoiner.add(URLEncoder.encode(entry.getKey(), "UTF-8") + "=" + URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
+
         String urlString = urlJoiner.toString();
 
         //发起请求

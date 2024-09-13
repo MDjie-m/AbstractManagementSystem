@@ -24,7 +24,7 @@ public class ConsultLoginDTO  {
    private String lastLoginIp;
    
    private String phone;
-   private String loginCodeByPhone;
+   private String smsCode;
 
 
 }
