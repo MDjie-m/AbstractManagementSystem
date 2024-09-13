@@ -127,26 +127,27 @@ public class MQTTServiceImpl implements IMQTTService, MqttCallback {
     }
 
     private void reconnect() {
-        // 最大重连尝试次数
-        int maxReconnectAttempts = 3;
-        if (reconnectAttempts < maxReconnectAttempts) {
-            reconnectAttempts++;
-            log.info("---MQTT Attempting to reconnect in " + reconnectDelay + "ms");
 
-            // 使用ScheduledExecutorService方式实现延迟重连
-            // 为简单起见，使用Thread.sleep
-            try {
-                Thread.sleep(reconnectDelay);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-
-            reconnectDelay *= 2; // 增大重连间隔
-            connect(); // 尝试重新连接
-        } else {
-            log.warn("---Max reconnect attempts reached");
-            // 可以考虑执行一些清理操作或通知操作
-        }
+//        // 最大重连尝试次数
+//        int maxReconnectAttempts = 3;
+//        if (reconnectAttempts < maxReconnectAttempts) {
+//            reconnectAttempts++;
+//            log.info("---MQTT Attempting to reconnect in " + reconnectDelay + "ms");
+//
+//            // 使用ScheduledExecutorService方式实现延迟重连
+//            // 为简单起见，使用Thread.sleep
+//            try {
+//                Thread.sleep(reconnectDelay);
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//            }
+//
+//            reconnectDelay *= 2; // 增大重连间隔
+//            connect(); // 尝试重新连接
+//        } else {
+//            log.warn("---Max reconnect attempts reached");
+//            // 可以考虑执行一些清理操作或通知操作
+//        }
     }
 
     @Override
