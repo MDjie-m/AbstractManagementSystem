@@ -157,6 +157,7 @@ aside {
   }
   .right-panel{
     flex: 1;
+    position: relative;
     display: flex;
     flex-direction: column;
     padding: 10px 28px;

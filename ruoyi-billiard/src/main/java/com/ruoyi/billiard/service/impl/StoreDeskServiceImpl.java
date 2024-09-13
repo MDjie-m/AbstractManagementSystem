@@ -1,19 +1,23 @@
 package com.ruoyi.billiard.service.impl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.TypeReference;
 import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreTutor;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
+import com.ruoyi.billiard.domain.vo.LineUpVo;
 import com.ruoyi.billiard.enums.DeskStatus;
 import com.ruoyi.billiard.enums.EmployeeStatus;
 import com.ruoyi.billiard.enums.TutorWorkStatus;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
 import com.ruoyi.billiard.service.IDeskDeviceRelationService;
+import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,8 @@ import com.ruoyi.billiard.mapper.StoreDeskMapper;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 /**
  * 球桌Service业务层处理
@@ -36,6 +42,10 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     private StoreTutorMapper storeTutorMapper;
     @Autowired
     private IDeskDeviceRelationService deskDeviceRelationService;
+
+    final static String LINE_UP_KEY = "line_up:{}";
+    @Resource
+    private RedisCache redisCacheService;
 
     /**
      * 查询球桌
@@ -140,21 +150,41 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     @Override
     public CashierDeskDashboardResVo getDeskDashboard(Long storeId) {
         CashierDeskDashboardResVo resVo = new CashierDeskDashboardResVo();
-        resVo.setDeskBusyCount( getStatusCount(storeId,DeskStatus.BUSY ));
-        resVo.setDeskWaitCount( getStatusCount(storeId,DeskStatus.WAIT ));
-        resVo.setDeskStopCount( getStatusCount(storeId,DeskStatus.STOP ));
-        resVo.setTutorBusyCount( getTutorStatusCount(storeId, TutorWorkStatus.BUSY));
-        resVo.setTutorWaitCount(  getTutorStatusCount(storeId, TutorWorkStatus.WAIT));
-        resVo.setTutorStopCount(  getTutorStatusCount(storeId, TutorWorkStatus.STOP));
+        resVo.setDeskBusyCount(getStatusCount(storeId, DeskStatus.BUSY));
+        resVo.setDeskWaitCount(getStatusCount(storeId, DeskStatus.WAIT));
+        resVo.setDeskStopCount(getStatusCount(storeId, DeskStatus.STOP));
+        resVo.setTutorBusyCount(getTutorStatusCount(storeId, TutorWorkStatus.BUSY));
+        resVo.setTutorWaitCount(getTutorStatusCount(storeId, TutorWorkStatus.WAIT));
+        resVo.setTutorStopCount(getTutorStatusCount(storeId, TutorWorkStatus.STOP));
         return resVo;
     }
 
-    private  Integer getStatusCount(Long storeId,DeskStatus status){
-       return Math.toIntExact(storeDeskMapper.selectCount(storeDeskMapper.query().eq(StoreDesk::getStoreId,storeId)
-                .eq(StoreDesk::getEnable,Boolean.TRUE).eq(StoreDesk::getStatus, status.getValue())));
+    private Integer getStatusCount(Long storeId, DeskStatus status) {
+        return Math.toIntExact(storeDeskMapper.selectCount(storeDeskMapper.query().eq(StoreDesk::getStoreId, storeId)
+                .eq(StoreDesk::getEnable, Boolean.TRUE).eq(StoreDesk::getStatus, status.getValue())));
     }
-    private  Integer getTutorStatusCount(Long storeId, TutorWorkStatus status){
-        return Math.toIntExact(storeTutorMapper.selectCount(storeTutorMapper.query().eq(StoreTutor::getStoreId,storeId)
+
+    private Integer getTutorStatusCount(Long storeId, TutorWorkStatus status) {
+        return Math.toIntExact(storeTutorMapper.selectCount(storeTutorMapper.query().eq(StoreTutor::getStoreId, storeId)
                 .eq(StoreTutor::getStatus, EmployeeStatus.WORK.getValue()).eq(StoreTutor::getWorkStatus, status.getValue())));
+    }
+
+    @Override
+    public Boolean saveLineUpInfo(Long storeId, Map<Integer,LineUpVo> reqVo) {
+
+        String json= JSON.toJSONString(reqVo);
+        redisCacheService.setCacheObject(StringUtils.format(LINE_UP_KEY, storeId), json);
+        return true;
+    }
+
+    @Override
+    public Map<Integer,LineUpVo> getLineUpInfo(Long storeId) {
+        String res = redisCacheService.getCacheObject(StringUtils.format(LINE_UP_KEY, storeId));
+        if(StringUtils.isEmpty(res)){
+            return  new HashMap<>();
+        }
+
+        return  JSON.parseObject(res, new TypeReference<Map<Integer, LineUpVo>>() {
+        });
     }
 }

@@ -2,17 +2,17 @@ package com.ruoyi.billiard.controller.cashier;
 
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
+import com.ruoyi.billiard.domain.vo.LineUpVo;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("cashier/desk")
@@ -41,5 +41,20 @@ public class CashierDeskController extends BaseController {
         return ResultVo.success(res);
     }
 
+    /*
+    获取排队信息
+     */
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @GetMapping("/line-up")
+    public ResultVo<Map<Integer,LineUpVo>> lineUp() {
+        Map<Integer,LineUpVo>res = storeDeskService.getLineUpInfo(getStoreId());
+        return ResultVo.success(res);
+    }
 
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/line-up")
+    public ResultVo<Boolean> lineUp( @RequestBody  Map<Integer,LineUpVo> reqVo) {
+
+        return ResultVo.success(storeDeskService.saveLineUpInfo(getStoreId(), reqVo));
+    }
 }

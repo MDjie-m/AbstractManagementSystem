@@ -111,22 +111,35 @@
           </div>
         </div>
 
-        <div class="sub-item">
+        <div class="sub-item" @click="onBtnClick(InvokeMethodName.LineUp,'排队叫号')">
           <svg-icon icon-class="line_up"/>
-          <div class="sub-item-text">
+          <div class="sub-item-text" >
             排队叫号
           </div>
         </div>
       </div>
 
     </div>
+    <el-dialog title="排队叫号"   :close-on-click-modal="false"  :visible.sync="openLineUp" width="80%"  style="height: 80%" append-to-body >
+       <LineUp/>
+    </el-dialog>
   </div>
 </template>
 <script >
+
 import { listDeskDashboard} from "@/api/cashier/desk";
+import LineUp from "@/views/cashier/desk/components/lineUp.vue";
+const OnBtnClickEvent="onBtnClick"
+export  const  InvokeMethodName={
+  LineUp:"lineUp"
+}
 export  default {
+  emits:[OnBtnClickEvent],
+  components: {LineUp},
   data(){
     return {
+      InvokeMethodName:InvokeMethodName,
+      openLineUp:false,
       deskTotal: {
         deskWaitCount: 0,
 
@@ -146,6 +159,9 @@ export  default {
     this.getList();
   },
   methods:{
+    onBtnClick(type,title){
+      this.$emit(OnBtnClickEvent,type,title)
+    },
     getList(){
       listDeskDashboard().then(res=>{
         this.deskTotal=res.data|| {}

@@ -1,10 +1,12 @@
 package com.ruoyi.billiard.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
+import com.ruoyi.billiard.domain.vo.LineUpVo;
 
 /**
  * 球桌Service接口
@@ -66,4 +68,7 @@ public interface IStoreDeskService
 
     CashierDeskDashboardResVo getDeskDashboard(Long storeId);
 
+    Map<Integer,LineUpVo> getLineUpInfo(Long storeId);
+
+    Boolean saveLineUpInfo(Long storeId, Map<Integer,LineUpVo> reqVo);
 }

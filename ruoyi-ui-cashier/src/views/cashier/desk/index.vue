@@ -6,9 +6,9 @@
       <div class="  section-container menu-container">
         <el-button @click="onSwitchLight(1)">开关灯({{ this.lightStatus }})</el-button>
       </div>
-           <Dashboard/>
+           <Dashboard @onBtnClick="onMenuBtnClick"/>
     </div>
-    <div class="right-panel">
+    <div class="right-panel"  >
       <div class="  section-container">
         <div>
           <el-row>
@@ -84,12 +84,14 @@
           </template>
         </el-scrollbar>
       </div>
+      <content-wrapper :visible.sync="openNewDialog" :title="title">
+        <line-up v-if="openNewDialog"/>
+      </content-wrapper>
     </div>
 
     <!-- 添加或修改球桌对话框 -->
 
   </div>
-
 
 </template>
 
@@ -98,14 +100,17 @@
 
 import {listDesk} from "@/api/cashier/desk";
 import {callPCMethod} from "@/utils/pcCommunication";
-import Dashboard from "@/views/cashier/desk/dashboard.vue";
+import Dashboard from "@/views/cashier/desk/components/dashboard.vue";
+import ContentWrapper from "@/views/cashier/desk/components/contentWrapper.vue";
+import LineUp from "@/views/cashier/desk/components/lineUp.vue";
 
 export default {
   name: "Desk",
-  components: {Dashboard},
+  components: {LineUp, ContentWrapper, Dashboard},
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
   data() {
     return {
+      openNewDialog:false,
       lightStatus: null,
       currentDesk: null,
 
@@ -139,6 +144,10 @@ export default {
     this.getList();
   },
   methods: {
+    onMenuBtnClick(name,title){
+       this.openNewDialog=true;
+       this.title=title
+    },
     onSwitchLight(deskNum) {
       let req = {deskNum: deskNum, open: this.lightStatus ? false : true}
       // callPCMethod("light.switch", req).then(res => {
