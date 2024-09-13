@@ -107,18 +107,18 @@ create table t_member_level
 drop table if exists t_level_discount_permission;
 create table t_level_discount_permission
 (
-    level_discount_permission_id bigint                   not null comment 'ID'
+    level_discount_permission_id bigint                                not null comment 'ID'
         primary key,
-    member_level_id  bigint                   not null comment '等级id',
-    value      int                         not null comment '打折类型：{1=球桌费用， 3=商品购买,4=陪练费用，5=教学费用} ',
-    discount        decimal(4, 2)                         not null comment '折扣力度',
-    create_by       varchar(64) default ''                null comment '创建者',
-    create_time     timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by       varchar(64) default ''                null comment '更新者',
-    update_time     timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id    bigint                                null comment '创建者Id',
-    update_by_id    bigint                                null comment '更新者Id',
-    remark          nvarchar(500)                         null comment '备注'
+    member_level_id              bigint                                not null comment '等级id',
+    value                        int                                   not null comment '打折类型：{1=球桌费用， 3=商品购买,4=陪练费用，5=教学费用} ',
+    discount                     decimal(4, 2)                         not null comment '折扣力度',
+    create_by                    varchar(64) default ''                null comment '创建者',
+    create_time                  timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by                    varchar(64) default ''                null comment '更新者',
+    update_time                  timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id                 bigint                                null comment '创建者Id',
+    update_by_id                 bigint                                null comment '更新者Id',
+    remark                       nvarchar(500)                         null comment '备注'
 )
     comment '等级折扣范围';
 
@@ -156,8 +156,9 @@ create table t_order
     total_amount          decimal(20, 2)                        null comment '实际支付金额',
     discount_value        decimal(4, 2)                         null comment '当前折扣',
     total_wipe_zero       decimal(4, 2)                         null comment '抹零金额',
+    store_id              bigint                                not null comment '门店',
     pay_type              int                                   null comment '支付方式：0=扫码，1=现金，2=会员',
-    status int not null         comment '订单状态：0=计费中,1=待结算,2=已结算，3=作废',
+    status                int                                   not null comment '订单状态：0=计费中,1=待结算,2=已结算，3=作废',
     member_id             bigint                                null comment '支付会员id',
     remark                nvarchar(500)                         null comment '备注',
     create_by             varchar(64) default ''                null comment '创建者',
@@ -231,29 +232,29 @@ drop table if exists t_order_desk_time;
 
 create table t_order_desk_time
 (
-    order_desk_time_id bigint                                not null comment '球桌编码'
+    order_desk_time_id    bigint                                not null comment '球桌编码'
         primary key,
-    order_id           bigint                                not null comment '订单编号',
-    desk_id            bigint                                not null comment '球桌编码',
-    from_desk_id       bigint                                null comment '转桌之前的Id',
-    start_time         datetime                              not null comment '开始时间',
-    end_time           datetime                              not null comment '结束时间',
-    total_time         int                                   not null comment '总时间分钟（开始时间去掉秒，结束时间多一秒加1分钟算）',
-    price              decimal(10, 2)                        not null comment '价格/分钟',
-    total_amount_due       decimal(20, 2)                        not null comment '应付总金额 ',
-    total_discount_amount  decimal(20, 2)                        null comment '折扣金额',
-    total_amount           decimal(20, 2)                        null comment '实际支付金额',
-    total_give_amount      decimal(20, 2)                        null comment '实际赠送支付金额',
-    discount_value         decimal(4, 2)                         null comment '当前折扣',
-    total_wipe_zero        decimal(4, 2)                         null comment '抹零金额',
-    create_by          varchar(64) default ''                null comment '创建者',
-    create_time        timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by          varchar(64) default ''                null comment '更新者',
+    order_id              bigint                                not null comment '订单编号',
+    desk_id               bigint                                not null comment '球桌编码',
+    from_desk_id          bigint                                null comment '转桌之前的Id',
+    start_time            datetime                              not null comment '开始时间',
+    end_time              datetime                              not null comment '结束时间',
+    total_time            int                                   not null comment '总时间分钟（开始时间去掉秒，结束时间多一秒加1分钟算）',
+    price                 decimal(10, 2)                        not null comment '价格/分钟',
+    total_amount_due      decimal(20, 2)                        not null comment '应付总金额 ',
+    total_discount_amount decimal(20, 2)                        null comment '折扣金额',
+    total_amount          decimal(20, 2)                        null comment '实际支付金额',
+    total_give_amount     decimal(20, 2)                        null comment '实际赠送支付金额',
+    discount_value        decimal(4, 2)                         null comment '当前折扣',
+    total_wipe_zero       decimal(4, 2)                         null comment '抹零金额',
+    create_by             varchar(64) default ''                null comment '创建者',
+    create_time           timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by             varchar(64) default ''                null comment '更新者',
 
-    update_time        timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id       bigint                                null comment '创建者Id',
-    update_by_id       bigint                                null comment '更新者Id',
-    remark             nvarchar(500)                         null comment '备注'
+    update_time           timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id          bigint                                null comment '创建者Id',
+    update_by_id          bigint                                null comment '更新者Id',
+    remark                nvarchar(500)                         null comment '备注'
 )
     comment '订单计时';
 drop table if exists t_order_tutor_time;
@@ -548,21 +549,20 @@ create table t_desk_price
 (
     desk_price_id bigint                                not null comment 'ID'
         primary key,
-    store_id         bigint              not null                  not null comment '抓拍时间',
-    desk_type         int                                 not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
-    price              decimal(10,2)                                null comment '价格',
+    store_id      bigint                                not null not null comment '抓拍时间',
+    desk_type     int                                   not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
+    price         decimal(10, 2)                        null comment '价格',
 
-    create_by            varchar(64) default ''                null comment '创建者',
-    create_time          timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by            varchar(64) default ''                null comment '更新者',
-    update_time          timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id         bigint                                null comment '创建者Id',
-    update_by_id         bigint                                null comment '更新者Id',
-    remark               nvarchar(500)                         null comment '备注'
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id  bigint                                null comment '创建者Id',
+    update_by_id  bigint                                null comment '更新者Id',
+    remark        nvarchar(500)                         null comment '备注'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
     comment '球桌价格';
-
 
 
 
@@ -571,17 +571,17 @@ create table t_tutor_price
 (
     tutor_price_id bigint                                not null comment 'ID'
         primary key,
-    store_id         bigint              not null                  not null comment '抓拍时间',
-    level          int                                 not null comment '等级(1=助教，2=教练，3=总教)',
-    price              decimal(10,2)                                null comment '价格',
+    store_id       bigint                                not null not null comment '抓拍时间',
+    level          int                                   not null comment '等级(1=助教，2=教练，3=总教)',
+    price          decimal(10, 2)                        null comment '价格',
 
-    create_by            varchar(64) default ''                null comment '创建者',
-    create_time          timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by            varchar(64) default ''                null comment '更新者',
-    update_time          timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id         bigint                                null comment '创建者Id',
-    update_by_id         bigint                                null comment '更新者Id',
-    remark               nvarchar(500)                         null comment '备注'
+    create_by      varchar(64) default ''                null comment '创建者',
+    create_time    timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by      varchar(64) default ''                null comment '更新者',
+    update_time    timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id   bigint                                null comment '创建者Id',
+    update_by_id   bigint                                null comment '更新者Id',
+    remark         nvarchar(500)                         null comment '备注'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
     comment '教练价格';

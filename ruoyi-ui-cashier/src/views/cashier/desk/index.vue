@@ -3,37 +3,48 @@
 
   <div class="page-container">
     <div class="left-panel">
-
+      <div class="  section-container menu-container">
+        SDFSDF
+      </div>
+      <div class="  section-container menu-container">
+        SDFSDF
+      </div>
+      <div class="  section-container menu-container">
+        SDFSDF
+      </div>
     </div>
     <div class="right-panel">
       <div class="  section-container">
         <div>
           <el-row>
-            <el-tag
-              type="primary"
-              @click="onChooseAll"
-              :effect="queryParams.deskType===null &&queryParams.placeType===null?'dark':'plain'"
-            >
-              全部
-            </el-tag>
-            <el-tag v-for="dict in dict.type.store_desk_type"
-                    :key="dict.value+'deskType'"
-                    :label="dict.label"
-                    type="primary"
-                    @click="onChooseClick('deskType',dict.value)"
-                    :effect="parseInt(dict.value )===queryParams.deskType?'dark':'plain'"
-                    round>
-              {{ dict.label }}
-            </el-tag>
-            <el-tag v-for="dict in dict.type.store_desk_place"
-                    :key="dict.value+'deskPlace'"
-                    :label="dict.label"
-                    :effect="parseInt(dict.value)===queryParams.placeType?'dark':'plain'"
-                    @click="onChooseClick('placeType',dict.value)"
-                    type="primary"
-            >
-              {{ dict.label }}
-            </el-tag>
+
+              <el-tag
+                type="primary"
+                @click="onChooseAll"
+                :effect="queryParams.deskType===null &&queryParams.placeType===null?'dark':'plain'"
+              >
+                全部
+              </el-tag>
+
+              <el-tag v-for="dict in dict.type.store_desk_type"
+                      :key="dict.value+'deskType'"
+                      :label="dict.label"
+                      type="primary"
+                      @click="onChooseClick('deskType',dict.value)"
+                      :effect="parseInt(dict.value )===queryParams.deskType?'dark':'plain'"
+                      round>
+                {{ dict.label }}
+              </el-tag>
+              <el-tag v-for="dict in dict.type.store_desk_place"
+                      :key="dict.value+'deskPlace'"
+                      :label="dict.label"
+                      :effect="parseInt(dict.value)===queryParams.placeType?'dark':'plain'"
+                      @click="onChooseClick('placeType',dict.value)"
+                      type="primary"
+              >
+                {{ dict.label }}
+              </el-tag>
+
           </el-row>
 
           <el-row style="margin-top: 20px; ">
@@ -60,15 +71,16 @@
 
       <div class="  section-container desk-box" v-loading="loading">
         <el-scrollbar>
-          <template class="box-card"   v-for="placeItem in dict.type.store_desk_place">
-            <el-divider  content-position="left" :key="'typeDesk'+placeItem.value" >{{placeItem.label}}</el-divider>
+          <template class="box-card" v-for="placeItem in dict.type.store_desk_place">
+            <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
             <div class="desk-container">
-              <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}" v-for="desk in deskList.filter(p=>  p.placeType === parseInt(placeItem.value))">
+              <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
+                       v-for="desk in deskList.filter(p=>  p.placeType === parseInt(placeItem.value))">
                 <div>
-                  {{desk.selected}}---
-                  <div class="desk-item-name">   {{desk.deskName}}</div>
-                  <div class="desk-item-num">   {{desk.deskNum}}</div>
-                  <div class="desk-item-price">   {{desk.price}}元/分钟</div>
+                  {{ desk.selected }}---
+                  <div class="desk-item-name"> {{ desk.deskName }}</div>
+                  <div class="desk-item-num"> {{ desk.deskNum }}</div>
+                  <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
                 </div>
 
 
@@ -205,7 +217,7 @@ export default {
   dicts: ['stoer_desk_status', 'store_desk_type', 'store_desk_place'],
   data() {
     return {
-      currentDesk:null,
+      currentDesk: null,
       storeOptions: [],
       storeInfo: null,
       // 遮罩层
@@ -223,7 +235,7 @@ export default {
       // 球桌表格数据
       deskList: [],
 
-      originalDeskList:[],
+      originalDeskList: [],
       deviceList: [],
       lightList: [],
       cameraList: [],
@@ -287,15 +299,15 @@ export default {
     this.getList();
   },
   methods: {
-    onDeskClick(item){
-      this.deskList.forEach(p=>{
-        if(p===item){
+    onDeskClick(item) {
+      this.deskList.forEach(p => {
+        if (p === item) {
           return;
         }
-        p.selected=false;
+        p.selected = false;
       })
-      item.selected=!item.selected
-      this.currentDesk=item.selected?item:null;
+      item.selected = !item.selected
+      this.currentDesk = item.selected ? item : null;
     },
     onChooseAll() {
       this.queryParams.placeType = null;
@@ -307,45 +319,45 @@ export default {
       this.getList();
     },
     onChooseClick(field, val) {
-      if(this.queryParams[field] === parseInt(val)){
-        this.queryParams[field]=null;
-      }else {
+      if (this.queryParams[field] === parseInt(val)) {
+        this.queryParams[field] = null;
+      } else {
         this.queryParams[field] = parseInt(val);
       }
 
       this.getList()
 
     },
-    filterDeskList(){
-      this.deskList=this.originalDeskList.filter(p=>{
-        let statusCondition=true;
-        let deskTypeCondition=true;
-        let placeCondition=true;
-        if(this.queryParams.status!==null){
-          statusCondition= p.status ===  parseInt(this.queryParams.status)
+    filterDeskList() {
+      this.deskList = this.originalDeskList.filter(p => {
+        let statusCondition = true;
+        let deskTypeCondition = true;
+        let placeCondition = true;
+        if (this.queryParams.status !== null) {
+          statusCondition = p.status === parseInt(this.queryParams.status)
         }
-        if(this.queryParams.deskType!==null){
-          deskTypeCondition= p.deskType === parseInt( this.queryParams.deskType)
+        if (this.queryParams.deskType !== null) {
+          deskTypeCondition = p.deskType === parseInt(this.queryParams.deskType)
         }
-        if(this.queryParams.placeType!==null){
-          placeCondition= p.placeType ===  parseInt(this.queryParams.placeType)
+        if (this.queryParams.placeType !== null) {
+          placeCondition = p.placeType === parseInt(this.queryParams.placeType)
         }
-        return statusCondition&&placeCondition &&deskTypeCondition
+        return statusCondition && placeCondition && deskTypeCondition
       });
-      console.log(this.deskList,'ddd')
+      console.log(this.deskList, 'ddd')
       return this.deskList;
     },
     /** 查询球桌列表 */
     getList() {
       this.loading = true;
       listDesk({}).then(response => {
-        this.originalDeskList=(response.data||[]).map(p=> {
-          p.selected=false;
+        this.originalDeskList = (response.data || []).map(p => {
+          p.selected = false;
           return p;
         });
         this.filterDeskList()
         this.loading = false;
-      }).finally(()=>this.loading=false);
+      }).finally(() => this.loading = false);
     },
 
     // 取消按钮
@@ -455,21 +467,32 @@ export default {
 </script>
 <style scoped lang="scss">
 @import '@/assets/styles/element-variables.scss';
-.el-tag + .el-tag {
-  margin-left: 10px;
+
+.el-tag {
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
-.desk-box{
-   flex: 1;
+.left-panel{
+  padding: 10px;
+}
+.menu-container{
+  padding: 10px;
+}
+
+.desk-box {
+  flex: 1;
   overflow-y: auto;
 }
-.desk-container{
+
+.desk-container {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
 
 
 }
-.desk-item{
+
+.desk-item {
   display: flex;
   width: 110px;
   min-height: 130px;
@@ -478,27 +501,31 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: rgba(0,0,0,0.8);
+  color: rgba(0, 0, 0, 0.8);
   border-radius: 10px;
 
-  &:hover, &.selected{
+  &:hover, &.selected {
     background-color: $--color-primary;
-    border:1px solid $--color-primary;
+    border: 1px solid $--color-primary;
     color: #FFFFFF;
     cursor: pointer;
   }
-  div+div{
+
+  div + div {
     margin-top: 10px;
   }
-  &-name{
+
+  &-name {
     font-weight: bold;
     font-size: 15px;
   }
-  &-num{
+
+  &-num {
     font-weight: bold;
     font-size: 15px;
   }
-  &-price{
+
+  &-price {
     font-size: 12px;
   }
 }
