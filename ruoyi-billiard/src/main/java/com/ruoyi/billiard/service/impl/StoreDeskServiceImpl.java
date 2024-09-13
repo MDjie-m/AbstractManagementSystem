@@ -23,13 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 球桌Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2024-09-07
  */
 @Service
-public class StoreDeskServiceImpl implements IStoreDeskService
-{
+public class StoreDeskServiceImpl implements IStoreDeskService {
     @Autowired
     private StoreDeskMapper storeDeskMapper;
 
@@ -38,70 +37,72 @@ public class StoreDeskServiceImpl implements IStoreDeskService
 
     /**
      * 查询球桌
-     * 
+     *
      * @param deskId 球桌主键
      * @return 球桌
      */
     @Override
-    public StoreDesk selectStoreDeskByDeskId(Long deskId)
-    {
+    public StoreDesk selectStoreDeskByDeskId(Long deskId) {
         return storeDeskMapper.selectById(deskId);
     }
 
     /**
      * 查询球桌列表
-     * 
+     *
      * @param storeDesk 球桌
      * @return 球桌
      */
     @Override
-    public List<StoreDesk> selectStoreDeskList(StoreDesk storeDesk)
-    {
+    public List<StoreDesk> selectStoreDeskList(StoreDesk storeDesk) {
         return storeDeskMapper.selectStoreDeskList(storeDesk);
     }
 
     /**
      * 新增球桌
-     * 
+     *
      * @param storeDesk 球桌
      * @return 结果
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insertStoreDesk(StoreDesk storeDesk)
-    {
+    public int insertStoreDesk(StoreDesk storeDesk) {
         storeDesk.setDeskId(IdUtils.singleNextId());
         SecurityUtils.fillCreateUser(storeDesk);
-        checkDevice( storeDesk.getCameraDeviceId(),null,"摄像头已绑定到其他桌");
-        checkDevice( storeDesk.getLightDeviceId(),null,"摄像头已绑定到其他桌");
+        checkDevice(storeDesk.getCameraDeviceId(), null, "摄像头已绑定到其他桌");
+        checkDevice(storeDesk.getLightDeviceId(), null, "摄像头已绑定到其他桌");
+        AssertUtil.isTrue(!storeDeskMapper.exists(storeDeskMapper.query().eq(StoreDesk::getStoreId, storeDesk.getStoreId())
+                .eq(StoreDesk::getDeskNum, storeDesk.getDeskNum())), "球桌编号重复");
         deskDeviceRelationService.bindDevice(storeDesk.getDeskId(),
                 Arrays.asList(storeDesk.getCameraDeviceId(), storeDesk.getLightDeviceId()));
 
 
         return storeDeskMapper.insertStoreDesk(storeDesk);
     }
-    private  void checkDevice( Long deviceId,Long deskId,String msg){
-        if(Objects.isNull(deviceId)){
+
+    private void checkDevice(Long deviceId, Long deskId, String msg) {
+        if (Objects.isNull(deviceId)) {
             return;
         }
-        AssertUtil.isTrue(Objects.isNull( storeDeskMapper.checkDeviceBind( deviceId,deskId)),msg);
+        AssertUtil.isTrue(Objects.isNull(storeDeskMapper.checkDeviceBind(deviceId, deskId)), msg);
     }
 
     /**
      * 修改球桌
-     * 
+     *
      * @param storeDesk 球桌
      * @return 结果
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateStoreDesk(StoreDesk storeDesk)
-    {
+    public int updateStoreDesk(StoreDesk storeDesk) {
+        AssertUtil.isTrue(!storeDeskMapper.exists(storeDeskMapper.query().eq(StoreDesk::getStoreId, storeDesk.getStoreId())
+                        .eq(StoreDesk::getDeskNum, storeDesk.getDeskNum()).notIn(StoreDesk::getDeskId, storeDesk.getDeskId())),
+                "球桌编号重复");
         deskDeviceRelationService.bindDevice(storeDesk.getDeskId(),
                 Arrays.asList(storeDesk.getCameraDeviceId(), storeDesk.getLightDeviceId()));
-        storeDesk.setStatus(null); 
-        checkDevice( storeDesk.getCameraDeviceId(),storeDesk.getDeskId(),"摄像头已绑定到其他桌");
-        checkDevice( storeDesk.getLightDeviceId(),storeDesk.getDeskId(),"摄像头已绑定到其他桌");
+        storeDesk.setStatus(null);
+        checkDevice(storeDesk.getCameraDeviceId(), storeDesk.getDeskId(), "摄像头已绑定到其他桌");
+        checkDevice(storeDesk.getLightDeviceId(), storeDesk.getDeskId(), "摄像头已绑定到其他桌");
         SecurityUtils.fillUpdateUser(storeDesk);
 
         return storeDeskMapper.updateStoreDesk(storeDesk);
@@ -109,37 +110,35 @@ public class StoreDeskServiceImpl implements IStoreDeskService
 
     /**
      * 批量删除球桌
-     * 
+     *
      * @param deskIds 需要删除的球桌主键
      * @return 结果
      */
     @Override
-    public int deleteStoreDeskByDeskIds(Long[] deskIds)
-    {
+    public int deleteStoreDeskByDeskIds(Long[] deskIds) {
         return storeDeskMapper.deleteStoreDeskByDeskIds(deskIds);
     }
 
     /**
      * 删除球桌信息
-     * 
+     *
      * @param deskId 球桌主键
      * @return 结果
      */
     @Override
-    public int deleteStoreDeskByDeskId(Long deskId)
-    {
+    public int deleteStoreDeskByDeskId(Long deskId) {
         return storeDeskMapper.deleteStoreDeskByDeskId(deskId);
     }
 
     @Override
-    public   List<Store> getByLoginUserId(Long loginUserId) {
+    public List<Store> getByLoginUserId(Long loginUserId) {
         return storeDeskMapper.selectStoreByLoginUserId(loginUserId);
     }
 
     @Override
     public CashierDeskDashboardResVo getDeskDashboard(Long storeId) {
 
-        CashierDeskDashboardResVo resVo=new CashierDeskDashboardResVo();
+        CashierDeskDashboardResVo resVo = new CashierDeskDashboardResVo();
         return resVo;
     }
 }
