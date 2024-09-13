@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.JobChangeApplicationMapper">
+    
+    <resultMap type="JobChangeApplication" id="JobChangeApplicationResult">
+        <result property="id"    column="id"    />
+        <result property="applicationTitle"    column="application_title"    />
+        <result property="applicationName"    column="application_name"    />
+        <result property="currentDepartment"    column="current_department"    />
+        <result property="currentPosition"    column="current_position"    />
+        <result property="currentRank"    column="current_rank"    />
+        <result property="targetDepartmentId"    column="target_department_id"    />
+        <result property="targetPosition"    column="target_position"    />
+        <result property="targetRank"    column="target_rank"    />
+        <result property="effectiveDate"    column="effective_date"    />
+        <result property="transferReason"    column="transfer_reason"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="attachmentFile"    column="attachment_file"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="postId"    column="post_id"    />
+        <result property="newRoseId"    column="new_rose_id"    />
+        <result property="targetDepartment"    column="target_department"    />
+    </resultMap>
+
+    <sql id="selectJobChangeApplicationVo">
+        select id, application_title, application_name, current_department, current_position, current_rank, target_department_id, target_position, target_rank, effective_date, transfer_reason, file_name, attachment_file, create_by, create_time, update_by, update_time, user_id, dept_id, post_id, new_rose_id, target_department from job_change_application
+    </sql>
+
+    <select id="selectJobChangeApplicationList" parameterType="JobChangeApplication" resultMap="JobChangeApplicationResult">
+        <include refid="selectJobChangeApplicationVo"/>
+        <where>  
+            <if test="applicationTitle != null  and applicationTitle != ''"> and application_title like concat('%', #{applicationTitle}, '%')</if>
+            <if test="applicationName != null  and applicationName != ''"> and application_name like concat('%', #{applicationName}, '%')</if>
+            <if test="effectiveDate != null "> and effective_date = #{effectiveDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectJobChangeApplicationById" parameterType="Long" resultMap="JobChangeApplicationResult">
+        <include refid="selectJobChangeApplicationVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertJobChangeApplication" parameterType="JobChangeApplication" useGeneratedKeys="true" keyProperty="id">
+        insert into job_change_application
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="applicationTitle != null">application_title,</if>
+            <if test="applicationName != null">application_name,</if>
+            <if test="currentDepartment != null">current_department,</if>
+            <if test="currentPosition != null">current_position,</if>
+            <if test="currentRank != null">current_rank,</if>
+            <if test="targetDepartmentId != null">target_department_id,</if>
+            <if test="targetPosition != null">target_position,</if>
+            <if test="targetRank != null">target_rank,</if>
+            <if test="effectiveDate != null">effective_date,</if>
+            <if test="transferReason != null">transfer_reason,</if>
+            <if test="fileName != null">file_name,</if>
+            <if test="attachmentFile != null">attachment_file,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="postId != null">post_id,</if>
+            <if test="newRoseId != null">new_rose_id,</if>
+            <if test="targetDepartment != null">target_department,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="applicationTitle != null">#{applicationTitle},</if>
+            <if test="applicationName != null">#{applicationName},</if>
+            <if test="currentDepartment != null">#{currentDepartment},</if>
+            <if test="currentPosition != null">#{currentPosition},</if>
+            <if test="currentRank != null">#{currentRank},</if>
+            <if test="targetDepartmentId != null">#{targetDepartmentId},</if>
+            <if test="targetPosition != null">#{targetPosition},</if>
+            <if test="targetRank != null">#{targetRank},</if>
+            <if test="effectiveDate != null">#{effectiveDate},</if>
+            <if test="transferReason != null">#{transferReason},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="attachmentFile != null">#{attachmentFile},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="postId != null">#{postId},</if>
+            <if test="newRoseId != null">#{newRoseId},</if>
+            <if test="targetDepartment != null">#{targetDepartment},</if>
+         </trim>
+    </insert>
+
+    <update id="updateJobChangeApplication" parameterType="JobChangeApplication">
+        update job_change_application
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="applicationTitle != null">application_title = #{applicationTitle},</if>
+            <if test="applicationName != null">application_name = #{applicationName},</if>
+            <if test="currentDepartment != null">current_department = #{currentDepartment},</if>
+            <if test="currentPosition != null">current_position = #{currentPosition},</if>
+            <if test="currentRank != null">current_rank = #{currentRank},</if>
+            <if test="targetDepartmentId != null">target_department_id = #{targetDepartmentId},</if>
+            <if test="targetPosition != null">target_position = #{targetPosition},</if>
+            <if test="targetRank != null">target_rank = #{targetRank},</if>
+            <if test="effectiveDate != null">effective_date = #{effectiveDate},</if>
+            <if test="transferReason != null">transfer_reason = #{transferReason},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="attachmentFile != null">attachment_file = #{attachmentFile},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="newRoseId != null">new_rose_id = #{newRoseId},</if>
+            <if test="targetDepartment != null">target_department = #{targetDepartment},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteJobChangeApplicationById" parameterType="Long">
+        delete from job_change_application where id = #{id}
+    </delete>
+
+    <delete id="deleteJobChangeApplicationByIds" parameterType="String">
+        delete from job_change_application where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
