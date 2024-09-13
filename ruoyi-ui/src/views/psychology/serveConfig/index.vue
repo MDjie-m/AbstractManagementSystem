@@ -39,6 +39,18 @@
       </el-row>
       <el-row>
         <el-col :span="8">
+          <el-form-item label="咨询师级别" prop="level">
+            <el-select v-model="queryParams.level" clearable>
+              <el-option
+                v-for="dict in levelList"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="状态" prop="status">
             <el-select v-model="queryParams.status" clearable>
               <el-option
@@ -110,6 +122,8 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
+
+
     <el-table v-loading="loading" :data="serveConfigList" @selection-change="handleSelectionChange">
 <!--      <el-table-column type="selection" width="55" align="center" />-->
       <el-table-column label="服务信息" align="center" prop="name">
@@ -124,6 +138,11 @@
       </el-table-column>
       <el-table-column label="售价(元)" align="center" prop="price" />
       <el-table-column label="销量" align="center" prop="sales" />
+      <el-table-column label="咨询师级别" align="center" prop="level">
+        <template slot-scope="scope">
+          {{ levelList.find(i => i.value === scope.row.level).label }}
+        </template>
+      </el-table-column>
       <el-table-column label="服务类型" align="center" prop="type">
         <template slot-scope="scope">
           {{ typeList.find(i => i.value === scope.row.type).label }}
