@@ -8,6 +8,12 @@ export function listDesk(params) {
     params: params
   })
 }
+export function listDeskDashboard() {
+  return request({
+    url: '/cashier/desk/dashboard',
+    method: 'get',
+  })
+}
 
 // 查询球桌详细
 export function getDesk(deskId) {

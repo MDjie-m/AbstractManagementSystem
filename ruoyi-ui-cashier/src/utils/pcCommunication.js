@@ -28,7 +28,7 @@ function getUuid() {
 
 export function callPCMethod(type, data, timeout = 5000) {
   let msgId = getUuid();
-  let res = window.DeviceMethod?.callMethd(type, (data instanceof String) ? data : JSON.stringify(data), msgId);
+  let res = window.DeviceMethod?.callMethd(type, (typeof (data) ==="string") ? data : JSON.stringify(data), msgId);
   return new Promise(resolve => {
     registerMethod(type + msgId, resolve)
   } , reject => {

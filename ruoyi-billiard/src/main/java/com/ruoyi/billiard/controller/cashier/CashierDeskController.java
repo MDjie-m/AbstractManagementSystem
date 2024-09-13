@@ -38,7 +38,6 @@ public class CashierDeskController extends BaseController {
     public ResultVo<CashierDeskDashboardResVo> deskDashboard() {
 
         CashierDeskDashboardResVo res = storeDeskService.getDeskDashboard(getStoreId());
-        ;
         return ResultVo.success(res);
     }
 

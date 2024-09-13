@@ -46,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="storeId != null "> and a.store_id = #{storeId}</if>
             <if test="price != null "> and price = #{price}</if>
             <if test="status != null "> and a.status = #{status}</if>
-            <if test="enable != null "> and a.status = #{enable}</if>
+            <if test="enable != null "> and a.enable = #{enable}</if>
             <if test="lightDeviceId != null "> and light_device_id = #{lightDeviceId}</if>
             <if test="cameraDeviceId != null "> and camera_device_id = #{cameraDeviceId}</if>
         </where>
