@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -74,30 +75,9 @@ public class ConsultantUserController extends BaseController {
     @PostMapping("/login")
     @RateLimiter
     public AjaxResult login(@RequestBody ConsultLoginDTO consultLoginDTO) {
-        try {
-            String phoneNumber = new CloudFunctions().getPhoneNumber(consultLoginDTO);
-            //获取咨询师信息(若无则新增)
-            PsyConsult psyConsult = psyConsultService.getByPhoneOrInsert(phoneNumber);
-            ConsultDTO consultDTO = new ConsultDTO();
-            consultDTO.setConsultId(psyConsult.getId());
-            consultDTO.setPhone(psyConsult.getPhonenumber());
-            String token = consultantTokenService.createToken(consultDTO, 360000);
-
-            //若无账户则创建
-            accountService.createAccountIfNotExist(psyConsult.getId());
-
-            //更新设备信息
-            psyConsult.setDeviceId(consultLoginDTO.getDeviceId());
-            psyConsult.setDeviceBrand(consultLoginDTO.getDeviceBrand());
-            psyConsult.setDeviceModel(consultLoginDTO.getDeviceModel());
-            psyConsult.setLastLoginIp(consultLoginDTO.getLastLoginIp());
-            psyConsultService.updateById(psyConsult);
-
-            return AjaxResult.success(Constants.TOKEN_PREFIX + token);
-        } catch (Exception e) {
-            log.error("login error", e);
-            return AjaxResult.error("login error");
-        }
+        String token = initAccountAndGetToken(consultLoginDTO);
+        return AjaxResult.success(Constants.TOKEN_PREFIX + token);
+    
     }
 
     @PostMapping("/sendSms")
@@ -130,12 +110,46 @@ public class ConsultantUserController extends BaseController {
             throw new ServiceException("该手机号无相符的咨询师");
         }
 
-        ConsultDTO consultDTO = new ConsultDTO();
+       /* ConsultDTO consultDTO = new ConsultDTO();
         consultDTO.setConsultId(consultant.getId());
         consultDTO.setPhone(consultant.getPhonenumber());
-        String token = consultantTokenService.createToken(consultDTO, 360000);
+        String token = consultantTokenService.createToken(consultDTO, 360000);*/
+        String token = initAccountAndGetToken(req);
 
         return AjaxResult.success(Constants.TOKEN_PREFIX + token);
+    }
+    
+    //登录逻辑处理
+    @Transactional(rollbackFor = Exception.class)
+    private String initAccountAndGetToken(ConsultLoginDTO req){
+        String phoneNumber = req.getPhone();
+        try {
+            if (ObjectUtils.isEmpty(phoneNumber)){
+                phoneNumber = new CloudFunctions().getPhoneNumber(req);
+            }
+        } catch (Exception e) {
+            log.error("login error", e);
+            throw new ServiceException("无法获取手机号");
+        }
+        //获取咨询师信息(若无则新增)
+        PsyConsult psyConsult = psyConsultService.getByPhoneOrInsert(phoneNumber);
+        ConsultDTO consultDTO = new ConsultDTO();
+        consultDTO.setConsultId(psyConsult.getId());
+        consultDTO.setPhone(psyConsult.getPhonenumber());
+        String token = consultantTokenService.createToken(consultDTO, 360000);
+
+        //若无账户则创建
+        accountService.createAccountIfNotExist(psyConsult.getId());
+
+        //更新设备信息
+        psyConsult.setDeviceId(req.getDeviceId());
+        psyConsult.setDeviceBrand(req.getDeviceBrand());
+        psyConsult.setDeviceModel(req.getDeviceModel());
+        psyConsult.setLastLoginIp(req.getLastLoginIp());
+        psyConsultService.updateById(psyConsult);
+
+        return token;
+       
     }
 
 

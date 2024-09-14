@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="accountNumber != null  and accountNumber != ''"> and account_number = #{accountNumber}</if>
             <if test="withdrawalPassword != null  and withdrawalPassword != ''"> and withdrawal_password = #{withdrawalPassword}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="amount != null "> and account_amount = #{amount}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
             <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
         </where>
     </select>
@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="accountNumber != null">account_number,</if>
             <if test="withdrawalPassword != null">withdrawal_password,</if>
             <if test="status != null">status,</if>
-            <if test="amount != null">account_amount,</if>
+            <if test="amount != null">amount,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -71,7 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="accountNumber != null">account_number = #{accountNumber},</if>
             <if test="withdrawalPassword != null">withdrawal_password = #{withdrawalPassword},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="amount != null">account_amount = #{amount},</if>
+            <if test="amount != null">amount = #{amount},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
