@@ -78,6 +78,9 @@ public class PsyUser
 
     //最后登录ip
     private String lastLoginIp;
+
+    private String sourceChannelId;//来源渠道id
+    private Long introduceUserId;//介绍人id
     
     //咨询记录
     private List<OrderItemDTO> orderItemList;

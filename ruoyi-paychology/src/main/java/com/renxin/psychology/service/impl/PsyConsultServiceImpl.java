@@ -699,12 +699,12 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     @Override
     public void refreshCacheAll(){
         //获取完整id清单
-        List<Long> courseIdList = psyConsultMapper.selectList(new LambdaQueryWrapper<PsyConsult>()
+        List<Long> consultIdList = psyConsultMapper.selectList(new LambdaQueryWrapper<PsyConsult>()
                 .select(PsyConsult::getId)
                 .orderByDesc(PsyConsult::getCreateTime)).stream().map(p -> p.getId()).collect(Collectors.toList());
 
         //刷新缓存
-        refreshCacheByIdList(courseIdList);
+        refreshCacheByIdList(consultIdList);
         refreshIdList();
     }
 
