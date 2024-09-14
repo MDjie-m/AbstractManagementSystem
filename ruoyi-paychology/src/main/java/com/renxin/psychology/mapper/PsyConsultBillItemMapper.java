@@ -12,6 +12,8 @@ public interface PsyConsultBillItemMapper extends BaseMapper<PsyConsultBillItem>
 {
 
     List<PsyConsultBillItem> getOrderItems();
+    
+    List<PsyConsultBillItem> getOrderItemsConsultant();
 
     List<BillItemDTO> getItemList(PsyAdminBillReq req);
 

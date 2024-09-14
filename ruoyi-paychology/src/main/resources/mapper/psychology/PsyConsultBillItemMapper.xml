@@ -37,6 +37,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by a.order_id asc,a.real_time asc
     </select>
 
+    <select id="getOrderItemsConsultant" resultType="com.renxin.psychology.domain.PsyConsultBillItem">
+        SELECT
+            a.id,
+            a.order_id  order_id,
+            a.consult_id  consult_id,
+            b.nick_name  consult_name,
+            CASE WHEN c.type = 1 THEN '合作型' ELSE '签约型' END type,
+            c.ratio  ratio,
+            d.order_no  order_no,
+            d.create_time  order_time,
+            d.serve_name  serve_name,
+            CASE WHEN e.type = 1 THEN '单次' ELSE '套餐' END serve_type,
+            e.num  order_num,
+            d.num  num,
+            d.nick_name  nick_name,
+            d.pay  order_total,
+            STR_TO_DATE(a.real_time, '%Y-%m-%d %H:%i') use_time,
+            a.create_by  create_by,
+            a.create_time  create_time,
+            a.update_by  update_by,
+            a.update_time  update_time
+        FROM
+            psy_consult_order_item a
+                LEFT JOIN psy_consult_bill_item f on a.id = f.id
+                INNER JOIN psy_consult b on a.consult_id = b.id
+                INNER JOIN psy_consult_contract c on a.consult_id = c.consult_id
+                INNER JOIN psy_consult_order d on a.order_id = d.id
+                INNER JOIN psy_consult_order_serve e on a.order_id = e.order_id
+        WHERE
+            a.`status` = '1' and f.id is null and c.`status` = '5'
+        order by a.order_id asc,a.real_time asc
+    </select>
+
     <select id="getItemList" resultType="com.renxin.psychology.dto.BillItemDTO">
         SELECT
         a.id,

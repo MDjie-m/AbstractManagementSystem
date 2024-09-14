@@ -27,7 +27,6 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -155,7 +154,7 @@ public class MyWsHandler extends AbstractWebSocketHandler {
     public void sendMessage(String receiceUserKey, String msgRecordJson){
             try {
                 sessionBeanMap.get(receiceUserKey).getWebSocketSession().sendMessage(new TextMessage(msgRecordJson));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.error("webSocket消息发送出错:" + msgRecordJson);
             }
      
@@ -166,7 +165,7 @@ public class MyWsHandler extends AbstractWebSocketHandler {
         for(String key:sessionBeanMap.keySet()){{
             try {
                 sessionBeanMap.get(key).getWebSocketSession().sendMessage(new TextMessage(stringBuffer.toString()));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.info("出错啦");
             }
         }}
@@ -174,7 +173,7 @@ public class MyWsHandler extends AbstractWebSocketHandler {
 
 //    //定时任务
 //    @Scheduled(fixedDelay = 2000)//多少秒执行1次
-//    public void sendMessage() throws IOException {
+//    public void sendMessage() throws Exception {
 //        for (String key:sessionBeanMap.keySet()){
 //            sessionBeanMap.get(key).getWebSocketSession().sendMessage(new TextMessage("：心跳"));
 //        }

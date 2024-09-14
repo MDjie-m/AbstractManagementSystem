@@ -230,6 +230,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 //团队督导
                 if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)){
                     PsyConsultantTeamSupervision team = teamSupervisionService.selectPsyConsultantTeamSupervisionById(Long.valueOf(order.getServerId()));
+                    if (ObjectUtils.isEmpty(team)){
+                        continue;
+                    }
                     order.setChargeConsultantId(team.getConsultantId());
                     order.setChargeConsultantName(team.getConsultUserName());
                     order.setTotalNum(team.getCycleNumber());
@@ -242,6 +245,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 else if (PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM.equals(serverType) || PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)){
                     //指定服务信息
                     PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(order.getServerId());
+                    if (ObjectUtils.isEmpty(serverDetail)){
+                        continue;
+                    }
                     order.setChargeConsultantId(serverDetail.getConsultantId());
                     //总服务次数
                     order.setTotalNum(serverDetail.getNum());
@@ -274,6 +280,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 //课程
                 else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)){
                     CourCourse course = courCourseService.selectCourCourseById(Long.valueOf(order.getServerId()));
+                    if (ObjectUtils.isEmpty(course)){
+                        continue;
+                    }
                     Long courseId = course.getId();
                     if (course == null) {
                         throw new ServiceException("查询课程详情失败");
