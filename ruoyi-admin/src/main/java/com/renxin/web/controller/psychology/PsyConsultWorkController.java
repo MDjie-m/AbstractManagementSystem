@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 咨询服务Controller
+ * 排班Controller
  *
  * @author renxin
  * @date 2023-06-25
@@ -34,7 +34,7 @@ public class PsyConsultWorkController extends BaseController
     private IPsyConsultWorkService psyConsultWorkService;
 
     /**
-     * 查询咨询服务列表
+     * 查询排班列表
      */
     @PreAuthorize("@ss.hasPermi('psychology:work:query')")
     @GetMapping("/getWorks")
@@ -55,7 +55,7 @@ public class PsyConsultWorkController extends BaseController
     }
 
     /**
-     * 查询咨询服务列表
+     * 查询排班列表
      */
     @PreAuthorize("@ss.hasPermi('psychology:work:query')")
     @GetMapping("/list")
@@ -67,20 +67,20 @@ public class PsyConsultWorkController extends BaseController
     }
 
     /**
-     * 导出咨询服务列表
+     * 导出排班列表
      */
     @PreAuthorize("@ss.hasPermi('psychology:work:export')")
-    @Log(title = "咨询服务", businessType = BusinessType.EXPORT)
+    @Log(title = "排班", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, PsyConsultWorkVO req)
     {
         List<PsyConsultWork> list = psyConsultWorkService.getList(req);
         ExcelUtil<PsyConsultWork> util = new ExcelUtil<PsyConsultWork>(PsyConsultWork.class);
-        util.exportExcel(response, list, "咨询服务数据");
+        util.exportExcel(response, list, "排班数据");
     }
 
     /**
-     * 获取咨询服务详细信息
+     * 获取排班详细信息
      */
     @PreAuthorize("@ss.hasPermi('psychology:work:query')")
     @GetMapping(value = "/{id}")
@@ -90,10 +90,10 @@ public class PsyConsultWorkController extends BaseController
     }
 
     /**
-     * 新增咨询服务
+     * 新增排班
      */
     @PreAuthorize("@ss.hasPermi('psychology:work:add')")
-    @Log(title = "咨询服务", businessType = BusinessType.INSERT)
+    @Log(title = "排班", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody PsyConsultWorkReq req)
     {
@@ -102,10 +102,10 @@ public class PsyConsultWorkController extends BaseController
     }
 
     /**
-     * 修改咨询服务
+     * 修改排班
      */
     @PreAuthorize("@ss.hasPermi('psychology:work:edit')")
-    @Log(title = "咨询服务", businessType = BusinessType.UPDATE)
+    @Log(title = "排班", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody PsyConsultWorkVO req)
     {

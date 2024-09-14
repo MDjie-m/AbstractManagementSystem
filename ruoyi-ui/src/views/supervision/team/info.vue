@@ -68,8 +68,11 @@
           disabled
         />
       </el-form-item>
-      <el-form-item label="服务价格" prop="price">
+      <el-form-item label="入团价格" prop="price">
         <el-input-number v-model="form.price" :min="0"  disabled/> 元
+      </el-form-item>
+      <el-form-item label="督导师每堂课收入" prop="lectureAmount">
+        <el-input-number v-model="form.lectureAmount" :min="0" disabled/> 元
       </el-form-item>
 
       <el-form-item label="团督head图片" prop="headPicUrl">
@@ -166,7 +169,7 @@ export default {
           { required: true, message: "请输入下课时间", trigger: "blur" }
         ],
         price: [
-          { required: true, message: "请输入服务价格", trigger: "change" }
+          { required: true, message: "请输入入团价格", trigger: "change" }
         ],*/
 
 

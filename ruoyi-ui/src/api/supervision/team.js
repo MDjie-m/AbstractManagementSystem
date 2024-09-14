@@ -45,6 +45,24 @@ export function deleteTeam(id) {
   })
 }
 
+//查询督导的排程任务清单
+export function teamScheduleList(data) {
+  return request({
+    url: '/system/schedule/list',
+    method: 'post',
+    data: data
+  })
+}
+
+//查询督导的排程任务清单
+export function confirmSchedule(id) {
+  return request({
+    url: '/system/schedule/confirm',
+    method: 'post',
+    data: {"id":id}
+  })
+}
+
 
 
 // 查询课程订单详细
@@ -80,3 +98,4 @@ export function delOrder(id) {
     method: 'delete'
   })
 }
+

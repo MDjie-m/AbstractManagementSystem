@@ -90,6 +90,8 @@ public class PsyConsultantTeamSupervision extends BaseEntity implements Serializ
 
     /** 入会价格 */
     private BigDecimal price;
+    //督导师每堂课的收入
+    private BigDecimal lectureAmount;
     //标签
     private String label;
     

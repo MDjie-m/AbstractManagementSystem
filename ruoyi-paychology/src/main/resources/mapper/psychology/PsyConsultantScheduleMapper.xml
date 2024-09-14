@@ -45,6 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             left join psy_consult_server_config cf on ser.serve_id = cf.id
         <where>  
             <if test="orderId != null "> and sc.order_id = #{orderId}</if>
+            <if test="teamId != null "> and sc.team_id = #{teamId}</if>
             <if test="workId != null "> and sc.work_id = #{workId}</if>
             <if test="scheduleType != null "> and sc.schedule_type = #{scheduleType}</if>
             <if test="timeStart != null  and timeStart != ''"> and sc.time_start = #{timeStart}</if>
