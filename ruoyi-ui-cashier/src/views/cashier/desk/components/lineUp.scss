@@ -32,16 +32,20 @@
       padding : 10px;
       &:hover{
         background-color: $--color-primary;
-        .num-item-text{
+        .num-item-text,.num-item-time{
           color: #FFFFFF;
         }
       }
       &-text{
-        flex: 1;
         padding-left: 20px;
         font-size: 20px;
         font-weight: bold;
 
+      }
+      &-time{
+          text-align: center;
+        flex: 1;
+        font-size: 16px;
       }
       &-btn{
         cursor: pointer;
