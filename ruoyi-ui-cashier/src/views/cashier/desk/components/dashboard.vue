@@ -1,6 +1,7 @@
 <template>
   <div class="menu-wrapper">
 
+
     <div class="  section-container menu-container">
       <div class="menu-title">
         球桌概览
@@ -34,7 +35,7 @@
           </div>
         </div>
         <div class="sub-item">
-          <el-badge :value="deskTotal.deskLightOnCount" :hidden="!deskTotal.deskLightOnCount" class="icon-tip"
+          <el-badge :value="lightOpenCount" :hidden="!lightOpenCount" class="icon-tip"
                     type="primary">
             <svg-icon icon-class="light_on"/>
           </el-badge>
@@ -129,6 +130,7 @@
 
 import { listDeskDashboard} from "@/api/cashier/desk";
 import LineUp from "@/views/cashier/desk/components/lineUp.vue";
+import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
 const OnBtnClickEvent="onBtnClick"
 export  const  InvokeMethodName={
   LineUp:"lineUp"
@@ -136,13 +138,14 @@ export  const  InvokeMethodName={
 export  default {
   emits:[OnBtnClickEvent],
   components: {LineUp},
+  props:["storeName"],
   data(){
     return {
       InvokeMethodName:InvokeMethodName,
       openLineUp:false,
+      lightOpenCount:0,
       deskTotal: {
         deskWaitCount: 0,
-
         deskBusyCount: 0,
 
         deskStopCount: 0,
@@ -156,19 +159,27 @@ export  default {
     }
   },
   created() {
-    this.getList();
+    this.refresh()
   },
+
   methods:{
+
     onBtnClick(type,title){
       this.$emit(OnBtnClickEvent,type,title)
     },
     getList(){
       listDeskDashboard().then(res=>{
-        this.deskTotal=res.data|| {}
+        this.deskTotal=res.data|| {};
+      })
+    },
+    getOpenLightCount(){
+      callPCMethod(DeviceMethodNames.LightStateQuery, {}).then(res => {
+          this.lightOpenCount= res.data.openCount||0
       })
     },
     refresh(){
       this.getList();
+      this.getOpenLightCount();
     }
   }
 }

@@ -4,6 +4,7 @@ const PcCallMethods = {};
 window.PcCallMethods = PcCallMethods;
 export const DeviceMethodNames = {
   LightSwitch: 'light.switch',
+  LightStateQuery:'light.state.query.all',
   Speech: "speech"
 }
 

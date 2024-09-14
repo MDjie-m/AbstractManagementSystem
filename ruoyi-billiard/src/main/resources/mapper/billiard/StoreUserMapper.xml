@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="realName != null  and realName != ''"> and real_name like concat('%', #{realName}, '%')</if>
             <if test="mobile != null  and mobile != ''"> and mobile = #{mobile}</if>
             <if test="userImg != null  and userImg != ''"> and user_img = #{userImg}</if>
-            <if test="status != null "> and status = #{status}</if>
+            <if test="status != null "> and a.status = #{status}</if>
             <if test="loginUserId != null "> and login_user_id = #{loginUserId}</if>
 
             <if test="storeId != null "> and a.store_id = #{storeId}</if>

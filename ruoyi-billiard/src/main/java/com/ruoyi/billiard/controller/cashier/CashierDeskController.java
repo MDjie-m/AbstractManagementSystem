@@ -4,6 +4,7 @@ import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.billiard.domain.vo.LineUpVo;
 import com.ruoyi.billiard.service.IStoreDeskService;
+import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class CashierDeskController extends BaseController {
     @GetMapping("/list")
     public ResultVo<List<StoreDesk>> list(@Validated StoreDesk storeDesk) {
 
-        storeDesk.setStoreId(getStoreId());
+        storeDesk.setStoreId(getStoreIdWithThrow());
         storeDesk.setEnable(Boolean.TRUE);
         List<StoreDesk> list = storeDeskService.selectStoreDeskList(storeDesk);
         return ResultVo.success(list);
@@ -37,7 +38,7 @@ public class CashierDeskController extends BaseController {
     @GetMapping("/dashboard")
     public ResultVo<CashierDeskDashboardResVo> deskDashboard() {
 
-        CashierDeskDashboardResVo res = storeDeskService.getDeskDashboard(getStoreId());
+        CashierDeskDashboardResVo res = storeDeskService.getDeskDashboard(getStoreIdWithThrow());
         return ResultVo.success(res);
     }
 
@@ -47,7 +48,7 @@ public class CashierDeskController extends BaseController {
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @GetMapping("/line-up")
     public ResultVo<Map<Integer,LineUpVo>> lineUp() {
-        Map<Integer,LineUpVo>res = storeDeskService.getLineUpInfo(getStoreId());
+        Map<Integer,LineUpVo>res = storeDeskService.getLineUpInfo(getStoreIdWithThrow());
         return ResultVo.success(res);
     }
 
@@ -55,6 +56,6 @@ public class CashierDeskController extends BaseController {
     @PostMapping("/line-up")
     public ResultVo<Boolean> lineUp( @RequestBody  Map<Integer,LineUpVo> reqVo) {
 
-        return ResultVo.success(storeDeskService.saveLineUpInfo(getStoreId(), reqVo));
+        return ResultVo.success(storeDeskService.saveLineUpInfo(getStoreIdWithThrow(), reqVo));
     }
 }

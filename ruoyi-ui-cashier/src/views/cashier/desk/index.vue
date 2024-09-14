@@ -3,12 +3,20 @@
 
   <div class="page-container">
     <div class="left-panel">
-      <div class="  section-container menu-container">
-        <el-button @click="onSwitchLight(1)">开关灯({{ this.lightStatus }})</el-button>
+
+      <div class="store-info">
+        <i class="el-icon-refresh-right store-info-btn" @click="onRefreshClick"></i>
+        <div class="store-info-icon">
+          <svg-icon icon-class="store"/>
+        </div>
+        <div class="store-info-title">
+          {{ storeInfo.storeName }}
+        </div>
+        <el-button @click="onSwitchLight(1)">test</el-button>
       </div>
-           <Dashboard @onBtnClick="onMenuBtnClick"/>
+      <Dashboard ref="dashboard" @onBtnClick="onMenuBtnClick" :storeName="storeInfo.storeName"/>
     </div>
-    <div class="right-panel"  >
+    <div class="right-panel">
       <div class="  section-container">
         <div>
           <el-row>
@@ -99,18 +107,21 @@
 
 
 import {listDesk} from "@/api/cashier/desk";
-import {callPCMethod} from "@/utils/pcCommunication";
+import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
 import Dashboard from "@/views/cashier/desk/components/dashboard.vue";
 import ContentWrapper from "@/views/cashier/desk/components/contentWrapper.vue";
 import LineUp from "@/views/cashier/desk/components/lineUp.vue";
+import {queryStoreBaseInfo} from "@/api/cashier/store";
 
 export default {
   name: "Desk",
   components: {LineUp, ContentWrapper, Dashboard},
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
+
   data() {
     return {
-      openNewDialog:false,
+      storeInfo: {storeName: '', userList: [], tutorList: []},
+      openNewDialog: false,
       lightStatus: null,
       currentDesk: null,
 
@@ -142,23 +153,41 @@ export default {
   },
   created() {
     this.getList();
+    this.getStoreInfo()
   },
   methods: {
-    onMenuBtnClick(name,title){
-       this.openNewDialog=true;
-       this.title=title
+    onRefreshClick() {
+      this.$refs.dashboard?.refresh();
+      this.getList();
+      this.getStoreInfo();
+      this.$modal.msgSuccess("已刷新")
+    },
+    getStoreInfo() {
+      queryStoreBaseInfo().then(res => {
+        this.storeInfo = res.data || {
+          storeName: '', userList: [], tutorList: []
+        }
+      });
+    },
+    onMenuBtnClick(name, title) {
+      this.openNewDialog = true;
+      this.title = title
     },
     onSwitchLight(deskNum) {
       let req = {deskNum: deskNum, open: this.lightStatus ? false : true}
-      // callPCMethod("light.switch", req).then(res => {
+      callPCMethod(DeviceMethodNames.LightSwitch, req).then(res => {
+        this.lightStatus = res.data.state;
+        this.$modal.msgSuccess(JSON.stringify(res))
+      })
+      // callPCMethod(DeviceMethodNames.LightStateQuery, req).then(res => {
+      //
+      //   this.$modal.msgSuccess(JSON.stringify(res))
+      // })
+      // let msgs=[{content:"请"},{content: "11",emphasis:1},{content: "号到前台"}]
+      // callPCMethod("speech", msgs).then(res => {
       //   this.lightStatus = res.data;
       //   this.$modal.msgSuccess(JSON.stringify(res))
       // })
-      let msgs=[{content:"请"},{content: "11",emphasis:1},{content: "号到前台"}]
-      callPCMethod("speech", msgs).then(res => {
-        this.lightStatus = res.data;
-        this.$modal.msgSuccess(JSON.stringify(res))
-      })
     },
     onDeskClick(item) {
       this.deskList.forEach(p => {
@@ -230,9 +259,7 @@ export default {
     },
     // 表单重置
     reset() {
-      this.form = {
-
-      };
+      this.form = {};
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -245,7 +272,6 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-
 
 
   }
