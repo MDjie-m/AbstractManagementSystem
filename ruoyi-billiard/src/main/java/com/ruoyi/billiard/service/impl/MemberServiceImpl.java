@@ -1,6 +1,12 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,5 +101,12 @@ public class MemberServiceImpl implements IMemberService
     public int deleteMemberByMemberId(Long memberId)
     {
         return memberMapper.deleteMemberByMemberId(memberId);
+    }
+
+    @Override
+    public List<Member> selectMemberListByMemberLevelId(Long memberLevelId) {
+        LambdaQueryWrapper<Member> wrapper = Wrappers.lambdaQuery();
+        wrapper.eq(Member::getLevelId,memberLevelId);
+        return Optional.ofNullable(memberMapper.selectList(wrapper)).orElse(Collections.emptyList());
     }
 }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.MemberLevelMapper">
+    
+    <resultMap type="MemberLevel" id="MemberLevelResult">
+        <result property="memberLevelId"    column="member_level_id"    />
+        <result property="levelName"    column="level_name"    />
+        <result property="discount"    column="discount"    />
+        <result property="storeId"    column="store_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createById"    column="create_by_id"    />
+        <result property="updateById"    column="update_by_id"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMemberLevelVo">
+        select member_level_id, level_name, discount, store_id, create_by, create_time, update_by, update_time, create_by_id, update_by_id, remark from t_member_level
+    </sql>
+
+    <select id="selectMemberLevelList" parameterType="MemberLevel" resultMap="MemberLevelResult">
+        <include refid="selectMemberLevelVo"/>
+        <where>  
+            <if test="levelName != null  and levelName != ''"> and level_name like concat('%', #{levelName}, '%')</if>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectMemberLevelByMemberLevelId" parameterType="Long" resultMap="MemberLevelResult">
+        <include refid="selectMemberLevelVo"/>
+        where member_level_id = #{memberLevelId}
+    </select>
+
+    <insert id="insertMemberLevel" parameterType="MemberLevel" useGeneratedKeys="true" keyProperty="memberLevelId">
+        insert into t_member_level
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="levelName != null and levelName != ''">level_name,</if>
+            <if test="discount != null">discount,</if>
+            <if test="storeId != null">store_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createById != null">create_by_id,</if>
+            <if test="updateById != null">update_by_id,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="levelName != null and levelName != ''">#{levelName},</if>
+            <if test="discount != null">#{discount},</if>
+            <if test="storeId != null">#{storeId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createById != null">#{createById},</if>
+            <if test="updateById != null">#{updateById},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMemberLevel" parameterType="MemberLevel">
+        update t_member_level
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="levelName != null and levelName != ''">level_name = #{levelName},</if>
+            <if test="discount != null">discount = #{discount},</if>
+            <if test="storeId != null">store_id = #{storeId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createById != null">create_by_id = #{createById},</if>
+            <if test="updateById != null">update_by_id = #{updateById},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where member_level_id = #{memberLevelId}
+    </update>
+
+    <delete id="deleteMemberLevelByMemberLevelId" parameterType="Long">
+        delete from t_member_level where member_level_id = #{memberLevelId}
+    </delete>
+
+    <delete id="deleteMemberLevelByMemberLevelIds" parameterType="String">
+        delete from t_member_level where member_level_id in 
+        <foreach item="memberLevelId" collection="array" open="(" separator="," close=")">
+            #{memberLevelId}
+        </foreach>
+    </delete>
+</mapper>

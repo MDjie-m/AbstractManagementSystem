@@ -58,4 +58,11 @@ public interface IMemberService
      * @return 结果
      */
     public int deleteMemberByMemberId(Long memberId);
+
+    /**
+     * 根据会员等级查询会员列表
+     * @param memberLevelId
+     * @return
+     */
+    List<Member> selectMemberListByMemberLevelId(Long memberLevelId);
 }
