@@ -111,7 +111,7 @@ service.interceptors.response.use(res => {
     console.log('err' + error)
     let { message } = error;
     if (message === "Network Error") {
-      message = "网络或服务器连接异常,请检查网络或联系管理员.";
+      message = "网络连接异常,请检查网络或联系管理员.";
     } else if (message.includes("timeout")) {
       message = "系统请求超时";
     } else if (message.includes("Request failed with status code")) {
