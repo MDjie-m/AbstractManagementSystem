@@ -124,6 +124,10 @@ public class Order extends MyBaseEntity
     @TableField(exist = false)
     private List<OrderTutorTime> orderTutorTimes = null;
 
+    /** 会员 */
+    @TableField(exist = false)
+    private Member member;
+
 
 
 

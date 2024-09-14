@@ -1,6 +1,7 @@
 package com.ruoyi.billiard.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.service.*;
@@ -34,6 +35,9 @@ public class OrderServiceImpl implements IOrderService
     @Autowired
     private IOrderTutorTimeService orderTutorTimeService;
 
+    @Autowired
+    private IMemberService memberService;
+
     /**
      * 查询订单
      * 
@@ -44,7 +48,12 @@ public class OrderServiceImpl implements IOrderService
     public Order selectOrderByOrderId(Long orderId)
     {
         Order order = orderMapper.selectById(orderId);
-        // 查询球桌即使列表
+        // 获取会员信息
+        Long memberId = order.getMemberId();
+        Member member = Optional.ofNullable(memberService.selectMemberByMemberId(memberId)).orElse(new Member());
+        order.setMember(member);
+
+        // 查询球桌计时列表
         List<OrderDeskTime> orderDeskTimeList = orderDeskTimeService.selectOrderDeskTimeListByOrderId(orderId);
         order.setOrderDeskTimes(orderDeskTimeList);
         // 查询订单商品列表

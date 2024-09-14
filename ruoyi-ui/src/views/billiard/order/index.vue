@@ -91,8 +91,8 @@
           </el-table-column>
           <el-table-column label="支付会员id" align="center" prop="memberId"/>
           <el-table-column label="备注" align="center" prop="remark"/>
-          <el-table-column label="创建者Id" align="center" prop="createById"/>
-          <el-table-column label="更新者Id" align="center" prop="updateById"/>
+<!--          <el-table-column label="创建者Id" align="center" prop="createById"/>-->
+<!--          <el-table-column label="更新者Id" align="center" prop="updateById"/>-->
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
@@ -125,7 +125,7 @@
       </div>
 
       <!-- 订单详情对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body>
+      <el-dialog :title="title" :visible.sync="open" width="1200px" append-to-body>
         <div class="info-box roll">
           <div class="info-box">
             <div class="info-box-row">
@@ -134,8 +134,10 @@
                 <div class="info-box-row-left-content">{{ form.orderNo }}</div>
               </div>
               <div class="info-box-row-middle">
-                <div class="info-box-title">支付会员id：</div>
-                <div class="info-box-row-left-content">{{ form.memberId }}</div>
+                <div class="info-box-title">会员：</div>
+                <div class="info-box-row-left-content" v-if="form.memberId">
+                  {{ `${form.member.realName}/${form.member.mobile}` }}
+                </div>
               </div>
             </div>
             <div class="info-box-row">
@@ -168,60 +170,50 @@
             </div>
           </div>
           <div class="info-box">
-            <el-divider content-position="left">商品购买信息</el-divider>
-            <div class="info-box" v-for="(item, idx) in form.orderGoods" :key="item.orderDetailId + idx">
-              <div class="info-box-row">
-                <div class="info-box-row-middle">
-                  <div class="info-box-title">商品id：</div>
-                  <div class="info-box-row-left-content">{{ item.goodsId }}</div>
-                </div>
-                <div class="info-box-row-middle">
-                  <div class="info-box-title">商品名称：</div>
-                  <div class="info-box-row-left-content">{{ item.goodsName }}</div>
-                </div>
-              </div>
-              <div class="info-box-row">
-                <div class="info-box-row-middle">
-                  <div class="info-box-title">单价：</div>
-                  <div class="info-box-row-left-content">{{ formatAmount(item.price) }}</div>
-                </div>
-                <div class="info-box-row-middle">
-                  <div class="info-box-title">数量：</div>
-                  <div class="info-box-row-left-content">{{ item.num }}</div>
-                </div>
-              </div>
-              <div class="info-box-row">
-                <div class="info-box-row-middle">
-                  <div class="info-box-title">应付总金额：</div>
-                  <div class="info-box-row-left-content">{{ formatAmount(item.totalAmountDue) }}</div>
-                </div>
-                <div class="info-box-row-middle">
-                  <div class="info-box-title">折扣金额：</div>
-                  <div class="info-box-row-left-content">{{ formatAmount(item.totalDiscountAmount) }}</div>
-                </div>
-              </div>
-              <div class="info-box-row">
-                <div class="info-box-row-middle">
-                  <div class="info-box-title">当前折扣：</div>
-                  <div class="info-box-row-left-content">{{ formatTotalDiscountAmount(item.discountValue) }}</div>
-                </div>
-                <div class="info-box-row-middle">
-                  <div class="info-box-title">抹零金额：</div>
-                  <div class="info-box-row-left-content">{{ formatAmount(item.totalWipeZero) }}</div>
-                </div>
-              </div>
-              <div class="info-box-row">
-                <div class="info-box-title">实际支付金额：</div>
-                <div class="info-box-row-left-content text-red">{{ formatAmount(item.totalAmount) }}</div>
-              </div>
-              <div class="info-box-row">
-                <div class="info-box-title">备注：</div>
-                <div class="info-box-row-left-content">{{ item.remark }}</div>
-              </div>
-            </div>
+            <el-divider content-position="left">商品</el-divider>
+            <el-table :data="form.orderGoods" style="width: 100%">
+              <el-table-column prop="goodsPrice" label="商品图片">
+                <template slot-scope="scope">
+                  <image-preview :src="scope.row.goods.goodsImg" :width="'100px'" :height="'100px'"/>
+                </template>
+              </el-table-column>
+              <el-table-column prop="goodsName" label="商品名称"></el-table-column>
+              <el-table-column prop="price" label="单价">
+                <template slot-scope="scope">
+                  {{ formatAmount(scope.row.price) }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="num" label="数量"></el-table-column>
+              <el-table-column prop="totalAmountDue" label="应付总金额">
+                <template slot-scope="scope">
+                  {{ formatAmount(scope.row.totalAmountDue) }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="totalDiscountAmount" label="折扣金额">
+                <template slot-scope="scope">
+                  {{ formatAmount(scope.row.totalDiscountAmount) }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="discountValue" label="当前折扣">
+                <template slot-scope="scope">
+                  {{ formatTotalDiscountAmount(scope.row.discountValue) }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="totalWipeZero" label="抹零金额">
+                <template slot-scope="scope">
+                  {{ formatAmount(scope.row.totalWipeZero) }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="totalAmount" label="实际支付金额">
+                <template slot-scope="scope">
+                  {{ formatAmount(scope.row.totalAmount) }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="remark" label="备注"></el-table-column>
+            </el-table>
           </div>
           <div class="info-box">
-            <el-divider content-position="left">会员充值信息</el-divider>
+            <el-divider content-position="left">会员充值</el-divider>
             <div class="info-box" v-for="(item, idx) in form.orderRecharges" :key="item.orderRechargeId + idx">
               <div class="info-box-row">
                 <div class="info-box-row-middle">
@@ -244,16 +236,18 @@
             </div>
           </div>
           <div class="info-box">
-            <el-divider content-position="left">球桌计时信息</el-divider>
+            <el-divider content-position="left">球桌计时</el-divider>
             <div class="info-box" v-for="(item, idx) in form.orderDeskTimes" :key="item.orderDeskTimeId + idx">
               <div class="info-box-row">
                 <div class="info-box-row-middle">
-                  <div class="info-box-title">球桌编码：</div>
-                  <div class="info-box-row-left-content">{{ item.deskId }}</div>
+                  <div class="info-box-title">球桌：</div>
+                  <div class="info-box-row-left-content" v-if="item.deskId">
+                    {{ `${item.storeDesk.deskName}(${item.storeDesk.deskNum})` }}
+                  </div>
                 </div>
                 <div class="info-box-row-middle">
-                  <div class="info-box-title">转桌之前的Id：</div>
-                  <div class="info-box-row-left-content">{{ item.fromDeskId }}</div>
+                  <div class="info-box-title">是否转桌：</div>
+                  <div class="info-box-row-left-content">{{ formatIfFormDesk(item.fromDeskId) }}</div>
                 </div>
               </div>
               <div class="info-box-row">
@@ -313,16 +307,18 @@
             </div>
           </div>
           <div class="info-box">
-            <el-divider content-position="left">教练计时信息</el-divider>
+            <el-divider content-position="left">教练计时</el-divider>
             <div class="info-box" v-for="(item, idx) in form.orderTutorTimes" :key="item.orderTutorTimeId + idx">
               <div class="info-box-row">
                 <div class="info-box-row-middle">
-                  <div class="info-box-title">球桌编码：</div>
-                  <div class="info-box-row-left-content">{{ item.deskId }}</div>
+                  <div class="info-box-title">球桌：</div>
+                  <div class="info-box-row-left-content">{{ `${item.storeDesk.deskName}(${item.storeDesk.deskNum})` }}</div>
                 </div>
                 <div class="info-box-row-middle">
                   <div class="info-box-title">教练类型：</div>
-                  <div class="info-box-row-left-content"><dict-tag :options="dict.type.order_tutor" :value="item.type"/></div>
+                  <div class="info-box-row-left-content">
+                    <dict-tag :options="dict.type.order_tutor" :value="item.type"/>
+                  </div>
                 </div>
               </div>
               <div class="info-box-row">
@@ -379,16 +375,10 @@ import {
   getsAnEnumerationOfPaymentMethods
 } from "@/api/billiard/order";
 import StoreContainer from "@/views/billiard/component/storeContainer.vue";
-import item from "../../../layout/components/Sidebar/Item.vue";
 
 
 export default {
   name: "Order",
-  computed: {
-    item() {
-      return item
-    }
-  },
   components: {StoreContainer},
   dicts: ['order_tutor'],
   data() {
@@ -582,7 +572,7 @@ export default {
       })
     },
     formatTotalDiscountAmount(value) {
-      if(!value) return '';
+      if (!value) return '';
       return `${this.convertAndRemoveTrailingZeros(value)}折`;
     },
     convertAndRemoveTrailingZeros(numStr) {
@@ -590,12 +580,16 @@ export default {
       return Number(parseFloat(numStr).toFixed(2));
     },
     formatAmount(value) {
-       if(!value) return '';
+      if (!value) return '';
       return `￥${value}`;
     },
     formatTotalTime(value) {
-       if(!value) return '0分钟';
+      if (!value) return '0分钟';
       return `${value}分钟`;
+    },
+    formatIfFormDesk(value) {
+      if (!value) return '否';
+      return '是';
     },
   }
 };

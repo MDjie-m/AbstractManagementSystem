@@ -3,9 +3,12 @@ package com.ruoyi.billiard.service.impl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.billiard.domain.Goods;
+import com.ruoyi.billiard.service.IGoodsService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,9 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService
 {
     @Autowired
     private OrderGoodsMapper orderGoodsMapper;
+
+    @Autowired
+    private IGoodsService goodsService;
 
     /**
      * 查询购买商品
@@ -106,6 +112,12 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService
     public List<OrderGoods> selectOrderGoodsListByOrderId(Long orderId) {
         LambdaQueryWrapper<OrderGoods> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(OrderGoods::getOrderId, orderId);
-        return Optional.ofNullable(orderGoodsMapper.selectList(wrapper)).orElse(Collections.emptyList());
+        List<OrderGoods> orderGoodsList = Optional.ofNullable(orderGoodsMapper.selectList(wrapper)).orElse(Collections.emptyList());
+        return orderGoodsList.stream().map(p -> {
+            Long goodsId = p.getGoodsId();
+            Goods goods = Optional.ofNullable(goodsService.selectGoodsByGoodsId(goodsId)).orElse(new Goods());
+            p.setGoods(goods);
+            return p;
+        }).collect(Collectors.toList());
     }
 }
