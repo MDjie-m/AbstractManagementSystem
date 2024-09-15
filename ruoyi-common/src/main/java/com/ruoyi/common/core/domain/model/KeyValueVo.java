@@ -13,4 +13,5 @@ public class KeyValueVo<K,V> {
 
     private K key;
     private V value;
+    private String label;
 }

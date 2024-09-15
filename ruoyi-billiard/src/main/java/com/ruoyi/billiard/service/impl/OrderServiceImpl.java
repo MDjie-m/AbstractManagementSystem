@@ -1,12 +1,16 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.enums.OrderStatus;
 import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.OrderMapper;
@@ -66,6 +70,19 @@ public class OrderServiceImpl implements IOrderService
         List<OrderTutorTime> orderTutorTimeList = orderTutorTimeService.selectOrderTutorTimeListByOrderId(orderId);
         order.setOrderTutorTimes(orderTutorTimeList);
         return order;
+    }
+
+    @Override
+    public Order selectLastActiveOrder(Long deskId) {
+
+       Order order =   orderMapper.selectLastOrderByDeskId(deskId);
+       if(Objects.isNull(order)){
+           return  null;
+       }
+       if(!Arrays.asList(OrderStatus.CHARGING.getValue()).contains(order.getStatus())){
+           return  null;
+       }
+       return  selectOrderByOrderId(order.getOrderId());
     }
 
     /**

@@ -54,8 +54,8 @@
     background-color: #E88E37;
   }
   &:hover, &.selected {
-    background-color: $--color-primary;
-    border: 1px solid $--color-primary;
+    background-color: $light-blue;
+    border: 1px solid $light-blue;
     color: #FFFFFF;
     cursor: pointer;
   }
@@ -78,13 +78,36 @@
     font-size: 12px;
   }
 }
+.list-enter-active,
+.list-leave-active {
+  transition: opacity 0.3s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+}
+.desk-base-info{
+display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  &-name{
+     font-size: 18px;
+    font-weight: 600;
+    padding: 5px;
+  }
+  &-price{
+     color: $sub-text-color;
+  }
+}
 .store-info{
   display: flex;
   position: relative;
   flex-direction: column;
   align-items: center;
-  padding-top: 40px;
-  flex: 1;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
   &-btn{
     position: absolute;
     font-size: 30px;
@@ -92,7 +115,7 @@
     top: 10px;
     cursor: pointer;
     :hover::before{
-      color:$--color-primary;
+      color:$light-blue;
     }
   }
   &-icon{

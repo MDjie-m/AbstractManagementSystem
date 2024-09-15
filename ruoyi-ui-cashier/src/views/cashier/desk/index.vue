@@ -2,20 +2,64 @@
 
 
   <div class="page-container">
-    <div class="left-panel">
 
+    <div class="left-panel">
       <div class="store-info">
-        <i class="el-icon-refresh-right store-info-btn" @click="onRefreshClick"></i>
+        <i v-show="!currentDesk" class="el-icon-refresh-right store-info-btn" @click="onRefreshClick"></i>
         <div class="store-info-icon">
           <svg-icon icon-class="store"/>
         </div>
         <div class="store-info-title">
           {{ storeInfo.storeName }}
         </div>
-        <el-button @click="onSwitchLight(1)">test</el-button>
       </div>
-      <Dashboard ref="dashboard" @onBtnClick="onMenuBtnClick" :storeName="storeInfo.storeName"/>
+      <div class="desk-base-info" v-if="currentDesk">
+        <div class="desk-base-info-name">
+          {{ currentDesk.deskName }}({{ currentDesk.deskNum }})
+        </div>
+        <div class="desk-base-info-price">
+          {{ currentDesk.price }}元/分钟
+        </div>
+      </div>
+
+      <ToolBar title="台桌服务" v-if="currentDesk">
+        <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
+          <span>0.00元</span> <i class="el-icon-info"/>
+        </div>
+        <SvgItem svg-icon="clock" label="开台" :btnAble="true"/>
+        <SvgItem svg-icon="desk_end" label="结开" :btnAble="true"/>
+        <SvgItem svg-icon="desk_pause" label="暂停" :btnAble="true"/>
+        <SvgItem svg-icon="desk_change" label="换台" :btnAble="true"/>
+        <SvgItem svg-icon="timing" label="定时" :btnAble="true"/>
+        <SvgItem svg-icon="light_on" label="开灯" :btnAble="true"
+                 @click.native="onSwitchLight(currentDesk.deskNum,true)"/>
+        <SvgItem svg-icon="close_light" label="关灯" :btnAble="true"
+                 @click.native="onSwitchLight(currentDesk.deskNum,false)"/>
+      </ToolBar>
+      <ToolBar title="订单服务" v-if="currentDesk">
+        <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
+          <span>0.00元</span> <i class="el-icon-info"/>
+        </div>
+        <SvgItem svg-icon="shop_car" label="选商品" :btnAble="true"/>
+        <SvgItem svg-icon="user_choose" label="选艺人" :btnAble="true"/>
+      </ToolBar>
+      <ToolBar title="订单操作" v-if="currentDesk">
+        <SvgItem svg-icon="trash" label="清空" :btnAble="true"/>
+        <SvgItem svg-icon="suspend_order" label="挂单" :btnAble="true"/>
+        <SvgItem svg-icon="stop" label="停止" :btnAble="true"/>
+        <SvgItem svg-icon="credit_card" label="去结算" :btnAble="true"/>
+      </ToolBar>
+      <Dashboard ref="dashboard" v-if="!currentDesk" :storeName="storeInfo.storeName"/>
+
+      <ToolBar title="预约/排队">
+        <SvgItem svg-icon="desk" label="台桌预约"/>
+        <SvgItem svg-icon="tutor" label="教练预约"/>
+        <SvgItem svg-icon="qrcode" label="预约核销"/>
+        <SvgItem svg-icon="line_up" label="排队叫号" @click.native="onOpenLineUpClick()"/>
+      </ToolBar>
+
     </div>
+
     <div class="right-panel">
       <div class="  section-container">
         <div>
@@ -112,10 +156,12 @@ import Dashboard from "@/views/cashier/desk/components/dashboard.vue";
 import ContentWrapper from "@/views/cashier/desk/components/contentWrapper.vue";
 import LineUp from "@/views/cashier/desk/components/lineUp.vue";
 import {queryStoreBaseInfo} from "@/api/cashier/store";
+import ToolBar from "@/views/cashier/desk/components/toolBar.vue";
+import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 
 export default {
   name: "Desk",
-  components: {LineUp, ContentWrapper, Dashboard},
+  components: {SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
 
   data() {
@@ -163,7 +209,7 @@ export default {
       this.$modal.msgSuccess("已刷新")
     },
     getStoreInfo() {
-      queryStoreBaseInfo().then(res => {
+      queryStoreBaseInfo(false).then(res => {
         this.storeInfo = res.data || {
           storeName: '', userList: [], tutorList: []
         }
@@ -173,11 +219,13 @@ export default {
       this.openNewDialog = true;
       this.title = title
     },
-    onSwitchLight(deskNum) {
-      let req = {deskNum: deskNum, open: this.lightStatus ? false : true}
+    onOpenLineUpClick() {
+      this.openNewDialog = true;
+    },
+    onSwitchLight(deskNum, open) {
+      let req = {deskNum: deskNum, open: !!open}
       callPCMethod(DeviceMethodNames.LightSwitch, req).then(res => {
-        this.lightStatus = res.data.state;
-        this.$modal.msgSuccess(JSON.stringify(res))
+
       })
       // callPCMethod(DeviceMethodNames.LightStateQuery, req).then(res => {
       //
@@ -198,11 +246,14 @@ export default {
       })
       item.selected = !item.selected
       this.currentDesk = item.selected ? item : null;
+
     },
     onChooseAll() {
       this.queryParams.placeType = null;
       this.queryParams.deskType = null;
+
       this.getList();
+
     },
     onChooseAllStatus() {
       this.queryParams.status = null;
@@ -242,6 +293,7 @@ export default {
     /** 查询球桌列表 */
     getList() {
       this.loading = true;
+      this.currentDesk = null;
       listDesk({}).then(response => {
         this.originalDeskList = (response.data || []).map(p => {
           p.selected = false;

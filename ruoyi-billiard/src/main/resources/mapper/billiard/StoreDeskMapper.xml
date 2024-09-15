@@ -65,6 +65,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="deskId != null"> and  desk_id not in (#{deskId}) </if>
 
     </select>
+    <select id="queryDeskCountGroupByStatus" resultType="com.ruoyi.common.core.domain.model.KeyValueVo">
+
+        select count(1)                                                                                   as value,
+               status                                                                                     as `key`,
+               case status when 0 then '空闲' when 1 then '计费中' when 2 then '已暂停' else '已停止' end as label
+        from t_store_desk where  store_id=#{storeId}
+        group by status
+        order by status;
+    </select>
 
 
     <insert id="insertStoreDesk" parameterType="StoreDesk">

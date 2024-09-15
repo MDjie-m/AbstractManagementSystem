@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,9 +29,12 @@ public class CashierStoreController  extends BaseController {
     private IStoreTutorService  storeTutorService;
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @GetMapping("/info")
-    public ResultVo<Store> getStoreInfo() {
+    public ResultVo<Store> getStoreInfo(@RequestParam(required = false) boolean needEmployees) {
 
         Store res = storeService.selectStoreByStoreId(getStoreIdWithThrow());
+        if(!Boolean.TRUE.equals(needEmployees)){
+            return ResultVo.success(res);
+        }
         res.setUserList(storeUserService.selectStoreUserList(StoreUser.builder().storeId(res.getStoreId())
                 .status(EmployeeStatus.WORK.getValue()).build()));
         res.setTutorList(storeTutorService.selectStoreTutorList(StoreTutor.builder()

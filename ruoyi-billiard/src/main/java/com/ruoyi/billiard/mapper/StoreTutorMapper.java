@@ -2,6 +2,7 @@ package com.ruoyi.billiard.mapper;
 
 import java.util.List;
 import com.ruoyi.billiard.domain.StoreTutor;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -61,4 +62,7 @@ public interface StoreTutorMapper extends MyBaseMapper<StoreTutor>
      * @return 结果
      */
     public int deleteStoreTutorByStoreTutorIds(Long[] storeTutorIds);
+
+    List<KeyValueVo<Integer, Long>> queryCountGroupByWorkStatus(Long storeId);
+
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
+import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.LineUpVo;
 
 /**
@@ -71,4 +72,6 @@ public interface IStoreDeskService
     Map<Integer,LineUpVo> getLineUpInfo(Long storeId);
 
     Boolean saveLineUpInfo(Long storeId, Map<Integer,LineUpVo> reqVo);
+
+    DeskQueryResVo queryDestCurrentInfo(Long deskId, Long storeId);
 }

@@ -18,7 +18,7 @@ public interface IOrderService
      * @return 订单
      */
     public Order selectOrderByOrderId(Long orderId);
-
+    public Order selectLastActiveOrder(Long deskId);
     /**
      * 查询订单列表
      * 

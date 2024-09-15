@@ -2,6 +2,7 @@ package com.ruoyi.billiard.controller.cashier;
 
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
+import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.LineUpVo;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.billiard.service.IStoreService;
@@ -12,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +33,7 @@ public class CashierDeskController extends BaseController {
         storeDesk.setStoreId(getStoreIdWithThrow());
         storeDesk.setEnable(Boolean.TRUE);
         List<StoreDesk> list = storeDeskService.selectStoreDeskList(storeDesk);
+        list.sort(Comparator.comparing(StoreDesk::getDeskNum));
         return ResultVo.success(list);
     }
 
@@ -39,9 +42,21 @@ public class CashierDeskController extends BaseController {
     public ResultVo<CashierDeskDashboardResVo> deskDashboard() {
 
         CashierDeskDashboardResVo res = storeDeskService.getDeskDashboard(getStoreIdWithThrow());
+
         return ResultVo.success(res);
     }
-
+    /**
+     * 查询球桌当前状态
+     * @param deskId
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @GetMapping("/{deskId}")
+    public ResultVo<DeskQueryResVo> list(@PathVariable Long deskId)
+    {
+        DeskQueryResVo desk  = storeDeskService.queryDestCurrentInfo(deskId,getStoreIdWithThrow());
+        return ResultVo.success(desk);
+    }
     /*
     获取排队信息
      */

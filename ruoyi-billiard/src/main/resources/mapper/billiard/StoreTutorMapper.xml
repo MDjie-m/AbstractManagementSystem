@@ -54,6 +54,15 @@
         <include refid="selectStoreTutorVo"/>
         where store_tutor_id = #{storeTutorId}
     </select>
+    <select id="queryCountGroupByWorkStatus" resultType="com.ruoyi.common.core.domain.model.KeyValueVo">
+
+        select count(1)                                                                                   as value,
+               status                                                                                     as `key`,
+               case status when 0 then '空闲' when 1 then '计费中' when 2 then '已暂停' else '已停止' end as label
+        from t_store_tutor where status=0 and   store_id=#{storeId}
+        group by work_status
+        order by work_status;
+    </select>
 
     <insert id="insertStoreTutor" parameterType="StoreTutor">
         insert into t_store_tutor

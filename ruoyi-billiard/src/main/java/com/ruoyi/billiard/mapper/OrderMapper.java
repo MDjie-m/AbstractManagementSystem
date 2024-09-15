@@ -61,4 +61,7 @@ public interface OrderMapper extends MyBaseMapper<Order>
      * @return 结果
      */
     public int deleteOrderByOrderIds(Long[] orderIds);
+
+    Order selectLastOrderByDeskId(Long deskId);
+
 }

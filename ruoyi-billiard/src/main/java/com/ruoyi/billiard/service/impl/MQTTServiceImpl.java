@@ -43,20 +43,20 @@ public class MQTTServiceImpl implements IMQTTService, MqttCallback {
 
     @Override
     public void connect() {
-        try {
-            client = new MqttClient(broker, clientId);
-            MqttConnectOptions options = getMqttConnectOptions();
-            client.setCallback(this);
-            client.connect(options);
-        } catch (MqttException me) {
-            log.info("reason " + me.getReasonCode());
-            log.info("msg " + me.getMessage());
-            log.info("loc " + me.getLocalizedMessage());
-            log.info("cause " + me.getCause());
-            log.info("excep " + me);
-            log.error("MQTT init error:", me);
-        }
-        log.info("---MQTT connected Success");
+//        try {
+//            client = new MqttClient(broker, clientId);
+//            MqttConnectOptions options = getMqttConnectOptions();
+//            client.setCallback(this);
+//            client.connect(options);
+//        } catch (MqttException me) {
+//            log.info("reason " + me.getReasonCode());
+//            log.info("msg " + me.getMessage());
+//            log.info("loc " + me.getLocalizedMessage());
+//            log.info("cause " + me.getCause());
+//            log.info("excep " + me);
+//            log.error("MQTT init error:", me);
+//        }
+//        log.info("---MQTT connected Success");
     }
 
     private MqttConnectOptions getMqttConnectOptions() {

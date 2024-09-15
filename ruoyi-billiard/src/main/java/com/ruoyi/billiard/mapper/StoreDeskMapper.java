@@ -5,6 +5,7 @@ import java.util.List;
 import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -70,4 +71,5 @@ public interface StoreDeskMapper extends MyBaseMapper<StoreDesk>
 
     Integer checkDeviceBind( @Param("deviceId")Long deviceId,@Param("deskId") Long deskId);
 
+    List<KeyValueVo<Integer, Long>> queryDeskCountGroupByStatus(Long storeId);
 }
