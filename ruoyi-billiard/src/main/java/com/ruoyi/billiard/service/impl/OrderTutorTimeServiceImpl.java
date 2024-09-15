@@ -67,7 +67,7 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
     {
         SecurityUtils.fillCreateUser(orderTutorTime);
         orderTutorTime.setOrderTutorTimeId(IdUtils.singleNextId());
-        return orderTutorTimeMapper.insertOrderTutorTime(orderTutorTime);
+        return orderTutorTimeMapper.insert(orderTutorTime);
     }
 
     /**

@@ -72,4 +72,6 @@ public interface StoreDeskMapper extends MyBaseMapper<StoreDesk>
     Integer checkDeviceBind( @Param("deviceId")Long deviceId,@Param("deskId") Long deskId);
 
     List<KeyValueVo<Integer, Long>> queryDeskCountGroupByStatus(Long storeId);
+
+    Integer deskInUse(@Param("deskId") Long deskId);
 }

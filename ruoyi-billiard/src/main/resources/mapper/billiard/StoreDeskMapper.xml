@@ -39,16 +39,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectStoreDeskList" parameterType="StoreDesk" resultMap="StoreDeskResult">
         <include refid="selectStoreDeskVo"/>
         <where>  
-            <if test="deskName != null  and deskName != ''"> and desk_name like concat('%', #{deskName}, '%')</if>
-            <if test="deskNum != null "> and desk_num = #{deskNum}</if>
-            <if test="deskType != null "> and desk_type = #{deskType}</if>
-            <if test="placeType != null "> and place_type = #{placeType}</if>
+            <if test="deskName != null  and deskName != ''"> and a.desk_name like concat('%', #{deskName}, '%')</if>
+            <if test="deskNum != null "> and a.desk_num = #{deskNum}</if>
+            <if test="deskType != null "> and a.desk_type = #{deskType}</if>
+            <if test="placeType != null "> and a.place_type = #{placeType}</if>
             <if test="storeId != null "> and a.store_id = #{storeId}</if>
-            <if test="price != null "> and price = #{price}</if>
+            <if test="price != null "> and a.price = #{price}</if>
             <if test="status != null "> and a.status = #{status}</if>
             <if test="enable != null "> and a.enable = #{enable}</if>
-            <if test="lightDeviceId != null "> and light_device_id = #{lightDeviceId}</if>
-            <if test="cameraDeviceId != null "> and camera_device_id = #{cameraDeviceId}</if>
+            <if test="lightDeviceId != null "> and a.light_device_id = #{lightDeviceId}</if>
+            <if test="cameraDeviceId != null "> and a.camera_device_id = #{cameraDeviceId}</if>
         </where>
     </select>
     
@@ -73,6 +73,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from t_store_desk where  store_id=#{storeId}
         group by status
         order by status;
+    </select>
+    <select id="deskInUse" resultType="java.lang.Integer">
+
+        select 1
+        from t_order_desk_time
+        where desk_id = #{deskId}
+          and end_time is null
+        limit 1;
     </select>
 
 

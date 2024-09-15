@@ -61,7 +61,7 @@ export default {
         let deskIcons = ['clock_wait', 'clock_busy', 'clock', 'clock_stop'];
         let tutorIcons = ['tutor_wait', 'tutor_busy', 'tutor', 'tutor_stop'];
 
-        this.deskMenus = this.dict.type.store_desk_status.map(p => {
+         let tempDeskMenus =  this.dict.type.store_desk_status.map(p => {
           let item = deskCount.find(n => n.key === parseInt(p.value))
           return {
             label: p.label,
@@ -69,7 +69,8 @@ export default {
             svgIcon: deskIcons[p.value]
           }
         });
-        this.deskMenus.push(lightItem);
+        tempDeskMenus.push(lightItem);
+        this.deskMenus =tempDeskMenus;
         this.tutorMenus = this.dict.type.store_tutor_work_status.map(p => {
           let item = tutorCount.find(n => n.key === parseInt(p.value))
           return {

@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import com.ruoyi.billiard.domain.DeskPrice;
 
@@ -58,4 +59,6 @@ public interface IDeskPriceService
      * @return 结果
      */
     public int deleteDeskPriceByDeskPriceId(Long deskPriceId);
+
+    BigDecimal queryPriceByType(Long storeId, Integer deskType);
 }

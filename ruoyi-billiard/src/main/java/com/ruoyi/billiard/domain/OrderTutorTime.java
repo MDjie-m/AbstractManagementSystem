@@ -81,6 +81,14 @@ public class OrderTutorTime extends MyBaseEntity
     @TableField("total_amount")
     private BigDecimal totalAmount;
 
+    @TableField("tutor_id")
+    private Long  tutorId;
+
+    /**
+     * 状态:1=计费中，2=暂停，3=已结束
+     */
+    @TableField("status")
+    private Integer  status;
     /** 创建者Id */
     @Excel(name = "创建者Id")
 

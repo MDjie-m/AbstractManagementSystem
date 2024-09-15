@@ -74,4 +74,13 @@ public interface IStoreDeskService
     Boolean saveLineUpInfo(Long storeId, Map<Integer,LineUpVo> reqVo);
 
     DeskQueryResVo queryDestCurrentInfo(Long deskId, Long storeId);
+
+    DeskQueryResVo startCalcFee(Long deskId, Long storeId);
+
+
+    DeskQueryResVo swapToNewDesk(Long deskId, Long storeId, Long orderId, Long newDeskId);
+
+    DeskQueryResVo pauseCalcFee(Long deskId, Long storeId);
+
+    DeskQueryResVo resumeDesk(Long deskId, Long storeId);
 }

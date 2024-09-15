@@ -21,10 +21,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createById"    column="create_by_id"    />
         <result property="updateById"    column="update_by_id"    />
         <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="tutorId"    column="tutor_id"    />
     </resultMap>
 
     <sql id="selectOrderTutorTimeVo">
-        select order_tutor_time_id, order_id, desk_id, start_time, end_time, type, total_time, price, total_amount, create_by, create_time, update_by, update_time, create_by_id, update_by_id, remark from t_order_tutor_time
+        select  a.*
+        from t_order_tutor_time a
     </sql>
 
     <select id="selectOrderTutorTimeList" parameterType="OrderTutorTime" resultMap="OrderTutorTimeResult">
@@ -40,53 +43,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalAmount != null "> and total_amount = #{totalAmount}</if>
             <if test="createById != null "> and create_by_id = #{createById}</if>
             <if test="updateById != null "> and update_by_id = #{updateById}</if>
+            <if test="tutorId != null "> and tutor_id = #{tutorId}</if>
+            <if test="status != null "> and status = #{status}</if>
         </where>
     </select>
-    
-    <select id="selectOrderTutorTimeByOrderTutorTimeId" parameterType="Long" resultMap="OrderTutorTimeResult">
-        <include refid="selectOrderTutorTimeVo"/>
-        where order_tutor_time_id = #{orderTutorTimeId}
-    </select>
 
-    <insert id="insertOrderTutorTime" parameterType="OrderTutorTime">
-        insert into t_order_tutor_time
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="orderTutorTimeId != null">order_tutor_time_id,</if>
-            <if test="orderId != null">order_id,</if>
-            <if test="deskId != null">desk_id,</if>
-            <if test="startTime != null">start_time,</if>
-            <if test="endTime != null">end_time,</if>
-            <if test="type != null">type,</if>
-            <if test="totalTime != null">total_time,</if>
-            <if test="price != null">price,</if>
-            <if test="totalAmount != null">total_amount,</if>
-            <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="createById != null">create_by_id,</if>
-            <if test="updateById != null">update_by_id,</if>
-            <if test="remark != null">remark,</if>
-         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="orderTutorTimeId != null">#{orderTutorTimeId},</if>
-            <if test="orderId != null">#{orderId},</if>
-            <if test="deskId != null">#{deskId},</if>
-            <if test="startTime != null">#{startTime},</if>
-            <if test="endTime != null">#{endTime},</if>
-            <if test="type != null">#{type},</if>
-            <if test="totalTime != null">#{totalTime},</if>
-            <if test="price != null">#{price},</if>
-            <if test="totalAmount != null">#{totalAmount},</if>
-            <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="createById != null">#{createById},</if>
-            <if test="updateById != null">#{updateById},</if>
-            <if test="remark != null">#{remark},</if>
-         </trim>
-    </insert>
 
     <update id="updateOrderTutorTime" parameterType="OrderTutorTime">
         update t_order_tutor_time
@@ -106,6 +67,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createById != null">create_by_id = #{createById},</if>
             <if test="updateById != null">update_by_id = #{updateById},</if>
             <if test="remark != null">remark = #{remark},</if>
+            <if test="tutorId != null">tutor_id = #{tutorId},</if>
+            <if test="status != null">status = #{status},</if>
         </trim>
         where order_tutor_time_id = #{orderTutorTimeId}
     </update>

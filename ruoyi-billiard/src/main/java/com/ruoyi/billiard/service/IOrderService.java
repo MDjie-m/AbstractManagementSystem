@@ -58,4 +58,13 @@ public interface IOrderService
      * @return 结果
      */
     public int deleteOrderByOrderId(Long orderId);
+
+    Order createOrder(Long deskId);
+
+    Order swapToNewDesk(Long deskId, Long orderId, Long newDeskId);
+
+    Order pauseCalcFee(Long deskId);
+
+    Order resumeCalcFee(Long deskId);
+
 }

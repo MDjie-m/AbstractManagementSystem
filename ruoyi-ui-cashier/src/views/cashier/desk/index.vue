@@ -24,26 +24,29 @@
 
       <ToolBar title="台桌服务" v-if="currentDesk">
         <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
-          <span>0.00元</span> <i class="el-icon-info"/>
+          <span  >{{ currentDesk.deskTotalTimeAmount }}</span>元 <i class="el-icon-info"/>
         </div>
-        <SvgItem svg-icon="clock" label="开台" :btnAble="true"/>
-        <SvgItem svg-icon="desk_end" label="结开" :btnAble="true"/>
-        <SvgItem svg-icon="desk_pause" label="暂停" :btnAble="true"/>
-        <SvgItem svg-icon="desk_change" label="换台" :btnAble="true"/>
+        <SvgItem svg-icon="clock" label="开台" @click.native="onStartDeskClick()"
+                 v-if="currentDesk.status ===DeskStatus.Wait && !currentDesk.lastActiveOrder" :btnAble="true"/>
+        <SvgItem svg-icon="desk_end" label="结开" v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
+        <SvgItem svg-icon="desk_pause" label="暂停"   @click.native="onPauseDeskClick()" v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
+        <SvgItem svg-icon="desk_resume" label="恢复"  @click.native="onResumeDeskClick()" v-if="currentDesk.status ===DeskStatus.PAUSE" :btnAble="true"/>
+        <SvgItem svg-icon="desk_change" label="换台" @click.native="onOpenSwapDeskClick()"
+                 v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
         <SvgItem svg-icon="timing" label="定时" :btnAble="true"/>
         <SvgItem svg-icon="light_on" label="开灯" :btnAble="true"
                  @click.native="onSwitchLight(currentDesk.deskNum,true)"/>
         <SvgItem svg-icon="close_light" label="关灯" :btnAble="true"
                  @click.native="onSwitchLight(currentDesk.deskNum,false)"/>
       </ToolBar>
-      <ToolBar title="订单服务" v-if="currentDesk">
+      <ToolBar title="订单服务" v-if="currentDesk &&currentDesk.lastActiveOrder">
         <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
-          <span>0.00元</span> <i class="el-icon-info"/>
+          <span>{{ currentDesk.otherTotalAmount }}元</span> <i class="el-icon-info"/>
         </div>
         <SvgItem svg-icon="shop_car" label="选商品" :btnAble="true"/>
         <SvgItem svg-icon="user_choose" label="选艺人" :btnAble="true"/>
       </ToolBar>
-      <ToolBar title="订单操作" v-if="currentDesk">
+      <ToolBar title="订单操作" v-if="currentDesk &&currentDesk.lastActiveOrder">
         <SvgItem svg-icon="trash" label="清空" :btnAble="true"/>
         <SvgItem svg-icon="suspend_order" label="挂单" :btnAble="true"/>
         <SvgItem svg-icon="stop" label="停止" :btnAble="true"/>
@@ -60,7 +63,7 @@
 
     </div>
 
-    <div class="right-panel">
+    <div class="right-panel" v-loading="loading">
       <div class="  section-container">
         <div>
           <el-row>
@@ -116,7 +119,7 @@
         </div>
       </div>
 
-      <div class="  section-container desk-box" v-loading="loading">
+      <div class="  section-container desk-box">
         <el-scrollbar>
           <template class="box-card" v-for="placeItem in dict.type.store_desk_place">
             <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
@@ -141,8 +144,54 @@
       </content-wrapper>
     </div>
 
-    <!-- 添加或修改球桌对话框 -->
-
+    <!-- 换台确认框 -->
+    <el-dialog   title="换台" class="custom-dialog" :visible.sync="openSwapDesk" width="700px" append-to-body :close-on-click-modal="false"
+               :close-on-press-escape="false" :show-close="false">
+      <el-form ref="form" :model="targetDesk"   label-width="120px">
+        <el-row v-if="currentDesk">
+          <el-col :span="12">
+            <el-form-item label="当前台桌:">
+              <span>{{ currentDesk.deskName }}({{ currentDesk.deskNum }})</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="当前台桌价格:">
+              <span>{{ currentDesk.price }}元/分钟</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="目标台桌:">
+              <el-select v-model="targetDesk.deskId" filterable @change="onTargetDeskIdChange">
+<!--                <div slot="prefix"></div>-->
+                <el-option :value="item.deskId" :key="'targetDesk'+item.deskId"
+                           :label="item.deskName"
+                           v-for="item in deskList">
+                  <div style="display: flex;flex-direction: row;align-items: center">
+                    <div class="desk-status" :class="`desk-status-`+item.status"></div>
+                    <div> {{ item.deskName }}({{ item.deskNum }}) / {{item.placeType===0?'大厅':'包间'}}
+                    </div>
+                    <div style=" padding-left: 20px">
+                      {{ item.price }}元/分钟
+                    </div>
+                  </div>
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="目标台桌价格:">
+              <span v-if="targetDesk.price!=null">{{ targetDesk.price }}元/分钟</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer" v-loading="loading">
+        <el-button type="primary" @click="onSwapDeskSubmit()">确 定</el-button>
+        <el-button @click="openSwapDesk=false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 
 </template>
@@ -150,7 +199,7 @@
 <script>
 
 
-import {listDesk} from "@/api/cashier/desk";
+import {getDeskBaseInfo, listDesk, pauseCalcFee, resumeCalcFee, startCalcFee, swapToNewDesk} from "@/api/cashier/desk";
 import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
 import Dashboard from "@/views/cashier/desk/components/dashboard.vue";
 import ContentWrapper from "@/views/cashier/desk/components/contentWrapper.vue";
@@ -158,7 +207,15 @@ import LineUp from "@/views/cashier/desk/components/lineUp.vue";
 import {queryStoreBaseInfo} from "@/api/cashier/store";
 import ToolBar from "@/views/cashier/desk/components/toolBar.vue";
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
+import {MessageBox} from "element-ui";
 
+const DeskStatus = {
+  Wait: 0,
+  Busy: 1,
+  PAUSE:2,
+  Stop: 3,
+
+}
 export default {
   name: "Desk",
   components: {SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
@@ -166,18 +223,19 @@ export default {
 
   data() {
     return {
+      DeskStatus: DeskStatus,
       storeInfo: {storeName: '', userList: [], tutorList: []},
       openNewDialog: false,
       lightStatus: null,
       currentDesk: null,
-
+      loading: false,
       deskList: [],
-      originalDeskList: [],
+      targetDesk: {deskId: null, deskName: null, deskNum: null, price: null},
 
       // 弹出层标题
       title: "",
       // 是否显示弹出层
-      open: false,
+      openSwapDesk: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -202,6 +260,25 @@ export default {
     this.getStoreInfo()
   },
   methods: {
+    onSwapDeskSubmit() {
+      if(!this.targetDesk?.deskId){
+        return this.$modal.msgWarning("请选择要更换的目标台桌");
+      }
+      this.loading=true;
+      swapToNewDesk(this.currentDesk.deskId ,this.targetDesk.deskId,this.currentDesk.lastActiveOrder.orderId).then(res=>{
+         this.onSwitchLight(this.currentDesk.deskNum,false);
+         this.currentDesk=res.data;
+         this.onSwitchLight(this.currentDesk?.deskNum,true);
+         this.$modal.msgSuccess("操作成功");
+         this.openSwapDesk=false;
+          this.getList();
+      }).then( ).then(n=>{
+
+      }).finally(()=>this.loading=false)
+    },
+    onTargetDeskIdChange(val){
+      this.targetDesk.price  = this.deskList.find(p=>p.deskId===val)?.price;
+    },
     onRefreshClick() {
       this.$refs.dashboard?.refresh();
       this.getList();
@@ -223,6 +300,9 @@ export default {
       this.openNewDialog = true;
     },
     onSwitchLight(deskNum, open) {
+      if(deskNum===null ||deskNum ===undefined){
+        return
+      }
       let req = {deskNum: deskNum, open: !!open}
       callPCMethod(DeviceMethodNames.LightSwitch, req).then(res => {
 
@@ -243,9 +323,21 @@ export default {
           return;
         }
         p.selected = false;
-      })
-      item.selected = !item.selected
-      this.currentDesk = item.selected ? item : null;
+      });
+      if (item.selected) {
+        item.selected = false;
+        this.currentDesk = null;
+        return;
+      }
+      if (this.loading) {
+        return
+      }
+      this.loading = true;
+      getDeskBaseInfo(item.deskId).then(res => {
+        item.selected = true;
+        this.currentDesk = res.data;
+      }).finally(() => this.loading = false);
+
 
     },
     onChooseAll() {
@@ -265,65 +357,86 @@ export default {
       } else {
         this.queryParams[field] = parseInt(val);
       }
-
       this.getList()
-
     },
-    filterDeskList() {
 
-      //状态：0=空闲，1=计时中， ,3=已停止
-      this.deskList = this.originalDeskList.filter(p => {
-        let statusCondition = true;
-        let deskTypeCondition = true;
-        let placeCondition = true;
-
-        if (this.queryParams.status !== null) {
-          statusCondition = p.status === parseInt(this.queryParams.status)
-        }
-        if (this.queryParams.deskType !== null) {
-          deskTypeCondition = p.deskType === parseInt(this.queryParams.deskType)
-        }
-        if (this.queryParams.placeType !== null) {
-          placeCondition = p.placeType === parseInt(this.queryParams.placeType)
-        }
-        return statusCondition && placeCondition && deskTypeCondition
-      });
-      return this.deskList;
-    },
     /** 查询球桌列表 */
     getList() {
       this.loading = true;
-      this.currentDesk = null;
-      listDesk({}).then(response => {
-        this.originalDeskList = (response.data || []).map(p => {
-          p.selected = false;
+      listDesk(this.queryParams).then(response => {
+        this.deskList = (response.data || []).map(p => {
+          p.selected = this.currentDesk?.deskId ===p.deskId;
           return p;
         });
-        this.filterDeskList()
+
         this.loading = false;
       }).finally(() => this.loading = false);
     },
-
-    // 取消按钮
-    cancel() {
-      this.open = false;
-      this.reset();
+    onOpenSwapDeskClick() {
+      this.openSwapDesk = true;
     },
-    // 表单重置
-    reset() {
-      this.form = {};
-      this.resetForm("form");
+    closeLoading(){
+      this.loading = false
     },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1;
-      this.getList();
+    startLoading(){
+      this.loading = false
     },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.resetForm("queryForm");
-      this.handleQuery();
+    onResumeDeskClick(){
+      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
+      MessageBox.confirm(`${deskTitle}恢复计费?`, '确认', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        resumeCalcFee(this.currentDesk.deskId).then(res => {
+          this.currentDesk = res.data;
+          this.deskList.forEach(p => {
+            if (p.deskId === this.currentDesk.deskId) {
+              p.status = this.currentDesk.status
+            }
+          })
+          this.$message.success(`${deskTitle}已恢复计费。`)
+        })
+      })
     },
+    onPauseDeskClick(){
+      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
+      MessageBox.confirm(`${deskTitle}暂停后将停止计费,确认暂停?`, '确认', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        pauseCalcFee(this.currentDesk.deskId).then(res => {
+          this.currentDesk = res.data;
+          this.deskList.forEach(p => {
+            if (p.deskId === this.currentDesk.deskId) {
+              p.status = this.currentDesk.status
+            }
+          })
+          this.$message.success(`${deskTitle}已暂停。`)
+        })
+      })
+    },
+    onStartDeskClick() {
+      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
+      MessageBox.confirm(`${deskTitle}确认开台?`, '确认', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        startCalcFee(this.currentDesk.deskId).then(res => {
+          this.currentDesk = res.data;
+          this.deskList.forEach(p => {
+            if (p.deskId === this.currentDesk.deskId) {
+              p.status = this.currentDesk.status
+            }
+          })
+          this.$message.success(`${deskTitle}已开台。`)
+        }).then(res => {
+          this.onSwitchLight(this.currentDesk.deskNum, true)
+        })
+      })
+    }
 
 
   }

@@ -51,7 +51,7 @@ create table t_store_tutor
     sex            char(1)                               null comment '性别（0=男，1=女，2=未知）',
     level          int                                   not null comment '等级(1=助教，2=教练，3=总教)',
     status         int                                   not null comment '教练（0=在岗 1=离职）',
-    work_status int default 0 not null comment '工作状态（0=空闲，1=计费中，3=已停止）',
+    work_status    int         default 0                 not null comment '工作状态（0=空闲，1=计费中，3=已停止）',
     del_flag       char        default '0'               null comment '删除标志（0代表存在 2代表删除）',
     create_by      varchar(64) default ''                null comment '创建者',
     create_time    timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
@@ -137,7 +137,7 @@ create table t_store_desk
     light_device_id  bigint                                null comment '灯光id',
     camera_device_id bigint                                null comment '摄像头设备id',
     status           int                                   not null comment '状态：0=空闲，1=计时中， ,3=已停止',
-    enable  tinyint default 1 not null comment '是否启用（1=启用，0=禁用，禁用后收银端不会显示）',
+    enable           tinyint     default 1                 not null comment '是否启用（1=启用，0=禁用，禁用后收银端不会显示）',
     create_by        varchar(64) default ''                null comment '创建者',
     create_time      timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by        varchar(64) default ''                null comment '更新者',
@@ -241,8 +241,8 @@ create table t_order_desk_time
     desk_id               bigint                                not null comment '球桌编码',
     from_desk_id          bigint                                null comment '转桌之前的Id',
     start_time            datetime                              not null comment '开始时间',
-    end_time              datetime                              not null comment '结束时间',
-    total_time            int                                   not null comment '总时间分钟（开始时间去掉秒，结束时间多一秒加1分钟算）',
+    end_time              datetime                              null comment '结束时间',
+    total_time            int                                   null comment '总时间分钟（开始时间去掉秒，结束时间多一秒加1分钟算）',
     price                 decimal(10, 2)                        not null comment '价格/分钟',
     total_amount_due      decimal(20, 2)                        not null comment '应付总金额 ',
     total_discount_amount decimal(20, 2)                        null comment '折扣金额',
@@ -257,6 +257,7 @@ create table t_order_desk_time
     update_time           timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     create_by_id          bigint                                null comment '创建者Id',
     update_by_id          bigint                                null comment '更新者Id',
+    status                int                                   not null default 1 comment '状态:1=计费中，2=暂停，3=已结束',
     remark                nvarchar(500)                         null comment '备注'
 )
     comment '订单计时';
@@ -267,10 +268,11 @@ create table t_order_tutor_time
         primary key,
     order_id              bigint                                not null comment '订单编号',
     desk_id               bigint                                not null comment '球桌编码',
+    tutor_id              bigint                                not null comment '教练id',
     start_time            datetime                              not null comment '开始时间',
-    end_time              datetime                              not null comment '结束时间',
+    end_time              datetime                              null comment '结束时间',
     type                  int                                   not null comment '类型：4=陪练,5=教学',
-    total_time            int                                   not null comment '总时间分钟（开始时间去掉秒，结束时间多一秒加1分钟算）',
+    total_time            int                                   null comment '总时间分钟（开始时间去掉秒，结束时间多一秒加1分钟算）',
     price                 decimal(10, 2)                        not null comment '价格/分钟',
     total_amount_due      decimal(20, 2)                        not null comment '应付总金额 ',
     total_discount_amount decimal(20, 2)                        null comment '折扣金额',
@@ -283,6 +285,7 @@ create table t_order_tutor_time
     update_time           timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     create_by_id          bigint                                null comment '创建者Id',
     update_by_id          bigint                                null comment '更新者Id',
+    status                int                                   not null default 1 comment '状态:1=计费中，2=暂停，3=已结束',
     remark                nvarchar(500)                         null comment '备注'
 )
     comment '订单教练计时';

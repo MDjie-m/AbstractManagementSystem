@@ -8,3 +8,5 @@ create index t_order_desk_time_desk_id_index
 create index t_order_desk_time_order_id_index
     on t_order_desk_time (order_id);
 
+create unique index t_desk_price_store_id_desk_type_uindex
+    on t_desk_price (store_id, desk_type);

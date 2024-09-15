@@ -28,13 +28,34 @@ export function listDeskDashboard() {
     method: 'get',
   })
 }
-
-
-// 查询球桌详细
-export function getDesk(deskId) {
+export function getDeskBaseInfo(deskId) {
   return request({
-    url: '/billiard/desk/' + deskId,
-    method: 'get'
+    url: `/cashier/desk/${deskId}`,
+    method: 'get',
   })
 }
-
+export function startCalcFee(deskId) {
+  return request({
+    url: `/cashier/desk/${deskId}/start`,
+    method: 'post',
+  })
+}
+export function pauseCalcFee(deskId) {
+  return request({
+    url: `/cashier/desk/${deskId}/pause`,
+    method: 'post',
+  })
+}
+export function resumeCalcFee(deskId) {
+  return request({
+    url: `/cashier/desk/${deskId}/resume`,
+    method: 'post',
+  })
+}
+export function swapToNewDesk(deskId,newDeskId,orderId) {
+  return request({
+    url: `/cashier/desk/${deskId}/swap`,
+    method: 'post',
+    params:{newDeskId,orderId}
+  })
+}
