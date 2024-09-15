@@ -28,10 +28,10 @@
   border-radius: 50%;
   margin-right: 10px;
 }
-.desk-status-0,.desk-status-2{
+.desk-status-0{
   background-color: #8a8a8a;
 }
-.desk-status-1{
+.desk-status-1,.desk-status-2{
   background-color: #26dc51;
 }
 .desk-status-3{
@@ -58,10 +58,10 @@
     right: 10px;
     top: 10px;
   }
-  .item-status-0,.item-status-2{
+  .item-status-0{
     background-color: #8a8a8a;
   }
-  .item-status-1{
+  .item-status-1,.item-status-2{
     background-color: #26dc51;
   }
   .item-status-3{

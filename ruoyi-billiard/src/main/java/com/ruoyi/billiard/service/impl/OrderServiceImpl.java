@@ -233,6 +233,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         deskTimeService.insertOrderDeskTime(deskTime);
 
+        orderTutorTimeMapper.selectList(orderTutorTimeMapper.query()
+                        .eq(OrderTutorTime::getOrderId, order.getOrderId())
+                        .eq(OrderTutorTime::getStatus, CalcTimeStatus.BUSY.getValue()))
+                .forEach(item -> {
+                    tutorSwapToNewDesk(newDeskId, item, endTime, order);
+                });
+
         //更新状态
         oldDesk.setStatus(DeskStatus.WAIT.getValue());
         newDesk.setStatus(DeskStatus.BUSY.getValue());
@@ -303,27 +310,33 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                         .eq(OrderTutorTime::getOrderId, order.getOrderId())
                         .eq(OrderTutorTime::getStatus, CalcTimeStatus.PAUSE.getValue()))
                 .forEach(item -> {
-                    item.setStatus(CalcTimeStatus.STOP.getValue());
-                    SecurityUtils.fillUpdateUser(item);
-                    orderTutorTimeMapper.updateById(item);
-                    OrderTutorTime p = new OrderTutorTime();
-
-                    p.setOrderTutorTimeId(IdUtils.singleNextId());
-                    p.setEndTime(null);
-                    p.setType(item.getType());
-                    p.setTotalAmount(BigDecimal.ZERO);
-                    p.setStartTime(now);
-                    p.setTotalAmount(BigDecimal.ZERO);
-                    p.setTutorId(item.getTutorId());
-                    p.setOrderId(order.getOrderId());
-                    p.setDeskId(deskId);
-                    p.setPrice(item.getPrice());
-                    p.setOrderTutorTimeId(IdUtils.singleNextId());
-                    p.setStatus(CalcTimeStatus.BUSY.getValue());
-                    SecurityUtils.fillCreateUser(p);
-                    orderTutorTimeMapper.insert(p);
+                    tutorSwapToNewDesk(deskId, item, now, order);
                 });
         return selectLastActiveOrder(deskId);
+    }
+
+    private void tutorSwapToNewDesk(Long deskId, OrderTutorTime item, Date now, Order order) {
+        item.setStatus(CalcTimeStatus.STOP.getValue());
+        SecurityUtils.fillUpdateUser(item);
+        if(Objects.isNull(item.getEndTime())){
+            item.setEndTime(now);
+        }
+        orderTutorTimeMapper.updateById(item);
+        OrderTutorTime newItem = new OrderTutorTime();
+        newItem.setOrderTutorTimeId(IdUtils.singleNextId());
+        newItem.setEndTime(null);
+        newItem.setType(item.getType());
+        newItem.setTotalAmount(BigDecimal.ZERO);
+        newItem.setStartTime(now);
+        newItem.setTotalAmount(BigDecimal.ZERO);
+        newItem.setTutorId(item.getTutorId());
+        newItem.setOrderId(order.getOrderId());
+        newItem.setDeskId(deskId);
+        newItem.setPrice(item.getPrice());
+        newItem.setOrderTutorTimeId(IdUtils.singleNextId());
+        newItem.setStatus(CalcTimeStatus.BUSY.getValue());
+        SecurityUtils.fillCreateUser(newItem);
+        orderTutorTimeMapper.insert(newItem);
     }
 
     private String createOrderNum(Long id) {

@@ -54,7 +54,7 @@
       </ToolBar>
       <Dashboard ref="dashboard" v-if="!currentDesk" :storeName="storeInfo.storeName"/>
 
-      <ToolBar title="预约/排队">
+      <ToolBar title="预约/排队" v-if="!currentDesk">
         <SvgItem svg-icon="desk" label="台桌预约"/>
         <SvgItem svg-icon="tutor" label="教练预约"/>
         <SvgItem svg-icon="qrcode" label="预约核销"/>
@@ -363,7 +363,11 @@ export default {
     /** 查询球桌列表 */
     getList() {
       this.loading = true;
-      listDesk(this.queryParams).then(response => {
+      let params=JSON.parse(JSON.stringify(this.queryParams));
+      if(params.status===1){
+        params.statusList=[1,2]
+      }
+      listDesk(params).then(response => {
         this.deskList = (response.data || []).map(p => {
           p.selected = this.currentDesk?.deskId ===p.deskId;
           return p;
