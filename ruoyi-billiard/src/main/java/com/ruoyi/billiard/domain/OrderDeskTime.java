@@ -22,7 +22,7 @@ import com.ruoyi.common.core.domain.MyBaseEntity;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDeskTime extends MyBaseEntity
+public class OrderDeskTime extends BaseFee
 {
     private static final long serialVersionUID = 1L;
 

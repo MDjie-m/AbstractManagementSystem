@@ -114,35 +114,7 @@ display: flex;
      color: $sub-text-color;
   }
 }
-.store-info{
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 30px;
-  padding-bottom: 30px;
 
-  &-btn{
-    position: absolute;
-    font-size: 30px;
-    right: 10px;
-    top: 10px;
-    cursor: pointer;
-    :hover::before{
-      color:$light-blue;
-    }
-  }
-  &-icon{
-    font-size: 30px;
-    margin: 20px;
-
-
-  }
-  &-title{
-    font-weight: 500;
-    font-size: 30px;
-  }
-}
 .el-tag {
   border-radius: 20px;
   padding: 0px 10px;

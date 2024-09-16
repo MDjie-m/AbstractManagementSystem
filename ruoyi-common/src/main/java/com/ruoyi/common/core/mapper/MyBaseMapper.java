@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
@@ -30,7 +31,9 @@ public interface MyBaseMapper<T> extends BaseMapper<T> {
     default  LambdaUpdateWrapper<T> updateWrapper(){
         return  new LambdaUpdateWrapper<>();
     }
-
+    default UpdateWrapper<T> edit(){
+        return  new UpdateWrapper<>();
+    }
 
     /**
      * 自定义批量更新，条件为主键

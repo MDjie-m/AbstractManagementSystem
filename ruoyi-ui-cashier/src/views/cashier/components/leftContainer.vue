@@ -1,0 +1,73 @@
+<template>
+  <div class="left-panel">
+    <div class="store-info">
+      <i class="el-icon-refresh-right store-info-btn" @click="onRefreshClick"></i>
+      <div class="store-info-icon">
+        <svg-icon icon-class="store"/>
+      </div>
+      <div class="store-info-title">
+        {{ storeName }}
+      </div>
+    </div>
+    <template>
+      <slot/>
+    </template>
+
+  </div>
+</template>
+<script>
+export default {
+  emits: ["onRefreshClick"],
+  props: [],
+  data() {
+    return {
+      storeName: '',
+    }
+  },
+  created() {
+    this.storeName = this.$store.getters.stores[0]?.storeName || ''
+  },
+  methods: {
+    onRefreshClick() {
+      this.$emit("onRefreshClick")
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+@import '@/assets/styles/variables.scss';
+
+.store-info {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  &-btn {
+    position: absolute;
+    font-size: 30px;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+
+    :hover::before {
+      color: $light-blue;
+    }
+  }
+
+  &-icon {
+    font-size: 30px;
+    margin: 20px;
+
+
+  }
+
+  &-title {
+    font-weight: 500;
+    font-size: 30px;
+  }
+}
+</style>

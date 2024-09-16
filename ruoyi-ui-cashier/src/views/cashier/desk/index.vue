@@ -3,16 +3,7 @@
 
   <div class="page-container">
 
-    <div class="left-panel">
-      <div class="store-info">
-        <i v-show="!currentDesk" class="el-icon-refresh-right store-info-btn" @click="onRefreshClick"></i>
-        <div class="store-info-icon">
-          <svg-icon icon-class="store"/>
-        </div>
-        <div class="store-info-title">
-          {{ storeInfo.storeName }}
-        </div>
-      </div>
+    <left-container @onRefreshClick="onRefreshClick">
       <div class="desk-base-info" v-if="currentDesk">
         <div class="desk-base-info-name">
           {{ currentDesk.deskName }}({{ currentDesk.deskNum }})
@@ -60,10 +51,9 @@
         <SvgItem svg-icon="qrcode" label="预约核销"/>
         <SvgItem svg-icon="line_up" label="排队叫号" @click.native="onOpenLineUpClick()"/>
       </ToolBar>
+    </left-container>
 
-    </div>
-
-    <div class="right-panel" v-loading="loading">
+    <div class="right-panel" >
       <div class="  section-container">
         <div>
           <el-row>
@@ -208,6 +198,7 @@ import {queryStoreBaseInfo} from "@/api/cashier/store";
 import ToolBar from "@/views/cashier/desk/components/toolBar.vue";
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import {MessageBox} from "element-ui";
+import LeftContainer from "@/views/cashier/components/leftContainer.vue";
 
 const DeskStatus = {
   Wait: 0,
@@ -218,7 +209,7 @@ const DeskStatus = {
 }
 export default {
   name: "Desk",
-  components: {SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
+  components: {LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
 
   data() {
@@ -362,6 +353,9 @@ export default {
 
     /** 查询球桌列表 */
     getList() {
+      if(this.loading){
+        return ;
+      }
       this.loading = true;
       let params=JSON.parse(JSON.stringify(this.queryParams));
       if(params.status===1){

@@ -187,7 +187,9 @@ create table t_order_goods
     total_amount_due      decimal(20, 2)                        not null comment '应付总金额 ',
     total_discount_amount decimal(20, 2)                        null comment '折扣金额',
     total_amount          decimal(20, 2)                        null comment '实际支付金额',
+    total_give_amount     decimal(20, 2)                        null comment '实际赠送支付金额',
     discount_value        decimal(4, 2)                         null comment '当前折扣',
+
     total_wipe_zero       decimal(4, 2)                         null comment '抹零金额',
     remark                nvarchar(500)                         null comment '备注',
     create_by             varchar(64) default ''                null comment '创建者',
@@ -262,7 +264,7 @@ create table t_order_desk_time
     status                int                                   not null default 1 comment '状态:1=计费中，2=暂停，3=已结束',
     remark                nvarchar(500)                         null comment '备注'
 )
-    comment '订单计时';
+    comment '订单台费计时';
 drop table if exists t_order_tutor_time;
 create table t_order_tutor_time
 (
@@ -278,6 +280,7 @@ create table t_order_tutor_time
     price                 decimal(10, 2)                        not null comment '价格/分钟',
     total_amount_due      decimal(20, 2)                        not null comment '应付总金额 ',
     total_discount_amount decimal(20, 2)                        null comment '折扣金额',
+    total_give_amount     decimal(20, 2)                        null comment '实际赠送支付金额',
     total_amount          decimal(20, 2)                        null comment '实际支付金额',
     discount_value        decimal(4, 2)                         null comment '当前折扣',
     total_wipe_zero       decimal(4, 2)                         null comment '抹零金额',

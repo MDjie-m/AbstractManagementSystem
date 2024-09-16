@@ -5,11 +5,8 @@ import java.math.RoundingMode;
 import java.util.*;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
@@ -159,11 +156,11 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteStoreDeskByDeskIds(Long[] deskIds) {
-        int  res=0;
+        int res = 0;
         for (Long deskId : deskIds) {
-            res+=deleteStoreDeskByDeskId(deskId);
+            res += deleteStoreDeskByDeskId(deskId);
         }
-        return  res;
+        return res;
     }
 
     /**
@@ -174,7 +171,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
      */
     @Override
     public int deleteStoreDeskByDeskId(Long deskId) {
-        AssertUtil.isTrue(!orderDeskTimeMapper.exists(OrderDeskTime::getDeskId,deskId),"台桌已被使用,无法删除.");
+        AssertUtil.isTrue(!orderDeskTimeMapper.exists(OrderDeskTime::getDeskId, deskId), "台桌已被使用,无法删除.");
         return storeDeskMapper.deleteStoreDeskByDeskId(deskId);
     }
 
@@ -217,45 +214,17 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         DeskQueryResVo resVo = new DeskQueryResVo();
         BeanUtils.copyProperties(desk, resVo);
 
-        Order order = orderService.selectLastActiveOrder(deskId);
+        Order order = orderService.selectRelationOrderWithDetail(deskId);
         if (Objects.isNull(order)) {
             return resVo;
         }
         resVo.setLastActiveOrder(order);
-        calcOrderFee(resVo);
+        resVo.calcFees();
         return resVo;
 
     }
 
-    private static void calcOrderFee(DeskQueryResVo resVo) {
-        Order order = resVo.getLastActiveOrder();
-        if (Objects.isNull(order)) {
-            return;
-        }
-        //台桌费用
-        resVo.setDeskTotalTimeAmount(Optional.ofNullable(order.getOrderDeskTimes()).orElse(Lists.newArrayList())
-                .stream().map(p -> {
-                    int minutes = DateUtils.deskTimeDiffMinutes(p.getStartTime(), Optional.ofNullable(p.getEndTime()).orElse(new Date()));
-                    if (minutes <= 0) {
-                        minutes = 1;
-                    }
-                    return p.getPrice().multiply(new BigDecimal(String.valueOf(minutes)));
-                }).reduce(BigDecimal::add).orElse(BigDecimal.ZERO).setScale(2, RoundingMode.HALF_DOWN));
 
-        //教练费用
-        resVo.setOtherTotalAmount(Optional.ofNullable(order.getOrderTutorTimes()).orElse(Lists.newArrayList())
-                .stream().map(p -> {
-                    int minutes = DateUtils.deskTimeDiffMinutes(p.getStartTime(), Optional.ofNullable(p.getEndTime()).orElse(new Date()));
-                    if (minutes <= 0) {
-                        minutes = 1;
-                    }
-                    return p.getPrice().multiply(new BigDecimal(String.valueOf(minutes)));
-                }).reduce(BigDecimal::add).orElse(BigDecimal.ZERO));
-        //商品费用
-        resVo.setOtherTotalAmount(resVo.getOtherTotalAmount().add(Optional.ofNullable(order.getOrderGoods()).orElse(Lists.newArrayList())
-                .stream().map(p -> p.getPrice().multiply(new BigDecimal(String.valueOf(p.getNum()))))
-                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO)).setScale(2, RoundingMode.HALF_DOWN));
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -264,10 +233,15 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
 
         AssertUtil.isTrue(Objects.equals(desk.getStatus(), DeskStatus.WAIT.getValue()), "当前不是空闲状态，无法开台。");
         AssertUtil.isNullOrEmpty(storeDeskMapper.deskInUse(deskId), "台桌正在计费中");
+        AssertUtil.isNullOrEmpty(desk.getCurrentOrderId(), "台桌正在计费中");
+
+        Order order = orderService.createOrder(deskId);
+        desk.setCurrentOrderId(order.getOrderId());
         desk.setStatus(DeskStatus.BUSY.getValue());
         this.storeDeskMapper.updateById(desk);
+
         DeskQueryResVo resVo = new DeskQueryResVo();
-        resVo.setLastActiveOrder(orderService.createOrder(deskId));
+        resVo.setLastActiveOrder(order);
 
         BeanUtils.copyProperties(desk, resVo);
         return resVo;
@@ -287,7 +261,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         desk.setStatus(DeskStatus.PAUSE.getValue());
         this.storeDeskMapper.updateById(desk);
         BeanUtils.copyProperties(desk, resVo);
-        calcOrderFee(resVo);
+        resVo.calcFees();
 
         return resVo;
     }
@@ -305,7 +279,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         desk.setStatus(DeskStatus.BUSY.getValue());
         this.storeDeskMapper.updateById(desk);
         BeanUtils.copyProperties(desk, resVo);
-        calcOrderFee(resVo);
+        resVo.calcFees();
 
         return resVo;
     }
@@ -330,7 +304,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         DeskQueryResVo resVo = new DeskQueryResVo();
         BeanUtils.copyProperties(storeDeskMapper.selectById(newDeskId), resVo);
         resVo.setLastActiveOrder(order);
-        calcOrderFee(resVo);
+        resVo.calcFees();
         return resVo;
     }
 
