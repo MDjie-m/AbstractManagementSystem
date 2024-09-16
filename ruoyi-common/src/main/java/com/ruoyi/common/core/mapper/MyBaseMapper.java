@@ -22,17 +22,20 @@ public interface MyBaseMapper<T> extends BaseMapper<T> {
      */
     int insertBatch(@Param("list") List<T> list);
 
-    default  LambdaQueryWrapper<T> query(){
-        return  new LambdaQueryWrapper<>();
+    default LambdaQueryWrapper<T> query() {
+        return new LambdaQueryWrapper<>();
     }
-    default   QueryWrapper<T> normalQuery(){
-        return  new  QueryWrapper<>();
+
+    default QueryWrapper<T> normalQuery() {
+        return new QueryWrapper<>();
     }
-    default  LambdaUpdateWrapper<T> updateWrapper(){
-        return  new LambdaUpdateWrapper<>();
+
+    default LambdaUpdateWrapper<T> updateWrapper() {
+        return new LambdaUpdateWrapper<>();
     }
-    default UpdateWrapper<T> edit(){
-        return  new UpdateWrapper<>();
+
+    default UpdateWrapper<T> edit() {
+        return new UpdateWrapper<>();
     }
 
     /**
@@ -40,45 +43,49 @@ public interface MyBaseMapper<T> extends BaseMapper<T> {
      * 如果要自动填充，@Param(xx) xx参数名必须是 list/collection/array 3个的其中之一
      */
     int updateBatch(@Param("list") List<T> list);
+
     int updateWithNull(@Param(Constants.ENTITY) T entity, @Param(Constants.WRAPPER) Wrapper<T> updateWrapper);
 
-    int updateAllWithId(  T entity );
+    int updateAllWithId(@Param(Constants.ENTITY) T entity);
 
-    default int update(  T entity ,boolean updateAll){
-        if(updateAll){
-            return  updateAllWithId(entity);
+    default int update(T entity, boolean updateAll) {
+        if (updateAll) {
+            return updateAllWithId(entity);
         }
-        return  updateById(entity);
-    }
-    default <V> boolean   exists(SFunction<T ,?> condition, V val){
-        LambdaQueryWrapper<T> queryWrapper=   new LambdaQueryWrapper<>();
-        queryWrapper.eq(  condition,val);
-      return this.exists( queryWrapper);
+        return updateById(entity);
     }
 
-    default <V> boolean   existsIn(SFunction<T ,?> condition, List<V> val){
-        LambdaQueryWrapper<T> queryWrapper=   new LambdaQueryWrapper<>();
-        queryWrapper.in(  condition,val);
-        return this.exists( queryWrapper);
-    }
-    default <V> boolean   existsWithDelFlag(SFunction< T, ?> condition, V val){
-        LambdaQueryWrapper<T> queryWrapper=   new LambdaQueryWrapper<>();
-        queryWrapper.eq(  condition,val);
-        queryWrapper.last("and del_flag='0'");
-        return this.exists( queryWrapper);
+    default <V> boolean exists(SFunction<T, ?> condition, V val) {
+        LambdaQueryWrapper<T> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(condition, val);
+        return this.exists(queryWrapper);
     }
 
-    default <V,ID> boolean   existsExcludeId(SFunction< T, ?> condition, V conditionVal,SFunction< T, ID> idCondition,ID id){
-        LambdaQueryWrapper<T> queryWrapper=   new LambdaQueryWrapper<>();
-        queryWrapper.eq(  condition,conditionVal);
-        queryWrapper.notIn(idCondition,id);
-        return this.exists( queryWrapper);
+    default <V> boolean existsIn(SFunction<T, ?> condition, List<V> val) {
+        LambdaQueryWrapper<T> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(condition, val);
+        return this.exists(queryWrapper);
     }
-    default <V,ID> boolean   existsWithDelFlagExcludeId(SFunction< T, ?> condition, V conditionVal,SFunction< T, ID> idCondition,ID id){
-        LambdaQueryWrapper<T> queryWrapper=   new LambdaQueryWrapper<>();
-        queryWrapper.eq(  condition,conditionVal);
-        queryWrapper.notIn(idCondition,id);
+
+    default <V> boolean existsWithDelFlag(SFunction<T, ?> condition, V val) {
+        LambdaQueryWrapper<T> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(condition, val);
         queryWrapper.last("and del_flag='0'");
-        return this.exists( queryWrapper);
+        return this.exists(queryWrapper);
+    }
+
+    default <V, ID> boolean existsExcludeId(SFunction<T, ?> condition, V conditionVal, SFunction<T, ID> idCondition, ID id) {
+        LambdaQueryWrapper<T> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(condition, conditionVal);
+        queryWrapper.notIn(idCondition, id);
+        return this.exists(queryWrapper);
+    }
+
+    default <V, ID> boolean existsWithDelFlagExcludeId(SFunction<T, ?> condition, V conditionVal, SFunction<T, ID> idCondition, ID id) {
+        LambdaQueryWrapper<T> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(condition, conditionVal);
+        queryWrapper.notIn(idCondition, id);
+        queryWrapper.last("and del_flag='0'");
+        return this.exists(queryWrapper);
     }
 }

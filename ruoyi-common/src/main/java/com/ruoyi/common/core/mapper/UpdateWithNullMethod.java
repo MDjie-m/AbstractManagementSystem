@@ -48,7 +48,7 @@ public class UpdateWithNullMethod extends AbstractMethod {
                 sqlSet(true, true, tableInfo, true, ENTITY, ENTITY_DOT),
                 sqlWhereEntityWrapper(true, tableInfo),"");
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
-        return addUpdateMappedStatement(mapperClass, modelClass, sqlMethod.getMethod(), sqlSource);
+        return addUpdateMappedStatement(mapperClass, modelClass, methodName , sqlSource);
 
     }
 

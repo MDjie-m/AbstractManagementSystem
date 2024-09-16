@@ -43,7 +43,7 @@ public class UpdateBatchMethod extends AbstractMethod {
         //log.debug("sqlResult----->{}", sqlResult);
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sqlResult, modelClass);
         // 第三个参数必须和RootMapper的自定义方法名一致
-        return this.addUpdateMappedStatement(mapperClass, modelClass, "updateBatch", sqlSource);
+        return this.addUpdateMappedStatement(mapperClass, modelClass, methodName, sqlSource);
     }
 
 }

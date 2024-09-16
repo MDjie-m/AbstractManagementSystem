@@ -1,13 +1,8 @@
 package com.ruoyi.framework.config;
 
 
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.injector.ISqlInjector;
-import com.baomidou.mybatisplus.core.toolkit.GlobalConfigUtils;
-import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.ruoyi.common.config.CustomizedSqlInjector;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.baomidou.mybatisplus.annotation.DbType;
@@ -15,10 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-import javax.sql.DataSource;
 /**
  * Mybatis支持*匹配扫描包
  * 
@@ -83,12 +75,10 @@ public class MyBatisPlusConfig
 //    @Value("${mybatis-plus.typeAliasesPackage}")
 //    private String typeAliasesPackage;
 //
-//    @Value("${mybatis-plus.configLocation}")
-//    private String configLocation;
-//    @Value("${mybatis-plus.configLocation}")
-//    private MyBatisPlusConfig myBatisPlusConfig;
-
-    // spring boot
+//
+//     @Resource
+//    private CustomMyBatisPlusGlobalConfig globalConfig;
+//
 //    @Bean
 //    public SqlSessionFactory sqlSessionFactory(DataSource dataSource)
 //            throws Exception {
@@ -98,7 +88,7 @@ public class MyBatisPlusConfig
 //        sessionFactory.setTypeHandlersPackage(typeHandlersPackage);
 //
 //        sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(mapperLocations));
-//        sessionFactory.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
+//
 //
 //        GlobalConfig globalConfig = GlobalConfigUtils.defaults();
 //        GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();

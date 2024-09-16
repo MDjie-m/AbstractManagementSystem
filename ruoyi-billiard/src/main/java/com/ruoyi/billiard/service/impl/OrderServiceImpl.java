@@ -201,7 +201,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public Order swapToNewDesk(Long oldDeskId, Long orderId, Long newDeskId) {
 
         AssertUtil.isTrue(!Objects.equals(oldDeskId, newDeskId), "当前台桌和目标台桌不能一样.");
-        Order order = orderMapper.selectOrderByOrderId(oldDeskId);
+        Order order = orderMapper.selectOrderByOrderId(orderId);
         AssertUtil.isTrue(Objects.nonNull(order) && Objects.equals(orderId, order.getOrderId()), "找不到相关订单");
         AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()), "当前订单不是计费中,无法换台.");
 
@@ -360,7 +360,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Transactional(rollbackFor = Exception.class)
     public OrderCommandResVo suspendOrder(Long orderId, Long storeId) {
         Order order = queryValidOrder(storeId, orderId);
-        AssertUtil.isTrue(!Arrays.asList(OrderStatus.CHARGING.getValue(), OrderStatus.WAIT_SETTLED.getValue()).contains(
+        AssertUtil.isTrue(Arrays.asList(OrderStatus.CHARGING.getValue(), OrderStatus.WAIT_SETTLED.getValue()).contains(
                 order.getStatus()), OrderErrorMsg.ORDER_NOT_CHARGING_OR_STOP);
 
 
@@ -386,10 +386,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Transactional(rollbackFor = Exception.class)
     public OrderCommandResVo stopOrder(Long orderId, Long storeId) {
         Order order = queryValidOrder(storeId, orderId);
-        AssertUtil.isTrue(!Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
+        AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
                 OrderErrorMsg.ORDER_NOT_CHARGING);
 
-        StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getCurrentOrderId, order));
+        StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getCurrentOrderId, order.getOrderId()));
         AssertUtil.notNullOrEmpty(desk, OrderErrorMsg.DESK_NOT_FOUND);
 
         order = stopAllCalcTimes(orderId);
@@ -410,7 +410,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public Boolean voidOrder(Long orderId, Long storeId) {
         Order order = queryValidOrder(storeId, orderId);
-        AssertUtil.isTrue(!Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
+        AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
                 OrderErrorMsg.ORDER_NOT_CHARGING);
 
         order = stopAllCalcTimes(orderId);
@@ -479,7 +479,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         });
         //更新球桌状态
         if (Objects.equals(order.getStatus(), OrderStatus.CHARGING.getValue())) {
-            StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getCurrentOrderId, order));
+            StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getCurrentOrderId, order.getOrderId()));
             AssertUtil.notNullOrEmpty(desk, "当前计费订单没有关联的台桌");
             desk.setStatus(DeskStatus.WAIT.getValue());
             desk.setCurrentOrderId(null);

@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      <ToolBar title="台桌服务" v-if="currentDesk">
+      <ToolBar title="台桌服务" v-if="currentDesk" v-loading="orderLoading">
         <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
           <span  >{{ currentDesk.deskTotalTimeAmount }}</span>元 <i class="el-icon-info"/>
         </div>
@@ -30,18 +30,18 @@
         <SvgItem svg-icon="close_light" label="关灯" :btnAble="true"
                  @click.native="onSwitchLight(currentDesk.deskNum,false)"/>
       </ToolBar>
-      <ToolBar title="订单服务" v-if="currentDesk &&currentDesk.lastActiveOrder">
+      <ToolBar title="订单服务" v-if="currentDesk &&currentDesk.lastActiveOrder"  v-loading="orderLoading">
         <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
           <span>{{ currentDesk.otherTotalAmount }}元</span> <i class="el-icon-info"/>
         </div>
         <SvgItem svg-icon="shop_car" label="选商品" :btnAble="true"/>
         <SvgItem svg-icon="user_choose" label="选艺人" :btnAble="true"/>
       </ToolBar>
-      <ToolBar title="订单操作" v-if="currentDesk &&currentDesk.lastActiveOrder">
-        <SvgItem svg-icon="trash" label="清空" :btnAble="true"/>
-        <SvgItem svg-icon="suspend_order" label="挂单" :btnAble="true"/>
-        <SvgItem svg-icon="stop" label="停止" :btnAble="true"/>
-        <SvgItem svg-icon="credit_card" label="去结算" :btnAble="true"/>
+      <ToolBar title="订单操作" v-if="currentDesk &&currentDesk.lastActiveOrder"  v-loading="orderLoading">
+        <SvgItem svg-icon="trash" label="清空" :btnAble="true" @click.native="onVoidOrderClick"/>
+        <SvgItem svg-icon="suspend_order" label="挂单" :btnAble="true" @click.native="onSuspendOrderClick"/>
+        <SvgItem svg-icon="stop" label="停止" :btnAble="true" @click.native="onStopOrderClick"/>
+        <SvgItem svg-icon="credit_card" label="去结算" :btnAble="true" @click.native="onNavToSettleOrderClick"/>
       </ToolBar>
       <Dashboard ref="dashboard" v-if="!currentDesk" :storeName="storeInfo.storeName"/>
 
@@ -199,6 +199,7 @@ import ToolBar from "@/views/cashier/desk/components/toolBar.vue";
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import {MessageBox} from "element-ui";
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
+import {stopOrder} from "@/api/cashier/order";
 
 const DeskStatus = {
   Wait: 0,
@@ -207,6 +208,14 @@ const DeskStatus = {
   Stop: 3,
 
 }
+const OrderStatus = {
+  Charging: 0 ,//"计费中"),
+  Stop:1,//"待结算"),
+  Settled:2,//"已结算"),
+  Void:3,//"作废"),
+  Suspend:4,//"挂起订单")
+}
+
 export default {
   name: "Desk",
   components: {LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
@@ -214,6 +223,7 @@ export default {
 
   data() {
     return {
+      orderLoading:false,
       DeskStatus: DeskStatus,
       storeInfo: {storeName: '', userList: [], tutorList: []},
       openNewDialog: false,
@@ -396,6 +406,46 @@ export default {
           this.$message.success(`${deskTitle}已恢复计费。`)
         })
       })
+    },
+    onVoidOrderClick(){
+
+    },
+    onSuspendOrderClick(){
+
+    },
+    navToOrder(orderId){
+      MessageBox.confirm(`订单已停止，是否进入结算页面？`, '确认', {
+        confirmButtonText: '是',
+        cancelButtonText: '否',
+        type: 'success'
+      }).then(res=>{
+
+      },()=>{
+
+      })
+    },
+    onStopOrderClick(){
+      if(this.currentDesk?.lastActiveOrder.status !==OrderStatus.Charging){
+        return
+      }
+      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
+
+      MessageBox.confirm(`${deskTitle}:确认终止订单?`, '确认', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.orderLoading=true;
+        stopOrder(this.currentDesk?.lastActiveOrder.orderId).then(res => {
+          this.currentDesk.status=DeskStatus.Wait;
+          this.currentDesk.currentOrderId =null;
+          this.getList();
+          this.navToOrder( this.currentDesk?.lastActiveOrder.orderId);
+        }).finally(()=>this.orderLoading=false)
+      })
+    },
+    onNavToSettleOrderClick(){
+
     },
     onPauseDeskClick(){
       let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;

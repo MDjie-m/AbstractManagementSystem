@@ -49,10 +49,10 @@ public class UpdateAllWithIdMethod extends AbstractMethod {
             }
         }
         String sql = String.format(sqlMethod.getSql(), tableInfo.getTableName(),
-                sqlSet(true, false, tableInfo, false, "", ""),
-                 String.format("\r\n where %s=#{%s}",tableInfo.getKeyColumn(), tableInfo.getKeyProperty()),"");
+                sqlSet(true, false, tableInfo, false, ENTITY, ENTITY_DOT),
+                 String.format("\r\n where %s=#{%s%s}",tableInfo.getKeyColumn(),ENTITY_DOT, tableInfo.getKeyProperty()),"");
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sql, modelClass);
-        return addUpdateMappedStatement(mapperClass, modelClass, sqlMethod.getMethod(), sqlSource);
+        return addUpdateMappedStatement(mapperClass, modelClass, methodName, sqlSource);
 
     }
 

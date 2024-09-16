@@ -31,7 +31,7 @@ public class InsertBatchMethod extends AbstractMethod {
         //log.debug("sqlResult----->{}", sqlResult);
         SqlSource sqlSource = languageDriver.createSqlSource(configuration, sqlResult, modelClass);
         // 第三个参数必须和RootMapper的自定义方法名一致
-        return this.addInsertMappedStatement(mapperClass, modelClass, "insertBatch", sqlSource, new NoKeyGenerator(), null, null);
+        return this.addInsertMappedStatement(mapperClass, modelClass, methodName, sqlSource, new NoKeyGenerator(), null, null);
     }
 
     private String prepareFieldSql(TableInfo tableInfo) {
