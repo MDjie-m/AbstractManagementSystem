@@ -14,13 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface OrderDeskTimeMapper extends MyBaseMapper<OrderDeskTime>
 {
-    /**
-     * 查询订单计时
-     * 
-     * @param orderDeskTimeId 订单计时主键
-     * @return 订单计时
-     */
-    public OrderDeskTime selectOrderDeskTimeByOrderDeskTimeId(Long orderDeskTimeId);
 
     /**
      * 查询订单计时列表
@@ -30,35 +23,4 @@ public interface OrderDeskTimeMapper extends MyBaseMapper<OrderDeskTime>
      */
     public List<OrderDeskTime> selectOrderDeskTimeList(OrderDeskTime orderDeskTime);
 
-    /**
-     * 新增订单计时
-     * 
-     * @param orderDeskTime 订单计时
-     * @return 结果
-     */
-    public int insertOrderDeskTime(OrderDeskTime orderDeskTime);
-
-    /**
-     * 修改订单计时
-     * 
-     * @param orderDeskTime 订单计时
-     * @return 结果
-     */
-    public int updateOrderDeskTime(OrderDeskTime orderDeskTime);
-
-    /**
-     * 删除订单计时
-     * 
-     * @param orderDeskTimeId 订单计时主键
-     * @return 结果
-     */
-    public int deleteOrderDeskTimeByOrderDeskTimeId(Long orderDeskTimeId);
-
-    /**
-     * 批量删除订单计时
-     * 
-     * @param orderDeskTimeIds 需要删除的数据主键集合
-     * @return 结果
-     */
-    public int deleteOrderDeskTimeByOrderDeskTimeIds(Long[] orderDeskTimeIds);
 }

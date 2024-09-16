@@ -22,7 +22,7 @@ import com.ruoyi.common.core.domain.MyBaseEntity;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderTutorTime extends MyBaseEntity
+public class OrderTutorTime extends BaseFee
 {
     private static final long serialVersionUID = 1L;
 
@@ -78,9 +78,35 @@ public class OrderTutorTime extends MyBaseEntity
     /** 助教总费用 */
     @Excel(name = "助教总费用")
 
+    @TableField("total_amount_due")
+    private BigDecimal totalAmountDue;
+
+    /** 折扣金额 */
+    @Excel(name = "折扣金额")
+
+    @TableField("total_discount_amount")
+    private BigDecimal totalDiscountAmount;
+
+    /** 实际支付金额 */
+    @Excel(name = "实际支付金额")
+
     @TableField("total_amount")
     private BigDecimal totalAmount;
 
+    /** 实际赠送支付金额 */
+    @Excel(name = "实际赠送支付金额")
+
+    @TableField("total_give_amount")
+    private BigDecimal totalGiveAmount;
+
+    @TableField("tutor_id")
+    private Long  tutorId;
+
+    /**
+     * 状态:1=计费中，2=暂停，3=已结束
+     */
+    @TableField("status")
+    private Integer  status;
     /** 创建者Id */
     @Excel(name = "创建者Id")
 
@@ -95,18 +121,5 @@ public class OrderTutorTime extends MyBaseEntity
 
     @TableField(exist = false)
     private StoreDesk storeDesk;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

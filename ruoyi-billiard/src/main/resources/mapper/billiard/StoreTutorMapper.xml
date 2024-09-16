@@ -4,29 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.billiard.mapper.StoreTutorMapper">
 
-    <resultMap type="StoreTutor" id="StoreTutorResult">
-        <result property="storeTutorId" column="store_tutor_id"/>
-        <result property="realName" column="real_name"/>
-        <result property="mobile" column="mobile"/>
-        <result property="userImg" column="user_img"/>
-        <result property="sex" column="sex"/>
-        <result property="level" column="level"/>
-        <result property="status" column="status"/>
-        <result property="delFlag" column="del_flag"/>
-        <result property="createBy" column="create_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="loginUserId" column="login_user_id"/>
-        <result property="remark" column="remark"/>
-        <result property="storeId" column="store_id"/>
-        <result property="storeName" column="store_name"/>
-        <result property="aptitude" column="aptitude"/>
-        <result property="createById" column="create_by_id"/>
-        <result property="updateById" column="update_by_id"/>
-        <result property="account" column="user_name"/>
-        <result property="workStatus" column="work_status"/>
-    </resultMap>
+
 
     <sql id="selectStoreTutorVo">
         select a.* ,b.store_name,c.user_name
@@ -34,7 +12,7 @@
                              left join sys_user c on a.login_user_id=c.user_id
     </sql>
 
-    <select id="selectStoreTutorList" parameterType="StoreTutor" resultMap="StoreTutorResult">
+    <select id="selectStoreTutorList" parameterType="StoreTutor" resultType="StoreTutor">
         <include refid="selectStoreTutorVo"/>
         <where>
             <if test="realName != null  and realName != ''">and real_name like concat('%', #{realName}, '%')</if>
@@ -42,7 +20,7 @@
             <if test="userImg != null  and userImg != ''">and user_img = #{userImg}</if>
             <if test="sex != null  and sex != ''">and sex = #{sex}</if>
             <if test="level != null ">and level = #{level}</if>
-            <if test="status != null ">and status = #{status}</if>
+            <if test="status != null ">and a.status = #{status}</if>
             <if test="loginUserId != null ">and login_user_id = #{loginUserId}</if>
             <if test="storeId != null ">and a.store_id = #{storeId}</if>
             <if test="workStatus != null ">and a.work_status = #{workStatus}</if>
@@ -50,92 +28,18 @@
         </where>
     </select>
 
-    <select id="selectStoreTutorByStoreTutorId" parameterType="Long" resultMap="StoreTutorResult">
+    <select id="selectStoreTutorByStoreTutorId" parameterType="Long" resultType="StoreTutor">
         <include refid="selectStoreTutorVo"/>
         where store_tutor_id = #{storeTutorId}
     </select>
+    <select id="queryCountGroupByWorkStatus" resultType="com.ruoyi.common.core.domain.model.KeyValueVo">
 
-    <insert id="insertStoreTutor" parameterType="StoreTutor">
-        insert into t_store_tutor
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="storeTutorId != null">store_tutor_id,</if>
-            <if test="realName != null and realName != ''">real_name,</if>
-            <if test="mobile != null and mobile != ''">mobile,</if>
-            <if test="userImg != null and userImg != ''">user_img,</if>
-            <if test="sex != null">sex,</if>
-            <if test="level != null">level,</if>
-            <if test="status != null">status,</if>
-            <if test="delFlag != null">del_flag,</if>
-            <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="loginUserId != null">login_user_id,</if>
-            <if test="remark != null">remark,</if>
-            <if test="storeId != null">store_id,</if>
-            <if test="updateById != null">update_by_id,</if>
-            <if test="createById != null">create_by_id,</if>
-            <if test="workStatus != null">work_status,</if>
+        select count(1)                                                                                   as value,
+               status                                                                                     as `key`,
+               case status when 0 then '空闲' when 1 then '计费中' when 2 then '已暂停' else '已停止' end as label
+        from t_store_tutor where status=0 and   store_id=#{storeId}
+        group by work_status
+        order by work_status;
+    </select>
 
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="storeTutorId != null">#{storeTutorId},</if>
-            <if test="realName != null and realName != ''">#{realName},</if>
-            <if test="mobile != null and mobile != ''">#{mobile},</if>
-            <if test="userImg != null and userImg != ''">#{userImg},</if>
-            <if test="sex != null">#{sex},</if>
-            <if test="level != null">#{level},</if>
-            <if test="status != null">#{status},</if>
-            <if test="delFlag != null">#{delFlag},</if>
-            <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="loginUserId != null">#{loginUserId},</if>
-            <if test="remark != null">#{remark},</if>
-            <if test="storeId != null">#{storeId},</if>
-            <if test="updateById != null">#{updateById},</if>
-            <if test="createById != null">#{createById},</if>
-            <if test="workStatus != null">#{work_status}</if>
-
-        </trim>
-    </insert>
-
-    <update id="updateStoreTutor" parameterType="StoreTutor">
-        update t_store_tutor
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="realName != null and realName != ''">real_name = #{realName},</if>
-            <if test="mobile != null and mobile != ''">mobile = #{mobile},</if>
-            <if test="userImg != null and userImg != ''">user_img = #{userImg},</if>
-            <if test="sex != null">sex = #{sex},</if>
-            <if test="level != null">level = #{level},</if>
-            <if test="status != null">status = #{status},</if>
-            <if test="delFlag != null">del_flag = #{delFlag},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="loginUserId != null">login_user_id = #{loginUserId},</if>
-            <if test="remark != null">remark = #{remark},</if>
-            <if test="storeId != null">store_id = #{storeId},</if>
-            <if test="aptitude != null">aptitude = #{aptitude},</if>
-            <if test="updateById != null">update_by_id =#{updateById},</if>
-            <if test="createById != null">create_by_id =#{createById},</if>
-            <if test="workStatus != null">work_status =#{workStatus},</if>
-        </trim>
-        where store_tutor_id = #{storeTutorId}
-    </update>
-
-    <delete id="deleteStoreTutorByStoreTutorId" parameterType="Long">
-        delete
-        from t_store_tutor
-        where store_tutor_id = #{storeTutorId}
-    </delete>
-
-    <delete id="deleteStoreTutorByStoreTutorIds" parameterType="String">
-        delete from t_store_tutor where store_tutor_id in
-        <foreach item="storeTutorId" collection="array" open="(" separator="," close=")">
-            #{storeTutorId}
-        </foreach>
-    </delete>
 </mapper>

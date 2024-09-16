@@ -9,6 +9,8 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+
+import cn.hutool.core.date.LocalDateTimeUtil;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
@@ -27,7 +29,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     public static String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
     public static String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
-
+    public static String YYYY_MM_DD_HH_MM_00 = "yyyy-MM-dd HH:mm:00";
     private static String[] parsePatterns = {
             "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM", 
             "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
@@ -142,6 +144,33 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     public static int differentDaysByMillisecond(Date date1, Date date2)
     {
         return Math.abs((int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24)));
+    }
+
+    public static int diffMinutes(Date start, Date end)
+    {
+        return Math.abs((int) ((end.getTime() - start.getTime()) / (1000 * 60)));
+    }
+    public static int deskTimeDiffMinutes(Date start, Date end)
+    {
+        return Math.abs((int) (( fileSecondsAddOneMinutes(end).getTime() - removeSeconds(start).getTime()) / (1000 * 60)));
+    }
+    public  static  Date removeSeconds(Date date) {
+        return parseDate(parseDateToStr(YYYY_MM_DD_HH_MM_00, date));
+    }
+    public  static  Date fileSecondsAddOneMinutes(Date date) {
+        LocalDateTime dateTime = toLocalDateTime(date);
+        int seconds = Integer.parseInt(parseDateToStr("ss", date));
+        if (seconds == 0) {
+            return date;
+        }
+        dateTime = toLocalDateTime(parseDate(parseDateToStr(YYYY_MM_DD_HH_MM_00, date)));
+        dateTime = dateTime.plusMinutes(1L);
+        return toDate(dateTime);
+    }
+    public  static  LocalDateTime toLocalDateTime(Date date){
+        //Date 转 LocalDateTime(第一种方法)
+       return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
     }
 
     /**

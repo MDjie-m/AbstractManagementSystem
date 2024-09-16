@@ -67,7 +67,7 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService
     {
         SecurityUtils.fillCreateUser(orderDeskTime);
         orderDeskTime.setOrderDeskTimeId(IdUtils.singleNextId());
-        return orderDeskTimeMapper.insertOrderDeskTime(orderDeskTime);
+        return orderDeskTimeMapper.insert(orderDeskTime);
     }
 
     /**
@@ -81,20 +81,9 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService
     {
         SecurityUtils.fillUpdateUser(orderDeskTime);
 
-        return orderDeskTimeMapper.updateOrderDeskTime(orderDeskTime);
+        return orderDeskTimeMapper.updateById(orderDeskTime);
     }
 
-    /**
-     * 批量删除订单计时
-     * 
-     * @param orderDeskTimeIds 需要删除的订单计时主键
-     * @return 结果
-     */
-    @Override
-    public int deleteOrderDeskTimeByOrderDeskTimeIds(Long[] orderDeskTimeIds)
-    {
-        return orderDeskTimeMapper.deleteOrderDeskTimeByOrderDeskTimeIds(orderDeskTimeIds);
-    }
 
     /**
      * 删除订单计时信息
@@ -105,7 +94,7 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService
     @Override
     public int deleteOrderDeskTimeByOrderDeskTimeId(Long orderDeskTimeId)
     {
-        return orderDeskTimeMapper.deleteOrderDeskTimeByOrderDeskTimeId(orderDeskTimeId);
+        return orderDeskTimeMapper.deleteById(orderDeskTimeId);
     }
 
     @Override

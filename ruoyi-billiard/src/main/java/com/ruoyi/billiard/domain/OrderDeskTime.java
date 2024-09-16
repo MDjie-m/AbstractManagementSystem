@@ -22,7 +22,7 @@ import com.ruoyi.common.core.domain.MyBaseEntity;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDeskTime extends MyBaseEntity
+public class OrderDeskTime extends BaseFee
 {
     private static final long serialVersionUID = 1L;
 
@@ -126,7 +126,11 @@ public class OrderDeskTime extends MyBaseEntity
     @TableField(exist = false)
     private StoreDesk storeDesk;
 
-
+    /**
+     * 状态:1=计费中，2=暂停，3=已结束
+     */
+    @TableField("status")
+    private Integer  status;
 
 
 

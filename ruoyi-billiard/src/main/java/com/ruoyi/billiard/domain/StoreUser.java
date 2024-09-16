@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.domain.MyBaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import java.util.List;
 
@@ -18,6 +17,9 @@ import java.util.List;
 @TableName("t_store_user")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class StoreUser extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -49,7 +51,7 @@ public class StoreUser extends MyBaseEntity
     @Excel(name = "门店状态", readConverterExp = "0=正常,1=停用")
 
     @TableField("status")
-    private Long status;
+    private Integer status;
 
     /** 删除标志（0代表存在 2代表删除） */
 

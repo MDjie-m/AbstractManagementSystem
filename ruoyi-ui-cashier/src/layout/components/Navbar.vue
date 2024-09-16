@@ -7,6 +7,10 @@
 
     <div class="right-menu">
 
+      <div class="btn-refresh-container" @click="onRefreshClick">
+        <i class="el-icon-refresh "></i>
+      </div>
+
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
@@ -75,6 +79,9 @@ export default {
     }
   },
   methods: {
+    onRefreshClick(){
+       this.$eventBus.$emit("global.refresh")
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
@@ -95,6 +102,7 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
+
   height: 50px;
   overflow: hidden;
   position: relative;
@@ -154,7 +162,13 @@ export default {
         }
       }
     }
+    .btn-refresh-container{
+      height: 100%;
+      font-size: 30px;
+      float: left;
+      cursor: pointer;
 
+    }
     .avatar-container {
       margin-right: 30px;
 

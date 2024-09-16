@@ -4,6 +4,7 @@ const PcCallMethods = {};
 window.PcCallMethods = PcCallMethods;
 export const DeviceMethodNames = {
   LightSwitch: 'light.switch',
+  LightStateQuery: 'light.state.query.all',
   Speech: "speech"
 }
 
@@ -33,10 +34,18 @@ function getUuid() {
 export function callPCMethod(type, data, timeout = 5000) {
   let msgId = getUuid();
   let res = window.DeviceMethod?.callMethd(type, (typeof (data) === "string") ? data : JSON.stringify(data), msgId);
+  let timeId = null;
   return new Promise(resolve => {
-    registerMethod(type + msgId, resolve)
+    registerMethod(type + msgId, (res) => {
+      if (timeId) {
+        clearImmediate(timeId)
+      }
+      resolve(res)
+    })
   }, reject => {
-    setTimeout(reject, timeout || 5000)
+    timeId = setTimeout(()=>{
+      throw  new Error(`${type}:${msgId},调用超时`)
+    }, timeout || 5000)
   }).finally(() => {
     removeMethod(type + msgId)
   })

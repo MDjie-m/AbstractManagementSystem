@@ -194,11 +194,23 @@ public class SecurityUtils
         entity.setCreateTime(DateUtils.getNowDate());
         fillUpdateUser(entity);
     }
+    public static <T extends MyBaseEntity>   void  fillCreateUser(T entity,T copyFrom){
+
+        entity.setCreateBy(copyFrom.getCreateBy());
+        entity.setCreateById(copyFrom.getCreateById());
+        entity.setCreateTime(copyFrom.getCreateTime());
+        fillUpdateUser(entity);
+    }
     public static <T extends MyBaseEntity>   void  fillUpdateUser(T entity){
         LoginUser user=getLoginUser();
         entity.setUpdateBy(user.getRealName());
         entity.setUpdateById(user.getUserId());
         entity.setUpdateTime(DateUtils.getNowDate());
     }
+    public static <T extends MyBaseEntity>   void  fillUpdateUser(T entity,T copyFom){
 
+        entity.setUpdateBy(copyFom.getUpdateBy());
+        entity.setUpdateById(copyFom.getUpdateById());
+        entity.setUpdateTime(copyFom.getUpdateTime());
+    }
 }

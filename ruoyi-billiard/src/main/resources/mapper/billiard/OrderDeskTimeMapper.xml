@@ -4,35 +4,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.billiard.mapper.OrderDeskTimeMapper">
     
-    <resultMap type="OrderDeskTime" id="OrderDeskTimeResult">
-        <result property="orderDeskTimeId"    column="order_desk_time_id"    />
-        <result property="orderId"    column="order_id"    />
-        <result property="deskId"    column="desk_id"    />
-        <result property="fromDeskId"    column="from_desk_id"    />
-        <result property="startTime"    column="start_time"    />
-        <result property="endTime"    column="end_time"    />
-        <result property="totalTime"    column="total_time"    />
-        <result property="price"    column="price"    />
-        <result property="totalAmountDue"    column="total_amount_due"    />
-        <result property="totalDiscountAmount"    column="total_discount_amount"    />
-        <result property="totalAmount"    column="total_amount"    />
-        <result property="totalGiveAmount"    column="total_give_amount"    />
-        <result property="discountValue"    column="discount_value"    />
-        <result property="totalWipeZero"    column="total_wipe_zero"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="createById"    column="create_by_id"    />
-        <result property="updateById"    column="update_by_id"    />
-        <result property="remark"    column="remark"    />
-    </resultMap>
+
 
     <sql id="selectOrderDeskTimeVo">
-        select order_desk_time_id, order_id, desk_id, from_desk_id, start_time, end_time, total_time, price, total_amount_due, total_discount_amount, total_amount, total_give_amount, discount_value, total_wipe_zero, create_by, create_time, update_by, update_time, create_by_id, update_by_id, remark from t_order_desk_time
+        select *  from t_order_desk_time
     </sql>
 
-    <select id="selectOrderDeskTimeList" parameterType="OrderDeskTime" resultMap="OrderDeskTimeResult">
+    <select id="selectOrderDeskTimeList" parameterType="OrderDeskTime" resultType="OrderDeskTime">
         <include refid="selectOrderDeskTimeVo"/>
         <where>  
             <if test="orderId != null "> and order_id = #{orderId}</if>
@@ -50,99 +28,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalWipeZero != null "> and total_wipe_zero = #{totalWipeZero}</if>
             <if test="createById != null "> and create_by_id = #{createById}</if>
             <if test="updateById != null "> and update_by_id = #{updateById}</if>
+            <if test="status != null "> and status = #{status}</if>
         </where>
     </select>
     
-    <select id="selectOrderDeskTimeByOrderDeskTimeId" parameterType="Long" resultMap="OrderDeskTimeResult">
+    <select id="selectOrderDeskTimeByOrderDeskTimeId" parameterType="Long" resultType="OrderDeskTime">
         <include refid="selectOrderDeskTimeVo"/>
         where order_desk_time_id = #{orderDeskTimeId}
     </select>
 
-    <insert id="insertOrderDeskTime" parameterType="OrderDeskTime">
-        insert into t_order_desk_time
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="orderDeskTimeId != null">order_desk_time_id,</if>
-            <if test="orderId != null">order_id,</if>
-            <if test="deskId != null">desk_id,</if>
-            <if test="fromDeskId != null">from_desk_id,</if>
-            <if test="startTime != null">start_time,</if>
-            <if test="endTime != null">end_time,</if>
-            <if test="totalTime != null">total_time,</if>
-            <if test="price != null">price,</if>
-            <if test="totalAmountDue != null">total_amount_due,</if>
-            <if test="totalDiscountAmount != null">total_discount_amount,</if>
-            <if test="totalAmount != null">total_amount,</if>
-            <if test="totalGiveAmount != null">total_give_amount,</if>
-            <if test="discountValue != null">discount_value,</if>
-            <if test="totalWipeZero != null">total_wipe_zero,</if>
-            <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="createById != null">create_by_id,</if>
-            <if test="updateById != null">update_by_id,</if>
-            <if test="remark != null">remark,</if>
-         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="orderDeskTimeId != null">#{orderDeskTimeId},</if>
-            <if test="orderId != null">#{orderId},</if>
-            <if test="deskId != null">#{deskId},</if>
-            <if test="fromDeskId != null">#{fromDeskId},</if>
-            <if test="startTime != null">#{startTime},</if>
-            <if test="endTime != null">#{endTime},</if>
-            <if test="totalTime != null">#{totalTime},</if>
-            <if test="price != null">#{price},</if>
-            <if test="totalAmountDue != null">#{totalAmountDue},</if>
-            <if test="totalDiscountAmount != null">#{totalDiscountAmount},</if>
-            <if test="totalAmount != null">#{totalAmount},</if>
-            <if test="totalGiveAmount != null">#{totalGiveAmount},</if>
-            <if test="discountValue != null">#{discountValue},</if>
-            <if test="totalWipeZero != null">#{totalWipeZero},</if>
-            <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="createById != null">#{createById},</if>
-            <if test="updateById != null">#{updateById},</if>
-            <if test="remark != null">#{remark},</if>
-         </trim>
-    </insert>
 
-    <update id="updateOrderDeskTime" parameterType="OrderDeskTime">
-        update t_order_desk_time
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="orderId != null">order_id = #{orderId},</if>
-            <if test="deskId != null">desk_id = #{deskId},</if>
-            <if test="fromDeskId != null">from_desk_id = #{fromDeskId},</if>
-            <if test="startTime != null">start_time = #{startTime},</if>
-            <if test="endTime != null">end_time = #{endTime},</if>
-            <if test="totalTime != null">total_time = #{totalTime},</if>
-            <if test="price != null">price = #{price},</if>
-            <if test="totalAmountDue != null">total_amount_due = #{totalAmountDue},</if>
-            <if test="totalDiscountAmount != null">total_discount_amount = #{totalDiscountAmount},</if>
-            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
-            <if test="totalGiveAmount != null">total_give_amount = #{totalGiveAmount},</if>
-            <if test="discountValue != null">discount_value = #{discountValue},</if>
-            <if test="totalWipeZero != null">total_wipe_zero = #{totalWipeZero},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="createById != null">create_by_id = #{createById},</if>
-            <if test="updateById != null">update_by_id = #{updateById},</if>
-            <if test="remark != null">remark = #{remark},</if>
-        </trim>
-        where order_desk_time_id = #{orderDeskTimeId}
-    </update>
-
-    <delete id="deleteOrderDeskTimeByOrderDeskTimeId" parameterType="Long">
-        delete from t_order_desk_time where order_desk_time_id = #{orderDeskTimeId}
-    </delete>
-
-    <delete id="deleteOrderDeskTimeByOrderDeskTimeIds" parameterType="String">
-        delete from t_order_desk_time where order_desk_time_id in 
-        <foreach item="orderDeskTimeId" collection="array" open="(" separator="," close=")">
-            #{orderDeskTimeId}
-        </foreach>
-    </delete>
 </mapper>

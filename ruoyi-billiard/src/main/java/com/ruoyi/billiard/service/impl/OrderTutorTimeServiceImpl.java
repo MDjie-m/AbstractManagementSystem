@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +68,7 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
     {
         SecurityUtils.fillCreateUser(orderTutorTime);
         orderTutorTime.setOrderTutorTimeId(IdUtils.singleNextId());
-        return orderTutorTimeMapper.insertOrderTutorTime(orderTutorTime);
+        return orderTutorTimeMapper.insert(orderTutorTime);
     }
 
     /**
@@ -81,7 +82,7 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
     {
         SecurityUtils.fillUpdateUser(orderTutorTime);
 
-        return orderTutorTimeMapper.updateOrderTutorTime(orderTutorTime);
+        return orderTutorTimeMapper.updateById(orderTutorTime);
     }
 
     /**
@@ -93,7 +94,8 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
     @Override
     public int deleteOrderTutorTimeByOrderTutorTimeIds(Long[] orderTutorTimeIds)
     {
-        return orderTutorTimeMapper.deleteOrderTutorTimeByOrderTutorTimeIds(orderTutorTimeIds);
+        return orderTutorTimeMapper.delete(orderTutorTimeMapper.query().in(OrderTutorTime::getOrderTutorTimeId,
+                Arrays.asList(orderTutorTimeIds)));
     }
 
     /**
@@ -105,7 +107,7 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
     @Override
     public int deleteOrderTutorTimeByOrderTutorTimeId(Long orderTutorTimeId)
     {
-        return orderTutorTimeMapper.deleteOrderTutorTimeByOrderTutorTimeId(orderTutorTimeId);
+        return orderTutorTimeMapper.deleteById(orderTutorTimeId);
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.ruoyi.billiard.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.ruoyi.billiard.domain.OrderTutorTime;
+import com.ruoyi.billiard.mapper.OrderTutorTimeMapper;
 import com.ruoyi.billiard.mapper.StoreUserMapper;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
 import com.ruoyi.billiard.domain.StoreTutor;
 import com.ruoyi.billiard.service.IStoreTutorService;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -40,6 +43,8 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
 
     @Resource
     private ISysUserService sysUserService;
+    @Resource
+    private OrderTutorTimeMapper orderTutorTimeMapper;
 
 
     /**
@@ -120,7 +125,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         storeTutor.setStoreTutorId(IdUtils.singleNextId());
         storeTutor.setLoginUserId(sysUser.getUserId());
         SecurityUtils.fillCreateUser(storeTutor);
-        return storeTutorMapper.insertStoreTutor(storeTutor);
+        return storeTutorMapper.insert(storeTutor);
     }
 
     /**
@@ -141,11 +146,13 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         user.setUpdateTime(DateUtils.getNowDate());
         user.setUpdateBy(SecurityUtils.getUsername());
         user.setRoleIds(storeTutor.getRoleIds());
+
         sysUserService.updateUser(user);
 
         SecurityUtils.fillUpdateUser(storeTutor);
         storeTutor.setWorkStatus(null);
-        return storeTutorMapper.updateStoreTutor(storeTutor);
+        storeTutor.setCurrentOrderId(null);
+        return storeTutorMapper.updateById(storeTutor);
     }
 
     /**
@@ -155,8 +162,14 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteStoreTutorByStoreTutorIds(Long[] storeTutorIds) {
-        return storeTutorMapper.deleteStoreTutorByStoreTutorIds(storeTutorIds);
+
+        for (Long storeTutorId : storeTutorIds) {
+
+            deleteStoreTutorByStoreTutorId(storeTutorId);
+        }
+        return storeTutorIds.length;
     }
 
     /**
@@ -167,6 +180,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
      */
     @Override
     public int deleteStoreTutorByStoreTutorId(Long storeTutorId) {
-        return storeTutorMapper.deleteStoreTutorByStoreTutorId(storeTutorId);
+        AssertUtil.isTrue(!orderTutorTimeMapper.exists(OrderTutorTime::getTutorId,storeTutorId),"教练已被使用,无法删除.");
+        return storeTutorMapper.deleteById(storeTutorId);
     }
 }

@@ -44,14 +44,6 @@ public interface IOrderDeskTimeService
     public int updateOrderDeskTime(OrderDeskTime orderDeskTime);
 
     /**
-     * 批量删除订单计时
-     * 
-     * @param orderDeskTimeIds 需要删除的订单计时主键集合
-     * @return 结果
-     */
-    public int deleteOrderDeskTimeByOrderDeskTimeIds(Long[] orderDeskTimeIds);
-
-    /**
      * 删除订单计时信息
      * 
      * @param orderDeskTimeId 订单计时主键

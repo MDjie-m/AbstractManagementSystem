@@ -1,11 +1,13 @@
 package com.ruoyi.billiard.domain.vo;
 
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Builder
@@ -13,15 +15,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CashierDeskDashboardResVo implements Serializable {
 
-    private  Integer deskWaitCount=0;
 
-    private  Integer deskBusyCount=0;
+    private List<KeyValueVo<Integer,Long>> deskCount;
 
-    private  Integer deskStopCount=0;
+    private List<KeyValueVo<Integer,Long>> tutorCount;
 
-    private  Integer deskLightOnCount=0;
-
-    private Integer tutorWaitCount=0;
-    private Integer tutorBusyCount=0;
-    private Integer tutorStopCount=0;
 }

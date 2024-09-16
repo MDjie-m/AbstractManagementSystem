@@ -2,6 +2,8 @@ package com.ruoyi.billiard.service;
 
 import java.util.List;
 import com.ruoyi.billiard.domain.Order;
+import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
+import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
 
 /**
  * 订单Service接口
@@ -18,7 +20,7 @@ public interface IOrderService
      * @return 订单
      */
     public Order selectOrderByOrderId(Long orderId);
-
+    public Order selectRelationOrderWithDetail(Long deskId);
     /**
      * 查询订单列表
      * 
@@ -58,4 +60,18 @@ public interface IOrderService
      * @return 结果
      */
     public int deleteOrderByOrderId(Long orderId);
+
+    Order createOrder(Long deskId);
+
+    Order swapToNewDesk(Long deskId, Long orderId, Long newDeskId);
+
+    Order pauseCalcFee(Long deskId);
+
+    Order resumeCalcFee(Long deskId);
+
+    OrderCommandResVo suspendOrder(Long orderId, Long storeId);
+
+    OrderCommandResVo stopOrder(Long orderId, Long storeId);
+
+    Boolean voidOrder(Long orderId, Long storeId);
 }

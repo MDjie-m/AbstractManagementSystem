@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import com.ruoyi.common.annotation.Excel;
 
+import java.util.List;
+
 /**
  * 门店对象 t_store
  *
@@ -54,6 +56,12 @@ public class Store extends MyBaseEntity
 
     @TableField("del_flag")
     private String delFlag;
+
+    @TableField(exist = false)
+    private List<StoreUser> userList;
+
+    @TableField(exist = false)
+    private List<StoreTutor> tutorList;
 
 
 }

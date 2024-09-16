@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderGoods extends MyBaseEntity
+public class OrderGoods extends MyBaseEntity implements ITotalDueFee
 {
     private static final long serialVersionUID = 1L;
 
@@ -79,6 +79,8 @@ public class OrderGoods extends MyBaseEntity
     @TableField("total_discount_amount")
     private BigDecimal totalDiscountAmount;
 
+    @TableField("total_give_amount")
+    private BigDecimal totalGiveAmount;
     /** 实际支付金额 */
     @Excel(name = "实际支付金额")
 

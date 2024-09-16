@@ -2,7 +2,7 @@
   <div class="line-up-container">
     <el-tabs v-model="currentTitle">
       <el-tab-pane :label="place.label" name="basic" :key="'line_up'+place.value" :name="place.value"
-                   v-for="place in dict.type.store_desk_place"  style="height:90%;overflow-y:auto;overflow-x:hidden;">
+                   v-for="place in dict.type.store_desk_place" style="height:90%;overflow-y:auto;overflow-x:hidden;">
         <el-scrollbar class="right-scrollbar">
           <div class="num-container">
             <div class="num-item" :key="place.value+'line_item_key'+item.num"
@@ -10,7 +10,9 @@
               <div class="num-item-text">
                 {{ item.num }}
               </div>
-
+              <div class="num-item-time">
+                <span v-if="index===0">{{ getWaitTime(item) }}   </span>
+              </div>
               <el-button class="num-item-btn" circle @click="onSpeechClick(item.num)"> 呼叫</el-button>
               <el-button class="num-item-btn" type="success" circle @click="onRemoveNumClick(place.value,index)"> 用号
               </el-button>
@@ -62,6 +64,10 @@ export default {
         this.lineUpInfo = p.data || {}
       }).finally(this.closeLoading)
     },
+    getWaitTime(item) {
+      let minute = Math.abs(this.$time(item.createTime).diff(new Date(), 'minute'));
+      return minute > 0 ? `${minute}分钟` : '1分钟';
+    },
     onRemoveNumClick(type, idx) {
       if (this.loading) {
         return
@@ -94,7 +100,7 @@ export default {
       let newNum = `${PreNum[parseInt(type)]}${tempLineInfo.currentNum + 1}`;
       let newItem = {
         num: newNum,
-        createTime: parseTime(Date())
+        createTime: this.$time().format("YYYY-MM-DD HH:mm:ss")
       };
       tempLineInfo.numList.push(newItem);
       tempLineInfo.currentNum += 1;

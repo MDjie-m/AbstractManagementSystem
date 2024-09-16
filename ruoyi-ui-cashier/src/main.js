@@ -37,7 +37,7 @@ import DictTag from '@/components/DictTag'
 import VueMeta from 'vue-meta'
 // 字典数据组件
 import DictData from '@/components/DictData'
-
+import  Dayjs from 'dayjs'
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey
@@ -48,7 +48,9 @@ Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
-
+Vue.prototype.handleTree = handleTree
+Vue.prototype.$time =Dayjs;
+Vue.prototype.$eventBus = new Vue();
 // 全局组件挂载
 Vue.component('DictTag', DictTag)
 Vue.component('Pagination', Pagination)
@@ -62,7 +64,7 @@ Vue.use(directive)
 Vue.use(plugins)
 Vue.use(VueMeta)
 DictData.install()
-Vue.prototype.$eventBus = new Vue();
+
 
 /**
  * If you don't want to use mock-server

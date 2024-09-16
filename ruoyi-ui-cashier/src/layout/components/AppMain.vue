@@ -1,7 +1,7 @@
 <template>
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
-      <router-view v-if="!$route.meta.link" :key="key"/>
+      <router-view v-if="ifRouterAlive && !$route.meta.link " :key="key"/>
     </transition>
     <iframe-toggle/>
   </section>
@@ -14,6 +14,16 @@ import {callPCMethod} from "@/utils/pcCommunication";
 export default {
   name: 'AppMain',
   components: {iframeToggle},
+  provide() {
+    return {
+      reload: this.reload
+    }
+  },
+  data() {
+    return {
+      ifRouterAlive: true
+    }
+  },
   computed: {
     cachedViews() {
       return this.$store.state.tagsView.cachedViews
@@ -21,14 +31,31 @@ export default {
     key() {
       return this.$route.path
     }
-  }, methods: {
+  },
+  created() {
+    this.$eventBus.$on("global.refresh",this.onReload);
+
+  },
+  beforeDestroy() {
+    this.$eventBus.$off("global.refresh" )
+  },
+  methods: {
+    onReload(){
+      this.reload();
+    },
+    reload() {
+      this.ifRouterAlive = false;
+      this.$nextTick(() => {
+        this.ifRouterAlive = true
+      })
+    },
     onDeviceTest() {
       let obj = {deskNo: 1, open: true}
       let type = "lightSwitch";
 
-      callPCMethod(type,obj).then(val=>{
-        console.log("--returen:"+val)
-        this.$modal.msgSuccess("oOK:"+val)
+      callPCMethod(type, obj).then(val => {
+        console.log("--returen:" + val)
+        this.$modal.msgSuccess("oOK:" + val)
       })
       // this.$registerPCMethod(type+msgId,p=>{
       //   this.$modal.msgWarning(type+p);
@@ -45,7 +72,7 @@ export default {
 <style lang="scss" scoped>
 .app-main {
   /* 50= navbar  50  */
-   height: calc(100vh );
+  height: calc(100vh);
   width: 100%;
   position: relative;
   overflow: hidden;

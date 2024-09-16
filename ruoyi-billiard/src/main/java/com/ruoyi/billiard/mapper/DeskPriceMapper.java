@@ -4,6 +4,7 @@ import java.util.List;
 import com.ruoyi.billiard.domain.DeskPrice;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * 球桌价格Mapper接口
@@ -11,7 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author zhoukeu
  * @date 2024-09-14
  */
-@Mapper
+@Repository
 public interface DeskPriceMapper extends MyBaseMapper<DeskPrice>
 {
     /**
