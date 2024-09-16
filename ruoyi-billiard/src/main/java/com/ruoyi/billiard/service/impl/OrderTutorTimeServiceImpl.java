@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.OrderTutorTimeMapper;
 import com.ruoyi.billiard.domain.OrderTutorTime;
 import com.ruoyi.billiard.service.IOrderTutorTimeService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 订单计时Service业务层处理
@@ -64,6 +63,7 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertOrderTutorTime(OrderTutorTime orderTutorTime)
     {
         SecurityUtils.fillCreateUser(orderTutorTime);
@@ -78,6 +78,7 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateOrderTutorTime(OrderTutorTime orderTutorTime)
     {
         SecurityUtils.fillUpdateUser(orderTutorTime);
@@ -105,6 +106,7 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteOrderTutorTimeByOrderTutorTimeId(Long orderTutorTimeId)
     {
         return orderTutorTimeMapper.deleteById(orderTutorTimeId);
@@ -112,9 +114,7 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
 
     @Override
     public List<OrderTutorTime> selectOrderTutorTimeListByOrderId(Long orderId) {
-        LambdaQueryWrapper<OrderTutorTime> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(OrderTutorTime::getOrderId, orderId);
-        List<OrderTutorTime> orderTutorTimes = Optional.ofNullable(orderTutorTimeMapper.selectList(wrapper)).orElse(Collections.emptyList());
+        List<OrderTutorTime> orderTutorTimes = Optional.ofNullable(orderTutorTimeMapper.selectList(orderTutorTimeMapper.query().eq(OrderTutorTime::getOrderId, orderId))).orElse(Collections.emptyList());
         return orderTutorTimes.stream().map(p -> {
             Long deskId = p.getDeskId();
             StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(deskId)).orElse(new StoreDesk());

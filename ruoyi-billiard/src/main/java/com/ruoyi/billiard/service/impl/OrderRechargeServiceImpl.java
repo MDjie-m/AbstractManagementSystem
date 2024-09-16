@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.OrderRechargeMapper;
 import com.ruoyi.billiard.domain.OrderRecharge;
 import com.ruoyi.billiard.service.IOrderRechargeService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 会员充值Service业务层处理
@@ -57,6 +56,7 @@ public class OrderRechargeServiceImpl implements IOrderRechargeService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertOrderRecharge(OrderRecharge orderRecharge)
     {
         SecurityUtils.fillCreateUser(orderRecharge);
@@ -71,6 +71,7 @@ public class OrderRechargeServiceImpl implements IOrderRechargeService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateOrderRecharge(OrderRecharge orderRecharge)
     {
         SecurityUtils.fillUpdateUser(orderRecharge);
@@ -85,6 +86,7 @@ public class OrderRechargeServiceImpl implements IOrderRechargeService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteOrderRechargeByOrderRechargeIds(Long[] orderRechargeIds)
     {
         return orderRechargeMapper.deleteOrderRechargeByOrderRechargeIds(orderRechargeIds);
@@ -97,6 +99,7 @@ public class OrderRechargeServiceImpl implements IOrderRechargeService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteOrderRechargeByOrderRechargeId(Long orderRechargeId)
     {
         return orderRechargeMapper.deleteOrderRechargeByOrderRechargeId(orderRechargeId);
@@ -104,8 +107,6 @@ public class OrderRechargeServiceImpl implements IOrderRechargeService
 
     @Override
     public List<OrderRecharge> selectOrderRechargeListByOrderId(Long orderId) {
-        LambdaQueryWrapper<OrderRecharge> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(OrderRecharge::getOrderId, orderId);
-        return Optional.ofNullable(orderRechargeMapper.selectList(wrapper)).orElse(Collections.emptyList());
+        return Optional.ofNullable(orderRechargeMapper.selectList(orderRechargeMapper.query().eq(OrderRecharge::getOrderId, orderId))).orElse(Collections.emptyList());
     }
 }

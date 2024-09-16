@@ -51,14 +51,16 @@
             </template>
           </el-table-column>
           <el-table-column label="价格" align="center" prop="price"/>
-          <el-table-column label="创建者" align="center" prop="createById">
+          <el-table-column label="创建/更新" align="center" prop="createById" width="250">>
             <template slot-scope="scope">
-              <dict-tag :options="userOptions" :value="scope.row.createById"/>
-            </template>
-          </el-table-column>
-          <el-table-column label="更新者" align="center" prop="updateById">
-            <template slot-scope="scope">
-              <dict-tag :options="userOptions" :value="scope.row.updateById"/>
+              <div>
+                <span>{{ scope.row.createBy }} </span>
+                <span>{{ scope.row.createTime }}</span>
+              </div>
+              <div>
+                <span>{{ scope.row.updateBy }} </span>
+                <span>{{ scope.row.updateTime }}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="备注" align="center" prop="remark"/>

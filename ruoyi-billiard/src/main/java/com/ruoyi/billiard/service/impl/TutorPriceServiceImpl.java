@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.TutorPriceMapper;
 import com.ruoyi.billiard.domain.TutorPrice;
 import com.ruoyi.billiard.service.ITutorPriceService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 教练价格Service业务层处理
@@ -52,6 +53,7 @@ public class TutorPriceServiceImpl implements ITutorPriceService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertTutorPrice(TutorPrice tutorPrice)
     {
         SecurityUtils.fillCreateUser(tutorPrice);
@@ -66,6 +68,7 @@ public class TutorPriceServiceImpl implements ITutorPriceService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateTutorPrice(TutorPrice tutorPrice)
     {
         SecurityUtils.fillUpdateUser(tutorPrice);
@@ -80,6 +83,7 @@ public class TutorPriceServiceImpl implements ITutorPriceService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteTutorPriceByTutorPriceIds(Long[] tutorPriceIds)
     {
         return tutorPriceMapper.deleteTutorPriceByTutorPriceIds(tutorPriceIds);
@@ -92,6 +96,7 @@ public class TutorPriceServiceImpl implements ITutorPriceService
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteTutorPriceByTutorPriceId(Long tutorPriceId)
     {
         return tutorPriceMapper.deleteTutorPriceByTutorPriceId(tutorPriceId);

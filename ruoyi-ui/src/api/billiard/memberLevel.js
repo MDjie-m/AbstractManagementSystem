@@ -50,3 +50,11 @@ export function checkMemberLevel(memberLevelId) {
     method: 'get'
   })
 }
+
+// 根据当前门店id查询所有会员等级
+export function getAllMemberLevel(storeId) {
+  return request({
+    url: '/billiard/memberLevel/listByStoreId/' + storeId,
+    method: 'get'
+  })
+}

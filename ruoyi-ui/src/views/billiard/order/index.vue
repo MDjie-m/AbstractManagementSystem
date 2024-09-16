@@ -91,8 +91,18 @@
           </el-table-column>
           <el-table-column label="支付会员id" align="center" prop="memberId"/>
           <el-table-column label="备注" align="center" prop="remark"/>
-<!--          <el-table-column label="创建者Id" align="center" prop="createById"/>-->
-<!--          <el-table-column label="更新者Id" align="center" prop="updateById"/>-->
+          <el-table-column label="创建/更新" align="center" prop="createById" width="250">>
+            <template slot-scope="scope">
+              <div>
+                <span>{{ scope.row.createBy }} </span>
+                <span>{{ scope.row.createTime }}</span>
+              </div>
+              <div>
+                <span>{{ scope.row.updateBy }} </span>
+                <span>{{ scope.row.updateTime }}</span>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button

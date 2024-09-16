@@ -6,7 +6,6 @@ import java.util.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.constant.OrderErrorMsg;
 import com.ruoyi.billiard.domain.*;
-import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
 import com.ruoyi.billiard.enums.CalcTimeStatus;
 import com.ruoyi.billiard.enums.DeskStatus;
@@ -126,6 +125,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertOrder(Order order) {
         SecurityUtils.fillCreateUser(order);
         order.setOrderId(IdUtils.singleNextId());
@@ -139,6 +139,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateOrder(Order order) {
         SecurityUtils.fillUpdateUser(order);
 
@@ -152,6 +153,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteOrderByOrderIds(Long[] orderIds) {
         return orderMapper.deleteOrderByOrderIds(orderIds);
     }
@@ -163,6 +165,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteOrderByOrderId(Long orderId) {
         return orderMapper.deleteOrderByOrderId(orderId);
     }

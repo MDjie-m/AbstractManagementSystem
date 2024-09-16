@@ -1,160 +1,159 @@
 <template>
-  <div class="container-div">
-    <div class=" col-sm-12 search-collapse" v-show="showSearch">
-      <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-        <el-form-item label="会员等级" prop="levelName">
-          <el-input
-            v-model="queryParams.levelName"
-            placeholder="请输入会员等级"
-            clearable
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="门店" prop="storeId">
+  <StoreContainer @onStoreChanged="onStoreChanged">
+    <div class="container-div">
+      <div class=" col-sm-12 search-collapse" v-show="showSearch">
+        <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch"
+                 label-width="68px">
+          <el-form-item label="会员等级" prop="levelName">
+            <el-input
+              v-model="queryParams.levelName"
+              placeholder="请输入会员等级"
+              clearable
+              @keyup.enter.native="handleQuery"
+            />
+          </el-form-item>
+<!--          <el-form-item label="门店" prop="storeId">-->
+<!--            <el-select v-model="queryParams.storeId" placeholder="请选择门店" clearable @change="handleQuery">-->
+<!--              <el-option-->
+<!--                v-for="dict in stoOptions"-->
+<!--                :key="dict.value"-->
+<!--                :label="dict.label"-->
+<!--                :value="dict.value"-->
+<!--              />-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
+          <!--      <el-form-item label="创建者Id" prop="createById">-->
           <!--        <el-input-->
-          <!--          v-model="queryParams.storeId"-->
-          <!--          placeholder="请输入门店"-->
+          <!--          v-model="queryParams.createById"-->
+          <!--          placeholder="请输入创建者Id"-->
           <!--          clearable-->
           <!--          @keyup.enter.native="handleQuery"-->
           <!--        />-->
-          <el-select v-model="queryParams.storeId" placeholder="请选择门店" clearable @change="handleQuery">
-            <el-option
-              v-for="dict in stoOptions"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
-        </el-form-item>
-        <!--      <el-form-item label="创建者Id" prop="createById">-->
-        <!--        <el-input-->
-        <!--          v-model="queryParams.createById"-->
-        <!--          placeholder="请输入创建者Id"-->
-        <!--          clearable-->
-        <!--          @keyup.enter.native="handleQuery"-->
-        <!--        />-->
-        <!--      </el-form-item>-->
-        <!--      <el-form-item label="更新者Id" prop="updateById">-->
-        <!--        <el-input-->
-        <!--          v-model="queryParams.updateById"-->
-        <!--          placeholder="请输入更新者Id"-->
-        <!--          clearable-->
-        <!--          @keyup.enter.native="handleQuery"-->
-        <!--        />-->
-        <!--      </el-form-item>-->
-        <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-        </el-form-item>
-      </el-form>
+          <!--      </el-form-item>-->
+          <!--      <el-form-item label="更新者Id" prop="updateById">-->
+          <!--        <el-input-->
+          <!--          v-model="queryParams.updateById"-->
+          <!--          placeholder="请输入更新者Id"-->
+          <!--          clearable-->
+          <!--          @keyup.enter.native="handleQuery"-->
+          <!--        />-->
+          <!--      </el-form-item>-->
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
 
-    </div>
-    <div class="col-sm-12 select-table table-striped">
-      <el-row :gutter="10" class="mb8">
-        <el-col :span="1.5">
-          <el-button
-            type="primary"
-            plain
-            icon="el-icon-plus"
-            size="mini"
-            @click="handleAdd"
-            v-hasPermi="['billiard:memberLevel:add']"
-          >新增
-          </el-button>
-        </el-col>
-        <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
-      </el-row>
-
-      <el-table v-loading="loading" :data="memberLevelList" @selection-change="handleSelectionChange">
-        <el-table-column label="ID" align="center" prop="memberLevelId"/>
-        <el-table-column label="会员等级" align="center" prop="levelName"/>
-        <el-table-column label="折扣力度" align="center" prop="discount">
-          <template slot-scope="scope" v-if="scope.row.discount">
-            {{ scope.row.discount }}折
-          </template>
-        </el-table-column>
-        <el-table-column label="门店" align="center" prop="storeId">
-          <template slot-scope="scope">
-            <dict-tag :options="stoOptions" :value="scope.row.storeId"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="创建者" align="center" prop="createById">
-          <template slot-scope="scope">
-            <dict-tag :options="userOptions" :value="scope.row.createById"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="更新者" align="center" prop="updateById">
-          <template slot-scope="scope">
-            <dict-tag :options="userOptions" :value="scope.row.updateById"/>
-          </template>
-        </el-table-column>
-        <el-table-column label="备注" align="center" prop="remark"/>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-edit"
-              @click="handleUpdate(scope.row)"
-              v-hasPermi="['billiard:memberLevel:edit']"
-            >修改
-            </el-button>
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
-              v-hasPermi="['billiard:memberLevel:remove']"
-            >删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <pagination
-        v-show="total>0"
-        :total="total"
-        :page.sync="queryParams.pageNum"
-        :limit.sync="queryParams.pageSize"
-        @pagination="getList"
-      />
-    </div>
-
-    <!-- 添加或修改门店会员等级对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="会员等级" prop="levelName">
-          <el-input v-model="form.levelName" placeholder="请输入会员等级"/>
-        </el-form-item>
-        <el-form-item label="折扣力度" prop="discount">
-          <el-input v-model="form.discount" placeholder="请输入折扣力度 95折就填写95"/>
-        </el-form-item>
-        <el-form-item label="门店" prop="storeId">
-          <el-select v-model="form.storeId" placeholder="请选择门店" clearable>
-            <el-option
-              v-for="dict in stoOptions"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
-        </el-form-item>
-        <!--        <el-form-item label="创建者Id" prop="createById">-->
-        <!--          <el-input v-model="form.createById" placeholder="请输入创建者Id" />-->
-        <!--        </el-form-item>-->
-        <!--        <el-form-item label="更新者Id" prop="updateById">-->
-        <!--          <el-input v-model="form.updateById" placeholder="请输入更新者Id" />-->
-        <!--        </el-form-item>-->
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
       </div>
-    </el-dialog>
-  </div>
+      <div class="col-sm-12 select-table table-striped">
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button
+              type="primary"
+              plain
+              icon="el-icon-plus"
+              size="mini"
+              @click="handleAdd"
+              v-hasPermi="['billiard:memberLevel:add']"
+            >新增
+            </el-button>
+          </el-col>
+          <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+        </el-row>
+
+        <el-table v-loading="loading" :data="memberLevelList" @selection-change="handleSelectionChange">
+          <el-table-column label="ID" align="center" prop="memberLevelId"/>
+          <el-table-column label="会员等级" align="center" prop="levelName"/>
+          <el-table-column label="折扣力度" align="center" prop="discount">
+            <template slot-scope="scope" v-if="scope.row.discount">
+              {{ scope.row.discount }}折
+            </template>
+          </el-table-column>
+          <el-table-column label="门店" align="center" prop="storeId">
+            <template slot-scope="scope">
+              <dict-tag :options="stoOptions" :value="scope.row.storeId"/>
+            </template>
+          </el-table-column>
+          <el-table-column label="创建/更新" align="center" prop="createById" width="250">>
+            <template slot-scope="scope">
+              <div>
+                <span>{{ scope.row.createBy }} </span>
+                <span>{{ scope.row.createTime }}</span>
+              </div>
+              <div>
+                <span>{{ scope.row.updateBy }} </span>
+                <span>{{ scope.row.updateTime }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="备注" align="center" prop="remark"/>
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-edit"
+                @click="handleUpdate(scope.row)"
+                v-hasPermi="['billiard:memberLevel:edit']"
+              >修改
+              </el-button>
+              <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.row)"
+                v-hasPermi="['billiard:memberLevel:remove']"
+              >删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="queryParams.pageNum"
+          :limit.sync="queryParams.pageSize"
+          @pagination="getList"
+        />
+      </div>
+
+      <!-- 添加或修改门店会员等级对话框 -->
+      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-form-item label="会员等级" prop="levelName">
+            <el-input v-model="form.levelName" placeholder="请输入会员等级"/>
+          </el-form-item>
+          <el-form-item label="折扣力度" prop="discount">
+            <el-input v-model="form.discount" placeholder="请输入折扣力度 95折就填写95"/>
+          </el-form-item>
+<!--          <el-form-item label="门店" prop="storeId">-->
+<!--            <el-select v-model="form.storeId" placeholder="请选择门店" clearable>-->
+<!--              <el-option-->
+<!--                v-for="dict in stoOptions"-->
+<!--                :key="dict.value"-->
+<!--                :label="dict.label"-->
+<!--                :value="dict.value"-->
+<!--              />-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
+          <!--        <el-form-item label="创建者Id" prop="createById">-->
+          <!--          <el-input v-model="form.createById" placeholder="请输入创建者Id" />-->
+          <!--        </el-form-item>-->
+          <!--        <el-form-item label="更新者Id" prop="updateById">-->
+          <!--          <el-input v-model="form.updateById" placeholder="请输入更新者Id" />-->
+          <!--        </el-form-item>-->
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </el-dialog>
+    </div>
+  </StoreContainer>
 </template>
 
 <script>
@@ -168,11 +167,14 @@ import {
 } from "@/api/billiard/memberLevel";
 import {listStoreAll} from "@/api/billiard/store";
 import {listUserAll} from "@/api/system/user";
+import StoreContainer from "@/views/billiard/component/storeContainer.vue";
 
 export default {
   name: "MemberLevel",
+  components: {StoreContainer},
   data() {
     return {
+      storeInfo: null,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -219,9 +221,14 @@ export default {
     };
   },
   created() {
-    this.initData()
   },
   methods: {
+    onStoreChanged(store) {
+      this.storeInfo = store;
+      this.queryParams.storeId = store?.storeId || -1;
+      this.form.storeId = store?.storeId || -1;
+      this.initData()
+    },
     initData() {
       this.getList()
       this.getAllStore()
@@ -266,7 +273,7 @@ export default {
         memberLevelId: null,
         levelName: null,
         discount: null,
-        storeId: null,
+        storeId: this.storeInfo?.storeId || -1,
         createBy: null,
         createTime: null,
         updateBy: null,

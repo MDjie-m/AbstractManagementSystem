@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.billiard.domain.Goods;
 import com.ruoyi.billiard.service.IGoodsService;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -16,16 +14,16 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.OrderGoodsMapper;
 import com.ruoyi.billiard.domain.OrderGoods;
 import com.ruoyi.billiard.service.IOrderGoodsService;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 购买商品Service业务层处理
- * 
+ *
  * @author zhoukeu
  * @date 2024-09-13
  */
 @Service
-public class OrderGoodsServiceImpl implements IOrderGoodsService 
-{
+public class OrderGoodsServiceImpl implements IOrderGoodsService {
     @Autowired
     private OrderGoodsMapper orderGoodsMapper;
 
@@ -34,37 +32,35 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService
 
     /**
      * 查询购买商品
-     * 
+     *
      * @param orderDetailId 购买商品主键
      * @return 购买商品
      */
     @Override
-    public OrderGoods selectOrderGoodsByOrderDetailId(Long orderDetailId)
-    {
+    public OrderGoods selectOrderGoodsByOrderDetailId(Long orderDetailId) {
         return orderGoodsMapper.selectById(orderDetailId);
     }
 
     /**
      * 查询购买商品列表
-     * 
+     *
      * @param orderGoods 购买商品
      * @return 购买商品
      */
     @Override
-    public List<OrderGoods> selectOrderGoodsList(OrderGoods orderGoods)
-    {
+    public List<OrderGoods> selectOrderGoodsList(OrderGoods orderGoods) {
         return orderGoodsMapper.selectOrderGoodsList(orderGoods);
     }
 
     /**
      * 新增购买商品
-     * 
+     *
      * @param orderGoods 购买商品
      * @return 结果
      */
     @Override
-    public int insertOrderGoods(OrderGoods orderGoods)
-    {
+    @Transactional(rollbackFor = Exception.class)
+    public int insertOrderGoods(OrderGoods orderGoods) {
         SecurityUtils.fillCreateUser(orderGoods);
         orderGoods.setOrderDetailId(IdUtils.singleNextId());
         return orderGoodsMapper.insertOrderGoods(orderGoods);
@@ -72,13 +68,13 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService
 
     /**
      * 修改购买商品
-     * 
+     *
      * @param orderGoods 购买商品
      * @return 结果
      */
     @Override
-    public int updateOrderGoods(OrderGoods orderGoods)
-    {
+    @Transactional(rollbackFor = Exception.class)
+    public int updateOrderGoods(OrderGoods orderGoods) {
         SecurityUtils.fillUpdateUser(orderGoods);
 
         return orderGoodsMapper.updateOrderGoods(orderGoods);
@@ -86,33 +82,31 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService
 
     /**
      * 批量删除购买商品
-     * 
+     *
      * @param orderDetailIds 需要删除的购买商品主键
      * @return 结果
      */
     @Override
-    public int deleteOrderGoodsByOrderDetailIds(Long[] orderDetailIds)
-    {
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteOrderGoodsByOrderDetailIds(Long[] orderDetailIds) {
         return orderGoodsMapper.deleteOrderGoodsByOrderDetailIds(orderDetailIds);
     }
 
     /**
      * 删除购买商品信息
-     * 
+     *
      * @param orderDetailId 购买商品主键
      * @return 结果
      */
     @Override
-    public int deleteOrderGoodsByOrderDetailId(Long orderDetailId)
-    {
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteOrderGoodsByOrderDetailId(Long orderDetailId) {
         return orderGoodsMapper.deleteOrderGoodsByOrderDetailId(orderDetailId);
     }
 
     @Override
     public List<OrderGoods> selectOrderGoodsListByOrderId(Long orderId) {
-        LambdaQueryWrapper<OrderGoods> wrapper = Wrappers.lambdaQuery();
-        wrapper.eq(OrderGoods::getOrderId, orderId);
-        List<OrderGoods> orderGoodsList = Optional.ofNullable(orderGoodsMapper.selectList(wrapper)).orElse(Collections.emptyList());
+        List<OrderGoods> orderGoodsList = Optional.ofNullable(orderGoodsMapper.selectList(orderGoodsMapper.query().eq(OrderGoods::getOrderId, orderId))).orElse(Collections.emptyList());
         return orderGoodsList.stream().map(p -> {
             Long goodsId = p.getGoodsId();
             Goods goods = Optional.ofNullable(goodsService.selectGoodsByGoodsId(goodsId)).orElse(new Goods());

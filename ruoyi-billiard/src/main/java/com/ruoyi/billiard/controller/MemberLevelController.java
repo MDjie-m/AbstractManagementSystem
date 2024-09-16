@@ -48,6 +48,17 @@ public class MemberLevelController extends BaseController
     }
 
     /**
+     * 根据当前门店id查询所有会员等级
+     */
+    @GetMapping("/listByStoreId/{storeId}")
+    public ResultVo<List<MemberLevel>> listByStoreId(@PathVariable("storeId") Long storeId) {
+        MemberLevel memberLevel = MemberLevel.builder()
+                .storeId(storeId)
+                .build();
+        return ResultVo.success(memberLevelService.selectMemberLevelList(memberLevel));
+    }
+
+    /**
      * 导出门店会员等级列表
      */
     @PreAuthorize("@ss.hasPermi('billiard:memberLevel:export')")
