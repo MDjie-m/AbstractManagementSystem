@@ -242,7 +242,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         //更新状态
         oldDesk.setStatus(DeskStatus.WAIT.getValue());
+        oldDesk.setCurrentOrderId(null);
+
         newDesk.setStatus(DeskStatus.BUSY.getValue());
+        newDesk.setCurrentOrderId(orderId);
+
         SecurityUtils.fillUpdateUser(oldDesk);
         SecurityUtils.fillUpdateUser(newDesk);
         storeDeskMapper.updateBatch(Arrays.asList(oldDesk, newDesk));

@@ -138,6 +138,7 @@ create table t_store_desk
     camera_device_id bigint                                null comment '摄像头设备id',
     status           int                                   not null comment '状态：0=空闲，1=计时中， ,3=已停止',
     enable           tinyint     default 1                 not null comment '是否启用（1=启用，0=禁用，禁用后收银端不会显示）',
+    current_order_id bigint                                null comment '当前关联的订单id',
     create_by        varchar(64) default ''                null comment '创建者',
     create_time      timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by        varchar(64) default ''                null comment '更新者',

@@ -16,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         <!-- 使用驼峰命名法转换字段 -->
 		<!-- <setting name="mapUnderscoreToCamelCase" value="true"/> -->
 <!--        # 自动驼峰命名规则（camel case）映射-->
-<!--        mapUnderscoreToCamelCase: true-->
+<!--        my: true-->
 <!--        # MyBatis 自动映射策略-->
 <!--        # NONE：不启用 PARTIAL：只对非嵌套 resultMap 自动映射 FULL：对所有 resultMap 自动映射-->
 <!--        autoMappingBehavior: PARTIAL-->

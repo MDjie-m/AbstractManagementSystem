@@ -1,6 +1,8 @@
 package com.ruoyi.billiard.domain;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -71,6 +73,11 @@ public class StoreDesk extends MyBaseEntity
     @TableField("status")
     private Integer status;
 
+    @TableField("current_order_id")
+    private Long currentOrderId;
+
+    @TableField(exist = false)
+    private List<Integer> statusList;
     @TableField("enable")
     private Boolean enable;
 

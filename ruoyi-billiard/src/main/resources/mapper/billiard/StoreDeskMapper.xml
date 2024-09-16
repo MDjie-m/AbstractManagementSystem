@@ -4,55 +4,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.billiard.mapper.StoreDeskMapper">
     
-    <resultMap type="StoreDesk" id="StoreDeskResult">
-        <result property="deskId"    column="desk_id"    />
-        <result property="deskName"    column="desk_name"    />
-        <result property="deskNum"    column="desk_num"    />
-        <result property="deskType"    column="desk_type"    />
-        <result property="placeType"    column="place_type"    />
-        <result property="storeId"    column="store_id"    />
-        <result property="price"    column="price"    />
-        <result property="status"    column="status"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
-        <result property="lightDeviceId"    column="light_device_id"    />
-        <result property="cameraDeviceId"    column="camera_device_id"    />
-        <result property="storeName"    column="store_name"    />
-        <result property="lightName"    column="lightName"    />
-        <result property="cameraName"    column="cameraName"    />
-        <result property="createById" column="create_by_id"/>
-        <result property="updateById" column="update_by_id"/>
-        <result property="enable" column="enable"/>
-    </resultMap>
+
 
     <sql id="selectStoreDeskVo">
-        select   a.*,b.store_name,f.price ,c.device_name as lightName,d.device_name as cameraName
+        select   a.*,b.store_name,f.price ,c.device_name as light_name,d.device_name as camera_name
         from t_store_desk a join  t_store b on a.store_id=b.store_id
         left join  t_device c on  c.device_id=a.light_device_id
         left join  t_device d on  d.device_id=a.camera_device_id
         left join  t_desk_price f on  a.desk_type=f.desk_type and a.store_id=f.store_id
     </sql>
 
-    <select id="selectStoreDeskList" parameterType="StoreDesk" resultMap="StoreDeskResult">
+    <select id="selectStoreDeskList" parameterType="StoreDesk" resultType="StoreDesk">
         <include refid="selectStoreDeskVo"/>
-        <where>  
-            <if test="deskName != null  and deskName != ''"> and a.desk_name like concat('%', #{deskName}, '%')</if>
-            <if test="deskNum != null "> and a.desk_num = #{deskNum}</if>
-            <if test="deskType != null "> and a.desk_type = #{deskType}</if>
-            <if test="placeType != null "> and a.place_type = #{placeType}</if>
-            <if test="storeId != null "> and a.store_id = #{storeId}</if>
-            <if test="price != null "> and a.price = #{price}</if>
-            <if test="status != null "> and a.status = #{status}</if>
-            <if test="enable != null "> and a.enable = #{enable}</if>
-            <if test="lightDeviceId != null "> and a.light_device_id = #{lightDeviceId}</if>
-            <if test="cameraDeviceId != null "> and a.camera_device_id = #{cameraDeviceId}</if>
-        </where>
+
+        ${ew.customSqlSegment}
     </select>
     
-    <select id="selectStoreDeskByDeskId" parameterType="Long" resultMap="StoreDeskResult">
+    <select id="selectStoreDeskByDeskId" parameterType="Long" resultType="StoreDesk">
         <include refid="selectStoreDeskVo"/>
         where desk_id = #{deskId}
     </select>
@@ -84,72 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
 
-    <insert id="insertStoreDesk" parameterType="StoreDesk">
-        insert into t_store_desk
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="deskId != null">desk_id,</if>
-            <if test="deskName != null and deskName != ''">desk_name,</if>
-            <if test="deskNum != null">desk_num,</if>
-            <if test="deskType != null">desk_type,</if>
-            <if test="placeType != null">place_type,</if>
-            <if test="storeId != null">store_id,</if>
-            <if test="status != null">status,</if>
-            <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="remark != null">remark,</if>
-            <if test="lightDeviceId != null">light_device_id,</if>
-            <if test="cameraDeviceId != null">camera_device_id,</if>
-            <if test="updateById != null">update_by_id,</if>
-            <if test="createById != null">create_by_id,</if>
-            <if test="enable != null">enable,</if>
 
-         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="deskId != null">#{deskId},</if>
-            <if test="deskName != null and deskName != ''">#{deskName},</if>
-            <if test="deskNum != null">#{deskNum},</if>
-            <if test="deskType != null">#{deskType},</if>
-            <if test="placeType != null">#{placeType},</if>
-            <if test="storeId != null">#{storeId},</if>
-            <if test="status != null">#{status},</if>
-            <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="remark != null">#{remark},</if>
-            <if test="lightDeviceId != null">#{lightDeviceId},</if>
-            <if test="cameraDeviceId != null">#{cameraDeviceId},</if>
-            <if test="updateById != null">#{updateById},</if>
-            <if test="createById != null">#{createById},</if>
-            <if test="enable != null">#{enable},</if>
-         </trim>
-    </insert>
-
-    <update id="updateStoreDesk" parameterType="StoreDesk">
-        update t_store_desk
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="deskName != null and deskName != ''">desk_name = #{deskName},</if>
-            <if test="deskNum != null">desk_num = #{deskNum},</if>
-            <if test="deskType != null">desk_type = #{deskType},</if>
-            <if test="placeType != null">place_type = #{placeType},</if>
-            <if test="storeId != null">store_id = #{storeId},</if>
-            <if test="status != null">status = #{status},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="remark != null">remark = #{remark},</if>
-            <if test="lightDeviceId != null">light_device_id = #{lightDeviceId},</if>
-            <if test="cameraDeviceId != null">camera_device_id = #{cameraDeviceId},</if>
-            <if test="updateById != null">update_by_id =#{updateById},</if>
-            <if test="createById != null">create_by_id =#{createById},</if>
-            <if test="enable != null">enable =#{enable},</if>
-
-        </trim>
-        where desk_id = #{deskId}
-    </update>
 
     <delete id="deleteStoreDeskByDeskId" parameterType="Long">
         delete from t_store_desk where desk_id = #{deskId}

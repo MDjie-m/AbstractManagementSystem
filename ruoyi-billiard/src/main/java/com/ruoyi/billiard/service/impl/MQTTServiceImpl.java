@@ -78,10 +78,10 @@ public class MQTTServiceImpl implements IMQTTService, MqttCallback {
     @Override
     public void subDevice(Long storeId, Long deviceId, String subTopic, DeviceCallbackEvent event) {
         ///${appId}/${deviceKey}/${deviceMAC}/subscribe
-        checkLostContent();
-        client.subscribe(subTopic);
-        log.info("主题订阅成功:{}", subTopic);
-        DEVICE_MAP.put(subTopic, new MQTTDevice(storeId, deviceId, subTopic, event));
+//        checkLostContent();
+//        client.subscribe(subTopic);
+//        log.info("主题订阅成功:{}", subTopic);
+//        DEVICE_MAP.put(subTopic, new MQTTDevice(storeId, deviceId, subTopic, event));
     }
 
     @SneakyThrows

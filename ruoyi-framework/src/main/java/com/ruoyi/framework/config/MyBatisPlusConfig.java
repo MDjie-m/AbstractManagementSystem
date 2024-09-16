@@ -75,38 +75,38 @@ public class MyBatisPlusConfig
     {
         return new BlockAttackInnerInterceptor();
     }
-    @Value("${mybatis-plus.mapperLocations}")
-    private String mapperLocations;
-    @Value("${mybatis-plus.type-handlers-package}")
-    private String typeHandlersPackage;
-
-    @Value("${mybatis-plus.typeAliasesPackage}")
-    private String typeAliasesPackage;
-
-    @Value("${mybatis-plus.configLocation}")
-    private String configLocation;
+//    @Value("${mybatis-plus.mapperLocations}")
+//    private String mapperLocations;
+//    @Value("${mybatis-plus.type-handlers-package}")
+//    private String typeHandlersPackage;
+//
+//    @Value("${mybatis-plus.typeAliasesPackage}")
+//    private String typeAliasesPackage;
+//
+//    @Value("${mybatis-plus.configLocation}")
+//    private String configLocation;
 //    @Value("${mybatis-plus.configLocation}")
 //    private MyBatisPlusConfig myBatisPlusConfig;
 
     // spring boot
-    @Bean
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource)
-            throws Exception {
-        final MybatisSqlSessionFactoryBean sessionFactory = new MybatisSqlSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource);
-        sessionFactory.setTypeAliasesPackage(typeAliasesPackage);
-        sessionFactory.setTypeHandlersPackage(typeHandlersPackage);
-
-        sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(mapperLocations));
-        sessionFactory.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
-
-        GlobalConfig globalConfig = GlobalConfigUtils.defaults();
-        GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
-        globalConfig.setDbConfig(dbConfig);
-        //【看到了吗？我在这呢！】
-        globalConfig.setSqlInjector(new CustomizedSqlInjector());
-        sessionFactory.setGlobalConfig(globalConfig);
-
-        return sessionFactory.getObject();
-    }
+//    @Bean
+//    public SqlSessionFactory sqlSessionFactory(DataSource dataSource)
+//            throws Exception {
+//        final MybatisSqlSessionFactoryBean sessionFactory = new MybatisSqlSessionFactoryBean();
+//        sessionFactory.setDataSource(dataSource);
+//        sessionFactory.setTypeAliasesPackage(typeAliasesPackage);
+//        sessionFactory.setTypeHandlersPackage(typeHandlersPackage);
+//
+//        sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(mapperLocations));
+//        sessionFactory.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
+//
+//        GlobalConfig globalConfig = GlobalConfigUtils.defaults();
+//        GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
+//        globalConfig.setDbConfig(dbConfig);
+//        //【看到了吗？我在这呢！】
+//        globalConfig.setSqlInjector(new CustomizedSqlInjector());
+//        sessionFactory.setGlobalConfig(globalConfig);
+//
+//        return sessionFactory.getObject();
+//    }
 }
