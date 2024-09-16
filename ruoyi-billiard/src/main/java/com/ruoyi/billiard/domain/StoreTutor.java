@@ -122,4 +122,9 @@ public class StoreTutor extends MyBaseEntity {
     @TableField(exist = false)
     private String account;
 
+
+    @TableField("current_order_id")
+    private Long currentOrderId;
+
+
 }

@@ -104,17 +104,4 @@ public class OrderTutorTime extends MyBaseEntity
     @TableField(exist = false)
     private StoreDesk storeDesk;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

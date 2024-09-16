@@ -41,7 +41,12 @@ public interface MyBaseMapper<T> extends BaseMapper<T> {
 
     int updateAllWithId(  T entity );
 
-
+    default int update(  T entity ,boolean updateAll){
+        if(updateAll){
+            return  updateAllWithId(entity);
+        }
+        return  updateById(entity);
+    }
     default <V> boolean   exists(SFunction<T ,?> condition, V val){
         LambdaQueryWrapper<T> queryWrapper=   new LambdaQueryWrapper<>();
         queryWrapper.eq(  condition,val);

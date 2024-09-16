@@ -49,6 +49,7 @@ create table t_store_tutor
     mobile         nvarchar(30)                          not null comment '手机号',
     user_img       nvarchar(200)                         not null comment '头像',
     sex            char(1)                               null comment '性别（0=男，1=女，2=未知）',
+    current_order_id bigint                                null comment '当前关联的订单id',
     level          int                                   not null comment '等级(1=助教，2=教练，3=总教)',
     status         int                                   not null comment '教练（0=在岗 1=离职）',
     work_status    int         default 0                 not null comment '工作状态（0=空闲，1=计费中，3=已停止）',

@@ -10,15 +10,14 @@ import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.ruoyi.billiard.domain.Order;
-import com.ruoyi.billiard.domain.Store;
-import com.ruoyi.billiard.domain.StoreTutor;
+import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.LineUpVo;
 import com.ruoyi.billiard.enums.DeskStatus;
 import com.ruoyi.billiard.enums.EmployeeStatus;
 import com.ruoyi.billiard.enums.TutorWorkStatus;
+import com.ruoyi.billiard.mapper.OrderDeskTimeMapper;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
 import com.ruoyi.billiard.service.IDeskDeviceRelationService;
 import com.ruoyi.billiard.service.IDeskPriceService;
@@ -35,7 +34,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.StoreDeskMapper;
-import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +49,8 @@ import javax.annotation.Resource;
 public class StoreDeskServiceImpl implements IStoreDeskService {
     @Autowired
     private StoreDeskMapper storeDeskMapper;
-
+    @Autowired
+    private OrderDeskTimeMapper orderDeskTimeMapper;
     @Autowired
     private IOrderService orderService;
     @Autowired
@@ -86,14 +85,13 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     @Override
     public List<StoreDesk> selectStoreDeskList(StoreDesk storeDesk) {
         QueryWrapper<StoreDesk> queryWrapper = this.storeDeskMapper.normalQuery();
-        queryWrapper.likeRight(StringUtils.isNotEmpty(storeDesk.getDeskName()),"a.store_name", storeDesk.getStoreName())
-                .eq(Objects.nonNull(storeDesk.getStatus()),"a.status",storeDesk.getStatus())
-                .eq(Objects.nonNull(storeDesk.getPlaceType()),"a.place_type",storeDesk.getPlaceType())
-                .eq(Objects.nonNull(storeDesk.getDeskNum()),"a.desk_num",storeDesk.getDeskNum())
-                .eq(Objects.nonNull(storeDesk.getStoreId()),"a.store_id",storeDesk.getStoreId())
-                .in(CollectionUtils.isNotEmpty(storeDesk.getStatusList()),"a.status",storeDesk.getStatusList())
+        queryWrapper.likeRight(StringUtils.isNotEmpty(storeDesk.getDeskName()), "a.store_name", storeDesk.getStoreName())
+                .eq(Objects.nonNull(storeDesk.getStatus()), "a.status", storeDesk.getStatus())
+                .eq(Objects.nonNull(storeDesk.getPlaceType()), "a.place_type", storeDesk.getPlaceType())
+                .eq(Objects.nonNull(storeDesk.getDeskNum()), "a.desk_num", storeDesk.getDeskNum())
+                .eq(Objects.nonNull(storeDesk.getStoreId()), "a.store_id", storeDesk.getStoreId())
+                .in(CollectionUtils.isNotEmpty(storeDesk.getStatusList()), "a.status", storeDesk.getStatusList())
         ;
-
 
 
         return storeDeskMapper.selectStoreDeskList(queryWrapper);
@@ -159,8 +157,13 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteStoreDeskByDeskIds(Long[] deskIds) {
-        return storeDeskMapper.deleteStoreDeskByDeskIds(deskIds);
+        int  res=0;
+        for (Long deskId : deskIds) {
+            res+=deleteStoreDeskByDeskId(deskId);
+        }
+        return  res;
     }
 
     /**
@@ -171,6 +174,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
      */
     @Override
     public int deleteStoreDeskByDeskId(Long deskId) {
+        AssertUtil.isTrue(!orderDeskTimeMapper.exists(OrderDeskTime::getDeskId,deskId),"台桌已被使用,无法删除.");
         return storeDeskMapper.deleteStoreDeskByDeskId(deskId);
     }
 
@@ -316,7 +320,8 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
 
         StoreDesk newDesk = queryEnableDesk(newDeskId, storeId);
 
-        AssertUtil.isTrue(Objects.equals(newDesk.getStatus(), DeskStatus.WAIT.getValue()), "目标台桌不是空闲状态，无法更换,请更换到其他台桌。");
+        AssertUtil.isTrue(Objects.equals(newDesk.getStatus(), DeskStatus.WAIT.getValue())
+                && Objects.isNull(newDesk.getCurrentOrderId()), "目标台桌不是空闲状态，无法更换,请更换到其他台桌。");
 
         AssertUtil.isNullOrEmpty(storeDeskMapper.deskInUse(newDeskId), "目标台桌不是空闲状态，无法更换,请更换到其他台桌。");
 

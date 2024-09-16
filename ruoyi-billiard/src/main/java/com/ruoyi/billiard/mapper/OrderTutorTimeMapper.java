@@ -25,27 +25,4 @@ public interface OrderTutorTimeMapper extends MyBaseMapper<OrderTutorTime>
     public List<OrderTutorTime> selectOrderTutorTimeList(OrderTutorTime orderTutorTime);
 
 
-    /**
-     * 修改订单计时
-     * 
-     * @param orderTutorTime 订单计时
-     * @return 结果
-     */
-    public int updateOrderTutorTime(OrderTutorTime orderTutorTime);
-
-    /**
-     * 删除订单计时
-     * 
-     * @param orderTutorTimeId 订单计时主键
-     * @return 结果
-     */
-    public int deleteOrderTutorTimeByOrderTutorTimeId(Long orderTutorTimeId);
-
-    /**
-     * 批量删除订单计时
-     * 
-     * @param orderTutorTimeIds 需要删除的数据主键集合
-     * @return 结果
-     */
-    public int deleteOrderTutorTimeByOrderTutorTimeIds(Long[] orderTutorTimeIds);
 }

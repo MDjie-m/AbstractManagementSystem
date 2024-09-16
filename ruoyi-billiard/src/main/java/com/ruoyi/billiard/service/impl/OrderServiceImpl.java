@@ -249,7 +249,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         SecurityUtils.fillUpdateUser(oldDesk);
         SecurityUtils.fillUpdateUser(newDesk);
-        storeDeskMapper.updateBatch(Arrays.asList(oldDesk, newDesk));
+        storeDeskMapper.updateAllWithId(oldDesk);
+        storeDeskMapper.updateAllWithId(newDesk);
 
 
         return selectOrderByOrderId(orderId);
