@@ -395,7 +395,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order = stopAllCalcTimes(orderId);
 
         order.setStatus(OrderStatus.WAIT_SETTLED.getValue());
+
         SecurityUtils.fillUpdateUser(order);
+
         orderMapper.updateById(order);
 
 
@@ -408,7 +410,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public Boolean voidOrder(Long orderId, Long storeId) {
+    public Boolean voidOrder(Long orderId, Long storeId,String remark) {
         Order order = queryValidOrder(storeId, orderId);
         AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
                 OrderErrorMsg.ORDER_NOT_CHARGING);
@@ -416,6 +418,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order = stopAllCalcTimes(orderId);
 
         order.setStatus(OrderStatus.VOID.getValue());
+        order.setRemark(remark);
         SecurityUtils.fillUpdateUser(order);
         orderMapper.updateById(order);
         return Boolean.TRUE;

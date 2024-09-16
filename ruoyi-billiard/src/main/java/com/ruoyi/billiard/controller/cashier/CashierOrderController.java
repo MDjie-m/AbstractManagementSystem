@@ -39,8 +39,8 @@ public class CashierOrderController extends BaseController {
     }
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @PostMapping("/{orderId}/void")
-    public ResultVo<Boolean> voidOrder(@PathVariable Long orderId) {
-        Boolean res = orderService.voidOrder(orderId, getStoreIdWithThrow());
+    public ResultVo<Boolean> voidOrder(@PathVariable Long orderId,String remark) {
+        Boolean res = orderService.voidOrder(orderId, getStoreIdWithThrow(),remark);
         return ResultVo.success(res);
     }
 }

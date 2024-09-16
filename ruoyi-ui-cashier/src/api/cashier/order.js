@@ -12,9 +12,10 @@ export function suspendOrder(orderId) {
     method: 'post',
   })
 }
-export function voidOrder(orderId) {
+export function voidOrder(orderId,remark) {
   return request({
     url: `/cashier/order/${orderId}/void`,
     method: 'post',
+    params:{remark}
   })
 }

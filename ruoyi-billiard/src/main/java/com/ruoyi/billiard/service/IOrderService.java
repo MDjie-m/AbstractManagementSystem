@@ -73,5 +73,5 @@ public interface IOrderService
 
     OrderCommandResVo stopOrder(Long orderId, Long storeId);
 
-    Boolean voidOrder(Long orderId, Long storeId);
+    Boolean voidOrder(Long orderId, Long storeId,String remark);
 }
