@@ -15,13 +15,15 @@
 
       <ToolBar title="台桌服务" v-if="currentDesk" v-loading="orderLoading">
         <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
-          <span  >{{ currentDesk.deskTotalTimeAmount }}</span>元 <i class="el-icon-info"/>
+          <span>{{ currentDesk.deskTotalTimeAmount }}</span>元 <i class="el-icon-info"/>
         </div>
         <SvgItem svg-icon="clock" label="开台" @click.native="onStartDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Wait && !currentDesk.lastActiveOrder" :btnAble="true"/>
         <SvgItem svg-icon="desk_end" label="结开" v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
-        <SvgItem svg-icon="desk_pause" label="暂停"   @click.native="onPauseDeskClick()" v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
-        <SvgItem svg-icon="desk_resume" label="恢复"  @click.native="onResumeDeskClick()" v-if="currentDesk.status ===DeskStatus.PAUSE" :btnAble="true"/>
+        <SvgItem svg-icon="desk_pause" label="暂停" @click.native="onPauseDeskClick()"
+                 v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
+        <SvgItem svg-icon="desk_resume" label="恢复" @click.native="onResumeDeskClick()"
+                 v-if="currentDesk.status ===DeskStatus.PAUSE" :btnAble="true"/>
         <SvgItem svg-icon="desk_change" label="换台" @click.native="onOpenSwapDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
         <SvgItem svg-icon="timing" label="定时" :btnAble="true"/>
@@ -30,22 +32,22 @@
         <SvgItem svg-icon="close_light" label="关灯" :btnAble="true"
                  @click.native="onSwitchLight(currentDesk.deskNum,false)"/>
       </ToolBar>
-      <ToolBar title="订单服务" v-if="currentDesk &&currentDesk.lastActiveOrder"  v-loading="orderLoading">
+      <ToolBar title="订单服务" v-if="currentDesk &&currentDesk.lastActiveOrder" v-loading="orderLoading">
         <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
           <span>{{ currentDesk.otherTotalAmount }}元</span> <i class="el-icon-info"/>
         </div>
         <SvgItem svg-icon="shop_car" label="选商品" :btnAble="true"/>
         <SvgItem svg-icon="user_choose" label="选艺人" :btnAble="true"/>
       </ToolBar>
-      <ToolBar title="订单操作" v-if="currentDesk &&currentDesk.lastActiveOrder"  v-loading="orderLoading">
-        <SvgItem svg-icon="trash" label="清空" :btnAble="true" @click.native="onVoidOrderClick"/>
+      <ToolBar title="订单操作" v-if="currentDesk &&currentDesk.lastActiveOrder" v-loading="orderLoading">
+        <SvgItem svg-icon="trash" label="作废" :btnAble="true" @click.native="onVoidOrderClick"/>
         <SvgItem svg-icon="suspend_order" label="挂单" :btnAble="true" @click.native="onSuspendOrderClick"/>
         <SvgItem svg-icon="stop" label="停止" :btnAble="true" @click.native="onStopOrderClick"/>
         <SvgItem svg-icon="credit_card" label="去结算" :btnAble="true" @click.native="onNavToSettleOrderClick"/>
       </ToolBar>
       <Dashboard ref="dashboard" v-if="!currentDesk" :storeName="storeInfo.storeName"/>
 
-      <ToolBar title="预约/排队" v-if="!currentDesk">
+      <ToolBar title="预约/排队" v-if="!(currentDesk &&currentDesk.lastActiveOrder)">
         <SvgItem svg-icon="desk" label="台桌预约"/>
         <SvgItem svg-icon="tutor" label="教练预约"/>
         <SvgItem svg-icon="qrcode" label="预约核销"/>
@@ -53,7 +55,7 @@
       </ToolBar>
     </left-container>
 
-    <div class="right-panel" >
+    <div class="right-panel">
       <div class="  section-container">
         <div>
           <el-row>
@@ -135,9 +137,10 @@
     </div>
 
     <!-- 换台确认框 -->
-    <el-dialog   title="换台" class="custom-dialog" :visible.sync="openSwapDesk" width="700px" append-to-body :close-on-click-modal="false"
+    <el-dialog title="换台" class="custom-dialog" :visible.sync="openSwapDesk" width="700px" append-to-body
+               :close-on-click-modal="false"
                :close-on-press-escape="false" :show-close="false">
-      <el-form ref="form" :model="targetDesk"   label-width="120px">
+      <el-form ref="form" :model="targetDesk" label-width="120px">
         <el-row v-if="currentDesk">
           <el-col :span="12">
             <el-form-item label="当前台桌:">
@@ -154,13 +157,13 @@
           <el-col :span="12">
             <el-form-item label="目标台桌:">
               <el-select v-model="targetDesk.deskId" filterable @change="onTargetDeskIdChange">
-<!--                <div slot="prefix"></div>-->
+                <!--                <div slot="prefix"></div>-->
                 <el-option :value="item.deskId" :key="'targetDesk'+item.deskId"
                            :label="item.deskName"
                            v-for="item in deskList">
                   <div style="display: flex;flex-direction: row;align-items: center">
                     <div class="desk-status" :class="`desk-status-`+item.status"></div>
-                    <div> {{ item.deskName }}({{ item.deskNum }}) / {{item.placeType===0?'大厅':'包间'}}
+                    <div> {{ item.deskName }}({{ item.deskNum }}) / {{ item.placeType === 0 ? '大厅' : '包间' }}
                     </div>
                     <div style=" padding-left: 20px">
                       {{ item.price }}元/分钟
@@ -199,21 +202,21 @@ import ToolBar from "@/views/cashier/desk/components/toolBar.vue";
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import {MessageBox} from "element-ui";
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
-import {stopOrder} from "@/api/cashier/order";
+import {stopOrder, suspendOrder, voidOrder} from "@/api/cashier/order";
 
 const DeskStatus = {
   Wait: 0,
   Busy: 1,
-  PAUSE:2,
+  PAUSE: 2,
   Stop: 3,
 
 }
 const OrderStatus = {
-  Charging: 0 ,//"计费中"),
-  Stop:1,//"待结算"),
-  Settled:2,//"已结算"),
-  Void:3,//"作废"),
-  Suspend:4,//"挂起订单")
+  Charging: 0,//"计费中"),
+  Stop: 1,//"待结算"),
+  Settled: 2,//"已结算"),
+  Void: 3,//"作废"),
+  Suspend: 4,//"挂起订单")
 }
 
 export default {
@@ -223,7 +226,7 @@ export default {
 
   data() {
     return {
-      orderLoading:false,
+      orderLoading: false,
       DeskStatus: DeskStatus,
       storeInfo: {storeName: '', userList: [], tutorList: []},
       openNewDialog: false,
@@ -262,23 +265,23 @@ export default {
   },
   methods: {
     onSwapDeskSubmit() {
-      if(!this.targetDesk?.deskId){
+      if (!this.targetDesk?.deskId) {
         return this.$modal.msgWarning("请选择要更换的目标台桌");
       }
-      this.loading=true;
-      swapToNewDesk(this.currentDesk.deskId ,this.targetDesk.deskId,this.currentDesk.lastActiveOrder.orderId).then(res=>{
-         this.onSwitchLight(this.currentDesk.deskNum,false);
-         this.currentDesk=res.data;
-         this.onSwitchLight(this.currentDesk?.deskNum,true);
-         this.$modal.msgSuccess("操作成功");
-         this.openSwapDesk=false;
-          this.getList();
-      }).then( ).then(n=>{
+      this.loading = true;
+      swapToNewDesk(this.currentDesk.deskId, this.targetDesk.deskId, this.currentDesk.lastActiveOrder.orderId).then(res => {
+        this.onSwitchLight(this.currentDesk.deskNum, false);
+        this.currentDesk = res.data;
+        this.onSwitchLight(this.currentDesk?.deskNum, true);
+        this.$modal.msgSuccess("操作成功");
+        this.openSwapDesk = false;
+        this.getList();
+      }).then().then(n => {
 
-      }).finally(()=>this.loading=false)
+      }).finally(() => this.loading = false)
     },
-    onTargetDeskIdChange(val){
-      this.targetDesk.price  = this.deskList.find(p=>p.deskId===val)?.price;
+    onTargetDeskIdChange(val) {
+      this.targetDesk.price = this.deskList.find(p => p.deskId === val)?.price;
     },
     onRefreshClick() {
       this.$refs.dashboard?.refresh();
@@ -301,7 +304,7 @@ export default {
       this.openNewDialog = true;
     },
     onSwitchLight(deskNum, open) {
-      if(deskNum===null ||deskNum ===undefined){
+      if (deskNum === null || deskNum === undefined) {
         return
       }
       let req = {deskNum: deskNum, open: !!open}
@@ -334,21 +337,28 @@ export default {
         return
       }
       this.loading = true;
-      getDeskBaseInfo(item.deskId).then(res => {
-        item.selected = true;
+      this.queryDeskById(item.deskId);
+    },
+    queryDeskById(deskId) {
+      return getDeskBaseInfo(deskId).then(res => {
         this.currentDesk = res.data;
+        this.deskList.forEach(p=>{
+          if(p.deskId===deskId){
+            p.status=this.currentDesk.status;
+            p.selected=true;
+          }
+        })
       }).finally(() => this.loading = false);
-
-
     },
     onChooseAll() {
       this.queryParams.placeType = null;
       this.queryParams.deskType = null;
-
+      this.currentDesk=null;
       this.getList();
 
     },
     onChooseAllStatus() {
+      this.currentDesk=null;
       this.queryParams.status = null;
       this.getList();
     },
@@ -358,22 +368,23 @@ export default {
       } else {
         this.queryParams[field] = parseInt(val);
       }
+      this.currentDesk=null;
       this.getList()
     },
 
     /** 查询球桌列表 */
     getList() {
-      if(this.loading){
-        return ;
+      if (this.loading) {
+        return;
       }
       this.loading = true;
-      let params=JSON.parse(JSON.stringify(this.queryParams));
-      if(params.status===1){
-        params.statusList=[1,2]
+      let params = JSON.parse(JSON.stringify(this.queryParams));
+      if (params.status === 1) {
+        params.statusList = [1, 2]
       }
       listDesk(params).then(response => {
         this.deskList = (response.data || []).map(p => {
-          p.selected = this.currentDesk?.deskId ===p.deskId;
+          p.selected = this.currentDesk?.deskId === p.deskId;
           return p;
         });
 
@@ -383,13 +394,13 @@ export default {
     onOpenSwapDeskClick() {
       this.openSwapDesk = true;
     },
-    closeLoading(){
+    closeLoading() {
       this.loading = false
     },
-    startLoading(){
+    startLoading() {
       this.loading = false
     },
-    onResumeDeskClick(){
+    onResumeDeskClick() {
       let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
       MessageBox.confirm(`${deskTitle}恢复计费?`, '确认', {
         confirmButtonText: '确认',
@@ -407,26 +418,63 @@ export default {
         })
       })
     },
-    onVoidOrderClick(){
+    onVoidOrderClick() {
+      if (this.currentDesk?.lastActiveOrder.status !== OrderStatus.Charging) {
+        return  this.$message.warning("订单状态不允许此操作.")
+      }
+      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
+      this.$prompt('请输入订单作废备注', "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        closeOnClickModal: false,
+        inputPattern: /^.{0,200}$/,
+        inputErrorMessage: "备注内容长度0-200",
+        // inputValidator: (value) => {
+        //   if (/<|>|"|'|\||\\/.test(value)) {
+        //     return "不能包含非法字符：< > \" ' \\\ |"
+        //   }
+        // },
+      }).then(({ value }) => {
+        this.orderLoading = true;
+        voidOrder(this.currentDesk?.lastActiveOrder.orderId,value).then(res => {
+          this.queryDeskById(this.currentDesk.deskId);
+          this.$message.success("订单已作废.")
+        }).finally(() => this.orderLoading = false)
+      }).catch(() => {});
 
     },
-    onSuspendOrderClick(){
+    onSuspendOrderClick() {
+      if (![OrderStatus.Stop,OrderStatus.Charging].includes(this.currentDesk?.lastActiveOrder.status ) ) {
+        return  this.$message.warning("订单状态不允许此操作.")
+      }
+      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
 
+      MessageBox.confirm(`${deskTitle}:是否挂起订单?`, '确认', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.orderLoading = true;
+        suspendOrder(this.currentDesk?.lastActiveOrder.orderId).then(res => {
+          this.queryDeskById(this.currentDesk.deskId);
+          this.$message.success("订单已挂起.")
+        }).finally(() => this.orderLoading = false)
+      })
     },
-    navToOrder(orderId){
+    navToOrder(orderId) {
       MessageBox.confirm(`订单已停止，是否进入结算页面？`, '确认', {
-        confirmButtonText: '是',
-        cancelButtonText: '否',
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
         type: 'success'
-      }).then(res=>{
+      }).then(res => {
 
-      },()=>{
+      }, () => {
 
       })
     },
-    onStopOrderClick(){
-      if(this.currentDesk?.lastActiveOrder.status !==OrderStatus.Charging){
-        return
+    onStopOrderClick() {
+      if (this.currentDesk?.lastActiveOrder.status !== OrderStatus.Charging) {
+        return  this.$message.warning("订单状态不允许此操作.")
       }
       let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
 
@@ -435,19 +483,18 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.orderLoading=true;
+        this.orderLoading = true;
         stopOrder(this.currentDesk?.lastActiveOrder.orderId).then(res => {
-          this.currentDesk.status=DeskStatus.Wait;
-          this.currentDesk.currentOrderId =null;
-          this.getList();
-          this.navToOrder( this.currentDesk?.lastActiveOrder.orderId);
-        }).finally(()=>this.orderLoading=false)
+          this.queryDeskById(this.currentDesk.deskId);
+
+          this.navToOrder(this.currentDesk?.lastActiveOrder.orderId);
+        }).finally(() => this.orderLoading = false)
       })
     },
-    onNavToSettleOrderClick(){
+    onNavToSettleOrderClick() {
 
     },
-    onPauseDeskClick(){
+    onPauseDeskClick() {
       let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
       MessageBox.confirm(`${deskTitle}暂停后将停止计费,确认暂停?`, '确认', {
         confirmButtonText: '确认',

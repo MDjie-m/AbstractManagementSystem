@@ -43,51 +43,54 @@ create table t_store_user
 drop table if exists t_store_tutor;
 create table t_store_tutor
 (
-    store_tutor_id bigint                                not null comment '员工id'
+    store_tutor_id   bigint                                not null comment '员工id'
         primary key,
-    real_name      nvarchar(60)                          not null comment '姓名',
-    mobile         nvarchar(30)                          not null comment '手机号',
-    user_img       nvarchar(200)                         not null comment '头像',
-    sex            char(1)                               null comment '性别（0=男，1=女，2=未知）',
+    real_name        nvarchar(60)                          not null comment '姓名',
+    mobile           nvarchar(30)                          not null comment '手机号',
+    user_img         nvarchar(200)                         not null comment '头像',
+    sex              char(1)                               null comment '性别（0=男，1=女，2=未知）',
     current_order_id bigint                                null comment '当前关联的订单id',
-    level          int                                   not null comment '等级(1=助教，2=教练，3=总教)',
-    status         int                                   not null comment '教练（0=在岗 1=离职）',
-    work_status    int         default 0                 not null comment '工作状态（0=空闲，1=计费中，3=已停止）',
-    del_flag       char        default '0'               null comment '删除标志（0代表存在 2代表删除）',
-    create_by      varchar(64) default ''                null comment '创建者',
-    create_time    timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by      varchar(64) default ''                null comment '更新者',
-    update_time    timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    store_id       BIGINT                                not null comment '门店',
-    login_user_id  bigint                                not null comment '登录账户id',
-    create_by_id   bigint                                null comment '创建者Id',
-    update_by_id   bigint                                null comment '更新者Id',
-    remark         nvarchar(500)                         null comment '备注'
+    level            int                                   not null comment '等级(1=助教，2=教练，3=总教)',
+    status           int                                   not null comment '教练（0=在岗 1=离职）',
+    work_status      int         default 0                 not null comment '工作状态（0=空闲，1=计费中，3=已停止）',
+    del_flag         char        default '0'               null comment '删除标志（0代表存在 2代表删除）',
+    create_by        varchar(64) default ''                null comment '创建者',
+    create_time      timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by        varchar(64) default ''                null comment '更新者',
+    update_time      timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    store_id         BIGINT                                not null comment '门店',
+    login_user_id    bigint                                not null comment '登录账户id',
+    create_by_id     bigint                                null comment '创建者Id',
+    update_by_id     bigint                                null comment '更新者Id',
+    remark           nvarchar(500)                         null comment '备注'
 )
     comment '门店助教';
 
 drop table if exists t_member;
 create table t_member
 (
-    member_id      bigint                                not null comment 'ID'
+    member_id         bigint                                   not null comment 'ID'
         primary key,
-    real_name      nvarchar(60)                          not null comment '姓名',
-    mobile         nvarchar(30)                          not null comment '手机号',
-    current_amount DECIMAL(20, 2)                        not null default 0 comment '当前金额',
-    total_amount   DECIMAL(20, 2)                        not null default 0 comment '历史总金额',
-    sex            char(1)                               null comment '性别（0=男，1=女，2=未知）',
-    store_id       BIGINT                                not null comment '门店',
-    level_id       int                                   not null comment '会员等级',
-    status         int                                   not null comment '门店状态（0正常 1停用）',
-    del_flag       char        default '0'               null comment '删
+    real_name         nvarchar(60)                             not null comment '姓名',
+    mobile            nvarchar(30)                             not null comment '手机号',
+    current_amount    DECIMAL(20, 2) default 0                 not null default 0 comment '当前金额',
+    total_amount      DECIMAL(20, 2) default 0                 not null default 0 comment '历史总金额',
+    give_amount       decimal(20, 2) default 0                 not null comment '充值赠送金额',
+    total_give_amount decimal(20, 2) default 0                 null comment '历史充值赠送总金额',
+
+    sex               char(1)                                  null comment '性别（0=男，1=女，2=未知）',
+    store_id          BIGINT                                   not null comment '门店',
+    level_id          int                                      not null comment '会员等级',
+    status            int                                      not null comment '门店状态（0正常 1停用）',
+    del_flag          char           default '0'               null comment '删
 除标志（0代表存在 2代表删除）',
-    create_by      varchar(64) default ''                null comment '创建者',
-    create_time    timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by      varchar(64) default ''                null comment '更新者',
-    update_time    timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id   bigint                                null comment '创建者Id',
-    update_by_id   bigint                                null comment '更新者Id',
-    remark         nvarchar(500)                         null comment '备注'
+    create_by         varchar(64)    default ''                null comment '创建者',
+    create_time       timestamp      default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by         varchar(64)    default ''                null comment '更新者',
+    update_time       timestamp      default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id      bigint                                   null comment '创建者Id',
+    update_by_id      bigint                                   null comment '更新者Id',
+    remark            nvarchar(500)                            null comment '备注'
 )
     comment '门店会员';
 drop table if exists t_member_level;
