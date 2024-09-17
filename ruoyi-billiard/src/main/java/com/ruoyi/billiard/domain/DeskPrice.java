@@ -60,6 +60,9 @@ public class DeskPrice extends MyBaseEntity
     @TableField("update_by_id")
     private Long updateById;
 
+    @TableField(exist = false)
+    private String storeName;
+
 
 
 

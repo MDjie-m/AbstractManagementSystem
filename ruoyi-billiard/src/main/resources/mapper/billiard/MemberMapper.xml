@@ -113,10 +113,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         delete from t_member where member_id = #{memberId}
     </delete>
 
-    <delete id="deleteMemberByMemberIds" parameterType="String">
-        delete from t_member where member_id in 
+    <update id="deleteMemberByMemberIds" parameterType="String">
+        update t_member
+        set del_flag = 2 where member_id in
         <foreach item="memberId" collection="array" open="(" separator="," close=")">
             #{memberId}
         </foreach>
-    </delete>
+    </update>
 </mapper>

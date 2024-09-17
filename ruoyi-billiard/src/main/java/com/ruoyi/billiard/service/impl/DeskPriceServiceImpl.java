@@ -1,9 +1,12 @@
 package com.ruoyi.billiard.service.impl;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ import com.ruoyi.billiard.service.IDeskPriceService;
 public class DeskPriceServiceImpl implements IDeskPriceService {
     @Autowired
     private DeskPriceMapper deskPriceMapper;
+
+    @Autowired
+    private IStoreService storeService;
 
     /**
      * 查询球桌价格
@@ -42,7 +48,9 @@ public class DeskPriceServiceImpl implements IDeskPriceService {
      */
     @Override
     public List<DeskPrice> selectDeskPriceList(DeskPrice deskPrice) {
-        return deskPriceMapper.selectDeskPriceList(deskPrice);
+        List<DeskPrice> deskPrices = Optional.ofNullable(deskPriceMapper.selectDeskPriceList(deskPrice)).orElse(Collections.emptyList());
+        deskPrices.forEach(p -> p.setStoreName(storeService.selectStoreByStoreId(p.getStoreId()).getStoreName()));
+        return deskPrices;
     }
 
     /**

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
@@ -25,6 +26,9 @@ public class MemberServiceImpl implements IMemberService {
     @Autowired
     private MemberMapper memberMapper;
 
+    @Autowired
+    private IStoreService storeService;
+
     /**
      * 查询门店会员
      *
@@ -44,7 +48,9 @@ public class MemberServiceImpl implements IMemberService {
      */
     @Override
     public List<Member> selectMemberList(Member member) {
-        return memberMapper.selectMemberList(member);
+        List<Member> memberList = Optional.ofNullable(memberMapper.selectMemberList(member)).orElse(Collections.emptyList());
+        memberList.forEach(p -> p.setStoreName(storeService.selectStoreByStoreId(p.getStoreId()).getStoreName()));
+        return memberList;
     }
 
     /**

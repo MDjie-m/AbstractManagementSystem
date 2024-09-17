@@ -7,7 +7,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ruoyi.billiard.domain.StoreDesk;
+import com.ruoyi.billiard.domain.StoreTutor;
 import com.ruoyi.billiard.service.IStoreDeskService;
+import com.ruoyi.billiard.service.IStoreTutorService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
 
     @Autowired
     private IStoreDeskService storeDeskService;
+
+    @Autowired
+    private IStoreTutorService storeTutorService;
 
     /**
      * 查询订单计时
@@ -116,9 +121,15 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
     public List<OrderTutorTime> selectOrderTutorTimeListByOrderId(Long orderId) {
         List<OrderTutorTime> orderTutorTimes = Optional.ofNullable(orderTutorTimeMapper.selectList(orderTutorTimeMapper.query().eq(OrderTutorTime::getOrderId, orderId))).orElse(Collections.emptyList());
         return orderTutorTimes.stream().map(p -> {
+            // 获取球桌信息
             Long deskId = p.getDeskId();
             StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(deskId)).orElse(new StoreDesk());
             p.setStoreDesk(storeDesk);
+
+            // 获取教练信息
+            Long tutorId = p.getTutorId();
+            StoreTutor storeTutor = Optional.ofNullable(storeTutorService.selectStoreTutorByStoreTutorId(tutorId)).orElse(new StoreTutor());
+            p.setStoreTutor(storeTutor);
             return p;
         }).collect(Collectors.toList());
     }

@@ -39,11 +39,7 @@
 
         <el-table v-loading="loading" :data="tutorPriceList" @selection-change="handleSelectionChange">
           <el-table-column label="ID" align="center" prop="tutorPriceId"/>
-          <el-table-column label="门店" align="center" prop="storeId">
-            <template slot-scope="scope">
-              <dict-tag :options="stoOptions" :value="scope.row.storeId"/>
-            </template>
-          </el-table-column>
+          <el-table-column label="门店" align="center" prop="storeName"/>
 
           <el-table-column label="等级" align="center" prop="level">
             <template slot-scope="scope">
@@ -99,17 +95,10 @@
       <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="门店" prop="storeId">
-            <el-select v-model="form.storeId" placeholder="请选择门店">
-              <el-option
-                v-for="dict in stoOptions"
-                :key="dict.storeId"
-                :label="dict.storeName"
-                :value="dict.value"
-              ></el-option>
-            </el-select>
+            <el-tag> {{ storeInfo ? storeInfo.storeName : '' }}</el-tag>
           </el-form-item>
           <el-form-item label="等级" prop="level">
-            <el-select v-model="form.level" placeholder="请选择等级">
+            <el-select v-model="form.level" placeholder="请选择等级" class="with100">
               <el-option
                 v-for="dict in dict.type.store_tutor"
                 :key="dict.value"
@@ -122,7 +111,8 @@
             <el-input v-model="form.price" placeholder="请输入价格"/>
           </el-form-item>
           <el-form-item label="备注" prop="remark">
-            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
+            <el-input v-model="form.remark" type="textarea" class="with100" placeholder="请输入内容"
+                      maxlength="200"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -136,8 +126,6 @@
 
 <script>
 import {listTutorPrice, getTutorPrice, delTutorPrice, addTutorPrice, updateTutorPrice} from "@/api/billiard/tutorPrice";
-import {listStoreAll} from "@/api/billiard/store";
-import {listUserAll} from "@/api/system/user";
 import StoreContainer from "@/views/billiard/component/storeContainer.vue";
 
 export default {
@@ -146,6 +134,7 @@ export default {
   dicts: ['store_tutor'],
   data() {
     return {
+      storeInfo: null,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -171,8 +160,6 @@ export default {
         level: null,
         storeId: null,
       },
-      userOptions: [],
-      stoOptions: [],
       // 表单参数
       form: {},
       // 表单校验
@@ -183,12 +170,21 @@ export default {
         level: [
           {required: true, message: "等级不能为空", trigger: "change"}
         ],
-        createTime: [
-          {required: true, message: "创建时间不能为空", trigger: "blur"}
-        ],
-        updateTime: [
-          {required: true, message: "更新时间不能为空", trigger: "blur"}
-        ],
+        price: [
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                return callback();
+              }
+              if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+                callback(new Error('请输入正确的价格格式，例如：9.99'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
+        ]
       }
     };
   },
@@ -202,26 +198,6 @@ export default {
     },
     initData() {
       this.getList();
-      this.getUserList()
-      this.getStoreList()
-    },
-    /** 获取门店列表 */
-    getStoreList() {
-      listStoreAll().then(response => {
-        this.stoOptions = (response.data || []).map(p => {
-          return Object.assign({label: p.storeName, value: p.storeId, raw: {listClass: ''}}, p)
-        })
-      })
-    },
-    /** 获取用户列表 */
-    getUserList() {
-      listUserAll().then(response => {
-        this.userOptions = (response.data || []).map(p => {
-          return Object.assign({label: p.nickName, value: p.userId, raw: {listClass: ''}}, p)
-        });
-
-        console.log('用户', this.userOptions)
-      })
     },
     /** 查询教练价格列表 */
     getList() {
@@ -241,15 +217,9 @@ export default {
     reset() {
       this.form = {
         tutorPriceId: null,
-        storeId: null,
+        storeId: this.storeInfo?.storeId || -1,
         level: null,
         price: null,
-        createBy: null,
-        createTime: null,
-        updateBy: null,
-        updateTime: null,
-        createById: null,
-        updateById: null,
         remark: null
       };
       this.resetForm("form");

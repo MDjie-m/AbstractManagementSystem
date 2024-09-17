@@ -34,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectOrderVo"/>
         <where>  
             <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
             <if test="orderType != null "> and order_type = #{orderType}</if>
             <if test="status != null "> and status = #{status}</if>
             <if test="payType != null "> and pay_type = #{payType}</if>

@@ -15,6 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="totalAmountDue"    column="total_amount_due"    />
         <result property="totalDiscountAmount"    column="total_discount_amount"    />
         <result property="totalAmount"    column="total_amount"    />
+        <result property="totalGiveAmount"    column="total_give_amount"    />
         <result property="discountValue"    column="discount_value"    />
         <result property="totalWipeZero"    column="total_wipe_zero"    />
         <result property="remark"    column="remark"    />
@@ -27,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectOrderGoodsVo">
-        select order_detail_id, order_id, desk_id, goods_id, goods_name, price, num, total_amount_due, total_discount_amount, total_amount, discount_value, total_wipe_zero, remark, create_by, create_time, update_by, create_by_id, update_by_id, update_time from t_order_goods
+        select order_detail_id, order_id, desk_id, goods_id, goods_name, price, num, total_amount_due, total_discount_amount, total_amount, total_give_amount, discount_value, total_wipe_zero, remark, create_by, create_time, update_by, create_by_id, update_by_id, update_time from t_order_goods
     </sql>
 
     <select id="selectOrderGoodsList" parameterType="OrderGoods" resultMap="OrderGoodsResult">
@@ -40,6 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="price != null "> and price = #{price}</if>
             <if test="num != null "> and num = #{num}</if>
             <if test="totalAmountDue != null "> and total_amount_due = #{totalAmountDue}</if>
+            <if test="totalGiveAmount != null "> and total_give_amount = #{totalGiveAmount}</if>
             <if test="totalDiscountAmount != null "> and total_discount_amount = #{totalDiscountAmount}</if>
             <if test="totalAmount != null "> and total_amount = #{totalAmount}</if>
             <if test="discountValue != null "> and discount_value = #{discountValue}</if>
@@ -67,6 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalAmountDue != null">total_amount_due,</if>
             <if test="totalDiscountAmount != null">total_discount_amount,</if>
             <if test="totalAmount != null">total_amount,</if>
+            <if test="totalGiveAmount != null">total_give_amount,</if>
             <if test="discountValue != null">discount_value,</if>
             <if test="totalWipeZero != null">total_wipe_zero,</if>
             <if test="remark != null">remark,</if>
@@ -88,6 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalAmountDue != null">#{totalAmountDue},</if>
             <if test="totalDiscountAmount != null">#{totalDiscountAmount},</if>
             <if test="totalAmount != null">#{totalAmount},</if>
+            <if test="totalGiveAmount != null">#{totalGiveAmount},</if>
             <if test="discountValue != null">#{discountValue},</if>
             <if test="totalWipeZero != null">#{totalWipeZero},</if>
             <if test="remark != null">#{remark},</if>
@@ -112,6 +116,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="totalAmountDue != null">total_amount_due = #{totalAmountDue},</if>
             <if test="totalDiscountAmount != null">total_discount_amount = #{totalDiscountAmount},</if>
             <if test="totalAmount != null">total_amount = #{totalAmount},</if>
+            <if test="totalGiveAmount != null">total_give_amount = #{totalGiveAmount},</if>
             <if test="discountValue != null">discount_value = #{discountValue},</if>
             <if test="totalWipeZero != null">total_wipe_zero = #{totalWipeZero},</if>
             <if test="remark != null">remark = #{remark},</if>

@@ -219,6 +219,11 @@
                   {{ formatAmount(scope.row.totalAmount) }}
                 </template>
               </el-table-column>
+              <el-table-column prop="totalGiveAmount" label="实际赠送支付金额">
+                <template slot-scope="scope">
+                  {{ formatAmount(scope.row.totalGiveAmount) }}
+                </template>
+              </el-table-column>
               <el-table-column prop="remark" label="备注"></el-table-column>
             </el-table>
           </div>
@@ -324,6 +329,12 @@
                   <div class="info-box-title">球桌：</div>
                   <div class="info-box-row-left-content">{{ `${item.storeDesk.deskName}(${item.storeDesk.deskNum})` }}</div>
                 </div>
+              </div>
+              <div class="info-box-row">
+                <div class="info-box-row-middle">
+                  <div class="info-box-title">教练：</div>
+                  <div class="info-box-row-left-content">{{ `${item.storeTutor.realName}(${item.storeTutor.mobile})` }}</div>
+                </div>
                 <div class="info-box-row-middle">
                   <div class="info-box-title">教练类型：</div>
                   <div class="info-box-row-left-content">
@@ -354,7 +365,21 @@
               <div class="info-box-row">
                 <div class="info-box-row-middle">
                   <div class="info-box-title">助教总费用：</div>
+                  <div class="info-box-row-left-content text-red">{{ formatAmount(item.totalAmountDue) }}</div>
+                </div>
+                <div class="info-box-row-middle">
+                  <div class="info-box-title">折扣金额：</div>
+                  <div class="info-box-row-left-content text-red">{{ formatAmount(item.totalDiscountAmount) }}</div>
+                </div>
+              </div>
+              <div class="info-box-row">
+                <div class="info-box-row-middle">
+                  <div class="info-box-title">实际支付金额：</div>
                   <div class="info-box-row-left-content text-red">{{ formatAmount(item.totalAmount) }}</div>
+                </div>
+                <div class="info-box-row-middle">
+                  <div class="info-box-title">实际赠送支付金额：</div>
+                  <div class="info-box-row-left-content text-red">{{ formatAmount(item.totalGiveAmount) }}</div>
                 </div>
               </div>
               <div class="info-box-row">

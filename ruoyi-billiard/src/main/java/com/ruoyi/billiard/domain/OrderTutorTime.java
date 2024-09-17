@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.MyBaseEntity;
 
 /**
  * 订单计时对象 t_order_tutor_time
@@ -122,4 +121,6 @@ public class OrderTutorTime extends BaseFee
     @TableField(exist = false)
     private StoreDesk storeDesk;
 
+    @TableField(exist = false)
+    private StoreTutor storeTutor;
 }

@@ -5,7 +5,7 @@
         <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch"
                  label-width="68px">
           <el-form-item label="球桌类型" prop="deskType">
-            <el-select v-model="queryParams.deskType" placeholder="请选择球桌类型" clearable>
+            <el-select v-model="queryParams.deskType" placeholder="请选择球桌类型" clearable @change="handleQuery">
               <el-option
                 v-for="dict in dict.type.store_desk_type"
                 :key="dict.value"
@@ -55,11 +55,7 @@
 
         <el-table v-loading="loading" :data="deskPriceList" @selection-change="handleSelectionChange">
           <el-table-column label="ID" align="center" prop="deskPriceId"/>
-          <el-table-column label="门店" align="center" prop="storeId">
-            <template slot-scope="scope">
-              <dict-tag :options="stoOptions" :value="scope.row.storeId"/>
-            </template>
-          </el-table-column>
+          <el-table-column label="门店" align="center" prop="storeName"/>
           <el-table-column label="球桌类型" align="center" prop="deskType">
             <template slot-scope="scope">
               <dict-tag :options="dict.type.store_desk_type" :value="scope.row.deskType"/>
@@ -114,17 +110,10 @@
       <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="门店" prop="storeId">
-            <el-select v-model="form.storeId" placeholder="请选择门店">
-              <el-option
-                v-for="dict in stoOptions"
-                :key="dict.storeId"
-                :label="dict.storeName"
-                :value="dict.value"
-              ></el-option>
-            </el-select>
+            <el-tag> {{ storeInfo ? storeInfo.storeName : '' }}</el-tag>
           </el-form-item>
           <el-form-item label="球桌类型" prop="deskType">
-            <el-select v-model="form.deskType" placeholder="请选择球桌类型">
+            <el-select v-model="form.deskType" placeholder="请选择球桌类型" class="with100">
               <el-option
                 v-for="dict in dict.type.store_desk_type"
                 :key="dict.value"
@@ -137,7 +126,8 @@
             <el-input v-model="form.price" placeholder="请输入价格"/>
           </el-form-item>
           <el-form-item label="备注" prop="remark">
-            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
+            <el-input v-model="form.remark" type="textarea" class="with100" placeholder="请输入内容"
+                      maxlength="200"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -151,8 +141,6 @@
 
 <script>
 import {listDeskPrice, getDeskPrice, delDeskPrice, addDeskPrice, updateDeskPrice} from "@/api/billiard/deskPrice";
-import {listUserAll} from "@/api/system/user";
-import {listStoreAll} from "@/api/billiard/store";
 import StoreContainer from "@/views/billiard/component/storeContainer.vue";
 
 export default {
@@ -161,6 +149,7 @@ export default {
   dicts: ['store_desk_type'],
   data() {
     return {
+      storeInfo: null,
       // 遮罩层
       loading: true,
       // 选中数组
@@ -186,18 +175,31 @@ export default {
         deskType: null,
         storeId: null,
       },
-      userOptions: [],
-      stoOptions: [],
       // 表单参数
       form: {},
       // 表单校验
       rules: {
         storeId: [
-          {required: true, message: "门店不能为空", trigger: "change"}
+          {required: true, message: "门店不能为空", trigger: "blur"}
         ],
         deskType: [
           {required: true, message: "球桌类型不能为空", trigger: "change"}
         ],
+        price: [
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                return callback();
+              }
+              if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+                callback(new Error('请输入正确的价格格式，例如：9.99'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
+        ]
       }
     };
   },
@@ -211,26 +213,6 @@ export default {
     },
     initData() {
       this.getList();
-      this.getUserList()
-      this.getStoreList()
-    },
-    /** 获取门店列表 */
-    getStoreList() {
-      listStoreAll().then(response => {
-        this.stoOptions = (response.data || []).map(p => {
-          return Object.assign({label: p.storeName, value: p.storeId, raw: {listClass: ''}}, p)
-        })
-      })
-    },
-    /** 获取用户列表 */
-    getUserList() {
-      listUserAll().then(response => {
-        this.userOptions = (response.data || []).map(p => {
-          return Object.assign({label: p.nickName, value: p.userId, raw: {listClass: ''}}, p)
-        });
-
-        console.log('用户', this.userOptions)
-      })
     },
     /** 查询球桌价格列表 */
     getList() {
@@ -250,7 +232,7 @@ export default {
     reset() {
       this.form = {
         deskPriceId: null,
-        storeId: null,
+        storeId: this.storeInfo?.storeId || -1,
         deskType: null,
         price: null,
         remark: null

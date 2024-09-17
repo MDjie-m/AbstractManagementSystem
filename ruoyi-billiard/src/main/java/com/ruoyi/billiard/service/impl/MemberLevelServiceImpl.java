@@ -1,9 +1,12 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import com.ruoyi.billiard.domain.Member;
 import com.ruoyi.billiard.service.IMemberService;
+import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -29,6 +32,9 @@ public class MemberLevelServiceImpl implements IMemberLevelService
     @Autowired
     private IMemberService memberService;
 
+    @Autowired
+    private IStoreService storeService;
+
     /**
      * 查询门店会员等级
      * 
@@ -50,7 +56,9 @@ public class MemberLevelServiceImpl implements IMemberLevelService
     @Override
     public List<MemberLevel> selectMemberLevelList(MemberLevel memberLevel)
     {
-        return memberLevelMapper.selectMemberLevelList(memberLevel);
+        List<MemberLevel> memberLevels = Optional.ofNullable(memberLevelMapper.selectMemberLevelList(memberLevel)).orElse(Collections.emptyList());
+        memberLevels.forEach(level -> level.setStoreName(storeService.selectStoreByStoreId(level.getStoreId()).getStoreName()));
+        return memberLevels;
     }
 
     /**

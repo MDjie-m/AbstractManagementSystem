@@ -26,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectTutorPriceVo"/>
         <where>  
             <if test="level != null "> and level = #{level}</if>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
             <if test="createById != null "> and create_by_id = #{createById}</if>
             <if test="updateById != null "> and update_by_id = #{updateById}</if>
         </where>

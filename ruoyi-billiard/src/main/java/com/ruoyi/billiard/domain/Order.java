@@ -128,6 +128,8 @@ public class Order extends MyBaseEntity
     @TableField(exist = false)
     private Member member;
 
+    @TableField(exist = false)
+    private String storeName;
 
 
 

@@ -69,11 +69,7 @@
               {{ scope.row.discount }}折
             </template>
           </el-table-column>
-          <el-table-column label="门店" align="center" prop="storeId">
-            <template slot-scope="scope">
-              <dict-tag :options="stoOptions" :value="scope.row.storeId"/>
-            </template>
-          </el-table-column>
+          <el-table-column label="门店" align="center" prop="storeName"/>
           <el-table-column label="创建/更新" align="center" prop="createById" width="250">>
             <template slot-scope="scope">
               <div>
@@ -144,7 +140,8 @@
           <!--          <el-input v-model="form.updateById" placeholder="请输入更新者Id" />-->
           <!--        </el-form-item>-->
           <el-form-item label="备注" prop="remark">
-            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
+            <el-input v-model="form.remark"  type="textarea" class="with100" placeholder="请输入内容"
+                      maxlength="200"/>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -165,8 +162,6 @@ import {
   updateMemberLevel,
   checkMemberLevel
 } from "@/api/billiard/memberLevel";
-import {listStoreAll} from "@/api/billiard/store";
-import {listUserAll} from "@/api/system/user";
 import StoreContainer from "@/views/billiard/component/storeContainer.vue";
 
 export default {
@@ -202,8 +197,6 @@ export default {
         createById: null,
         updateById: null,
       },
-      stoOptions: [], // 门店列表
-      userOptions: [], // 用户列表
       // 表单参数
       form: {},
       // 表单校验
@@ -231,28 +224,8 @@ export default {
     },
     initData() {
       this.getList()
-      this.getAllStore()
-      this.getUserList()
-    },
-    /** 查询所有门店 */
-    getAllStore() {
-      listStoreAll().then(res => {
-        this.stoOptions = (res.data || []).map(p => {
-          return Object.assign({label: p.storeName, value: p.storeId, raw: {listClass: ''}}, p)
-        })
-      })
     },
 
-    /** 获取用户列表 */
-    getUserList() {
-      listUserAll().then(response => {
-        this.userOptions = (response.data || []).map(p => {
-          return Object.assign({label: p.nickName, value: p.userId, raw: {listClass: ''}}, p)
-        });
-
-        console.log('用户', this.userOptions)
-      })
-    },
     /** 查询门店会员等级列表 */
     getList() {
       this.loading = true;

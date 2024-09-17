@@ -1,6 +1,10 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
+import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,9 @@ public class TutorPriceServiceImpl implements ITutorPriceService
 {
     @Autowired
     private TutorPriceMapper tutorPriceMapper;
+
+    @Autowired
+    private IStoreService storeService;
 
     /**
      * 查询教练价格
@@ -43,7 +50,9 @@ public class TutorPriceServiceImpl implements ITutorPriceService
     @Override
     public List<TutorPrice> selectTutorPriceList(TutorPrice tutorPrice)
     {
-        return tutorPriceMapper.selectTutorPriceList(tutorPrice);
+        List<TutorPrice> tutorPrices = Optional.ofNullable(tutorPriceMapper.selectTutorPriceList(tutorPrice)).orElse(Collections.emptyList());
+        tutorPrices.forEach(tutorPrice1 -> tutorPrice1.setStoreName(storeService.selectStoreByStoreId(tutorPrice1.getStoreId()).getStoreName()));
+        return tutorPrices;
     }
 
     /**

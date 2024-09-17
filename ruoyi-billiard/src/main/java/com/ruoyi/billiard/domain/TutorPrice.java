@@ -60,6 +60,9 @@ public class TutorPrice extends MyBaseEntity
     @TableField("update_by_id")
     private Long updateById;
 
+    @TableField(exist = false)
+    private String storeName;
+
 
 
 

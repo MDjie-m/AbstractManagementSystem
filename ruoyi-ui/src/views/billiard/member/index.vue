@@ -84,11 +84,7 @@
               <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.sex"/>
             </template>
           </el-table-column>
-          <el-table-column label="门店" align="center" prop="storeId">
-            <template slot-scope="scope">
-              <dict-tag :options="stoOptions" :value="scope.row.storeId"/>
-            </template>
-          </el-table-column>
+          <el-table-column label="门店" align="center" prop="storeName"/>
           <el-table-column label="会员等级" align="center" prop="levelId">
             <template slot-scope="scope">
               <dict-tag :options="levelOptions" :value="scope.row.levelId"/>
@@ -118,7 +114,7 @@
           </el-table-column>
           <el-table-column label="备注" align="center" prop="remark"/>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
+            <template slot-scope="scope" v-if="scope.row.delFlag === '0'">
               <el-button
                 size="mini"
                 type="text"
@@ -149,37 +145,75 @@
       </div>
 
       <!-- 添加或修改门店会员对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body>
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-          <el-form-item label="姓名" prop="realName">
-            <el-input v-model="form.realName" placeholder="请输入姓名"/>
-          </el-form-item>
-          <el-form-item label="手机号" prop="mobile">
-            <el-input type="tel" maxlength="11" v-model="form.mobile" placeholder="请输入手机号"/>
-          </el-form-item>
-          <el-form-item label="性别" prop="sex">
-            <el-select v-model="form.sex" placeholder="请选择性别">
-              <el-option
-                v-for="dict in dict.type.sys_user_sex"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="会员等级" prop="levelId">
-            <el-select v-model="form.levelId" placeholder="请选择性别">
-              <el-option
-                v-for="dict in levelOptions"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="门店" prop="storeId">
-            <el-tag> {{ storeInfo ? storeInfo.storeName : '' }}</el-tag>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="姓名" prop="realName">
+                <el-input v-model="form.realName" placeholder="请输入姓名"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="手机号" prop="mobile">
+                <el-input type="tel" maxlength="11" v-model="form.mobile" placeholder="请输入手机号"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="性别" prop="sex">
+                <el-select v-model="form.sex" placeholder="请选择性别" class="with100">
+                  <el-option
+                    v-for="dict in dict.type.sys_user_sex"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="会员等级" prop="levelId">
+                <el-select v-model="form.levelId" placeholder="请选择性别" class="with100">
+                  <el-option
+                    v-for="dict in levelOptions"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="门店" prop="storeId">
+                <el-tag> {{ storeInfo ? storeInfo.storeName : '' }}</el-tag>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="状态" prop="status">
+                <el-radio-group v-model="form.status">
+                  <el-radio-button     :label="0"   >
+                    正常
+                  </el-radio-button>
+                  <el-radio-button     :label="1"   >
+                    停用
+                  </el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="备注" prop="remark">
+                <el-input v-model="form.remark" type="textarea" class="with100" placeholder="请输入内容"
+                          maxlength="200"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
 <!--          <el-form-item label="当前金额" prop="currentAmount">-->
 <!--            <el-input v-model="form.currentAmount" placeholder="请输入当前金额"/>-->
 <!--          </el-form-item>-->
@@ -189,19 +223,7 @@
 <!--          <el-form-item label="门店" prop="storeId">-->
 <!--            <el-input v-model="form.storeId" placeholder="请输入门店"/>-->
 <!--          </el-form-item>-->
-          <el-form-item label="状态" prop="status">
-            <el-radio-group v-model="form.status">
-              <el-radio-button     :label="0"   >
-                正常
-              </el-radio-button>
-              <el-radio-button     :label="1"   >
-                停用
-              </el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="备注" prop="remark">
-            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"/>
-          </el-form-item>
+
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -214,7 +236,6 @@
 
 <script>
 import {listMember, getMember, delMember, addMember, updateMember} from "@/api/billiard/member";
-import {listStoreAll} from "@/api/billiard/store";
 import {getAllMemberLevel} from "@/api/billiard/memberLevel";
 import StoreContainer from "@/views/billiard/component/storeContainer.vue";
 
@@ -223,6 +244,16 @@ export default {
   components: {StoreContainer},
   dicts: ['sys_user_sex', 'member_status', 'member_del_flag'],
   data() {
+    const checkPhone = (rule, value, callback) => {
+      const reg = /^1[3-9]\d{9}$/;
+      if (value === '') {
+        callback(new Error('手机号不能为空'));
+      } else if (!reg.test(value)) {
+        callback(new Error('请输入正确的手机号'));
+      } else {
+        callback();
+      }
+    };
     return {
       storeInfo: null,
       // 遮罩层
@@ -262,7 +293,8 @@ export default {
           {required: true, message: "姓名不能为空", trigger: "blur"}
         ],
         mobile: [
-          {required: true, message: "手机号不能为空", trigger: "blur"}
+          {required: true, message: "手机号不能为空", trigger: "blur"},
+          { validator: checkPhone, trigger: 'blur' }
         ],
         currentAmount: [
           {required: true, message: "当前金额不能为空", trigger: "blur"}
@@ -280,7 +312,6 @@ export default {
           {required: true, message: "状态不能为空", trigger: "change"}
         ],
       },
-      stoOptions: [], // 门店列表
       levelOptions: [], // 当前门店会员等级列表
     };
   },
@@ -296,23 +327,13 @@ export default {
     /** 初始化数据 */
     initData() {
       this.getList();
-      this.getAllStore();
       this.getAllLevelByStoreId();
-      this.getUserList();
     },
     /** 根据当前门店id查询所有当前门店会员等级 */
     getAllLevelByStoreId() {
       getAllMemberLevel(this.queryParams.storeId).then(res => {
         this.levelOptions = (res.data || []).map(p => {
           return Object.assign({label: p.levelName, value: p.memberLevelId, raw: {listClass: ''}}, p)
-        })
-      })
-    },
-    /** 查询所有门店 */
-    getAllStore() {
-      listStoreAll().then(res => {
-        this.stoOptions = (res.data || []).map(p => {
-          return Object.assign({label: p.storeName, value: p.storeId, raw: {listClass: ''}}, p)
         })
       })
     },
@@ -341,7 +362,7 @@ export default {
         sex: null,
         storeId: this.storeInfo?.storeId || -1,
         levelId: null,
-        status: null,
+        status: 0,
         remark: null
       };
       this.resetForm("form");

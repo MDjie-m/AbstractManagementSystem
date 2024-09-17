@@ -67,6 +67,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private StoreDeskMapper storeDeskMapper;
 
+    @Autowired
+    private IStoreService storeService;
+
     /**
      * 查询订单
      *
@@ -115,7 +118,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     @Override
     public List<Order> selectOrderList(Order order) {
-        return orderMapper.selectOrderList(order);
+        List<Order> orders = Optional.ofNullable(orderMapper.selectOrderList(order)).orElse(Collections.emptyList());
+        orders.forEach(p -> p.setStoreName(storeService.selectStoreByStoreId(p.getStoreId()).getStoreName()));
+        return orders;
     }
 
     /**
