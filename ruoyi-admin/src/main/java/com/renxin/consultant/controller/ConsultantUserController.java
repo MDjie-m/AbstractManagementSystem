@@ -1,6 +1,7 @@
 package com.renxin.consultant.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.constant.Constants;
@@ -19,6 +20,7 @@ import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.request.PsyAdminConsultReq;
+import com.renxin.psychology.request.PsyConsultReq;
 import com.renxin.psychology.request.PsyConsultServeConfigReq;
 import com.renxin.psychology.request.QueryListByTypeReq;
 import com.renxin.psychology.service.*;
@@ -139,14 +141,20 @@ public class ConsultantUserController extends BaseController {
         String token = consultantTokenService.createToken(consultDTO, 360000);
 
         //若无账户则创建
-        accountService.createAccountIfNotExist(psyConsult.getId());
-
+        //accountService.createAccountIfNotExist(psyConsult.getId());
+        
         //更新设备信息
-        psyConsult.setDeviceId(req.getDeviceId());
-        psyConsult.setDeviceBrand(req.getDeviceBrand());
-        psyConsult.setDeviceModel(req.getDeviceModel());
-        psyConsult.setLastLoginIp(req.getLastLoginIp());
-        psyConsultService.updateById(psyConsult);
+        PsyConsult oldConsultant = psyConsultService.getById(psyConsult.getId());
+        psyConsultService.update(new LambdaUpdateWrapper<PsyConsult>()
+                .eq(PsyConsult::getId,psyConsult.getId())
+                .set(PsyConsult::getDeviceId,req.getDeviceId())
+                .set(PsyConsult::getDeviceBrand,req.getDeviceBrand())
+                .set(PsyConsult::getDeviceModel,req.getDeviceModel())
+                .set(PsyConsult::getLastLoginIp,req.getLastLoginIp())
+                //来源渠道和推荐人, 仅在原值为空时更新
+                //.set(ObjectUtils.isEmpty(oldConsultant.getSourceChannelId()),PsyConsult::getSourceChannelId,req.getSourceChannelId())
+                //.set(ObjectUtils.isEmpty(oldConsultant.getIntroduceUserId()),PsyConsult::getIntroduceUserId,req.getIntroduceUserId())
+                );
 
         return token;
        
@@ -187,6 +195,18 @@ public class ConsultantUserController extends BaseController {
         List<PsyConsult> list = psyConsultService.getList(consultantReq);*/
 
         return getDataTable(cacheList, idList.size());
+    }
+
+    /**
+     * 查询心理咨询师列表
+     */
+    @PostMapping("/search")
+    @RateLimiter
+    public TableDataInfo list(@RequestBody PsyConsultReq req)
+    {
+        startPage();
+        List<PsyConsult> list = psyConsultService.search(req);
+        return getDataTable(list);
     }
 
     /**

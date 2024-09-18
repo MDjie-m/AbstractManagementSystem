@@ -23,6 +23,9 @@ public class ConsultLoginDTO  {
    //最后登录ip
    private String lastLoginIp;
    
+   private String sourceChannelId;//来源渠道id
+   private Long introduceUserId;//介绍人id
+   
    private String phone;
    private String smsCode;
 

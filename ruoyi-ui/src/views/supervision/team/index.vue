@@ -129,7 +129,7 @@
       <el-table-column label="满额人数" align="center" prop="maxNumPeople" />
       <el-table-column label="剩余名额" align="center" prop="surplusJoinNum" />
 
-      <el-table-column label="服务价格" align="center" prop="price" sortable=""/>
+      <el-table-column label="入团价格" align="center" prop="price" sortable=""/>
       <el-table-column label="每周几开课" align="center" prop="weekDay" >
         <template slot-scope="scope">
           <dict-tag :options="dict.type.week_day" :value="scope.row.weekDay"/>
@@ -149,6 +149,12 @@
             type="text"
             @click="view(scope.row)"
           >查看详情</el-button>
+
+          <el-button
+            size="mini"
+            type="text"
+            @click="viewSchedule(scope.row)"
+          >查看排班</el-button>
 
           <el-button
             size="mini"
@@ -183,6 +189,8 @@
 
     <info-form ref="infoForm" :consultList="consultList" @handleOk="getList"/>
 
+    <schedule-info-form ref="scheduleInfoForm" :consultList="consultList" @handleOk="getList"/>
+
   </div>
 </template>
 
@@ -191,6 +199,7 @@ import {addTeam,editTeam, queryTeamList,deleteTeam} from "@/api/supervision/team
 import addForm from "./addForm";
 import editForm from "./editForm";
 import infoForm from "./info";
+import scheduleInfoForm from "./scheduleInfo";
 import {getConsultAll} from "@/api/psychology/consult";
 
 export default {
@@ -198,6 +207,7 @@ export default {
     addForm,
     editForm,
     infoForm,
+    scheduleInfoForm
   },
   name: "team",
   dicts: ['supervision_type','supervision_status','week_day', 'team_sup_label'],
@@ -307,6 +317,11 @@ export default {
     /** 查看督导 */
     view(row) {
       this.$refs.infoForm.init(row.id)
+    },
+
+    /** 查看排班 */
+    viewSchedule(row) {
+      this.$refs.scheduleInfoForm.init(row.id)
     },
 
     /** 编辑督导 */

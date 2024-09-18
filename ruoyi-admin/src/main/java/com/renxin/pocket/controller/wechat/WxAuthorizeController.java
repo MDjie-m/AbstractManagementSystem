@@ -156,6 +156,8 @@ public class WxAuthorizeController {
         psyUser.setDeviceBrand(params.get("deviceBrand"));
         psyUser.setDeviceModel(params.get("deviceModel"));
         psyUser.setLastLoginIp(params.get("lastLoginIp"));
+        psyUser.setSourceChannelId(params.get("sourceChannelId"));
+        psyUser.setIntroduceUserId(Long.valueOf(params.get("introduceUserId")));
         psyUserService.updatePsyUser(psyUser);
 
         return AjaxResult.success(Constants.TOKEN_PREFIX +  token);

@@ -82,6 +82,13 @@
             <if test="deviceBrand != null">device_brand = #{deviceBrand},</if>
             <if test="deviceModel != null">device_model = #{deviceModel},</if>
             <if test="lastLoginIp != null">last_login_ip = #{lastLoginIp},</if>
+            <if test="sourceChannelId != null">
+                <!-- 仅当source_channel_id为空时才更新该字段 -->
+                source_channel_id = CASE WHEN source_channel_id IS NULL or source_channel_id = '' THEN #{sourceChannelId} ELSE source_channel_id END,
+            </if>
+            <if test="introduceUserId != null">
+                introduce_user_id = CASE WHEN introduce_user_id IS NULL or introduce_user_id = '' THEN #{introduceUserId} ELSE introduce_user_id END,
+            </if>
         </trim>
         where id = #{id}
     </update>

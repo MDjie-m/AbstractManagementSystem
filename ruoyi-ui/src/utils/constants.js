@@ -302,3 +302,11 @@ export const teamSupLabel = [
   { label: '升阶课程', value: 'sjkc' },
   { label: '名师课程', value: 'mskc' },
 ];
+
+// 排班任务状态
+export const scheduleStatus = [
+  { label: '待办', value: '0' },
+  { label: '已完成', value: '1' },
+  { label: '付费人请假', value: '2' },
+  { label: '收费人请假', value: '3' },
+];

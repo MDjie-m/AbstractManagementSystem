@@ -64,9 +64,11 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
      * @return 咨询师排班任务
      */
     @Override
-    public List<PsyConsultantSchedule> selectPsyConsultantScheduleList(PsyConsultantSchedule psyConsultantSchedule)
+    public List<PsyConsultantSchedule> selectPsyConsultantScheduleList(PsyConsultantSchedule req)
     {
-        return psyConsultantScheduleMapper.selectPsyConsultantScheduleList(psyConsultantSchedule);
+        req.setOrderBy("real_time");
+        req.setOrderDir("asc");
+        return psyConsultantScheduleMapper.selectPsyConsultantScheduleList(req);
     }
 
     /**
@@ -91,6 +93,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
 
     /**
      * 修改咨询师排班任务
+     * 
      * 
      * @param psyConsultantSchedule 咨询师排班任务
      * @return 结果
