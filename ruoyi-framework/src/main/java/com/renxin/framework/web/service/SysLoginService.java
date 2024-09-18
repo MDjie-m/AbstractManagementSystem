@@ -94,20 +94,20 @@ public class SysLoginService
             AuthenticationContextHolder.clearContext();
         }
 
-        // 咨询师状态判断
-        String consultStatus = userService.getConsultStatus(username);
-        if (StringUtils.isNotBlank(consultStatus) && "1".equals(consultStatus)) {
-            AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.blocked")));
-            throw new ServiceException(MessageUtils.message("user.blocked"));
-        }
-        // 合同状态判断
-        if (StringUtils.isNotBlank(consultStatus) && "0".equals(consultStatus)) {
-            int num = userService.getContractNumByUserName(username);
-            if (num == 0) {
-                AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.blocked")));
-                throw new ServiceException(MessageUtils.message("user.blocked"));
-            }
-        }
+//        // 咨询师状态判断
+//        String consultStatus = userService.getConsultStatus(username);
+//        if (StringUtils.isNotBlank(consultStatus) && "1".equals(consultStatus)) {
+//            AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.blocked")));
+//            throw new ServiceException(MessageUtils.message("user.blocked"));
+//        }
+//        // 合同状态判断
+//        if (StringUtils.isNotBlank(consultStatus) && "0".equals(consultStatus)) {
+//            int num = userService.getContractNumByUserName(username);
+//            if (num == 0) {
+//                AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.blocked")));
+//                throw new ServiceException(MessageUtils.message("user.blocked"));
+//            }
+//        }
 
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
