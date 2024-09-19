@@ -30,21 +30,6 @@ public interface OrderMapper extends MyBaseMapper<Order>
      */
     public List<Order> selectOrderList(Order order);
 
-    /**
-     * 新增订单
-     * 
-     * @param order 订单
-     * @return 结果
-     */
-    public int insertOrder(Order order);
-
-    /**
-     * 修改订单
-     * 
-     * @param order 订单
-     * @return 结果
-     */
-    public int updateOrder(Order order);
 
     /**
      * 删除订单

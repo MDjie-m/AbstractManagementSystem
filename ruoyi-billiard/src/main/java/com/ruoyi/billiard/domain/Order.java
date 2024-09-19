@@ -60,6 +60,13 @@ public class Order extends MyBaseEntity
     @TableField("total_amount")
     private BigDecimal totalAmount;
 
+
+    /**
+     * 预付费
+     */
+    @TableField("pre_pay_amount")
+    private BigDecimal prePayAmount;
+
     /** 当前折扣 */
     @Excel(name = "当前折扣")
 

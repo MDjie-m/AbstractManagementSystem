@@ -9,7 +9,9 @@
 
 <script>
 import iframeToggle from "./IframeToggle/index"
-import {callPCMethod} from "@/utils/pcCommunication";
+import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
+import {stopOrder} from "@/api/cashier/order";
+import {listLightTimer, removeLightTimer} from "@/api/cashier/desk";
 
 export default {
   name: 'AppMain',
@@ -21,6 +23,7 @@ export default {
   },
   data() {
     return {
+      intervalId: null,
       ifRouterAlive: true
     }
   },
@@ -33,14 +36,36 @@ export default {
     }
   },
   created() {
-    this.$eventBus.$on("global.refresh",this.onReload);
-
+    this.$eventBus.$on("global.refresh", this.onReload);
+    this.intervalId = setInterval(async () => {
+      this.queryLightTimer()
+    }, 5000);
+    this.queryLightTimer();
   },
   beforeDestroy() {
-    this.$eventBus.$off("global.refresh" )
+    this.$eventBus.$off("global.refresh");
+    clearInterval(this.intervalId);
   },
   methods: {
-    onReload(){
+    async queryLightTimer() {
+
+      let time = this.$time().format("YYYY-MM-DD HH:mm:ss");
+      let res = await listLightTimer(time);
+
+      let timers = (res.data || []).filter(p => p.enable);
+      timers.forEach(p => {
+        try {
+          callPCMethod(DeviceMethodNames.LightSwitch, {deskNum: p.deskNum, open: false});
+          if (p.lightType === 1) {
+            stopOrder(p.orderId)
+          }
+        } catch (e) {
+        }
+      })
+    //  removeLightTimer(time)
+
+    },
+    onReload() {
       this.reload();
     },
     reload() {

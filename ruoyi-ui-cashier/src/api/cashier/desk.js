@@ -28,6 +28,27 @@ export function listDeskDashboard() {
     method: 'get',
   })
 }
+export function listLightTimer(time) {
+  return request({
+    url: '/cashier/desk/light-timer/list',
+    method: 'get',
+    params:{time}
+  })
+}
+export function createLightTimer(data) {
+  return request({
+    url: '/cashier/desk/light-timer',
+    method: 'post',
+    data:data
+  })
+}
+export function removeLightTimer(time) {
+  return request({
+    url: '/cashier/desk/light-timer/remove',
+    method: 'post',
+    params:{time}
+  })
+}
 export function getDeskBaseInfo(deskId) {
   return request({
     url: `/cashier/desk/${deskId}`,

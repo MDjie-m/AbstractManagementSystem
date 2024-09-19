@@ -26,9 +26,15 @@
                  v-if="currentDesk.status ===DeskStatus.PAUSE" :btnAble="true"/>
         <SvgItem svg-icon="desk_change" label="换台" @click.native="onOpenSwapDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
-        <SvgItem svg-icon="timing" label="定时" :btnAble="true"/>
+        <SvgItem svg-icon="timing" label="定时" @click.native="onTempLight( 1)" v-if="currentDesk.currentOrderId" :btnAble="true"/>
+        <SvgItem svg-icon="pre_pay" label="预付"
+                 :badge="currentDesk.lastActiveOrder &&  parseFloat( currentDesk.lastActiveOrder.prePayAmount)?currentDesk.lastActiveOrder.prePayAmount:0 " :btnAble="true"
+                 v-if="currentDesk.lastActiveOrder"
+                 @click.native="onPrePayClick  "/>
         <SvgItem svg-icon="light_on" label="开灯" :btnAble="true"
                  @click.native="onSwitchLight(currentDesk.deskNum,true)"/>
+        <SvgItem svg-icon="light_temp" label="临时灯" :btnAble="true"
+                 @click.native="onTempLight( 0)"/>
         <SvgItem svg-icon="close_light" label="关灯" :btnAble="true"
                  @click.native="onSwitchLight(currentDesk.deskNum,false)"/>
       </ToolBar>
@@ -192,7 +198,15 @@
 <script>
 
 
-import {getDeskBaseInfo, listDesk, pauseCalcFee, resumeCalcFee, startCalcFee, swapToNewDesk} from "@/api/cashier/desk";
+import {
+  createLightTimer,
+  getDeskBaseInfo,
+  listDesk,
+  pauseCalcFee,
+  resumeCalcFee,
+  startCalcFee,
+  swapToNewDesk
+} from "@/api/cashier/desk";
 import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
 import Dashboard from "@/views/cashier/desk/components/dashboard.vue";
 import ContentWrapper from "@/views/cashier/desk/components/contentWrapper.vue";
@@ -202,8 +216,12 @@ import ToolBar from "@/views/cashier/desk/components/toolBar.vue";
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import {MessageBox} from "element-ui";
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
-import {stopOrder, suspendOrder, voidOrder} from "@/api/cashier/order";
+import {orderPrePay, stopOrder, suspendOrder, voidOrder} from "@/api/cashier/order";
 
+const LightType = {
+  Temp: 0,
+  CalcFee: 1,
+}
 const DeskStatus = {
   Wait: 0,
   Busy: 1,
@@ -286,7 +304,10 @@ export default {
     onRefreshClick() {
       this.$refs.dashboard?.refresh();
       this.getList();
-      this.getStoreInfo();
+      if (this.currentDesk) {
+        this.queryDeskById(this.currentDesk?.deskId)
+      }
+
       this.$modal.msgSuccess("已刷新")
     },
     getStoreInfo() {
@@ -302,6 +323,64 @@ export default {
     },
     onOpenLineUpClick() {
       this.openNewDialog = true;
+    },
+    onTempLight(lightType) {
+      let msg = LightType.Temp === lightType ? '请输入灯光持续打开时间(分钟)' : '请输入计费时间(分钟)，订单会在到期后自动停止计费'
+      this.$prompt(msg, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        closeOnClickModal: false,
+        inputPattern: /^[1-9]\d{0,2}$/,
+        inputErrorMessage: "请输入1~999的数字",
+        inputValidator: (value) => {
+          if (!/^[1-9]\d{0,2}$/.test(value)) {
+            return "请输入1~999的数字"
+          }
+        },
+      }).then(({value}) => {
+        if(lightType===LightType.Temp){
+          this.onSwitchLight(this.currentDesk?.deskNum, true);
+        }
+        createLightTimer({
+          deskId: this.currentDesk?.deskId,
+          lightType: lightType,
+          orderId: this.currentDesk?.currentOrderId,
+          startTime: this.$time().format("YYYY-MM-DD HH:mm:00"),
+          endTime: this.$time().add(value, "minute").format("YYYY-MM-DD HH:mm:00"),
+        }).then(response => {
+          if(lightType===LightType.Temp){
+            this.$modal.msgSuccess(`灯已打开,将会在${value}分钟后关闭`);
+          }else {
+            this.$modal.msgSuccess(`已开始计费，订单将会在${value}分钟后停止计费。`);
+          }
+
+        });
+      }).catch(() => {
+      });
+
+    },
+    onPrePayClick() {
+      this.$prompt("请输入预付费金额", "预付费确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        closeOnClickModal: false,
+        inputPattern: /^[1-9]\d{2,3}|1000$/,
+        inputErrorMessage: "预付费金额限制在100~10000元之间整额",
+        // inputValidator: (value) => {
+        //   if (!/^[1-9]\d{2,3}|1000$/.test(value)) {
+        //     return "预付费金额限制在100~10000的证书"
+        //   }
+        // },
+      }).then(({value}) => {
+        orderPrePay({
+          amount: value,
+          orderId: this.currentDesk?.currentOrderId,
+        }).then(response => {
+          this.currentDesk.lastActiveOrder.prePayAmount = value;
+          this.$modal.msgSuccess(`预付费成功`);
+        });
+      }).catch(() => {
+      });
     },
     onSwitchLight(deskNum, open) {
       if (deskNum === null || deskNum === undefined) {
@@ -342,10 +421,10 @@ export default {
     queryDeskById(deskId) {
       return getDeskBaseInfo(deskId).then(res => {
         this.currentDesk = res.data;
-        this.deskList.forEach(p=>{
-          if(p.deskId===deskId){
-            p.status=this.currentDesk.status;
-            p.selected=true;
+        this.deskList.forEach(p => {
+          if (p.deskId === deskId) {
+            p.status = this.currentDesk.status;
+            p.selected = true;
           }
         })
       }).finally(() => this.loading = false);
@@ -353,12 +432,12 @@ export default {
     onChooseAll() {
       this.queryParams.placeType = null;
       this.queryParams.deskType = null;
-      this.currentDesk=null;
+      this.currentDesk = null;
       this.getList();
 
     },
     onChooseAllStatus() {
-      this.currentDesk=null;
+      this.currentDesk = null;
       this.queryParams.status = null;
       this.getList();
     },
@@ -368,7 +447,7 @@ export default {
       } else {
         this.queryParams[field] = parseInt(val);
       }
-      this.currentDesk=null;
+      this.currentDesk = null;
       this.getList()
     },
 
@@ -420,7 +499,7 @@ export default {
     },
     onVoidOrderClick() {
       if (this.currentDesk?.lastActiveOrder.status !== OrderStatus.Charging) {
-        return  this.$message.warning("订单状态不允许此操作.")
+        return this.$message.warning("订单状态不允许此操作.")
       }
       let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
       this.$prompt('请输入订单作废备注', "确认", {
@@ -434,18 +513,19 @@ export default {
         //     return "不能包含非法字符：< > \" ' \\\ |"
         //   }
         // },
-      }).then(({ value }) => {
+      }).then(({value}) => {
         this.orderLoading = true;
-        voidOrder(this.currentDesk?.lastActiveOrder.orderId,value).then(res => {
+        voidOrder(this.currentDesk?.lastActiveOrder.orderId, value).then(res => {
           this.queryDeskById(this.currentDesk.deskId);
           this.$message.success("订单已作废.")
         }).finally(() => this.orderLoading = false)
-      }).catch(() => {});
+      }).catch(() => {
+      });
 
     },
     onSuspendOrderClick() {
-      if (![OrderStatus.Stop,OrderStatus.Charging].includes(this.currentDesk?.lastActiveOrder.status ) ) {
-        return  this.$message.warning("订单状态不允许此操作.")
+      if (![OrderStatus.Stop, OrderStatus.Charging].includes(this.currentDesk?.lastActiveOrder.status)) {
+        return this.$message.warning("订单状态不允许此操作.")
       }
       let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
 
@@ -474,7 +554,7 @@ export default {
     },
     onStopOrderClick() {
       if (this.currentDesk?.lastActiveOrder.status !== OrderStatus.Charging) {
-        return  this.$message.warning("订单状态不允许此操作.")
+        return this.$message.warning("订单状态不允许此操作.")
       }
       let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
 

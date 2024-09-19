@@ -32,6 +32,8 @@ function getUuid() {
 }
 
 export function callPCMethod(type, data, timeout = 5000) {
+  console.log("pc调用参数：",type,JSON.stringify(data))
+
   let msgId = getUuid();
   let res = window.DeviceMethod?.callMethd(type, (typeof (data) === "string") ? data : JSON.stringify(data), msgId);
   let timeId = null;

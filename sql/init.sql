@@ -158,6 +158,7 @@ create table t_order
 (
     order_id              bigint                                not null comment '订单id' primary key,
     order_no              varchar(60)                           not null comment '订单编码',
+    pre_pay_amount        decimal(20, 2)                        not null default 0.00 not null comment '预付费',
     order_type            int                                   not null comment '类型：1=球桌费用，2=会员充值，3=商品购买,4=陪练费用，5=教学费用',
     total_amount_due      decimal(20, 2)                        not null comment '应付总金额 ',
     total_discount_amount decimal(20, 2)                        null comment '折扣金额',
@@ -600,4 +601,31 @@ create table t_tutor_price
   DEFAULT CHARSET = utf8mb4
     comment '教练价格';
 
-
+drop table if exists t_light_timer;
+create table t_light_timer
+(
+    light_timer_id bigint auto_increment                 not null comment 'ID'
+        primary key,
+    store_id       bigint                                not null comment '门店',
+    start_time     datetime                              not null comment '开始时间',
+    end_time       datetime                              not null comment '结束时间',
+    desk_id        bigint                                not null comment '桌子id',
+    order_id       bigint                                null comment '订单id',
+    light_type     int                                   not null comment '定光定时类型：0=零时灯,1=计费灯',
+    enable         tinyint                               not null default 1 comment '是否有效',
+    create_by      varchar(64) default ''                null comment '创建者',
+    create_time    timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by      varchar(64) default ''                null comment '更新者',
+    update_time    timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id   bigint                                null comment '创建者Id',
+    update_by_id   bigint                                null comment '更新者Id',
+    remark         nvarchar(500)                         null comment '备注'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    comment '灯光计时器';
+create index t_light_timer_desk_id_index
+    on t_light_timer (desk_id);
+create index t_light_timer_order_id_index
+    on t_light_timer (order_id);
+create index t_light_timer_store_id_end_time_index
+    on t_light_timer (store_id, end_time);

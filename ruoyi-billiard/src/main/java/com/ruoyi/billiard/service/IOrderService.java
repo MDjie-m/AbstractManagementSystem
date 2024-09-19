@@ -1,9 +1,11 @@
 package com.ruoyi.billiard.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import com.ruoyi.billiard.domain.Order;
 import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
+import com.ruoyi.billiard.domain.vo.OrderPrePayReqVo;
 
 /**
  * 订单Service接口
@@ -71,7 +73,12 @@ public interface IOrderService
 
     OrderCommandResVo suspendOrder(Long orderId, Long storeId);
 
-    OrderCommandResVo stopOrder(Long orderId, Long storeId);
+    BigDecimal prePayAmount(OrderPrePayReqVo reqVo);
+
+    OrderCommandResVo stopOrder(Long orderId, Long storeId,boolean stopByTimer);
 
     Boolean voidOrder(Long orderId, Long storeId,String remark);
+
+    void checkOrderTimer();
+
 }

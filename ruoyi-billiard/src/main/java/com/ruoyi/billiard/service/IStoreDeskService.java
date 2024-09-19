@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.LineUpVo;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 球桌Service接口
@@ -81,6 +83,7 @@ public interface IStoreDeskService
     DeskQueryResVo swapToNewDesk(Long deskId, Long storeId, Long orderId, Long newDeskId);
 
     DeskQueryResVo pauseCalcFee(Long deskId, Long storeId);
+
 
     DeskQueryResVo resumeDesk(Long deskId, Long storeId);
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.LightTimerMapper">
+
+
+    <sql id="selectLightTimerVo">
+        select *
+        from t_light_timer
+    </sql>
+
+    <select id="selectLightTimerList" parameterType="LightTimer" resultType="LightTimer">
+        <include refid="selectLightTimerVo"/>
+        <where>
+            <if test="startTime != null ">and start_time = #{startTime}</if>
+            <if test="endTime != null ">and end_time = #{endTime}</if>
+            <if test="deskId != null ">and desk_id = #{deskId}</if>
+            <if test="orderId != null ">and order_id = #{orderId}</if>
+            <if test="lightType != null ">and light_type = #{lightType}</if>
+            <if test="enable != null ">and enable = #{enable}</if>
+            <if test="createById != null ">and create_by_id = #{createById}</if>
+            <if test="updateById != null ">and update_by_id = #{updateById}</if>
+            <if test="storeId != null ">and store_id = #{storeId}</if>
+        </where>
+    </select>
+
+    <select id="selectLightTimerByLightTimerId" parameterType="Long" resultType="LightTimer">
+        <include refid="selectLightTimerVo"/>
+        where light_timer_id = #{lightTimerId}
+    </select>
+
+
+
+
+</mapper>

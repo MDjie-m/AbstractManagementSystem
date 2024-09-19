@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Objects;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -77,6 +78,9 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
 
     public static final String parseDateToStr(final String format, final Date date)
     {
+        if(Objects.isNull(date)){
+            return  null;
+        }
         return new SimpleDateFormat(format).format(date);
     }
 

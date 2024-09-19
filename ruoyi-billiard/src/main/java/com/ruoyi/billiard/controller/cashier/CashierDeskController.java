@@ -1,13 +1,16 @@
 package com.ruoyi.billiard.controller.cashier;
 
+import com.ruoyi.billiard.domain.LightTimer;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.LineUpVo;
+import com.ruoyi.billiard.service.ILightTimerService;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
+import com.ruoyi.common.core.page.PageResVo;
 import com.ruoyi.common.utils.ArrayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,6 +28,9 @@ import java.util.stream.Collectors;
 public class CashierDeskController extends BaseController {
     @Autowired
     private IStoreDeskService storeDeskService;
+
+    @Autowired
+    private ILightTimerService lightTimerService;
 
     /**
      * 查询球桌列表
@@ -76,6 +83,7 @@ public class CashierDeskController extends BaseController {
         DeskQueryResVo desk = storeDeskService.pauseCalcFee(deskId, getStoreIdWithThrow());
         return ResultVo.success(desk);
     }
+
     /**
      * 开台
      *
@@ -88,6 +96,7 @@ public class CashierDeskController extends BaseController {
         DeskQueryResVo desk = storeDeskService.resumeDesk(deskId, getStoreIdWithThrow());
         return ResultVo.success(desk);
     }
+
     /**
      * 开台
      *
@@ -100,6 +109,7 @@ public class CashierDeskController extends BaseController {
         DeskQueryResVo desk = storeDeskService.startCalcFee(deskId, getStoreIdWithThrow());
         return ResultVo.success(desk);
     }
+
     /**
      * 换台
      *
@@ -128,5 +138,24 @@ public class CashierDeskController extends BaseController {
     public ResultVo<Boolean> lineUp(@RequestBody Map<Integer, LineUpVo> reqVo) {
 
         return ResultVo.success(storeDeskService.saveLineUpInfo(getStoreIdWithThrow(), reqVo));
+    }
+
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/light-timer")
+    public ResultVo<Integer> creatTimer(@RequestBody LightTimer lightTimer) {
+        lightTimer.setStoreId(getStoreIdWithThrow());
+        return ResultVo.success(lightTimerService.insertLightTimer(lightTimer));
+    }
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/light-timer/remove")
+    public ResultVo<Boolean> removeTimer(@RequestParam Date time) {
+        return ResultVo.success(lightTimerService.removeByTime(time,getStoreIdWithThrow()));
+    }
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @GetMapping("/light-timer/list")
+    public ResultVo<List<LightTimer>> list(  @RequestParam Date time) {
+        List<LightTimer> list = lightTimerService.selectLightTimerList(LightTimer.builder().storeId(getStoreIdWithThrow())
+                .endTime(time).build());
+        return ResultVo.success(list);
     }
 }
