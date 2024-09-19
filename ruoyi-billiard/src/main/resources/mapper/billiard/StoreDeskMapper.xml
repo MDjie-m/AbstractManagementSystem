@@ -50,8 +50,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
           and end_time is null
         limit 1;
     </select>
+    <select id="queryBusyDeskByOrderId" resultType="com.ruoyi.billiard.domain.StoreDesk">
 
-
+        select a.*
+        from t_store_desk a join t_order_desk_time b on a.desk_id=b.desk_id
+         where b.status = 1 and  b.order_id=#{orderId}
+    </select>
 
 
     <delete id="deleteStoreDeskByDeskId" parameterType="Long">

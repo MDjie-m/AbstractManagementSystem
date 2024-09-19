@@ -61,4 +61,6 @@ public interface StoreDeskMapper extends MyBaseMapper<StoreDesk>
     List<KeyValueVo<Integer, Long>> queryDeskCountGroupByStatus(Long storeId);
 
     Integer deskInUse(@Param("deskId") Long deskId);
+
+    List<StoreDesk> queryBusyDeskByOrderId(@Param("orderId") Long orderId);
 }

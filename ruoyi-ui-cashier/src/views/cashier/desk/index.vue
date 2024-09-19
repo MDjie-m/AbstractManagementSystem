@@ -167,7 +167,7 @@
               <el-select v-model="targetDesk.deskId" filterable @change="onTargetDeskIdChange">
                 <!--                <div slot="prefix"></div>-->
                 <el-option :value="item.deskId" :key="'targetDesk'+item.deskId"
-                           :label="item.title"
+                           :label="item.title"  v-if=" currentDesk &&  currentDesk.deskId!==item.deskId"
                            v-for="item in deskList">
                   <div style="display: flex;flex-direction: row;align-items: center">
                     <div class="desk-status" :class="`desk-status-`+item.status"></div>
@@ -496,6 +496,7 @@ export default {
       item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`
     },
     onOpenSwapDeskClick() {
+      this.getList();
       this.openSwapDesk = true;
     },
     closeLoading() {
@@ -562,6 +563,9 @@ export default {
         this.orderLoading = true;
         suspendOrder(this.currentDesk?.lastActiveOrder.orderId).then(res => {
           this.queryDeskById(this.currentDesk.deskId);
+          res.data?.busyDesks?.forEach(p=>{
+            this.onSwitchLight(p.deskNum,false)
+          })
           this.$message.success("订单已挂起.")
         }).finally(() => this.orderLoading = false)
       })
@@ -591,6 +595,9 @@ export default {
         this.orderLoading = true;
         stopOrder(this.currentDesk?.lastActiveOrder.orderId).then(res => {
           this.queryDeskById(this.currentDesk.deskId);
+          res.data?.busyDesks?.forEach(p=>{
+            this.onSwitchLight(p.deskNum,false)
+          })
 
           this.navToOrder(this.currentDesk?.lastActiveOrder.orderId);
         }).finally(() => this.orderLoading = false)

@@ -17,9 +17,9 @@ spring:
                 username: 
                 password: 
             # 初始连接数
-            initialSize: 30
+            initialSize: 10
             # 最小连接池数量
-            minIdle: 60
+            minIdle: 10
             # 最大连接池数量
             maxActive: 2000
             # 配置获取连接等待超时的时间
