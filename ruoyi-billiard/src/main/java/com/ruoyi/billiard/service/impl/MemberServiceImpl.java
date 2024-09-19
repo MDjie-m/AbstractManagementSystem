@@ -77,6 +77,7 @@ public class MemberServiceImpl implements IMemberService {
      * @param member 门店会员
      * @return 结果
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateMember(Member member) {
         SecurityUtils.fillUpdateUser(member);
@@ -90,6 +91,7 @@ public class MemberServiceImpl implements IMemberService {
      * @param memberIds 需要删除的门店会员主键
      * @return 结果
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteMemberByMemberIds(Long[] memberIds) {
         return memberMapper.deleteMemberByMemberIds(memberIds);
@@ -101,6 +103,7 @@ public class MemberServiceImpl implements IMemberService {
      * @param memberId 门店会员主键
      * @return 结果
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteMemberByMemberId(Long memberId) {
         return memberMapper.deleteMemberByMemberId(memberId);

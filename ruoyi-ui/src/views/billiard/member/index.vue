@@ -385,6 +385,9 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
+      if (!this.storeInfo?.storeId) {
+        return this.$modal.msgWarning("请选择门店");
+      }
       this.reset();
       this.open = true;
       this.title = "添加门店会员";

@@ -123,7 +123,8 @@
             </el-select>
           </el-form-item>
           <el-form-item label="价格" prop="price">
-            <el-input v-model="form.price" placeholder="请输入价格"/>
+            <el-input-number controls-position="right" v-model="form.price" :precision="2" :step="0.1" :max="100"
+                             :min="0.00"></el-input-number>
           </el-form-item>
           <el-form-item label="备注" prop="remark">
             <el-input v-model="form.remark" type="textarea" class="with100" placeholder="请输入内容"
@@ -186,13 +187,11 @@ export default {
           {required: true, message: "球桌类型不能为空", trigger: "change"}
         ],
         price: [
+          {required: true, message: "价格不能为空", trigger: "blur"},
           {
             validator: (rule, value, callback) => {
-              if (!value) {
-                return callback();
-              }
-              if (!/^\d+(\.\d{1,2})?$/.test(value)) {
-                callback(new Error('请输入正确的价格格式，例如：9.99'));
+              if (value <= 0.00) {
+                callback(new Error('价格应该大于0'));
               } else {
                 callback();
               }
@@ -257,6 +256,9 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
+      if (!this.storeInfo?.storeId) {
+        return this.$modal.msgWarning("请选择门店");
+      }
       this.reset();
       this.open = true;
       this.title = "添加球桌价格";

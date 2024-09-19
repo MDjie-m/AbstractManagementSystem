@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.LevelDiscountPermissionMapper">
+
+    <resultMap type="LevelDiscountPermission" id="LevelDiscountPermissionResult">
+        <result property="levelDiscountPermissionId"    column="level_discount_permission_id"    />
+        <result property="memberLevelId"    column="member_level_id"    />
+        <result property="value"    column="value"    />
+        <result property="discount"    column="discount"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="createById"    column="create_by_id"    />
+        <result property="updateById"    column="update_by_id"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectLevelDiscountPermissionVo">
+        select level_discount_permission_id, member_level_id, value, discount, create_by, create_time, update_by, update_time, create_by_id, update_by_id, remark from t_level_discount_permission
+    </sql>
+
+    <select id="selectLevelDiscountPermissionList" parameterType="LevelDiscountPermission" resultMap="LevelDiscountPermissionResult">
+        <include refid="selectLevelDiscountPermissionVo"/>
+        <where>
+        </where>
+    </select>
+
+    <select id="selectLevelDiscountPermissionByLevelDiscountPermissionId" parameterType="Long" resultMap="LevelDiscountPermissionResult">
+        <include refid="selectLevelDiscountPermissionVo"/>
+        where level_discount_permission_id = #{levelDiscountPermissionId}
+    </select>
+
+    <insert id="insertLevelDiscountPermission" parameterType="LevelDiscountPermission">
+        insert into t_level_discount_permission
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="levelDiscountPermissionId != null">level_discount_permission_id,</if>
+            <if test="memberLevelId != null">member_level_id,</if>
+            <if test="value != null">value,</if>
+            <if test="discount != null">discount,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="createById != null">create_by_id,</if>
+            <if test="updateById != null">update_by_id,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="levelDiscountPermissionId != null">#{levelDiscountPermissionId},</if>
+            <if test="memberLevelId != null">#{memberLevelId},</if>
+            <if test="value != null">#{value},</if>
+            <if test="discount != null">#{discount},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="createById != null">#{createById},</if>
+            <if test="updateById != null">#{updateById},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateLevelDiscountPermission" parameterType="LevelDiscountPermission">
+        update t_level_discount_permission
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="memberLevelId != null">member_level_id = #{memberLevelId},</if>
+            <if test="value != null">value = #{value},</if>
+            <if test="discount != null">discount = #{discount},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="createById != null">create_by_id = #{createById},</if>
+            <if test="updateById != null">update_by_id = #{updateById},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where level_discount_permission_id = #{levelDiscountPermissionId}
+    </update>
+
+    <delete id="deleteLevelDiscountPermissionByLevelDiscountPermissionId" parameterType="Long">
+        delete from t_level_discount_permission where level_discount_permission_id = #{levelDiscountPermissionId}
+    </delete>
+
+    <delete id="deleteLevelDiscountPermissionByLevelDiscountPermissionIds" parameterType="String">
+        delete from t_level_discount_permission where level_discount_permission_id in
+        <foreach item="levelDiscountPermissionId" collection="array" open="(" separator="," close=")">
+            #{levelDiscountPermissionId}
+        </foreach>
+    </delete>
+</mapper>

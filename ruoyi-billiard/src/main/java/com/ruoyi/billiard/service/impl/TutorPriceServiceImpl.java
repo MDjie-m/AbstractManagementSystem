@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ruoyi.billiard.service.IStoreService;
+import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,9 @@ public class TutorPriceServiceImpl implements ITutorPriceService
     {
         SecurityUtils.fillCreateUser(tutorPrice);
         tutorPrice.setTutorPriceId(IdUtils.singleNextId());
+
+        Long num = tutorPriceMapper.selectCount(tutorPriceMapper.query().eq(TutorPrice::getStoreId, tutorPrice.getStoreId()).eq(TutorPrice::getLevel, tutorPrice.getLevel()));
+        AssertUtil.isTrue(num == 0, "该门店已存在该等级教练价格");
         return tutorPriceMapper.insertTutorPrice(tutorPrice);
     }
 
@@ -81,7 +85,8 @@ public class TutorPriceServiceImpl implements ITutorPriceService
     public int updateTutorPrice(TutorPrice tutorPrice)
     {
         SecurityUtils.fillUpdateUser(tutorPrice);
-
+        Long num = tutorPriceMapper.selectCount(tutorPriceMapper.query().eq(TutorPrice::getStoreId, tutorPrice.getStoreId()).eq(TutorPrice::getLevel, tutorPrice.getLevel()).ne(TutorPrice::getTutorPriceId, tutorPrice.getTutorPriceId()));
+        AssertUtil.isTrue(num == 0, "该门店已存在该等级教练价格");
         return tutorPriceMapper.updateTutorPrice(tutorPrice);
     }
 

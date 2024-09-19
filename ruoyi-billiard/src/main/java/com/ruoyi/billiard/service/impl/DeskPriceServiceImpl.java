@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.ruoyi.billiard.service.IStoreService;
+import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,8 @@ public class DeskPriceServiceImpl implements IDeskPriceService {
     public int insertDeskPrice(DeskPrice deskPrice) {
         SecurityUtils.fillCreateUser(deskPrice);
         deskPrice.setDeskPriceId(IdUtils.singleNextId());
+        Long num = deskPriceMapper.selectCount(deskPriceMapper.query().eq(DeskPrice::getStoreId, deskPrice.getStoreId()).eq(DeskPrice::getDeskType, deskPrice.getDeskType()));
+        AssertUtil.isTrue(num == 0, "该球桌类型已存在");
         return deskPriceMapper.insertDeskPrice(deskPrice);
     }
 
@@ -75,7 +78,8 @@ public class DeskPriceServiceImpl implements IDeskPriceService {
     @Override
     public int updateDeskPrice(DeskPrice deskPrice) {
         SecurityUtils.fillUpdateUser(deskPrice);
-
+        Long num = deskPriceMapper.selectCount(deskPriceMapper.query().eq(DeskPrice::getStoreId, deskPrice.getStoreId()).eq(DeskPrice::getDeskType, deskPrice.getDeskType()).ne(DeskPrice::getDeskPriceId, deskPrice.getDeskPriceId()));
+        AssertUtil.isTrue(num == 0, "该球桌类型已存在");
         return deskPriceMapper.updateDeskPrice(deskPrice);
     }
 

@@ -12,16 +12,16 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-<!--          <el-form-item label="门店" prop="storeId">-->
-<!--            <el-select v-model="queryParams.storeId" placeholder="请选择门店" clearable @change="handleQuery">-->
-<!--              <el-option-->
-<!--                v-for="dict in stoOptions"-->
-<!--                :key="dict.value"-->
-<!--                :label="dict.label"-->
-<!--                :value="dict.value"-->
-<!--              />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
+          <!--          <el-form-item label="门店" prop="storeId">-->
+          <!--            <el-select v-model="queryParams.storeId" placeholder="请选择门店" clearable @change="handleQuery">-->
+          <!--              <el-option-->
+          <!--                v-for="dict in stoOptions"-->
+          <!--                :key="dict.value"-->
+          <!--                :label="dict.label"-->
+          <!--                :value="dict.value"-->
+          <!--              />-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
           <!--      <el-form-item label="创建者Id" prop="createById">-->
           <!--        <el-input-->
           <!--          v-model="queryParams.createById"-->
@@ -67,6 +67,11 @@
           <el-table-column label="折扣力度" align="center" prop="discount">
             <template slot-scope="scope" v-if="scope.row.discount">
               {{ scope.row.discount }}折
+            </template>
+          </el-table-column>
+          <el-table-column label="折扣范围" align="center" prop="discountRange">
+            <template slot-scope="scope">
+              {{ conversionDiscountRange(scope.row.discountRange) }}
             </template>
           </el-table-column>
           <el-table-column label="门店" align="center" prop="storeName"/>
@@ -116,31 +121,31 @@
 
       <!-- 添加或修改门店会员等级对话框 -->
       <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+          <el-form-item label="门店" prop="storeId">
+            <el-tag> {{ storeInfo ? storeInfo.storeName : '' }}</el-tag>
+          </el-form-item>
           <el-form-item label="会员等级" prop="levelName">
             <el-input v-model="form.levelName" placeholder="请输入会员等级"/>
           </el-form-item>
           <el-form-item label="折扣力度" prop="discount">
             <el-input v-model="form.discount" placeholder="请输入折扣力度 95折就填写95"/>
           </el-form-item>
-<!--          <el-form-item label="门店" prop="storeId">-->
-<!--            <el-select v-model="form.storeId" placeholder="请选择门店" clearable>-->
-<!--              <el-option-->
-<!--                v-for="dict in stoOptions"-->
-<!--                :key="dict.value"-->
-<!--                :label="dict.label"-->
-<!--                :value="dict.value"-->
-<!--              />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
-          <!--        <el-form-item label="创建者Id" prop="createById">-->
-          <!--          <el-input v-model="form.createById" placeholder="请输入创建者Id" />-->
-          <!--        </el-form-item>-->
+          <el-form-item label="折扣范围" prop="discountRange">
+            <el-select v-model="form.discountRange" multiple placeholder="请选择折扣范围" class="with100">
+              <el-option
+                v-for="item in discountPermissionOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
           <!--        <el-form-item label="更新者Id" prop="updateById">-->
           <!--          <el-input v-model="form.updateById" placeholder="请输入更新者Id" />-->
           <!--        </el-form-item>-->
           <el-form-item label="备注" prop="remark">
-            <el-input v-model="form.remark"  type="textarea" class="with100" placeholder="请输入内容"
+            <el-input v-model="form.remark" type="textarea" class="with100" placeholder="请输入内容"
                       maxlength="200"/>
           </el-form-item>
         </el-form>
@@ -167,6 +172,7 @@ import StoreContainer from "@/views/billiard/component/storeContainer.vue";
 export default {
   name: "MemberLevel",
   components: {StoreContainer},
+  dicts: ['level_discount_permission'],
   data() {
     return {
       storeInfo: null,
@@ -197,6 +203,23 @@ export default {
         createById: null,
         updateById: null,
       },
+      discountPermissionOptions: [{
+        value: 1,
+        label: '球桌费用',
+        raw: {listClass: 'primary'}
+      }, {
+        value: 3,
+        label: '商品购买',
+        raw: {listClass: 'primary'}
+      }, {
+        value: 4,
+        label: '陪练费用',
+        raw: {listClass: 'primary'}
+      }, {
+        value: 5,
+        label: '教学费用',
+        raw: {listClass: 'primary'}
+      }],
       // 表单参数
       form: {},
       // 表单校验
@@ -205,10 +228,24 @@ export default {
           {required: true, message: "会员等级不能为空", trigger: "blur"}
         ],
         discount: [
-          {required: true, message: "折扣力度", trigger: "blur"}
+          {required: true, message: "折扣力度不能为空", trigger: "blur"},
+          {
+            validator: (rule, value, callback) => {
+              console.log(rule, value, callback)
+              if (!this.isPositiveInteger(value) || (value < 0 || value >= 100)) {
+                callback(new Error('打折参数必须是 0 到 100之间整数，代表折扣百分比'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur',
+          },
         ],
         storeId: [
           {required: true, message: "门店不能为空", trigger: "change"}
+        ],
+        discountRange: [
+          {required: true, message: "折扣范围不能为空", trigger: "change"}
         ]
       }
     };
@@ -247,6 +284,7 @@ export default {
         levelName: null,
         discount: null,
         storeId: this.storeInfo?.storeId || -1,
+        discountRange: [],
         createBy: null,
         createTime: null,
         updateBy: null,
@@ -275,6 +313,9 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
+      if (!this.storeInfo?.storeId) {
+        return this.$modal.msgWarning("请选择门店");
+      }
       this.reset();
       this.open = true;
       this.title = "添加门店会员等级";
@@ -336,7 +377,17 @@ export default {
       this.download('billiard/memberLevel/export', {
         ...this.queryParams
       }, `memberLevel_${new Date().getTime()}.xlsx`)
-    }
+    },
+    isPositiveInteger(value) {
+      const regex = /^\d+$/;
+      return regex.test(value);
+    },
+    conversionDiscountRange(discountRanges) {
+      return discountRanges.map((item) => {
+        const option = this.discountPermissionOptions.find((opt) => opt.value === item);
+        return option? option.label : null;
+      }).join('、');
+    },
   }
 };
 </script>
