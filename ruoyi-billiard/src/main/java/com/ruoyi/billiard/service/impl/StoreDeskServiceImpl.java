@@ -308,6 +308,31 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         return resVo;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public DeskQueryResVo mergeToNewDesk(Long deskId, Long storeId, Long orderId, Long newDeskId) {
+        StoreDesk currentDesk = queryEnableDesk(deskId, storeId);
+
+        AssertUtil.isTrue(Objects.equals(currentDesk.getStatus(), DeskStatus.BUSY.getValue()), "当前台桌不是计费状态，无法并台");
+        AssertUtil.notNullOrEmpty(storeDeskMapper.deskInUse(deskId), "当前台桌正不是计费中,无法并台。");
+
+        StoreDesk newDesk = queryEnableDesk(newDeskId, storeId);
+
+        AssertUtil.isTrue(Objects.equals(newDesk.getStatus(), DeskStatus.BUSY.getValue())
+                && Objects.nonNull(newDesk.getCurrentOrderId()), "目标台桌不是计费中，无法并台,请更换到其他台桌。");
+
+        AssertUtil.notNullOrEmpty(storeDeskMapper.deskInUse(newDeskId), "目标台桌不是计费中，无法并台,请更换到其他台桌。");
+
+        Order order = orderService.mergeToNewDesk(deskId, orderId, newDeskId);
+
+        DeskQueryResVo resVo = new DeskQueryResVo();
+        BeanUtils.copyProperties(storeDeskMapper.selectById(newDeskId), resVo);
+        resVo.setLastActiveOrder(order);
+        resVo.calcFees();
+
+        return resVo;
+    }
+
     private StoreDesk queryEnableDesk(Long deskId, Long storeId) {
         StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query()
                 .eq(StoreDesk::getDeskId, deskId).eq(StoreDesk::getStoreId, storeId));

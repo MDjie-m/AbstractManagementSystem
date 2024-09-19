@@ -6,11 +6,13 @@ import com.ruoyi.billiard.domain.StoreDesk;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Data
 public class OrderCommandResVo {
     private StoreDesk desk;
+    private List<StoreDesk > desks;
 
     private Order order;
 

@@ -123,6 +123,19 @@ public class CashierDeskController extends BaseController {
         return ResultVo.success(desk);
     }
 
+    /**
+     * 并台
+     *
+     * @param deskId 球桌id
+     * @return 球桌基本信息
+     */
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/{deskId}/merge")
+    public ResultVo<DeskQueryResVo> mergeToNewDesk(@PathVariable Long deskId, @RequestParam Long orderId, @RequestParam Long newDeskId) {
+        DeskQueryResVo desk = storeDeskService.mergeToNewDesk(deskId, getStoreIdWithThrow(), orderId, newDeskId);
+        return ResultVo.success(desk);
+    }
+
     /*
     获取排队信息
      */

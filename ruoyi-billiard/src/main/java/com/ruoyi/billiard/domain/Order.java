@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
+import org.apache.commons.compress.utils.Lists;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -117,7 +118,7 @@ public class Order extends MyBaseEntity
 
     /** 球桌计时详情 */
     @TableField(exist = false)
-    private List<OrderDeskTime> orderDeskTimes = null;
+    private List<OrderDeskTime> orderDeskTimes  = Lists.newArrayList();
 
     /** 会员订单详情 */
     @TableField(exist = false)
@@ -125,11 +126,11 @@ public class Order extends MyBaseEntity
 
     /** 商品订单详情 */
     @TableField(exist = false)
-    private List<OrderGoods> orderGoods = null;
+    private List<OrderGoods> orderGoods  = Lists.newArrayList();
 
     /** 教练计时详情 */
     @TableField(exist = false)
-    private List<OrderTutorTime> orderTutorTimes = null;
+    private List<OrderTutorTime> orderTutorTimes = Lists.newArrayList();
 
     /** 会员 */
     @TableField(exist = false)

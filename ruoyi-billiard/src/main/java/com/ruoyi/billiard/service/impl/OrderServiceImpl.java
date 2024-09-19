@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.constant.OrderErrorMsg;
@@ -16,12 +17,14 @@ import com.ruoyi.billiard.enums.OrderType;
 import com.ruoyi.billiard.mapper.*;
 import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -273,6 +276,81 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public Order mergeToNewDesk(Long oldDeskId, Long oldOrderId, Long newDeskId) {
+        AssertUtil.isTrue(!Objects.equals(oldDeskId, newDeskId), "当前台桌和目标台桌不能一样.");
+        Order order = orderMapper.selectOrderByOrderId(oldOrderId);
+        AssertUtil.isTrue(Objects.nonNull(order) && Objects.equals(oldOrderId, order.getOrderId()), "找不到相关订单");
+        AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()), "当前订单不是计费中,无法并台.");
+
+        Order newOrder = orderMapper.selectCurrentRelationOrder(newDeskId);
+        AssertUtil.isTrue(Objects.nonNull(newOrder), "找不新台桌到相关订单");
+        AssertUtil.isTrue(!Objects.equals(oldOrderId, newOrder.getOrderId()), "当前台桌与目标台桌已经并台，不用重复操作");
+
+        AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), newOrder.getStatus()), "当前订单不是计费中,无法并台.");
+
+
+        lightTimerMapper.delete(lightTimerMapper.query().eq(LightTimer::getDeskId, oldDeskId));
+
+        copyFeesToNewOrder(oldOrderId, newOrder.getOrderId());
+
+        stopOrder(oldOrderId, order.getStoreId(), false);
+
+        //更新状态
+        StoreDesk oldDesk = storeDeskMapper.selectById(oldDeskId);
+        oldDesk.setStatus(DeskStatus.WAIT.getValue());
+        oldDesk.setCurrentOrderId(newOrder.getOrderId());
+        storeDeskMapper.updateById(oldDesk);
+
+        return selectOrderByOrderId(newOrder.getOrderId());
+    }
+
+    private void copyFeesToNewOrder(Long oldOrderId, Long newOrderId) {
+        Order oldOrder = selectOrderByOrderId(oldOrderId);
+        MyBaseEntity baseEntity = new MyBaseEntity();
+        SecurityUtils.fillUpdateUser(baseEntity);
+
+        List<OrderDeskTime> deskTimes = oldOrder.getOrderDeskTimes().stream().map(p -> {
+            OrderDeskTime time = new OrderDeskTime();
+            BeanUtils.copyProperties(p, time);
+            time.setStatus(CalcTimeStatus.BUSY.getValue());
+            time.setOrderId(newOrderId);
+            time.setOrderDeskTimeId(IdUtils.singleNextId());
+            SecurityUtils.fillUpdateUser(time, baseEntity);
+            return time;
+        }).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(deskTimes)) {
+            orderDeskTimeMapper.insertBatch(deskTimes);
+        }
+
+        List<OrderTutorTime> tutorTimes = oldOrder.getOrderTutorTimes().stream().map(p -> {
+            OrderTutorTime time = new OrderTutorTime();
+            BeanUtils.copyProperties(p, time);
+            time.setStatus(CalcTimeStatus.BUSY.getValue());
+            time.setOrderId(newOrderId);
+            time.setOrderTutorTimeId(IdUtils.singleNextId());
+            SecurityUtils.fillUpdateUser(time, baseEntity);
+            return time;
+        }).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(tutorTimes)) {
+            orderTutorTimeMapper.insertBatch(tutorTimes);
+        }
+
+        List<OrderGoods> goods = oldOrder.getOrderGoods().stream().map(p -> {
+            OrderGoods time = new OrderGoods();
+            BeanUtils.copyProperties(p, time);
+
+            time.setOrderId(newOrderId);
+            time.setOrderDetailId(IdUtils.singleNextId());
+            SecurityUtils.fillUpdateUser(time, baseEntity);
+            return time;
+        }).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(goods)) {
+            orderGoodsMapper.insertBatch(goods);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public Order pauseCalcFee(Long deskId) {
 
         Order order = orderMapper.selectCurrentRelationOrder(deskId);
@@ -381,7 +459,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 order.getStatus()), OrderErrorMsg.ORDER_NOT_CHARGING_OR_STOP);
 
 
-        order = stopAllCalcTimes(orderId,false);
+        order = stopAllCalcTimes(orderId, false);
 
         //更新order
         order.setStatus(OrderStatus.SUSPEND.getValue());
@@ -396,6 +474,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             resVo.setDesk(storeDeskMapper.selectStoreDeskByDeskId(times.get(0).getDeskId()));
         }
         resVo.calcFees();
+        clearDeskOrder(orderId);
         return resVo;
     }
 
@@ -406,10 +485,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
                 OrderErrorMsg.ORDER_NOT_CHARGING);
 
-        Order newOrder=new Order();
+        Order newOrder = new Order();
         newOrder.setOrderId(order.getOrderId());
         newOrder.setPrePayAmount(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO).add(reqVo.getAmount()).setScale(2, RoundingMode.DOWN));
-  SecurityUtils.fillUpdateUser(newOrder);
+        SecurityUtils.fillUpdateUser(newOrder);
         orderMapper.updateById(newOrder);
         return newOrder.getPrePayAmount();
     }
@@ -422,41 +501,51 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 OrderErrorMsg.ORDER_NOT_CHARGING);
 
 
-        StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getCurrentOrderId, order.getOrderId()));
-        AssertUtil.notNullOrEmpty(desk, OrderErrorMsg.DESK_NOT_FOUND);
+        List<StoreDesk> desks = storeDeskMapper.selectList(storeDeskMapper.query().eq(StoreDesk::getCurrentOrderId, order.getOrderId()));
+        AssertUtil.notNullOrEmpty(desks, OrderErrorMsg.DESK_NOT_FOUND);
 
-        lightTimerMapper.delete(lightTimerMapper.query().eq(LightTimer::getDeskId, desk.getDeskId()));
+        List<Long> deskIds=  desks.stream().map(StoreDesk::getDeskId).collect(Collectors.toList());
+        lightTimerMapper.delete(lightTimerMapper.query().in(LightTimer::getDeskId, deskIds));
 
         order = stopAllCalcTimes(orderId, stopByTimer);
-
         order.setStatus(OrderStatus.WAIT_SETTLED.getValue());
-
         SecurityUtils.fillUpdateUser(order);
-
         orderMapper.updateById(order);
+
+        clearDeskOrder(orderId);
 
 
         OrderCommandResVo resVo = new OrderCommandResVo();
         resVo.setOrder(selectOrderByOrderId(orderId));
-        resVo.setDesk(storeDeskMapper.selectById(desk.getDeskId()));
+        resVo.setDesks(storeDeskMapper.selectList(storeDeskMapper.query().in(StoreDesk::getDeskId,deskIds)));
+        resVo.setDesk(resVo.getDesks().get(0));
         resVo.calcFees();
 
         return resVo;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean voidOrder(Long orderId, Long storeId, String remark) {
         Order order = queryValidOrder(storeId, orderId);
         AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
                 OrderErrorMsg.ORDER_NOT_CHARGING);
 
-        order = stopAllCalcTimes(orderId,false);
+        order = stopAllCalcTimes(orderId, false);
 
         order.setStatus(OrderStatus.VOID.getValue());
         order.setRemark(remark);
         SecurityUtils.fillUpdateUser(order);
         orderMapper.updateById(order);
+
+        clearDeskOrder(orderId);
+
         return Boolean.TRUE;
+    }
+    private  void clearDeskOrder(Long orderId){
+        storeDeskMapper.update(null,storeDeskMapper.edit().lambda().set(StoreDesk::getStatus,DeskStatus.WAIT.getValue())
+                        .set(StoreDesk::getCurrentOrderId,null)
+                .eq(StoreDesk::getCurrentOrderId,orderId));
     }
 
     /**
@@ -464,8 +553,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      *
      * @param orderId
      */
-    private Order stopAllCalcTimes(Long orderId, Boolean byTimer) {
-        final Date endTime =byTimer?  DateUtils.removeSeconds(new Date()) :DateUtils.getNowDate();
+    private Order stopAllCalcTimes(Long orderId, Boolean byTimer)
+
+    {
+        final Date endTime = byTimer ? DateUtils.removeSeconds(new Date()) : DateUtils.getNowDate();
         Order order = orderMapper.selectById(orderId);
         SecurityUtils.fillUpdateUser(order);
         //更新台桌结束时间

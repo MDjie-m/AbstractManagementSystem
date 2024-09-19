@@ -80,3 +80,10 @@ export function swapToNewDesk(deskId,newDeskId,orderId) {
     params:{newDeskId,orderId}
   })
 }
+export function mergeToNewDesk(deskId,newDeskId,orderId) {
+  return request({
+    url: `/cashier/desk/${deskId}/merge`,
+    method: 'post',
+    params:{newDeskId,orderId}
+  })
+}

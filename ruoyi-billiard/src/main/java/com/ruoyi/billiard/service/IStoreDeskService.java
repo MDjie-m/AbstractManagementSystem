@@ -86,4 +86,6 @@ public interface IStoreDeskService
 
 
     DeskQueryResVo resumeDesk(Long deskId, Long storeId);
+
+    DeskQueryResVo mergeToNewDesk(Long deskId, Long storeId, Long orderId, Long newDeskId);
 }

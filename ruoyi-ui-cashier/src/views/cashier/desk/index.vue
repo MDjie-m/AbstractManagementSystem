@@ -24,11 +24,13 @@
                  v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
         <SvgItem svg-icon="desk_resume" label="恢复" @click.native="onResumeDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.PAUSE" :btnAble="true"/>
-        <SvgItem svg-icon="desk_change" label="换台" @click.native="onOpenSwapDeskClick()"
+        <SvgItem svg-icon="desk_change" label="换台/并台" @click.native="onOpenSwapDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
-        <SvgItem svg-icon="timing" label="定时" @click.native="onTempLight( 1)" v-if="currentDesk.currentOrderId" :btnAble="true"/>
+        <SvgItem svg-icon="timing" label="定时" @click.native="onTempLight( 1)" v-if="currentDesk.currentOrderId"
+                 :btnAble="true"/>
         <SvgItem svg-icon="pre_pay" label="预付"
-                 :badge="currentDesk.lastActiveOrder &&  parseFloat( currentDesk.lastActiveOrder.prePayAmount)?currentDesk.lastActiveOrder.prePayAmount:0 " :btnAble="true"
+                 :badge="currentDesk.lastActiveOrder &&  parseFloat( currentDesk.lastActiveOrder.prePayAmount)?currentDesk.lastActiveOrder.prePayAmount:0 "
+                 :btnAble="true"
                  v-if="currentDesk.lastActiveOrder"
                  @click.native="onPrePayClick  "/>
         <SvgItem svg-icon="light_on" label="开灯" :btnAble="true"
@@ -143,7 +145,7 @@
     </div>
 
     <!-- 换台确认框 -->
-    <el-dialog title="换台" class="custom-dialog" :visible.sync="openSwapDesk" width="700px" append-to-body
+    <el-dialog title="换台/并台" class="custom-dialog" :visible.sync="openSwapDesk" width="700px" append-to-body
                :close-on-click-modal="false"
                :close-on-press-escape="false" :show-close="false">
       <el-form ref="form" :model="targetDesk" label-width="120px">
@@ -165,12 +167,11 @@
               <el-select v-model="targetDesk.deskId" filterable @change="onTargetDeskIdChange">
                 <!--                <div slot="prefix"></div>-->
                 <el-option :value="item.deskId" :key="'targetDesk'+item.deskId"
-                           :label="item.deskName"
+                           :label="item.title"
                            v-for="item in deskList">
                   <div style="display: flex;flex-direction: row;align-items: center">
                     <div class="desk-status" :class="`desk-status-`+item.status"></div>
-                    <div> {{ item.deskName }}({{ item.deskNum }}) / {{ item.placeType === 0 ? '大厅' : '包间' }}
-                    </div>
+                    <div>   {{item.title}} </div>
                     <div style=" padding-left: 20px">
                       {{ item.price }}元/分钟
                     </div>
@@ -187,7 +188,8 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer" v-loading="loading">
-        <el-button type="primary" @click="onSwapDeskSubmit()">确 定</el-button>
+        <el-button type="primary" @click="onMergeDeskSubmit()">并台</el-button>
+        <el-button type="primary" @click="onSwapDeskSubmit()">换台</el-button>
         <el-button @click="openSwapDesk=false">取 消</el-button>
       </div>
     </el-dialog>
@@ -201,7 +203,7 @@
 import {
   createLightTimer,
   getDeskBaseInfo,
-  listDesk,
+  listDesk, mergeToNewDesk,
   pauseCalcFee,
   resumeCalcFee,
   startCalcFee,
@@ -282,6 +284,22 @@ export default {
     this.getStoreInfo()
   },
   methods: {
+    onMergeDeskSubmit() {
+      if (!this.targetDesk?.deskId) {
+        return this.$modal.msgWarning("请选择要合并的目标台桌");
+      }
+      this.loading = true;
+      mergeToNewDesk(this.currentDesk.deskId, this.targetDesk.deskId, this.currentDesk.lastActiveOrder.orderId).then(res => {
+        this.onSwitchLight(this.currentDesk.deskNum, false);
+        this.currentDesk = res.data;
+        this.onSwitchLight(this.currentDesk?.deskNum, true);
+        this.$modal.msgSuccess("操作成功");
+        this.openSwapDesk = false;
+        this.getList();
+      }).then().then(n => {
+
+      }).finally(() => this.loading = false)
+    },
     onSwapDeskSubmit() {
       if (!this.targetDesk?.deskId) {
         return this.$modal.msgWarning("请选择要更换的目标台桌");
@@ -338,7 +356,7 @@ export default {
           }
         },
       }).then(({value}) => {
-        if(lightType===LightType.Temp){
+        if (lightType === LightType.Temp) {
           this.onSwitchLight(this.currentDesk?.deskNum, true);
         }
         createLightTimer({
@@ -348,9 +366,9 @@ export default {
           startTime: this.$time().format("YYYY-MM-DD HH:mm:00"),
           endTime: this.$time().add(value, "minute").format("YYYY-MM-DD HH:mm:00"),
         }).then(response => {
-          if(lightType===LightType.Temp){
+          if (lightType === LightType.Temp) {
             this.$modal.msgSuccess(`灯已打开,将会在${value}分钟后关闭`);
-          }else {
+          } else {
             this.$modal.msgSuccess(`已开始计费，订单将会在${value}分钟后停止计费。`);
           }
 
@@ -463,12 +481,19 @@ export default {
       }
       listDesk(params).then(response => {
         this.deskList = (response.data || []).map(p => {
+          this.fillTitle(p);
           p.selected = this.currentDesk?.deskId === p.deskId;
           return p;
         });
 
         this.loading = false;
       }).finally(() => this.loading = false);
+    },
+    fillTitle(item) {
+      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) ===  item.deskType)?.label ?? '';
+      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value)===  item.placeType)?.label ?? '';
+      item.shortTitle = `${item.deskName}(${item.deskNum})`
+      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`
     },
     onOpenSwapDeskClick() {
       this.openSwapDesk = true;
