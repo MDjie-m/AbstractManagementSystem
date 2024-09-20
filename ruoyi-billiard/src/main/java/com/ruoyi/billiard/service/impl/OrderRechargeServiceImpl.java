@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -108,5 +109,10 @@ public class OrderRechargeServiceImpl implements IOrderRechargeService
     @Override
     public List<OrderRecharge> selectOrderRechargeListByOrderId(Long orderId) {
         return Optional.ofNullable(orderRechargeMapper.selectList(orderRechargeMapper.query().eq(OrderRecharge::getOrderId, orderId))).orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<OrderRecharge> selectOrderRechargeByMemberIds(Long[] memberIds) {
+        return Optional.ofNullable(orderRechargeMapper.selectList(orderRechargeMapper.query().in(OrderRecharge::getMemberId, Arrays.asList(memberIds)))).orElse(Collections.emptyList());
     }
 }

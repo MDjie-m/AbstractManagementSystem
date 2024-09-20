@@ -78,7 +78,7 @@
           <el-table-column label="姓名" align="center" prop="realName"/>
           <el-table-column label="手机号" align="center" prop="mobile"/>
           <el-table-column label="当前金额" align="center" prop="currentAmount"/>
-          <el-table-column label="历史总金额" align="center" prop="totalAmount"/>
+          <el-table-column label="历史总金额" align="center" prop="totalAmount" width="120"/>
           <el-table-column label="性别" align="center" prop="sex">
             <template slot-scope="scope">
               <dict-tag :options="dict.type.sys_user_sex" :value="scope.row.sex"/>
@@ -95,11 +95,11 @@
               <dict-tag :options="dict.type.member_status" :value="scope.row.status"/>
             </template>
           </el-table-column>
-          <el-table-column label="是否删除" align="center" prop="delFlag" width="180">
-            <template slot-scope="scope">
-              <dict-tag :options="dict.type.member_del_flag" :value="scope.row.delFlag"/>
-            </template>
-          </el-table-column>
+<!--          <el-table-column label="是否删除" align="center" prop="delFlag" width="180">-->
+<!--            <template slot-scope="scope">-->
+<!--              <dict-tag :options="dict.type.member_del_flag" :value="scope.row.delFlag"/>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
           <el-table-column label="创建/更新" align="center" prop="createById" width="250">>
             <template slot-scope="scope">
               <div>
@@ -114,7 +114,7 @@
           </el-table-column>
           <el-table-column label="备注" align="center" prop="remark"/>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-            <template slot-scope="scope" v-if="scope.row.delFlag === '0'">
+            <template slot-scope="scope">
               <el-button
                 size="mini"
                 type="text"

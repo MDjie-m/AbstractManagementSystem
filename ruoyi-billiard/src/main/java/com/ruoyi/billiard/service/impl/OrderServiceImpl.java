@@ -621,4 +621,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public void checkOrderTimer() {
         //   orderDeskTimeMapper.
     }
+
+    @Override
+    public List<Order> selectOrderByMemberIds(Long[] memberIds) {
+        return Optional.ofNullable(orderMapper.selectList(orderMapper.query().in(Order::getMemberId, Arrays.asList(memberIds)))).orElse(Collections.emptyList());
+    }
 }

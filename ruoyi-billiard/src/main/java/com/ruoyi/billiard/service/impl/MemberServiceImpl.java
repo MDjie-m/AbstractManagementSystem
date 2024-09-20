@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.ruoyi.billiard.domain.LevelDiscountPermission;
+import com.ruoyi.billiard.domain.Order;
+import com.ruoyi.billiard.domain.OrderRecharge;
+import com.ruoyi.billiard.service.IOrderRechargeService;
+import com.ruoyi.billiard.service.IOrderService;
 import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.utils.ArrayUtil;
 import com.ruoyi.common.utils.AssertUtil;
@@ -29,6 +33,12 @@ public class MemberServiceImpl implements IMemberService {
 
     @Autowired
     private IStoreService storeService;
+
+    @Autowired
+    private IOrderService orderService;
+
+    @Autowired
+    private IOrderRechargeService orderRechargeService;
 
     /**
      * 查询门店会员
@@ -95,6 +105,15 @@ public class MemberServiceImpl implements IMemberService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteMemberByMemberIds(Long[] memberIds) {
+        // 根据会员id查询订单
+        List<Order> orders = orderService.selectOrderByMemberIds(memberIds);
+        AssertUtil.isNullOrEmpty(orders, "会员已存在订单，无法删除.");
+
+        // 根据会员id查询会员充值记录表
+        List<OrderRecharge> orderRecharges = orderRechargeService.selectOrderRechargeByMemberIds(memberIds);
+        AssertUtil.isNullOrEmpty(orderRecharges, "会员已存在充值记录，无法删除.");
+
+        // 删除会员数据
         return memberMapper.deleteMemberByMemberIds(memberIds);
     }
 
@@ -107,6 +126,14 @@ public class MemberServiceImpl implements IMemberService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteMemberByMemberId(Long memberId) {
+        // 根据会员id查询订单
+        List<Order> orders = orderService.selectOrderByMemberIds(new Long[]{memberId});
+        AssertUtil.isNullOrEmpty(orders, "会员已存在订单，无法删除.");
+
+        // 根据会员id查询会员充值记录表
+        List<OrderRecharge> orderRecharges = orderRechargeService.selectOrderRechargeByMemberIds(new Long[]{memberId});
+        AssertUtil.isNullOrEmpty(orderRecharges, "会员已存在充值记录，无法删除.");
+        // 删除会员数据
         return memberMapper.deleteMemberByMemberId(memberId);
     }
 
@@ -117,8 +144,8 @@ public class MemberServiceImpl implements IMemberService {
 
     @Override
     public Map<Integer, BigDecimal> getOrderMemberDisCountValue(Long memberId) {
-        if(Objects.isNull(memberId)){
-            return  new HashMap<>();
+        if (Objects.isNull(memberId)) {
+            return new HashMap<>();
         }
         List<LevelDiscountPermission> permissions = memberMapper.selectMemberPermissions(memberId);
         return ArrayUtil.toMap(permissions, LevelDiscountPermission::getValue, p -> {
