@@ -18,11 +18,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="branchName"    column="branch_name"    />
         <result property="cardUserName"    column="card_user_name"    />
         <result property="idCard"    column="id_card"    />
+        <result property="isDefault"    column="is_default"    />
     </resultMap>
 
     <sql id="selectPsyConsultantDebitcardVo">
         select card_number, consultant_id, bank_name, status, del_flag, create_by, create_time, update_by, update_time ,
-               branch_name, card_user_name, id_card, bank_code
+               branch_name, card_user_name, id_card, bank_code, is_default
                from psy_consultant_debitcard
     </sql>
 
@@ -32,6 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
             <if test="bankName != null  and bankName != ''"> and bank_name = #{bankName}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="isDefault != null  and isDefault != ''"> and is_default = #{isDefault}</if>
         </where>
     </select>
     
@@ -56,6 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="branchName != null">branch_name,</if>
             <if test="cardUserName != null">card_user_name,</if>
             <if test="idCard != null">id_card,</if>
+            <if test="isDefault != null">is_default,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="cardNumber != null">#{cardNumber},</if>
@@ -71,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="branchName != null">#{branchName},</if>
             <if test="cardUserName != null">#{cardUserName},</if>
             <if test="idCard != null">#{idCard},</if>
+            <if test="isDefault != null">#{isDefault},</if>
          </trim>
     </insert>
 
@@ -89,6 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="branchName != null">branch_name = #{branchName},</if>
             <if test="cardUserName != null">card_user_name = #{cardUserName},</if>
             <if test="idCard != null">id_card = #{idCard},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
         </trim>
         where card_number = #{cardNumber}
     </update>

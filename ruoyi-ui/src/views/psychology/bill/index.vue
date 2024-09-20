@@ -197,14 +197,17 @@ export default {
     //下载提现申请报表
     handleDrawDetailExport(row){
       const billDate = new Date(row.billTime);
-      const createTimeStart = new Date(billDate.getFullYear(), billDate.getMonth() - 1, 21);
+      const createTimeStart = new Date(billDate);
+      createTimeStart.setMonth(createTimeStart.getMonth() - 1);
+      createTimeStart.setDate(21);
+
       const queryParams = {
         payType : 1,//提现申请记录
         createTimeStart: createTimeStart.toISOString().split('T')[0],
         createTimeEnd: row.billTime
       }
 
-      this.download('/consultant/record/export', {
+      this.download('/finance/record/export', {
         ...queryParams
       }, `咨询师${row.billTime}提现申请报表_${new Date().getTime()}.xlsx`)
     },

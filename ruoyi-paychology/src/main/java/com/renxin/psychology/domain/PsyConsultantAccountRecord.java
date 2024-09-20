@@ -1,16 +1,15 @@
 package com.renxin.psychology.domain;
 
-import java.math.BigDecimal;
-
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.renxin.common.annotation.Excel;
+import com.renxin.common.core.domain.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import com.renxin.common.annotation.Excel;
-import com.renxin.common.core.domain.BaseEntity;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 账户明细流水对象 psy_consultant_account_record
@@ -41,7 +40,7 @@ public class PsyConsultantAccountRecord extends BaseEntity
     private String payType;
 
     /** 分成来源BillItemID */
-    @Excel(name = "分成来源BillItemID")
+    //@Excel(name = "分成来源BillItemID")
     private String orderId;
 
     /** 支付前账户余额 */
@@ -57,6 +56,9 @@ public class PsyConsultantAccountRecord extends BaseEntity
     /** 0 未删除 1 删除 */
     private String delFlag;
 
+    /** 生成时间 */
+    @Excel(name = "生成时间", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
     
     @TableField(exist = false)
     private String createTimeStart;

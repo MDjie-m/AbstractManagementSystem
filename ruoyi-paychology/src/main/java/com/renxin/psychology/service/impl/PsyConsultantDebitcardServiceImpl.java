@@ -1,10 +1,13 @@
 package com.renxin.psychology.service.impl;
 
 import java.util.List;
+
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.psychology.domain.PsyConsultantDebitcard;
 import com.renxin.psychology.mapper.PsyConsultantDebitcardMapper;
 import com.renxin.psychology.service.IPsyConsultantDebitcardService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,27 +50,69 @@ public class PsyConsultantDebitcardServiceImpl implements IPsyConsultantDebitcar
     /**
      * 新增客户银行卡
      * 
-     * @param psyConsultantDebitcard 客户银行卡
+     * @param req 客户银行卡
      * @return 结果
      */
     @Override
-    public int insertPsyConsultantDebitcard(PsyConsultantDebitcard psyConsultantDebitcard)
+    public int insertPsyConsultantDebitcard(PsyConsultantDebitcard req)
     {
-        psyConsultantDebitcard.setCreateTime(DateUtils.getNowDate());
-        return psyConsultantDebitcardMapper.insertPsyConsultantDebitcard(psyConsultantDebitcard);
+        req.setCreateTime(DateUtils.getNowDate());
+        PsyConsultantDebitcard one = psyConsultantDebitcardMapper.selectPsyConsultantDebitcardByCardNumber(req.getCardNumber());
+        if (ObjectUtils.isNotEmpty(one)){
+            throw new ServiceException("该银行卡号已存在");
+        }
+        int i = psyConsultantDebitcardMapper.insertPsyConsultantDebitcard(req);
+
+        //若用户只有一张卡, 则将该卡设为默认
+        PsyConsultantDebitcard debitcardReq = new PsyConsultantDebitcard();
+        debitcardReq.setConsultantId(req.getConsultantId());
+        List<PsyConsultantDebitcard> debitcardList = psyConsultantDebitcardMapper.selectPsyConsultantDebitcardList(debitcardReq);
+        if (debitcardList.size() == 1){
+            PsyConsultantDebitcard debitcard = debitcardList.get(0);
+            debitcard.setIsDefault(0);//默认
+            psyConsultantDebitcardMapper.updatePsyConsultantDebitcard(debitcard);
+        }
+        //若不止一张卡, 且新增的这张卡为默认,  则将该用户的其他卡都置为"非默认"
+        else if (0 == req.getIsDefault()){
+         {
+            for (PsyConsultantDebitcard debitcard : debitcardList) {
+                if (!debitcard.getCardNumber().equals(req.getCardNumber())){
+                    debitcard.setIsDefault(1);//非默认
+                    psyConsultantDebitcardMapper.updatePsyConsultantDebitcard(debitcard);
+                }
+            }
+        }
+            
+        }
+        
+        
+        return i;
     }
 
     /**
      * 修改客户银行卡
-     * 
-     * @param psyConsultantDebitcard 客户银行卡
      * @return 结果
      */
     @Override
-    public int updatePsyConsultantDebitcard(PsyConsultantDebitcard psyConsultantDebitcard)
+    public int updatePsyConsultantDebitcard(PsyConsultantDebitcard req)
     {
-        psyConsultantDebitcard.setUpdateTime(DateUtils.getNowDate());
-        return psyConsultantDebitcardMapper.updatePsyConsultantDebitcard(psyConsultantDebitcard);
+        req.setUpdateTime(DateUtils.getNowDate());
+        int i = psyConsultantDebitcardMapper.updatePsyConsultantDebitcard(req);
+        
+        //若设置默认卡, 则将该用户的其他卡都置为"非默认"
+        if (0 == req.getIsDefault()){
+            PsyConsultantDebitcard debitcardReq = new PsyConsultantDebitcard();
+            debitcardReq.setConsultantId(req.getConsultantId());
+            List<PsyConsultantDebitcard> debitcardList = psyConsultantDebitcardMapper.selectPsyConsultantDebitcardList(debitcardReq);
+            for (PsyConsultantDebitcard debitcard : debitcardList) {
+                if (!debitcard.getCardNumber().equals(req.getCardNumber())){
+                    debitcard.setIsDefault(1);//非默认
+                    psyConsultantDebitcardMapper.updatePsyConsultantDebitcard(debitcard);
+                }
+            }
+        }
+        
+        return i;
     }
 
     /**

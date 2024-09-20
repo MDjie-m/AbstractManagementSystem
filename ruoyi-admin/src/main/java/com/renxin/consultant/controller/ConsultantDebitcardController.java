@@ -3,6 +3,7 @@ package com.renxin.consultant.controller;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.page.TableDataInfo;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantDebitcard;
 import com.renxin.psychology.service.IPsyConsultantDebitcardService;
@@ -79,6 +80,11 @@ public class ConsultantDebitcardController extends BaseController {
         List<PsyConsultantDebitcard> list = psyConsultantDebitcardService.selectPsyConsultantDebitcardList(listReq);
         //判断是否属于当前咨询师
         if (list.stream().anyMatch(card -> req.getCardNumber().equals(card.getCardNumber()))){
+            //属于当前咨询师, 判断其是否为默认卡
+            PsyConsultantDebitcard debitcard = psyConsultantDebitcardService.selectPsyConsultantDebitcardByCardNumber(req.getCardNumber());
+            if (debitcard.getIsDefault() == 0){
+                throw new ServiceException("默认卡无法删除, 请先将其他卡设为默认");
+            }
             count = psyConsultantDebitcardService.deletePsyConsultantDebitcardByCardNumbers(new String[]{req.getCardNumber()});
         }
 

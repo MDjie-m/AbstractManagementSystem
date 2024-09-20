@@ -152,7 +152,10 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     private List<PsyConsultantSchedule> scheduleList;
     
     private List<Long> idList;
-    
+
+    //是否新用户(未领取新人礼包) 0是 1否
+    private Integer isNewPeople;
+
     //最低来访者咨询价格
     private BigDecimal minConsultPrice;
     //最低个督价格

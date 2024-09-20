@@ -107,10 +107,10 @@ public class ConsultantUserController extends BaseController {
             throw new ServiceException("验证码与手机号不相符");
         }
 
-        PsyConsult consultant = psyConsultService.getByPhone(req.getPhone());
+       /* PsyConsult consultant = psyConsultService.getByPhone(req.getPhone());
         if (ObjectUtils.isEmpty(consultant)) {
             throw new ServiceException("该手机号无相符的咨询师");
-        }
+        }*/
 
        /* ConsultDTO consultDTO = new ConsultDTO();
         consultDTO.setConsultId(consultant.getId());

@@ -49,6 +49,8 @@ public class PsyConsultantDebitcard extends BaseEntity
     private String cardUserName;
     //持卡人身份证号
     private String idCard;
+    //默认银行卡   0是  1否
+    private Integer isDefault;
 
   
 }
