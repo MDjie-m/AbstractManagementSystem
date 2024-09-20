@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -117,5 +118,12 @@ public class LevelDiscountPermissionServiceImpl implements ILevelDiscountPermiss
     @Override
     public void deleteLevelDiscountPermissionByMemberLevelId(Long memberLevelId) {
         levelDiscountPermissionMapper.delete(levelDiscountPermissionMapper.query().eq(LevelDiscountPermission::getMemberLevelId, memberLevelId));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteLevelDiscountPermissionByMemberLevelIds(Long[] memberLevelIds) {
+        levelDiscountPermissionMapper.delete(levelDiscountPermissionMapper.query()
+                .in(LevelDiscountPermission::getMemberLevelId, Arrays.asList(memberLevelIds)));
     }
 }

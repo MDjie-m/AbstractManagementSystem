@@ -79,4 +79,10 @@ public interface ILevelDiscountPermissionService
      * @param memberLevelId 会员等级Id
      */
     void deleteLevelDiscountPermissionByMemberLevelId(Long memberLevelId);
+
+    /**
+     * 根据会员等级ids批量删除等级折扣范围
+     * @param memberLevelIds 会员等级Id
+     */
+    void deleteLevelDiscountPermissionByMemberLevelIds(Long[] memberLevelIds);
 }

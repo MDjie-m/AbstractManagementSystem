@@ -40,6 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertMemberLevel" parameterType="MemberLevel" useGeneratedKeys="true" keyProperty="memberLevelId">
         insert into t_member_level
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="memberLevelId != null and memberLevelId != ''">member_level_id,</if>
             <if test="levelName != null and levelName != ''">level_name,</if>
             <if test="discount != null">discount,</if>
             <if test="storeId != null">store_id,</if>
@@ -52,6 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="memberLevelId != null and memberLevelId != ''">#{memberLevelId},</if>
             <if test="levelName != null and levelName != ''">#{levelName},</if>
             <if test="discount != null">#{discount},</if>
             <if test="storeId != null">#{storeId},</if>

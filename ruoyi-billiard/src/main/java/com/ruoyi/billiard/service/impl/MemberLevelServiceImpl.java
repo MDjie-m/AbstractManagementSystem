@@ -11,6 +11,7 @@ import com.ruoyi.billiard.domain.Member;
 import com.ruoyi.billiard.service.ILevelDiscountPermissionService;
 import com.ruoyi.billiard.service.IMemberService;
 import com.ruoyi.billiard.service.IStoreService;
+import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -83,12 +84,14 @@ public class MemberLevelServiceImpl implements IMemberLevelService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int insertMemberLevel(MemberLevel memberLevel) {
+        // 查询是否有相同名字的会员等级
+        Long nameCount = memberLevelMapper.selectCount(memberLevelMapper.query().eq(MemberLevel::getLevelName, memberLevel.getLevelName()));
+        AssertUtil.isTrue(nameCount == 0, "会员等级名称已存在，无法重复添加.");
         SecurityUtils.fillCreateUser(memberLevel);
+        // 添加会员等级
         memberLevel.setMemberLevelId(IdUtils.singleNextId());
         memberLevelMapper.insertMemberLevel(memberLevel);
-        Long memberLevelId = memberLevel.getMemberLevelId();
-        BigDecimal discount = memberLevel.getDiscount();
-        List<Integer> discountRange = memberLevel.getDiscountRange();
+
         // 添加等级折扣权限表
         addALevelDiscountPermissionTable(memberLevel);
         return 1;
@@ -103,6 +106,10 @@ public class MemberLevelServiceImpl implements IMemberLevelService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateMemberLevel(MemberLevel memberLevel) {
+        // 查询是否有相同名字的会员等级
+        Long nameCount = memberLevelMapper.selectCount(memberLevelMapper.query().eq(MemberLevel::getLevelName, memberLevel.getLevelName()).ne(MemberLevel::getMemberLevelId, memberLevel.getMemberLevelId()));
+        AssertUtil.isTrue(nameCount == 0, "会员等级名称已存在，无法重复添加.");
+
         SecurityUtils.fillUpdateUser(memberLevel);
         memberLevelMapper.updateMemberLevel(memberLevel);
         // 先删除等级折扣权限表
@@ -122,6 +129,9 @@ public class MemberLevelServiceImpl implements IMemberLevelService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteMemberLevelByMemberLevelIds(Long[] memberLevelIds) {
+        // 先删除相关联的等级折扣权限表数据
+        levelDiscountPermissionService.deleteLevelDiscountPermissionByMemberLevelIds(memberLevelIds);
+        // 再删除相关联的会员等级表数据
         return memberLevelMapper.deleteMemberLevelByMemberLevelIds(memberLevelIds);
     }
 
@@ -134,6 +144,9 @@ public class MemberLevelServiceImpl implements IMemberLevelService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int deleteMemberLevelByMemberLevelId(Long memberLevelId) {
+        // 先删除相关联的等级折扣权限表数据
+        levelDiscountPermissionService.deleteLevelDiscountPermissionByMemberLevelId(memberLevelId);
+        // 再删除相关联的会员等级表数据
         return memberLevelMapper.deleteMemberLevelByMemberLevelId(memberLevelId);
     }
 
@@ -159,6 +172,7 @@ public class MemberLevelServiceImpl implements IMemberLevelService {
             SecurityUtils.fillCreateUser(levelDiscountPermission);
             return levelDiscountPermission;
         }).collect(Collectors.toList());
+        // 批量插入等级折扣权限表
         levelDiscountPermissionService.batchInsertLevelDiscountPermission(levelDiscountPermissions);
     }
 }

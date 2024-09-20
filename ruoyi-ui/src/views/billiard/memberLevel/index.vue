@@ -231,9 +231,8 @@ export default {
           {required: true, message: "折扣力度不能为空", trigger: "blur"},
           {
             validator: (rule, value, callback) => {
-              console.log(rule, value, callback)
-              if (!this.isPositiveInteger(value) || (value < 0 || value >= 100)) {
-                callback(new Error('打折参数必须是 0 到 100之间整数，代表折扣百分比'));
+              if (this.decimalPlacesRegex(value) > 2 || (value < 0 || value >= 100)) {
+                callback(new Error('打折参数必须是 0 到 100之间的两位小数，代表折扣百分比'));
               } else {
                 callback();
               }
@@ -378,9 +377,17 @@ export default {
         ...this.queryParams
       }, `memberLevel_${new Date().getTime()}.xlsx`)
     },
-    isPositiveInteger(value) {
-      const regex = /^\d+$/;
-      return regex.test(value);
+    // isPositiveInteger(value) {
+    //   const regex = /^\d+$/;
+    //   return regex.test(value);
+    // },
+    /** 使用正则表达式来匹配数字的小数部分和指数部分，如果存在小数部分，则返回其长度，否则返回 0 */
+    decimalPlacesRegex(num) {
+      const match = num.toString().match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+      if (!match) {
+        return 0;
+      }
+      return match[1]? match[1].length : 0;
     },
     conversionDiscountRange(discountRanges) {
       return discountRanges.map((item) => {
