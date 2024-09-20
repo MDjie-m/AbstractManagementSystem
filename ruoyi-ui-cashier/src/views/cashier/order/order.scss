@@ -1,0 +1,71 @@
+.order-box {
+  flex: 1;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .table-box {
+    flex: 1;
+    overflow-y: auto;
+  }
+}
+
+
+::v-deep.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell{
+  background-color: #1890ff!important;
+  color: #fff!important;
+}
+
+.time-box-wrapper {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: content-box;
+
+  .num-box {
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    padding: 3px;
+    align-items: center;
+    justify-content: center;
+
+  }
+
+  .time-box {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 10px 20px;
+    gap: 5px;
+
+    .goods-img {
+      height: 30px;
+      width: 30px;
+    }
+
+    &-row {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      gap: 10px;
+
+      .item-center {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .item-right {
+        margin-left: auto;
+      }
+
+      .due-amount {
+        color: rgba(0, 0, 0, 0.5);
+        text-decoration: line-through rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+}

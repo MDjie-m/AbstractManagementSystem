@@ -1,6 +1,7 @@
 <template>
   <div class="left-panel">
-    <div class="store-info">
+    <div class="left-header" v-if="$slots.title"> <slot name="title"/>  </div>
+    <div class="store-info"  v-if="!hideStoreInfo">
       <i class="el-icon-refresh-right store-info-btn" @click="onRefreshClick"></i>
       <div class="store-info-icon">
         <svg-icon icon-class="store"/>
@@ -18,7 +19,7 @@
 <script>
 export default {
   emits: ["onRefreshClick"],
-  props: [],
+  props: ["hideStoreInfo"],
   data() {
     return {
       storeName: '',
@@ -37,7 +38,15 @@ export default {
 
 <style scoped lang="scss">
 @import '@/assets/styles/variables.scss';
-
+.left-header{
+  background: #fff;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, .2);
+}
 .store-info {
   display: flex;
   position: relative;

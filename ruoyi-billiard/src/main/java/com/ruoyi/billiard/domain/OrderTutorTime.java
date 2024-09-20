@@ -43,14 +43,14 @@ public class OrderTutorTime extends BaseFee
     private Long deskId;
 
     /** 开始时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
 
     @TableField("start_time")
     private Date startTime;
 
     /** 结束时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
 
     @TableField("end_time")

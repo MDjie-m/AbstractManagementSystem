@@ -9,6 +9,7 @@ import com.ruoyi.common.core.domain.MyBaseEntity;
 import org.apache.commons.compress.utils.Lists;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -142,10 +143,14 @@ public class Order extends MyBaseEntity
 
 
 
+    @TableField(exist = false)
+    private Date createStart;
 
 
 
 
+    @TableField(exist = false)
+    private Date createEnd;
 
 
 

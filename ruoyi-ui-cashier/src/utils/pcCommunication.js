@@ -54,11 +54,10 @@ export function callPCMethod(type, data, timeout = 5000) {
 }
 
 window.onPCCall = function (type, msg) {
-  let failRes = {code: 500, msg: `未找到[${type}]方法:` + Object.keys(PcCallMethods)};
+  let failRes = {code: 500, msg: `未找到[${type}]方法`};
   if (!PcCallMethods[type]) {
-    Vue.prototype.$modal.msgSuccess("调用 失败" + JSON.stringify(failRes))
+    console.log("调用失败" + JSON.stringify(failRes))
     return JSON.stringify(failRes);
   }
-  Vue.prototype.$modal.msgSuccess("调用 成功=======")
   return PcCallMethods[type](JSON.parse(msg))
 }

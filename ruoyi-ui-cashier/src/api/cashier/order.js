@@ -12,6 +12,20 @@ export function stopOrderByTimer(orderId) {
     method: 'post',
   })
 }
+
+export function listOrders(params) {
+  return request({
+    url: `/cashier/order/list`,
+    method: 'get',
+    params:params
+  })
+}
+export function getOrderInfo(orderId) {
+  return request({
+    url: `/cashier/order/${orderId}`,
+    method: 'get',
+  })
+}
 export function suspendOrder(orderId) {
   return request({
     url: `/cashier/order/${orderId}/suspend`,

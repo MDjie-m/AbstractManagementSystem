@@ -1,11 +1,14 @@
 package com.ruoyi.billiard.controller.cashier;
 
+import com.ruoyi.billiard.domain.Order;
+import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
 import com.ruoyi.billiard.domain.vo.OrderPrePayReqVo;
 import com.ruoyi.billiard.service.IOrderService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
+import com.ruoyi.common.core.page.PageResVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("cashier/order")
@@ -22,6 +26,20 @@ public class CashierOrderController extends BaseController {
     @Resource
     private IOrderService orderService;
 
+    @PreAuthorize("@ss.hasPermi('cashier:order:list')")
+    @GetMapping("/list")
+    public PageResVo<Order> orderList( @Validated Order reqVo) {
+        reqVo.setStoreId(getStoreIdWithThrow());
+        startPage();
+        List<Order> res = orderService.selectOrderList(reqVo);
+        return PageResVo.success(res);
+    }
+    @PreAuthorize("@ss.hasPermi('cashier:order:list')")
+    @GetMapping("/{orderId}")
+    public ResultVo<Order> orderList( @PathVariable Long orderId) {
+        Order  res = orderService.selectOrderByOrderId(orderId);
+        return ResultVo.success(res);
+    }
     /**
      * 订单挂起
      * @param orderId

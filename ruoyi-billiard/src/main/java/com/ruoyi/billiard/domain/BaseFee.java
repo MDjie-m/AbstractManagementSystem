@@ -14,14 +14,17 @@ import java.util.Optional;
 public abstract class BaseFee extends MyBaseEntity implements IFee {
 
     public BigDecimal calcFee() {
+        int minutes =cacTime();
+        return Optional.ofNullable(this.getPrice()).orElse(BigDecimal.ZERO)
+                .multiply(new BigDecimal(String.valueOf(minutes)));
+    }
+    public Integer cacTime() {
         int minutes = DateUtils.deskTimeDiffMinutes(this.getStartTime(), Optional.ofNullable(this.getEndTime()).orElse(new Date()));
         if (minutes <= 0) {
             minutes = 1;
         }
-        return Optional.ofNullable(this.getPrice()).orElse(BigDecimal.ZERO)
-                .multiply(new BigDecimal(String.valueOf(minutes)));
+       return  minutes;
     }
-
     public static <T extends BaseFee> BigDecimal calcFees(List<T> fees) {
         if (CollectionUtils.isEmpty(fees)) {
             return BigDecimal.ZERO;

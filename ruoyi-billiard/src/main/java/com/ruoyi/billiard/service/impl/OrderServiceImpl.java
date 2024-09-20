@@ -201,11 +201,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         BigDecimal price = priceService.queryPriceByType(desk.getStoreId(), desk.getDeskType());
         AssertUtil.notNullOrEmpty(price, "未设置价格无法开台.请联系管理员设置价格.");
 
+        Date startTime = DateUtils.removeSeconds(new Date());
         OrderDeskTime deskTime = OrderDeskTime.builder()
                 .deskId(deskId)
                 .status(CalcTimeStatus.BUSY.getValue())
                 .orderId(order.getOrderId())
-                .price(price).startTime(new Date()).totalAmountDue(BigDecimal.ZERO).build();
+                .price(price).startTime(startTime).totalAmountDue(BigDecimal.ZERO).build();
         deskTimeService.insertOrderDeskTime(deskTime);
 
         order.setOrderDeskTimes(Arrays.asList(deskTime));
@@ -295,7 +296,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         copyFeesToNewOrder(oldOrderId, newOrder.getOrderId());
 
         voidOrder(oldOrderId, oldOrder.getStoreId(), "系统自动废弃：已并台到订单:" + newOrder.getOrderNo());
-
 
 
         //更新状态
@@ -461,7 +461,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 order.getStatus()), OrderErrorMsg.ORDER_NOT_CHARGING_OR_STOP);
 
         List<StoreDesk> desks = storeDeskMapper.queryBusyDeskByOrderId(orderId);
-        desks.forEach(p->p.setStatus(CalcTimeStatus.STOP.getValue()));
+        desks.forEach(p -> p.setStatus(CalcTimeStatus.STOP.getValue()));
 
         order = stopAllCalcTimes(orderId, false);
 
@@ -543,7 +543,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @param orderId
      */
     private Order stopAllCalcTimes(Long orderId, Boolean byTimer) {
-        final Date endTime = byTimer ? DateUtils.removeSeconds(new Date()) : DateUtils.getNowDate();
+        final Date endTime = byTimer ? DateUtils.removeSeconds(new Date()) : DateUtils.fileSecondsAddOneMinutes(DateUtils.getNowDate());
         Order order = orderMapper.selectById(orderId);
         SecurityUtils.fillUpdateUser(order);
         //更新台桌结束时间
@@ -559,8 +559,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 time.setEndTime(endTime);
 
             }
-            if (Objects.isNull(time.getTotalAmountDue())) {
+            if (Objects.isNull(time.getTotalAmountDue()) || BigDecimal.ZERO.compareTo(time.getTotalAmountDue()) >= 0) {
                 time.setTotalAmountDue(time.calcFee());
+                time.setTotalTime(time.getTotalTime());
             }
             amounts.add(time.getTotalAmountDue());
 
@@ -578,8 +579,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             if (Objects.isNull(time.getEndTime())) {
                 time.setEndTime(endTime);
             }
-            if (Objects.isNull(time.getTotalAmountDue())) {
+            if (Objects.isNull(time.getTotalAmountDue()) || BigDecimal.ZERO.compareTo(time.getTotalAmountDue()) >= 0) {
                 time.setTotalAmountDue(time.calcFee());
+                time.setTotalTime(time.getTotalTime());
             }
             amounts.add(time.getTotalAmountDue());
             time.setStatus(CalcTimeStatus.STOP.getValue());
@@ -599,7 +601,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         //更新球桌状态
         if (Objects.equals(order.getStatus(), OrderStatus.CHARGING.getValue())) {
             AssertUtil.notNullOrEmpty(busyDesks, "当前计费订单没有关联的台桌");
-            busyDesks.forEach(desk->{
+            busyDesks.forEach(desk -> {
                 desk.setStatus(DeskStatus.WAIT.getValue());
                 desk.setCurrentOrderId(null);
                 storeDeskMapper.updateAllWithId(desk);

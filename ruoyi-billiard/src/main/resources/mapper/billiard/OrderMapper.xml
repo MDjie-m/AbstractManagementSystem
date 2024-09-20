@@ -19,6 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderType != null "> and order_type = #{orderType}</if>
             <if test="status != null "> and status = #{status}</if>
             <if test="payType != null "> and pay_type = #{payType}</if>
+            <if test="createStart != null and createEnd!=null "> and create_time  between   #{createStart} and   #{createEnd}  </if>
         </where>
     </select>
     
