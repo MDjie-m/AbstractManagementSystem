@@ -28,15 +28,13 @@ public class PsyConsultantAccountRecord extends BaseEntity
     /** 记录ID */
     private Long recordId;
 
-    /** 账户ID */
-    @Excel(name = "账户ID")
+    /** 咨询师ID */
     private Long consultantId;
 
     /** 1 成功 0 失败 */
     private String status;
 
     /** 0 分成 1 提现 */
-    @Excel(name = "0 分成 1 提现")
     private String payType;
 
     /** 分成来源BillItemID */
@@ -46,9 +44,6 @@ public class PsyConsultantAccountRecord extends BaseEntity
     /** 支付前账户余额 */
     private String accountAmount;
 
-    /** 金额 */
-    @Excel(name = "金额")
-    private BigDecimal payAmount;
 
     /** 支付消息结果 */
     private String payMessage;
@@ -57,11 +52,36 @@ public class PsyConsultantAccountRecord extends BaseEntity
     private String delFlag;
 
     /** 生成时间 */
-    @Excel(name = "生成时间", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    //@Excel(name = "生成时间", dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     
     @TableField(exist = false)
     private String createTimeStart;
     @TableField(exist = false)
     private String createTimeEnd;
+    
+    @TableField(exist = false)
+    @Excel(name = "银行卡号")
+    private String cardNumber;
+    
+    @TableField(exist = false)
+    @Excel(name = "持卡人姓名")
+    private String cardUserName;
+    
+    /** 金额 */
+    @Excel(name = "金额")
+    private BigDecimal payAmount;
+
+
+    @TableField(exist = false)
+    @Excel(name = "开户行")
+    private String bankName;
+    
+    @TableField(exist = false)
+    @Excel(name = "开户地")
+    private String branchName;
+
+    @TableField(exist = false)
+    @Excel(name = "汇款备注")
+    private String remark;
 }

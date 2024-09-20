@@ -91,6 +91,9 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
             allotToAcct(orderItems);
         }
         
+        //自动完成已到时的任务
+        mapper.finishSchedule();
+        
         //咨询师订单核销
         List<PsyConsultBillItem> consultantOrderItemList = mapper.getConsultantOrderItems();
         if (CollectionUtils.isNotEmpty(consultantOrderItemList)) {

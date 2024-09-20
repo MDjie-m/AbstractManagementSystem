@@ -18,6 +18,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+ 
+        <result property="cardNumber"    column="card_number"    />
+        <result property="cardUserName"    column="card_user_name"    />
+        <result property="bankName"    column="bank_name"    />
+        <result property="branchName"    column="branch_name"    />
     </resultMap>
 
     <sql id="selectPsyConsultantAccountRecordVo">
@@ -40,12 +45,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by update_time desc
     </select>
+
+
     
+    <select id="calcDrawList" resultType="com.renxin.psychology.domain.PsyConsultantAccountRecord">
+        SELECT
+            main.consultant_id,
+            main.payAmount,
+            card.card_number,
+            card.bank_name,
+            card.branch_name,
+            card.card_user_name
+        FROM
+            (
+            SELECT
+                re.consultant_id,
+                SUM(re.pay_amount) AS payAmount
+            FROM psy_consultant_account_record re
+            WHERE 1=1
+                <if test="payType != null  and payType != ''">
+                    AND re.pay_type = #{payType}
+                </if>
+                <if test="createTimeStart != null and createTimeStart != '' and createTimeEnd != null and createTimeStart != ''">
+                    AND re.create_time BETWEEN #{createTimeStart} AND concat(#{createTimeEnd}, ' 23:59:59')
+                </if>
+            GROUP BY re.consultant_id
+            ) main
+        LEFT JOIN psy_consultant_debitcard card ON card.consultant_id = main.consultant_id AND card.is_default = 0;
+    </select>
+
+    
+
     <select id="selectPsyConsultantAccountRecordByRecordId" parameterType="Long" resultMap="PsyConsultantAccountRecordResult">
         <include refid="selectPsyConsultantAccountRecordVo"/>
         where record_id = #{recordId}
     </select>
-        
+    
+    
     <insert id="insertPsyConsultantAccountRecord" parameterType="PsyConsultantAccountRecord">
         insert into psy_consultant_account_record
         <trim prefix="(" suffix=")" suffixOverrides=",">

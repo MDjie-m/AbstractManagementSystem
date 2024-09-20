@@ -47,6 +47,18 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
         return psyConsultantAccountRecordMapper.selectPsyConsultantAccountRecordList(psyConsultantAccountRecord);
     }
 
+    //统计支取清单
+    @Override
+    public List<PsyConsultantAccountRecord> calcDrawList(PsyConsultantAccountRecord req){
+        List<PsyConsultantAccountRecord> drawList = psyConsultantAccountRecordMapper.calcDrawList(req);
+        String createTimeEnd = req.getCreateTimeEnd();
+        String year = createTimeEnd.substring(0,4);
+        String month = createTimeEnd.substring(5,7);
+        drawList.forEach(p -> p.setRemark(year + "年" + month + "月咨询费"));
+        
+        return drawList;
+    }
+
     /**
      * 新增账户明细流水
      * 

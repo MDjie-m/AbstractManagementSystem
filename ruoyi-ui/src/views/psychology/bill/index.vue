@@ -207,7 +207,7 @@ export default {
         createTimeEnd: row.billTime
       }
 
-      this.download('/finance/record/export', {
+      this.download('/finance/record/drawExport', {
         ...queryParams
       }, `咨询师${row.billTime}提现申请报表_${new Date().getTime()}.xlsx`)
     },

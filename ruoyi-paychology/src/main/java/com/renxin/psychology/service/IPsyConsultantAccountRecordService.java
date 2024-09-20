@@ -28,6 +28,9 @@ public interface IPsyConsultantAccountRecordService
      * @return 账户明细流水集合
      */
     public List<PsyConsultantAccountRecord> selectPsyConsultantAccountRecordList(PsyConsultantAccountRecord psyConsultantAccountRecord);
+    
+    //统计支取清单
+    public List<PsyConsultantAccountRecord> calcDrawList(PsyConsultantAccountRecord psyConsultantAccountRecord);
 
     /**
      * 新增账户明细流水

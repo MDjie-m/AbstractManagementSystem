@@ -54,6 +54,19 @@ public class PsyConsultantAccountRecordController extends BaseController
     }
 
     /**
+     * 导出月度提现清单
+     */
+    @PreAuthorize("@ss.hasPermi('system:record:export')")
+    @Log(title = "导出月度提现清单", businessType = BusinessType.EXPORT)
+    @PostMapping("/drawExport")
+    public void drawExport(HttpServletResponse response, PsyConsultantAccountRecord psyConsultantAccountRecord)
+    {
+        List<PsyConsultantAccountRecord> list = psyConsultantAccountRecordService.calcDrawList(psyConsultantAccountRecord);
+        ExcelUtil<PsyConsultantAccountRecord> util = new ExcelUtil<PsyConsultantAccountRecord>(PsyConsultantAccountRecord.class);
+        util.exportExcel(response, list, "月度提现申请清单");
+    }
+
+    /**
      * 获取账户明细流水详细信息
      */
     @PreAuthorize("@ss.hasPermi('system:record:query')")

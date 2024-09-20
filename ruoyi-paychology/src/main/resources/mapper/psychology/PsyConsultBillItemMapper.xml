@@ -3,6 +3,16 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.renxin.psychology.mapper.PsyConsultBillItemMapper">
+    <update id="finishSchedule">
+        update
+            psy_consultant_schedule
+        set 
+            status = 1 
+        where
+            schedule_type in (22,23)
+        and status = 0 
+        and NOW() > concat(day," ",time_end)
+    </update>
 
     <select id="getOrderItems" resultType="com.renxin.psychology.domain.PsyConsultBillItem">
         SELECT
