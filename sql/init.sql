@@ -62,6 +62,7 @@ create table t_store_tutor
     login_user_id    bigint                                not null comment '登录账户id',
     create_by_id     bigint                                null comment '创建者Id',
     update_by_id     bigint                                null comment '更新者Id',
+    aptitude nvarchar(500) null comment '资质',
     remark           nvarchar(500)                         null comment '备注'
 )
     comment '门店助教';
@@ -201,7 +202,7 @@ create table t_order_goods
     order_id              bigint                                not null comment '订单id',
     desk_id               bigint                                null comment '球桌id',
     goods_id              bigint                                not null comment '商品id',
-    goods_name            bigint                                not null comment '商品名称',
+    goods_name            nvarchar(64)                                  not null comment '商品名称',
     price                 decimal(10, 2)                        not null comment '单价',
     num                   int                                   not null comment '数量',
     total_amount_due      decimal(20, 2)                        not null comment '应付总金额 ',
