@@ -44,6 +44,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectMemberVo"/>
         where member_id = #{memberId}
     </select>
+    <select id="selectMemberPermissions" resultType="com.ruoyi.billiard.domain.LevelDiscountPermission">
+        select c.*
+        from t_member a
+        join t_level_discount_permission c on a.level_id=c.member_level_id;
+    </select>
 
     <insert id="insertMember" parameterType="Member">
         insert into t_member

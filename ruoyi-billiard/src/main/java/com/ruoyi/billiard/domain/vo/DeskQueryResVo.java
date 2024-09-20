@@ -39,6 +39,6 @@ public class DeskQueryResVo extends StoreDesk {
         //教练费用
         this.setOtherTotalAmount(BaseFee.calcFees(lastActiveOrder.getOrderTutorTimes()));
         //商品费用
-        this.setOtherTotalAmount(this.getOtherTotalAmount().add(BaseFee.calcGoodsFee(lastActiveOrder.getOrderGoods())));
+        this.setOtherTotalAmount(this.getOtherTotalAmount().add(BaseFee.calcFees(lastActiveOrder.getOrderGoods())));
     }
 }

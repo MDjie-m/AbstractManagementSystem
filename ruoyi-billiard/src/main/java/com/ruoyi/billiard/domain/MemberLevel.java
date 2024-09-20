@@ -7,6 +7,7 @@ import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ public class MemberLevel extends MyBaseEntity
     @Excel(name = "折扣力度 95折就填写95")
 
     @TableField("discount")
-    private Long discount;
+    private BigDecimal discount;
 
     /** 门店 */
     @Excel(name = "门店")

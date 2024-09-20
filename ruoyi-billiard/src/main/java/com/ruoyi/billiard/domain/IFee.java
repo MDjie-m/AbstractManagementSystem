@@ -12,7 +12,7 @@ public interface IFee extends ITotalDueFee{
 
     Date getEndTime();
 
-    BigDecimal getPrice();
+
 
 
 }

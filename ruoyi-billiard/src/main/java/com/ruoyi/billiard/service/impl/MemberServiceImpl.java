@@ -1,10 +1,11 @@
 package com.ruoyi.billiard.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
 
+import com.ruoyi.billiard.domain.LevelDiscountPermission;
 import com.ruoyi.billiard.service.IStoreService;
+import com.ruoyi.common.utils.ArrayUtil;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
@@ -112,5 +113,16 @@ public class MemberServiceImpl implements IMemberService {
     @Override
     public List<Member> selectMemberListByMemberLevelId(Long memberLevelId) {
         return Optional.ofNullable(memberMapper.selectList(memberMapper.query().eq(Member::getLevelId, memberLevelId))).orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Map<Integer, BigDecimal> getOrderMemberDisCountValue(Long memberId) {
+        if(Objects.isNull(memberId)){
+            return  new HashMap<>();
+        }
+        List<LevelDiscountPermission> permissions = memberMapper.selectMemberPermissions(memberId);
+        return ArrayUtil.toMap(permissions, LevelDiscountPermission::getValue, p -> {
+            return Optional.ofNullable(p.getDiscount()).orElse(BigDecimal.ZERO);
+        });
     }
 }

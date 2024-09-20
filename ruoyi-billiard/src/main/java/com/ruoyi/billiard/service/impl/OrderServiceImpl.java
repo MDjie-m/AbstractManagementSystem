@@ -78,6 +78,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private LightTimerMapper lightTimerMapper;
 
+
     /**
      * 查询订单
      *
@@ -537,6 +538,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .eq(StoreDesk::getCurrentOrderId, orderId));
     }
 
+
     /**
      * 停止所有计费 并 更新球桌关联orderId
      *
@@ -547,7 +549,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Order order = orderMapper.selectById(orderId);
         SecurityUtils.fillUpdateUser(order);
         //更新台桌结束时间
-        List<BigDecimal> amounts = Lists.newArrayList();
+
+        List<ITotalDueFee> feeItems = Lists.newArrayList();
+        Map<Integer, BigDecimal> discountValueMap = memberService.getOrderMemberDisCountValue(order.getMemberId());
         List<OrderDeskTime> deskTimes =
                 orderDeskTimeMapper.selectList(orderDeskTimeMapper.query()
                         .eq(OrderDeskTime::getOrderId, orderId));
@@ -557,17 +561,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         deskTimes.forEach(time -> {
             if (Objects.isNull(time.getEndTime())) {
                 time.setEndTime(endTime);
+            }
 
-            }
-            if (Objects.isNull(time.getTotalAmountDue()) || BigDecimal.ZERO.compareTo(time.getTotalAmountDue()) >= 0) {
-                time.setTotalAmountDue(time.calcFee());
-                time.setTotalTime(time.getTotalTime());
-            }
-            amounts.add(time.getTotalAmountDue());
+            time.setTotalTime(time.getNum());
+            time.calcAndSetFee(discountValueMap.getOrDefault(OrderType.TABLE_CHARGE.getValue(), BigDecimal.ZERO));
 
             time.setStatus(CalcTimeStatus.STOP.getValue());
             SecurityUtils.fillUpdateUser(time, order);
             orderDeskTimeMapper.updateById(time);
+            feeItems.add(time);
         });
         //更新教练时间
 
@@ -579,24 +581,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             if (Objects.isNull(time.getEndTime())) {
                 time.setEndTime(endTime);
             }
-            if (Objects.isNull(time.getTotalAmountDue()) || BigDecimal.ZERO.compareTo(time.getTotalAmountDue()) >= 0) {
-                time.setTotalAmountDue(time.calcFee());
-                time.setTotalTime(time.getTotalTime());
-            }
-            amounts.add(time.getTotalAmountDue());
+            time.setTotalTime(time.getNum());
+            time.calcAndSetFee(discountValueMap.getOrDefault(time.getType(), BigDecimal.ZERO));
             time.setStatus(CalcTimeStatus.STOP.getValue());
             SecurityUtils.fillUpdateUser(time, order);
             orderTutorTimeMapper.updateById(time);
+            feeItems.add(time);
         });
         List<OrderGoods> goods =
                 orderGoodsService.selectOrderGoodsListByOrderId(orderId);
         goods.forEach(item -> {
-            if (Objects.isNull(item.getTotalAmountDue())) {
-                item.setTotalAmountDue(BaseFee.calcGoodsFee(item));
-                SecurityUtils.fillUpdateUser(item, order);
-                orderGoodsMapper.updateById(item);
-            }
-            amounts.add(item.getTotalAmountDue());
+
+            item.calcAndSetFee(discountValueMap.getOrDefault(OrderType.COMMODITY_PURCHASE.getValue(), BigDecimal.ZERO));
+            SecurityUtils.fillUpdateUser(item, order);
+            orderGoodsMapper.updateById(item);
+            feeItems.add(item);
         });
         //更新球桌状态
         if (Objects.equals(order.getStatus(), OrderStatus.CHARGING.getValue())) {
@@ -608,7 +607,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             });
 
         }
-        order.setTotalAmountDue(BaseFee.sumTotalFees(amounts));
+        order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount));
+        order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount));
+
+        order.setTotalWipeZero(order.getTotalAmount().remainder(BigDecimal.ONE));
+        order.setTotalAmount(BigDecimal.valueOf(order.getTotalAmount().intValue()));
         orderMapper.update(null, orderMapper.edit().lambda()
                 .set(Order::getTotalAmountDue, order.getTotalAmountDue()).eq(Order::getOrderId, orderId));
         return order;

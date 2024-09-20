@@ -80,6 +80,9 @@ public class OrderTutorTime extends BaseFee
     @TableField("total_amount_due")
     private BigDecimal totalAmountDue;
 
+    @TableField("discount_value")
+    private BigDecimal discountValue;
+
     /** 折扣金额 */
     @Excel(name = "折扣金额")
 

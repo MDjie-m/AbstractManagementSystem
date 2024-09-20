@@ -7,6 +7,8 @@ import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
+import java.math.BigDecimal;
+
 /**
  * 等级折扣范围对象 t_level_discount_permission
  * 
@@ -44,7 +46,7 @@ public class LevelDiscountPermission extends MyBaseEntity
     @Excel(name = "折扣力度")
 
     @TableField("discount")
-    private Long discount;
+    private BigDecimal discount;
 
     /** 创建者Id */
     @Excel(name = "创建者Id")

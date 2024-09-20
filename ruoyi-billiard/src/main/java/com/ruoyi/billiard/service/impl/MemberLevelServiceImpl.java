@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -86,7 +87,7 @@ public class MemberLevelServiceImpl implements IMemberLevelService {
         memberLevel.setMemberLevelId(IdUtils.singleNextId());
         memberLevelMapper.insertMemberLevel(memberLevel);
         Long memberLevelId = memberLevel.getMemberLevelId();
-        Long discount = memberLevel.getDiscount();
+        BigDecimal discount = memberLevel.getDiscount();
         List<Integer> discountRange = memberLevel.getDiscountRange();
         // 添加等级折扣权限表
         addALevelDiscountPermissionTable(memberLevel);
@@ -149,7 +150,7 @@ public class MemberLevelServiceImpl implements IMemberLevelService {
      */
     public void addALevelDiscountPermissionTable(MemberLevel memberLevel) {
         Long memberLevelId = memberLevel.getMemberLevelId();
-        Long discount = memberLevel.getDiscount();
+        BigDecimal discount = memberLevel.getDiscount();
         List<Integer> discountRange = memberLevel.getDiscountRange();
         // 添加等级折扣权限表
         List<LevelDiscountPermission> levelDiscountPermissions = discountRange.stream().map(range -> {

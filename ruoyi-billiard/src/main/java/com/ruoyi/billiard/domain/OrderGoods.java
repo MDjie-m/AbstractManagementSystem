@@ -115,18 +115,4 @@ public class OrderGoods extends MyBaseEntity implements ITotalDueFee
     @TableField(exist = false)
     private Goods goods;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
