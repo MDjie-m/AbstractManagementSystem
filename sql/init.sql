@@ -97,7 +97,7 @@ create table t_member
 drop table if exists t_member_level;
 create table t_member_level
 (
-    member_level_id bigint auto_increment                 not null comment 'ID'
+    member_level_id bigint                   not null comment 'ID'
         primary key,
     level_name      nvarchar(60)                          not null comment '会员等级',
     discount        decimal(4, 2)                         not null comment '折扣力度 95折就填写95',
