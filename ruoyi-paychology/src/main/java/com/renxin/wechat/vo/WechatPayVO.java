@@ -30,6 +30,7 @@ public class WechatPayVO implements Serializable {
 
 
     private BigDecimal originalPrice;//原价
+    private BigDecimal consultantRatio;//咨询师分配比例
     private String orderServerType;//下单服务类型
     private String orderServerId;//下单服务id
     private String couponNo;//使用优惠券编号

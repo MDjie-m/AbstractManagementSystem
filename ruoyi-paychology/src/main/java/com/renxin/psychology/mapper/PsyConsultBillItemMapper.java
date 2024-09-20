@@ -23,4 +23,5 @@ public interface PsyConsultBillItemMapper extends BaseMapper<PsyConsultBillItem>
 
     BigDecimal getBillItemSum(PsyAdminBillReq req);
 
+    List<PsyConsultBillItem> getConsultantOrderItems();
 }

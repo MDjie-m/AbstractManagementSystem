@@ -253,6 +253,7 @@ public class WechatProgramPayController extends BaseController {
         }
 
         BigDecimal originalPrice = new BigDecimal(0); //原价格
+        BigDecimal consultantRatio = new BigDecimal(0); //咨询师分配比例
         BigDecimal analysePrice = new BigDecimal(0); //测评解析服务价格
 
         //根据不同[服务类型和id]获取服务原价格
@@ -262,6 +263,7 @@ public class WechatProgramPayController extends BaseController {
             case "1" + PsyConstants.POCKET_ORDER_CONSULT_NUM:
                 PsyConsultServeConfig serverDetailConsult = consultServeService.getServerDetailByRelationId(orderServerId);
                 originalPrice = serverDetailConsult.getPrice();
+                consultantRatio = serverDetailConsult.getConsultantRatio();
                 break;
             // 13.测评
             case "1" + PsyConstants.POCKET_ORDER_GAUGE_NUM:
@@ -315,6 +317,7 @@ public class WechatProgramPayController extends BaseController {
             throw new ServiceException("优惠后无需付款",300);
         }*/
         req.setOriginalPrice(originalPrice.add(analysePrice));
+        req.setConsultantRatio(consultantRatio);
         req.setAmount(totalAmount);
         return totalAmount;
     }

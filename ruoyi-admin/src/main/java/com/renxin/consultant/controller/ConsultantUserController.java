@@ -148,6 +148,7 @@ public class ConsultantUserController extends BaseController {
         psyConsultService.update(new LambdaUpdateWrapper<PsyConsult>()
                 .eq(PsyConsult::getId,psyConsult.getId())
                 .set(PsyConsult::getDeviceId,req.getDeviceId())
+                .set(PsyConsult::getPushClientId,req.getPushClientId())
                 .set(PsyConsult::getDeviceBrand,req.getDeviceBrand())
                 .set(PsyConsult::getDeviceModel,req.getDeviceModel())
                 .set(PsyConsult::getLastLoginIp,req.getLastLoginIp())

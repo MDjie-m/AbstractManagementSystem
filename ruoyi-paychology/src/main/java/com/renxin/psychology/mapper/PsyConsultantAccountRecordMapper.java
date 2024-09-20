@@ -36,6 +36,8 @@ public interface PsyConsultantAccountRecordMapper
      */
     public int insertPsyConsultantAccountRecord(PsyConsultantAccountRecord psyConsultantAccountRecord);
 
+    int insertPsyConsultantAccountRecordBatch(List<PsyConsultantAccountRecord> list);
+
     /**
      * 修改账户明细流水
      * 

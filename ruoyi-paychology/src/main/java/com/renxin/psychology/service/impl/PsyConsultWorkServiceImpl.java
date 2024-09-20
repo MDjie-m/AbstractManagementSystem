@@ -342,7 +342,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                 req.setPayConsultId(Long.valueOf(sc.getCreateBy()));
                 req.setChargeConsultId(sc.getConsultId());
                 req.setRealTime(sc.getRealTime());
-                int timeNum = consultantScheduleService.getTimeNumForConsultant(req);
+                int timeNum = consultantScheduleService.getTimeNum(req);
                 sc.setTimeNum(timeNum);
                 
                 //为null时赋值""

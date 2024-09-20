@@ -175,6 +175,7 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
             // psyConsultOrderVO.setAmount(wechatPay.getAmount());
             psyConsultOrderVO.setPay(wechatPay.getAmount());
             psyConsultOrderVO.setOriginalPrice(wechatPay.getOriginalPrice());
+            psyConsultOrderVO.setConsultantRatio(wechatPay.getConsultantRatio());
             psyConsultOrderVO.setCouponNo(wechatPay.getCouponNo());
             psyConsultOrderVO.setServeId(wechatPay.getServeId());
             psyConsultOrderVO.setUserId(wechatPay.getUserId());

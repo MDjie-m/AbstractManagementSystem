@@ -19,12 +19,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             e.num  order_num,
             d.num  num,
             d.nick_name  nick_name,
-            d.pay  order_total,
+            d.original_price  order_total,
             STR_TO_DATE(a.real_time, '%Y-%m-%d %H:%i') use_time,
             a.create_by  create_by,
             a.create_time  create_time,
             a.update_by  update_by,
-            a.update_time  update_time
+            a.update_time  update_time,
+            12 as scheduleType
         FROM
             psy_consult_order_item a
                 LEFT JOIN psy_consult_bill_item f on a.id = f.id
@@ -35,6 +36,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE
             a.`status` = '1' and f.id is null and c.`status` = '5'
         order by a.order_id asc,a.real_time asc
+    </select>
+
+    <select id="getConsultantOrderItems" resultType="com.renxin.psychology.domain.PsyConsultBillItem">
+        SELECT
+            sc.id,
+            IF(sc.order_id IS NOT NULL AND sc.order_id != '', sc.order_id, sc.team_id) AS keyId,
+            sc.order_id  order_id,
+            sc.team_id  teamId,
+            sc.consult_id  consult_id,
+            b.nick_name  consult_name,
+            CASE WHEN c.type = 1 THEN '合作型' ELSE '签约型' END type,
+            d.consultant_ratio ratio,
+            team.lecture_amount as brokerage,
+            d.order_no  order_no,
+            d.create_time  order_time,
+            d.server_name  serve_name,
+            CASE WHEN sc.total_num = 1 THEN '单次' ELSE '套餐' END serve_type,
+            sc.total_num  order_num,
+            sc.time_num  buyNum,
+            d.pay_consultant_name  nick_name,
+            d.original_price  order_total,
+            STR_TO_DATE(sc.real_time, '%Y-%m-%d %H:%i') use_time,
+            sc.real_time realTime,
+            sc.create_by  create_by,
+            sc.create_time  create_time,
+            sc.update_by  update_by,
+            sc.update_time  update_time,
+            sc.schedule_type as scheduleType
+        FROM
+            psy_consultant_schedule sc
+                LEFT JOIN psy_consult_bill_item f on sc.id = f.id
+                INNER JOIN psy_consult b on sc.consult_id = b.id
+                INNER JOIN psy_consult_contract c on sc.consult_id = c.consult_id
+                left JOIN psy_consultant_order d on sc.order_id = d.order_no 
+                left join psy_consultant_team_supervision team on sc.team_id = team.id
+        WHERE
+            sc.`status` = '1' and f.id is null  /* and c.`status` = '5'*/
+        order by sc.order_id asc,sc.real_time asc
     </select>
 
     <select id="getOrderItemsConsultant" resultType="com.renxin.psychology.domain.PsyConsultBillItem">
@@ -153,4 +192,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
         </where>
     </select>
+
 </mapper>

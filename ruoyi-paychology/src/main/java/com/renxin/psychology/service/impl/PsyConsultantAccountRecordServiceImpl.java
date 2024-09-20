@@ -1,6 +1,9 @@
 package com.renxin.psychology.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.psychology.domain.PsyConsultantAccountRecord;
 import com.renxin.psychology.mapper.PsyConsultantAccountRecordMapper;
@@ -51,10 +54,44 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
      * @return 结果
      */
     @Override
-    public int insertPsyConsultantAccountRecord(PsyConsultantAccountRecord psyConsultantAccountRecord)
+    public int insertPsyConsultantAccountRecord(PsyConsultantAccountRecord req)
     {
-        psyConsultantAccountRecord.setCreateTime(DateUtils.getNowDate());
-        return psyConsultantAccountRecordMapper.insertPsyConsultantAccountRecord(psyConsultantAccountRecord);
+        if ("1".equals(req.getPayType())){//提现申请
+            //计算账户余额
+            BigDecimal acctAmount = calcAcctAmount(req.getConsultantId());
+            if (acctAmount.compareTo(req.getPayAmount()) < 0){
+                throw new ServiceException("提现失败, 当前账户余额不足");
+            }
+        }
+        
+        req.setCreateTime(DateUtils.getNowDate());
+        return psyConsultantAccountRecordMapper.insertPsyConsultantAccountRecord(req);
+    }
+    
+    //计算咨询师账户余额
+    @Override
+    public BigDecimal calcAcctAmount(Long consultantId){
+        PsyConsultantAccountRecord queryUserReq = new PsyConsultantAccountRecord();
+            queryUserReq.setConsultantId(consultantId);
+        List<PsyConsultantAccountRecord> recordList = psyConsultantAccountRecordMapper.selectPsyConsultantAccountRecordList(queryUserReq);
+        
+        BigDecimal amount = BigDecimal.ZERO;
+        for (PsyConsultantAccountRecord record : recordList) {
+            if ("0".equals(record.getPayType())){//分成记录
+               amount = amount.add(record.getPayAmount());
+            }else if ("1".equals(record.getPayType())) {//提现记录
+               amount = amount.subtract(record.getPayAmount());
+            }
+        }
+        return amount;
+    }
+
+    /**
+     * 新增账户明细流水 - 批量
+     */
+     @Override
+    public int insertPsyConsultantAccountRecordBatch(List<PsyConsultantAccountRecord> list){
+         return psyConsultantAccountRecordMapper.insertPsyConsultantAccountRecordBatch(list);
     }
 
     /**

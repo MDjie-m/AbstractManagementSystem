@@ -2,6 +2,7 @@ package com.renxin.psychology.service;
 
 import com.renxin.psychology.domain.PsyConsultantAccountRecord;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -35,6 +36,11 @@ public interface IPsyConsultantAccountRecordService
      * @return 结果
      */
     public int insertPsyConsultantAccountRecord(PsyConsultantAccountRecord psyConsultantAccountRecord);
+    
+    public int insertPsyConsultantAccountRecordBatch(List<PsyConsultantAccountRecord> list);
+    
+    //计算账户余额
+    public BigDecimal calcAcctAmount(Long consultantId);
 
     /**
      * 修改账户明细流水

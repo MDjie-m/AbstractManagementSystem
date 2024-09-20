@@ -153,11 +153,15 @@ public class WxAuthorizeController {
          
         //更新设备信息
         psyUser.setDeviceId(params.get("deviceId"));
+        psyUser.setPushClientId(params.get("pushClientId"));
         psyUser.setDeviceBrand(params.get("deviceBrand"));
         psyUser.setDeviceModel(params.get("deviceModel"));
         psyUser.setLastLoginIp(params.get("lastLoginIp"));
         psyUser.setSourceChannelId(params.get("sourceChannelId"));
-        psyUser.setIntroduceUserId(Long.valueOf(params.get("introduceUserId")));
+        try {
+            psyUser.setIntroduceUserId(Long.valueOf(params.get("introduceUserId")));
+        }catch (Exception e){
+        }
         psyUserService.updatePsyUser(psyUser);
 
         return AjaxResult.success(Constants.TOKEN_PREFIX +  token);

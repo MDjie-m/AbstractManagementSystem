@@ -21,6 +21,7 @@ public class WechatPayDTO implements Serializable {
 
     private BigDecimal amount;
     private BigDecimal originalPrice;//原价
+    private BigDecimal consultantRatio;//咨询师分配比例
 
     private String module;
     private String outTradeNo;

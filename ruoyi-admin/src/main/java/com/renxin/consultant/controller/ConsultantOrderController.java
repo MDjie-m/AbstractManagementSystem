@@ -154,7 +154,7 @@ public class ConsultantOrderController extends BaseController
     }*/
 
     /**
-     * 生成咨询师订单
+     * 创建咨询师订单
      *
      * 用于换取openid 正式使用时openid可以直接从用户信息中获取 不需要在此接口中获取
      * @return 小程序支付所需参数
@@ -175,8 +175,10 @@ public class ConsultantOrderController extends BaseController
         //BigDecimal amount = consultantOrder.getPayAmount(); //单位：元
         String serverName = ""; //服务描述
         BigDecimal originalPrice = new BigDecimal(0); //原价
+        BigDecimal consultantRatio = new BigDecimal(0); //咨询师分成比例
+        BigDecimal consultantPrice = new BigDecimal(0); //咨询师收取费用
 
-        //根据不同类型生成订单
+        //根据不同类型创建订单
         switch (consultantOrder.getServerType()) {
             //团队督导
             case PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM:
@@ -189,6 +191,8 @@ public class ConsultantOrderController extends BaseController
                     throw new ServiceException("不可报名自己开班的团队督导");
                 }
                 originalPrice = team.getPrice();
+                consultantPrice = team.getLectureAmount();
+                
                 serverName = team.getTitle() + "-第" + team.getPeriodNo() +"期";
                 //TODO 超卖问题.
                 if (team.getSurplusJoinNum() <= 0){
@@ -207,6 +211,8 @@ public class ConsultantOrderController extends BaseController
                     throw new ServiceException("不可购买自己提供的服务");
                 }
                 originalPrice = serverDetail.getPrice();
+                consultantRatio = serverDetail.getConsultantRatio();
+                
                 serverName = "个人督导服务购买-" + serverDetail.getName() + "-" + serverDetail.getConsultantName();
 
                 // 支付单时需要校验服务库存
@@ -228,6 +234,7 @@ public class ConsultantOrderController extends BaseController
                     throw new ServiceException("不可购买自己提供的服务");
                 }
                 originalPrice = serverDetailExp.getPrice();
+                consultantRatio = serverDetailExp.getConsultantRatio();
                 serverName = "个人体验服务购买-" + serverDetailExp.getName() + "-" + serverDetailExp.getConsultantName();
 
                 // 支付单时需要校验服务库存
@@ -271,6 +278,8 @@ public class ConsultantOrderController extends BaseController
             consultantOrder.setOrderNo(out_trade_no);
             consultantOrder.setServerName(serverName);
             consultantOrder.setOriginalPrice(originalPrice);
+            consultantOrder.setConsultantRatio(consultantRatio);
+            consultantOrder.setConsultantPrice(consultantPrice);
         PsyConsultantOrder newOrder = psyConsultantOrderService.createConsultantOrder(consultantOrder);
         if (newOrder.getPayAmount().compareTo(BigDecimal.ZERO) == 0){
             return AjaxResult.success("应付金额为0, 无需发起支付");

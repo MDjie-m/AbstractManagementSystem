@@ -102,6 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consultId != null">consult_id,</if>
             <if test="customerConfirm != null">customer_confirm,</if>
             <if test="workRecord != null">work_record,</if>
+            <if test="totalNum != null">total_num,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -122,8 +123,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="time != null">#{time},</if>
             <if test="realTime != null">#{realTime},</if>
             <if test="consultId != null">#{consultId},</if>
-            <if test="customerConfirm != null">#{customer_confirm},</if>
-            <if test="workRecord != null">#{work_record},</if>
+            <if test="customerConfirm != null">#{customerConfirm},</if>
+            <if test="workRecord != null">#{workRecord},</if>
+            <if test="totalNum != null">#{totalNum},</if>
          </trim>
     </insert>
     
@@ -131,7 +133,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into psy_consultant_schedule (
             id, order_id, team_id, schedule_type, time_num, work_id,
             time_start, time_end, day, week, status, create_by,
-            create_time, update_by, update_time, time, real_time, consult_id, customer_confirm, work_record
+            create_time, update_by, update_time, time, real_time, consult_id, customer_confirm, work_record,total_num
         )
         values
         <foreach collection="list" item="item" index="index" separator=",">
@@ -155,7 +157,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.realTime},
             #{item.consultId},
             #{item.customerConfirm},
-            #{item.workRecord}
+            #{item.workRecord},
+            #{item.totalNum}
             )
         </foreach>
     </insert>
@@ -197,15 +200,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
-    <select id="getTimeNumForConsultant" parameterType="com.renxin.psychology.request.PsyWorkReq" resultType="java.lang.Integer">
+    <select id="getTimeNum" parameterType="com.renxin.psychology.request.PsyWorkReq" resultType="java.lang.Integer">
         select
             count(sc.id)
         from
             psy_consultant_schedule sc
-        where
-            sc.consult_id =  #{chargeConsultId}
-          and sc.create_by = #{payConsultId}
-          and sc.real_time &lt;= #{realTime}
+        where 1=1
+        <if test="chargeConsultId != null and chargeConsultId != ''">
+            and sc.consult_id =  #{chargeConsultId}
+        </if>
+        <if test="payConsultId != null and payConsultId != ''">
+            and sc.create_by = #{payConsultId}
+        </if>
+        <if test="orderNo != null and orderNo != ''">
+            and sc.order_id = #{orderNo}
+        </if>
+            and sc.real_time &lt;= #{realTime}
     </select>
     
     

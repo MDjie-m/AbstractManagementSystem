@@ -240,3 +240,14 @@ INSERT INTO `psy_coupon_template` (`id`, `user_type`, `coupon_name`, `total_num`
                                    `use_threshold_price`, `remark`, `is_free_get`) 
                                    VALUES (10000, 1, 'pocket测评解析券', 9999999, NULL, 1, 13, 29.90, NULL, 9999, 1, '0', NULL, '2024-09-06 10:05:46', NULL, NULL, 
                                            0.00, NULL, 'N');
+
+
+UPDATE psy_consult_server_config SET consultant_ratio = 0.1 WHERE 1=1;
+
+update psy_consult_order SET original_price = pay , consultant_ratio = 0.1  WHERE 1=1;
+
+UPDATE psy_consultant_order SET consultant_price = 100 WHERE server_type = 1;
+
+UPDATE psy_consultant_order SET consultant_ratio = 0.1 WHERE server_type IN (1,2);
+
+UPDATE psy_consult_bill_item SET schedule_type = 12 WHERE 1=1;

@@ -28,10 +28,16 @@ public class PsyConsultBillItem extends BasePlusEntity implements Serializable
 
     /** 账单 */
     private Long billId;
-
+    
     /** 订单id */
-    private Long orderId;
-
+    private String orderId;
+    //团督id
+    private String teamId;
+    
+    //标识id
+    @TableField(exist = false)
+    private String keyId;
+    
     /** 所属咨询师 */
     private Long consultId;
 
@@ -109,6 +115,16 @@ public class PsyConsultBillItem extends BasePlusEntity implements Serializable
     /** 订单实付金额 */
     @Excel(name = "订单实付金额")
     private BigDecimal orderTotal;
+
+    @TableField(exist = false)
+    //咨询师分成比例
+    private BigDecimal consultantRatio;
+
+    /** 订单任务类型  12.咨询  21.团督  22.个督  23.体验 */
+    private Integer scheduleType;
+    
+    @TableField(exist = false)
+    private String realTime;
 
     /** 已结算金额 */
     @Excel(name = "已结算金额")

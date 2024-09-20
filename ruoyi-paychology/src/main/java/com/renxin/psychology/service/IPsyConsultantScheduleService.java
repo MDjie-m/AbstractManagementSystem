@@ -75,7 +75,7 @@ public interface IPsyConsultantScheduleService
      * @param req
      * @return
      */
-    public int getTimeNumForConsultant(PsyWorkReq req);
+    public int getTimeNum(PsyWorkReq req);
 
     /**
      * 查询咨询师工作时长

@@ -346,6 +346,7 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
             schedule.setDay(lectureDay);
             schedule.setRealTime(lectureDay + " " + team.getLectureStartTime());
             schedule.setTimeNum(timeNum++);
+            schedule.setTotalNum(team.getCycleNumber());
             scheduleList.add(schedule);
 
             //排程占用

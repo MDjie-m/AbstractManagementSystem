@@ -79,6 +79,7 @@
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="isNewPeople != null">is_new_people = #{isNewPeople},</if>
             <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="pushClientId != null">push_client_id = #{pushClientId},</if>
             <if test="deviceBrand != null">device_brand = #{deviceBrand},</if>
             <if test="deviceModel != null">device_model = #{deviceModel},</if>
             <if test="lastLoginIp != null">last_login_ip = #{lastLoginIp},</if>

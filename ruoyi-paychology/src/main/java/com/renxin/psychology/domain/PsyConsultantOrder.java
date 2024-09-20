@@ -67,6 +67,11 @@ public class PsyConsultantOrder extends BaseEntity
     private BigDecimal payAmount;
     //原价
     private BigDecimal originalPrice;
+    //咨询师分成比例
+    private BigDecimal consultantRatio;
+    //督导师每堂课的收入
+    private BigDecimal consultantPrice;
+    
     //优惠券no
     private String couponNo;
 

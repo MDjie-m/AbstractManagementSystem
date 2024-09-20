@@ -39,6 +39,8 @@ public class PsyWorkReq implements Serializable
     
     //收费人工作记录
     private String workRecord;
+    //订单编号
+    private String orderNo;
 
     /** 咨询师 */
     private List<Long> ids;

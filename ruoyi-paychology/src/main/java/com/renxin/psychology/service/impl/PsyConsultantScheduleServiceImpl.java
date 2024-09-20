@@ -172,6 +172,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
             schedule.setTimeStart(addZero(time)+":00");
             schedule.setTimeEnd(addZero(time)+":50");
             //schedule.setTimeNum(++usedNum);//第几次执行
+            schedule.setTotalNum(order.getTotalNum());
             schedule.setStatus("0");//待办
             schedule.setRealTime(schedule.getDay() + " " + schedule.getTimeStart());
             schedule.setConsultId(Long.valueOf(chargeConsultantId));
@@ -233,8 +234,8 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
      * @return
      */
     @Override
-    public int getTimeNumForConsultant(PsyWorkReq req){
-        return psyConsultantScheduleMapper.getTimeNumForConsultant(req);
+    public int getTimeNum(PsyWorkReq req){
+        return psyConsultantScheduleMapper.getTimeNum(req);
     }
 
 

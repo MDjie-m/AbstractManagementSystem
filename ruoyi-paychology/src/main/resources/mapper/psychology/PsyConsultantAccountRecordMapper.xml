@@ -76,6 +76,40 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null">#{updateTime},</if>
          </trim>
     </insert>
+    <insert id="insertPsyConsultantAccountRecordBatch" parameterType="list">
+        insert into psy_consultant_account_record (
+            record_id,
+            consultant_id,
+            status,
+            pay_type,
+            order_id,
+            account_amount,
+            pay_amount,
+            pay_message,
+            del_flag,
+            create_by,
+            create_time,
+            update_by,
+            update_time
+        ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.recordId},
+            #{item.consultantId},
+            #{item.status},
+            #{item.payType},
+            #{item.orderId},
+            #{item.accountAmount},
+            #{item.payAmount},
+            #{item.payMessage},
+            #{item.delFlag},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateBy},
+            #{item.updateTime}
+            )
+        </foreach>
+    </insert>
 
     <update id="updatePsyConsultantAccountRecord" parameterType="PsyConsultantAccountRecord">
         update psy_consultant_account_record

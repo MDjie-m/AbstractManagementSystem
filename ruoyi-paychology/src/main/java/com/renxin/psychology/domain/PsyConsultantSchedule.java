@@ -34,6 +34,8 @@ public class PsyConsultantSchedule extends BaseEntity
     
     //同一任务的第几次执行
     private Integer timeNum;
+    //该订单可执行总次数
+    private Integer totalNum;
 
     /** 排班 */
     @Excel(name = "排班")

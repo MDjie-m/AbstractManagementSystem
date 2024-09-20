@@ -76,6 +76,8 @@ public class PsyConsultOrder extends BasePlusEntity implements Serializable
     /** 实际支付 */
     @Excel(name = "实际支付")
     private BigDecimal pay;
+    
+    private BigDecimal consultantRatio;//咨询师分配比例
 
     /** 付款时间 */
     @Excel(name = "付款时间")

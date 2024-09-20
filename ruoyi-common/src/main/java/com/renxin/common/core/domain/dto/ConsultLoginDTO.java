@@ -14,6 +14,9 @@ public class ConsultLoginDTO  {
    //设备id
    private String deviceId;
 
+   //推送id
+   private String pushClientId;
+
    //设备品牌
    private String deviceBrand;
 

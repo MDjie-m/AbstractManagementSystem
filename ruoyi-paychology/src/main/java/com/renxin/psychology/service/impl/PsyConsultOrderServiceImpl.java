@@ -488,7 +488,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
             req.setTime(-1);
         }
 
-        // 新增服务
+        // 新增订单服务快照
         psyConsultOrderServeService.add(serve, req.getId());
 
         req.setConsultName(consult.getNickName());
