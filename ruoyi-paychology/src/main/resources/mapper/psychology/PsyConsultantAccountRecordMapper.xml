@@ -34,6 +34,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="accountAmount != null  and accountAmount != ''"> and account_amount = #{accountAmount}</if>
             <if test="payAmount != null "> and pay_amount = #{payAmount}</if>
             <if test="payMessage != null  and payMessage != ''"> and pay_message = #{payMessage}</if>
+             <if test="createTimeStart != null and createTimeStart != '' and createTimeEnd != null and createTimeStart != ''">
+                 and create_time between #{createTimeStart} and #{createTimeEnd}
+             </if>
         </where>
         order by update_time desc
     </select>

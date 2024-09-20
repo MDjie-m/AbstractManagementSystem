@@ -85,18 +85,6 @@ public class ConsultantAccountRecordController extends BaseController
     }
 
     /**
-     * 余额查询
-     */
-    //@PreAuthorize("@ss.hasPermi('system:record:add')")
-    @PostMapping("/queryAcctAmount")
-    public AjaxResult queryAcctAmount(HttpServletRequest request)
-    {
-        Long consultId = consultantTokenService.getConsultId(request);
-        BigDecimal acctAmount = psyConsultantAccountRecordService.calcAcctAmount(consultId);
-        return AjaxResult.success(acctAmount);
-    }
-
-    /**
      * 修改账户明细流水
      */
     //@PreAuthorize("@ss.hasPermi('system:record:edit')")

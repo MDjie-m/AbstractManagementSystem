@@ -55,7 +55,13 @@
             type="text"
             @click="handleDetailExport(scope.row)"
             v-hasPermi="['psychology:bill:export']"
-          >下载报表</el-button>
+          >下载核销分账报表</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDrawDetailExport(scope.row)"
+            v-hasPermi="['psychology:bill:export']"
+          >下载提现申请报表</el-button>
           <el-button
             size="mini"
             type="text"
@@ -186,6 +192,21 @@ export default {
       this.download('psychology/bill/exportItemsForDetail', {
         ...queryParams
       }, `心理咨询${row.billTime}账单_${new Date().getTime()}.xlsx`)
+    },
+
+    //下载提现申请报表
+    handleDrawDetailExport(row){
+      const billDate = new Date(row.billTime);
+      const createTimeStart = new Date(billDate.getFullYear(), billDate.getMonth() - 1, 21);
+      const queryParams = {
+        payType : 1,//提现申请记录
+        createTimeStart: createTimeStart.toISOString().split('T')[0],
+        createTimeEnd: row.billTime
+      }
+
+      this.download('/consultant/record/export', {
+        ...queryParams
+      }, `咨询师${row.billTime}提现申请报表_${new Date().getTime()}.xlsx`)
     },
     view(row) {
       this.$router.push({ path: '/bill/billDetail', query: { id: row.id }})
