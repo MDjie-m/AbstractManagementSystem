@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -113,10 +114,7 @@ public class DeskDeviceRelationServiceImpl implements IDeskDeviceRelationService
         if(CollectionUtils.isNotEmpty(deviceIds)){
             deskDeviceRelationMapper.insertBatch(deviceIds.stream().map(p-> {
                 DeskDeviceRelation relation=      DeskDeviceRelation.builder().deskId(deskId).deviceId(p).build();
-                relation.setCreateTime(new Date());
-                relation.setCreateBy(userName);
-                relation.setUpdateBy(userName);
-                relation.setUpdateTime(new Date());
+                SecurityUtils.fillUpdateUser(relation);
                 return  relation;
             }).collect(Collectors.toList()));
 

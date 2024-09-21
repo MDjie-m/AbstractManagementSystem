@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -94,7 +95,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
     public int insertStoreTutor(StoreTutor storeTutor) {
         AssertUtil.isTrue(!storeTutorMapper.exists(storeTutorMapper.query().eq(StoreTutor::getMobile, storeTutor.getMobile())
                 .eq(StoreTutor::getStoreId, storeTutor.getStoreId())), "手机号已被其他用户使用");
-        storeTutor.setCreateTime(DateUtils.getNowDate());
+
 
         //手机号重复加字母
         List<String> nameSubList = Lists.newArrayList();
@@ -143,7 +144,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         SysUser user = sysUserService.selectUserById(storeTutor.getLoginUserId());
         user.setSex(storeTutor.getSex());
         user.setPhonenumber(storeTutor.getMobile());
-        user.setUpdateTime(DateUtils.getNowDate());
+        user.setUpdateTime(LocalDateTime.now());
         user.setUpdateBy(SecurityUtils.getUsername());
         user.setRoleIds(storeTutor.getRoleIds());
 

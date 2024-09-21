@@ -11,8 +11,8 @@
         <div class="order-info-box">
 
         </div>
-        <div class="order-btn-container">
-          f
+        <div class="order_btn_container">
+          <el-button  >取消</el-button> <el-button type="primary" >完成选购</el-button>
         </div>
       </template>
 
@@ -155,6 +155,15 @@ e
       font-size: 40px !important;
     }
 
+  }
+}
+::v-deep.order_btn_container {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  background-color: #00afff;
+  *:first-child{
+    margin-left: auto!important;
   }
 }
 </style>

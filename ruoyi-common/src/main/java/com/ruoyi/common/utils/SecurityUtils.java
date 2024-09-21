@@ -1,5 +1,6 @@
 package com.ruoyi.common.utils;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -191,7 +192,7 @@ public class SecurityUtils
         LoginUser user=getLoginUser();
         entity.setCreateBy(user.getRealName());
         entity.setCreateById(user.getUserId());
-        entity.setCreateTime(DateUtils.getNowDate());
+        entity.setCreateTime(LocalDateTime.now());
         fillUpdateUser(entity);
     }
     public static <T extends MyBaseEntity>   void  fillCreateUser(T entity,T copyFrom){
@@ -205,7 +206,7 @@ public class SecurityUtils
         LoginUser user=getLoginUser();
         entity.setUpdateBy(user.getRealName());
         entity.setUpdateById(user.getUserId());
-        entity.setUpdateTime(DateUtils.getNowDate());
+        entity.setUpdateTime(LocalDateTime.now());
     }
     public static <T extends MyBaseEntity>   void  fillUpdateUser(T entity,T copyFom){
 
