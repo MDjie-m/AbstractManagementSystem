@@ -7,9 +7,10 @@
 
 
     <sql id="selectStoreTutorVo">
-        select a.* ,b.store_name,c.user_name
+        select a.* ,b.store_name,c.user_name,e.price
         from t_store_tutor a  left join  t_store b on a.store_id=b.store_id
                              left join sys_user c on a.login_user_id=c.user_id
+        left join t_tutor_price e on e.level=a.level and a.store_id=e.store_id
     </sql>
 
     <select id="selectStoreTutorList" parameterType="StoreTutor" resultType="StoreTutor">

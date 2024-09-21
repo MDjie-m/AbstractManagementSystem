@@ -108,6 +108,9 @@ service.interceptors.response.use(res => {
     }
   },
   error => {
+    if(error.request?.headers['noTip']){
+      return Promise.reject(error)
+    }
     console.log('err' + error)
     let { message } = error;
     if (message === "Network Error") {

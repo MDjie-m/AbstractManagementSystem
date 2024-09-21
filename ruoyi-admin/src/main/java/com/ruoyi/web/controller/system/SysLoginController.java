@@ -56,17 +56,27 @@ public class SysLoginController
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
-                loginBody.getUuid(), LoginSystem.BACKEND_SYSTEM,null);
+                loginBody.getUuid(), LoginSystem.BACKEND_SYSTEM);
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }
     @PostMapping("/api/login")
-    public AjaxResult loginApi(@RequestBody @Validated(LoginBody.ICashierSystemValidate.class) LoginBody loginBody)
+    public AjaxResult loginApi(@RequestBody  LoginBody loginBody)
     {
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
-                loginBody.getUuid(), LoginSystem.CASHIER_SYSTEM,loginBody.getStoreId());
+                loginBody.getUuid(), LoginSystem.CASHIER_SYSTEM);
+        ajax.put(Constants.TOKEN, token);
+        return ajax;
+    }
+    @PostMapping("/api/mini-app/login")
+    public AjaxResult miniAppLogin(@RequestBody  LoginBody loginBody)
+    {
+        AjaxResult ajax = AjaxResult.success();
+        // 生成令牌
+        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
+                loginBody.getUuid(), LoginSystem.MINI_APP_SYSTEM);
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }
@@ -75,7 +85,7 @@ public class SysLoginController
      * 
      * @return 用户信息
      */
-    @GetMapping("getInfo")
+    @GetMapping({"getInfo","api/mini-app/getInfo"})
 
     public AjaxResult getInfo()
     {
@@ -93,6 +103,17 @@ public class SysLoginController
         return ajax;
     }
 
+    /**
+     * 获取小程序路由
+     * @return
+     */
+    @GetMapping("api/mini-app/getRouters")
+    public AjaxResult getMiniAppRouters()
+    {
+        Long userId = SecurityUtils.getUserId();
+        List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId, MenuCategory.MINI_APP);
+        return AjaxResult.success(menuService.buildMenus(menus));
+    }
     /**
      * 获取路由信息
      * 

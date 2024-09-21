@@ -55,7 +55,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
      */
     @Override
     public StoreTutor selectStoreTutorByStoreTutorId(Long storeTutorId) {
-        StoreTutor user = storeTutorMapper.selectById(storeTutorId);
+        StoreTutor user = storeTutorMapper.selectStoreTutorByStoreTutorId(storeTutorId);
         if (Objects.nonNull(user)) {
             user.setRoleIds(storeUserMapper.selectRoleIds(user.getLoginUserId()));
         }
