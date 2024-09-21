@@ -131,6 +131,7 @@ aside {
   flex-direction: column;
   flex: 1;
 }
+
 .container-div {
   padding: 10px 28px;
   height: 100%;
@@ -140,7 +141,8 @@ aside {
   flex-direction: column;
   background-color: rgb(243, 243, 244);
 }
-.page-container  {
+
+.page-container {
 
   height: 100%;
   flex: 1;
@@ -148,7 +150,8 @@ aside {
   display: flex;
   flex-direction: row;
   background-color: rgb(243, 243, 244);
-  .left-panel{
+
+  .left-panel {
     width: 360px;
     height: 100%;
     display: flex;
@@ -157,17 +160,19 @@ aside {
     background-color: rgb(243, 243, 244);
     box-shadow: 2px 0px 5px rgba(0, 21, 41, 0.18);
   }
-  .right-panel{
+
+  .right-panel {
     flex: 1;
     position: relative;
     display: flex;
     flex-direction: column;
     padding: 10px 28px;
-    overflow:hidden;
+    overflow: hidden;
     height: 100%;
   }
 }
-.section-container{
+
+.section-container {
   padding: 20px;
   margin-top: 20px;
 }
@@ -180,6 +185,7 @@ aside {
 
   box-shadow: 1px 1px 3px rgba(0, 0, 0, .2);
 }
+
 .components-container {
   margin: 30px 50px;
   position: relative;
@@ -237,23 +243,43 @@ aside {
     margin-bottom: 10px;
   }
 }
-.with100{
+
+.with100 {
   width: 100%;
 }
-.custom-form{
-  .el-input,.el-select{
-    width: 100%!important;
+
+.custom-form {
+  .el-input, .el-select {
+    width: 100% !important;
   }
 }
-.custom-dialog{
-  .el-dialog{
+
+.custom-dialog {
+  .el-dialog {
     border-radius: 20px;
   }
 
-  .el-dialog__header{
+  .el-dialog__header {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    border-bottom: 1px solid rgb(0,0,0,0.1);
+    border-bottom: 1px solid rgb(0, 0, 0, 0.1);
     background-color: $light-blue;
   }
 }
+
+.mini-input {
+  width: 70px!important;
+  line-height: 20px!important;
+
+   input{
+     height: 20px!important;   line-height: 12px!important;
+     padding-left: 19px!important;
+     padding-right: 19px!important;
+   }
+   .el-input-number__increase, .el-input-number__decrease {
+    width: 19px !important;
+     height: 18px!important;
+    font-size: 12px !important;
+  }
+}
+

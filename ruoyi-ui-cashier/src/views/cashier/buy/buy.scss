@@ -13,8 +13,9 @@
     width: 100%;
     box-sizing: content-box;
 
+
     .num-box {
-      width: 30px;
+      width: 10px;
       display: flex;
       flex-direction: column;
       padding: 3px;
@@ -22,7 +23,15 @@
       justify-content: center;
 
     }
+    .btn-box {
+      width: 10px;
+      display: flex;
+      flex-direction: column;
+      margin-right: 20px;
+      align-items: center;
+      justify-content: center;
 
+    }
     .time-box {
       display: flex;
       flex: 1;
@@ -40,6 +49,12 @@
         align-items: center;
         flex-direction: row;
         gap: 10px;
+        .item-column{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 70px;
+        }
 
         .item-center {
           flex: 1;
@@ -133,6 +148,10 @@
   .item-img {
     height: 50px;
     width: 50px;
+    &.big{
+      height: 100px;
+      width: 100px;
+    }
   }
 
   .item-btn {
