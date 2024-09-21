@@ -85,7 +85,8 @@ public class MemberLevelServiceImpl implements IMemberLevelService {
     @Override
     public int insertMemberLevel(MemberLevel memberLevel) {
         // 查询是否有相同名字的会员等级
-        Long nameCount = memberLevelMapper.selectCount(memberLevelMapper.query().eq(MemberLevel::getLevelName, memberLevel.getLevelName()));
+        Long nameCount = memberLevelMapper.selectCount(memberLevelMapper.query().eq(MemberLevel::getStoreId, memberLevel.getStoreId())
+                .eq(MemberLevel::getLevelName, memberLevel.getLevelName()));
         AssertUtil.isTrue(nameCount == 0, "会员等级名称已存在，无法重复添加.");
         SecurityUtils.fillCreateUser(memberLevel);
         // 添加会员等级
@@ -107,7 +108,9 @@ public class MemberLevelServiceImpl implements IMemberLevelService {
     @Override
     public int updateMemberLevel(MemberLevel memberLevel) {
         // 查询是否有相同名字的会员等级
-        Long nameCount = memberLevelMapper.selectCount(memberLevelMapper.query().eq(MemberLevel::getLevelName, memberLevel.getLevelName()).ne(MemberLevel::getMemberLevelId, memberLevel.getMemberLevelId()));
+        Long nameCount = memberLevelMapper.selectCount(memberLevelMapper.query().eq(MemberLevel::getStoreId, memberLevel.getStoreId())
+                .eq(MemberLevel::getLevelName, memberLevel.getLevelName())
+                .ne(MemberLevel::getMemberLevelId, memberLevel.getMemberLevelId()));
         AssertUtil.isTrue(nameCount == 0, "会员等级名称已存在，无法重复添加.");
 
         SecurityUtils.fillUpdateUser(memberLevel);

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ruoyi.billiard.service.IStoreDeskService;
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.constant.LoginSystem;
 import com.ruoyi.common.enums.MenuCategory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,7 @@ public class SysLoginController
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }
+    @Anonymous
     @PostMapping("/api/mini-app/login")
     public AjaxResult miniAppLogin(@RequestBody  LoginBody loginBody)
     {
