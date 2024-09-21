@@ -539,6 +539,49 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
 
+    @Override
+    public void calOrderFees(Order order) {
+        List<ITotalDueFee> feeItems = Lists.newArrayList();
+        Map<Integer, BigDecimal> discountValueMap = memberService.getOrderMemberDisCountValue(order.getMemberId());
+
+        Date endTime = DateUtils.getNowDate();
+
+        order.getOrderDeskTimes().forEach(time -> {
+            if (Objects.isNull(time.getEndTime())) {
+                time.setEndTime(endTime);
+            }
+
+            time.setTotalTime(time.getNum());
+            time.calcAndSetFee(discountValueMap.getOrDefault(OrderType.TABLE_CHARGE.getValue(), BigDecimal.ZERO));
+            time.setStatus(CalcTimeStatus.STOP.getValue());
+            feeItems.add(time);
+        });
+        order.getOrderTutorTimes().forEach(time -> {
+            if (Objects.isNull(time.getEndTime())) {
+                time.setEndTime(endTime);
+            }
+            time.setTotalTime(time.getNum());
+            time.calcAndSetFee(discountValueMap.getOrDefault(time.getType(), BigDecimal.ZERO));
+            time.setStatus(CalcTimeStatus.STOP.getValue());
+
+            feeItems.add(time);
+        });
+        order.getOrderGoods().forEach(item -> {
+
+            item.calcAndSetFee(discountValueMap.getOrDefault(OrderType.COMMODITY_PURCHASE.getValue(), BigDecimal.ZERO));
+
+            feeItems.add(item);
+        });
+
+        order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmountDue));
+        order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount)
+                .subtract(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO)));
+
+        order.setTotalWipeZero(order.getTotalAmount().remainder(BigDecimal.ONE));
+        order.setTotalAmount(BigDecimal.valueOf(order.getTotalAmount().intValue()));
+
+    }
+
     /**
      * 停止所有计费 并 更新球桌关联orderId
      *
@@ -607,8 +650,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             });
 
         }
-        order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount));
-        order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount));
+        order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmountDue));
+        order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount)
+                .subtract(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO)));
 
         order.setTotalWipeZero(order.getTotalAmount().remainder(BigDecimal.ONE));
         order.setTotalAmount(BigDecimal.valueOf(order.getTotalAmount().intValue()));

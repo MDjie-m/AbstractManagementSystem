@@ -1,22 +1,20 @@
-
 <template>
 
   <div class="page-container">
 
-    <left-container  @onRefreshClick="onRefreshClick">
+    <left-container @onRefreshClick="onRefreshClick">
     </left-container>
   </div>
 </template>
-<script  >
+<script>
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
-export  default  {
-  components:{LeftContainer},
-  data(){
 
+export default {
+  components: {LeftContainer},
+  data() {
+    return {}
   },
-  methods:{
-
-  }
+  methods: {}
 }
 </script>
 e

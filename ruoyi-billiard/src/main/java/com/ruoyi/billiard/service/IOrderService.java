@@ -80,6 +80,8 @@ public interface IOrderService
 
     Boolean voidOrder(Long orderId, Long storeId,String remark);
 
+    void calOrderFees(Order order);
+
     void checkOrderTimer();
 
     /**

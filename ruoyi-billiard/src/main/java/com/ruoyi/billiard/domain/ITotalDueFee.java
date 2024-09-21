@@ -30,7 +30,7 @@ public interface ITotalDueFee {
     default  void calcAndSetFee(BigDecimal discountPercent){
         this.setDiscountValue(Optional.ofNullable(discountPercent).orElse(BigDecimal.ZERO));
         this.setTotalAmountDue(calcFee());
-        this.setTotalAmount(calcFeeSubDiscount(this.getTotalAmount(),this.getDiscountValue()));
+        this.setTotalAmount(calcFeeSubDiscount(this.getTotalAmountDue(),this.getDiscountValue()));
     }
 
     default BigDecimal calcFeeSubDiscount(BigDecimal total, BigDecimal discountPercent) {

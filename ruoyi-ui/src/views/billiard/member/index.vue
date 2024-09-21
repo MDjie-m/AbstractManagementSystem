@@ -174,7 +174,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="会员等级" prop="levelId">
-                <el-select v-model="form.levelId" placeholder="请选择性别" class="with100">
+                <el-select v-model="form.levelId" placeholder="请选择会员等级" class="with100">
                   <el-option
                     v-for="dict in levelOptions"
                     :key="dict.value"
@@ -388,6 +388,7 @@ export default {
       if (!this.storeInfo?.storeId) {
         return this.$modal.msgWarning("请选择门店");
       }
+      this.getAllLevelByStoreId();
       this.reset();
       this.open = true;
       this.title = "添加门店会员";

@@ -167,11 +167,11 @@
               <el-select v-model="targetDesk.deskId" filterable @change="onTargetDeskIdChange">
                 <!--                <div slot="prefix"></div>-->
                 <el-option :value="item.deskId" :key="'targetDesk'+item.deskId"
-                           :label="item.title"  v-if=" currentDesk &&  currentDesk.deskId!==item.deskId"
+                           :label="item.title" v-if=" currentDesk &&  currentDesk.deskId!==item.deskId"
                            v-for="item in deskList">
                   <div style="display: flex;flex-direction: row;align-items: center">
                     <div class="desk-status" :class="`desk-status-`+item.status"></div>
-                    <div>   {{item.title}} </div>
+                    <div> {{ item.title }}</div>
                     <div style=" padding-left: 20px">
                       {{ item.price }}元/分钟
                     </div>
@@ -490,8 +490,8 @@ export default {
       }).finally(() => this.loading = false);
     },
     fillTitle(item) {
-      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) ===  item.deskType)?.label ?? '';
-      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value)===  item.placeType)?.label ?? '';
+      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) === item.deskType)?.label ?? '';
+      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value) === item.placeType)?.label ?? '';
       item.shortTitle = `${item.deskName}(${item.deskNum})`
       item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`
     },
@@ -563,8 +563,8 @@ export default {
         this.orderLoading = true;
         suspendOrder(this.currentDesk?.lastActiveOrder.orderId).then(res => {
           this.queryDeskById(this.currentDesk.deskId);
-          res.data?.busyDesks?.forEach(p=>{
-            this.onSwitchLight(p.deskNum,false)
+          res.data?.busyDesks?.forEach(p => {
+            this.onSwitchLight(p.deskNum, false)
           })
           this.$message.success("订单已挂起.")
         }).finally(() => this.orderLoading = false)
@@ -576,7 +576,11 @@ export default {
         cancelButtonText: '取消',
         type: 'success'
       }).then(res => {
-
+        this.$router.push({
+          path: '/cashier/order', query: {
+            orderId
+          }
+        })
       }, () => {
 
       })
@@ -595,8 +599,8 @@ export default {
         this.orderLoading = true;
         stopOrder(this.currentDesk?.lastActiveOrder.orderId).then(res => {
           this.queryDeskById(this.currentDesk.deskId);
-          res.data?.busyDesks?.forEach(p=>{
-            this.onSwitchLight(p.deskNum,false)
+          res.data?.busyDesks?.forEach(p => {
+            this.onSwitchLight(p.deskNum, false)
           })
 
           this.navToOrder(this.currentDesk?.lastActiveOrder.orderId);

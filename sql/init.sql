@@ -81,7 +81,7 @@ create table t_member
 
     sex               char(1)                                  null comment '性别（0=男，1=女，2=未知）',
     store_id          BIGINT                                   not null comment '门店',
-    level_id          int                                      not null comment '会员等级',
+    level_id          BIGINT                                      not null comment '会员等级',
     status            int                                      not null comment '门店状态（0正常 1停用）',
     del_flag          char           default '0'               null comment '删
 除标志（0代表存在 2代表删除）',

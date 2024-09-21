@@ -7,6 +7,8 @@ import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
+import java.math.BigInteger;
+
 /**
  * 门店会员对象 t_member
  * 
@@ -68,7 +70,7 @@ public class Member extends MyBaseEntity
     @Excel(name = "会员等级")
 
     @TableField("level_id")
-    private Integer levelId;
+    private BigInteger levelId;
 
     /** 状态（0正常 1停用） */
     @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
