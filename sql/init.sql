@@ -643,3 +643,30 @@ create index t_light_timer_order_id_index
     on t_light_timer (order_id);
 create index t_light_timer_store_id_end_time_index
     on t_light_timer (store_id, end_time);
+
+
+
+drop table if exists t_store_schedule;
+create table t_store_schedule
+(
+    store_schedule_id bigint                   not null comment 'ID'
+        primary key,
+    store_id       bigint                                not null comment '门店',
+    start_time     datetime                              not null comment '开始时间',
+    end_time       datetime                              not null comment '结束时间',
+    start_time_offset_day       int                                not null comment '-1,0,+1',
+    end_time_offset_day       int                                null comment '-1,0,+1',
+    day    date                              not null comment '哪一天',
+    create_by      varchar(64) default ''                null comment '创建者',
+    create_time    timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by      varchar(64) default ''                null comment '更新者',
+    update_time    timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id   bigint                                null comment '创建者Id',
+    update_by_id   bigint                                null comment '更新者Id',
+    remark         nvarchar(500)                         null comment '备注'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    comment '门店班次';
+
+create  unique  index   t_store_schedule_store_id_index
+    on t_store_schedule (store_id,day);

@@ -6,4 +6,5 @@ import javax.annotation.Resource;
 
 @RequestMapping("api/mini-app")
 public class MiniAppLoginController {
+
 }
