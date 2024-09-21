@@ -108,6 +108,10 @@
               <div> {{ currentOrder.totalDiscountAmount }}</div>
             </div>
             <div class="amount-item">
+              <div> 折后应付:</div>
+              <div> {{ (currentOrder.totalAmountDue - currentOrder.totalDiscountAmount)|numFormat(2) }}</div>
+            </div>
+            <div class="amount-item">
               <div>预付金额:</div>
               <div> {{ currentOrder.prePayAmount }}</div>
             </div>
@@ -122,12 +126,21 @@
             </div>
           </div>
           <div class="order-member-box">
-            <svg-icon icon-class="user_choose"/>
-            <div class="member-input"></div>
+            <svg-icon class="name-icon" icon-class="user_choose"/>
+            <div class="member-input" v-if="!currentOrder.memberId" @click="onOpenMemberClick"></div>
+            <div class="member-name" v-if="currentOrder.memberId &&currentOrder.member ">
+              <div @click="onOpenMemberClick"> {{ currentOrder.member.realName }}/{{ currentOrder.member.mobile }}
+              </div>
+              <i class="el-icon-delete" @click.stop="onRemoveMemberClick"
+                 v-if="currentOrder.status ===OrderStatus.Stop  "></i>
+            </div>
+
           </div>
           <div class="order-tool-box">
 
-            <el-button size="mini" circle type="danger">结算</el-button>
+            <el-button size="mini" circle type="danger" @click="showFinishOrder=true"
+                       v-if="currentOrder.status ===OrderStatus.Stop">结算
+            </el-button>
           </div>
 
         </div>
@@ -201,20 +214,64 @@
       </div>
     </div>
 
-    <!-- 换台确认框 -->
+    <MemberSearch :visible.sync="showMemberSearch" @onOk="onChooseMemberOk"/>
 
+    <CustomDialog title="结算" :visible.sync="showFinishOrder" :onOk="onFinishOrderOkClick" width="500px">
+      <el-form v-if="currentOrder ">
+        <template v-if="currentOrder.memberId">
+          <el-form-item label="结算方式:">
+            <el-radio v-model="finishOrderForm.type" label="0">扫码支付</el-radio>
+            <el-radio v-model="finishOrderForm.type" label="1">会员支付</el-radio>
+
+          </el-form-item>
+          <template v-if="finishOrderForm.type==1">
+            <el-form-item label="当前会员余额:">
+              <span> {{ currentOrder.member.currentAmount }}  </span>
+            </el-form-item>
+            <el-form-item label="待支付金额:">
+              <span> {{ currentOrder.totalAmount }}  </span>
+            </el-form-item>
+            <el-form-item label="请输入会员密码:">
+              <el-input maxlength="10" v-model="finishOrderForm.password">
+
+              </el-input>
+            </el-form-item>
+          </template>
+
+        </template>
+        <template v-else>
+          确认结算？
+        </template>
+
+      </el-form>
+
+    </CustomDialog>
   </div>
 </template>
 <script>
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
-import {getOrderInfo, listOrders} from "@/api/cashier/order";
+import {fillMember, finishOrder, getOrderInfo, listOrders} from "@/api/cashier/order";
+import MemberSearch from "@/views/cashier/components/memberSearch.vue";
+import {MessageBox} from "element-ui";
+import {resumeCalcFee} from "@/api/cashier/desk";
+import {OrderStatus} from "@/views/cashier/components/constant";
+import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
+
 
 export default {
-  components: {LeftContainer},
+  components: {CustomDialog, MemberSearch, LeftContainer},
   dicts: ['order_type', 'order_status', 'store_desk_status'],
   data() {
     return {
+      showFinishOrder: false,
+      finishOrderForm: {
+        type: '0',
+        password: null,
+        orderId: null,
+      },
       loading: false,
+      OrderStatus: OrderStatus,
+      showMemberSearch: false,
       total: 0,
       orderList: [],
       currentOrder: null,
@@ -242,7 +299,43 @@ export default {
     }
   },
   methods: {
+    onFinishOrderOkClick() {
+      if (this.finishOrderForm.type == 1 && !String(this.finishOrderForm.password).trim()) {
+        return this.$modal.msgWarning("请输入密码");
+      }
+      this.finishOrderForm.orderId = this.currentOrder.orderId;
+      return finishOrder(this.finishOrderForm).then(res => {
+        this.$modal.msgWarning("操作成功")
+      }).finally(() => {
+        this.onRowClick(this.currentOrder);
+        this.getList();
+      })
 
+    },
+    onOpenMemberClick() {
+      if (this.currentOrder.status !== OrderStatus.Stop) {
+        return
+      }
+      this.showMemberSearch = true;
+    },
+    onRemoveMemberClick() {
+      MessageBox.confirm(`确认不使用会员结算?`, '确认', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.onChooseMemberOk({memberId: null})
+      })
+    },
+    onChooseMemberOk(member) {
+      this.showMemberSearch = false;
+      fillMember(this.currentOrder.orderId, member.memberId).then(() => {
+        this.$modal.msgSuccess("已变更会员信息,请查看支付金额是否更新")
+      }).finally(() => {
+        this.onRowClick(this.currentOrder)
+      })
+
+    },
     onRefreshClick() {
 
     },
@@ -357,16 +450,34 @@ export default {
   }
 
   .order-member-box {
-     display: flex;
+    display: flex;
     align-items: center;
     gap: 5px;
     padding: 5px 10px;
-    font-size: 30px;
+    height: 40px;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, .2);
-    .member-input{
+
+    .name-icon {
+      font-size: 20px;
+      margin-right: 20px;
+    }
+
+    .member-input {
       flex: 1;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       height: 30px;
+    }
+
+    .member-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      i {
+        font-size: 12px;
+        color: #ff4949;
+        cursor: pointer;
+      }
     }
   }
 

@@ -1,20 +1,29 @@
 <template>
-  <el-dialog title="会员查找" class="custom-dialog" :visible.sync="visible" width="700px" append-to-body
+  <el-dialog title="会员查找" class="custom-dialog" :visible.sync="visible" width="450px" append-to-body
              :close-on-click-modal="false"
              :close-on-press-escape="false" :show-close="false">
-    <el-form ref="form" label-width="120px">
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="会员:">
-            <el-autocomplete
-              v-model="memberId"
-              :fetch-suggestions="querySearchAsync"
-              placeholder="请输入内容手机号或者姓名"
+    <el-form ref="form"  >
 
-            ></el-autocomplete>
+          <el-form-item  >
+            <el-select
+              v-model="memberId"
+
+              filterable style="width: 400px"
+              remote
+              clearable autocomplete="off"
+              reserve-keyword
+              no-data-text="未找到相关会员"
+              placeholder="请输入姓名或者手机号"
+              :remote-method="querySearchAsync"
+              :loading="loading">
+              <el-option
+                v-for="item in memberList"
+                :key="item.memberId"
+                :label="item.title"
+                :value="item.memberId">
+              </el-option>
+            </el-select>
           </el-form-item>
-        </el-col>
-      </el-row>
 
     </el-form>
     <div slot="footer" class="dialog-footer" v-loading="loading">
@@ -24,28 +33,45 @@
   </el-dialog>
 </template>
 <script>
+import {listMembers} from "@/api/cashier/member";
+
 export default {
-  emits:["onOk"],
-  props:['visible'],
+  emits: ["onOk"],
+  props: ['visible'],
   data() {
     return {
-      memberId:null,
-      memberList:[]
+      loading: false,
+      memberId: null,
+      memberList: []
     }
   },
   methods: {
-    querySearchAsync(queryString,cb){
+    querySearchAsync(queryString) {
+      this.loading = true;
+      listMembers({
+        pageIndex: 1,
+        pageSize: 10,
+        keyword: String(queryString).trim()
+      }).then(res => {
+        let list =res.rows || [];
+        list.forEach(p=>{
+          p.title=`${p.realName}/${p.mobile}`
+        })
+        this.memberList = res.rows || [];
 
+      }).finally(() => this.loading = false)
     },
-    onOkClick(){
-      if(!this.memberId){
+    onOkClick() {
+      if (!this.memberId) {
         return this.$modal.msgWarning("请选择会员")
       }
-      let item  =  this.memberList.find(p=>p.memberId===this.memberId)
-      this.$emit("onOk",item)
+      let item = this.memberList.find(p => p.memberId === this.memberId)
+      this.$emit("onOk", item);
+      this.onCancel();
+      this.memberId=null;
     },
-    onCancel(){
-      this.$emit("update:visible",false)
+    onCancel() {
+      this.$emit("update:visible", false)
     }
   }
 }

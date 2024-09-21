@@ -4,6 +4,7 @@ import com.ruoyi.billiard.domain.Member;
 import com.ruoyi.billiard.domain.Order;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
+import com.ruoyi.billiard.domain.vo.FinishOrderReqVo;
 import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
 import com.ruoyi.billiard.domain.vo.OrderPrePayReqVo;
 import com.ruoyi.billiard.enums.OrderStatus;
@@ -51,6 +52,20 @@ public class CashierOrderController extends BaseController {
         }
         return ResultVo.success(res);
     }
+
+    @PreAuthorize("@ss.hasPermi('cashier:order:list')")
+    @PostMapping("/{orderId}/member")
+    public ResultVo<Boolean> fillMember(@PathVariable Long orderId,@RequestParam(required = false) Long memberId) {
+
+        return ResultVo.success(orderService.fillMember(orderId,memberId));
+    }
+    @PreAuthorize("@ss.hasPermi('cashier:order:list')")
+    @PostMapping("/finish")
+    public ResultVo<Boolean> finishOrder(@RequestBody @Validated FinishOrderReqVo reqVo) {
+        reqVo.setStoreId(getStoreIdWithThrow());
+        return ResultVo.success(orderService.finishOrder(reqVo));
+    }
+
 
 
 

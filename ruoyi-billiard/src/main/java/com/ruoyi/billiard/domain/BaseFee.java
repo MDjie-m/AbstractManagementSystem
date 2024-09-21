@@ -16,6 +16,9 @@ import java.util.function.Function;
 public abstract class BaseFee extends MyBaseEntity implements IFee {
 
 
+    public Boolean getDiscountDisable() {
+            return Boolean.FALSE;
+    }
 
     public Integer getNum() {
         int minutes = DateUtils.deskTimeDiffMinutes(this.getStartTime(), Optional.ofNullable(this.getEndTime()).orElse(new Date()));

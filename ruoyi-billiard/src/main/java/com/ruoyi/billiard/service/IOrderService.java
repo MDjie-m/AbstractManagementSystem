@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service;
 import java.math.BigDecimal;
 import java.util.List;
 import com.ruoyi.billiard.domain.Order;
+import com.ruoyi.billiard.domain.vo.FinishOrderReqVo;
 import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
 import com.ruoyi.billiard.domain.vo.OrderPrePayReqVo;
 
@@ -90,4 +91,8 @@ public interface IOrderService
      * @return
      */
     List<Order> selectOrderByMemberIds(Long[] memberIds);
+
+    Boolean fillMember(Long orderId, Long memberId);
+
+    Boolean finishOrder(FinishOrderReqVo reqVo);
 }

@@ -7,6 +7,7 @@ import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
@@ -46,13 +47,16 @@ public class Member extends MyBaseEntity
     @Excel(name = "当前金额")
 
     @TableField("current_amount")
-    private Long currentAmount;
+    private BigDecimal currentAmount;
 
     /** 历史总金额 */
     @Excel(name = "历史总金额")
 
     @TableField("total_amount")
-    private Long totalAmount;
+    private BigDecimal totalAmount;
+
+    @TableField("pay_password")
+    private String payPassword;
 
     /** 性别（0=男，1=女，2=未知） */
     @Excel(name = "性别", readConverterExp = "0==男，1=女，2=未知")
@@ -102,7 +106,8 @@ public class Member extends MyBaseEntity
 
 
 
-
+    @TableField(exist = false)
+    private String keyword;
 
 
 

@@ -62,7 +62,7 @@ create table t_store_tutor
     login_user_id    bigint                                not null comment '登录账户id',
     create_by_id     bigint                                null comment '创建者Id',
     update_by_id     bigint                                null comment '更新者Id',
-    aptitude nvarchar(500) null comment '资质',
+    aptitude         nvarchar(500)                         null comment '资质',
     remark           nvarchar(500)                         null comment '备注'
 )
     comment '门店助教';
@@ -78,10 +78,10 @@ create table t_member
     total_amount      DECIMAL(20, 2) default 0                 not null default 0 comment '历史总金额',
     give_amount       decimal(20, 2) default 0                 not null comment '充值赠送金额',
     total_give_amount decimal(20, 2) default 0                 null comment '历史充值赠送总金额',
-
+    pay_password      varchar(200)                             null comment '支付密码',
     sex               char(1)                                  null comment '性别（0=男，1=女，2=未知）',
     store_id          BIGINT                                   not null comment '门店',
-    level_id          BIGINT                                      not null comment '会员等级',
+    level_id          BIGINT                                   not null comment '会员等级',
     status            int                                      not null comment '门店状态（0正常 1停用）',
     del_flag          char           default '0'               null comment '删
 除标志（0代表存在 2代表删除）',
@@ -97,7 +97,7 @@ create table t_member
 drop table if exists t_member_level;
 create table t_member_level
 (
-    member_level_id bigint                   not null comment 'ID'
+    member_level_id bigint                                not null comment 'ID'
         primary key,
     level_name      nvarchar(60)                          not null comment '会员等级',
     discount        decimal(4, 2)                         not null comment '折扣力度 95折就填写95',
@@ -182,16 +182,16 @@ create table t_order
 drop table if exists t_order_relation;
 create table t_order_relation
 (
-    order_relation_id             bigint                                not null comment '订单id' primary key,
-    main_order_id            bigint                         not null comment '主单id',
-     sub_order_id    bigint    not null comment '从单id',
-    remark                nvarchar(500)                         null comment '备注',
-    create_by             varchar(64) default ''                null comment '创建者',
-    create_time           timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by             varchar(64) default ''                null comment '更新者',
-    create_by_id          bigint                                null comment '创建者Id',
-    update_by_id          bigint                                null comment '更新者Id',
-    update_time           timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+    order_relation_id bigint                                not null comment '订单id' primary key,
+    main_order_id     bigint                                not null comment '主单id',
+    sub_order_id      bigint                                not null comment '从单id',
+    remark            nvarchar(500)                         null comment '备注',
+    create_by         varchar(64) default ''                null comment '创建者',
+    create_time       timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by         varchar(64) default ''                null comment '更新者',
+    create_by_id      bigint                                null comment '创建者Id',
+    update_by_id      bigint                                null comment '更新者Id',
+    update_time       timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
 ) comment '订单关系表';
 
 
@@ -202,7 +202,7 @@ create table t_order_goods
     order_id              bigint                                not null comment '订单id',
     desk_id               bigint                                null comment '球桌id',
     goods_id              bigint                                not null comment '商品id',
-    goods_name            nvarchar(64)                                  not null comment '商品名称',
+    goods_name            nvarchar(64)                          not null comment '商品名称',
     price                 decimal(10, 2)                        not null comment '单价',
     num                   int                                   not null comment '数量',
     total_amount_due      decimal(20, 2)                        not null comment '应付总金额 ',
@@ -226,12 +226,8 @@ create table t_order_member_deduct
     order_member_deduct_id bigint                                not null comment 'id' primary key,
     order_id               bigint                                not null comment '订单id',
     member_id              bigint                                not null comment '会员id',
-    total_amount_due       decimal(20, 2)                        not null comment '应付总金额 ',
-    total_discount_amount  decimal(20, 2)                        null comment '折扣金额',
     total_amount           decimal(20, 2)                        null comment '实际支付金额',
-    total_give_amount      decimal(20, 2)                        null comment '实际赠送支付金额',
-    discount_value         decimal(4, 2)                         null comment '当前折扣',
-    total_wipe_zero        decimal(4, 2)                         null comment '抹零金额',
+
     create_by              varchar(64) default ''                null comment '创建者',
     create_time            timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
     update_by              varchar(64) default ''                null comment '更新者',
@@ -411,23 +407,24 @@ create table t_goods_category
 drop table if exists t_goods;
 create table t_goods
 (
-    goods_id     bigint                                not null comment '商品编码'
+    goods_id         bigint                                not null comment '商品编码'
         primary key,
-    store_id     bigint                                not null comment '门店Id',
-    goods_name   nvarchar(64)                          not null comment '商品名称',
-    goods_img    nvarchar(500)                         not null comment '商品图片',
-    sort         int                                   not null comment '排序',
-    barcode      nvarchar(64)                          null comment '商品条码',
-    category_id  bigint                                not null null comment '商品分类',
-    sell         tinyint                               not null comment '是否上架销售',
-    price        decimal(10, 2)                        not null comment '价格',
-    create_by    varchar(64) default ''                null comment '创建者',
-    create_time  timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by    varchar(64) default ''                null comment '更新者',
-    update_time  timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id bigint                                null comment '创建者Id',
-    update_by_id bigint                                null comment '更新者Id',
-    remark       nvarchar(500)                         null comment '备注'
+    store_id         bigint                                not null comment '门店Id',
+    goods_name       nvarchar(64)                          not null comment '商品名称',
+    goods_img        nvarchar(500)                         not null comment '商品图片',
+    discount_disable tinyint     default 0                 not null comment '禁止折扣',
+    sort             int                                   not null comment '排序',
+    barcode          nvarchar(64)                          null comment '商品条码',
+    category_id      bigint                                not null null comment '商品分类',
+    sell             tinyint                               not null comment '是否上架销售',
+    price            decimal(10, 2)                        not null comment '价格',
+    create_by        varchar(64) default ''                null comment '创建者',
+    create_time      timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by        varchar(64) default ''                null comment '更新者',
+    update_time      timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                                null comment '创建者Id',
+    update_by_id     bigint                                null comment '更新者Id',
+    remark           nvarchar(500)                         null comment '备注'
 )
     comment '商品';
 drop table if exists t_desk_device_relation;

@@ -204,6 +204,14 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="支付密码" prop="payPassword">
+                <el-input v-model="form.payPassword" type="password" class="with100" placeholder="请输入密码"
+                          maxlength="20"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
           <el-row>
             <el-col :span="24">
@@ -357,6 +365,7 @@ export default {
         memberId: null,
         realName: null,
         mobile: null,
+        payPassword:null,
         currentAmount: null,
         totalAmount: null,
         sex: null,
@@ -408,12 +417,16 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.memberId != null) {
+
             updateMember(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
+            if(!String(this.form.payPassword).trim()){
+              return    this.$modal.msgWarning("请输入支付密码");
+            }
             addMember(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;

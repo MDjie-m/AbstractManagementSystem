@@ -46,3 +46,17 @@ export function voidOrder(orderId,remark) {
     params:{remark}
   })
 }
+export function fillMember(orderId,memberId) {
+  return request({
+    url: `/cashier/order/${orderId}/member`,
+    method: 'post',
+    params:{memberId}
+  })
+}
+export function finishOrder(params) {
+  return request({
+    url: `/cashier/order/finish`,
+    method: 'post',
+    data:params
+  })
+}

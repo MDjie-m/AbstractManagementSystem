@@ -82,9 +82,12 @@ public class Goods extends MyBaseEntity
     @TableField("price")
     private BigDecimal price;
 
+    /**
+     * 禁止折扣 默认是false，
+     */
 
-
-
+    @TableField("discount_disable")
+    private Boolean discountDisable;
 
 
 

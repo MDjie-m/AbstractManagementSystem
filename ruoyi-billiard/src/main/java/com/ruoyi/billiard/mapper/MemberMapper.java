@@ -32,21 +32,6 @@ public interface MemberMapper extends MyBaseMapper<Member>
      */
     public List<Member> selectMemberList(Member member);
 
-    /**
-     * 新增门店会员
-     * 
-     * @param member 门店会员
-     * @return 结果
-     */
-    public int insertMember(Member member);
-
-    /**
-     * 修改门店会员
-     * 
-     * @param member 门店会员
-     * @return 结果
-     */
-    public int updateMember(Member member);
 
     /**
      * 删除门店会员

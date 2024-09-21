@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import com.ruoyi.billiard.domain.LevelDiscountPermission;
 import com.ruoyi.billiard.domain.Member;
 
 /**
@@ -72,4 +71,8 @@ public interface IMemberService {
 
     //获取会员折扣
     Map<Integer, BigDecimal> getOrderMemberDisCountValue(Long memberId);
+
+    Boolean checkPwd(Long memberId, String password);
+
+    void deductAmount(Long memberId, Long orderId, BigDecimal totalAmount);
 }

@@ -3,22 +3,25 @@ package com.ruoyi.billiard.service.impl;
 import java.math.BigDecimal;
 import java.util.*;
 
-import com.ruoyi.billiard.domain.LevelDiscountPermission;
-import com.ruoyi.billiard.domain.Order;
-import com.ruoyi.billiard.domain.OrderRecharge;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.mapper.OrderMemberDeductMapper;
 import com.ruoyi.billiard.service.IOrderRechargeService;
 import com.ruoyi.billiard.service.IOrderService;
 import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.utils.ArrayUtil;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.MemberMapper;
-import com.ruoyi.billiard.domain.Member;
 import com.ruoyi.billiard.service.IMemberService;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.swing.text.html.Option;
 
 /**
  * 门店会员Service业务层处理
@@ -40,6 +43,9 @@ public class MemberServiceImpl implements IMemberService {
     @Autowired
     private IOrderRechargeService orderRechargeService;
 
+    @Autowired
+    private OrderMemberDeductMapper orderMemberDeductMapper;
+
     /**
      * 查询门店会员
      *
@@ -48,7 +54,12 @@ public class MemberServiceImpl implements IMemberService {
      */
     @Override
     public Member selectMemberByMemberId(Long memberId) {
-        return memberMapper.selectById(memberId);
+        Member member = memberMapper.selectById(memberId);
+         if(Objects.nonNull(member)){
+             member.setPayPassword(null);
+         }
+
+        return member;
     }
 
     /**
@@ -60,7 +71,7 @@ public class MemberServiceImpl implements IMemberService {
     @Override
     public List<Member> selectMemberList(Member member) {
         List<Member> memberList = Optional.ofNullable(memberMapper.selectMemberList(member)).orElse(Collections.emptyList());
-        memberList.forEach(p -> p.setStoreName(storeService.selectStoreByStoreId(p.getStoreId()).getStoreName()));
+        memberList.forEach(p -> p.setPayPassword(null));
         return memberList;
     }
 
@@ -75,11 +86,14 @@ public class MemberServiceImpl implements IMemberService {
     public int insertMember(Member member) {
         SecurityUtils.fillCreateUser(member);
         member.setMemberId(IdUtils.singleNextId());
+        if (StringUtils.isNotEmpty(member.getPayPassword())) {
+            member.setPayPassword(SecurityUtils.encryptPassword(member.getPayPassword()));
+        }
         // 查询当前门店是否存在会员
         Long count = memberMapper.selectCount(memberMapper.query().eq(Member::getMobile, member.getMobile())
                 .eq(Member::getStoreId, member.getStoreId()));
         AssertUtil.isTrue(count == 0, "当前手机号已经是门店会员了，无法重复添加.");
-        return memberMapper.insertMember(member);
+        return memberMapper.insert(member);
     }
 
     /**
@@ -92,8 +106,10 @@ public class MemberServiceImpl implements IMemberService {
     @Override
     public int updateMember(Member member) {
         SecurityUtils.fillUpdateUser(member);
-
-        return memberMapper.updateMember(member);
+        if (StringUtils.isNotEmpty(member.getPayPassword())) {
+            member.setPayPassword(SecurityUtils.encryptPassword(member.getPayPassword()));
+        }
+        return memberMapper.updateById(member);
     }
 
     /**
@@ -151,5 +167,41 @@ public class MemberServiceImpl implements IMemberService {
         return ArrayUtil.toMap(permissions, LevelDiscountPermission::getValue, p -> {
             return Optional.ofNullable(p.getDiscount()).orElse(BigDecimal.ZERO);
         });
+    }
+
+    @Override
+    public Boolean checkPwd(Long memberId, String password) {
+        Member member = memberMapper.selectById(memberId);
+        if (Objects.isNull(member)) {
+            return false;
+        }
+        if (StringUtils.isEmpty(member.getPayPassword())) {
+            return false;
+        }
+        return SecurityUtils.matchesPassword(password, member.getPayPassword());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deductAmount(Long memberId, Long orderId, BigDecimal deductAmount) {
+
+        Member member = memberMapper.selectById(memberId);
+        BigDecimal nowMoney = Optional.ofNullable(member.getCurrentAmount()).orElse(BigDecimal.ZERO);
+
+        AssertUtil.isTrue(nowMoney.compareTo(deductAmount) >= 0,
+                StringUtils.format("余额不足:当前余额{}", nowMoney.toPlainString()));
+        UpdateWrapper<Member> updateWrapper = memberMapper.edit();
+        updateWrapper.lambda().eq(Member::getMemberId, memberId).eq(Member::getCurrentAmount, nowMoney);
+        updateWrapper.setSql(StrUtil.format("current_amount = current_amount - {}", deductAmount));
+        updateWrapper.last(StrUtil.format(" and (current_amount - {} >= 0)   ", deductAmount));
+        AssertUtil.isTrue(memberMapper.update(null, updateWrapper) > 0, "余额不足");
+
+        OrderMemberDeduct deduct = new OrderMemberDeduct();
+        deduct.setOrderMemberDeductId(IdUtils.singleNextId());
+        deduct.setMemberId(memberId);
+        deduct.setTotalAmount(deductAmount);
+        deduct.setOrderId(orderId);
+        SecurityUtils.fillCreateUser(deduct);
+        orderMemberDeductMapper.insert(deduct);
     }
 }

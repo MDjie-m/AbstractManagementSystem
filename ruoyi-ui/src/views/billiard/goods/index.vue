@@ -142,7 +142,17 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="是否销售" prop="barcode">
+        <el-form-item label="禁止折扣" prop="discountDisable" >
+          <el-radio-group v-model="form.discountDisable">
+            <el-radio-button     :label="true"   >
+              是
+            </el-radio-button>
+            <el-radio-button     :label="false"   >
+              否
+            </el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="是否销售" prop="sell">
           <el-tooltip :content="'选择[否]，商品不会在收银台展示'  " placement="top">
           <el-switch
             v-model="form.sell"
@@ -230,6 +240,9 @@ export default {
         price: [
           { required: true, message: "价格不能为空", trigger: "blur" }
         ],
+        discountDisable: [
+          { required: true, message: "价格不能为空", trigger: "blur" }
+        ],
         updateTime: [
           { required: true, message: "更新时间不能为空", trigger: "blur" }
         ]
@@ -269,6 +282,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
+        discountDisable:false,
         goodsId: null,
         storeId: this.storeInfo?.storeId,
         goodsName: null,

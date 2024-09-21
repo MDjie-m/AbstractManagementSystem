@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.constant.OrderErrorMsg;
 import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.domain.vo.FinishOrderReqVo;
 import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
 import com.ruoyi.billiard.domain.vo.OrderPrePayReqVo;
 import com.ruoyi.billiard.enums.CalcTimeStatus;
@@ -553,7 +554,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
             time.setTotalTime(time.getNum());
             time.calcAndSetFee(discountValueMap.getOrDefault(OrderType.TABLE_CHARGE.getValue(), BigDecimal.ZERO));
-            time.setStatus(CalcTimeStatus.STOP.getValue());
+            //time.setStatus(CalcTimeStatus.STOP.getValue());
             feeItems.add(time);
         });
         order.getOrderTutorTimes().forEach(time -> {
@@ -562,7 +563,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             }
             time.setTotalTime(time.getNum());
             time.calcAndSetFee(discountValueMap.getOrDefault(time.getType(), BigDecimal.ZERO));
-            time.setStatus(CalcTimeStatus.STOP.getValue());
+            //time.setStatus(CalcTimeStatus.STOP.getValue());
 
             feeItems.add(time);
         });
@@ -574,6 +575,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         });
 
         order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmountDue));
+        order.setTotalDiscountAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalDiscountAmount));
+
         order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount)
                 .subtract(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO)));
 
@@ -651,13 +654,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         }
         order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmountDue));
+        order.setTotalDiscountAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalDiscountAmount));
         order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount)
                 .subtract(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO)));
 
+
         order.setTotalWipeZero(order.getTotalAmount().remainder(BigDecimal.ONE));
         order.setTotalAmount(BigDecimal.valueOf(order.getTotalAmount().intValue()));
+
+
         orderMapper.update(null, orderMapper.edit().lambda()
-                .set(Order::getTotalAmountDue, order.getTotalAmountDue()).eq(Order::getOrderId, orderId));
+                .set(Order::getTotalAmountDue, order.getTotalAmountDue())
+                .set(Order::getTotalDiscountAmount, order.getTotalDiscountAmount())
+                .set(Order::getTotalAmount, order.getTotalAmount())
+                .set(Order::getTotalWipeZero, order.getTotalWipeZero())
+                .eq(Order::getOrderId, orderId));
         return order;
     }
 
@@ -669,5 +680,37 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public List<Order> selectOrderByMemberIds(Long[] memberIds) {
         return Optional.ofNullable(orderMapper.selectList(orderMapper.query().in(Order::getMemberId, Arrays.asList(memberIds)))).orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Boolean fillMember(Long orderId, Long memberId) {
+        Order order = orderMapper.selectById(orderId);
+        AssertUtil.notNullOrEmpty(order, OrderErrorMsg.ORDER_NOT_FOUND);
+        AssertUtil.isTrue(order.getStatus() <= OrderStatus.SETTLED.getValue(), "只有计费中和待结算的订单才能更改会员");
+        SecurityUtils.fillUpdateUser(order);
+        order.setMemberId(memberId);
+        orderMapper.updateAllWithId(order);
+        if (Objects.equals(OrderStatus.WAIT_SETTLED.getValue(), order.getStatus())) {
+            stopAllCalcTimes(orderId, false);
+        }
+        return Boolean.TRUE;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean finishOrder(FinishOrderReqVo reqVo) {
+        Order order = orderMapper.selectById(reqVo.getOrderId());
+        AssertUtil.notNullOrEmpty(order, OrderErrorMsg.ORDER_NOT_FOUND);
+        AssertUtil.isTrue(Arrays.asList(OrderStatus.WAIT_SETTLED.getValue(), OrderStatus.SUSPEND.getValue())
+                .contains(order.getStatus()), "只有待结算和挂起的订单才能结算");
+        if (Objects.equals(reqVo.getType(), 1)) {
+            AssertUtil.notNullOrEmpty(order.getMemberId(), "订单未绑定会员");
+            AssertUtil.isTrue(memberService.checkPwd(order.getMemberId(), reqVo.getPassword()), "密码错误");
+            memberService.deductAmount(order.getMemberId(),order.getOrderId(), order.getTotalAmount());
+        }
+        order.setStatus(OrderStatus.SETTLED.getValue());
+        SecurityUtils.fillUpdateUser(order);
+        orderMapper.updateById(order);
+        return true;
     }
 }

@@ -30,21 +30,7 @@ public interface GoodsMapper extends MyBaseMapper<Goods>
      */
     public List<Goods> selectGoodsList(Goods goods);
 
-    /**
-     * 新增商品
-     * 
-     * @param goods 商品
-     * @return 结果
-     */
-    public int insertGoods(Goods goods);
 
-    /**
-     * 修改商品
-     * 
-     * @param goods 商品
-     * @return 结果
-     */
-    public int updateGoods(Goods goods);
 
     /**
      * 删除商品

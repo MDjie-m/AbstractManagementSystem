@@ -4,25 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.billiard.mapper.GoodsMapper">
 
-    <resultMap type="Goods" id="GoodsResult">
-        <result property="goodsId" column="goods_id"/>
-        <result property="storeId" column="store_id"/>
-        <result property="goodsName" column="goods_name"/>
-        <result property="goodsImg" column="goods_img"/>
-        <result property="sort" column="sort"/>
-        <result property="barcode" column="barcode"/>
-        <result property="categoryId" column="category_id"/>
-        <result property="categoryName" column="goods_category_name"/>
-        <result property="sell" column="sell"/>
-        <result property="price" column="price"/>
-        <result property="remark" column="remark"/>
-        <result property="createBy" column="create_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="createById" column="create_by_id"/>
-        <result property="updateById" column="update_by_id"/>
-    </resultMap>
 
     <sql id="selectGoodsVo">
         select a.*, b.goods_category_name
@@ -30,7 +11,7 @@
                  left join t_goods_category b on a.category_id = b.goods_category_id
     </sql>
 
-    <select id="selectGoodsList" parameterType="Goods" resultMap="GoodsResult">
+    <select id="selectGoodsList" parameterType="Goods" resultType="Goods">
         <include refid="selectGoodsVo"/>
         <where>
             <if test="storeId != null ">and a.store_id = #{storeId}</if>
@@ -44,72 +25,12 @@
         </where>
     </select>
 
-    <select id="selectGoodsByGoodsId" parameterType="Long" resultMap="GoodsResult">
+    <select id="selectGoodsByGoodsId" parameterType="Long" resultType="Goods">
         <include refid="selectGoodsVo"/>
         where goods_id = #{goodsId}
     </select>
 
-    <insert id="insertGoods" parameterType="Goods">
-        insert into t_goods
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="goodsId != null">goods_id,</if>
-            <if test="storeId != null">store_id,</if>
-            <if test="goodsName != null and goodsName != ''">goods_name,</if>
-            <if test="goodsImg != null and goodsImg != ''">goods_img,</if>
-            <if test="sort != null">sort,</if>
-            <if test="barcode != null and barcode != ''">barcode,</if>
-            <if test="categoryId != null">category_id,</if>
-            <if test="sell != null">sell,</if>
-            <if test="price != null">price,</if>
-            <if test="remark != null">remark,</if>
-            <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="updateById != null">update_by_id,</if>
-            <if test="createById != null">create_by_id,</if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="goodsId != null">#{goodsId},</if>
-            <if test="storeId != null">#{storeId},</if>
-            <if test="goodsName != null and goodsName != ''">#{goodsName},</if>
-            <if test="goodsImg != null and goodsImg != ''">#{goodsImg},</if>
-            <if test="sort != null">#{sort},</if>
-            <if test="barcode != null and barcode != ''">#{barcode},</if>
-            <if test="categoryId != null">#{categoryId},</if>
-            <if test="sell != null">#{sell},</if>
-            <if test="price != null">#{price},</if>
-            <if test="remark != null">#{remark},</if>
-            <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="updateById != null">#{updateById},</if>
-            <if test="createById != null">#{createById},</if>
-        </trim>
-    </insert>
 
-    <update id="updateGoods" parameterType="Goods">
-        update t_goods
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="storeId != null">store_id = #{storeId},</if>
-            <if test="goodsName != null and goodsName != ''">goods_name = #{goodsName},</if>
-            <if test="goodsImg != null and goodsImg != ''">goods_img = #{goodsImg},</if>
-            <if test="sort != null">sort = #{sort},</if>
-            <if test="barcode != null and barcode != ''">barcode = #{barcode},</if>
-            <if test="categoryId != null">category_id = #{categoryId},</if>
-            <if test="sell != null">sell = #{sell},</if>
-            <if test="price != null">price = #{price},</if>
-            <if test="remark != null">remark = #{remark},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="updateById != null">update_by_id =#{updateById},</if>
-            <if test="createById != null">create_by_id =#{createById},</if>
-        </trim>
-        where goods_id = #{goodsId}
-    </update>
 
     <delete id="deleteGoodsByGoodsId" parameterType="Long">
         delete
