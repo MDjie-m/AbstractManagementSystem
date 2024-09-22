@@ -450,9 +450,9 @@ create table t_desk_device_relation
 drop table if exists t_order_desk_score;
 create table t_order_desk_score
 (
-    t_order_desk_score_id bigint                                not null comment 'ID'
+    order_desk_score_id bigint                                not null comment 'ID'
         primary key,
-    t_order_id            bigint                                not null comment '订单id',
+    order_id            bigint                                not null comment '订单id',
     desk_id               bigint                                not null comment '桌子id',
     score_a               int         default 0                 not null comment '比分A',
     score_b               int         default 0                 not null comment '比分B',

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.OrderRelationMapper">
+
+    <sql id="selectOrderRelationVo">
+        select *
+        from t_order_relation
+    </sql>
+
+    <select id="selectOrderRelationList" parameterType="OrderRelation" resultType="OrderRelation">
+        <include refid="selectOrderRelationVo"/>
+        <where>
+            <if test="mainOrderId != null ">and main_order_id = #{mainOrderId}</if>
+            <if test="subOrderId != null ">and sub_order_id = #{subOrderId}</if>
+            <if test="createById != null ">and create_by_id = #{createById}</if>
+            <if test="updateById != null ">and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+
+
+
+    <delete id="deleteOrderRelationByOrderRelationId" parameterType="Long">
+        delete
+        from t_order_relation
+        where order_relation_id = #{orderRelationId}
+    </delete>
+
+    <delete id="deleteOrderRelationByOrderRelationIds" parameterType="String">
+        delete from t_order_relation where order_relation_id in
+        <foreach item="orderRelationId" collection="array" open="(" separator="," close=")">
+            #{orderRelationId}
+        </foreach>
+    </delete>
+</mapper>
