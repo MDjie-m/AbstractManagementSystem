@@ -114,7 +114,7 @@ public class DeskDeviceRelationServiceImpl implements IDeskDeviceRelationService
         if(CollectionUtils.isNotEmpty(deviceIds)){
             deskDeviceRelationMapper.insertBatch(deviceIds.stream().map(p-> {
                 DeskDeviceRelation relation=      DeskDeviceRelation.builder().deskId(deskId).deviceId(p).build();
-                SecurityUtils.fillUpdateUser(relation);
+                SecurityUtils.fillCreateUser(relation);
                 return  relation;
             }).collect(Collectors.toList()));
 

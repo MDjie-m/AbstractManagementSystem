@@ -3,6 +3,9 @@ package com.ruoyi.billiard.service;
 import java.util.List;
 import com.ruoyi.billiard.domain.Stock;
 import com.ruoyi.billiard.domain.StockLog;
+import com.ruoyi.billiard.enums.StockChangeType;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 库存Service接口
@@ -43,6 +46,9 @@ public interface IStockService
      * @return 结果
      */
     public int editStock(StockLog stock);
+
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    boolean updateStock(Long storeId, Long goodsId, Long changeCount, StockChangeType changeType, String remark, Long orderId);
 
     /**
      * 批量删除库存

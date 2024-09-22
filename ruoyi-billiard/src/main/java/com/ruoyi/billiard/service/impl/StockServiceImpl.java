@@ -5,20 +5,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.billiard.domain.Goods;
 import com.ruoyi.billiard.domain.StockLog;
 import com.ruoyi.billiard.enums.StockChangeType;
 import com.ruoyi.billiard.mapper.GoodsMapper;
 import com.ruoyi.billiard.mapper.StockLogMapper;
-import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.exception.ExceptionCodeEnum;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.AssertUtil;
-import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
@@ -87,7 +83,7 @@ public class StockServiceImpl implements IStockService {
 
     @Transactional(rollbackFor = Exception.class)
     public int editStock(StockLog req) {
-        updateStock(req.getStoreId(), req.getGoodsId(), req.getChangeCount(), StockChangeType.valueOf(req.getChangeType()), req.getRemark());
+        updateStock(req.getStoreId(), req.getGoodsId(), req.getChangeCount(), StockChangeType.valueOf(req.getChangeType()), req.getRemark(),null);
         return 1;
     }
 
@@ -98,7 +94,8 @@ public class StockServiceImpl implements IStockService {
      */
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
-    public boolean updateStock(Long storeId, Long goodsId, Long changeCount, StockChangeType changeType, String remark) {
+    @Override
+    public boolean updateStock(Long storeId, Long goodsId, Long changeCount, StockChangeType changeType, String remark, Long orderId) {
         AssertUtil.notNullOrEmpty(changeType, ExceptionCodeEnum.CHECK_STOCK_ERROR, "操作类型错误");
         AssertUtil.notNullOrEmpty(changeCount, ExceptionCodeEnum.CHECK_STOCK_ERROR, "数量不能为空");
         AssertUtil.isTrue(!Objects.equals(changeCount, 0L), ExceptionCodeEnum.CHECK_STOCK_ERROR, "数量不能为0");
@@ -134,7 +131,7 @@ public class StockServiceImpl implements IStockService {
             updateWrapper.setSql(StrUtil.format("total = total - {},total_out=total_out+{}", Math.abs(changeCount), Math.abs(changeCount)));
             updateWrapper.last(StrUtil.format(" and (total - {} >= 0)   ", Math.abs(changeCount)));
         }
-        addChangeLog(goodsId, changeCount, changeType, currentCount, stock.getStockId(), remark);
+        addChangeLog(goodsId, changeCount, changeType, currentCount, stock.getStockId(), remark,orderId);
 
         updateWrapper.lambda()
                 .set(Stock::getUpdateBy, user.getRealName())
@@ -143,17 +140,18 @@ public class StockServiceImpl implements IStockService {
                 .eq(Stock::getTotal, currentCount);
         int res = stockMapper.update(null, updateWrapper);
         AssertUtil.isTrue(res > 0, ExceptionCodeEnum.CHECK_STOCK_ERROR,
-                StringUtils.format("{}失败，当前库存为：{}。", changeType.getDesc(), currentCount));
+                StringUtils.format("操作失败，{}库存为：{}。", goods.getGoodsName(), currentCount));
         return true;
     }
 
-    private void addChangeLog(Long goodsId, Long changeCount, StockChangeType changeType, Long currentCount, Long stockId, String remark) {
+    private void addChangeLog(Long goodsId, Long changeCount, StockChangeType changeType, Long currentCount, Long stockId, String remark,Long orderId) {
         StockLog log = StockLog.builder()
                 .beforeCount(currentCount)
                 .currentCount(currentCount + changeCount)
                 .changeType(changeType.getValue())
                 .changeCount(changeCount)
                 .goodsId(goodsId)
+                .orderId(orderId)
                 .stockId(stockId).build();
         log.setRemark(remark);
         SecurityUtils.fillCreateUser(log);

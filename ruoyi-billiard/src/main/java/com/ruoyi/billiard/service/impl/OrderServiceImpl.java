@@ -11,10 +11,8 @@ import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.vo.FinishOrderReqVo;
 import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
 import com.ruoyi.billiard.domain.vo.OrderPrePayReqVo;
-import com.ruoyi.billiard.enums.CalcTimeStatus;
-import com.ruoyi.billiard.enums.DeskStatus;
-import com.ruoyi.billiard.enums.OrderStatus;
-import com.ruoyi.billiard.enums.OrderType;
+import com.ruoyi.billiard.domain.vo.StopDeskResVo;
+import com.ruoyi.billiard.enums.*;
 import com.ruoyi.billiard.mapper.*;
 import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -22,6 +20,7 @@ import com.ruoyi.common.core.domain.MyBaseEntity;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -59,6 +58,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private OrderGoodsMapper orderGoodsMapper;
 
     @Autowired
+    private GoodsMapper goodsMapper;
+
+    @Autowired
     private IOrderRechargeService orderRechargeService;
 
     @Autowired
@@ -74,10 +76,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private StoreDeskMapper storeDeskMapper;
 
     @Autowired
+    private StoreTutorMapper storeTutorMapper;
+
+    @Autowired
     private IStoreService storeService;
 
     @Autowired
     private LightTimerMapper lightTimerMapper;
+
+    @Autowired
+    private IStockService stockService;
 
 
     /**
@@ -445,6 +453,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     private String createOrderNum(Long id) {
+
         return String.format("DESK%s", id);
     }
 
@@ -547,42 +556,95 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         Date endTime = DateUtils.getNowDate();
 
-        order.getOrderDeskTimes().forEach(time -> {
-            if (Objects.isNull(time.getEndTime())) {
-                time.setEndTime(endTime);
-            }
 
-            time.setTotalTime(time.getNum());
-            time.calcAndSetFee(discountValueMap.getOrDefault(OrderType.TABLE_CHARGE.getValue(), BigDecimal.ZERO));
-            //time.setStatus(CalcTimeStatus.STOP.getValue());
-            feeItems.add(time);
-        });
-        order.getOrderTutorTimes().forEach(time -> {
-            if (Objects.isNull(time.getEndTime())) {
-                time.setEndTime(endTime);
-            }
-            time.setTotalTime(time.getNum());
-            time.calcAndSetFee(discountValueMap.getOrDefault(time.getType(), BigDecimal.ZERO));
-            //time.setStatus(CalcTimeStatus.STOP.getValue());
-
-            feeItems.add(time);
-        });
-        order.getOrderGoods().forEach(item -> {
-
-            item.calcAndSetFee(discountValueMap.getOrDefault(OrderType.COMMODITY_PURCHASE.getValue(), BigDecimal.ZERO));
-
-            feeItems.add(item);
-        });
+        stopDeskTimes(order.getOrderDeskTimes(), endTime, order.getMemberId(), false, false);
+        stopTutorTimes(order.getOrderTutorTimes(), endTime, order.getMemberId(), false, false);
+        stopGoods(order.getOrderGoods(), order.getMemberId(), false);
+        feeItems.addAll(order.getOrderDeskTimes());
+        feeItems.addAll(order.getOrderTutorTimes());
+        feeItems.addAll(order.getOrderGoods());
 
         order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmountDue));
         order.setTotalDiscountAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalDiscountAmount));
-
         order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount)
                 .subtract(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO)));
 
         order.setTotalWipeZero(order.getTotalAmount().remainder(BigDecimal.ONE));
         order.setTotalAmount(BigDecimal.valueOf(order.getTotalAmount().intValue()));
 
+    }
+
+    private void stopDeskTimes(List<OrderDeskTime> times, Date endTime,
+                               Long memberId,
+                               boolean needUpdate, boolean needUpdateDesk) {
+        BigDecimal disCountValue = memberService.getMemberDisCountValue(OrderType.TABLE_CHARGE, memberId);
+
+        times.forEach(time -> {
+            Integer oldStatus = time.getStatus();
+            if (Objects.isNull(time.getEndTime())) {
+                time.setEndTime(endTime);
+            }
+
+            time.setTotalTime(time.getNum());
+            time.calcAndSetFee(disCountValue);
+            if (!needUpdate) {
+
+                return;
+            }
+            time.setStatus(CalcTimeStatus.STOP.getValue());
+            SecurityUtils.fillUpdateUser(time);
+            orderDeskTimeMapper.updateById(time);
+            if (needUpdateDesk && Objects.equals(oldStatus, CalcTimeStatus.BUSY.getValue())) {
+                storeDeskMapper.update(null, storeDeskMapper.edit().lambda()
+                        .set(StoreDesk::getStatus, DeskStatus.WAIT.getValue())
+                        .set(StoreDesk::getCurrentOrderId, null)
+                        .eq(StoreDesk::getDeskId, time.getDeskId())
+                        .eq(StoreDesk::getCurrentOrderId, time.getOrderId()));
+            }
+        });
+    }
+
+    private void stopTutorTimes(List<OrderTutorTime> times, Date endTime,
+                                Long memberId,
+                                boolean needUpdate, boolean needUpdateTutor) {
+
+        times.forEach(time -> {
+            Integer oldStatus = time.getStatus();
+            BigDecimal disCountValue = memberService.getMemberDisCountValue(OrderType.valueOf(time.getType()), memberId);
+            if (Objects.isNull(time.getEndTime())) {
+                time.setEndTime(endTime);
+            }
+            time.setTotalTime(time.getNum());
+            time.calcAndSetFee(disCountValue);
+            SecurityUtils.fillUpdateUser(time);
+            if (!needUpdate) {
+                return;
+            }
+            time.setStatus(CalcTimeStatus.STOP.getValue());
+            SecurityUtils.fillUpdateUser(time);
+            orderTutorTimeMapper.updateById(time);
+            if (needUpdateTutor && Objects.equals(oldStatus, CalcTimeStatus.BUSY.getValue())) {
+                storeTutorMapper.update(null, storeTutorMapper.edit().lambda()
+                        .set(StoreTutor::getWorkStatus, TutorWorkStatus.WAIT.getValue())
+                        .set(StoreTutor::getCurrentOrderId, null)
+                        .eq(StoreTutor::getStoreTutorId, time.getTutorId())
+                        .eq(StoreTutor::getCurrentOrderId, time.getOrderId()));
+            }
+        });
+    }
+
+    private void stopGoods(List<OrderGoods> times,
+                           Long memberId,
+                           boolean needUpdate) {
+        times.forEach(item -> {
+            BigDecimal disCountValue = memberService.getMemberDisCountValue(OrderType.COMMODITY_PURCHASE, memberId);
+
+            item.calcAndSetFee(disCountValue);
+            SecurityUtils.fillUpdateUser(item);
+            if (needUpdate) {
+                orderGoodsMapper.updateById(item);
+            }
+        });
     }
 
     /**
@@ -594,70 +656,35 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         final Date endTime = byTimer ? DateUtils.removeSeconds(new Date()) : DateUtils.fileSecondsAddOneMinutes(DateUtils.getNowDate());
         Order order = orderMapper.selectById(orderId);
         SecurityUtils.fillUpdateUser(order);
+
+        boolean isCharging = Objects.equals(order.getStatus(), OrderStatus.CHARGING.getValue());
         //更新台桌结束时间
-
         List<ITotalDueFee> feeItems = Lists.newArrayList();
-        Map<Integer, BigDecimal> discountValueMap = memberService.getOrderMemberDisCountValue(order.getMemberId());
-        List<OrderDeskTime> deskTimes =
-                orderDeskTimeMapper.selectList(orderDeskTimeMapper.query()
-                        .eq(OrderDeskTime::getOrderId, orderId));
 
-        List<StoreDesk> busyDesks = storeDeskMapper.queryBusyDeskByOrderId(orderId);
+        List<OrderDeskTime> deskTimes = orderDeskTimeMapper.selectList(orderDeskTimeMapper.query()
+                .eq(OrderDeskTime::getOrderId, orderId));
 
-        deskTimes.forEach(time -> {
-            if (Objects.isNull(time.getEndTime())) {
-                time.setEndTime(endTime);
-            }
-
-            time.setTotalTime(time.getNum());
-            time.calcAndSetFee(discountValueMap.getOrDefault(OrderType.TABLE_CHARGE.getValue(), BigDecimal.ZERO));
-
-            time.setStatus(CalcTimeStatus.STOP.getValue());
-            SecurityUtils.fillUpdateUser(time, order);
-            orderDeskTimeMapper.updateById(time);
-            feeItems.add(time);
-        });
+        //更新台费
+        stopDeskTimes(deskTimes, endTime, order.getMemberId(), true, isCharging);
         //更新教练时间
-
 
         List<OrderTutorTime> tutorTimes =
                 orderTutorTimeMapper.selectList(orderTutorTimeMapper.query()
                         .eq(OrderTutorTime::getOrderId, orderId));
-        tutorTimes.forEach(time -> {
-            if (Objects.isNull(time.getEndTime())) {
-                time.setEndTime(endTime);
-            }
-            time.setTotalTime(time.getNum());
-            time.calcAndSetFee(discountValueMap.getOrDefault(time.getType(), BigDecimal.ZERO));
-            time.setStatus(CalcTimeStatus.STOP.getValue());
-            SecurityUtils.fillUpdateUser(time, order);
-            orderTutorTimeMapper.updateById(time);
-            feeItems.add(time);
-        });
+        stopTutorTimes(tutorTimes, endTime, order.getMemberId(), true, isCharging);
+
+
         List<OrderGoods> goods =
                 orderGoodsService.selectOrderGoodsListByOrderId(orderId);
-        goods.forEach(item -> {
+        stopGoods(goods, order.getMemberId(), true);
+        feeItems.addAll(deskTimes);
+        feeItems.addAll(tutorTimes);
+        feeItems.addAll(goods);
 
-            item.calcAndSetFee(discountValueMap.getOrDefault(OrderType.COMMODITY_PURCHASE.getValue(), BigDecimal.ZERO));
-            SecurityUtils.fillUpdateUser(item, order);
-            orderGoodsMapper.updateById(item);
-            feeItems.add(item);
-        });
-        //更新球桌状态
-        if (Objects.equals(order.getStatus(), OrderStatus.CHARGING.getValue())) {
-            AssertUtil.notNullOrEmpty(busyDesks, "当前计费订单没有关联的台桌");
-            busyDesks.forEach(desk -> {
-                desk.setStatus(DeskStatus.WAIT.getValue());
-                desk.setCurrentOrderId(null);
-                storeDeskMapper.updateAllWithId(desk);
-            });
-
-        }
         order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmountDue));
         order.setTotalDiscountAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalDiscountAmount));
         order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount)
                 .subtract(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO)));
-
 
         order.setTotalWipeZero(order.getTotalAmount().remainder(BigDecimal.ONE));
         order.setTotalAmount(BigDecimal.valueOf(order.getTotalAmount().intValue()));
@@ -686,11 +713,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public Boolean fillMember(Long orderId, Long memberId) {
         Order order = orderMapper.selectById(orderId);
         AssertUtil.notNullOrEmpty(order, OrderErrorMsg.ORDER_NOT_FOUND);
-        AssertUtil.isTrue(order.getStatus() <= OrderStatus.SETTLED.getValue(), "只有计费中和待结算的订单才能更改会员");
+        AssertUtil.isTrue(order.getStatus() <= OrderStatus.SETTLED.getValue()
+                || Objects.equals(order.getStatus(), OrderStatus.SUSPEND.getValue()), "只有计费中和待结算的订单才能更改会员");
         SecurityUtils.fillUpdateUser(order);
         order.setMemberId(memberId);
         orderMapper.updateAllWithId(order);
-        if (Objects.equals(OrderStatus.WAIT_SETTLED.getValue(), order.getStatus())) {
+        if (Objects.equals(OrderStatus.WAIT_SETTLED.getValue(), order.getStatus())
+                || Objects.equals(OrderStatus.SUSPEND.getValue(), order.getStatus())) {
             stopAllCalcTimes(orderId, false);
         }
         return Boolean.TRUE;
@@ -706,11 +735,134 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if (Objects.equals(reqVo.getType(), 1)) {
             AssertUtil.notNullOrEmpty(order.getMemberId(), "订单未绑定会员");
             AssertUtil.isTrue(memberService.checkPwd(order.getMemberId(), reqVo.getPassword()), "密码错误");
-            memberService.deductAmount(order.getMemberId(),order.getOrderId(), order.getTotalAmount());
+            memberService.deductAmount(order.getMemberId(), order.getOrderId(), order.getTotalAmount());
         }
         order.setStatus(OrderStatus.SETTLED.getValue());
         SecurityUtils.fillUpdateUser(order);
         orderMapper.updateById(order);
         return true;
+    }
+
+    private void checkOrderIsCharging(Order order) {
+        AssertUtil.notNullOrEmpty(order, OrderErrorMsg.INVALID_ORDER);
+        AssertUtil.equal(OrderStatus.CHARGING.getValue(), order.getStatus(), OrderErrorMsg.ORDER_NOT_CHARGING);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long orderShopping(Order reqVo) {
+        if (CollectionUtils.isNotEmpty(reqVo.getOrderTutorTimes())) {
+            Order order = orderMapper.selectCurrentRelationOrder(reqVo.getOrderTutorTimes().get(0).getDeskId());
+            checkOrderIsCharging(order);
+            SecurityUtils.fillUpdateUser(order);
+            Date startTime = DateUtils.removeSeconds(new Date());
+            reqVo.getOrderTutorTimes().forEach(p -> {
+                StoreDesk desk = storeDeskMapper.selectById(p.getDeskId());
+
+                AssertUtil.notNullOrEmpty(desk, "台桌不存在");
+                AssertUtil.equal(desk.getStoreId(), order.getStoreId(), "台桌id不合法");
+                AssertUtil.equal(desk.getStatus(), DeskStatus.BUSY.getValue(), "台桌不是计费状态,无法添加");
+                AssertUtil.equal(desk.getCurrentOrderId(), order.getOrderId(), StringUtils.format("{}({})不在同一个订单", desk.getDeskName(), desk.getDeskNum()));
+
+                StoreTutor tutor = storeTutorMapper.selectById(p.getTutorId());
+                AssertUtil.notNullOrEmpty(tutor, "教练不存在");
+                AssertUtil.equal(tutor.getStatus(), EmployeeStatus.WORK.getValue(), "教练已离职，无法添加");
+                AssertUtil.equal(tutor.getStatus(), TutorWorkStatus.WAIT.getValue(), "教练不是空闲状态,无法添加");
+                AssertUtil.isNullOrEmpty(tutor.getCurrentOrderId(), "教练正在计费中，无法添加");
+
+                AssertUtil.isNullOrEmpty(orderTutorTimeMapper.selectList(orderTutorTimeMapper.query()
+                        .eq(OrderTutorTime::getDeskId, desk.getDeskId()).in(OrderTutorTime::getStatus, CalcTimeStatus.PAUSE.getValue(),
+                                CalcTimeStatus.BUSY.getValue())), StringUtils.format("台桌:{}({})已经有教练在计费,无法重复添加", desk.getDeskName(), desk.getDeskNum()));
+
+                BigDecimal price = storeTutorMapper.queryPrice(p.getTutorId());
+                AssertUtil.notNullOrEmpty(price, "未配置教练价格，请联系管理员添加");
+                p.setOrderTutorTimeId(IdUtils.singleNextId());
+                p.setOrderId(order.getOrderId());
+                p.setStartTime(startTime);
+                p.setStatus(CalcTimeStatus.BUSY.getValue());
+                SecurityUtils.fillCreateUser(p, order);
+                orderTutorTimeMapper.insert(p);
+
+                tutor.setWorkStatus(TutorWorkStatus.BUSY.getValue());
+                tutor.setCurrentOrderId(p.getOrderId());
+                SecurityUtils.fillCreateUser(tutor, order);
+                storeTutorMapper.updateById(tutor);
+            });
+
+            return order.getOrderId();
+
+        }
+        AssertUtil.notNullOrEmpty(reqVo.getOrderGoods(), "商品不能为空");
+        Order order = null;
+        if (Objects.nonNull(reqVo.getOrderId())) {
+            order = orderMapper.selectById(reqVo.getOrderId());
+            checkOrderIsCharging(order);
+            SecurityUtils.fillUpdateUser(order);
+        } else {
+            order = new Order();
+            order.setOrderId(IdUtils.singleNextId());
+            order.setStoreId(reqVo.getStoreId());
+            order.setOrderNo(createOrderNum(order.getOrderId()));
+            order.setTotalAmount(BigDecimal.ZERO);
+            order.setOrderType(OrderType.COMMODITY_PURCHASE.getValue());
+            order.setStatus(OrderStatus.WAIT_SETTLED.getValue());
+
+            SecurityUtils.fillCreateUser(order);
+            orderMapper.insert(order);
+        }
+        BigDecimal disCountValue = memberService.getMemberDisCountValue(OrderType.COMMODITY_PURCHASE, order.getMemberId());
+        for (OrderGoods p : reqVo.getOrderGoods()) {
+            Goods goods = goodsMapper.selectById(p.getGoodsId());
+            AssertUtil.notNullOrEmpty(goods, "商品不存在");
+            AssertUtil.equal(goods.getStoreId(), order.getStoreId(), "商品id不合法");
+            AssertUtil.isTrue(goods.getSell(), "商品未上架");
+            p.setPrice(p.getPrice());
+            p.setGoodsName(goods.getGoodsName());
+            p.setOrderId(order.getOrderId());
+            p.setOrderDetailId(IdUtils.singleNextId());
+            p.setGoods(goods);
+
+            p.calcAndSetFee(disCountValue);
+            SecurityUtils.fillUpdateUser(p, order);
+            stockService.updateStock(reqVo.getStoreId(), p.getGoodsId(), 1L, StockChangeType.OUT, "商品售卖", p.getOrderId());
+            orderGoodsMapper.insert(p);
+        }
+        if (Objects.isNull(reqVo.getOrderId())) {
+            stopAllCalcTimes(order.getOrderId(), false);
+        }
+
+        return order.getOrderId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public StopDeskResVo stopDesk(Long orderId, Long storeId, Long deskId) {
+        Order order = queryValidOrder(storeId, orderId);
+        AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
+                OrderErrorMsg.ORDER_NOT_CHARGING);
+        List<StoreDesk> desks = storeDeskMapper.queryBusyDeskByOrderId(orderId);
+        AssertUtil.notNullOrEmpty(desks, "台桌未在计费状态");
+        AssertUtil.isTrue(desks.stream().anyMatch(p -> Objects.equals(p.getDeskId(), deskId)), "台桌不在当前订单");
+        if (Objects.equals(desks.size(), 1)) {
+            stopOrder(orderId, storeId, false);
+            return StopDeskResVo.builder().orderId(orderId)
+                    .hasOtherDesk(false).build();
+        }
+        Date endTime = DateUtils.fileSecondsAddOneMinutes(DateUtils.getNowDate());
+        List<OrderDeskTime> times = orderDeskTimeMapper.selectList(orderDeskTimeMapper.query()
+                .eq(OrderDeskTime::getDeskId, deskId)
+                .eq(OrderDeskTime::getOrderId, orderId)
+                .eq(OrderDeskTime::getStatus,
+                        CalcTimeStatus.BUSY.getValue()));
+
+        stopDeskTimes(times, endTime, order.getMemberId(), true, true);
+
+
+        List<OrderTutorTime> tutorTimes = orderTutorTimeMapper.selectList(orderTutorTimeMapper.query().eq(OrderTutorTime::getDeskId, deskId)
+                .eq(OrderTutorTime::getOrderId, orderId).eq(OrderTutorTime::getStatus, CalcTimeStatus.BUSY.getValue()));
+        stopTutorTimes(tutorTimes, endTime, order.getMemberId(), true, true);
+
+        return StopDeskResVo.builder().orderId(orderId)
+                .hasOtherDesk(true).build();
     }
 }

@@ -4,21 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.billiard.mapper.StockLogMapper">
     
-    <resultMap type="StockLog" id="StockLogResult">
-        <result property="stockLogId"    column="stock_log_id"    />
-        <result property="stockId"    column="stock_id"    />
-        <result property="changeCount"    column="change_count"    />
-        <result property="changeType"    column="change_type"    />
-        <result property="beforeCount"    column="before_count"    />
-        <result property="currentCount"    column="current_count"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="createById"    column="create_by_id"    />
-        <result property="updateById"    column="update_by_id"    />
-        <result property="remark"    column="remark"    />
-    </resultMap>
+
 
     <sql id="selectStockLogVo">
         select stock_log_id,
@@ -37,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from t_stock_log
     </sql>
 
-    <select id="selectStockLogList" parameterType="StockLog" resultMap="StockLogResult">
+    <select id="selectStockLogList" parameterType="StockLog" resultType="StockLog">
         <include refid="selectStockLogVo"/>
         <where>  
             <if test="stockId != null "> and stock_id = #{stockId}</if>
@@ -49,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by create_time desc
     </select>
     
-    <select id="selectStockLogByStockLogId" parameterType="Long" resultMap="StockLogResult">
+    <select id="selectStockLogByStockLogId" parameterType="Long" resultType="StockLog">
         <include refid="selectStockLogVo"/>
         where stock_log_id = #{stockLogId}
     </select>

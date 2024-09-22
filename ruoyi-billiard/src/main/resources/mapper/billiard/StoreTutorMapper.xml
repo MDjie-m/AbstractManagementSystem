@@ -42,5 +42,10 @@
         group by work_status
         order by work_status;
     </select>
+    <select id="queryPrice" resultType="java.math.BigDecimal">
+
+      select  a.price  from t_tutor_price a join t_store_tutor b on a.store_id=b.store_id and a.level=b.level
+      limit  1
+    </select>
 
 </mapper>

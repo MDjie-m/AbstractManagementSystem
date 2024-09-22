@@ -6,8 +6,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.billiard.domain.vo.IBuy;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * 订单计时对象 t_order_tutor_time
@@ -40,6 +44,7 @@ public class OrderTutorTime extends BaseFee
     @Excel(name = "球桌编码")
 
     @TableField("desk_id")
+    @NotNull(  groups = IBuy.class,message = "台桌不能为空")
     private Long deskId;
 
     /** 开始时间 */
@@ -60,6 +65,7 @@ public class OrderTutorTime extends BaseFee
     @Excel(name = "类型：4=陪练,5=教学")
 
     @TableField("type")
+    @NotNull(  groups = IBuy.class,message = "课程类型不能为空")
     private Integer type;
 
     /** 总时间分钟（开始时间去掉秒，结束时间多一秒加1分钟算） */
@@ -102,6 +108,7 @@ public class OrderTutorTime extends BaseFee
     private BigDecimal totalGiveAmount;
 
     @TableField("tutor_id")
+    @NotNull(  groups = IBuy.class,message = "教练不能为空")
     private Long  tutorId;
 
     /**

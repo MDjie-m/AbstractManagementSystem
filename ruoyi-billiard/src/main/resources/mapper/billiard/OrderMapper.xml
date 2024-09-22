@@ -8,12 +8,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <sql id="selectOrderVo">
         select  *
-        from t_order
+        from t_order a
     </sql>
 
-    <select id="selectOrderList" parameterType="Order" resultType="com.ruoyi.billiard.domain.Order">
+    <select id="selectOrderList" parameterType="Order" resultType="Order">
+
         <include refid="selectOrderVo"/>
-        <where>  
+        <where>
+            <if test="deskId != null "> and EXISTS(select b.order_id from t_order_desk_time b
+             where  b.order_id=a.order_id and  b.desk_id =#{deskId}) </if>
             <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
             <if test="storeId != null "> and store_id = #{storeId}</if>
             <if test="orderType != null "> and order_type = #{orderType}</if>

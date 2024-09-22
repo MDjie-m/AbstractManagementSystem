@@ -31,9 +31,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectMemberPermissions" resultType="com.ruoyi.billiard.domain.LevelDiscountPermission">
         select c.*
         from t_member a
-        join t_level_discount_permission c on a.level_id=c.member_level_id;
+        join t_level_discount_permission c on a.level_id=c.member_level_id where a.member_id=#{memberId}
     </select>
 
+    <select id="selectDiscountByType" resultType="BigDecimal">
+        select c.discount
+        from t_member a
+                 join t_level_discount_permission c on a.level_id=c.member_level_id
+        where c.value=#{type} and  a.member_id=#{memberId}
+    </select>
 
 
     <delete id="deleteMemberByMemberId" parameterType="Long">

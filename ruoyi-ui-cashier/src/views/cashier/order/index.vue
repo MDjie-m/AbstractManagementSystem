@@ -36,8 +36,8 @@
                     <div>{{ item.startTime|timeFormat('MM-DD HH:mm') }}</div>
                   </div>
                   <div class="time-box-row">
-                    <el-tag type="info" size="mini">结束</el-tag>
-                    <div>{{ item.endTime|timeFormat('MM-DD HH:mm') }}</div>
+                    <el-tag type="info" size="mini">{{ item.status!==CalcTimeStatus.Stop?'当前':'结束' }}</el-tag>
+                    <div  >{{ item.endTime|timeFormat('MM-DD HH:mm') }}</div>
                   </div>
                 </div>
               </div>
@@ -69,8 +69,8 @@
                     <div>{{ item.startTime|timeFormat('MM-DD HH:mm') }}</div>
                   </div>
                   <div class="time-box-row">
-                    <el-tag type="info" size="mini">结束</el-tag>
-                    <div>{{ item.endTime|timeFormat('MM-DD HH:mm') }}</div>
+                    <el-tag type="info" size="mini">{{ item.status!==CalcTimeStatus.Stop?'当前':'结束' }}</el-tag>
+                    <div  >{{ item.endTime|timeFormat('MM-DD HH:mm') }}</div>
                   </div>
                 </div>
               </div>
@@ -132,14 +132,14 @@
               <div @click="onOpenMemberClick"> {{ currentOrder.member.realName }}/{{ currentOrder.member.mobile }}
               </div>
               <i class="el-icon-delete" @click.stop="onRemoveMemberClick"
-                 v-if="currentOrder.status ===OrderStatus.Stop  "></i>
+                 v-if="currentOrder.status ===OrderStatus.Stop ||currentOrder.status ===OrderStatus.Suspend "></i>
             </div>
 
           </div>
           <div class="order-tool-box">
 
             <el-button size="mini" circle type="danger" @click="showFinishOrder=true"
-                       v-if="currentOrder.status ===OrderStatus.Stop">结算
+                       v-if="currentOrder.status ===OrderStatus.Stop||currentOrder.status ===OrderStatus.Suspend">结算
             </el-button>
           </div>
 
@@ -163,6 +163,19 @@
               <el-option label="订单状态" :value="null"></el-option>
               <el-option :label="item.label" :key="'sta'+item.value" :value="item.value"
                          v-for="item in dict.type.order_status"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="queryParams.deskId" @change="onConditionChanged">
+              <el-option label="台桌" :value="null"></el-option>
+              <el-option :label="item.title" :key="'deskId'+item.deskId" :value="item.deskId"
+                         v-for="item in deskList">
+                <div style="display: flex;flex-direction: row;align-items: center">
+
+                  <div> {{ item.title }}</div>
+                  <div class="desk-status" :class="`desk-status-`+item.status"  ></div>
+                </div>
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="创建时间:">
@@ -219,8 +232,8 @@
     <CustomDialog title="结算" :visible.sync="showFinishOrder" :onOk="onFinishOrderOkClick" width="500px">
       <el-form v-if="currentOrder ">
         <template v-if="currentOrder.memberId">
-          <el-form-item label="结算方式:">
-            <el-radio v-model="finishOrderForm.type" label="0">扫码支付</el-radio>
+          <el-form-item label="支付方式:">
+            <el-radio v-model="finishOrderForm.type" label="0">线下支付</el-radio>
             <el-radio v-model="finishOrderForm.type" label="1">会员支付</el-radio>
 
           </el-form-item>
@@ -232,7 +245,7 @@
               <span> {{ currentOrder.totalAmount }}  </span>
             </el-form-item>
             <el-form-item label="请输入会员密码:">
-              <el-input maxlength="10" v-model="finishOrderForm.password">
+              <el-input maxlength="10" type="password" v-model="finishOrderForm.password">
 
               </el-input>
             </el-form-item>
@@ -253,14 +266,22 @@ import LeftContainer from "@/views/cashier/components/leftContainer.vue";
 import {fillMember, finishOrder, getOrderInfo, listOrders} from "@/api/cashier/order";
 import MemberSearch from "@/views/cashier/components/memberSearch.vue";
 import {MessageBox} from "element-ui";
-import {resumeCalcFee} from "@/api/cashier/desk";
-import {OrderStatus} from "@/views/cashier/components/constant";
+import {listDesk, resumeCalcFee} from "@/api/cashier/desk";
+import {CalcTimeStatus, DeskStatus, OrderStatus} from "@/views/cashier/components/constant";
 import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
 
 
 export default {
+  computed: {
+    DeskStatus() {
+      return DeskStatus
+    },
+    CalcTimeStatus() {
+      return CalcTimeStatus
+    }
+  },
   components: {CustomDialog, MemberSearch, LeftContainer},
-  dicts: ['order_type', 'order_status', 'store_desk_status'],
+  dicts: ['order_type', 'order_status', 'store_desk_status','store_desk_type','store_desk_place'],
   data() {
     return {
       showFinishOrder: false,
@@ -273,9 +294,11 @@ export default {
       OrderStatus: OrderStatus,
       showMemberSearch: false,
       total: 0,
+      deskList:[],
       orderList: [],
       currentOrder: null,
       queryParams: {
+        deskId:null,
         times: [this.$time().startOf('day').add(-1, 'd').format('YYYY-MM-DD HH:mm:ss'),
           this.$time().endOf('day').format('YYYY-MM-DD HH:mm:ss')],
         createStart: null,
@@ -294,18 +317,33 @@ export default {
   },
   mounted() {
     this.getList();
+    this.getDeskList();
     if (this.$route.query?.orderId) {
       this.onRowClick(this.$route.query)
     }
   },
   methods: {
+    getDeskList() {
+      return listDesk( {}).then(response => {
+        this.deskList = (response.data || []).map(p => {
+          this.fillTitle(p);
+          return p;
+        });
+      })
+    },
+    fillTitle(item) {
+      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) === item.deskType)?.label ?? '';
+      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value) === item.placeType)?.label ?? '';
+      item.shortTitle = `${item.deskName}(${item.deskNum})`
+      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`
+    },
     onFinishOrderOkClick() {
       if (this.finishOrderForm.type == 1 && !String(this.finishOrderForm.password).trim()) {
         return this.$modal.msgWarning("请输入密码");
       }
       this.finishOrderForm.orderId = this.currentOrder.orderId;
       return finishOrder(this.finishOrderForm).then(res => {
-        this.$modal.msgWarning("操作成功")
+        this.$modal.msgSuccess("操作成功")
       }).finally(() => {
         this.onRowClick(this.currentOrder);
         this.getList();
@@ -313,7 +351,7 @@ export default {
 
     },
     onOpenMemberClick() {
-      if (this.currentOrder.status !== OrderStatus.Stop) {
+      if (![ OrderStatus.Stop, OrderStatus.Suspend].includes(this.currentOrder.status) ) {
         return
       }
       this.showMemberSearch = true;

@@ -3,10 +3,7 @@ package com.ruoyi.billiard.controller.cashier;
 import com.ruoyi.billiard.domain.Member;
 import com.ruoyi.billiard.domain.Order;
 import com.ruoyi.billiard.domain.StoreDesk;
-import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
-import com.ruoyi.billiard.domain.vo.FinishOrderReqVo;
-import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
-import com.ruoyi.billiard.domain.vo.OrderPrePayReqVo;
+import com.ruoyi.billiard.domain.vo.*;
 import com.ruoyi.billiard.enums.OrderStatus;
 import com.ruoyi.billiard.service.IMemberService;
 import com.ruoyi.billiard.service.IOrderService;
@@ -31,9 +28,6 @@ public class CashierOrderController extends BaseController {
     @Resource
     private IOrderService orderService;
 
-    @Resource
-    private IMemberService memberService;
-
     @PreAuthorize("@ss.hasPermi('cashier:order:list')")
     @GetMapping("/list")
     public PageResVo<Order> orderList(@Validated Order reqVo) {
@@ -55,10 +49,11 @@ public class CashierOrderController extends BaseController {
 
     @PreAuthorize("@ss.hasPermi('cashier:order:list')")
     @PostMapping("/{orderId}/member")
-    public ResultVo<Boolean> fillMember(@PathVariable Long orderId,@RequestParam(required = false) Long memberId) {
+    public ResultVo<Boolean> fillMember(@PathVariable Long orderId, @RequestParam(required = false) Long memberId) {
 
-        return ResultVo.success(orderService.fillMember(orderId,memberId));
+        return ResultVo.success(orderService.fillMember(orderId, memberId));
     }
+
     @PreAuthorize("@ss.hasPermi('cashier:order:list')")
     @PostMapping("/finish")
     public ResultVo<Boolean> finishOrder(@RequestBody @Validated FinishOrderReqVo reqVo) {
@@ -66,7 +61,13 @@ public class CashierOrderController extends BaseController {
         return ResultVo.success(orderService.finishOrder(reqVo));
     }
 
-
+    @PreAuthorize("@ss.hasRole('cashier')")
+    @PostMapping("/buy")
+    public ResultVo<Long> buy(@Validated(IBuy.class) @RequestBody Order reqVo) {
+        reqVo.setStoreId(getStoreIdWithThrow());
+        Long res = orderService.orderShopping(reqVo);
+        return ResultVo.success(res);
+    }
 
 
     /**
@@ -105,6 +106,12 @@ public class CashierOrderController extends BaseController {
             log.error("定时器停止订单失败,orderId:{}", orderId, e);
         }
         return ResultVo.success(true);
+    }
+
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/{orderId}/stop-desk")
+    public ResultVo<StopDeskResVo> stopDesk(@PathVariable Long orderId, @RequestParam Long deskId) {
+        return ResultVo.success(orderService.stopDesk(orderId, getStoreIdWithThrow(), deskId));
     }
 
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")

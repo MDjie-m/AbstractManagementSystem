@@ -171,6 +171,10 @@
               <div class="some-item-price"> {{ item.price }}元</div>
 
             </div>
+            <div>
+              <div class="some-item-price">库存:{{item.total}}</div>
+
+            </div>
             <i class="el-icon-plus item-btn" v-if="isCreating" @click="addGoodsToOrder(item)"></i>
 
           </el-card>
@@ -184,12 +188,38 @@
               <div class="some-item-name"> {{ item.realName }}</div>
               <div class="some-item-price"> {{ item.price }}元/分钟</div>
             </div>
-            <i class="el-icon-plus item-btn" v-if="isCreating &&item.workStatus===TutorWorkStatus.Wait" @click="addTutorToOrder(item)"></i>
+            <i class="el-icon-plus item-btn" v-if="isCreating &&item.workStatus===TutorWorkStatus.Wait"
+               @click="addTutorToOrder(item)"></i>
 
           </el-card>
         </div>
       </div>
     </div>
+    <CustomDialog title="确认" :visible.sync="showTutorConfirm" :onOk="OnTutorConfirmOk" width="500px">
+      <el-form>
+        <el-form-item label="类型:">
+          <el-radio v-model="tutorConfirmForm.type" :label="4">陪练</el-radio>
+          <el-radio v-model="tutorConfirmForm.type" :label="5">教学</el-radio>
+        </el-form-item>
+        <el-form-item label="台桌:">
+          <el-select v-model="tutorConfirmForm.deskId" filterable  no-data-text="当前没有正在计费的台桌">
+            <!--                <div slot="prefix"></div>-->
+            <el-option :value="item.deskId" :key="'ddddd'+item.deskId"
+                       :label="item.title"  v-if="item.status === DeskStatus.Busy"
+                       v-for="item in deskList">
+              <div style="display: flex;flex-direction: row;align-items: center" >
+                <div class="desk-status" :class="`desk-status-`+item.status" ></div>
+                <div> {{ item.title }}</div>
+                <div style=" padding-left: 20px">
+                  {{ item.price }}元/分钟
+                </div>
+              </div>
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+
+    </CustomDialog>
   </div>
 </template>
 <script>
@@ -197,20 +227,39 @@ import LeftContainer from "@/views/cashier/components/leftContainer.vue";
 import {listAllGoods} from "@/api/cashier/goods";
 import {listAllTutor} from "@/api/cashier/tutor";
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
-import {CalcTimeStatus,TutorWorkStatus} from "@/views/cashier/components/constant";
+import {CalcTimeStatus, ChooseType, DeskStatus, TutorWorkStatus} from "@/views/cashier/components/constant";
+import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
+import {listDesk} from "@/api/cashier/desk";
+import {orderBuy} from "@/api/cashier/order";
 
 export default {
-  components: {SvgItem, LeftContainer},
+  computed: {
+    DeskStatus() {
+      return DeskStatus
+    }
+  },
+  components: {CustomDialog, SvgItem, LeftContainer},
   dicts: ['store_tutor_work_status', 'store_desk_type', 'store_desk_place'],
   data() {
     return {
-      CalcTimeStatus:CalcTimeStatus,
-      TutorWorkStatus:TutorWorkStatus,
+      navOrderId:null,
+      navDeskId:null,
+      tutorConfirmForm: {
+        tutor: null,
+        type: 4,
+        deskId: null,
+      },
+      deskList: [],
+
+      showTutorConfirm: false,
+      CalcTimeStatus: CalcTimeStatus,
+      TutorWorkStatus: TutorWorkStatus,
       isGoodsPanel: true,
       tutorStatus: null,
       goodsList: [],
       tutorList: [],
       isCreating: false,
+      isChoosingGoods: true,
       order: {
         orderTutorTimes: [],
         orderGoods: [],
@@ -219,23 +268,61 @@ export default {
     }
   },
   mounted() {
+
     this.getGoodsList();
     this.getTutorList();
+
+    this.navDeskId=this.$route.query.deskId;
+    this.navOrderId=this.$route.query.orderId;
+    this.isGoodsPanel= parseInt(this.$route.query.type) ===ChooseType.Goods;
+    if(this.navOrderId &&this.navOrderId){
+      this.onCreateOrderClick()
+    }else {
+      this.navDeskId= this.navOrderId=null
+    }
   },
   methods: {
+
+    getDeskList() {
+      return listDesk( {}).then(response => {
+        this.deskList = (response.data || []).map(p => {
+          this.fillTitle(p);
+          return p;
+        });
+      })
+    },
+    fillTitle(item) {
+      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) === item.deskType)?.label ?? '';
+      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value) === item.placeType)?.label ?? '';
+      item.shortTitle = `${item.deskName}(${item.deskNum})`
+      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`
+    },
     onRefreshClick() {
 
     },
     onCancelOrderClick() {
       this.isCreating = false;
+      this.navDeskId=null;
+      this.navOrderId=null;
       this.order = {
+
         orderTutorTimes: [],
         orderGoods: [],
         orderDestTimes: [],
       }
     },
     onOkOrderClick() {
-
+        orderBuy(this.order).then(res=>{
+          this.$modal.msgSuccess("操作成功")
+          this.$router.push({
+            path: '/cashier/order', query: {
+              orderId:res.data
+            }
+          })
+        }).finally(()=>{
+          this.navDeskId=null;
+          this.navOrderId=null;
+        })
     },
     onGoodsNumChanged(item) {
       item.totalAmount = item.price * item.num;
@@ -249,23 +336,37 @@ export default {
     },
     onCreateOrderClick() {
       this.isCreating = true;
+      this.isChoosingGoods = this.isGoodsPanel;
       this.order = {
+        orderId:this.navOrderId,
         orderTutorTimes: [],
         orderDestTimes: [],
         orderGoods: [],
       }
+
     },
     addTutorToOrder(item) {
       let findItem = this.order.orderTutorTimes.find(p => p.tutorId === item.storeTutorId && p.status !== CalcTimeStatus.Stop);
       if (findItem) {
         return this.$modal.msgWarning("教练已在订单内，无需重复添加")
       }
-      findItem = {
+
+      this.tutorConfirmForm.tutor = item;
+      this.tutorConfirmForm.type = 4
+      this.tutorConfirmForm.deskId = this.navDeskId;
+      this.showTutorConfirm = true;
+      this.getDeskList();
+    },
+    OnTutorConfirmOk() {
+      let item = this.tutorConfirmForm.tutor;
+      let findItem = {
         tutorId: item.storeTutorId,
+        deskId:this.tutorConfirmForm.deskId,
         price: item.price,
+        type: this.tutorConfirmForm.type,
         totalAmount: 0.00,
         totalAmountDue: 0.00,
-        totalTime:0,
+        totalTime: 0,
         status: CalcTimeStatus.Busy,
         startTime: this.$time().format("YYYY-MM-DD HH:mm:ss"),
         storeTutor: item,
@@ -276,12 +377,16 @@ export default {
       this.sortIdx();
     },
     addGoodsToOrder(item) {
+      if(item.total<=0){
+        return this.$modal.msgWarning("商品库存为0，请补充商品库存.")
+      }
       let findItem = this.order.orderGoods.find(p => p.goodsId === item.goodsId);
       if (!findItem) {
         findItem = {
           goodsId: item.goodsId,
           price: item.price,
           totalAmount: 0.00,
+          deskId:this.navDeskId,
           totalAmountDue: 0.00,
           num: 0,
           goods: item,
@@ -317,6 +422,9 @@ export default {
       this.tutorStatus = val;
     },
     onChangePanel(val) {
+      if (this.isCreating) {
+        return this.$modal.msgWarning("正在选购无法切换")
+      }
       this.isGoodsPanel = val;
     },
   }

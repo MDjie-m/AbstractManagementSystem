@@ -43,9 +43,9 @@ export default {
         this.onCancel();
       }catch (e){
         this.loading=false;
+      }finally {
+        this.loading=false;
       }
-
-
     },
     onCancel() {
       this.$emit("update:visible", false)

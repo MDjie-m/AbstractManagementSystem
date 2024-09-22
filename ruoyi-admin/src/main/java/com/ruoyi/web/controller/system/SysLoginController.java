@@ -61,7 +61,7 @@ public class SysLoginController
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }
-    @PostMapping("/api/login")
+    @PostMapping("/api/cashier/login")
     public AjaxResult loginApi(@RequestBody  LoginBody loginBody)
     {
         AjaxResult ajax = AjaxResult.success();

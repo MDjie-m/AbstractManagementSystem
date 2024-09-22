@@ -6,6 +6,7 @@ import java.util.*;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.enums.OrderType;
 import com.ruoyi.billiard.mapper.OrderMemberDeductMapper;
 import com.ruoyi.billiard.service.IOrderRechargeService;
 import com.ruoyi.billiard.service.IOrderService;
@@ -55,9 +56,9 @@ public class MemberServiceImpl implements IMemberService {
     @Override
     public Member selectMemberByMemberId(Long memberId) {
         Member member = memberMapper.selectById(memberId);
-         if(Objects.nonNull(member)){
-             member.setPayPassword(null);
-         }
+        if (Objects.nonNull(member)) {
+            member.setPayPassword(null);
+        }
 
         return member;
     }
@@ -167,6 +168,12 @@ public class MemberServiceImpl implements IMemberService {
         return ArrayUtil.toMap(permissions, LevelDiscountPermission::getValue, p -> {
             return Optional.ofNullable(p.getDiscount()).orElse(BigDecimal.ZERO);
         });
+    }
+
+    @Override
+    public BigDecimal getMemberDisCountValue(OrderType type, Long memberId) {
+
+        return Optional.ofNullable(memberMapper.selectDiscountByType(memberId, type.getValue())).orElse(BigDecimal.ZERO);
     }
 
     @Override

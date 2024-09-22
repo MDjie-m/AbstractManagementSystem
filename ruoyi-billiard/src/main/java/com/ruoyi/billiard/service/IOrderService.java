@@ -6,6 +6,7 @@ import com.ruoyi.billiard.domain.Order;
 import com.ruoyi.billiard.domain.vo.FinishOrderReqVo;
 import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
 import com.ruoyi.billiard.domain.vo.OrderPrePayReqVo;
+import com.ruoyi.billiard.domain.vo.StopDeskResVo;
 
 /**
  * 订单Service接口
@@ -95,4 +96,8 @@ public interface IOrderService
     Boolean fillMember(Long orderId, Long memberId);
 
     Boolean finishOrder(FinishOrderReqVo reqVo);
+
+    Long orderShopping(Order reqVo);
+
+    StopDeskResVo stopDesk(Long orderId, Long storeId, Long deskId);
 }

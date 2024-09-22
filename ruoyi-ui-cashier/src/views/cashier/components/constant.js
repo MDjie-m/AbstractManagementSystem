@@ -17,3 +17,20 @@ export const TutorWorkStatus = Object.freeze({
   Stop: 3
 
 })
+
+export const LightType = Object.freeze({
+  Temp: 0,
+  CalcFee: 1,
+})
+export const DeskStatus = Object.freeze({
+  Wait: 0,
+  Busy: 1,
+  PAUSE: 2,
+  Stop: 3,
+
+})
+export const ChooseType = Object.freeze({
+  Goods: 0,
+  Tutor: 1,
+
+})

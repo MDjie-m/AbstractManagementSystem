@@ -1,11 +1,13 @@
 package com.ruoyi.billiard.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.ruoyi.billiard.domain.LevelDiscountPermission;
 import com.ruoyi.billiard.domain.Member;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 门店会员Mapper接口
@@ -50,4 +52,7 @@ public interface MemberMapper extends MyBaseMapper<Member>
     public int deleteMemberByMemberIds(Long[] memberIds);
 
     List<LevelDiscountPermission> selectMemberPermissions(Long memberId);
+
+
+    BigDecimal  selectDiscountByType(@Param("memberId") Long memberId,@Param("type") Integer type);
 }

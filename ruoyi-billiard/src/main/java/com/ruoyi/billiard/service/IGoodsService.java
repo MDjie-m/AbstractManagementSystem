@@ -27,6 +27,7 @@ public interface IGoodsService
      */
     public List<Goods> selectGoodsList(Goods goods);
 
+
     /**
      * 新增商品
      * 

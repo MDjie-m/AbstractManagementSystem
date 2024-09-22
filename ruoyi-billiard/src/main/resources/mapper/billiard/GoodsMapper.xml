@@ -6,9 +6,10 @@
 
 
     <sql id="selectGoodsVo">
-        select a.*, b.goods_category_name
+        select a.*, b.goods_category_name,c.total
         from t_goods a
                  left join t_goods_category b on a.category_id = b.goods_category_id
+        left join t_stock c on c.goods_id=a.goods_id
     </sql>
 
     <select id="selectGoodsList" parameterType="Goods" resultType="Goods">

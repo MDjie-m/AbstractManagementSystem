@@ -28,4 +28,12 @@ public enum OrderType implements IEnum {
         }
         return valueList;
     }
+    public static OrderType valueOf(Integer val){
+        for (OrderType item : values()) {
+            if(Objects.equals(val,item.getValue())){
+                return  item;
+            }
+        }
+        return  null;
+    }
 }

@@ -19,7 +19,12 @@
         </div>
         <SvgItem svg-icon="clock" label="开台" @click.native="onStartDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Wait && !currentDesk.lastActiveOrder" :btnAble="true"/>
-        <SvgItem svg-icon="desk_end" label="结开" v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
+        <el-popconfirm v-if="currentDesk.status ===DeskStatus.Busy"
+          title="确认结束开台？" @confirm="onStopDeskClick">
+          <SvgItem slot="reference" svg-icon="desk_end" label="结开"
+                   :btnAble="true"/>
+        </el-popconfirm>
+
         <SvgItem svg-icon="desk_pause" label="暂停" @click.native="onPauseDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
         <SvgItem svg-icon="desk_resume" label="恢复" @click.native="onResumeDeskClick()"
@@ -44,8 +49,8 @@
         <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
           <span>{{ currentDesk.otherTotalAmount }}元</span> <i class="el-icon-info"/>
         </div>
-        <SvgItem svg-icon="shop_car" label="选商品" :btnAble="true"/>
-        <SvgItem svg-icon="user_choose" label="选艺人" :btnAble="true"/>
+        <SvgItem svg-icon="shop_car" label="选商品" :btnAble="true" @click.native="onNavBuyClick(ChooseType.Goods)"/>
+        <SvgItem svg-icon="user_choose" label="选艺人" :btnAble="true" @click.native="onNavBuyClick(ChooseType.Tutor)"/>
       </ToolBar>
       <ToolBar title="订单操作" v-if="currentDesk &&currentDesk.lastActiveOrder" v-loading="orderLoading">
         <SvgItem svg-icon="trash" label="作废" :btnAble="true" @click.native="onVoidOrderClick"/>
@@ -218,29 +223,17 @@ import ToolBar from "@/views/cashier/desk/components/toolBar.vue";
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import {MessageBox} from "element-ui";
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
-import {orderPrePay, stopOrder, suspendOrder, voidOrder} from "@/api/cashier/order";
+import {orderPrePay, orderStopDesk, stopOrder, suspendOrder, voidOrder} from "@/api/cashier/order";
+import {OrderStatus, DeskStatus, LightType, ChooseType} from "@/views/cashier/components/constant";
 
-const LightType = {
-  Temp: 0,
-  CalcFee: 1,
-}
-const DeskStatus = {
-  Wait: 0,
-  Busy: 1,
-  PAUSE: 2,
-  Stop: 3,
-
-}
-const OrderStatus = {
-  Charging: 0,//"计费中"),
-  Stop: 1,//"待结算"),
-  Settled: 2,//"已结算"),
-  Void: 3,//"作废"),
-  Suspend: 4,//"挂起订单")
-}
 
 export default {
   name: "Desk",
+  computed: {
+    ChooseType() {
+      return ChooseType
+    }
+  },
   components: {LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
 
@@ -284,6 +277,15 @@ export default {
     this.getStoreInfo()
   },
   methods: {
+    onNavBuyClick(type) {
+      this.$router.push({
+        path: '/cashier/buy', query: {
+          orderId: this.currentDesk?.currentOrderId,
+          deskId: this.currentDesk?.deskId,
+          type: type
+        }
+      })
+    },
     onMergeDeskSubmit() {
       if (!this.targetDesk?.deskId) {
         return this.$modal.msgWarning("请选择要合并的目标台桌");
@@ -570,17 +572,20 @@ export default {
         }).finally(() => this.orderLoading = false)
       })
     },
+    routeToOrder(orderId) {
+      this.$router.push({
+        path: '/cashier/order', query: {
+          orderId
+        }
+      })
+    },
     navToOrder(orderId) {
       MessageBox.confirm(`订单已停止，是否进入结算页面？`, '确认', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'success'
       }).then(res => {
-        this.$router.push({
-          path: '/cashier/order', query: {
-            orderId
-          }
-        })
+        this.routeToOrder(orderId)
       }, () => {
 
       })
@@ -627,6 +632,18 @@ export default {
           this.$message.success(`${deskTitle}已暂停。`)
         })
       })
+    },
+    onStopDeskClick() {
+
+      orderStopDesk(this.currentDesk.currentOrderId, this.currentDesk.deskId)
+        .then(res => {
+          this.queryDeskById(this.currentDesk.deskId);
+          if (res.data.hasOtherDesk) {
+            this.$message.success("当前台桌已结束开台,但是还有其他台桌在计费,如要结账，请结开另一个台桌。")
+            return
+          }
+          this.navToOrder(res.data.orderId);
+        })
     },
     onStartDeskClick() {
       let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;

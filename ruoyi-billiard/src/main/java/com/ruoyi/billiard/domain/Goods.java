@@ -90,9 +90,11 @@ public class Goods extends MyBaseEntity
     private Boolean discountDisable;
 
 
-
-
-
+    /**
+     * 库存
+     */
+    @TableField(exist = false)
+    private Long  total;
 
 
 

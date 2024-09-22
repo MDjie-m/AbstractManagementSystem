@@ -6,4 +6,5 @@ public interface IEnum extends com.baomidou.mybatisplus.annotation.IEnum<Integer
     String getDesc();
 
 
+
 }

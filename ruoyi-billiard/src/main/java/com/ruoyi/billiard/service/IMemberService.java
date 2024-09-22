@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.billiard.domain.Member;
+import com.ruoyi.billiard.enums.OrderType;
 
 /**
  * 门店会员Service接口
@@ -70,8 +71,8 @@ public interface IMemberService {
     List<Member> selectMemberListByMemberLevelId(Long memberLevelId);
 
     //获取会员折扣
-    Map<Integer, BigDecimal> getOrderMemberDisCountValue(Long memberId);
-
+    Map<Integer, BigDecimal> getOrderMemberDisCountValue(  Long memberId);
+    BigDecimal getMemberDisCountValue(OrderType type, Long memberId);
     Boolean checkPwd(Long memberId, String password);
 
     void deductAmount(Long memberId, Long orderId, BigDecimal totalAmount);

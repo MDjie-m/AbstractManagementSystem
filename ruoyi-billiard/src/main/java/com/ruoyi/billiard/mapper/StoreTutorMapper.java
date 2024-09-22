@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 import com.ruoyi.billiard.domain.StoreTutor;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
@@ -34,4 +35,5 @@ public interface StoreTutorMapper extends MyBaseMapper<StoreTutor>
 
     List<KeyValueVo<Integer, Long>> queryCountGroupByWorkStatus(Long storeId);
 
+    BigDecimal queryPrice(Long tutorId);
 }

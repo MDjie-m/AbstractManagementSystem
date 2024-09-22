@@ -3,10 +3,13 @@ package com.ruoyi.billiard.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.billiard.domain.vo.IBuy;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -54,6 +57,7 @@ public class OrderGoods extends MyBaseEntity implements ITotalDueFee {
     @Excel(name = "商品id")
 
     @TableField("goods_id")
+    @NotNull(groups = IBuy.class,message = "商品id不能为空")
     private Long goodsId;
 
     /**
@@ -79,6 +83,7 @@ public class OrderGoods extends MyBaseEntity implements ITotalDueFee {
     @Excel(name = "数量")
 
     @TableField("num")
+    @Min( value = 1,groups = IBuy.class,message = "商品数量必须大于1")
     private Integer num;
 
     /**
