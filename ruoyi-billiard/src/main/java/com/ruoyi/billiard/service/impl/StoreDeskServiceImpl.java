@@ -14,6 +14,7 @@ import com.ruoyi.billiard.domain.vo.LineUpVo;
 import com.ruoyi.billiard.enums.DeskStatus;
 import com.ruoyi.billiard.enums.EmployeeStatus;
 import com.ruoyi.billiard.enums.TutorWorkStatus;
+import com.ruoyi.billiard.mapper.OrderDeskScoreMapper;
 import com.ruoyi.billiard.mapper.OrderDeskTimeMapper;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
 import com.ruoyi.billiard.service.IDeskDeviceRelationService;
@@ -57,6 +58,9 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
 
     @Resource
     private IDeskPriceService deskPriceService;
+
+    @Resource
+    private OrderDeskScoreMapper orderDeskScoreMapper;
 
     final static String LINE_UP_KEY = "line_up:{}";
     @Resource
@@ -220,10 +224,14 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         }
         resVo.setLastActiveOrder(order);
         resVo.calcFees();
+        resVo.setScore(Optional.ofNullable(orderDeskScoreMapper.selectOne(orderDeskScoreMapper.query()
+                        .eq(OrderDeskScore::getDeskId, deskId)
+                        .eq(OrderDeskScore::getOrderId, order.getOrderId())
+                        .orderByDesc(OrderDeskScore::getStartTime).last(" limit 1")))
+                .orElse(resVo.getScore()));
         return resVo;
 
     }
-
 
 
     @Override

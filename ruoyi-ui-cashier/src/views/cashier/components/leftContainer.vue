@@ -10,9 +10,9 @@
         {{ storeName }}
       </div>
     </div>
-    <template>
+    <div class="left-slot" >
       <slot/>
-    </template>
+    </div>
 
   </div>
 </template>
@@ -38,6 +38,11 @@ export default {
 
 <style scoped lang="scss">
 @import '@/assets/styles/variables.scss';
+.left-slot{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
 .left-header{
   background: #fff;
   box-sizing: border-box;

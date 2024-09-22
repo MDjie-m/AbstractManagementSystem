@@ -2,6 +2,7 @@ package com.ruoyi.billiard.domain.vo;
 
 import com.ruoyi.billiard.domain.BaseFee;
 import com.ruoyi.billiard.domain.Order;
+import com.ruoyi.billiard.domain.OrderDeskScore;
 import com.ruoyi.billiard.domain.StoreDesk;
 import lombok.*;
 
@@ -27,6 +28,8 @@ public class DeskQueryResVo extends StoreDesk {
      * 其他费用
      */
     private BigDecimal otherTotalAmount = BigDecimal.ZERO;
+
+    private OrderDeskScore score=new OrderDeskScore();
 
     public void calcFees() {
 

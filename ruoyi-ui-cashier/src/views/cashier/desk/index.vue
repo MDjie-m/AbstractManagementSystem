@@ -3,7 +3,17 @@
 
   <div class="page-container">
 
-    <left-container @onRefreshClick="onRefreshClick">
+    <left-container @onRefreshClick="onRefreshClick" :hide-store-info="currentDesk">
+      <div class="score-info" v-if="currentDesk">
+
+
+        <el-card class="score-info-item">
+          {{currentDesk.score.scoreA|numPad}}
+        </el-card>
+        <el-card class="score-info-item" >
+          {{currentDesk.score.scoreB|numPad}}
+        </el-card>
+      </div>
       <div class="desk-base-info" v-if="currentDesk">
         <div class="desk-base-info-name">
           {{ currentDesk.deskName }}({{ currentDesk.deskNum }})
@@ -125,7 +135,7 @@
       </div>
 
       <div class="  section-container desk-box">
-        <el-scrollbar>
+
           <template class="box-card" v-for="placeItem in dict.type.store_desk_place">
             <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
             <div class="desk-container">
@@ -142,7 +152,6 @@
               </el-card>
             </div>
           </template>
-        </el-scrollbar>
       </div>
       <content-wrapper :visible.sync="openNewDialog" :title="title">
         <line-up v-if="openNewDialog"/>
