@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.domain.vo;
 
+import com.ruoyi.billiard.enums.OrderPayType;
 import com.ruoyi.common.utils.StringUtils;
 import lombok.Data;
 
@@ -12,11 +13,9 @@ public class FinishOrderReqVo {
 
     @NotNull(message = "订单不能为空")
     private Long orderId;
-    /**
-     * 0=现金支付，1=会员支付
-     */
-    @NotNull(message = "结算方式不能为空")
-    private Integer type;
+
+    @NotNull(message = "支付方式不能为空")
+    private OrderPayType payType;
 
     private String password;
 
@@ -24,7 +23,7 @@ public class FinishOrderReqVo {
 
     @AssertTrue(message = "密码不能为空")
     public boolean isPwdOk() {
-        if (!Objects.equals(type, 1)) {
+        if (!Objects.equals(payType, OrderPayType.MEMBER)) {
             return true;
         }
         return StringUtils.isNotEmpty(password);

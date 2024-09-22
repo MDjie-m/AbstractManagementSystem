@@ -200,7 +200,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Order order = new Order();
         order.setOrderId(IdUtils.singleNextId());
         order.setOrderNo(createOrderNum(order.getOrderId()));
-        order.setOrderType(OrderType.TABLE_CHARGE.getValue());
+        order.setOrderType(OrderType.TABLE_CHARGE);
         order.setStatus(OrderStatus.CHARGING.getValue());
 
         order.setStoreId(desk.getStoreId());
@@ -729,10 +729,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Transactional(rollbackFor = Exception.class)
     public Boolean finishOrder(FinishOrderReqVo reqVo) {
         Order order = orderMapper.selectById(reqVo.getOrderId());
+        order.setPayType(reqVo.getPayType());
         AssertUtil.notNullOrEmpty(order, OrderErrorMsg.ORDER_NOT_FOUND);
         AssertUtil.isTrue(Arrays.asList(OrderStatus.WAIT_SETTLED.getValue(), OrderStatus.SUSPEND.getValue())
                 .contains(order.getStatus()), "只有待结算和挂起的订单才能结算");
-        if (Objects.equals(reqVo.getType(), 1)) {
+        if (Objects.equals(reqVo.getPayType(), OrderPayType.MEMBER)) {
             AssertUtil.notNullOrEmpty(order.getMemberId(), "订单未绑定会员");
             AssertUtil.isTrue(memberService.checkPwd(order.getMemberId(), reqVo.getPassword()), "密码错误");
             memberService.deductAmount(order.getMemberId(), order.getOrderId(), order.getTotalAmount());
@@ -804,7 +805,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setStoreId(reqVo.getStoreId());
             order.setOrderNo(createOrderNum(order.getOrderId()));
             order.setTotalAmount(BigDecimal.ZERO);
-            order.setOrderType(OrderType.COMMODITY_PURCHASE.getValue());
+            order.setOrderType(OrderType.COMMODITY_PURCHASE);
             order.setStatus(OrderStatus.WAIT_SETTLED.getValue());
 
             SecurityUtils.fillCreateUser(order);

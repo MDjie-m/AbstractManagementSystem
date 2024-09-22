@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.billiard.enums.OrderStatus;
 import com.ruoyi.billiard.enums.OrderType;
-import com.ruoyi.billiard.enums.PayType;
+import com.ruoyi.billiard.enums.OrderPayType;
 import com.ruoyi.common.core.domain.ResultVo;
 import com.ruoyi.common.core.page.PageResVo;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -125,7 +125,7 @@ public class OrderController extends BaseController
     @GetMapping("/getsAnEnumerationOfPaymentMethods")
     public  ResultVo<List<Map<String, Object>>> getsAnEnumerationOfPaymentMethods()
     {
-        List<Map<String, Object>> valueMap = PayType.getValueMap();
+        List<Map<String, Object>> valueMap = OrderPayType.getValueMap();
         return ResultVo.success(valueMap);
     }
 

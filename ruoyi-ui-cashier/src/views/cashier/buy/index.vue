@@ -298,7 +298,8 @@ export default {
       item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`
     },
     onRefreshClick() {
-
+      this.getGoodsList();
+      this.getTutorList();
     },
     onCancelOrderClick() {
       this.isCreating = false;

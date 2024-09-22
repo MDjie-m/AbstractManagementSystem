@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ruoyi.billiard.domain.vo.IBuy;
+import com.ruoyi.billiard.enums.OrderPayType;
+import com.ruoyi.billiard.enums.OrderType;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
@@ -52,7 +54,7 @@ public class Order extends MyBaseEntity {
      */
     @Excel(name = "类型：1=球桌费用，2=会员充值，3=商品购买,4=陪练费用，5=教学费用")
     @TableField("order_type")
-    private Integer orderType;
+    private OrderType orderType;
 
     /**
      * 应付总金额
@@ -107,7 +109,7 @@ public class Order extends MyBaseEntity {
     @Excel(name = "支付方式：0=扫码，1=现金，2=会员")
 
     @TableField("pay_type")
-    private Integer payType;
+    private OrderPayType payType;
 
     /**
      * 订单状态：0=计费中,1=待结算,2=已结算，3=作废

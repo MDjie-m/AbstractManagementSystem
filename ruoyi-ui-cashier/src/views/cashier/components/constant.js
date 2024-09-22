@@ -34,3 +34,8 @@ export const ChooseType = Object.freeze({
   Tutor: 1,
 
 })
+export const OrderPayType = Object.freeze({
+  SCAN_QRCODE: 0,
+  CASH: 1,
+  MEMBER:2,
+})

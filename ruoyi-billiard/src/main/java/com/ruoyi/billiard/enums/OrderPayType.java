@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.enums;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,8 +11,8 @@ import java.util.Map;
 
 @Getter
 @AllArgsConstructor
-public enum PayType implements IEnum {
-    SCANTHECODE(0, "扫码"),
+public enum OrderPayType implements IEnum {
+    SCAN_QRCODE(0, "扫码"),
     CASH(1, "现金"),
     MEMBER(2, "会员"),
 
@@ -22,7 +23,7 @@ public enum PayType implements IEnum {
 
     public static List<Map<String, Object>> getValueMap() {
         List<Map<String, Object>> valueList = new ArrayList<>();
-        for (PayType item : values()) {
+        for (OrderPayType item : values()) {
             Map<String, Object> valueMap = new HashMap<>();
             valueMap.put("name", item.desc);
             valueMap.put("value", item.value + "");
