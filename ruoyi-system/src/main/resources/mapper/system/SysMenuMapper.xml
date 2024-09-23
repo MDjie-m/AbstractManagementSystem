@@ -63,7 +63,7 @@
                 AND status = #{status}
             </if>
         </where>
-        order by parent_id, order_num
+        order by menu_category,parent_id, order_num
     </select>
 
     <select id="selectMenuTreeAll" resultMap="SysMenuResult">
