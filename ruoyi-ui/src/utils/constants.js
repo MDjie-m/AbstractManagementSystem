@@ -309,4 +309,5 @@ export const scheduleStatus = [
   { label: '已完成', value: '1' },
   { label: '付费人请假', value: '2' },
   { label: '收费人请假', value: '3' },
+  { label: '已分账', value: '4' },
 ];

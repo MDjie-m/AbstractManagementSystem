@@ -3,6 +3,7 @@ package com.renxin.web.controller.schedule;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.renxin.common.exception.ServiceException;
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.service.IPsyConsultantScheduleService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -98,10 +99,15 @@ public class PsyScheduleController extends BaseController
     //@PreAuthorize("@ss.hasPermi('system:schedule:edit')")
     @Log(title = "咨询师排班任务", businessType = BusinessType.UPDATE)
     @PostMapping("/confirm")
-    public AjaxResult confirm(@RequestBody PsyConsultantSchedule psyConsultantSchedule)
+    public AjaxResult confirm(@RequestBody PsyConsultantSchedule req)
     {
-        psyConsultantSchedule.setStatus("1");//已完成
-        return toAjax(psyConsultantScheduleService.updatePsyConsultantSchedule(psyConsultantSchedule));
+        PsyConsultantSchedule oldSchedule = psyConsultantScheduleService.selectPsyConsultantScheduleById(req.getId());
+        if (!"0".equals(oldSchedule.getStatus())){
+            throw new ServiceException("确认失败, 该任务并非[待办]状态");
+        }
+
+        req.setStatus("1");//已完成
+        return toAjax(psyConsultantScheduleService.updatePsyConsultantSchedule(req));
     }
 
     /**

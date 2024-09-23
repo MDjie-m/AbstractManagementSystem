@@ -12,6 +12,7 @@ import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.service.IPsyConsultBillItemService;
 import com.renxin.psychology.service.IPsyConsultantAccountRecordService;
 import com.renxin.psychology.service.IPsyConsultantScheduleService;
+import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -69,6 +71,8 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void batchAdd() {
+        //自动完成已到时的任务
+        mapper.finishOrderItem();
         //来访者订单核销
         List<PsyConsultBillItem> orderItems = mapper.getOrderItems();
         if (CollectionUtils.isNotEmpty(orderItems)) {
@@ -115,10 +119,12 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
                     if (ObjectUtils.isEmpty(it.getBrokerage())){
                         it.setPrice(it.getOrderTotal().divide(new BigDecimal(it.getOrderNum()), 2, BigDecimal.ROUND_UP));
                         it.setBrokerage(it.getPrice().multiply(it.getRatio().divide(new BigDecimal(100), 2, BigDecimal.ROUND_UP)));
+                        //剩余次数 = 总次数 - 已执行次数
+                        it.setNum(it.getOrderNum() - it.getBuyNum());
                     }
                 });
             });
-            this.saveOrUpdateBatch(consultantOrderItemList);
+            mapper.insertBatch(consultantOrderItemList);
             allotToAcct(consultantOrderItemList);
         }
         
@@ -140,6 +146,9 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
         }
         accountRecordService.insertPsyConsultantAccountRecordBatch(acctRecordList);
         
+        //将相关的团督任务设为[已分账]
+        List<Long> teamScheduleIdList = billList.stream().filter(p -> p.getScheduleType() == 21).map(PsyConsultBillItem::getId).collect(Collectors.toList());
+        scheduleService.updateStatusBatch(teamScheduleIdList, "4");//团督已分账
     }
 
     @Override

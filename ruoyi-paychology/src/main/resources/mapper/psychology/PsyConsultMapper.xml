@@ -15,9 +15,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 and b.price <![CDATA[>=]]> #{lowPrice} and b.price <![CDATA[<=]]> #{highPrice}
             </if>
             ORDER BY b.price ASC LIMIT 1) price,
-        (SELECT b.price FROM psy_consult_serve a INNER JOIN psy_consult_server_config b ON a.serve_id=b.id AND a.consult_id=psy_consult.id WHERE b.bound = 1 ORDER BY b.price ASC LIMIT 1) new_price
+        (SELECT b.price FROM psy_consult_serve a INNER JOIN psy_consult_server_config b ON a.serve_id=b.id AND a.consult_id=psy_consult.id 
+            WHERE b.bound = 1 
+            ORDER BY b.price ASC LIMIT 1) new_price
         from psy_consult
         <where>
+            (SELECT b.price FROM psy_consult_serve a INNER JOIN psy_consult_server_config b ON a.serve_id=b.id AND a.consult_id=psy_consult.id
+            WHERE b.bound = 0
+            <if test="lowPrice != null and highPrice != null">
+                AND b.price <![CDATA[>=]]> #{lowPrice} AND b.price <![CDATA[<=]]> #{highPrice}
+            </if>
+            ORDER BY b.price ASC LIMIT 1) IS NOT NULL 
             and status = 0 and del_flag = 0 and is_show = 0
             <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
             <if test="sex != null  and sex != ''"> and sex = #{sex}</if>

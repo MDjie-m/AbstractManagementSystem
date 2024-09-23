@@ -8,6 +8,7 @@ import com.renxin.common.enums.BusinessType;
 import com.renxin.common.utils.poi.ExcelUtil;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantAccountRecord;
+import com.renxin.psychology.service.IPsyConsultBillItemService;
 import com.renxin.psychology.service.IPsyConsultantAccountRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,15 +35,24 @@ public class ConsultantAccountRecordController extends BaseController
 
     @Resource
     ConsultantTokenService consultantTokenService;
+
+    @Resource
+    private IPsyConsultBillItemService psyConsultBillItemService;
+    
     /**
      * 查询账户明细流水列表
      */
     //@PreAuthorize("@ss.hasPermi('system:record:list')")
-    @GetMapping("/list")
-    public TableDataInfo list(PsyConsultantAccountRecord psyConsultantAccountRecord)
+    @PostMapping("/list")
+    public TableDataInfo list(PsyConsultantAccountRecord psyConsultantAccountRecord,HttpServletRequest request)
     {
+        Long consultId = consultantTokenService.getConsultId(request);
+        psyConsultantAccountRecord.setConsultantId(consultId);
         startPage();
         List<PsyConsultantAccountRecord> list = psyConsultantAccountRecordService.selectPsyConsultantAccountRecordList(psyConsultantAccountRecord);
+
+        psyConsultBillItemService.batchAdd();
+        
         return getDataTable(list);
     }
 

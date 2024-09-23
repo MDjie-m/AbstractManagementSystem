@@ -2,6 +2,7 @@ package com.renxin.psychology.mapper;
 
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.request.PsyWorkReq;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -80,4 +81,7 @@ public interface PsyConsultantScheduleMapper
 
     //查询团督已讲完的课程数
     public int getTimeNumForTeam(PsyConsultantSchedule psyConsultantSchedule);
+
+    //批量修改状态
+    public void updateStatusBatch(@Param("idList") List<Long> idList,@Param("status") String status);
 }

@@ -387,6 +387,7 @@ public class PsyCouponServiceImpl implements IPsyCouponService
 
 
     //领取优惠券
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void receiveFreeCoupon(ReceiveFreeCouponReq req){
         List<Long> couponTemplateIdList = Arrays.stream(req.getCouponTemplateIdStr().split(","))
@@ -460,6 +461,7 @@ public class PsyCouponServiceImpl implements IPsyCouponService
                 psyConsult.setId(req.getConsultId());
                 psyConsult.setIsNewPeople(1);//老用户
             psyConsultService.updateById(psyConsult);
+            psyConsultService.refreshCacheById(psyConsult.getId());
         }
         
     }

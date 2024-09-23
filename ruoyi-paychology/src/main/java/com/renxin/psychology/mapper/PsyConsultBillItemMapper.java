@@ -26,4 +26,7 @@ public interface PsyConsultBillItemMapper extends BaseMapper<PsyConsultBillItem>
     List<PsyConsultBillItem> getConsultantOrderItems();
     
     void finishSchedule();
+    void finishOrderItem();
+    
+    void insertBatch(List<PsyConsultBillItem> list);
 }

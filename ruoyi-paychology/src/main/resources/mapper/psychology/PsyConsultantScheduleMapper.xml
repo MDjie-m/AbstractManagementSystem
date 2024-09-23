@@ -188,6 +188,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where id = #{id}
     </update>
+    
+    
+    <update id="updateStatusBatch">
+        update
+            psy_consultant_schedule
+        set
+            status = #{status}
+        where 
+            id in 
+            <foreach collection="idList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+    </update>
 
     <delete id="deletePsyConsultantScheduleById" parameterType="Long">
         delete from psy_consultant_schedule where id = #{id}

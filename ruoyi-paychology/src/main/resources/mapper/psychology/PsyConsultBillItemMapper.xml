@@ -3,6 +3,42 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.renxin.psychology.mapper.PsyConsultBillItemMapper">
+    <insert id="insertBatch">
+        INSERT INTO psy_consult_bill_item (id, bill_id, order_id, team_id, consult_id, consult_name, type, ratio, order_no, order_time, serve_name, serve_type, buy_num, order_num, num, nick_name, price, brokerage, order_total, use_time, bill_time, create_by, create_time, update_by, update_time, buy_num_str, schedule_type)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.id},
+            #{item.billId},
+            #{item.orderId},
+            #{item.teamId},
+            #{item.consultId},
+            #{item.consultName},
+            #{item.type},
+            #{item.ratio},
+            #{item.orderNo},
+            #{item.orderTime},
+            #{item.serveName},
+            #{item.serveType},
+            #{item.buyNum},
+            #{item.orderNum},
+            #{item.num},
+            #{item.nickName},
+            #{item.price},
+            #{item.brokerage},
+            #{item.orderTotal},
+            #{item.useTime},
+            #{item.billTime},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateBy},
+            #{item.updateTime},
+            #{item.buyNumStr},
+            #{item.scheduleType}
+            )
+        </foreach>
+    </insert>
+    
     <update id="finishSchedule">
         update
             psy_consultant_schedule
@@ -12,6 +48,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             schedule_type in (22,23)
         and status = 0 
         and NOW() > concat(day," ",time_end)
+    </update>
+    
+    <update id="finishOrderItem">
+        update
+            psy_consultant_schedule
+        set
+            status = 1
+        where
+            status = 0
+          and NOW() > concat(day," ",time_end)
     </update>
 
     <select id="getOrderItems" resultType="com.renxin.psychology.domain.PsyConsultBillItem">

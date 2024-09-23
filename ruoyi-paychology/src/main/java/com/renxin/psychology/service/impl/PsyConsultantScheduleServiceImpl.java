@@ -21,6 +21,7 @@ import com.renxin.psychology.service.IPsyConsultWorkService;
 import com.renxin.psychology.service.IPsyConsultantOrderService;
 import com.renxin.psychology.service.IPsyConsultantScheduleService;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,16 +94,14 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
 
     /**
      * 修改咨询师排班任务
-     * 
-     * 
      * @param psyConsultantSchedule 咨询师排班任务
      * @return 结果
      */
     @Override
-    public int updatePsyConsultantSchedule(PsyConsultantSchedule psyConsultantSchedule)
+    public int updatePsyConsultantSchedule(PsyConsultantSchedule req)
     {
-        psyConsultantSchedule.setUpdateTime(DateUtils.getNowDate());
-        return psyConsultantScheduleMapper.updatePsyConsultantSchedule(psyConsultantSchedule);
+        req.setUpdateTime(DateUtils.getNowDate());
+        return psyConsultantScheduleMapper.updatePsyConsultantSchedule(req);
     }
 
     /**
@@ -273,5 +272,14 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         int num = psyConsultantScheduleMapper.getTimeNumForTeam(req);
         return num;
     }
-    
+
+
+    //批量修改状态
+    @Override
+    public void updateStatusBatch(List<Long> idList, String status){
+        if (ObjectUtils.isEmpty(idList)){
+            return;
+        }
+        psyConsultantScheduleMapper.updateStatusBatch(idList,status);
+    }
 }

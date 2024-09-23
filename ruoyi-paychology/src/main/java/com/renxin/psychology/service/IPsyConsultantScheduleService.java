@@ -84,4 +84,7 @@ public interface IPsyConsultantScheduleService
     
     //查询团督已讲完的课程数
     public int getTimeNumForTeam(Long teamId);
+    
+    //批量修改状态
+    public void updateStatusBatch(List<Long> idList, String status);
 }
