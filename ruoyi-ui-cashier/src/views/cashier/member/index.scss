@@ -1,4 +1,15 @@
 .member-box {
   flex: 1;
   overflow-y: auto;
+  .table-box {
+    flex: 1;
+    overflow-y: auto;
+  }
+}
+::v-deep.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell{
+  background-color: #1890ff!important;
+  color: #fff!important;
+  .el-button{
+    color: #fff!important;
+  }
 }
