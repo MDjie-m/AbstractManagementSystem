@@ -340,6 +340,7 @@ export default {
         this.levelOptions = (res.data || []).map(p => {
           return Object.assign({label: p.levelName, value: p.memberLevelId, raw: {listClass: ''}}, p)
         })
+        console.log(111, this.levelOptions)
       })
     },
     /** 查询门店会员列表 */

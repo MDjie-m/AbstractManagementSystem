@@ -3,11 +3,12 @@ package com.ruoyi.framework.web.service;
 import javax.annotation.Resource;
 
 import com.ruoyi.common.constant.LoginSystem;
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.framework.web.domain.CustomAuthToken;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import com.ruoyi.common.constant.CacheConstants;
@@ -32,6 +33,10 @@ import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 /**
  * 登录校验方法
  * 
@@ -54,6 +59,7 @@ public class SysLoginService
 
     @Autowired
     private ISysConfigService configService;
+
 
     /**
      * 登录验证
@@ -78,6 +84,20 @@ public class SysLoginService
             AuthenticationContextHolder.setContext(authenticationToken);
             // 该方法会去调用UserDetailsServiceImpl.loadUserByUsername
             authentication = authenticationManager.authenticate(authenticationToken);
+            if (Objects.equals(loginSystem, LoginSystem.MINI_APP_SYSTEM)) {
+                LoginUser principal = (LoginUser) authentication.getPrincipal();
+                SysUser user = principal.getUser();
+                List<String> roleKeys = user.getRoles().stream().map(SysRole::getRoleKey).collect(Collectors.toList());
+                String[] miniAppRolekeys = Constants.MINI_APP_ROLEKEYS;
+
+                boolean result = containsInMiniAppRolekeys(miniAppRolekeys, roleKeys);
+                if (!result) {
+                    AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.miniapp.not.roles")));
+                    throw new ServiceException("此用户没有小程序登录权限");
+                }
+
+
+            }
         }
         catch (Exception e)
         {
@@ -180,5 +200,18 @@ public class SysLoginService
         sysUser.setLoginIp(IpUtils.getIpAddr());
         sysUser.setLoginDate(DateUtils.getNowDate());
         userService.updateUserProfile(sysUser);
+    }
+
+
+
+    public boolean containsInMiniAppRolekeys(String[] miniAppRolekeys, List<String> roleKey) {
+        for (String role : roleKey) {
+            for (String key : miniAppRolekeys) {
+                if (key.contains(role)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

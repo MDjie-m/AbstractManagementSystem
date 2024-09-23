@@ -8,7 +8,6 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  * 门店会员对象 t_member
@@ -89,7 +88,7 @@ public class Member extends MyBaseEntity {
     @Excel(name = "会员等级")
 
     @TableField("level_id")
-    private BigInteger levelId;
+    private Long levelId;
 
     @TableField(exist = false)
     private String levelName;
