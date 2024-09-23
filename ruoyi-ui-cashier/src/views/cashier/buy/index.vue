@@ -161,20 +161,23 @@
       <div class="  section-container buy-box">
 
         <div class="buy-container" v-show="isGoodsPanel">
-          <el-card class="some-item" :class="{'selected':item.selected}"
+          <el-card class="some-item goods-item" :class="{'selected':item.selected}"
                    v-for="item in  goodsList">
-            <div>
-              <image-preview class="item-img" :src="item.goodsImg"/>
+            <div class="goods-item-left">
+              <image-preview class="item-img big" :src="item.goodsImg"/>
+              <svg-icon class="item-discount"   icon-class="discount_disable"
+                        v-if="item.discountDisable"/>
             </div>
-            <div>
-              <div class="some-item-name"> {{ item.goodsName }}</div>
+            <div class="goods-item-right">
+
+              <div class="some-item-name"> <div>{{ item.goodsName }}</div></div>
               <div class="some-item-price"> {{ item.price }}元</div>
 
-            </div>
-            <div>
-              <div class="some-item-price">库存:{{item.total}}</div>
+              <div class="some-item-price">库存:{{ item.total }}</div>
+
 
             </div>
+
             <i class="el-icon-plus item-btn" v-if="isCreating" @click="addGoodsToOrder(item)"></i>
 
           </el-card>
@@ -202,13 +205,13 @@
           <el-radio v-model="tutorConfirmForm.type" :label="5">教学</el-radio>
         </el-form-item>
         <el-form-item label="台桌:">
-          <el-select v-model="tutorConfirmForm.deskId" filterable  no-data-text="当前没有正在计费的台桌">
+          <el-select v-model="tutorConfirmForm.deskId" filterable no-data-text="当前没有正在计费的台桌">
             <!--                <div slot="prefix"></div>-->
             <el-option :value="item.deskId" :key="'ddddd'+item.deskId"
-                       :label="item.title"  v-if="item.status === DeskStatus.Busy"
+                       :label="item.title" v-if="item.status === DeskStatus.Busy"
                        v-for="item in deskList">
-              <div style="display: flex;flex-direction: row;align-items: center" >
-                <div class="desk-status" :class="`desk-status-`+item.status" ></div>
+              <div style="display: flex;flex-direction: row;align-items: center">
+                <div class="desk-status" :class="`desk-status-`+item.status"></div>
                 <div> {{ item.title }}</div>
                 <div style=" padding-left: 20px">
                   {{ item.price }}元/分钟
@@ -242,8 +245,8 @@ export default {
   dicts: ['store_tutor_work_status', 'store_desk_type', 'store_desk_place'],
   data() {
     return {
-      navOrderId:null,
-      navDeskId:null,
+      navOrderId: null,
+      navDeskId: null,
       tutorConfirmForm: {
         tutor: null,
         type: 4,
@@ -272,19 +275,22 @@ export default {
     this.getGoodsList();
     this.getTutorList();
 
-    this.navDeskId=this.$route.query.deskId;
-    this.navOrderId=this.$route.query.orderId;
-    this.isGoodsPanel= parseInt(this.$route.query.type) ===ChooseType.Goods;
-    if(this.navOrderId &&this.navOrderId){
+    this.navDeskId = this.$route.query.deskId;
+    this.navOrderId = this.$route.query.orderId;
+    if (this.navOrderId) {
+      this.isGoodsPanel = parseInt(this.$route.query.type) === ChooseType.Goods;
+    }
+
+    if (this.navOrderId && this.navOrderId) {
       this.onCreateOrderClick()
-    }else {
-      this.navDeskId= this.navOrderId=null
+    } else {
+      this.navDeskId = this.navOrderId = null
     }
   },
   methods: {
 
     getDeskList() {
-      return listDesk( {}).then(response => {
+      return listDesk({}).then(response => {
         this.deskList = (response.data || []).map(p => {
           this.fillTitle(p);
           return p;
@@ -303,8 +309,8 @@ export default {
     },
     onCancelOrderClick() {
       this.isCreating = false;
-      this.navDeskId=null;
-      this.navOrderId=null;
+      this.navDeskId = null;
+      this.navOrderId = null;
       this.order = {
 
         orderTutorTimes: [],
@@ -313,17 +319,17 @@ export default {
       }
     },
     onOkOrderClick() {
-        orderBuy(this.order).then(res=>{
-          this.$modal.msgSuccess("操作成功")
-          this.$router.push({
-            path: '/cashier/order', query: {
-              orderId:res.data
-            }
-          })
-        }).finally(()=>{
-          this.navDeskId=null;
-          this.navOrderId=null;
+      orderBuy(this.order).then(res => {
+        this.$modal.msgSuccess("操作成功")
+        this.$router.push({
+          path: '/cashier/order', query: {
+            orderId: res.data
+          }
         })
+      }).finally(() => {
+        this.navDeskId = null;
+        this.navOrderId = null;
+      })
     },
     onGoodsNumChanged(item) {
       item.totalAmount = item.price * item.num;
@@ -339,7 +345,7 @@ export default {
       this.isCreating = true;
       this.isChoosingGoods = this.isGoodsPanel;
       this.order = {
-        orderId:this.navOrderId,
+        orderId: this.navOrderId,
         orderTutorTimes: [],
         orderDestTimes: [],
         orderGoods: [],
@@ -362,7 +368,7 @@ export default {
       let item = this.tutorConfirmForm.tutor;
       let findItem = {
         tutorId: item.storeTutorId,
-        deskId:this.tutorConfirmForm.deskId,
+        deskId: this.tutorConfirmForm.deskId,
         price: item.price,
         type: this.tutorConfirmForm.type,
         totalAmount: 0.00,
@@ -378,7 +384,7 @@ export default {
       this.sortIdx();
     },
     addGoodsToOrder(item) {
-      if(item.total<=0){
+      if (item.total <= 0) {
         return this.$modal.msgWarning("商品库存为0，请补充商品库存.")
       }
       let findItem = this.order.orderGoods.find(p => p.goodsId === item.goodsId);
@@ -387,7 +393,7 @@ export default {
           goodsId: item.goodsId,
           price: item.price,
           totalAmount: 0.00,
-          deskId:this.navDeskId,
+          deskId: this.navDeskId,
           totalAmountDue: 0.00,
           num: 0,
           goods: item,

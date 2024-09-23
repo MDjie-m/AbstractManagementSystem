@@ -6,7 +6,7 @@
 
 
     <sql id="selectGoodsVo">
-        select a.*, b.goods_category_name,c.total
+        select a.*, b.goods_category_name,ifnull(c.total,0) as total
         from t_goods a
                  left join t_goods_category b on a.category_id = b.goods_category_id
         left join t_stock c on c.goods_id=a.goods_id

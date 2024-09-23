@@ -130,10 +130,44 @@
 .desk-status-3 {
   background-color: #E88E37;
 }
-
+.goods-item{
+  display: flex;
+   min-width: 200px!important;
+   height: 130px;
+  flex-direction: row !important;
+  ::v-deep.el-card__body{
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    padding: 10px;
+  }
+  &-left{
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    .item-discount{
+      position: absolute;
+      right: 3px;
+      bottom: 3px;
+      font-size: 25px
+    }
+  }
+  &-right{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    &>div{
+      justify-content: start;
+      display: flex;
+      padding-left: 10px;
+    }
+  }
+}
 .some-item {
   display: flex;
-  width: 140px;
+  min-width: 140px;
   min-height: 130px;
 
   margin: 10px;
@@ -151,6 +185,10 @@
     &.big{
       height: 100px;
       width: 100px;
+    }
+    &.mid{
+      height: 80px;
+      width: 80px;
     }
   }
 
@@ -202,6 +240,18 @@
   &-name {
     font-weight: bold;
     font-size: 15px;
+    white-space: nowrap;
+    max-width: 150px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &>div{
+      white-space: nowrap;
+      max-width: 150px;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   &-num {

@@ -305,7 +305,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         copyFeesToNewOrder(oldOrderId, newOrder.getOrderId());
 
-        voidOrder(oldOrderId, oldOrder.getStoreId(), "系统自动废弃：已并台到订单:" + newOrder.getOrderNo());
+        voidOrder(oldOrderId, oldOrder.getStoreId(), "系统自动废弃：已并台到订单:" + newOrder.getOrderNo(), false);
 
 
         //更新状态
@@ -453,7 +453,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     private String createOrderNum(Long id) {
-
         return String.format("DESK%s", id);
     }
 
@@ -527,12 +526,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean voidOrder(Long orderId, Long storeId, String remark) {
+    public Boolean voidOrder(Long orderId, Long storeId, String remark, boolean needRevertGoods) {
         Order order = queryValidOrder(storeId, orderId);
         AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
                 OrderErrorMsg.ORDER_NOT_CHARGING);
 
         order = stopAllCalcTimes(orderId, false);
+        if (needRevertGoods) {
+            revertGoods(orderId, order.getStoreId());
+        }
 
         order.setStatus(OrderStatus.VOID.getValue());
         order.setRemark(remark);
@@ -540,6 +542,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderMapper.updateById(order);
 
         return Boolean.TRUE;
+    }
+
+    private void revertGoods(Long orderId, Long storeId) {
+        List<OrderGoods> goods = orderGoodsMapper.selectOrderGoodsList(OrderGoods.builder().orderId(orderId).build());
+        if (CollectionUtils.isEmpty(goods)) {
+            return;
+        }
+        goods.forEach(p -> {
+            stockService.updateStock(storeId, p.getGoodsId(), Long.valueOf(p.getNum()), StockChangeType.IN, "订单作废撤回", orderId);
+        });
     }
 
     private void clearDeskOrder(Long orderId) {

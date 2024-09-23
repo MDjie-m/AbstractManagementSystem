@@ -80,7 +80,7 @@ public interface IOrderService
 
     OrderCommandResVo stopOrder(Long orderId, Long storeId,boolean stopByTimer);
 
-    Boolean voidOrder(Long orderId, Long storeId,String remark);
+    Boolean voidOrder(Long orderId, Long storeId,String remark,boolean needRevertGoods);
 
     void calOrderFees(Order order);
 
