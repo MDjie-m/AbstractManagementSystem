@@ -350,10 +350,14 @@ export default {
     },
     /** 提交按钮 */
     submitForm() {
-
       console.log(this.form)
       this.$refs["form"].validate(valid => {
         if (valid) {
+          const isValidTime = this.validTime()
+          if (!isValidTime) {
+            this.$modal.msgError("开始时间不能大于结束时间")
+            return
+          }
           if (this.form.storeScheduleId != null) {
             updateSchedule(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
@@ -386,6 +390,27 @@ export default {
       this.download('billiard/schedule/export', {
         ...this.queryParams
       }, `schedule_${new Date().getTime()}.xlsx`)
+    },
+    /** 校验开始时间和结束时间是否合法 */
+    validTime() {
+      const day = this.form.day;
+      const startTime = this.form.startTime;
+      const endTime = this.form.endTime;
+      const newStartTime = this.computationalConcatenationDate(day, this.form.startTimeOffsetDay, startTime);
+      const newEndTime = this.computationalConcatenationDate(day, this.form.endTimeOffsetDay, endTime);
+      if (new Date(newStartTime) >= new Date(newEndTime)) {
+        return false
+      }
+      return true
+    },
+    computationalConcatenationDate(day, offsetDay, time) {
+      const date = new Date(day);
+      date.setDate(date.getDate() + Number(offsetDay));
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const dayStr = String(date.getDate()).padStart(2, '0');
+      const [hour, minute] = time.split(':');
+      return `${year}-${month}-${dayStr} ${hour}:${minute}`;
     }
   }
 };
