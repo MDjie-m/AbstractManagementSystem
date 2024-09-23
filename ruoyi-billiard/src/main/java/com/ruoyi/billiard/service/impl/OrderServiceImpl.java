@@ -41,6 +41,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private OrderMapper orderMapper;
 
     @Autowired
+    private IOrderRelationService orderRelationService;
+
+    @Autowired
     private IOrderDeskTimeService deskTimeService;
 
     @Autowired
@@ -299,21 +302,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         AssertUtil.isTrue(!Objects.equals(oldOrderId, newOrder.getOrderId()), "当前台桌与目标台桌已经并台，不用重复操作");
 
         AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), newOrder.getStatus()), "当前订单不是计费中,无法并台.");
-
+        // 添加关系并检查
+        orderRelationService.addRelation(newOrder.getOrderId(), oldOrderId);
 
         lightTimerMapper.delete(lightTimerMapper.query().eq(LightTimer::getDeskId, oldDeskId));
 
         copyFeesToNewOrder(oldOrderId, newOrder.getOrderId());
 
-        voidOrder(oldOrderId, oldOrder.getStoreId(), "系统自动废弃：已并台到订单:" + newOrder.getOrderNo(), false);
+        stopAllCalcTimes(oldOrderId, false, false);
 
-
-        //更新状态
-        StoreDesk oldDesk = storeDeskMapper.selectById(oldDeskId);
-        oldDesk.setStatus(DeskStatus.BUSY.getValue());
-        oldDesk.setCurrentOrderId(newOrder.getOrderId());
-        storeDeskMapper.updateById(oldDesk);
-
+        oldOrder = orderMapper.selectOrderByOrderId(oldOrderId);
+        oldOrder.setStatus(OrderStatus.VOID.getValue());
+        oldOrder.setRemark(StringUtils.format("并台自动废弃旧订单，已合并到订单:{}", newOrder.getOrderNo()));
+        SecurityUtils.fillUpdateUser(oldOrder);
+        orderMapper.updateById(oldOrder);
         return selectOrderByOrderId(newOrder.getOrderId());
     }
 
@@ -328,6 +330,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             time.setOrderId(newOrderId);
             time.setOrderDeskTimeId(IdUtils.singleNextId());
             SecurityUtils.fillUpdateUser(time, baseEntity);
+            storeDeskMapper.update(null, storeDeskMapper.updateWrapper().set(StoreDesk::getCurrentOrderId, newOrderId)
+                    .eq(StoreDesk::getDeskId, time.getDeskId()).eq(StoreDesk::getCurrentOrderId, oldOrderId));
             return time;
         }).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(deskTimes)) {
@@ -340,6 +344,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             time.setOrderId(newOrderId);
             time.setOrderTutorTimeId(IdUtils.singleNextId());
             SecurityUtils.fillUpdateUser(time, baseEntity);
+
+            storeTutorMapper.update(null, storeTutorMapper.updateWrapper().set(StoreTutor::getCurrentOrderId, newOrderId)
+                    .eq(StoreTutor::getStoreTutorId, time.getTutorId()).eq(StoreTutor::getCurrentOrderId, oldOrderId));
             return time;
         }).collect(Collectors.toList());
         if (CollectionUtils.isNotEmpty(tutorTimes)) {
@@ -473,7 +480,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         List<StoreDesk> desks = storeDeskMapper.queryBusyDeskByOrderId(orderId);
         desks.forEach(p -> p.setStatus(CalcTimeStatus.STOP.getValue()));
 
-        order = stopAllCalcTimes(orderId, false);
+        order = stopAllCalcTimes(orderId, true, false);
 
 
         //更新order
@@ -512,7 +519,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         List<StoreDesk> desks = storeDeskMapper.queryBusyDeskByOrderId(orderId);
 
         //关闭所有计费
-        order = stopAllCalcTimes(orderId, stopByTimer);
+        order = stopAllCalcTimes(orderId, true, stopByTimer);
 
         //更新订单状态
         order.setStatus(OrderStatus.WAIT_SETTLED.getValue());
@@ -531,7 +538,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
                 OrderErrorMsg.ORDER_NOT_CHARGING);
 
-        order = stopAllCalcTimes(orderId, false);
+        order = stopAllCalcTimes(orderId, true, false);
         if (needRevertGoods) {
             revertGoods(orderId, order.getStoreId());
         }
@@ -664,12 +671,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      *
      * @param orderId
      */
-    private Order stopAllCalcTimes(Long orderId, Boolean byTimer) {
+    private Order stopAllCalcTimes(Long orderId, boolean updateDeskOrTutor, Boolean byTimer) {
         final Date endTime = byTimer ? DateUtils.removeSeconds(new Date()) : DateUtils.fileSecondsAddOneMinutes(DateUtils.getNowDate());
         Order order = orderMapper.selectById(orderId);
         SecurityUtils.fillUpdateUser(order);
 
-        boolean isCharging = Objects.equals(order.getStatus(), OrderStatus.CHARGING.getValue());
+
         //更新台桌结束时间
         List<ITotalDueFee> feeItems = Lists.newArrayList();
 
@@ -677,13 +684,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .eq(OrderDeskTime::getOrderId, orderId));
 
         //更新台费
-        stopDeskTimes(deskTimes, endTime, order.getMemberId(), true, isCharging);
+        stopDeskTimes(deskTimes, endTime, order.getMemberId(), true, updateDeskOrTutor);
         //更新教练时间
 
         List<OrderTutorTime> tutorTimes =
                 orderTutorTimeMapper.selectList(orderTutorTimeMapper.query()
                         .eq(OrderTutorTime::getOrderId, orderId));
-        stopTutorTimes(tutorTimes, endTime, order.getMemberId(), true, isCharging);
+        stopTutorTimes(tutorTimes, endTime, order.getMemberId(), true, updateDeskOrTutor);
 
 
         List<OrderGoods> goods =
@@ -732,7 +739,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderMapper.updateAllWithId(order);
         if (Objects.equals(OrderStatus.WAIT_SETTLED.getValue(), order.getStatus())
                 || Objects.equals(OrderStatus.SUSPEND.getValue(), order.getStatus())) {
-            stopAllCalcTimes(orderId, false);
+            stopAllCalcTimes(orderId, false, false);
         }
         return Boolean.TRUE;
     }
@@ -841,7 +848,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderGoodsMapper.insert(p);
         }
         if (Objects.isNull(reqVo.getOrderId())) {
-            stopAllCalcTimes(order.getOrderId(), false);
+            stopAllCalcTimes(order.getOrderId(), true, false);
         }
 
         return order.getOrderId();

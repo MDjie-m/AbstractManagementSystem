@@ -8,10 +8,10 @@
 
 
         <el-card class="score-info-item">
-          {{currentDesk.score.scoreA|numPad}}
+          {{ currentDesk.score.scoreA|numPad }}
         </el-card>
-        <el-card class="score-info-item" >
-          {{currentDesk.score.scoreB|numPad}}
+        <el-card class="score-info-item">
+          {{ currentDesk.score.scoreB|numPad }}
         </el-card>
       </div>
       <div class="desk-base-info" v-if="currentDesk">
@@ -30,7 +30,7 @@
         <SvgItem svg-icon="clock" label="开台" @click.native="onStartDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Wait && !currentDesk.lastActiveOrder" :btnAble="true"/>
         <el-popconfirm v-if="currentDesk.status ===DeskStatus.Busy"
-          title="确认结束开台？" @confirm="onStopDeskClick">
+                       title="确认结束开台？" @confirm="onStopDeskClick">
           <SvgItem slot="reference" svg-icon="desk_end" label="结开"
                    :btnAble="true"/>
         </el-popconfirm>
@@ -136,22 +136,22 @@
 
       <div class="  section-container desk-box">
 
-          <template class="box-card" v-for="placeItem in dict.type.store_desk_place">
-            <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
-            <div class="desk-container">
-              <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
-                       v-for="desk in deskList.filter(p=>  p.placeType === parseInt(placeItem.value))">
-                <div class="item-status" :class="`item-status-${desk.status}`"></div>
-                <div>
-                  <div class="desk-item-name"> {{ desk.deskName }}</div>
-                  <div class="desk-item-num"> {{ desk.deskNum }}</div>
-                  <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
-                </div>
+        <template class="box-card" v-for="placeItem in dict.type.store_desk_place">
+          <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
+          <div class="desk-container">
+            <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
+                     v-for="desk in deskList.filter(p=>  p.placeType === parseInt(placeItem.value))">
+              <div class="item-status" :class="`item-status-${desk.status}`"></div>
+              <div>
+                <div class="desk-item-name"> {{ desk.deskName }}</div>
+                <div class="desk-item-num"> {{ desk.deskNum }}</div>
+                <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
+              </div>
 
 
-              </el-card>
-            </div>
-          </template>
+            </el-card>
+          </div>
+        </template>
       </div>
       <content-wrapper :visible.sync="openNewDialog" :title="title">
         <line-up v-if="openNewDialog"/>
@@ -202,7 +202,10 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer" v-loading="loading">
-        <el-button type="primary" @click="onMergeDeskSubmit()">并台</el-button>
+        <el-popconfirm @confirm=" onMergeDeskSubmit "
+                       title="请谨慎操作，确认好目标台桌，并台后将不可撤销？"  >
+          <el-button slot="reference" style="margin-right: 10px" type="primary">并台</el-button>
+        </el-popconfirm>
         <el-button type="primary" @click="onSwapDeskSubmit()">换台</el-button>
         <el-button @click="openSwapDesk=false">取 消</el-button>
       </div>

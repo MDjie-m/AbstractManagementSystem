@@ -1,6 +1,8 @@
 package com.ruoyi.billiard.service;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.billiard.domain.OrderRelation;
 
 /**
@@ -9,7 +11,7 @@ import com.ruoyi.billiard.domain.OrderRelation;
  * @author ruoyi
  * @date 2024-09-23
  */
-public interface IOrderRelationService 
+public interface IOrderRelationService extends IService<OrderRelation>
 {
     /**
      * 查询订单关系
@@ -58,4 +60,6 @@ public interface IOrderRelationService
      * @return 结果
      */
     public int deleteOrderRelationByOrderRelationId(Long orderRelationId);
+
+    void addRelation(Long newOrderId,Long oldOrderId);
 }

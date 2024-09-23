@@ -80,7 +80,7 @@ public class StoreScheduleServiceImpl implements IStoreScheduleService
     {
         SecurityUtils.fillCreateUser(storeSchedule);
         storeSchedule.setStoreScheduleId(IdUtils.singleNextId());
-        return storeScheduleMapper.insertStoreSchedule(storeSchedule);
+        return storeScheduleMapper.insert(storeSchedule);
     }
 
     /**
@@ -93,8 +93,7 @@ public class StoreScheduleServiceImpl implements IStoreScheduleService
     public int updateStoreSchedule(StoreSchedule storeSchedule)
     {
         SecurityUtils.fillUpdateUser(storeSchedule);
-
-        return storeScheduleMapper.updateStoreSchedule(storeSchedule);
+        return storeScheduleMapper.updateById(storeSchedule);
     }
 
     /**

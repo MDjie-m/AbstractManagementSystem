@@ -30,21 +30,7 @@ public interface StoreScheduleMapper extends MyBaseMapper<StoreSchedule>
      */
     public List<StoreSchedule> selectStoreScheduleList(StoreSchedule storeSchedule);
 
-    /**
-     * 新增门店班次
-     * 
-     * @param storeSchedule 门店班次
-     * @return 结果
-     */
-    public int insertStoreSchedule(StoreSchedule storeSchedule);
 
-    /**
-     * 修改门店班次
-     * 
-     * @param storeSchedule 门店班次
-     * @return 结果
-     */
-    public int updateStoreSchedule(StoreSchedule storeSchedule);
 
     /**
      * 删除门店班次

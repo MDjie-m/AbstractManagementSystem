@@ -90,8 +90,9 @@ public class StoreSchedule extends MyBaseEntity
     private String endTimeStr;
 
 
-
-
+    //'是否是默认系统班次'
+    @TableField("default_schedule")
+    private Boolean defaultSchedule;
 
 
 
