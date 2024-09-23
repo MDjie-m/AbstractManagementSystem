@@ -13,10 +13,12 @@
     <select id="selectStoreScheduleList" parameterType="StoreSchedule" resultType="StoreSchedule">
         <include refid="selectStoreScheduleVo"/>
         <where>
-            <if test="storeId != null and storeId != ''"> and store_id = #{storeId}</if>
-            <if test="params.beginDay != null and params.beginDay != '' and params.endDay != null and params.endDay != ''"> and day between #{params.beginDay} and #{params.endDay}</if>
+            <if test="storeId != null and storeId != ''">and store_id = #{storeId}</if>
+            <if test="params.beginDay != null and params.beginDay != '' and params.endDay != null and params.endDay != ''">
+                and day between #{params.beginDay} and #{params.endDay}
+            </if>
         </where>
-        ORDER BY day DESC
+        ORDER BY default_schedule Desc, day DESC
     </select>
 
     <select id="selectStoreScheduleByStoreScheduleId" parameterType="Long" resultType="StoreSchedule">
