@@ -7,8 +7,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <sql id="selectMemberVo">
-        select  a.*,b.store_name
-        from t_member a  left join  t_store b on a.store_id=b.store_id
+        select a.*, b.store_name, c.level_name
+        from t_member a
+                 left join t_store b on a.store_id = b.store_id
+                 left join t_member_level c on c.member_level_id = a.level_id
     </sql>
 
     <select id="selectMemberList" parameterType="Member" resultType="com.ruoyi.billiard.domain.Member">
