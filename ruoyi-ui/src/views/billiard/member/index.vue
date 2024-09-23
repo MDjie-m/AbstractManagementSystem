@@ -85,10 +85,7 @@
             </template>
           </el-table-column>
           <el-table-column label="门店" align="center" prop="storeName"/>
-          <el-table-column label="会员等级" align="center" prop="levelId">
-            <template slot-scope="scope">
-              <dict-tag :options="levelOptions" :value="scope.row.levelId"/>
-            </template>
+          <el-table-column label="会员等级" align="center" prop="levelName">
           </el-table-column>
           <el-table-column label="状态" align="center" prop="status">
             <template slot-scope="scope">
