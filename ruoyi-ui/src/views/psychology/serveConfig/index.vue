@@ -231,7 +231,7 @@
           <el-input-number :disabled="form.type === 1 || isEditing" v-model="form.num" step-strictly	:max="999999" />
         </el-form-item>
         <el-form-item label="单次服务时长" prop="time">
-          <el-input-number disabled style="margin-right: 10px" v-model="form.time" step-strictly :max="999999"/>分钟
+          <el-input-number style="margin-right: 10px" v-model="form.time" :min="10" :max="60" :step="5" step-strictly/>分钟
         </el-form-item>
         <el-form-item label="售价" prop="price">
           <el-input-number v-model="form.price" :precision="2" :max="999999"/>

@@ -12,11 +12,13 @@ import java.util.stream.Collectors;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.psychology.constant.ConsultConstant;
+import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.mapper.PsyConsultantScheduleMapper;
 import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.request.PsyWorkTimeRes;
+import com.renxin.psychology.service.IPsyConsultServeService;
 import com.renxin.psychology.service.IPsyConsultWorkService;
 import com.renxin.psychology.service.IPsyConsultantOrderService;
 import com.renxin.psychology.service.IPsyConsultantScheduleService;
@@ -45,6 +47,9 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
 
     @Resource
     private IPsyConsultWorkService psyConsultWorkService;
+
+    @Resource
+    private IPsyConsultServeService consultServeService;
 
     /**
      * 查询咨询师排班任务
@@ -127,6 +132,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     {
         return psyConsultantScheduleMapper.deletePsyConsultantScheduleById(id);
     }
+    
 
     /**
      * 批量预约服务 (个督/体验)
@@ -148,6 +154,11 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
             throw new ServiceException("该订单剩余[咨询次数]不足, 当前剩余" + surplusNum +"次");
         }
         
+        //查询该项服务详情
+        PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(order.getServerId());
+        //每次服务耗时
+        Integer timeCost = serverDetail.getTime();
+
         sortSchedule(consultantScheduleList);//按预约时间排序
         for (PsyConsultantSchedule schedule : consultantScheduleList) {
             PsyConsultWorkVO work = psyConsultWorkService.getOne(schedule.getWorkId());
@@ -169,7 +180,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
             schedule.setWeek(work.getWeek());
             schedule.setScheduleType(Integer.valueOf("2"+order.getServerType()));
             schedule.setTimeStart(addZero(time)+":00");
-            schedule.setTimeEnd(addZero(time)+":50");
+            schedule.setTimeEnd(addZero(time)+ ":" + timeCost);
             //schedule.setTimeNum(++usedNum);//第几次执行
             schedule.setTotalNum(order.getTotalNum());
             schedule.setStatus("0");//待办
