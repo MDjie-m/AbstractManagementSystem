@@ -185,7 +185,7 @@
         <div class="buy-container" v-show="!isGoodsPanel">
           <el-card class="some-item" :class="{'selected':item.selected}"
                    v-for="item in  tutorList">
-            <div class="item-status" :class="`item-status-${item.status}`"></div>
+            <div class="item-status" :class="`item-status-${item.workStatus}`"></div>
             <image-preview class="item-img big" :src="item.userImg"/>
             <div>
               <div class="some-item-name"> {{ item.realName }}</div>

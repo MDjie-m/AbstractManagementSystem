@@ -203,7 +203,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer" v-loading="loading">
         <el-popconfirm @confirm=" onMergeDeskSubmit "
-                       title="请谨慎操作，确认好目标台桌，并台后将不可撤销？"  >
+                       title="请谨慎操作，确认好目标台桌，并台后将不可撤销？">
           <el-button slot="reference" style="margin-right: 10px" type="primary">并台</el-button>
         </el-popconfirm>
         <el-button type="primary" @click="onSwapDeskSubmit()">换台</el-button>
@@ -452,7 +452,7 @@ export default {
     },
     queryDeskById(deskId) {
       return getDeskBaseInfo(deskId).then(res => {
-        this.currentDesk = res.data;
+        this.currentDesk = this.fillTitle(res.data);
         this.deskList.forEach(p => {
           if (p.deskId === deskId) {
             p.status = this.currentDesk.status;
@@ -507,7 +507,8 @@ export default {
       let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) === item.deskType)?.label ?? '';
       let place = this.dict.type.store_desk_place.find(p => parseInt(p.value) === item.placeType)?.label ?? '';
       item.shortTitle = `${item.deskName}(${item.deskNum})`
-      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`
+      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`;
+      return item;
     },
     onOpenSwapDeskClick() {
       this.getList();
@@ -520,7 +521,7 @@ export default {
       this.loading = false
     },
     onResumeDeskClick() {
-      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
+      let deskTitle = this.currentDesk.title;
       MessageBox.confirm(`${deskTitle}恢复计费?`, '确认', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
@@ -541,7 +542,6 @@ export default {
       if (this.currentDesk?.lastActiveOrder.status !== OrderStatus.Charging) {
         return this.$message.warning("订单状态不允许此操作.")
       }
-      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
       this.$prompt('请输入订单作废备注', "确认", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -567,7 +567,7 @@ export default {
       if (![OrderStatus.Stop, OrderStatus.Charging].includes(this.currentDesk?.lastActiveOrder.status)) {
         return this.$message.warning("订单状态不允许此操作.")
       }
-      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
+      let deskTitle = this.currentDesk.title;
 
       MessageBox.confirm(`${deskTitle}:是否挂起订单?`, '确认', {
         confirmButtonText: '确认',
@@ -606,9 +606,10 @@ export default {
       if (this.currentDesk?.lastActiveOrder.status !== OrderStatus.Charging) {
         return this.$message.warning("订单状态不允许此操作.")
       }
-      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
 
-      MessageBox.confirm(`${deskTitle}:确认终止订单?`, '确认', {
+      let orderId = this.currentDesk?.lastActiveOrder.orderId;
+
+      MessageBox.confirm(`${this.currentDesk.title}:确认终止订单?`, '确认', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
         type: 'warning'
@@ -620,15 +621,29 @@ export default {
             this.onSwitchLight(p.deskNum, false)
           })
 
-          this.navToOrder(this.currentDesk?.lastActiveOrder.orderId);
+          this.navToOrder(orderId);
         }).finally(() => this.orderLoading = false)
       })
     },
     onNavToSettleOrderClick() {
-
+      let orderId = this.currentDesk?.lastActiveOrder.orderId;
+      MessageBox.confirm(`${this.currentDesk.title}:确认终止订单并结算?`, '确认', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.orderLoading = true;
+        stopOrder(this.currentDesk?.lastActiveOrder.orderId).then(res => {
+          this.queryDeskById(this.currentDesk.deskId);
+          res.data?.busyDesks?.forEach(p => {
+            this.onSwitchLight(p.deskNum, false)
+          })
+          this.routeToOrder(orderId)
+        }).finally(() => this.orderLoading = false)
+      })
     },
     onPauseDeskClick() {
-      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
+      let deskTitle = this.currentDesk.title;
       MessageBox.confirm(`${deskTitle}暂停后将停止计费,确认暂停?`, '确认', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
@@ -658,7 +673,7 @@ export default {
         })
     },
     onStartDeskClick() {
-      let deskTitle = `${this.currentDesk.deskName}(${this.currentDesk.deskNum})`;
+      let deskTitle = this.currentDesk.title;
       MessageBox.confirm(`${deskTitle}确认开台?`, '确认', {
         confirmButtonText: '确认',
         cancelButtonText: '取消',
