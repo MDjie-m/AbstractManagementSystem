@@ -176,7 +176,7 @@ public class Order extends MyBaseEntity {
      * 会员订单详情
      */
     @TableField(exist = false)
-    private List<OrderRecharge> orderRecharges = null;
+    private List<OrderRecharge> orderRecharges =  Lists.newArrayList();
 
     /**
      * 商品订单详情

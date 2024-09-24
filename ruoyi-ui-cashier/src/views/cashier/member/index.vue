@@ -17,7 +17,7 @@
             <dict-tag :options="dict.type.sys_user_sex" :value="current.sex"/>
           </el-form-item>
           <el-form-item label="当前余额:">
-           {{ current.showAmount ? current.currentAmount : '***' }}
+            {{ current.showAmount ? current.currentAmount : '***' }}
           </el-form-item>
           <el-form-item label="充值总额:">
             {{ current.showAmount ? current.totalAmount : '***' }}
@@ -26,10 +26,10 @@
         </el-form>
         <div style="display: flex ;justify-content: center">
           <el-button-group>
-          <el-button type="danger" size="mini">充值</el-button>
-          <el-button type="primary" @click="onPwdClick" size="mini">修改密码</el-button>
-          <el-button type="primary"  size="mini" @click="current.showAmount=!current.showAmount" >查看余额</el-button>
-          <el-button type="primary" size="mini">消费记录</el-button>
+            <el-button type="danger" @click="onPwdClick(MemberDialogTitle.Recharge)" size="mini">充值</el-button>
+            <el-button type="primary" @click="onPwdClick(MemberDialogTitle.ChangePwd)" size="mini">修改密码</el-button>
+            <el-button type="primary" size="mini" @click="current.showAmount=!current.showAmount">查看余额</el-button>
+            <el-button type="primary" @click="onPwdClick(MemberDialogTitle.Order)" size="mini">消费记录</el-button>
           </el-button-group>
         </div>
 
@@ -79,7 +79,10 @@
       </div>
 
       <content-wrapper :visible.sync="openNewDialog" :title="title">
-        <change-pwd v-if="title==='修改密码' &&current" :memberId="current.memberId"></change-pwd>
+        <change-pwd v-if="title===MemberDialogTitle.ChangePwd &&current" :memberId="current.memberId"
+                    @ok="openNewDialog=false"></change-pwd>
+        <recharge v-if="title===MemberDialogTitle.Recharge &&current" :memberId="current.memberId"
+                  @ok="onRechargeOk"></recharge>
       </content-wrapper>
     </div>
   </div>
@@ -87,18 +90,26 @@
 <script>
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
-import {listMembers} from "@/api/cashier/member";
+import {listMemberDetail, listMembers} from "@/api/cashier/member";
 import ContentWrapper from "@/views/cashier/desk/components/contentWrapper.vue";
 
 import ChangePwd from "@/views/cashier/member/components/changePwd.vue";
+import {MemberDialogTitle} from "@/views/cashier/components/constant";
+import Recharge from "@/views/cashier/member/components/recharge.vue";
+
 export default {
-  components: {  ChangePwd,ContentWrapper, LeftContainer, SvgItem},
+  computed: {
+    MemberDialogTitle() {
+      return MemberDialogTitle
+    }
+  },
+  components: {Recharge, ChangePwd, ContentWrapper, LeftContainer, SvgItem},
   dicts: ['sys_user_sex'],
   data() {
 
     return {
-      openNewDialog:false,
-      title:'修改密码',
+      openNewDialog: false,
+      title: '修改密码',
       loading: false,
       memberList: [],
       current: null,
@@ -115,9 +126,15 @@ export default {
     this.getList()
   },
   methods: {
-    onPwdClick(){
-      this.title="修改密码"
-      this.openNewDialog=true
+    onRechargeOk() {
+      this.openNewDialog = false;
+      if (this.current) {
+        this.queryMember(this.current?.memberId,true);
+      }
+    },
+    onPwdClick(val) {
+      this.title = val
+      this.openNewDialog = true
     },
     onRowClick(item) {
       this.current = item;
@@ -141,7 +158,15 @@ export default {
       }).finally(() => this.loading = false)
     },
     onRefreshClick() {
+      if (this.current) {
+        this.queryMember(this.current?.memberId,this.current?.showAmount);
+      }
 
+    },
+    queryMember(id,showAmount) {
+      listMemberDetail(id).then(res => {
+        this.current = {showAmount: showAmount, ...res.data}
+      })
     }
   }
 

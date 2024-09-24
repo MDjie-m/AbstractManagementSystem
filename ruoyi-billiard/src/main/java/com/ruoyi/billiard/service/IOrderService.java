@@ -3,10 +3,13 @@ package com.ruoyi.billiard.service;
 import java.math.BigDecimal;
 import java.util.List;
 import com.ruoyi.billiard.domain.Order;
+import com.ruoyi.billiard.domain.OrderMemberDeduct;
+import com.ruoyi.billiard.domain.OrderRecharge;
 import com.ruoyi.billiard.domain.vo.FinishOrderReqVo;
 import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
 import com.ruoyi.billiard.domain.vo.OrderPrePayReqVo;
 import com.ruoyi.billiard.domain.vo.StopDeskResVo;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 订单Service接口
@@ -100,4 +103,13 @@ public interface IOrderService
     Long orderShopping(Order reqVo);
 
     StopDeskResVo stopDesk(Long orderId, Long storeId, Long deskId);
+
+    @Transactional(rollbackFor = Exception.class)
+    void memberRecharge(OrderRecharge recharge);
+
+    List<OrderRecharge> selectRechargeOrderList(Order order);
+
+    List<OrderMemberDeduct> selectDeductOrderList(Order order);
+
+    OrderRecharge getPreRecharge(Long storeId, Long memberId, BigDecimal recharge);
 }

@@ -9,6 +9,24 @@
       <template v-if="currentOrder">
         <div class="order-detail-wrapper">
           <div class="order-detail-box">
+            <template v-if="currentOrder.orderRecharges">
+              <div class="time-box-wrapper" v-for="(item,idx) in currentOrder.orderRecharges">
+                <div class="num-box">
+                  {{ item.idx }}
+                </div>
+                <div class="time-box">
+                  <div class="time-box-row">
+                    充值金额:{{item.rechargeAmount}}
+                  </div>
+                  <div class="time-box-row">
+                    折扣金额:{{item.totalDiscountAmount}}
+                  </div>
+                  <div class="time-box-row">
+                    实际支付金额:{{item.totalAmount}}
+                  </div>
+                </div>
+              </div>
+            </template>
             <template v-if="currentOrder.orderDeskTimes">
               <div class="time-box-wrapper" v-for="(item,idx) in currentOrder.orderDeskTimes">
                 <div class="num-box">
@@ -401,6 +419,10 @@ export default {
         let item = res.data;
         if (item) {
           let idx = 0;
+          item.orderRecharges?.forEach(p => {
+            idx++;
+            p.idx = idx;
+          })
           item.orderDeskTimes?.forEach(p => {
             idx++;
             p.idx = idx;
@@ -414,6 +436,8 @@ export default {
             idx++;
             p.idx = idx;
           })
+
+
         }
         this.currentOrder = item;
       }).catch(e => {

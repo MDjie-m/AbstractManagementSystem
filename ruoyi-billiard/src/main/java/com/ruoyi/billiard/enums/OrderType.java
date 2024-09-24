@@ -8,16 +8,16 @@ import java.util.*;
 @Getter
 @AllArgsConstructor
 public enum OrderType implements IEnum {
-    TABLE_CHARGE(1, "球桌费用"),
-    MEMBER_RECHARGE(2, "会员充值"),
-    COMMODITY_PURCHASE(3, "商品购买"),
-    SPARRING_FEE(4, "陪练费用"),
-    TEACHING_COST(5, "教学费用"),
+    TABLE_CHARGE(1, "球桌费用","D"),
+    MEMBER_RECHARGE(2, "会员充值","R"),
+    COMMODITY_PURCHASE(3, "商品购买","B"),
+    SPARRING_FEE(4, "陪练费用","TA"),
+    TEACHING_COST(5, "教学费用","TB"),
 
     ;
     private final Integer value;
     private final String desc;
-
+    private final String prefix;
     public static List<Map<String, Object>> getValueMap() {
         List<Map<String, Object>> valueList = new ArrayList<>();
         for (OrderType item : values()) {

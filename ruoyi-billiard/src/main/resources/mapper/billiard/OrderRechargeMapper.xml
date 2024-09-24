@@ -4,27 +4,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.billiard.mapper.OrderRechargeMapper">
     
-    <resultMap type="OrderRecharge" id="OrderRechargeResult">
-        <result property="orderRechargeId"    column="order_recharge_id"    />
-        <result property="orderId"    column="order_id"    />
-        <result property="memberId"    column="member_id"    />
-        <result property="rechargeAmount"    column="recharge_amount"    />
-        <result property="giveAmount"    column="give_amount"    />
-        <result property="totalAmount"    column="total_amount"    />
-        <result property="remark"    column="remark"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="createById"    column="create_by_id"    />
-        <result property="updateById"    column="update_by_id"    />
-    </resultMap>
 
     <sql id="selectOrderRechargeVo">
-        select order_recharge_id, order_id, member_id, recharge_amount, give_amount, total_amount, remark, create_by, create_time, update_by, update_time, create_by_id, update_by_id from t_order_recharge
+        select  *
+        from t_order_recharge
     </sql>
 
-    <select id="selectOrderRechargeList" parameterType="OrderRecharge" resultMap="OrderRechargeResult">
+    <select id="selectOrderRechargeList" parameterType="OrderRecharge" resultType="OrderRecharge">
         <include refid="selectOrderRechargeVo"/>
         <where>  
             <if test="orderId != null "> and order_id = #{orderId}</if>
@@ -37,63 +23,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectOrderRechargeByOrderRechargeId" parameterType="Long" resultMap="OrderRechargeResult">
+    <select id="selectOrderRechargeByOrderRechargeId" parameterType="Long" resultType="OrderRecharge">
         <include refid="selectOrderRechargeVo"/>
         where order_recharge_id = #{orderRechargeId}
     </select>
 
-    <insert id="insertOrderRecharge" parameterType="OrderRecharge">
-        insert into t_order_recharge
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="orderRechargeId != null">order_recharge_id,</if>
-            <if test="orderId != null">order_id,</if>
-            <if test="memberId != null">member_id,</if>
-            <if test="rechargeAmount != null">recharge_amount,</if>
-            <if test="giveAmount != null">give_amount,</if>
-            <if test="totalAmount != null">total_amount,</if>
-            <if test="remark != null">remark,</if>
-            <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="createById != null">create_by_id,</if>
-            <if test="updateById != null">update_by_id,</if>
-         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="orderRechargeId != null">#{orderRechargeId},</if>
-            <if test="orderId != null">#{orderId},</if>
-            <if test="memberId != null">#{memberId},</if>
-            <if test="rechargeAmount != null">#{rechargeAmount},</if>
-            <if test="giveAmount != null">#{giveAmount},</if>
-            <if test="totalAmount != null">#{totalAmount},</if>
-            <if test="remark != null">#{remark},</if>
-            <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="createById != null">#{createById},</if>
-            <if test="updateById != null">#{updateById},</if>
-         </trim>
-    </insert>
-
-    <update id="updateOrderRecharge" parameterType="OrderRecharge">
-        update t_order_recharge
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="orderId != null">order_id = #{orderId},</if>
-            <if test="memberId != null">member_id = #{memberId},</if>
-            <if test="rechargeAmount != null">recharge_amount = #{rechargeAmount},</if>
-            <if test="giveAmount != null">give_amount = #{giveAmount},</if>
-            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
-            <if test="remark != null">remark = #{remark},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="createById != null">create_by_id = #{createById},</if>
-            <if test="updateById != null">update_by_id = #{updateById},</if>
-        </trim>
-        where order_recharge_id = #{orderRechargeId}
-    </update>
 
     <delete id="deleteOrderRechargeByOrderRechargeId" parameterType="Long">
         delete from t_order_recharge where order_recharge_id = #{orderRechargeId}

@@ -41,6 +41,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private OrderMapper orderMapper;
 
     @Autowired
+    private OrderRechargeMapper orderRechargeMapper;
+
+    @Autowired
     private IOrderRelationService orderRelationService;
 
     @Autowired
@@ -202,7 +205,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         StoreDesk desk = storeDeskMapper.selectById(deskId);
         Order order = new Order();
         order.setOrderId(IdUtils.singleNextId());
-        order.setOrderNo(createOrderNum(order.getOrderId()));
+        order.setOrderNo(createOrderNum(OrderType.TABLE_CHARGE, order.getOrderId()));
         order.setOrderType(OrderType.TABLE_CHARGE);
         order.setStatus(OrderStatus.CHARGING.getValue());
 
@@ -459,8 +462,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderTutorTimeMapper.insert(newItem);
     }
 
-    private String createOrderNum(Long id) {
-        return String.format("DESK%s", id);
+    private String createOrderNum(OrderType type, Long id) {
+        return String.format("%s%s", type.getPrefix(), id);
     }
 
     private Order queryValidOrder(Long storeId, Long orderId) {
@@ -842,7 +845,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order = new Order();
             order.setOrderId(IdUtils.singleNextId());
             order.setStoreId(reqVo.getStoreId());
-            order.setOrderNo(createOrderNum(order.getOrderId()));
+            order.setOrderNo(createOrderNum(OrderType.COMMODITY_PURCHASE, order.getOrderId()));
             order.setTotalAmount(BigDecimal.ZERO);
             order.setOrderType(OrderType.COMMODITY_PURCHASE);
             order.setStatus(OrderStatus.WAIT_SETTLED.getValue());
@@ -904,5 +907,55 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         return StopDeskResVo.builder().orderId(orderId)
                 .hasOtherDesk(true).build();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void memberRecharge(OrderRecharge recharge) {
+        Order order = new Order();
+        BeanUtils.copyProperties(recharge, order);
+        order.setStatus(OrderStatus.SETTLED.getValue());
+        order.setOrderId(IdUtils.singleNextId());
+        order.setOrderNo(createOrderNum(OrderType.MEMBER_RECHARGE, order.getOrderId()));
+        order.setOrderType(OrderType.MEMBER_RECHARGE);
+        order.setStoreId(recharge.getStoreId());
+        order.setTotalAmountDue(recharge.getRechargeAmount());
+        SecurityUtils.fillCreateUser(order);
+
+        recharge.setOrderId(order.getOrderId());
+        SecurityUtils.fillCreateUser(recharge, order);
+
+        orderMapper.insert(order);
+        orderRechargeMapper.insert(recharge);
+
+        memberService.recharge(recharge);
+
+    }
+
+    @Override
+    public List<OrderRecharge> selectRechargeOrderList(Order order) {
+
+        return orderMapper.selectMemberRechargeOrderList(orderMapper.normalQuery()
+                .eq("a.memberId", order.getMemberId())
+                .eq("b.storeId", order.getStoreId())
+                .orderByDesc("a.order_recharge_id"));
+    }
+
+    @Override
+    public List<OrderMemberDeduct> selectDeductOrderList(Order order) {
+        return orderMapper.selectDeductOrderList(orderMapper.normalQuery()
+                .eq("a.memberId", order.getMemberId())
+                .eq("b.storeId", order.getStoreId())
+                .orderByDesc("a.order_member_deduct_id"));
+    }
+
+    @Override
+    public OrderRecharge getPreRecharge(Long storeId, Long memberId, BigDecimal recharge) {
+        OrderRecharge res = new OrderRecharge();
+        BigDecimal discountValue = memberService.getMemberDisCountValue(OrderType.MEMBER_RECHARGE, memberId);
+        res.setStoreId(storeId);
+        res.setRechargeAmount(recharge);
+        res.calcAndSetFee(discountValue);
+        return res;
     }
 }

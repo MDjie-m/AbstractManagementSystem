@@ -1,9 +1,16 @@
 package com.ruoyi.billiard.mapper;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.ruoyi.billiard.domain.Order;
+import com.ruoyi.billiard.domain.OrderMemberDeduct;
+import com.ruoyi.billiard.domain.OrderRecharge;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 订单Mapper接口
@@ -48,5 +55,9 @@ public interface OrderMapper extends MyBaseMapper<Order>
     public int deleteOrderByOrderIds(Long[] orderIds);
 
     Order selectCurrentRelationOrder(Long deskId);
+
+    List<OrderRecharge> selectMemberRechargeOrderList(@Param(Constants.WRAPPER) QueryWrapper<Order> orderLambdaQueryWrapper);
+
+    List<OrderMemberDeduct> selectDeductOrderList(@Param(Constants.WRAPPER) QueryWrapper<Order> orderQueryWrapper);
 
 }

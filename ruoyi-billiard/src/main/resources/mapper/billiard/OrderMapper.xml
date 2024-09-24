@@ -36,6 +36,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where b.desk_id=#{deskId}
 
     </select>
+    <select id="selectMemberRechargeOrderList" resultType="OrderRecharge">
+
+        select a.*,b.order_no
+        from   t_order_recharge a join  t_order b   on a.order_id=b.order_id;
+        ${ew.customSqlSegment}
+    </select>
+    <select id="selectDeductOrderList" resultType="com.ruoyi.billiard.domain.OrderMemberDeduct">
+        select a.*,b.order_no
+        from   t_order_recharge a join  t_order b   on a.order_id=b.order_id;
+        ${ew.customSqlSegment}
+    </select>
 
 
     <delete id="deleteOrderByOrderId" parameterType="Long">

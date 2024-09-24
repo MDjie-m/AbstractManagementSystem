@@ -37,5 +37,11 @@ export const ChooseType = Object.freeze({
 export const OrderPayType = Object.freeze({
   SCAN_QRCODE: 0,
   CASH: 1,
-  MEMBER:2,
+  MEMBER: 2,
+})
+
+export const MemberDialogTitle = Object.freeze({
+  ChangePwd: '修改密码',
+  Recharge: "会员充值",
+  Order: "消费记录"
 })

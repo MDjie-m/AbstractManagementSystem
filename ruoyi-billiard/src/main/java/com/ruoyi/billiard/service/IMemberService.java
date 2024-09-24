@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.billiard.domain.Member;
+import com.ruoyi.billiard.domain.OrderRecharge;
 import com.ruoyi.billiard.domain.vo.MemberPwdReqVo;
 import com.ruoyi.billiard.enums.OrderType;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 门店会员Service接口
@@ -77,6 +79,8 @@ public interface IMemberService {
     Boolean checkPwd(Long memberId, String password);
 
     void deductAmount(Long memberId, Long orderId, BigDecimal totalAmount);
+
+    void recharge(OrderRecharge recharge);
 
     Boolean updatePayPwd(MemberPwdReqVo reqVo);
 

@@ -12,6 +12,7 @@ import com.ruoyi.billiard.mapper.OrderMemberDeductMapper;
 import com.ruoyi.billiard.service.IOrderRechargeService;
 import com.ruoyi.billiard.service.IOrderService;
 import com.ruoyi.billiard.service.IStoreService;
+import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.utils.ArrayUtil;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -22,8 +23,6 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.MemberMapper;
 import com.ruoyi.billiard.service.IMemberService;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.swing.text.html.Option;
 
 /**
  * 门店会员Service业务层处理
@@ -214,11 +213,34 @@ public class MemberServiceImpl implements IMemberService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void recharge(OrderRecharge recharge) {
+        Member member = memberMapper.selectById(recharge.getMemberId());
+        AssertUtil.isTrue(SecurityUtils.matchesPassword(recharge.getPwd(), member.getPayPassword()), "密码不正确");
+        BigDecimal nowMoney = Optional.ofNullable(member.getCurrentAmount()).orElse(BigDecimal.ZERO);
+        BigDecimal rechargeMoney = Optional.ofNullable(recharge.getRechargeAmount()).orElse(BigDecimal.ZERO);
+        AssertUtil.isTrue(rechargeMoney.compareTo(BigDecimal.ZERO) > 0,
+                StringUtils.format("充值金额不能为0"));
+        UpdateWrapper<Member> updateWrapper = memberMapper.edit();
+
+        updateWrapper.lambda().eq(Member::getMemberId, member.getMemberId())
+                .eq(Member::getCurrentAmount, nowMoney)
+                .set(Member::getUpdateById, SecurityUtils.getUserId())
+                .set(BaseEntity::getUpdateTime, new Date())
+                .set(BaseEntity::getUpdateBy, SecurityUtils.getUsername());
+
+        updateWrapper
+                .setSql(StrUtil.format("current_amount = current_amount + {}", rechargeMoney))
+                .setSql(StrUtil.format("total_amount = total_amount + {}", rechargeMoney));
+        AssertUtil.isTrue(memberMapper.update(null, updateWrapper) > 0, "充值失败请重试");
+    }
+
+    @Override
     public Boolean updatePayPwd(MemberPwdReqVo reqVo) {
         Member member = memberMapper.selectById(reqVo.getMemberId());
         AssertUtil.notNullOrEmpty(member, "会员不存在");
         AssertUtil.equal(member.getStoreId(), reqVo.getStoreId(), "会员不合法");
-        AssertUtil.isTrue(SecurityUtils.matchesPassword(reqVo.getOldPwd(),member.getPayPassword()),"旧密码不正确");
+        AssertUtil.isTrue(SecurityUtils.matchesPassword(reqVo.getOldPwd(), member.getPayPassword()), "旧密码不正确");
         member = new Member();
         member.setPayPassword(SecurityUtils.encryptPassword(reqVo.getPwd()));
         member.setMemberId(reqVo.getMemberId());

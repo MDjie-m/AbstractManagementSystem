@@ -26,6 +26,7 @@ import {updatePayPwd} from "@/api/cashier/member";
 
 export default {
   props: ['memberId'],
+  emits:["ok"],
   data() {
     const equalToPassword = (rule, value, callback) => {
       if (this.pwdForm.pwd !== value) {
@@ -70,6 +71,7 @@ export default {
             memberId: this.memberId, ...this.pwdForm
           }).then(response => {
             this.$modal.msgSuccess("修改成功");
+            this.$emit("ok")
           });
         }
       });
