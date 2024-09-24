@@ -41,7 +41,7 @@
                  v-if="currentDesk.status ===DeskStatus.PAUSE" :btnAble="true"/>
         <SvgItem svg-icon="desk_change" label="换台/并台" @click.native="onOpenSwapDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
-        <SvgItem svg-icon="timing" label="定时" @click.native="onTempLight( 1)" v-if="currentDesk.currentOrderId"
+        <SvgItem svg-icon="timing" label="定时" :badge="currentDesk.lastCalcTime" @click.native="onTempLight( 1)" v-if="currentDesk.currentOrderId"
                  :btnAble="true"/>
         <SvgItem svg-icon="pre_pay" label="预付"
                  :badge="currentDesk.lastActiveOrder &&  parseFloat( currentDesk.lastActiveOrder.prePayAmount)?currentDesk.lastActiveOrder.prePayAmount:0 "
@@ -50,7 +50,7 @@
                  @click.native="onPrePayClick  "/>
         <SvgItem svg-icon="light_on" label="开灯" :btnAble="true"
                  @click.native="onSwitchLight(currentDesk.deskNum,true)"/>
-        <SvgItem svg-icon="light_temp" label="临时灯" :btnAble="true"
+        <SvgItem svg-icon="light_temp" label="临时灯" :btnAble="true"  :badge="currentDesk.lastTempTime"
                  @click.native="onTempLight( 0)"/>
         <SvgItem svg-icon="close_light" label="关灯" :btnAble="true"
                  @click.native="onSwitchLight(currentDesk.deskNum,false)"/>
@@ -385,6 +385,7 @@ export default {
           } else {
             this.$modal.msgSuccess(`已开始计费，订单将会在${value}分钟后停止计费。`);
           }
+          this.queryDeskById(this.currentDesk?.deskId)
 
         });
       }).catch(() => {
@@ -392,6 +393,10 @@ export default {
 
     },
     onPrePayClick() {
+      if( this.currentDesk.lastActiveOrder.prePayAmount>=9999){
+        return this.$modal.msgWarning("预付金额不能超过9999")
+      }
+      debugger
       this.$prompt("请输入预付费金额", "预付费确认", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

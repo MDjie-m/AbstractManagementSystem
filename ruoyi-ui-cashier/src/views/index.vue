@@ -38,6 +38,7 @@
           <div slot="header" class="clearfix">
             <span>趋势</span>
           </div>
+          <el-button @click="onSendScore">test</el-button>
 
         </el-card>
       </el-col>
@@ -46,6 +47,8 @@
 </template>
 
 <script>
+import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
+
 export default {
   name: "Index",
   data() {
@@ -84,6 +87,9 @@ export default {
     };
   },
   methods: {
+    onSendScore(){
+      callPCMethod(DeviceMethodNames.Score,{deskNum:2,btnType:0})
+    },
     goTarget(href) {
       window.open(href, "_blank");
     }

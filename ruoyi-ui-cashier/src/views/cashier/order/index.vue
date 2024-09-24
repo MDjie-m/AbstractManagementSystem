@@ -123,15 +123,15 @@
               <div> 抹零后应付:</div>
               <div> {{ currentOrder.totalAmount }}</div>
             </div>
-            <div class="amount-item">
+            <div class="amount-item" :class="{'tip-text':parseFloat(currentOrder.refundAmount)}">
               <div> 退款金额:</div>
-              <div> {{ currentOrder.refundAmount }}</div>
+              <div class="tip-red"> {{ currentOrder.refundAmount }}</div>
             </div>
 
             <div class="amount-item">
               <div class="tip-text">当前应付:</div>
-              <div class="tip-text" v-if="parseFloat(currentOrder.refundAmount )"> 0.00</div>
-              <div class="tip-text" v-else> {{
+              <div class="tip-red" v-if="parseFloat(currentOrder.refundAmount )"> 0.00</div>
+              <div class="tip-red" v-else> {{
                   parseInt(currentOrder.repayAmount) ? currentOrder.repayAmount : currentOrder.totalAmount
                 }}
               </div>
@@ -481,16 +481,21 @@ export default {
       background-color: rgba(204, 204, 204, 0.39);
       padding: 10px;
     }
-
+    .tip-text {
+      font-size: 20px !important;
+      font-weight: bold;
+    }
+    .tip-red {
+      font-size: 20px !important;
+      font-weight: bold;
+      color: #C03639;
+    }
     .amount-item {
       display: flex;
       align-items: center;
       padding: 3px 10px;
 
-      .tip-text {
-        font-size: 20px !important;
-        font-weight: bold;
-      }
+
 
       div:first-child {
         margin-right: 10px;

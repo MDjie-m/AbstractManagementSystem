@@ -5,9 +5,9 @@ window.PcCallMethods = PcCallMethods;
 export const DeviceMethodNames = {
   LightSwitch: 'light.switch',
   LightStateQuery: 'light.state.query.all',
-  Speech: "speech"
+  Speech: "speech",
+  Score:"score"
 }
-
 export function registerMethod(methodName, func) {
   if (PcCallMethods[methodName]) {
     Vue.prototype.$modal.msgWarning("方法名重复，无法注册");
