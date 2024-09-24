@@ -113,7 +113,7 @@
         <el-col :span="8">
           <el-form-item label="列表图片" prop="img">
 <!--            <image-upload v-model="form.img" :extraData="extraData"/>-->
-            <my-cropper v-model="form.img" sizeTip="宽172px 高264px" :extraData="extraData" :width="172" :height="264"/>
+            <my-cropper v-model="form.img" sizeTip="宽140px 高174px" :extraData="extraData" :width="140" :height="174"/>
           </el-form-item>
         </el-col>
         <el-col :span="8">

@@ -44,5 +44,8 @@ public class PsyWorkReq implements Serializable
 
     /** 咨询师 */
     private List<Long> ids;
+    
+    //来源类型 1来访者   2咨询师
+    private Integer sourceType;
 
 }

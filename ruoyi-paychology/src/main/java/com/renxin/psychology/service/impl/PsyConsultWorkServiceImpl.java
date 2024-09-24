@@ -472,10 +472,11 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
     }
 
     /**
-     * 咨询师指定任务请假
+     * 指定预约任务请假
      * @param req
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void scheduleLeave(PsyWorkReq req){
         Integer scheduleType = req.getScheduleType();
         Long scheduleId = req.getScheduleId();
@@ -523,12 +524,26 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                 }else{
                     throw new ServiceException("当前用户与该排程任务不相关.");
                 }
+                
                 //子订单/排程请假
                 orderItemService.update(item);
+                
+                //主订单信息修改
                 PsyConsultOrderVO order = consultOrderService.getOne(item.getOrderId());
+                order.setNum(order.getNum() + 1);
+                order.setBuyNum(order.getBuyNum() - 1);
                 if (ConsultConstant.CONSULT_ORDER_STATUE_PENDING.equals(order.getStatus())){//已完成
-                    order.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);
-                    consultOrderService.update(order);
+                    order.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);//进行中
+                }
+                consultOrderService.update(order);
+                
+                //若为来访者请假, 则将咨询师在该时段置为空闲
+                if (item.getUserId().equals(loginUserId)){
+                    PsyConsultWorkVO workVO = new PsyConsultWorkVO();
+                    workVO.setConsultId(item.getConsultId());
+                    workVO.setDay(item.getDay());
+                    workVO.setTimes(item.getTime()+"");
+                    idleTime(workVO);
                 }
                 break;
                 
@@ -536,6 +551,49 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
             default:
                 throw new ServiceException("该类型的预约不存在或不可请假");
         }
+    }
+    
+    //将指定咨询师的指定时段置为空闲
+    private void idleTime(PsyConsultWorkVO req){
+        List<PsyConsultWork> list = psyConsultWorkMapper.getList(req);
+        if (ObjectUtils.isEmpty(list)){
+            log.warn(req.getConsultId()+ "在" + req.getDay() + "没有排程");
+            return;
+        }
+        Integer time = Integer.valueOf(req.getTimes());
+        PsyConsultWork consultWork = list.get(0);
+        String live = consultWork.getLive();
+        String used = consultWork.getUsed();
+        consultWork.setUsed(modifyStringList(live,time,false));//删除工作时间
+        psyConsultWorkMapper.updateById(consultWork);
+    }
+
+    //向[8,14,15,16,17,18]中添加或删除
+    public static String modifyStringList(String str, int number, boolean toAdd) {
+        String[] items = str.substring(1, str.length() - 1).split(",");
+
+        List<String> itemList = new ArrayList<>(Arrays.asList(items));
+
+        List<Integer> intList = new ArrayList<>();
+        for (String item : itemList) {
+            intList.add(Integer.parseInt(item));
+        }
+
+        if (toAdd) {
+            if (!intList.contains(number)) {
+                intList.add(number);
+            }
+        } else {
+            intList.remove((Integer) number);
+        }
+
+        List<String> modifiedItemList = new ArrayList<>();
+        for (int num : intList) {
+            modifiedItemList.add(String.valueOf(num));
+        }
+
+        String modifiedString = "[" + String.join(",", modifiedItemList) + "]";
+        return modifiedString;
     }
 
 

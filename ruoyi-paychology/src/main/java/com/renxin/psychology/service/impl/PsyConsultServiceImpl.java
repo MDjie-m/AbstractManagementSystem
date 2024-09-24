@@ -292,6 +292,11 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         PsyConsult newConsultant = new PsyConsult();
             newConsultant.setId(IDhelper.getNextId());
             newConsultant.setPhonenumber(phone);
+            newConsultant.setUserName("口袋咨询师" + phone.substring(0,4));
+            newConsultant.setNickName("口袋咨询师" + phone.substring(0,4));
+            newConsultant.setAvatar("https://ssg-1316267898.cos.ap-beijing.myqcloud.com/logo.jpg");
+            newConsultant.setIsShow("1");//默认隐藏
+            newConsultant.setStatus("1");//默认停用
         psyConsultMapper.insert(newConsultant);
         refreshIdList();
         return newConsultant;

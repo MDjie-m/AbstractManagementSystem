@@ -425,6 +425,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         couponService.returnCoupon(order.getCouponNo());//归还优惠券        
     }
 
+    //来访者预约咨询
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int doConsult(Long id, Long workId, Integer time) {
@@ -452,6 +453,8 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
 //            order.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);
 //        }
         // 更新预约数量
+        order.setNum(order.getNum()-1);
+        order.setBuyNum(order.getBuyNum()+1);
         return update(order);
     }
 

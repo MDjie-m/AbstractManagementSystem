@@ -250,7 +250,8 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
 
         vo.setId(consultId);
         vo.setUserName(userName);
-        vo.setStatus("1");
+        vo.setStatus("1");//状态正常
+        vo.setIsShow("0");//显示
         vo.setSex(partner.getSex() == 1 ? "男" : "女");
         vo.setNickName(partner.getName());
         vo.setEmail(partner.getEmail());

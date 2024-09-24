@@ -72,7 +72,7 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
             //计算账户余额
             BigDecimal acctAmount = calcAcctAmount(req.getConsultantId());
             if (acctAmount.compareTo(req.getPayAmount()) < 0){
-                throw new ServiceException("提现失败, 当前账户余额不足");
+                throw new ServiceException("余额不足");
             }
         }
         

@@ -29,4 +29,6 @@ public interface PsyConsultWorkMapper extends BaseMapper<PsyConsultWork>
     
     int insertBatch(List<PsyConsultWork> list);
 
+    void idleTime(PsyWorkReq req);
+
 }
