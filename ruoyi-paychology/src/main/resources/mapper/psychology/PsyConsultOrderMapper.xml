@@ -84,7 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHEN a.STATUS = '1' THEN '进行中'
         WHEN a.STATUS = '2' THEN '已完成' ELSE '已关闭' END as status_name,
         (SELECT CONCAT(oi.day, ' ', oi.time_start)
-        FROM psy_consult_order_item oi   WHERE oi.order_id = a.id and oi.status=0 and   order by oi.day asc,oi.time_start asc LIMIT 1) AS next_time,
+        FROM psy_consult_order_item oi   WHERE oi.order_id = a.id and oi.status=0  order by oi.day asc,oi.time_start asc LIMIT 1) AS next_time,
         (SELECT oi.id
         FROM psy_consult_order_item oi   WHERE oi.order_id = a.id and oi.status=0  order by oi.day asc,oi.time_start asc LIMIT 1) AS nextItemId
 

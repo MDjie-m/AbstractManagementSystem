@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -53,6 +54,7 @@ public class PocketConsultantController extends BaseController
     public TableDataInfo list(@RequestBody PsyConsultReq req)
     {
         startPage();
+        req.setServiceObjectList(Arrays.asList("1"));
         List<PsyConsult> list = psyConsultService.search(req);
         return getDataTable(list);
     }

@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -206,6 +207,7 @@ public class ConsultantUserController extends BaseController {
     public TableDataInfo list(@RequestBody PsyConsultReq req)
     {
         startPage();
+       // req.setServiceObjectList(Arrays.asList("2","3"));
         List<PsyConsult> list = psyConsultService.search(req);
         return getDataTable(list);
     }

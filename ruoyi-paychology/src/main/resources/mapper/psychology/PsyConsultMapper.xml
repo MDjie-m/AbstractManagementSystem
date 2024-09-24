@@ -9,7 +9,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         qualification, index_qualification, mode, city, province, genre, img, share, lang,
         is_new_people , device_id , device_brand, device_model, last_login_ip,
         (SELECT count(id) FROM psy_consult_work WHERE `live` != '[]' and `live` != `used` and consult_id = psy_consult.id and `day` = DATE_FORMAT(NOW(),'%Y-%m-%d')) buy,
+        <!-- 筛选价格范围, 筛选服务对象, 取出符合条件的最低价 -->       
         (SELECT b.price FROM psy_consult_serve a INNER JOIN psy_consult_server_config b ON a.serve_id=b.id AND a.consult_id=psy_consult.id
+            <if test="serviceObjectList != null and serviceObjectList.size > 0">
+                and b.service_object in 
+                <foreach collection="serviceObjectList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
             WHERE b.bound = 0
             <if test="lowPrice != null and highPrice != null">
                 and b.price <![CDATA[>=]]> #{lowPrice} and b.price <![CDATA[<=]]> #{highPrice}
@@ -20,7 +27,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ORDER BY b.price ASC LIMIT 1) new_price
         from psy_consult
         <where>
+            <!--  -->
             (SELECT b.price FROM psy_consult_serve a INNER JOIN psy_consult_server_config b ON a.serve_id=b.id AND a.consult_id=psy_consult.id
+            <if test="serviceObjectList != null and serviceObjectList.size > 0">
+                and b.service_object in
+                <foreach collection="serviceObjectList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
             WHERE b.bound = 0
             <if test="lowPrice != null and highPrice != null">
                 AND b.price <![CDATA[>=]]> #{lowPrice} AND b.price <![CDATA[<=]]> #{highPrice}

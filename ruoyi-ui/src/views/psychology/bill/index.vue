@@ -18,6 +18,8 @@
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         <el-button type="warning" icon="el-icon-download" plain v-hasPermi="['psychology:bill:export']" size="mini" @click="handleExport">导出</el-button>
+        <el-button icon="el-icon-upload" size="mini" @click="importFinishedExcel">导入已完成打款的清单</el-button>
+            <input type="file" ref="fileInput" @change="handleFileChange" style="display: none;" />
       </el-form-item>
     </el-form>
 
@@ -97,6 +99,7 @@
 <script>
 import { getConsultAll } from "@/api/psychology/consult";
 import { listBill, updateBill } from "@/api/psychology/bill";
+import * as XLSX from "xlsx";
 
 export default {
   name: "PysBill",
@@ -171,6 +174,39 @@ export default {
     resetQuery() {
       this.resetForm("queryForm");
       this.handleQuery();
+    },
+    //已完成打款的清单导入
+    importFinishedExcel() {
+      this.$refs.fileInput.click();
+    },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (!file) { return; }
+      const fileName = file.name.toLowerCase();
+      if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+        this.$modal.msgError('请上传一个Excel文件（.xlsx 或 .xls）');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        if (jsonData.length > 0) {
+          const firstColumnData = jsonData.slice(1).map(row => row[0]);
+          const joinedData = firstColumnData.join(',');
+          console.log(joinedData);
+        } else {
+          this.$modal.msgError('Excel 表格为空或格式不正确');
+        }
+      };
+      reader.readAsArrayBuffer(file);
     },
     /** 导出按钮操作 */
     handleExport() {

@@ -45,7 +45,9 @@ export const levelList = [
   { label: '初级咨询师', value: 2 },
   { label: '中级咨询师', value: 3 },
   { label: '高级咨询师', value: 4 },
-  { label: '督导师', value: 5 },
+  { label: '初级督导师', value: 5 },
+  { label: '中级督导师', value: 6 },
+  { label: '高级督导师', value: 7 },
 ]
 
 export const serviceObjectList = [
