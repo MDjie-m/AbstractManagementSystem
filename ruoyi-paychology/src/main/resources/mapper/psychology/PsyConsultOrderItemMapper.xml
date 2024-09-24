@@ -26,7 +26,19 @@ INNER JOIN psy_user c ON c.id = d.user_id
     
 <select id="getTodoList" parameterType="com.renxin.psychology.request.PsyWorkReq" resultType="com.renxin.psychology.dto.OrderItemDTO">
     select
-        item.*,
+        item.id,
+        item.order_id,
+        item.work_id,
+        item.time_start,
+        item.time_end,
+        item.day,
+        item.week,
+        item.status,
+        item.customer_confirm,
+        item.work_record,
+        item.time,
+        item.consult_id,
+        concat(item.day,' ',item.time_start) as realTime,
         con.user_name AS `consultantName`,
         con.avatar AS `consultantAvatar`,
         user.id AS `userId`,
@@ -49,6 +61,7 @@ INNER JOIN psy_user c ON c.id = d.user_id
       <if test="start != null and start != ''"> AND item.day >= #{start}</if>
       <if test="end != null and end != ''"> AND item.day &lt;= #{end}</if>
       <if test="week != null and week != ''"> AND item.week = #{week}</if>
+      <if test="status != null and status != ''"> AND item.status = #{status}</if>
       
     ORDER BY item.day,item.time_start asc
 </select>
@@ -60,11 +73,11 @@ INNER JOIN psy_user c ON c.id = d.user_id
             psy_consult_order_item item
         left join psy_consult con on con.id = item.consult_id
         left join psy_consult_order orde on orde.id = item.order_id
-        left join psy_user user on user.id = orde.user_id
         where
             item.consult_id =  #{consultId}
-            and user.id = #{userId}
-            and item.real_time &lt;= #{realTime}
+            and item.status in (0,1)
+            and orde.user_id = #{userId}
+            and concat(item.day , ' ', item.time_start) &lt;= #{realTime}
     </select>
 
 

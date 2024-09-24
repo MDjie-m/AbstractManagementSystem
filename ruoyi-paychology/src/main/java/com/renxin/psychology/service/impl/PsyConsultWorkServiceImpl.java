@@ -320,6 +320,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
         //Long consultId = req.getConsultId();//本咨询师id
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         req.setDay(today);
+        req.setStatus("0");//待办
         //查询面向[来访者]的服务待办清单
         List<OrderItemDTO> orderItemList = orderItemService.getTodoList(req);
         //查询每一条任务, 是该[来访者-咨询师]之间的第几次
@@ -638,12 +639,23 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
     //收费咨询师针对个督写记录
     @Override
     public void recordSchedule(PsyWorkReq req){
-        PsyConsultantSchedule schedule = consultantScheduleService.selectPsyConsultantScheduleById(req.getScheduleId());
-        if (!schedule.getConsultId().equals(req.getConsultId())){
-            throw new ServiceException("您并非该预约的收费人, 无发对其填写记录");
+        Integer sourceType = req.getSourceType();
+        if (sourceType == 1){//来访者咨询
+            PsyConsultOrderItem orderItem = orderItemService.getOne(req.getScheduleId());
+            if (!orderItem.getConsultId().equals(req.getConsultId())){
+                throw new ServiceException("您并非该预约的收费人, 无发对其填写记录");
+            }
+            orderItem.setWorkRecord(req.getWorkRecord());
+            orderItemService.update(orderItem);
+        } else if (sourceType == 2){//个督/体验
+            PsyConsultantSchedule schedule = consultantScheduleService.selectPsyConsultantScheduleById(req.getScheduleId());
+            if (!schedule.getConsultId().equals(req.getConsultId())){
+                throw new ServiceException("您并非该预约的收费人, 无发对其填写记录");
+            }
+            schedule.setWorkRecord(req.getWorkRecord());
+            consultantScheduleService.updatePsyConsultantSchedule(schedule);
         }
-        schedule.setWorkRecord(req.getWorkRecord());
-        consultantScheduleService.updatePsyConsultantSchedule(schedule);
+        
     }
     
     //付费咨询师针对个督确认完成

@@ -1,5 +1,6 @@
 package com.renxin.psychology.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.renxin.common.core.domain.BaseValObj;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -99,5 +100,7 @@ public class PsyConsultOrderVO extends BaseValObj implements Serializable
     private String couponNo;//使用优惠券编号
 
     private String payParam;//支付参数
+    //最后下单日期
+    private String maxOrderDate;
 
 }

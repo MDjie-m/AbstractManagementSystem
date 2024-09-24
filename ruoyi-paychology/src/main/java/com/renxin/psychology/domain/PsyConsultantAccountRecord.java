@@ -39,7 +39,7 @@ public class PsyConsultantAccountRecord extends BaseEntity
 
     /** 分成来源BillItemID */
     //@Excel(name = "分成来源BillItemID")
-    private String orderId;
+    private String billItemId;
 
     /** 支付前账户余额 */
     private String accountAmount;
@@ -84,4 +84,8 @@ public class PsyConsultantAccountRecord extends BaseEntity
     @TableField(exist = false)
     @Excel(name = "汇款备注")
     private String remark;
+
+    @TableField(exist = false)
+    //订单任务类型  12.咨询  21.团督  22.个督  23.体验
+    private String scheduleType;
 }

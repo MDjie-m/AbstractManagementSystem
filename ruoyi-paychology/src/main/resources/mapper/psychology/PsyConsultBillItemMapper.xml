@@ -4,7 +4,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.renxin.psychology.mapper.PsyConsultBillItemMapper">
     <insert id="insertBatch">
-        INSERT INTO psy_consult_bill_item (id, bill_id, order_id, team_id, consult_id, consult_name, type, ratio, order_no, order_time, serve_name, serve_type, buy_num, order_num, num, nick_name, price, brokerage, order_total, use_time, bill_time, create_by, create_time, update_by, update_time, buy_num_str, schedule_type)
+        INSERT INTO psy_consult_bill_item (id, bill_id, order_id, team_id, consult_id, consult_name, type, ratio, order_no, order_time, serve_name, serve_type, 
+                                           buy_num, order_num, num, nick_name, price, brokerage, order_total, use_time, bill_time, create_by, create_time, 
+                                           update_by, update_time, buy_num_str, schedule_type, pay_user_id, pay_user_type)
         VALUES
         <foreach collection="list" item="item" separator=",">
             (
@@ -34,7 +36,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.updateBy},
             #{item.updateTime},
             #{item.buyNumStr},
-            #{item.scheduleType}
+            #{item.scheduleType},
+            #{item.payUserId},
+            #{item.payUserType}
             )
         </foreach>
     </insert>
@@ -74,6 +78,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             CASE WHEN e.type = 1 THEN '单次' ELSE '套餐' END serve_type,
             e.num  order_num,
             d.num  num,
+            d.user_id  payUserId,
+            1 as payUserType,
             d.nick_name  nick_name,
             d.original_price  order_total,
             STR_TO_DATE(a.real_time, '%Y-%m-%d %H:%i') use_time,
@@ -111,6 +117,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             CASE WHEN sc.total_num = 1 THEN '单次' ELSE '套餐' END serve_type,
             sc.total_num  order_num,
             sc.time_num  buyNum,
+            d.pay_consultant_id  payUserId,
+            2 as payUserType,
             d.pay_consultant_name  nick_name,
             d.original_price  order_total,
             STR_TO_DATE(sc.real_time, '%Y-%m-%d %H:%i') use_time,

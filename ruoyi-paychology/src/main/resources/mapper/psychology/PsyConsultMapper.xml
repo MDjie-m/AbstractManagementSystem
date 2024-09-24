@@ -269,20 +269,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             IFNULL(cf.mode, '') AS mode,
             IFNULL(con.sex, '') AS sex,
             IFNULL(con.tabs, '') AS tabs,
-            IFNULL(con.avatar, '') AS avatar
+            IFNULL(con.avatar, '') AS avatar,
+            IFNULL(mo.max_order_date, '') AS maxOrderDate
         FROM psy_consultant_order od
-                 LEFT JOIN psy_consult con ON od.pay_consultant_id = con.id
-                 LEFT JOIN psy_consult_serve ser ON od.server_id = ser.relation_id
-                 LEFT JOIN psy_consult_server_config cf ON ser.serve_id = cf.id
-                 INNER JOIN (
-            SELECT
-                pay_consultant_id,
-                MAX(create_time) AS max_order_date
-            FROM psy_consultant_order
-            WHERE (server_type = 2 OR server_type = 3)
-            GROUP BY pay_consultant_id
-        ) mo ON od.pay_consultant_id = mo.pay_consultant_id AND od.create_time = mo.max_order_date
+         LEFT JOIN psy_consult con ON od.pay_consultant_id = con.id
+         LEFT JOIN psy_consult_serve ser ON od.server_id = ser.relation_id
+         LEFT JOIN psy_consult_server_config cf ON ser.serve_id = cf.id
+         INNER JOIN (
+                    SELECT
+                        pay_consultant_id,
+                        MAX(create_time) AS max_order_date
+                    FROM psy_consultant_order
+                    WHERE (server_type = 2 OR server_type = 3)
+                    GROUP BY pay_consultant_id
+                ) mo ON od.pay_consultant_id = mo.pay_consultant_id AND od.create_time = mo.max_order_date
         WHERE ser.consult_id = #{consultId}
+        order by mo.max_order_date desc 
        <!-- <if test="pay != null  and pay != ''"> and od.pay = #{pay}</if>-->
     
     </select>

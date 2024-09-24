@@ -59,4 +59,7 @@ public class PsyConsultOrderItem extends BasePlusEntity implements Serializable
     /** 状态  0待办  1已完成  2付费人请假   3收费人请假 */
     @Excel(name = "状态", readConverterExp = "0=待咨询,1=咨询完成")
     private String status;
+
+    //收费人工作记录
+    private String workRecord;
 }

@@ -205,6 +205,9 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     //服务名
     @TableField(exist = false)
     private String serverName;
+    //最后下单日期
+    @TableField(exist = false)
+    private String maxOrderDate;
 
     //已付款订单次数
     @TableField(exist = false)

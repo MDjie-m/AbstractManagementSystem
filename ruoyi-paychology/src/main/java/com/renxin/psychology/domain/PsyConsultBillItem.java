@@ -131,4 +131,6 @@ public class PsyConsultBillItem extends BasePlusEntity implements Serializable
     @TableField(exist = false)
     private BigDecimal total;
 
+    private Long payUserId;//付款用户id
+    private Integer payUserType;//付款用户类型
 }

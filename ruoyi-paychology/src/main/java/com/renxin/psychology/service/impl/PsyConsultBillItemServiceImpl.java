@@ -111,7 +111,7 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
                     p.setBuyNum(timeNum);
                 }
             });
-            // 以orderId 分组 计数
+            // 以keyId 分组 计数
             Map<String, List<PsyConsultBillItem>> collect = consultantOrderItemList.stream().collect(groupingBy(PsyConsultBillItem::getKeyId));
             collect.forEach((key, value) -> {
                 value.forEach(it -> {
@@ -138,7 +138,7 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
             PsyConsultantAccountRecord record = new PsyConsultantAccountRecord();
                 record.setConsultantId(bill.getConsultId());
                 record.setPayType("0");//分成
-                record.setOrderId(bill.getId()+"");
+                record.setBillItemId(bill.getId()+"");
                 record.setPayAmount(bill.getBrokerage());
                 record.setCreateBy("system");
                 record.setCreateTime(new Date());
