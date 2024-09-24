@@ -93,6 +93,13 @@ public class Order extends MyBaseEntity {
     @TableField("refund_amount")
     private BigDecimal refundAmount;
 
+    /**
+     * '补缴金额'
+     */
+    @TableField("repay_amount")
+    private BigDecimal repayAmount;
+
+
 
     /**
      * 当前折扣

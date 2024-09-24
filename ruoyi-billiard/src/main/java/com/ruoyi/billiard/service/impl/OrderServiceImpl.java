@@ -499,8 +499,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
                 OrderErrorMsg.ORDER_NOT_CHARGING);
 
-        if(Objects.nonNull(order.getPrePayAmount())){
-            AssertUtil.isTrue(order.getPrePayAmount().compareTo(new BigDecimal("9999"))<0,"预付费不能超过9999");
+        if (Objects.nonNull(order.getPrePayAmount())) {
+            AssertUtil.isTrue(order.getPrePayAmount().compareTo(new BigDecimal("9999")) < 0, "预付费不能超过9999");
         }
         Order newOrder = new Order();
         newOrder.setOrderId(order.getOrderId());
@@ -591,11 +591,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmountDue));
         order.setTotalDiscountAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalDiscountAmount));
 
-        order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount)
-                .subtract(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO)));
+        order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount));
 
         order.setTotalWipeZero(order.getTotalAmount().remainder(BigDecimal.ONE));
         order.setTotalAmount(BigDecimal.valueOf(order.getTotalAmount().intValue()));
+        if (Objects.nonNull(order.getPrePayAmount()) && order.getPrePayAmount().compareTo(BigDecimal.ZERO) > 0) {
+            BigDecimal refund = order.getPrePayAmount().subtract(order.getTotalAmount());
+            if (refund.compareTo(BigDecimal.ZERO) >= 0) {
+                order.setRefundAmount(refund);
+            } else {
+                order.setRepayAmount(refund.abs());
+            }
+        }
 
     }
 
@@ -708,11 +715,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmountDue));
         order.setTotalDiscountAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalDiscountAmount));
-        order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount)
-                .subtract(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO)));
+        order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount));
 
         order.setTotalWipeZero(order.getTotalAmount().remainder(BigDecimal.ONE));
         order.setTotalAmount(BigDecimal.valueOf(order.getTotalAmount().intValue()));
+        if (Objects.nonNull(order.getPrePayAmount()) && order.getPrePayAmount().compareTo(BigDecimal.ZERO) > 0) {
+            BigDecimal refund = order.getPrePayAmount().subtract(order.getTotalAmount());
+            if (refund.compareTo(BigDecimal.ZERO) >= 0) {
+                order.setRefundAmount(refund);
+            } else {
+                order.setRepayAmount(refund.abs());
+            }
+        }
 
 
         orderMapper.update(null, orderMapper.edit().lambda()

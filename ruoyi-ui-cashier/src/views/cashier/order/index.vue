@@ -118,11 +118,23 @@
             <div class="amount-item">
               <div> 抹零金额:</div>
               <div> {{ currentOrder.totalWipeZero }}</div>
-
             </div>
             <div class="amount-item">
-              <div class="tip-text">实际应付:</div>
-              <div class="tip-text"> {{ currentOrder.totalAmount }}</div>
+              <div> 抹零后应付:</div>
+              <div> {{ currentOrder.totalAmount }}</div>
+            </div>
+            <div class="amount-item">
+              <div> 退款金额:</div>
+              <div> {{ currentOrder.refundAmount }}</div>
+            </div>
+
+            <div class="amount-item">
+              <div class="tip-text">当前应付:</div>
+              <div class="tip-text" v-if="parseFloat(currentOrder.refundAmount )"> 0.00</div>
+              <div class="tip-text" v-else> {{
+                  parseInt(currentOrder.repayAmount) ? currentOrder.repayAmount : currentOrder.totalAmount
+                }}
+              </div>
             </div>
           </div>
           <div class="order-member-box">
@@ -342,8 +354,8 @@ export default {
       item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`
     },
     onFinishOrderOkClick() {
-      if (parseInt(this.finishOrderForm.payType )===OrderPayType.MEMBER && !String(this.finishOrderForm.password).trim()) {
-          this.$modal.msgWarning("请输入密码");
+      if (parseInt(this.finishOrderForm.payType) === OrderPayType.MEMBER && !String(this.finishOrderForm.password).trim()) {
+        this.$modal.msgWarning("请输入密码");
         return Promise.reject()
       }
       this.finishOrderForm.orderId = this.currentOrder.orderId;

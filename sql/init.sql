@@ -160,8 +160,9 @@ create table t_order
     order_id              bigint                                   not null comment '订单id' primary key,
     order_no              varchar(60)                              not null comment '订单编码',
 
-    pre_pay_amount        decimal(20, 2)                           not null default 0.00 not null comment '预付费',
+    pre_pay_amount        decimal(20, 2) default 0.00              not null default 0.00 not null comment '预付费',
     refund_amount         DECIMAL(20, 2) default 0.00              not null comment '退款金额',
+    repay_amount          DECIMAL(20, 2) default 0.00              not null comment '补缴金额',
     order_type            int                                      not null comment '类型：1=球桌费用，2=会员充值，3=商品购买,4=陪练费用，5=教学费用',
     total_amount_due      decimal(20, 2)                           null comment '应付总金额 ',
     total_discount_amount decimal(20, 2)                           null comment '折扣金额',
