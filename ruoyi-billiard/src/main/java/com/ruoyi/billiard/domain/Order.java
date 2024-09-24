@@ -88,6 +88,13 @@ public class Order extends MyBaseEntity {
     private BigDecimal prePayAmount;
 
     /**
+     * '退款金额'
+     */
+    @TableField("refund_amount")
+    private BigDecimal refundAmount;
+
+
+    /**
      * 当前折扣
      */
     @Excel(name = "当前折扣")
