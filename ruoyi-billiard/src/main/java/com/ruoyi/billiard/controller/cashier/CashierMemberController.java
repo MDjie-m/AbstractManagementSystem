@@ -42,9 +42,9 @@ public class CashierMemberController extends BaseController {
 
     @PreAuthorize("@ss.hasRole('cashier')")
     @GetMapping("/{memberId}/deduct/list")
-    public PageResVo<OrderMemberDeduct> queryDeductList(@PathVariable Long memberId) {
+    public PageResVo<Order> queryDeductList(@PathVariable Long memberId) {
         startPage();
-        List<OrderMemberDeduct> res =
+        List<Order> res =
                 orderService.selectDeductOrderList(Order.builder().storeId(getStoreIdWithThrow())
                         .memberId(memberId).build());
         return PageResVo.success(res);

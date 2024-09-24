@@ -109,7 +109,7 @@ public interface IOrderService
 
     List<OrderRecharge> selectRechargeOrderList(Order order);
 
-    List<OrderMemberDeduct> selectDeductOrderList(Order order);
+    List<Order> selectDeductOrderList(Order order);
 
     OrderRecharge getPreRecharge(Long storeId, Long memberId, BigDecimal recharge);
 }

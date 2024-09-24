@@ -83,6 +83,8 @@
                     @ok="openNewDialog=false"></change-pwd>
         <recharge v-if="title===MemberDialogTitle.Recharge &&current" :memberId="current.memberId"
                   @ok="onRechargeOk"></recharge>
+        <money-record  e v-if="title===MemberDialogTitle.Order &&current" :memberId="current.memberId"
+                       @ok="openNewDialog=false"></money-record>
       </content-wrapper>
     </div>
   </div>
@@ -96,6 +98,7 @@ import ContentWrapper from "@/views/cashier/desk/components/contentWrapper.vue";
 import ChangePwd from "@/views/cashier/member/components/changePwd.vue";
 import {MemberDialogTitle} from "@/views/cashier/components/constant";
 import Recharge from "@/views/cashier/member/components/recharge.vue";
+import MoneyRecord from "@/views/cashier/member/components/moneyRecord.vue";
 
 export default {
   computed: {
@@ -103,7 +106,7 @@ export default {
       return MemberDialogTitle
     }
   },
-  components: {Recharge, ChangePwd, ContentWrapper, LeftContainer, SvgItem},
+  components: {MoneyRecord, Recharge, ChangePwd, ContentWrapper, LeftContainer, SvgItem},
   dicts: ['sys_user_sex'],
   data() {
 

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.vo.MemberPwdReqVo;
 import com.ruoyi.billiard.enums.OrderType;
+import com.ruoyi.billiard.mapper.MemberLevelMapper;
 import com.ruoyi.billiard.mapper.OrderMemberDeductMapper;
 import com.ruoyi.billiard.service.IOrderRechargeService;
 import com.ruoyi.billiard.service.IOrderService;
@@ -47,6 +48,9 @@ public class MemberServiceImpl implements IMemberService {
     @Autowired
     private OrderMemberDeductMapper orderMemberDeductMapper;
 
+    @Autowired
+    private MemberLevelMapper memberLevelMapper;
+
     /**
      * 查询门店会员
      *
@@ -58,8 +62,10 @@ public class MemberServiceImpl implements IMemberService {
         Member member = memberMapper.selectById(memberId);
         if (Objects.nonNull(member)) {
             member.setPayPassword(null);
+            Optional.ofNullable(memberLevelMapper.selectById(member.getLevelId())).ifPresent(p->{
+                member.setLevelName(p.getLevelName());
+            });
         }
-
         return member;
     }
 

@@ -936,17 +936,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public List<OrderRecharge> selectRechargeOrderList(Order order) {
 
         return orderMapper.selectMemberRechargeOrderList(orderMapper.normalQuery()
-                .eq("a.memberId", order.getMemberId())
-                .eq("b.storeId", order.getStoreId())
+                .eq("a.member_id", order.getMemberId())
+                .eq("b.store_id", order.getStoreId())
                 .orderByDesc("a.order_recharge_id"));
     }
 
     @Override
-    public List<OrderMemberDeduct> selectDeductOrderList(Order order) {
-        return orderMapper.selectDeductOrderList(orderMapper.normalQuery()
-                .eq("a.memberId", order.getMemberId())
-                .eq("b.storeId", order.getStoreId())
-                .orderByDesc("a.order_member_deduct_id"));
+    public List<Order> selectDeductOrderList(Order order) {
+        return orderMapper.selectList(orderMapper.normalQuery()
+                .lambda().eq(Order::getMemberId, order.getMemberId())
+                .eq(Order::getStoreId, order.getStoreId())
+                .in(Order::getOrderType, OrderType.COMMODITY_PURCHASE, OrderType.TABLE_CHARGE)
+                .in(Order::getStatus, OrderStatus.SETTLED.getValue())
+                .orderByDesc(Order::getOrderId));
     }
 
     @Override
