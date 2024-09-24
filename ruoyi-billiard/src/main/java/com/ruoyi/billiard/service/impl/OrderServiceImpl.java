@@ -499,9 +499,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         AssertUtil.isTrue(Objects.equals(OrderStatus.CHARGING.getValue(), order.getStatus()),
                 OrderErrorMsg.ORDER_NOT_CHARGING);
 
+        if(Objects.nonNull(order.getPrePayAmount())){
+            AssertUtil.isTrue(order.getPrePayAmount().compareTo(new BigDecimal("9999"))<0,"预付费不能超过9999");
+        }
         Order newOrder = new Order();
         newOrder.setOrderId(order.getOrderId());
-        newOrder.setPrePayAmount(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO).add(reqVo.getAmount()).setScale(2, RoundingMode.DOWN));
+        newOrder.setPrePayAmount(Optional.ofNullable(order.getPrePayAmount())
+                .orElse(BigDecimal.ZERO).add(reqVo.getAmount())
+                .setScale(2, RoundingMode.DOWN));
         SecurityUtils.fillUpdateUser(newOrder);
         orderMapper.updateById(newOrder);
         return newOrder.getPrePayAmount();
@@ -585,6 +590,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         order.setTotalAmountDue(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmountDue));
         order.setTotalDiscountAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalDiscountAmount));
+
         order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount)
                 .subtract(Optional.ofNullable(order.getPrePayAmount()).orElse(BigDecimal.ZERO)));
 

@@ -396,19 +396,19 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false,
-        inputPattern: /^[1-9]\d{2,3}|1000$/,
-        inputErrorMessage: "预付费金额限制在100~10000元之间整额",
-        // inputValidator: (value) => {
-        //   if (!/^[1-9]\d{2,3}|1000$/.test(value)) {
-        //     return "预付费金额限制在100~10000的证书"
-        //   }
-        // },
+        inputPattern: /^[1-9]\d{2,3}$/,
+        inputErrorMessage: "预付费金额限制在100~9999元之间整额",
+        inputValidator: (value) => {
+          if (!/^[1-9]\d{2,3}$/.test(value)) {
+            return "预付费金额限制在100~9999之间的整额"
+          }
+        },
       }).then(({value}) => {
         orderPrePay({
           amount: value,
           orderId: this.currentDesk?.currentOrderId,
         }).then(response => {
-          this.currentDesk.lastActiveOrder.prePayAmount = value;
+          this.currentDesk.lastActiveOrder.prePayAmount = response.data;
           this.$modal.msgSuccess(`预付费成功`);
         });
       }).catch(() => {
