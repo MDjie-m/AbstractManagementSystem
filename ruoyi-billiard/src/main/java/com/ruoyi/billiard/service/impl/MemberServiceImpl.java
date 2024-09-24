@@ -6,6 +6,7 @@ import java.util.*;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.domain.vo.MemberPwdReqVo;
 import com.ruoyi.billiard.enums.OrderType;
 import com.ruoyi.billiard.mapper.OrderMemberDeductMapper;
 import com.ruoyi.billiard.service.IOrderRechargeService;
@@ -210,5 +211,19 @@ public class MemberServiceImpl implements IMemberService {
         deduct.setOrderId(orderId);
         SecurityUtils.fillCreateUser(deduct);
         orderMemberDeductMapper.insert(deduct);
+    }
+
+    @Override
+    public Boolean updatePayPwd(MemberPwdReqVo reqVo) {
+        Member member = memberMapper.selectById(reqVo.getMemberId());
+        AssertUtil.notNullOrEmpty(member, "会员不存在");
+        AssertUtil.equal(member.getStoreId(), reqVo.getStoreId(), "会员不合法");
+        AssertUtil.isTrue(SecurityUtils.matchesPassword(reqVo.getOldPwd(),member.getPayPassword()),"旧密码不正确");
+        member = new Member();
+        member.setPayPassword(SecurityUtils.encryptPassword(reqVo.getPwd()));
+        member.setMemberId(reqVo.getMemberId());
+        SecurityUtils.fillUpdateUser(member);
+        memberMapper.updateById(member);
+        return Boolean.TRUE;
     }
 }

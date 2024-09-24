@@ -81,7 +81,7 @@ export default {
     }
     background-color: #FFFFFF;
     display: flex;
-
+    z-index: 20;
     width: 100%;
     flex-direction: column;
     flex: 1;
@@ -89,6 +89,7 @@ export default {
     overflow: hidden;
     .slot-container{
       padding: 20px;
+
       padding-top: 10px;
       overflow: hidden;
       display: flex;

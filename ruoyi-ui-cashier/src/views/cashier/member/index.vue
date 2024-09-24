@@ -27,7 +27,7 @@
         <div style="display: flex ;justify-content: center">
           <el-button-group>
           <el-button type="danger" size="mini">充值</el-button>
-          <el-button type="primary" size="mini">修改密码</el-button>
+          <el-button type="primary" @click="onPwdClick" size="mini">修改密码</el-button>
           <el-button type="primary"  size="mini" @click="current.showAmount=!current.showAmount" >查看余额</el-button>
           <el-button type="primary" size="mini">消费记录</el-button>
           </el-button-group>
@@ -77,6 +77,10 @@
           @pagination="getList"
         />
       </div>
+
+      <content-wrapper :visible.sync="openNewDialog" :title="title">
+        <change-pwd v-if="title==='修改密码' &&current" :memberId="current.memberId"></change-pwd>
+      </content-wrapper>
     </div>
   </div>
 </template>
@@ -84,12 +88,17 @@
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
 import {listMembers} from "@/api/cashier/member";
+import ContentWrapper from "@/views/cashier/desk/components/contentWrapper.vue";
 
+import ChangePwd from "@/views/cashier/member/components/changePwd.vue";
 export default {
-  components: {LeftContainer, SvgItem},
+  components: {  ChangePwd,ContentWrapper, LeftContainer, SvgItem},
   dicts: ['sys_user_sex'],
   data() {
+
     return {
+      openNewDialog:false,
+      title:'修改密码',
       loading: false,
       memberList: [],
       current: null,
@@ -106,6 +115,10 @@ export default {
     this.getList()
   },
   methods: {
+    onPwdClick(){
+      this.title="修改密码"
+      this.openNewDialog=true
+    },
     onRowClick(item) {
       this.current = item;
     },

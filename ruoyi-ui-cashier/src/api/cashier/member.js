@@ -7,3 +7,10 @@ export function listMembers(params) {
     params:params
   })
 }
+export function updatePayPwd(params) {
+  return request({
+    url: `/cashier/member/pwd`,
+    method: 'post',
+    data:params
+  })
+}

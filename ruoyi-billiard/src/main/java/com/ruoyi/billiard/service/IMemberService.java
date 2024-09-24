@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.billiard.domain.Member;
+import com.ruoyi.billiard.domain.vo.MemberPwdReqVo;
 import com.ruoyi.billiard.enums.OrderType;
 
 /**
@@ -76,4 +77,7 @@ public interface IMemberService {
     Boolean checkPwd(Long memberId, String password);
 
     void deductAmount(Long memberId, Long orderId, BigDecimal totalAmount);
+
+    Boolean updatePayPwd(MemberPwdReqVo reqVo);
+
 }
