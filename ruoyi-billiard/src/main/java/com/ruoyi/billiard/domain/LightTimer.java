@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.billiard.enums.LightTimerType;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
@@ -69,7 +70,7 @@ public class LightTimer extends MyBaseEntity
     @Excel(name = "定光定时类型：0=零时灯,1=计费灯")
 
     @TableField("light_type")
-    private Integer lightType;
+    private LightTimerType lightType;
 
     /** 是否有效 */
     @Excel(name = "是否有效")

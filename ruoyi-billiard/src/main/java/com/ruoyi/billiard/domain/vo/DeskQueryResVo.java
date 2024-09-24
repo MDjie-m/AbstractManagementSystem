@@ -29,7 +29,10 @@ public class DeskQueryResVo extends StoreDesk {
      */
     private BigDecimal otherTotalAmount = BigDecimal.ZERO;
 
-    private OrderDeskScore score=new OrderDeskScore();
+    private Integer lastCalcTime = 0;
+    private Integer lastTempTime = 0;
+
+    private OrderDeskScore score = new OrderDeskScore();
 
     public void calcFees() {
 

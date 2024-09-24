@@ -13,13 +13,12 @@ import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.LineUpVo;
 import com.ruoyi.billiard.enums.DeskStatus;
 import com.ruoyi.billiard.enums.EmployeeStatus;
+import com.ruoyi.billiard.enums.LightTimerType;
 import com.ruoyi.billiard.enums.TutorWorkStatus;
 import com.ruoyi.billiard.mapper.OrderDeskScoreMapper;
 import com.ruoyi.billiard.mapper.OrderDeskTimeMapper;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
-import com.ruoyi.billiard.service.IDeskDeviceRelationService;
-import com.ruoyi.billiard.service.IDeskPriceService;
-import com.ruoyi.billiard.service.IOrderService;
+import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
@@ -32,7 +31,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.StoreDeskMapper;
-import com.ruoyi.billiard.service.IStoreDeskService;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -55,6 +53,9 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     private StoreTutorMapper storeTutorMapper;
     @Autowired
     private IDeskDeviceRelationService deskDeviceRelationService;
+
+    @Autowired
+    private ILightTimerService lightTimerService;
 
     @Resource
     private IDeskPriceService deskPriceService;
@@ -217,6 +218,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         StoreDesk desk = queryEnableDesk(deskId, storeId);
         DeskQueryResVo resVo = new DeskQueryResVo();
         BeanUtils.copyProperties(desk, resVo);
+        setTimer(deskId, resVo);
 
         Order order = orderService.selectRelationOrderWithDetail(deskId);
         if (Objects.isNull(order)) {
@@ -229,8 +231,27 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
                         .eq(OrderDeskScore::getOrderId, order.getOrderId())
                         .orderByDesc(OrderDeskScore::getStartTime).last(" limit 1")))
                 .orElse(resVo.getScore()));
+
+
         return resVo;
 
+    }
+
+    private void setTimer(Long deskId, DeskQueryResVo resVo) {
+        LightTimer timer = lightTimerService.getOne(lightTimerService.lambdaQuery().eq(LightTimer::getDeskId, deskId).last(" limit 1").getWrapper());
+
+        if (Objects.isNull(timer)) {
+            return;
+        }
+        int times = DateUtils.diffMinutes(DateUtils.getNowDate(), timer.getEndTime());
+        if (times <= 0) {
+            times = 0;
+        }
+        if (Objects.equals(timer.getLightType(), LightTimerType.CALC_FEE)) {
+            resVo.setLastCalcTime(times);
+        } else {
+            resVo.setLastTempTime(times);
+        }
     }
 
 

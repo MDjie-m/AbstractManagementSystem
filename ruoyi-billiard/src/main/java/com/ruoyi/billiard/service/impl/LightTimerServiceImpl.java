@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.enums.LightTimerType;
 import com.ruoyi.billiard.mapper.StoreDeskMapper;
@@ -26,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2024-09-19
  */
 @Service
-public class LightTimerServiceImpl implements ILightTimerService {
+public class LightTimerServiceImpl extends ServiceImpl<LightTimerMapper,LightTimer> implements ILightTimerService {
     @Autowired
     private LightTimerMapper lightTimerMapper;
 
@@ -79,7 +80,7 @@ public class LightTimerServiceImpl implements ILightTimerService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertLightTimer(LightTimer lightTimer) {
-        if (Objects.equals(lightTimer.getLightType(), LightTimerType.CALC_FEE.getValue())) {
+        if (Objects.equals(lightTimer.getLightType(), LightTimerType.CALC_FEE )) {
             AssertUtil.notNullOrEmpty(lightTimer.getOrderId(), "订单id不能为空");
         }
         lightTimerMapper.delete(lightTimerMapper.query().eq(LightTimer::getDeskId, lightTimer.getDeskId()));

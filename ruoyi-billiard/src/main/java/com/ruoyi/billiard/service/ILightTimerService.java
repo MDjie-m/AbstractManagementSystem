@@ -2,6 +2,8 @@ package com.ruoyi.billiard.service;
 
 import java.util.Date;
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.billiard.domain.LightTimer;
 
 /**
@@ -10,7 +12,7 @@ import com.ruoyi.billiard.domain.LightTimer;
  * @author ruoyi
  * @date 2024-09-19
  */
-public interface ILightTimerService 
+public interface ILightTimerService  extends IService<LightTimer>
 {
     /**
      * 查询灯光计时器
