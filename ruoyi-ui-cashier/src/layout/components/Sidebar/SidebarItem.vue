@@ -124,7 +124,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 70px;
-
+  color:#1890ff!important;
 
   &>.svg-icon{
     flex-shrink: 0;

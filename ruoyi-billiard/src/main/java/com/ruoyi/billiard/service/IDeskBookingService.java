@@ -63,4 +63,6 @@ public interface IDeskBookingService  extends IService<DeskBooking>
     public int deleteDeskBookingByDeskBookingId(Long deskBookingId);
 
     Map<String, List<DeskBooking>> selectBookingDayMap(DeskBooking booking);
+
+    void checkBookingExpire(Integer timeMinutes);
 }

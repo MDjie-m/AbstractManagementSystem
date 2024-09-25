@@ -1,11 +1,13 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.enums.BookingStatus;
 import com.ruoyi.billiard.mapper.DeskBookingMapper;
+import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.utils.ArrayUtil;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
@@ -112,5 +114,17 @@ public class DeskBookingServiceImpl extends ServiceImpl<DeskBookingMapper, DeskB
     @Override
     public Map<String, List<DeskBooking>> selectBookingDayMap(DeskBooking booking) {
         return ArrayUtil.groupBy(selectDeskBookingList(booking), p -> DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, p.getStartTime()));
+    }
+
+    @Override
+    public void checkBookingExpire(Integer timeMinutes) {
+
+        //超时自动过期
+        baseMapper.update(null, baseMapper.updateWrapper().
+                le(DeskBooking::getStartTime, DateUtils.toDate(LocalDateTime.now().minusMinutes(timeMinutes)))
+                .eq(DeskBooking::getStatus, BookingStatus.ACTIVE)
+                .ge(DeskBooking::getStartTime, DateUtils.toDate(LocalDateTime.now().minusHours(24)))
+                .set(DeskBooking::getStatus, BookingStatus.EXPIRE)
+                .set(BaseEntity::getRemark, "系统检测超时，自动过期"));
     }
 }
