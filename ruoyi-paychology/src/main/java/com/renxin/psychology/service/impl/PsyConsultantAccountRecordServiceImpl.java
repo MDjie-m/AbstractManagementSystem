@@ -48,7 +48,7 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
         List<PsyConsultantAccountRecord> recordList = psyConsultantAccountRecordMapper.selectPsyConsultantAccountRecordList(psyConsultantAccountRecord);
         for (PsyConsultantAccountRecord record : recordList) {
             if (ObjectUtils.isEmpty(record.getServerTitle())){
-                record.setServerTitle(record.getScheduleType());
+                record.setServerTitle(transforScheduleType(record.getScheduleType()));
             }
         }
         return recordList;

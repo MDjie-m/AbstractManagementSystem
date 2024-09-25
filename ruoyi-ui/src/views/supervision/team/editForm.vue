@@ -99,6 +99,31 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="form.remark" placeholder="请输入备注" />
       </el-form-item>
+
+      <el-form-item label="标签" prop="label">
+        <el-tag
+          v-for="tag in labelList"
+          :key="tag"
+          closable
+          :disable-transitions="false"
+          @close="handleClose(tag)"
+        >
+          {{ tag }}
+        </el-tag>
+        <el-input
+          v-if="inputVisible"
+          ref="InputRef"
+          v-model="inputValue"
+          class="w-20"
+          size="small"
+          @keyup.enter="handleInputConfirm"
+          @blur="handleInputConfirm"
+        />
+        <el-button v-else class="button-new-tag" size="small" @click="showInput">
+          + New Tag
+        </el-button>
+      </el-form-item>
+
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -127,6 +152,7 @@ export default {
       supervisionType: this.$constants.supervisionType,
       weekDay: this.$constants.weekDay,
       teamSupLabelList: this.$constants.teamSupLabel,
+      labelList: ['111','222'],
       selectedLabelList:[],
       form: {
       },

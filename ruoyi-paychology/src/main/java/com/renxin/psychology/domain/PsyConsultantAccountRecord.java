@@ -93,7 +93,10 @@ public class PsyConsultantAccountRecord extends BaseEntity
     @TableField(exist = false)
     private Integer payUserType;//付款用户类型
     @TableField(exist = false)
+    private String payUserName;//付款用户名称
+    @TableField(exist = false)
     private Integer payAndChargeNum;//收费人付费人之间第几次合作/团督第几次讲课
     @TableField(exist = false)
     private String serverTitle;//服务类型标题
+    
 }

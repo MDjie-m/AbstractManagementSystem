@@ -37,11 +37,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select
         red.record_id, red.consultant_id, red.status, red.pay_type, red.bill_item_id, red.account_amount, red.pay_amount, red.pay_message,
                red.create_by, red.create_time, red.update_by, red.update_time , 
-               bItem.schedule_type, bItem.pay_user_id, bItem.pay_user_type, bItem.pay_and_charge_num, 
-               team.title as serverTitle
+               bItem.schedule_type, bItem.pay_user_id, bItem.pay_user_type, bItem.pay_and_charge_num, ifnull(user.name,con.nick_name) as payUserName,
+               team.title as serverTitle 
         from psy_consultant_account_record red
             left join psy_consult_bill_item bItem on red.bill_item_id = bItem.id
             left join psy_consultant_team_supervision team on bItem.team_id = team.id
+            left join psy_user user on bItem.pay_user_type = 1 and bItem.pay_user_id = user.id
+            left join psy_consult con on bItem.pay_user_type = 2 and bItem.pay_user_id = con.id
 
         <where>  
             red.del_flag = 0 
@@ -56,7 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                  and red.create_time between #{createTimeStart} and concat(#{createTimeEnd},' 23:59:59')
              </if>
         </where>
-        order by red.update_time desc
+        order by bItem.use_time desc
     </select>
 
 
