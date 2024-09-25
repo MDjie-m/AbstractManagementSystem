@@ -5,7 +5,6 @@ import javax.annotation.Resource;
 import com.ruoyi.common.constant.LoginSystem;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.framework.web.domain.CustomAuthToken;
-import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -93,7 +92,7 @@ public class SysLoginService
                 boolean result = containsInMiniAppRolekeys(miniAppRolekeys, roleKeys);
                 if (!result) {
                     AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.miniapp.not.roles")));
-                    throw new ServiceException("此用户没有小程序登录权限");
+                    throw new ServiceException("此账号没有权限.");
                 }
 
 

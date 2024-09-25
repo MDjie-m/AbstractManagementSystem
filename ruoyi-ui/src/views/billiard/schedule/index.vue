@@ -50,7 +50,13 @@
               <span>{{ parseTime(scope.row.day, '{y}-{m}-{d}') }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="创建/更新" align="center" prop="createById" width="360">>
+          <el-table-column label="默认系统班次" align="center" prop="defaultSchedule">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.defaultSchedule" type="success">是</el-tag>
+              <el-tag v-else type="danger">否</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="创建/更新" align="center" prop="createById" width="360">
             <template slot-scope="scope">
               <div>
                 <span>{{ scope.row.createBy }} </span>
@@ -95,8 +101,8 @@
       </div>
 
       <!-- 添加或修改门店班次对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="900px" append-to-body>
-        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-dialog :title="title" :visible.sync="open" width="950px" append-to-body>
+        <el-form ref="form" :model="form" :rules="rules" label-width="115px">
           <el-row>
             <el-col :span="24">
               <el-form-item label="门店" prop="storeId">
@@ -160,7 +166,19 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="排班日期" prop="day">
+              <el-form-item label="默认系统班次" prop="defaultSchedule">
+                <el-radio-group v-model="form.defaultSchedule">
+                  <el-radio-button     :label="false"   >
+                    否
+                  </el-radio-button>
+                  <el-radio-button     :label="true"   >
+                    是
+                  </el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="排班日期" prop="day" v-if="!form.defaultSchedule">
                 <el-date-picker clearable
                                 v-model="form.day"
                                 type="date"
@@ -168,9 +186,6 @@
                                 placeholder="请选择排班日期">
                 </el-date-picker>
               </el-form-item>
-            </el-col>
-            <el-col :span="12">
-
             </el-col>
           </el-row>
           <el-row>
@@ -212,6 +227,10 @@ export default {
   dicts: ['store_schedule_offset_day'],
   data() {
     return {
+      isDefaultSchedule: {
+        id: null,
+        isHave: false,
+      },
       storeInfo: null,
       // 遮罩层
       loading: true,
@@ -259,6 +278,9 @@ export default {
         day: [
           {required: true, message: "排班日期不能为空", trigger: "blur"}
         ],
+        defaultSchedule: [
+          {required: true, message: "默认系统班次不能为空", trigger: "change"}
+        ]
       },
       offsetDayOptions: [
         {label: "当天", value: 0},
@@ -289,8 +311,18 @@ export default {
         this.queryParams.params["endDay"] = this.daterangeDay[1];
       }
       listSchedule(this.queryParams).then(response => {
+        this.isDefaultSchedule = {
+          id: null,
+          isHave: false,
+        }
         this.scheduleList = response.rows;
         this.total = response.total;
+        const findTrueDefaultSchedule = this.scheduleList.find(item => item.defaultSchedule === true);
+        if (findTrueDefaultSchedule) {
+          this.isDefaultSchedule.id = true
+          this.isDefaultSchedule.isHave = findTrueDefaultSchedule.storeScheduleId
+        }
+
         this.loading = false;
       });
     },
@@ -309,6 +341,7 @@ export default {
         startTimeOffsetDay: null,
         endTimeOffsetDay: null,
         day: null,
+        defaultSchedule: false,
         remark: null
       };
       this.resetForm("form");
@@ -358,13 +391,21 @@ export default {
             this.$modal.msgError("开始时间不能大于结束时间")
             return
           }
-          if (this.form.storeScheduleId != null) {
+          if (this.form.storeScheduleId !== null) {
+            if (this.form.defaultSchedule && this.isDefaultSchedule.isHave && this.isDefaultSchedule.id !== this.form.storeScheduleId) {
+              this.$modal.msgError("已存在默认系统班次，无法修改");
+              return;
+            }
             updateSchedule(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
+            if (this.form.defaultSchedule && this.isDefaultSchedule.isHave) {
+              this.$modal.msgError("已存在默认系统班次，无法新增");
+              return;
+            }
             addSchedule(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;

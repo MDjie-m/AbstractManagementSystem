@@ -172,5 +172,6 @@ public class Constants
             "org.springframework", "org.apache", "com.ruoyi.common.utils.file", "com.ruoyi.common.config", "com.ruoyi.generator" };
 
 
+    /** 小程序用户权限标识 */
     public static final String[] MINI_APP_ROLEKEYS = {"storeManager", "copartner", "cashier", "treasurer"};
 }

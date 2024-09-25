@@ -55,16 +55,24 @@ public class StoreScheduleServiceImpl implements IStoreScheduleService
         List<StoreSchedule> storeSchedules = storeScheduleMapper.selectStoreScheduleList(storeSchedule);
         return storeSchedules.stream().map(item -> {
             item.setStoreName(storeService.selectStoreByStoreId(item.getStoreId()).getStoreName());
-            // 获取排班时间
-            Date day = item.getDay();
+
             // 计算具体开始时间
             Date startTime = item.getStartTime();
             Integer startTimeOffsetDay = item.getStartTimeOffsetDay();
-            item.setStartTimeStr(getScheduleTimeStr(day, startTime, startTimeOffsetDay));
-            // 计算具体结束时间
+
             Date endTime = item.getEndTime();
             Integer endTimeOffsetDay = item.getEndTimeOffsetDay();
-            item.setEndTimeStr(getScheduleTimeStr(day, endTime, endTimeOffsetDay));
+
+            if (item.getDefaultSchedule()) {
+                item.setStartTimeStr(getOffsetDayStr(startTimeOffsetDay) + " " + DateUtils.parseDateToStr(DateUtils.HH_MM, startTime));
+                item.setEndTimeStr(getOffsetDayStr(endTimeOffsetDay) + " " + DateUtils.parseDateToStr(DateUtils.HH_MM, endTime));
+            } else {
+                // 获取排班时间
+                Date day = item.getDay();
+                item.setStartTimeStr(getScheduleTimeStr(day, startTime, startTimeOffsetDay));
+                // 计算具体结束时间
+                item.setEndTimeStr(getScheduleTimeStr(day, endTime, endTimeOffsetDay));
+            }
             return item;
         }).collect(Collectors.toList());
     }
@@ -80,6 +88,9 @@ public class StoreScheduleServiceImpl implements IStoreScheduleService
     {
         SecurityUtils.fillCreateUser(storeSchedule);
         storeSchedule.setStoreScheduleId(IdUtils.singleNextId());
+        if (storeSchedule.getDefaultSchedule()) {
+            storeSchedule.setDay(new Date(0));
+        }
         return storeScheduleMapper.insert(storeSchedule);
     }
 
@@ -93,6 +104,9 @@ public class StoreScheduleServiceImpl implements IStoreScheduleService
     public int updateStoreSchedule(StoreSchedule storeSchedule)
     {
         SecurityUtils.fillUpdateUser(storeSchedule);
+        if (storeSchedule.getDefaultSchedule()) {
+            storeSchedule.setDay(new Date(0));
+        }
         return storeScheduleMapper.updateById(storeSchedule);
     }
 
@@ -124,10 +138,30 @@ public class StoreScheduleServiceImpl implements IStoreScheduleService
      * 计算排班开始时间或者结束时间返回String类型
      */
     public String getScheduleTimeStr(Date day, Date time, Integer offsetDay) {
-        String toStrTime = DateUtils.parseDateToStr("HH:mm", time);
+        String toStrTime = DateUtils.parseDateToStr(DateUtils.HH_MM, time);
         Date newDay = DateUtils.addDays(day, offsetDay);
-        String toStrDay = DateUtils.parseDateToStr("yyy-MM-dd", newDay);
+        String toStrDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, newDay);
         return toStrDay + " " + toStrTime;
+    }
+
+    /**
+     * 计算排班哪一天中文名
+     */
+    public String getOffsetDayStr(Integer offsetDay) {
+        String dayStr = "";
+        switch (offsetDay) {
+            case -1:
+                dayStr = "前一天";
+                break;
+            case 0:
+                dayStr = "当天";
+                break;
+            case 1:
+                dayStr = "后一天";
+                break;
+        }
+        return dayStr;
+
     }
 
 }
