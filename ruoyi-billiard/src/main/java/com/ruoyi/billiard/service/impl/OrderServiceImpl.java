@@ -781,6 +781,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             memberService.deductAmount(order.getMemberId(), order.getOrderId(), order.getTotalAmount());
         }
         order.setStatus(OrderStatus.SETTLED.getValue());
+        order.setPayTime(new Date());
         SecurityUtils.fillUpdateUser(order);
         orderMapper.updateById(order);
         return true;
