@@ -169,6 +169,7 @@ create table t_order
     total_amount          decimal(20, 2)                           null comment '实际支付金额',
     discount_value        decimal(4, 2)                            null comment '当前折扣',
     total_wipe_zero       decimal(4, 2)                            null comment '抹零金额',
+    pay_time              datetime                                 null comment '支付时间',
     store_id              bigint                                   not null comment '门店',
     pay_type              int                                      null comment '支付方式：0=扫码，1=现金，2=会员',
     status                int                                      not null comment '订单状态：0=计费中,1=待结算,2=已结算，3=作废',
@@ -240,21 +241,21 @@ create table t_order_member_deduct
 drop table if exists t_order_recharge;
 create table t_order_recharge
 (
-    order_recharge_id     bigint                                not null comment 'id' primary key,
-    order_id              bigint                                not null comment '订单id',
-    member_id             bigint                                not null comment '会员id',
-    recharge_amount       decimal(10, 2)                        not null comment '充值金额',
-    give_amount           decimal(10, 2)     default  0                   not null comment '充值赠送金额',
-    total_amount          decimal(10, 2)                        not null comment '支付金额',
-    total_discount_amount decimal(20, 2)                        null comment '打折金额',
-    discount_value        decimal(20, 2)                        not null comment '当时折扣',
-    remark                nvarchar(500)                         null comment '备注',
-    create_by             varchar(64) default ''                null comment '创建者',
-    create_time           timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by             varchar(64) default ''                null comment '更新者',
-    update_time           timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id          bigint                                null comment '创建者Id',
-    update_by_id          bigint                                null comment '更新者Id'
+    order_recharge_id     bigint                                   not null comment 'id' primary key,
+    order_id              bigint                                   not null comment '订单id',
+    member_id             bigint                                   not null comment '会员id',
+    recharge_amount       decimal(10, 2)                           not null comment '充值金额',
+    give_amount           decimal(10, 2) default 0                 not null comment '充值赠送金额',
+    total_amount          decimal(10, 2)                           not null comment '支付金额',
+    total_discount_amount decimal(20, 2)                           null comment '打折金额',
+    discount_value        decimal(20, 2)                           not null comment '当时折扣',
+    remark                nvarchar(500)                            null comment '备注',
+    create_by             varchar(64)    default ''                null comment '创建者',
+    create_time           timestamp      default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by             varchar(64)    default ''                null comment '更新者',
+    update_time           timestamp      default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id          bigint                                   null comment '创建者Id',
+    update_by_id          bigint                                   null comment '更新者Id'
 ) comment '会员充值';
 drop table if exists t_order_desk_time;
 
