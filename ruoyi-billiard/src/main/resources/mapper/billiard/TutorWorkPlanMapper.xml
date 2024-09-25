@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.TutorWorkPlanMapper">
+
+
+    <sql id="selectTutorWorkPlanVo">
+        select * from t_tutor_work_plan
+    </sql>
+
+    <select id="selectTutorWorkPlanList" parameterType="TutorWorkPlan" resultType="TutorWorkPlan">
+        <include refid="selectTutorWorkPlanVo"/>
+        <where>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="tutorId != null "> and tutor_id = #{tutorId}</if>
+            <if test="day != null "> and day = #{day}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectTutorWorkPlanByTutorWorkPlanId" parameterType="Long" resultType="TutorWorkPlan">
+        <include refid="selectTutorWorkPlanVo"/>
+        where tutor_work_plan_id = #{tutorWorkPlanId}
+    </select>
+
+
+
+    <delete id="deleteTutorWorkPlanByTutorWorkPlanId" parameterType="Long">
+        delete from t_tutor_work_plan where tutor_work_plan_id = #{tutorWorkPlanId}
+    </delete>
+
+    <delete id="deleteTutorWorkPlanByTutorWorkPlanIds" parameterType="String">
+        delete from t_tutor_work_plan where tutor_work_plan_id in 
+        <foreach item="tutorWorkPlanId" collection="array" open="(" separator="," close=")">
+            #{tutorWorkPlanId}
+        </foreach>
+    </delete>
+</mapper>

@@ -68,13 +68,13 @@
         <SvgItem svg-icon="stop" label="停止" :btnAble="true" @click.native="onStopOrderClick"/>
         <SvgItem svg-icon="credit_card" label="去结算" :btnAble="true" @click.native="onNavToSettleOrderClick"/>
       </ToolBar>
-      <Dashboard ref="dashboard" v-if="!currentDesk" :storeName="storeInfo.storeName"/>
+      <Dashboard ref="dashboard" v-if="!currentDesk" :storeName="storeInfo?storeInfo.storeName:''"/>
 
       <ToolBar title="预约/排队" v-if="!(currentDesk &&currentDesk.lastActiveOrder)">
-        <SvgItem svg-icon="desk" label="台桌预约"/>
-        <SvgItem svg-icon="tutor" label="教练预约"/>
-        <SvgItem svg-icon="qrcode" label="预约核销"/>
-        <SvgItem svg-icon="line_up" label="排队叫号" @click.native="onOpenLineUpClick()"/>
+        <SvgItem svg-icon="desk" label="台桌预约"  @click.native="onOpenLineUpClick(DeskDialogTitle.BookingDesk)"/>
+        <SvgItem svg-icon="tutor" label="教练预约" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingTutor)"/>
+        <SvgItem svg-icon="qrcode" label="预约核销" @click.native="onOpenLineUpClick(DeskDialogTitle.FinishBooking)"/>
+        <SvgItem svg-icon="line_up" label="排队叫号" @click.native="onOpenLineUpClick(DeskDialogTitle.LineUp)"/>
       </ToolBar>
     </left-container>
 
@@ -154,7 +154,8 @@
         </template>
       </div>
       <content-wrapper :visible.sync="openNewDialog" :title="title">
-        <line-up v-if="openNewDialog"/>
+        <line-up v-if="title===DeskDialogTitle.LineUp"/>
+        <booking-desk :desk-list="deskList" v-if="title===DeskDialogTitle.BookingDesk"/>
       </content-wrapper>
     </div>
 
@@ -236,17 +237,21 @@ import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import {MessageBox} from "element-ui";
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
 import {orderPrePay, orderStopDesk, stopOrder, suspendOrder, voidOrder} from "@/api/cashier/order";
-import {OrderStatus, DeskStatus, LightType, ChooseType} from "@/views/cashier/components/constant";
+import {OrderStatus, DeskStatus, LightType, ChooseType, DeskDialogTitle} from "@/views/cashier/components/constant";
+import BookingDesk from "@/views/cashier/desk/components/bookingDesk.vue";
 
 
 export default {
   name: "Desk",
   computed: {
+    DeskDialogTitle() {
+      return DeskDialogTitle
+    },
     ChooseType() {
       return ChooseType
     }
   },
-  components: {LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
+  components: {BookingDesk, LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
 
   data() {
@@ -254,7 +259,7 @@ export default {
       orderLoading: false,
       DeskStatus: DeskStatus,
       storeInfo: {storeName: '', userList: [], tutorList: []},
-      openNewDialog: false,
+      openNewDialog:false,
       lightStatus: null,
       currentDesk: null,
       loading: false,
@@ -353,7 +358,8 @@ export default {
       this.openNewDialog = true;
       this.title = title
     },
-    onOpenLineUpClick() {
+    onOpenLineUpClick(title) {
+      this.title=title
       this.openNewDialog = true;
     },
     onTempLight(lightType) {

@@ -1,14 +1,18 @@
 package com.ruoyi.billiard.controller.cashier;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.billiard.domain.DeskBooking;
 import com.ruoyi.billiard.domain.LightTimer;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.LineUpVo;
+import com.ruoyi.billiard.service.IDeskBookingService;
 import com.ruoyi.billiard.service.ILightTimerService;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
+import com.ruoyi.common.core.page.PageResVo;
 import com.ruoyi.common.utils.ArrayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +33,33 @@ public class CashierDeskController extends BaseController {
 
     @Autowired
     private ILightTimerService lightTimerService;
+
+    @Autowired
+    private IDeskBookingService deskBookingService;
+
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @GetMapping("/booking/map")
+    public ResultVo<Map<String, List<DeskBooking>>> bookingMap(@Validated(DeskBooking.IQuery.class) DeskBooking reqVo) {
+
+        reqVo.setStoreId(getStoreIdWithThrow());
+        return ResultVo.success(deskBookingService.selectBookingDayMap(reqVo));
+    }
+
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/booking")
+    public ResultVo<DeskBooking> addBooking(@Validated(DeskBooking.IAdd.class) @RequestBody DeskBooking reqVo) {
+
+        reqVo.setStoreId(getStoreIdWithThrow());
+        return ResultVo.success(deskBookingService.insertDeskBooking(reqVo));
+    }
+
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @DeleteMapping("/booking/{bookingId}")
+    public ResultVo<Boolean> remove(@PathVariable Long bookingId) {
+
+        return ResultVo.success(deskBookingService.getBaseMapper().delete(Wrappers.<DeskBooking>lambdaQuery()
+                .eq(DeskBooking::getDeskBookingId, bookingId).eq(DeskBooking::getStoreId, getStoreIdWithThrow())) > 0);
+    }
 
     /**
      * 查询球桌列表
@@ -157,14 +188,16 @@ public class CashierDeskController extends BaseController {
         lightTimer.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(lightTimerService.insertLightTimer(lightTimer));
     }
+
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @PostMapping("/light-timer/remove")
     public ResultVo<Boolean> removeTimer(@RequestParam Date time) {
-        return ResultVo.success(lightTimerService.removeByTime(time,getStoreIdWithThrow()));
+        return ResultVo.success(lightTimerService.removeByTime(time, getStoreIdWithThrow()));
     }
+
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @GetMapping("/light-timer/list")
-    public ResultVo<List<LightTimer>> list(  @RequestParam Date time) {
+    public ResultVo<List<LightTimer>> list(@RequestParam Date time) {
         List<LightTimer> list = lightTimerService.selectLightTimerList(LightTimer.builder().storeId(getStoreIdWithThrow())
                 .endTime(time).build());
         return ResultVo.success(list);

@@ -3,30 +3,13 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${packageName}.mapper.${ClassName}Mapper">
-    
-    <resultMap type="${ClassName}" id="${ClassName}Result">
-#foreach ($column in $columns)
-        <result property="${column.javaField}"    column="${column.columnName}"    />
-#end
-    </resultMap>
-#if($table.sub)
 
-    <resultMap id="${ClassName}${subClassName}Result" type="${ClassName}" extends="${ClassName}Result">
-        <collection property="${subclassName}List" ofType="${subClassName}" column="${pkColumn.columnName}" select="select${subClassName}List" />
-    </resultMap>
-
-    <resultMap type="${subClassName}" id="${subClassName}Result">
-#foreach ($column in $subTable.columns)
-        <result property="${column.javaField}"    column="${column.columnName}"    />
-#end
-    </resultMap>
-#end
 
     <sql id="select${ClassName}Vo">
-        select#foreach($column in $columns) $column.columnName#if($foreach.count != $columns.size()),#end#end from ${tableName}
+        select * from ${tableName}
     </sql>
 
-    <select id="select${ClassName}List" parameterType="${ClassName}" resultMap="${ClassName}Result">
+    <select id="select${ClassName}List" parameterType="${ClassName}" resultType="${ClassName}">
         <include refid="select${ClassName}Vo"/>
         <where>  
 #foreach($column in $columns)
@@ -58,7 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="select${ClassName}By${pkColumn.capJavaField}" parameterType="${pkColumn.javaType}" resultMap="#if($table.sub)${ClassName}${subClassName}Result#else${ClassName}Result#end">
+    <select id="select${ClassName}By${pkColumn.capJavaField}" parameterType="${pkColumn.javaType}" resultType="#if($table.sub)${ClassName}${subClassName}#else${ClassName}#end">
 #if($table.crud || $table.tree)
         <include refid="select${ClassName}Vo"/>
         where ${pkColumn.columnName} = #{${pkColumn.javaField}}
@@ -70,42 +53,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 #if($table.sub)
 
-    <select id="select${subClassName}List" resultMap="${subClassName}Result">
+    <select id="select${subClassName}List" resultType="${subClassName}">
         select#foreach ($column in $subTable.columns) $column.columnName#if($foreach.count != $subTable.columns.size()),#end#end
         from ${subTableName}
         where ${subTableFkName} = #{${subTableFkName}}
     </select>
 #end
 
-    <insert id="insert${ClassName}" parameterType="${ClassName}"#if($pkColumn.increment) useGeneratedKeys="true" keyProperty="$pkColumn.javaField"#end>
-        insert into ${tableName}
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-#foreach($column in $columns)
-#if($column.columnName != $pkColumn.columnName || !$pkColumn.increment)
-            <if test="$column.javaField != null#if($column.javaType == 'String' && $column.required) and $column.javaField != ''#end">$column.columnName,</if>
-#end
-#end
-         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-#foreach($column in $columns)
-#if($column.columnName != $pkColumn.columnName || !$pkColumn.increment)
-            <if test="$column.javaField != null#if($column.javaType == 'String' && $column.required) and $column.javaField != ''#end">#{$column.javaField},</if>
-#end
-#end
-         </trim>
-    </insert>
 
-    <update id="update${ClassName}" parameterType="${ClassName}">
-        update ${tableName}
-        <trim prefix="SET" suffixOverrides=",">
-#foreach($column in $columns)
-#if($column.columnName != $pkColumn.columnName)
-            <if test="$column.javaField != null#if($column.javaType == 'String' && $column.required) and $column.javaField != ''#end">$column.columnName = #{$column.javaField},</if>
-#end
-#end
-        </trim>
-        where ${pkColumn.columnName} = #{${pkColumn.javaField}}
-    </update>
 
     <delete id="delete${ClassName}By${pkColumn.capJavaField}" parameterType="${pkColumn.javaType}">
         delete from ${tableName} where ${pkColumn.columnName} = #{${pkColumn.javaField}}

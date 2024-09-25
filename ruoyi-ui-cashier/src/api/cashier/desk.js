@@ -100,3 +100,23 @@ export function mergeToNewDesk(deskId, newDeskId, orderId) {
     params: {newDeskId, orderId}
   })
 }
+export function getBookingMap(params) {
+  return request({
+    url: `/cashier/desk/booking/map`,
+    method: 'get',
+    params:params
+  })
+}
+export function addDeskBooking(params) {
+  return request({
+    url: `/cashier/desk/booking`,
+    method: 'post',
+    data:params
+  })
+}
+export function delDeskBooking(bookingId) {
+  return request({
+    url: `/cashier/desk/booking/${bookingId}`,
+    method: 'delete',
+  })
+}

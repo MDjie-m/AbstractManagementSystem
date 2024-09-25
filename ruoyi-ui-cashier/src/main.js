@@ -50,6 +50,9 @@ Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
 Vue.prototype.handleTree = handleTree
 Vue.prototype.$time =Dayjs;
+Dayjs.locale("zh-cn", {
+  weekStart: 1// 配置为周一
+})
 Vue.prototype.$eventBus = new Vue();
 // 全局组件挂载
 Vue.component('DictTag', DictTag)

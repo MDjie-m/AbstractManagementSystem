@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.TutorWorkPlanDetailMapper">
+
+
+    <sql id="selectTutorWorkPlanDetailVo">
+        select * from t_tutor_work_plan_detail
+    </sql>
+
+    <select id="selectTutorWorkPlanDetailList" parameterType="TutorWorkPlanDetail" resultType="TutorWorkPlanDetail">
+        <include refid="selectTutorWorkPlanDetailVo"/>
+        <where>  
+            <if test="tutorWorkPlanId != null "> and tutor_work_plan_id = #{tutorWorkPlanId}</if>
+            <if test="planType != null "> and plan_type = #{planType}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectTutorWorkPlanDetailByTutorWorkPlanDetailId" parameterType="Long" resultType="TutorWorkPlanDetail">
+        <include refid="selectTutorWorkPlanDetailVo"/>
+        where tutor_work_plan_detail_id = #{tutorWorkPlanDetailId}
+    </select>
+
+
+
+    <delete id="deleteTutorWorkPlanDetailByTutorWorkPlanDetailId" parameterType="Long">
+        delete from t_tutor_work_plan_detail where tutor_work_plan_detail_id = #{tutorWorkPlanDetailId}
+    </delete>
+
+    <delete id="deleteTutorWorkPlanDetailByTutorWorkPlanDetailIds" parameterType="String">
+        delete from t_tutor_work_plan_detail where tutor_work_plan_detail_id in 
+        <foreach item="tutorWorkPlanDetailId" collection="array" open="(" separator="," close=")">
+            #{tutorWorkPlanDetailId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.DeskImageMapper">
+
+
+    <sql id="selectDeskImageVo">
+        select * from t_desk_image
+    </sql>
+
+    <select id="selectDeskImageList" parameterType="DeskImage" resultType="DeskImage">
+        <include refid="selectDeskImageVo"/>
+        <where>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="captureTime != null "> and capture_time = #{captureTime}</if>
+            <if test="cameraId != null "> and camera_id = #{cameraId}</if>
+            <if test="deskId != null "> and desk_id = #{deskId}</if>
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectDeskImageByDeskMultimediaId" parameterType="Long" resultType="DeskImage">
+        <include refid="selectDeskImageVo"/>
+        where desk_multimedia_id = #{deskMultimediaId}
+    </select>
+
+
+
+    <delete id="deleteDeskImageByDeskMultimediaId" parameterType="Long">
+        delete from t_desk_image where desk_multimedia_id = #{deskMultimediaId}
+    </delete>
+
+    <delete id="deleteDeskImageByDeskMultimediaIds" parameterType="String">
+        delete from t_desk_image where desk_multimedia_id in 
+        <foreach item="deskMultimediaId" collection="array" open="(" separator="," close=")">
+            #{deskMultimediaId}
+        </foreach>
+    </delete>
+</mapper>

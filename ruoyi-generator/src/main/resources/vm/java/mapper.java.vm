@@ -33,21 +33,6 @@ public interface ${ClassName}Mapper extends MyBaseMapper<${ClassName}>
      */
     public List<${ClassName}> select${ClassName}List(${ClassName} ${className});
 
-    /**
-     * 新增${functionName}
-     * 
-     * @param ${className} ${functionName}
-     * @return 结果
-     */
-    public int insert${ClassName}(${ClassName} ${className});
-
-    /**
-     * 修改${functionName}
-     * 
-     * @param ${className} ${functionName}
-     * @return 结果
-     */
-    public int update${ClassName}(${ClassName} ${className});
 
     /**
      * 删除${functionName}

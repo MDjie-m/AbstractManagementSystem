@@ -475,17 +475,20 @@ create table t_order_desk_score
 drop table if exists t_tutor_work_plan;
 create table t_tutor_work_plan
 (
-    t_tutor_work_plan_id bigint                                not null comment 'ID'
+    tutor_work_plan_id bigint                                not null comment 'ID'
         primary key,
-    t_tutor_id           bigint                                not null comment '教练id',
-    day                  date                                  not null comment '日期',
-    create_by            varchar(64) default ''                null comment '创建者',
-    create_time          timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by            varchar(64) default ''                null comment '更新者',
-    update_time          timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id         bigint                                null comment '创建者Id',
-    update_by_id         bigint                                null comment '更新者Id',
-    remark               nvarchar(500)                         null comment '备注'
+    tutor_id           bigint                                not null comment '教练id',
+    store_id           bigint                                not null comment '门店',
+    day                date                                  not null comment '日期',
+    create_by          varchar(64) default ''                null comment '创建者',
+    create_time        timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by          varchar(64) default ''                null comment '更新者',
+    update_time        timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id       bigint                                null comment '创建者Id',
+    update_by_id       bigint                                null comment '更新者Id',
+
+
+    remark             nvarchar(500)                         null comment '备注'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
     comment '教练排班计划';
@@ -493,19 +496,19 @@ create table t_tutor_work_plan
 drop table if exists t_tutor_work_plan_detail;
 create table t_tutor_work_plan_detail
 (
-    t_tutor_work_plan_detail_id bigint                                not null comment 'ID'
+    tutor_work_plan_detail_id bigint                                not null comment 'ID'
         primary key,
-    t_tutor_work_plan_id        bigint                                not null comment '计划id',
-    plan_type                   int                                   not null comment '计划类型：4=陪练,5=教学',
-    start_time                  datetime                              not null comment '开始时间',
-    end_time                    datetime                              not null comment '结束时间',
-    create_by                   varchar(64) default ''                null comment '创建者',
-    create_time                 timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by                   varchar(64) default ''                null comment '更新者',
-    update_time                 timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id                bigint                                null comment '创建者Id',
-    update_by_id                bigint                                null comment '更新者Id',
-    remark                      nvarchar(500)                         null comment '备注'
+    tutor_work_plan_id        bigint                                not null comment '计划id',
+    plan_type                 int                                   not null comment '计划类型：4=陪练,5=教学',
+    start_time                datetime                              not null comment '开始时间',
+    end_time                  datetime                              not null comment '结束时间',
+    create_by                 varchar(64) default ''                null comment '创建者',
+    create_time               timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by                 varchar(64) default ''                null comment '更新者',
+    update_time               timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id              bigint                                null comment '创建者Id',
+    update_by_id              bigint                                null comment '更新者Id',
+    remark                    nvarchar(500)                         null comment '备注'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
     comment '教练排班计划详细';
@@ -513,8 +516,9 @@ create table t_tutor_work_plan_detail
 drop table if exists t_tutor_booking;
 create table t_tutor_booking
 (
-    t_tutor_booking_id  bigint                                not null comment 'ID'
+    tutor_booking_id    bigint                                not null comment 'ID'
         primary key,
+    store_id            bigint                                not null comment '门店',
     start_time          datetime                              not null comment '开始时间',
     end_time            datetime                              not null comment '结束时间',
     tutor_id            bigint                                not null comment '助教id',
@@ -535,10 +539,11 @@ create table t_tutor_booking
 drop table if exists t_desk_booking;
 create table t_desk_booking
 (
-    t_desk_booking_id   bigint                                not null comment 'ID'
+    desk_booking_id     bigint                                not null comment 'ID'
         primary key,
     start_time          datetime                              not null comment '开始时间',
     end_time            datetime                              not null comment '结束时间',
+    store_id            bigint                                not null comment '门店',
     desk_id             bigint                                not null comment '球桌id',
     booking_user_name   nvarchar(64)                          not null comment '预约人姓名',
     booking_user_mobile nvarchar(64)                          not null comment '预约人手机号',
@@ -558,20 +563,21 @@ create table t_desk_booking
 drop table if exists t_desk_image;
 create table t_desk_image
 (
-    t_desk_multimedia_id bigint                                not null comment 'ID'
+    desk_multimedia_id bigint                                not null comment 'ID'
         primary key,
-    capture_time         datetime                              not null comment '抓拍时间',
-    camera_id            bigint                                not null comment '摄像头id',
-    desk_id              bigint                                null comment '球桌id',
-    order_id             bigint                                not null comment '订单id(不一定有订单)',
-    file_path            nvarchar(200)                         not null comment '图片地址',
-    create_by            varchar(64) default ''                null comment '创建者',
-    create_time          timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by            varchar(64) default ''                null comment '更新者',
-    update_time          timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id         bigint                                null comment '创建者Id',
-    update_by_id         bigint                                null comment '更新者Id',
-    remark               nvarchar(500)                         null comment '备注'
+    store_id           bigint                                not null comment '门店',
+    capture_time       datetime                              not null comment '抓拍时间',
+    camera_id          bigint                                not null comment '摄像头id',
+    desk_id            bigint                                null comment '球桌id',
+    order_id           bigint                                not null comment '订单id(不一定有订单)',
+    file_path          nvarchar(200)                         not null comment '图片地址',
+    create_by          varchar(64) default ''                null comment '创建者',
+    create_time        timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by          varchar(64) default ''                null comment '更新者',
+    update_time        timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id       bigint                                null comment '创建者Id',
+    update_by_id       bigint                                null comment '更新者Id',
+    remark             nvarchar(500)                         null comment '备注'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
     comment '球桌抓拍等';

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.TutorBookingMapper">
+
+
+    <sql id="selectTutorBookingVo">
+        select * from t_tutor_booking
+    </sql>
+
+    <select id="selectTutorBookingList" parameterType="TutorBooking" resultType="TutorBooking">
+        <include refid="selectTutorBookingVo"/>
+        <where>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="tutorId != null "> and tutor_id = #{tutorId}</if>
+            <if test="bookingUserName != null  and bookingUserName != ''"> and booking_user_name like concat('%', #{bookingUserName}, '%')</if>
+            <if test="bookingUserMobile != null  and bookingUserMobile != ''"> and booking_user_mobile = #{bookingUserMobile}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectTutorBookingByTutorBookingId" parameterType="Long" resultType="TutorBooking">
+        <include refid="selectTutorBookingVo"/>
+        where tutor_booking_id = #{tutorBookingId}
+    </select>
+
+
+
+    <delete id="deleteTutorBookingByTutorBookingId" parameterType="Long">
+        delete from t_tutor_booking where tutor_booking_id = #{tutorBookingId}
+    </delete>
+
+    <delete id="deleteTutorBookingByTutorBookingIds" parameterType="String">
+        delete from t_tutor_booking where tutor_booking_id in 
+        <foreach item="tutorBookingId" collection="array" open="(" separator="," close=")">
+            #{tutorBookingId}
+        </foreach>
+    </delete>
+</mapper>
