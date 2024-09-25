@@ -199,7 +199,7 @@
               <el-select v-model="form.status" placeholder="请选择教练状态"  style="width: 100%">
                 <el-option
                   v-for="dict in dict.type.store_user_status"
-                  :key="dict.value"
+                  :key="dict.value+'abc'"
                   :label="dict.label"
                   :value="parseInt(dict.value)"
                 ></el-option>
