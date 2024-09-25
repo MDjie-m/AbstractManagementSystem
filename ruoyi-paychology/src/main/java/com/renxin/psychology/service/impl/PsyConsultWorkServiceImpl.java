@@ -590,7 +590,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
         // 判断当前时间是否早于目标时间减去两小时
         if (!now.isBefore(targetMinusTwoHours))  {
             //throw new ServiceException("请假必须提前" + leaveAdvanceHour + "小时申请, 当前已不可发起, 请与咨询师联系协商");
-            throw new ServiceException("请假失败");
+            throw new ServiceException("请联系咨询师");
         }
     }
     
