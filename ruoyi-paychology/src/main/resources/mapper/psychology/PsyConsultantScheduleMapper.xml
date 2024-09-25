@@ -75,7 +75,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectPsyConsultantScheduleById" parameterType="Long" resultMap="PsyConsultantScheduleResult">
-        <include refid="selectPsyConsultantScheduleVo"/>
+        select id, order_id,team_id, work_id,time_num,schedule_type, time_start, time_end, day, week, status, create_by,
+               create_time, update_by, update_time, time, real_time, consult_id,customer_confirm, work_record  ,
+               concat(day,' ',time_start) as serverStartTime
+        from psy_consultant_schedule
+
         where id = #{id}
     </select>
         

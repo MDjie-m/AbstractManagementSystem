@@ -99,6 +99,7 @@ public class PsyConsultantSchedule extends BaseEntity
     private String orderBy;
     private String start;
     private String end;
+    private String serverStartTime;//服务开始时间
     /** 状态  0待办  1已完成  2付费人请假   3收费人请假 */
     private List<String> statusList;
     

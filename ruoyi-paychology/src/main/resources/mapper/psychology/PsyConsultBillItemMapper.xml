@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             status = 1
         where
             status = 0
-          and NOW() > concat(day," ",time_end)
+        and NOW() > concat(day," ",time_end)
     </update>
 
     <select id="getOrderItems" resultType="com.renxin.psychology.domain.PsyConsultBillItem">

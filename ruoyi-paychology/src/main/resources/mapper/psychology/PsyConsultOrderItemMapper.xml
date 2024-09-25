@@ -98,6 +98,7 @@ INNER JOIN psy_user c ON c.id = d.user_id
             item.time,
             item.real_time as realTime,
             item.consult_id as consultId,
+            concat(item.day,' ',item.time_start) as serverStartTime,
             od.user_id as userId
         from
             psy_consult_order_item item

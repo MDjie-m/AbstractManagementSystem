@@ -25,12 +25,14 @@ import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultOrderItemVO;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
+import com.renxin.system.service.ISysConfigService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,6 +59,9 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
     @Resource
     private IPsyConsultOrderService consultOrderService;
 
+    @Resource
+    private ISysConfigService configService;
+    
     @Override
     public List<PsyConsultWorkVO> getConsultWorks(PsyWorkReq req) {
         return psyConsultWorkMapper.getWorks(req);
@@ -492,8 +497,13 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                 if (ObjectUtils.isEmpty(schedule)){
                     throw new ServiceException("scheduleId不存在, 找不到指定任务");
                 }
+                if (!"0".equals(schedule.getStatus())){
+                    throw new ServiceException("该预约已完成或已取消, 不可请假");
+                }
+                
                 if ((loginConsultId+"").equals(schedule.getCreateBy())){
                     schedule.setStatus("2");//付费人请假
+                    isBeforeTime(schedule.getServerStartTime());//判断请假提前时间是否足够
                 }
                 else if (loginConsultId.equals(schedule.getConsultId())){
                     schedule.setStatus("3");//收费人请假
@@ -518,8 +528,13 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                     throw new ServiceException("scheduleId不存在,找不到指定任务.");
                 }
                 OrderItemDTO item = orderItemList.get(0);
+                if (!"0".equals(item.getStatus())){
+                    throw new ServiceException("该预约已完成或已取消, 不可请假");
+                }
+                
                 if (item.getUserId().equals(loginUserId)){
                     item.setStatus("2");//付费人请假
+                    isBeforeTime(item.getServerStartTime());//判断请假提前时间是否足够
                 }else if (item.getConsultId().equals(loginConsultId)){
                     item.setStatus("3");//收费人请假
                 }else{
@@ -551,6 +566,31 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
             //无匹配
             default:
                 throw new ServiceException("该类型的预约不存在或不可请假");
+        }
+    }
+    
+    //判断请假提前时间是否足够 (默认必须提前12小时)
+    private void isBeforeTime(String serverTime){
+        //获取系统参数
+        Integer leaveAdvanceHour = Integer.valueOf(configService.selectConfigByKey("leave.advance.hour"));
+
+        // 定义日期时间格式化器
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        // 定义目标时间 "2024-05-05 14:00"
+        LocalDateTime targetDateTime = LocalDateTime.parse(serverTime, formatter);
+
+        // 当前时间
+        LocalDateTime now = LocalDateTime.now();
+
+        // 计算目标时间减去两小时
+       // LocalDateTime targetMinusTwoHours = targetDateTime.minusHours(leaveAdvanceHour);
+        LocalDateTime targetMinusTwoHours = targetDateTime.minusHours(10000);
+
+        // 判断当前时间是否早于目标时间减去两小时
+        if (!now.isBefore(targetMinusTwoHours))  {
+            //throw new ServiceException("请假必须提前" + leaveAdvanceHour + "小时申请, 当前已不可发起, 请与咨询师联系协商");
+            throw new ServiceException("请假失败");
         }
     }
     

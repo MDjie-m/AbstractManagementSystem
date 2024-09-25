@@ -1,5 +1,6 @@
 package com.renxin.psychology.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BasePlusEntity;
@@ -62,4 +63,7 @@ public class PsyConsultOrderItem extends BasePlusEntity implements Serializable
 
     //收费人工作记录
     private String workRecord;
+    
+    @TableField(exist = false)
+    private String serverStartTime;//服务开始时间
 }
