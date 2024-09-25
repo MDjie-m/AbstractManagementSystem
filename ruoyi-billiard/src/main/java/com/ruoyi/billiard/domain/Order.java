@@ -100,7 +100,6 @@ public class Order extends MyBaseEntity {
     private BigDecimal repayAmount;
 
 
-
     /**
      * 当前折扣
      */
@@ -148,6 +147,9 @@ public class Order extends MyBaseEntity {
 
     @TableField("store_id")
     private Long storeId;
+    //支付时间
+    @TableField("pay_time")
+    private Date payTime;
 
     /**
      * 创建者Id
@@ -176,7 +178,7 @@ public class Order extends MyBaseEntity {
      * 会员订单详情
      */
     @TableField(exist = false)
-    private List<OrderRecharge> orderRecharges =  Lists.newArrayList();
+    private List<OrderRecharge> orderRecharges = Lists.newArrayList();
 
     /**
      * 商品订单详情
