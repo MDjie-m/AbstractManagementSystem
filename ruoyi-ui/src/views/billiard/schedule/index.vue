@@ -101,7 +101,7 @@
       </div>
 
       <!-- 添加或修改门店班次对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="950px" append-to-body>
+      <el-dialog :title="title" :visible.sync="open" width="950px" append-to-body @close="cancel">
         <el-form ref="form" :model="form" :rules="rules" label-width="115px">
           <el-row>
             <el-col :span="24">
@@ -118,7 +118,7 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="开始时间" prop="startTime">
-                <el-select v-model="form.startTimeOffsetDay" placeholder="请选择" class="form-offset mr10">
+                <el-select v-model="form.startTimeOffsetDay" @change="offsetSelectChange($event, 0)" placeholder="请选择" class="form-offset mr10">
                   <el-option
                     v-for="dict in dict.type.store_schedule_offset_day"
                     :key="dict.value"
@@ -141,7 +141,7 @@
             <el-col :span="12">
               <el-form-item label="结束时间" prop="endTime">
                 <div class="d-flex">
-                  <el-select v-model="form.endTimeOffsetDay" placeholder="请选择" class="form-offset mr10">
+                  <el-select v-model="form.endTimeOffsetDay" @change="offsetSelectChange($event, 1)" placeholder="请选择" class="form-offset mr10">
                     <el-option
                       v-for="dict in dict.type.store_schedule_offset_day"
                       :key="dict.value"
@@ -209,7 +209,7 @@
 
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button type="primary" @click="submitForm" :disabled="disSubmit">确 定</el-button>
           <el-button @click="cancel">取 消</el-button>
         </div>
       </el-dialog>
@@ -227,6 +227,7 @@ export default {
   dicts: ['store_schedule_offset_day'],
   data() {
     return {
+      disSubmit: false,
       isDefaultSchedule: {
         id: null,
         isHave: false,
@@ -328,7 +329,9 @@ export default {
     },
     // 取消按钮
     cancel() {
+      console.log(11111111111111)
       this.open = false;
+      this.disSubmit = false
       this.reset();
     },
     // 表单重置
@@ -452,6 +455,37 @@ export default {
       const dayStr = String(date.getDate()).padStart(2, '0');
       const [hour, minute] = time.split(':');
       return `${year}-${month}-${dayStr} ${hour}:${minute}`;
+    },
+    offsetSelectChange(val, offsetType) {
+      if (offsetType === 0) {
+        if (this.form.endTimeOffsetDay) {
+          if (Number(this.form.endTimeOffsetDay) < Number(val)) {
+            this.$modal.msgError("开始时间不能大于结束时间")
+            return
+          }
+          if (Number(this.form.endTimeOffsetDay) - Number(val) > 1) {
+            this.$modal.msgError("时间跨度不能大于一天")
+            this.disSubmit = true
+            return
+          }
+        }
+        this.form.startTimeOffsetDay = val;
+      } else {
+        if (this.form.startTimeOffsetDay) {
+          if (Number(this.form.startTimeOffsetDay) > Number(val)) {
+            this.$modal.msgError("开始时间不能大于结束时间")
+            return
+          }
+          if (Number(val) - Number(this.form.startTimeOffsetDay) > 1) {
+            this.$modal.msgError("时间跨度不能大于一天")
+            this.disSubmit = true
+            return
+          }
+        }
+        this.form.endTimeOffsetDay = val;
+      }
+
+      this.disSubmit = false
     }
   }
 };
