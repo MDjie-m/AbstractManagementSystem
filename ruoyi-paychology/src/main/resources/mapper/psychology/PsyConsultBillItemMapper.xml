@@ -57,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <update id="finishOrderItem">
         update
-            psy_consultant_schedule
+            psy_consult_order_item
         set
             status = 1
         where
