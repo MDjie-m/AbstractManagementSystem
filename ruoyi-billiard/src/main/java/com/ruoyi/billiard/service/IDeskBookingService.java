@@ -4,19 +4,19 @@ import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import  com.ruoyi.billiard.domain.DeskBooking;
+import com.ruoyi.billiard.domain.DeskBooking;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 
 /**
  * 球桌预约Service接口
- * 
+ *
  * @author ruoyi
  * @date 2024-09-25
  */
-public interface IDeskBookingService  extends IService<DeskBooking>
-{
+public interface IDeskBookingService extends IService<DeskBooking> {
     /**
      * 查询球桌预约
-     * 
+     *
      * @param deskBookingId 球桌预约主键
      * @return 球桌预约
      */
@@ -24,7 +24,7 @@ public interface IDeskBookingService  extends IService<DeskBooking>
 
     /**
      * 查询球桌预约列表
-     * 
+     *
      * @param deskBooking 球桌预约
      * @return 球桌预约集合
      */
@@ -32,7 +32,7 @@ public interface IDeskBookingService  extends IService<DeskBooking>
 
     /**
      * 新增球桌预约
-     * 
+     *
      * @param deskBooking 球桌预约
      * @return 结果
      */
@@ -40,7 +40,7 @@ public interface IDeskBookingService  extends IService<DeskBooking>
 
     /**
      * 修改球桌预约
-     * 
+     *
      * @param deskBooking 球桌预约
      * @return 结果
      */
@@ -48,7 +48,7 @@ public interface IDeskBookingService  extends IService<DeskBooking>
 
     /**
      * 批量删除球桌预约
-     * 
+     *
      * @param deskBookingIds 需要删除的球桌预约主键集合
      * @return 结果
      */
@@ -56,7 +56,7 @@ public interface IDeskBookingService  extends IService<DeskBooking>
 
     /**
      * 删除球桌预约信息
-     * 
+     *
      * @param deskBookingId 球桌预约主键
      * @return 结果
      */
@@ -65,4 +65,6 @@ public interface IDeskBookingService  extends IService<DeskBooking>
     Map<String, List<DeskBooking>> selectBookingDayMap(DeskBooking booking);
 
     void checkBookingExpire(Integer timeMinutes);
+
+    List<KeyValueVo<Long, Long>> selectBookingCount(List<Long> ids);
 }

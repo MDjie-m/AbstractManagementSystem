@@ -1,6 +1,7 @@
 package com.ruoyi.billiard.domain;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -106,9 +107,14 @@ public class StoreDesk extends MyBaseEntity
 
 
 
+    @TableField(exist = false)
+    private Date bookingStart;
+
+    @TableField(exist = false)
+    private Date bookingEnd;
 
 
-
-
+    @TableField(exist = false)
+    private Long bookingCount;
 
 }

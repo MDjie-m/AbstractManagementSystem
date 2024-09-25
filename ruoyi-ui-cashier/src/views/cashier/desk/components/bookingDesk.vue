@@ -1,6 +1,18 @@
 <template>
   <div class="   input-container">
     <div class="container-wrapper" v-show="showList">
+      <!--      <div class="section-container">-->
+      <!--        <el-time-select-->
+      <!--          placeholder="起始时间"-->
+      <!--          v-model="deskQueryParams.startTime"-->
+      <!--          :picker-options="{  start: '00:00',  step: '00:30',  end: '24:00'  }">-->
+      <!--        </el-time-select>-->
+      <!--        <el-time-select-->
+      <!--          placeholder="结束时间"-->
+      <!--          v-model="deskQueryParams.endTime"-->
+      <!--          :picker-options="{  start: '00:00', step: '00:30',   end: '24:00',  minTime: deskQueryParams.startTime-->
+      <!--          }"/>-->
+      <!--      </div>-->
       <template v-for="placeItem in dict.type.store_desk_place">
         <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
         <div class="desk-container">
@@ -11,9 +23,8 @@
               <div class="desk-item-name"> {{ desk.deskName }}</div>
               <div class="desk-item-num"> {{ desk.deskNum }}</div>
               <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
+              <div class="desk-item-price"> 预约: <span class="desk-item-count">{{ desk.bookingCount }}</span>  </div>
             </div>
-
-
           </el-card>
 
         </div>
@@ -113,13 +124,13 @@
 </template>
 <script>
 
-import {addDeskBooking, delDeskBooking, getBookingMap} from "@/api/cashier/desk";
+import {addDeskBooking, delDeskBooking, getBookingMap, listDesk} from "@/api/cashier/desk";
 import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
 import {DeskBookingStatus, formatTime} from "@/views/cashier/components/constant";
 
 export default {
   components: {CustomDialog},
-  props: ['memberId', "deskList"],
+  props: ['memberId'],
   emits: ["ok"],
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
   computed: {
@@ -129,6 +140,7 @@ export default {
   },
 
   data() {
+
     const validateTime = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("请选择时间"));
@@ -145,11 +157,17 @@ export default {
 
     };
     return {
+      deskList: [],
       showAdd: false,
       timeOptions: {
         start: '00:01',
         step: '00:30',
         end: '24:00',
+      },
+      deskQueryParams: {
+        day: this.$time().format("YYYY-MM-DD"),
+        startTime: "00:00",
+        endTime: "24:00",
       },
       bookingRules: {
         startTime: [
@@ -199,8 +217,14 @@ export default {
   mounted() {
 
     this.onMonthChanged();
+    this.getDeskList();
   },
   methods: {
+    getDeskList() {
+      listDesk({bookingCount:1}).then(res => {
+        this.deskList = res.data;
+      })
+    },
     onRemoveBookingClick(day, idx) {
       let item = this.bookingMap[day][idx];
       let id = item.deskBookingId
@@ -309,14 +333,17 @@ export default {
   border: 1px solid #dfe6ec;
   flex-direction: column;
   display: flex;
-  .day-header-box{
+
+  .day-header-box {
     display: flex;
     width: 100%;
+
     .day-header {
       display: flex;
       padding: 10px;
       position: relative;
       border-bottom: 1px solid #dfe6ec;
+
       &:not(:last-child) {
         border-right: 1px solid #dfe6ec
       }
@@ -348,7 +375,8 @@ export default {
     }
 
   }
-  .day-content-box{
+
+  .day-content-box {
     display: flex;
     flex: 1;
     overflow-y: auto;
@@ -365,7 +393,6 @@ export default {
   &:not(:last-child) {
     border-right: 1px solid #dfe6ec
   }
-
 
 
   .tag-container {
@@ -495,6 +522,11 @@ export default {
 
     &-price {
       font-size: 12px;
+    }
+    &-count{
+      font-size: 13px;
+      font-weight: bold;
+      color: #ff4949;
     }
   }
 

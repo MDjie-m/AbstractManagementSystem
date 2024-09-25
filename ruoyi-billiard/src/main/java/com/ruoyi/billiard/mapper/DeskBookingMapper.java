@@ -2,8 +2,10 @@ package com.ruoyi.billiard.mapper;
 
 import java.util.List;
 import com.ruoyi.billiard.domain.DeskBooking;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 球桌预约Mapper接口
@@ -46,4 +48,6 @@ public interface DeskBookingMapper extends MyBaseMapper<DeskBooking>
      * @return 结果
      */
     public int deleteDeskBookingByDeskBookingIds(Long[] deskBookingIds);
+
+    List<KeyValueVo<Long, Long>> selectBookingCount(@Param("deskIds") List<Long> deskIds);
 }

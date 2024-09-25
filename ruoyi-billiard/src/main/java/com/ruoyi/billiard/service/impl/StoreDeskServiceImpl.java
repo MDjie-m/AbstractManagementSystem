@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
@@ -19,11 +20,9 @@ import com.ruoyi.billiard.mapper.OrderDeskScoreMapper;
 import com.ruoyi.billiard.mapper.OrderDeskTimeMapper;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
 import com.ruoyi.billiard.service.*;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.common.utils.AssertUtil;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.*;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -45,6 +44,9 @@ import javax.annotation.Resource;
 public class StoreDeskServiceImpl implements IStoreDeskService {
     @Autowired
     private StoreDeskMapper storeDeskMapper;
+
+    @Autowired
+    private IDeskBookingService deskBookingService;
     @Autowired
     private OrderDeskTimeMapper orderDeskTimeMapper;
     @Autowired
@@ -92,11 +94,32 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
                 .eq(Objects.nonNull(storeDesk.getPlaceType()), "a.place_type", storeDesk.getPlaceType())
                 .eq(Objects.nonNull(storeDesk.getDeskNum()), "a.desk_num", storeDesk.getDeskNum())
                 .eq(Objects.nonNull(storeDesk.getStoreId()), "a.store_id", storeDesk.getStoreId())
-                .in(CollectionUtils.isNotEmpty(storeDesk.getStatusList()), "a.status", storeDesk.getStatusList())
-        ;
+                .in(CollectionUtils.isNotEmpty(storeDesk.getStatusList()), "a.status", storeDesk.getStatusList());
+        if (Objects.nonNull(storeDesk.getBookingStart())
+                && Objects.nonNull(storeDesk.getBookingEnd())) {
+            String start = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_00, storeDesk.getBookingStart());
+            String end = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_00, storeDesk.getBookingEnd());
+            String startLimit = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, storeDesk.getBookingStart());
+            String existSql = StringUtils.format("(select 1  from t_desk_booking b\n" +
+                    "                 where a.desk_id = b.desk_id\n" +
+                    "                   and ((b.start_time < '{}' and b.end_time > '{}')\n" +
+                    "                     or ('{}' between b.start_time and b.end_time))\n" +
+                    "                   and b.status in (0, 1) and b.start_time >{} )", start, start, end, startLimit);
+            ;
+            queryWrapper.notExists(existSql);
+        }
 
 
-        return storeDeskMapper.selectStoreDeskList(queryWrapper);
+        List<StoreDesk> res = storeDeskMapper.selectStoreDeskList(queryWrapper);
+        if (Objects.nonNull(storeDesk.getBookingCount()) && CollectionUtils.isNotEmpty(res)) {
+            Map<Long, Long> map = ArrayUtil.toMap(deskBookingService
+                            .selectBookingCount(res.stream().map(StoreDesk::getDeskId).collect(Collectors.toList())),
+                    KeyValueVo::getKey, KeyValueVo::getValue);
+            res.forEach(p -> {
+                p.setBookingCount(map.getOrDefault(p.getDeskId(), 0L));
+            });
+        }
+        return res;
     }
 
     /**

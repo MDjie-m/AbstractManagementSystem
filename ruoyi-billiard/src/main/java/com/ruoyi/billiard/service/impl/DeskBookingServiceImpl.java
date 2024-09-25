@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.enums.BookingStatus;
 import com.ruoyi.billiard.mapper.DeskBookingMapper;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.utils.ArrayUtil;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
@@ -126,5 +127,10 @@ public class DeskBookingServiceImpl extends ServiceImpl<DeskBookingMapper, DeskB
                 .ge(DeskBooking::getStartTime, DateUtils.toDate(LocalDateTime.now().minusHours(24)))
                 .set(DeskBooking::getStatus, BookingStatus.EXPIRE)
                 .set(BaseEntity::getRemark, "系统检测超时，自动过期"));
+    }
+
+    @Override
+    public List<KeyValueVo<Long, Long>>selectBookingCount(List<Long> deskIds) {
+        return baseMapper.selectBookingCount (deskIds) ;
     }
 }
