@@ -133,4 +133,8 @@ public class PsyConsultBillItem extends BasePlusEntity implements Serializable
 
     private Long payUserId;//付款用户id
     private Integer payUserType;//付款用户类型
+    private Integer payAndChargeNum;//收费人付费人之间第几次合作/团督第几次讲课
+    @TableField(exist = false)
+    private Integer teamTimeNUm;//团督第几次讲课
+    
 }

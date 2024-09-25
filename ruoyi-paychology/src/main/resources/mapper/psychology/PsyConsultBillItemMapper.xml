@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertBatch">
         INSERT INTO psy_consult_bill_item (id, bill_id, order_id, team_id, consult_id, consult_name, type, ratio, order_no, order_time, serve_name, serve_type, 
                                            buy_num, order_num, num, nick_name, price, brokerage, order_total, use_time, bill_time, create_by, create_time, 
-                                           update_by, update_time, buy_num_str, schedule_type, pay_user_id, pay_user_type)
+                                           update_by, update_time, buy_num_str, schedule_type, pay_user_id, pay_user_type, pay_and_charge_num)
         VALUES
         <foreach collection="list" item="item" separator=",">
             (
@@ -38,7 +38,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.buyNumStr},
             #{item.scheduleType},
             #{item.payUserId},
-            #{item.payUserType}
+            #{item.payUserType},
+            #{item.payAndChargeNum}
             )
         </foreach>
     </insert>
@@ -82,12 +83,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             1 as payUserType,
             d.nick_name  nick_name,
             d.original_price  order_total,
-            STR_TO_DATE(a.real_time, '%Y-%m-%d %H:%i') use_time,
+            STR_TO_DATE(concat(a.day,' ',a.time_start), '%Y-%m-%d %H:%i') use_time,
             a.create_by  create_by,
             a.create_time  create_time,
             a.update_by  update_by,
             a.update_time  update_time,
-            12 as scheduleType
+            12 as scheduleType,
+            (
+                select
+                count(item.id)
+                from
+                psy_consult_order_item item
+                left join psy_consult_order orde on orde.id = item.order_id
+                where
+                item.consult_id =  a.consult_id
+                and item.status in (0,1)
+                and orde.user_id = d.user_id
+                AND STR_TO_DATE(CONCAT(item.day, ' ', item.time_start), '%Y-%m-%d %H:%i') &lt;= STR_TO_DATE(CONCAT(a.day, ' ', a.time_start), '%Y-%m-%d %H:%i')
+            ) AS payAndChargeNum
         FROM
             psy_consult_order_item a
                 LEFT JOIN psy_consult_bill_item f on a.id = f.id
@@ -121,13 +134,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             2 as payUserType,
             d.pay_consultant_name  nick_name,
             d.original_price  order_total,
-            STR_TO_DATE(sc.real_time, '%Y-%m-%d %H:%i') use_time,
+            STR_TO_DATE(concat(sc.day,' ',sc.time_start), '%Y-%m-%d %H:%i') use_time,
             sc.real_time realTime,
             sc.create_by  create_by,
             sc.create_time  create_time,
             sc.update_by  update_by,
             sc.update_time  update_time,
-            sc.schedule_type as scheduleType
+            sc.schedule_type as scheduleType,
+            (
+                select
+                    count(sc1.id)
+                from
+                    psy_consultant_schedule sc1
+                where
+                    sc1.consult_id =  sc.consult_id
+                  and sc1.status in (0,1,4)
+                  and sc1.create_by = sc.create_by
+                  AND STR_TO_DATE(CONCAT(sc1.day, ' ', sc1.time_start), '%Y-%m-%d %H:%i') &lt;= STR_TO_DATE(CONCAT(sc.day, ' ', sc.time_start), '%Y-%m-%d %H:%i')
+            ) AS payAndChargeNum,
+            sc.time_num AS teamTimeNUm
         FROM
             psy_consultant_schedule sc
                 LEFT JOIN psy_consult_bill_item f on sc.id = f.id

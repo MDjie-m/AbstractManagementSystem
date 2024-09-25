@@ -15,7 +15,7 @@ import java.util.List;
 public interface PsyConsultServeConfigMapper extends BaseMapper<PsyConsultServeConfig>
 {
 
-    List<PsyConsultServeConfig> getList(PsyConsultServeConfigReq req);
+    List<PsyConsultServeConfig> getConfigList(PsyConsultServeConfigReq req);
 
     int tombstonedByIds(Long[] ids);
 

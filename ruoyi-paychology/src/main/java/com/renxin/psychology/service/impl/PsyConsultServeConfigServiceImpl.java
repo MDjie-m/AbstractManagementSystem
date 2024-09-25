@@ -80,7 +80,7 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
             req.setServiceObject(one.getServiceObject());
         }
 
-        List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getList(req);
+        List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getConfigList(req);
         list.forEach(this::setNames);
         return list;
     }
@@ -140,7 +140,7 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
             newReq.setLevel(req.getLevel());
             newReq.setType(1);
             newReq.setServiceObject(serviceObject);
-            List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getList(newReq);
+            List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getConfigList(newReq);
             if (ObjectUtils.isNotEmpty(list)){
                 PsyConsultServeConfig old = list.get(0);
                 throw new ServiceException("该级别已有服务对象为" + ServiceObjectEnum.fromKey(old.getServiceObject()).getValue() + "的单次服务条目, 不可重复添加");
@@ -167,7 +167,7 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
             newReq.setLevel(req.getLevel());
             newReq.setType(1);
             newReq.setServiceObject(serviceObject);
-            List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getList(newReq);
+            List<PsyConsultServeConfig> list = psyConsultServeConfigMapper.getConfigList(newReq);
             if (ObjectUtils.isNotEmpty(list) && !Objects.equals(list.get(0).getId(), req.getId())){
                 PsyConsultServeConfig old = list.get(0);
                 throw new ServiceException("[该级别]已有服务对象为[" + ServiceObjectEnum.fromKey(old.getServiceObject()).getValue() + "]的[单次服务]条目, 不可重复添加");

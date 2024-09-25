@@ -199,10 +199,16 @@ public class PsyUserServiceImpl implements IPsyUserService {
             itemReq.setConsultId(req.getChargeConsultantId());
             itemReq.setUserId(psyUser.getId()+"");
             itemReq.setOrderDir("desc");
-            itemReq.setOrderBy("item.real_time");
+            itemReq.setOrderBy("concat(item.day,' ',item.time_start)");
             List<OrderItemDTO> orderItemChargeList = orderItemService.queryOrderItemList(itemReq);
+            int timeNum = 1;
+            for (int i = orderItemChargeList.size() - 1; i >= 0; i--) {
+                if ("0".equals(orderItemChargeList.get(i).getStatus()) || "1".equals(orderItemChargeList.get(i).getStatus())){
+                    orderItemChargeList.get(i).setTimeNum(timeNum++);
+                }
+            }
             
-            //查询该顾客在本平台的咨询记录
+            /*//查询该顾客在本平台的咨询记录
             itemReq.setConsultId(null);
             itemReq.setOrderDir("asc");
             List<OrderItemDTO> orderItemList = orderItemService.queryOrderItemList(itemReq);
@@ -214,7 +220,7 @@ public class PsyUserServiceImpl implements IPsyUserService {
                         itemCharge.setRowNum(i);
                     }
                 }
-            }
+            }*/
             psyUser.setOrderItemList(orderItemChargeList);  
         }
         return psyUser;

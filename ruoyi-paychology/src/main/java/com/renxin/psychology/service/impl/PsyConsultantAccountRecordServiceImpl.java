@@ -8,6 +8,7 @@ import com.renxin.common.utils.DateUtils;
 import com.renxin.psychology.domain.PsyConsultantAccountRecord;
 import com.renxin.psychology.mapper.PsyConsultantAccountRecordMapper;
 import com.renxin.psychology.service.IPsyConsultantAccountRecordService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,26 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
     @Override
     public List<PsyConsultantAccountRecord> selectPsyConsultantAccountRecordList(PsyConsultantAccountRecord psyConsultantAccountRecord)
     {
-        return psyConsultantAccountRecordMapper.selectPsyConsultantAccountRecordList(psyConsultantAccountRecord);
+        List<PsyConsultantAccountRecord> recordList = psyConsultantAccountRecordMapper.selectPsyConsultantAccountRecordList(psyConsultantAccountRecord);
+        for (PsyConsultantAccountRecord record : recordList) {
+            if (ObjectUtils.isEmpty(record.getServerTitle())){
+                record.setServerTitle(record.getScheduleType());
+            }
+        }
+        return recordList;
+    }
+    
+    //翻译任务类型名
+    private String transforScheduleType(String scheduleType){
+        switch (scheduleType){
+            case "12":
+                return "咨询";
+            case "22":
+                return "个人督导";
+            case "23":
+                return "个人体验";
+        }
+        return "";
     }
 
     //统计支取清单

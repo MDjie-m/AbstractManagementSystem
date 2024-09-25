@@ -88,4 +88,12 @@ public class PsyConsultantAccountRecord extends BaseEntity
     @TableField(exist = false)
     //订单任务类型  12.咨询  21.团督  22.个督  23.体验
     private String scheduleType;
+    @TableField(exist = false)
+    private Long payUserId;//付款用户id
+    @TableField(exist = false)
+    private Integer payUserType;//付款用户类型
+    @TableField(exist = false)
+    private Integer payAndChargeNum;//收费人付费人之间第几次合作/团督第几次讲课
+    @TableField(exist = false)
+    private String serverTitle;//服务类型标题
 }

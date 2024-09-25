@@ -97,7 +97,6 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
         
         //自动完成已到时的任务
         mapper.finishSchedule();
-        
         //咨询师订单核销
         List<PsyConsultBillItem> consultantOrderItemList = mapper.getConsultantOrderItems();
         if (CollectionUtils.isNotEmpty(consultantOrderItemList)) {
@@ -121,14 +120,15 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
                         it.setBrokerage(it.getPrice().multiply(it.getRatio().divide(new BigDecimal(100), 2, BigDecimal.ROUND_UP)));
                         //剩余次数 = 总次数 - 已执行次数
                         it.setNum(it.getOrderNum() - it.getBuyNum());
+                    }else{
+                        it.setPayAndChargeNum(it.getTeamTimeNUm());
+                        it.setPayUserId(10000L);
                     }
                 });
             });
             mapper.insertBatch(consultantOrderItemList);
             allotToAcct(consultantOrderItemList);
         }
-        
-        
     }
     
     //分配金额到账户
@@ -142,6 +142,7 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
                 record.setPayAmount(bill.getBrokerage());
                 record.setCreateBy("system");
                 record.setCreateTime(new Date());
+                record.setDelFlag("0");
             acctRecordList.add(record);
         }
         accountRecordService.insertPsyConsultantAccountRecordBatch(acctRecordList);

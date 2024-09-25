@@ -315,8 +315,6 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        orderByColumn: 'create_time',
-        isAsc: 'descending',
         dateLimit: null,
         cId: null,
         type: null,

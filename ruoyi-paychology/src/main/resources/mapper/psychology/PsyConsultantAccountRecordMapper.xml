@@ -24,6 +24,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="bankName"    column="bank_name"    />
         <result property="branchName"    column="branch_name"    />
         <result property="scheduleType"    column="schedule_type"    />
+        <result property="payUserId"    column="pay_user_id"    />
+        <result property="payUserType"    column="pay_user_type"    />
+        <result property="payAndChargeNum"    column="pay_and_charge_num"    />
     </resultMap>
 
     <sql id="selectPsyConsultantAccountRecordVo">
@@ -33,25 +36,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectPsyConsultantAccountRecordList" parameterType="PsyConsultantAccountRecord" resultMap="PsyConsultantAccountRecordResult">
         select
         red.record_id, red.consultant_id, red.status, red.pay_type, red.bill_item_id, red.account_amount, red.pay_amount, red.pay_message,
-               red.create_by, red.create_time, red.update_by, red.update_time , bItem.schedule_type
-               
+               red.create_by, red.create_time, red.update_by, red.update_time , 
+               bItem.schedule_type, bItem.pay_user_id, bItem.pay_user_type, bItem.pay_and_charge_num, 
+               team.title as serverTitle
         from psy_consultant_account_record red
             left join psy_consult_bill_item bItem on red.bill_item_id = bItem.id
+            left join psy_consultant_team_supervision team on bItem.team_id = team.id
 
         <where>  
             red.del_flag = 0 
-            <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
-            <if test="billItemId != null  and billItemId != ''"> and bill_item_id = #{billItemId}</if>
-            <if test="accountAmount != null  and accountAmount != ''"> and account_amount = #{accountAmount}</if>
-            <if test="payAmount != null "> and pay_amount = #{payAmount}</if>
-            <if test="payMessage != null  and payMessage != ''"> and pay_message = #{payMessage}</if>
+            <if test="consultantId != null "> and red.consultant_id = #{consultantId}</if>
+            <if test="status != null  and status != ''"> and red.status = #{status}</if>
+            <if test="payType != null  and payType != ''"> and red.pay_type = #{payType}</if>
+            <if test="billItemId != null  and billItemId != ''"> and red.bill_item_id = #{billItemId}</if>
+            <if test="accountAmount != null  and accountAmount != ''"> and red.account_amount = #{accountAmount}</if>
+            <if test="payAmount != null "> and red.pay_amount = #{payAmount}</if>
+            <if test="payMessage != null  and payMessage != ''"> and red.pay_message = #{payMessage}</if>
              <if test="createTimeStart != null and createTimeStart != '' and createTimeEnd != null and createTimeStart != ''">
-                 and create_time between #{createTimeStart} and concat(#{createTimeEnd},' 23:59:59')
+                 and red.create_time between #{createTimeStart} and concat(#{createTimeEnd},' 23:59:59')
              </if>
         </where>
-        order by update_time desc
+        order by red.update_time desc
     </select>
 
 

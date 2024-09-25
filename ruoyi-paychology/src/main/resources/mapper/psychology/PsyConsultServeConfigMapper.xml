@@ -30,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
     
 
-    <select id="getList" parameterType="PsyConsultServeConfig" resultMap="PsyConsultServeConfigResult">
+    <select id="getConfigList" parameterType="PsyConsultServeConfig" resultMap="PsyConsultServeConfigResult">
         select cf.id, cf.mode, cf.type, cf.name, cf.info, cf.price, cf.time, cf.num,cf.consultant_ratio,
             (SELECT COUNT(id) from psy_consult_order WHERE
             serve_id = cf.id and pay_status = '2'
@@ -70,7 +70,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
         
         </where>
-        order by z_index desc
+        order by cf.z_index asc
     </select>
 
     <update id="tombstonedByIds">
