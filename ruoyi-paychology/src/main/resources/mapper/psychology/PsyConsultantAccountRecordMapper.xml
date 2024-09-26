@@ -28,6 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="payUserType"    column="pay_user_type"    />
         <result property="payAndChargeNum"    column="pay_and_charge_num"    />
         <result property="useTime"    column="use_time"    />
+        <result property="serveName"    column="serve_name"    />
     </resultMap>
 
     <sql id="selectPsyConsultantAccountRecordVo">
@@ -36,11 +37,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectPsyConsultantAccountRecordList" parameterType="PsyConsultantAccountRecord" resultMap="PsyConsultantAccountRecordResult">
         select
-        red.record_id, red.consultant_id, red.status, red.pay_type, red.bill_item_id, red.account_amount, red.pay_amount, red.pay_message,
-               red.create_by, red.create_time, red.update_by, red.update_time , 
+               red.record_id, red.consultant_id, red.status, red.pay_type, red.bill_item_id, red.account_amount, red.pay_amount, red.pay_message,
+               red.create_by, red.create_time, red.update_by, red.update_time , red.use_time ,
                bItem.schedule_type, bItem.pay_user_id, bItem.pay_user_type, bItem.pay_and_charge_num, ifnull(user.name,con.nick_name) as payUserName,
-                bItem.use_time ,
-               team.title as serverTitle 
+               bItem.serve_name, 
+               team.title as serverTitle
+               
         from psy_consultant_account_record red
             left join psy_consult_bill_item bItem on red.bill_item_id = bItem.id
             left join psy_consultant_team_supervision team on bItem.team_id = team.id
@@ -59,8 +61,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="createTimeStart != null and createTimeStart != '' and createTimeEnd != null and createTimeStart != ''">
                  and red.create_time between #{createTimeStart} and concat(#{createTimeEnd},' 23:59:59')
              </if>
+            <if test="isHideZero">
+                and red.pay_amount != 0
+            </if>
         </where>
-        order by bItem.use_time desc
+        order by red.use_time desc
     </select>
 
 
@@ -115,6 +120,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="useTime != null">use_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="recordId != null">#{recordId},</if>
@@ -130,6 +136,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="useTime != null">#{useTime},</if>
          </trim>
     </insert>
     <insert id="insertPsyConsultantAccountRecordBatch" parameterType="list">
@@ -146,7 +153,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             create_by,
             create_time,
             update_by,
-            update_time
+            update_time,
+            use_time
         ) values
         <foreach collection="list" item="item" index="index" separator=",">
             (
@@ -162,7 +170,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item.createBy},
             #{item.createTime},
             #{item.updateBy},
-            #{item.updateTime}
+            #{item.updateTime},
+            #{item.useTime}
             )
         </foreach>
     </insert>
@@ -182,6 +191,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="useTime != null">use_time = #{useTime},</if>
         </trim>
         where record_id = #{recordId}
     </update>

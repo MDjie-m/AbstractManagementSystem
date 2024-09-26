@@ -49,6 +49,9 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
         for (PsyConsultantAccountRecord record : recordList) {
             if (ObjectUtils.isEmpty(record.getServerTitle())){
                 record.setServerTitle(transforScheduleType(record.getScheduleType()));
+                if (ObjectUtils.isEmpty(record.getServeName())){
+                    record.setServeName(record.getServerTitle());
+                }
             }
         }
         return recordList;
@@ -60,6 +63,8 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
             switch (scheduleType){
                 case "12":
                     return "咨询";
+                case "21":
+                    return "团队督导";
                 case "22":
                     return "个人督导";
                 case "23":
@@ -99,6 +104,7 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
         }
         
         req.setCreateTime(DateUtils.getNowDate());
+        req.setUseTime(DateUtils.getNowDate());
         return psyConsultantAccountRecordMapper.insertPsyConsultantAccountRecord(req);
     }
     

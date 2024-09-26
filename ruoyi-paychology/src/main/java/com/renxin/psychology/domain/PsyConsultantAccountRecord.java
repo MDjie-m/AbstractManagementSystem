@@ -43,10 +43,11 @@ public class PsyConsultantAccountRecord extends BaseEntity
 
     /** 支付前账户余额 */
     private String accountAmount;
-
-
+    
     /** 支付消息结果 */
     private String payMessage;
+    
+
 
     /** 0 未删除 1 删除 */
     private String delFlag;
@@ -54,6 +55,9 @@ public class PsyConsultantAccountRecord extends BaseEntity
     /** 生成时间 */
     //@Excel(name = "生成时间", dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    @TableField(exist = false)
+    private Boolean isHideZero;//是否隐藏金额为0的记录
     
     @TableField(exist = false)
     private String createTimeStart;
@@ -97,8 +101,11 @@ public class PsyConsultantAccountRecord extends BaseEntity
     @TableField(exist = false)
     private Integer payAndChargeNum;//收费人付费人之间第几次合作/团督第几次讲课
     @TableField(exist = false)
+    private String serveName;//服务名称
+    
+    @TableField(exist = false)
     private String serverTitle;//服务类型标题
     @TableField(exist = false)
-    private String useTime;//使用时间
+    private Date useTime;//使用时间
     
 }

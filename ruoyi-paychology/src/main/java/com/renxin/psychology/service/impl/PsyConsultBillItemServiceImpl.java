@@ -142,6 +142,7 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
                 record.setPayAmount(bill.getBrokerage());
                 record.setCreateBy("system");
                 record.setCreateTime(new Date());
+                record.setUseTime(bill.getUseTime());
                 record.setDelFlag("0");
             acctRecordList.add(record);
         }

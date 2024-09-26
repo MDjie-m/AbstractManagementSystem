@@ -44,14 +44,12 @@ public class ConsultantAccountRecordController extends BaseController
      */
     //@PreAuthorize("@ss.hasPermi('system:record:list')")
     @PostMapping("/list")
-    public TableDataInfo list(PsyConsultantAccountRecord psyConsultantAccountRecord,HttpServletRequest request)
+    public TableDataInfo list(@RequestBody PsyConsultantAccountRecord psyConsultantAccountRecord,HttpServletRequest request)
     {
         Long consultId = consultantTokenService.getConsultId(request);
         psyConsultantAccountRecord.setConsultantId(consultId);
         startPage();
         List<PsyConsultantAccountRecord> list = psyConsultantAccountRecordService.selectPsyConsultantAccountRecordList(psyConsultantAccountRecord);
-
-        psyConsultBillItemService.batchAdd();
         
         return getDataTable(list);
     }
