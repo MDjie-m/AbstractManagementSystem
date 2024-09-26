@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.billiard.domain.vo.IAdd;
+import com.ruoyi.billiard.domain.vo.IQuery;
 import com.ruoyi.billiard.enums.BookingStatus;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
@@ -109,10 +111,9 @@ public class DeskBooking extends MyBaseEntity {
 
     @TableField("store_id")
     private Long storeId;
+    @TableField(exist = false)
+    private String deskTitle;
 
-
-    public interface IQuery {
-    }
-    public interface IAdd {
-    }
+    @TableField(exist = false)
+    private String keyword;
 }

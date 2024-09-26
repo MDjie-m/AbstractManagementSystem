@@ -73,7 +73,7 @@
       <ToolBar title="预约/排队" v-if="!(currentDesk &&currentDesk.lastActiveOrder)">
         <SvgItem svg-icon="desk" label="台桌预约"  @click.native="onOpenLineUpClick(DeskDialogTitle.BookingDesk)"/>
         <SvgItem svg-icon="tutor" label="教练预约" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingTutor)"/>
-        <SvgItem svg-icon="qrcode" label="预约核销" @click.native="onOpenLineUpClick(DeskDialogTitle.FinishBooking)"/>
+        <SvgItem svg-icon="qrcode" label="预约核销" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingVerify)"/>
         <SvgItem svg-icon="line_up" label="排队叫号" @click.native="onOpenLineUpClick(DeskDialogTitle.LineUp)"/>
       </ToolBar>
     </left-container>
@@ -156,6 +156,8 @@
       <content-wrapper :visible.sync="openNewDialog" :title="title">
         <line-up v-if="title===DeskDialogTitle.LineUp"/>
         <booking-desk :desk-list="deskList" v-if="title===DeskDialogTitle.BookingDesk"/>
+        <booking-tutor v-if="title===DeskDialogTitle.BookingTutor"/>
+        <booking-verify v-if="title===DeskDialogTitle.BookingVerify"/>
       </content-wrapper>
     </div>
 
@@ -240,7 +242,8 @@ import {orderPrePay, orderStopDesk, stopOrder, suspendOrder, voidOrder} from "@/
 import {OrderStatus, DeskStatus, LightType, ChooseType, DeskDialogTitle} from "@/views/cashier/components/constant";
 import BookingDesk from "@/views/cashier/desk/components/bookingDesk.vue";
 
-
+import BookingTutor from "@/views/cashier/desk/components/bookingTutor/index.vue";
+import BookingVerify from "@/views/cashier/desk/components/bookingVerify/index.vue";
 export default {
   name: "Desk",
   computed: {
@@ -251,7 +254,7 @@ export default {
       return ChooseType
     }
   },
-  components: {BookingDesk, LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
+  components: {BookingVerify,BookingDesk,BookingTutor, LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
 
   data() {

@@ -51,12 +51,12 @@ export const DeskDialogTitle = Object.freeze({
   LineUp: '排队叫号',
   BookingDesk: "台桌预约",
   BookingTutor: "教练预约",
-  FinishBooking: "预约核销"
+  BookingVerify: "预约核销"
 })
 export const formatTime = (val, format) => {
   return Vue.prototype.$time(val).format(format || 'YYYY-MM-DD HH:mm')
 }
-export const DeskBookingStatus = Object.freeze({
+export const BookingStatus = Object.freeze({
   Active: 0,//生效中
   Used: 1,//已使用,
   Expire: 2 //"已过期"

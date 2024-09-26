@@ -46,7 +46,7 @@
     </div>
     <div class="container-wrapper" v-if="selectedDesk && !showList">
       <div class="section-container btn-container">
-        <el-button type="primary" icon="el-icon-back" @click="showList=true" circle></el-button>
+        <el-button type="primary" icon="el-icon-back" @click="onBackClick" circle></el-button>
         <div>当前台桌：{{ selectedDesk.title }}</div>
         <div>
           <el-date-picker
@@ -140,7 +140,7 @@
 
 import {addDeskBooking, delDeskBooking, getBookingMap, listDesk} from "@/api/cashier/desk";
 import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
-import {DeskBookingStatus, formatTime} from "@/views/cashier/components/constant";
+import {BookingStatus, formatTime} from "@/views/cashier/components/constant";
 import CustomTip from "@/views/cashier/components/customTip.vue";
 
 export default {
@@ -150,7 +150,7 @@ export default {
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
   computed: {
     DeskBookingStatus() {
-      return DeskBookingStatus
+      return BookingStatus
     }
   },
 
@@ -239,6 +239,10 @@ export default {
     this.getDeskList();
   },
   methods: {
+    onBackClick(){
+      this.showList=true;
+      this.getDeskList();
+    },
     initDayList() {
       let time = this.$time();
       let list = [];

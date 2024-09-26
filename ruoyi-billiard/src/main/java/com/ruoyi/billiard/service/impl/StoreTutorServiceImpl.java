@@ -5,8 +5,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.ruoyi.billiard.domain.OrderTutorTime;
+import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.mapper.OrderTutorTimeMapper;
 import com.ruoyi.billiard.mapper.StoreUserMapper;
+import com.ruoyi.billiard.service.ITutorBookingService;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
@@ -47,6 +49,9 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
     @Resource
     private OrderTutorTimeMapper orderTutorTimeMapper;
 
+    @Resource
+    private ITutorBookingService tutorBookingService;
+
 
     /**
      * 查询门店助教
@@ -82,6 +87,17 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         users.forEach(u -> {
             u.setRoleIds(roleIdMap.getOrDefault(u.getLoginUserId(), Lists.newArrayList()));
         });
+
+        if (Objects.nonNull(storeTutor.getBookingStart()) && Objects.nonNull(storeTutor.getBookingEnd())) {
+            Map<Long, Long> map = ArrayUtil.toMap(tutorBookingService
+                            .selectBookingCount(users.stream()
+                                            .map(StoreTutor::getStoreTutorId).collect(Collectors.toList()),
+                                    storeTutor.getBookingStart(), storeTutor.getBookingEnd()),
+                    KeyValueVo::getKey, KeyValueVo::getValue);
+            users.forEach(p -> {
+                p.setBookingCount(map.getOrDefault(p.getStoreTutorId(), 0L));
+            });
+        }
         return users;
     }
 
@@ -114,7 +130,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         SysUser sysUser = new SysUser();
         sysUser.setAvatar(storeTutor.getUserImg());
         sysUser.setDeptId(100L);
-        sysUser.setUserName(storeTutor.getMobile()+nameSub);
+        sysUser.setUserName(storeTutor.getMobile() + nameSub);
         sysUser.setPhonenumber(storeTutor.getMobile());
         sysUser.setNickName(storeTutor.getRealName());
         sysUser.setPassword(SecurityUtils.encryptPassword(storeTutor.getMobile()));
@@ -181,7 +197,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
      */
     @Override
     public int deleteStoreTutorByStoreTutorId(Long storeTutorId) {
-        AssertUtil.isTrue(!orderTutorTimeMapper.exists(OrderTutorTime::getTutorId,storeTutorId),"教练已被使用,无法删除.");
+        AssertUtil.isTrue(!orderTutorTimeMapper.exists(OrderTutorTime::getTutorId, storeTutorId), "教练已被使用,无法删除.");
         return storeTutorMapper.deleteById(storeTutorId);
     }
 }

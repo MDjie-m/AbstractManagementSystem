@@ -120,6 +120,13 @@ export function getBookingMap(params) {
     params:params
   })
 }
+export function getDeskBookingList(params) {
+  return request({
+    url: `/cashier/desk/booking/list`,
+    method: 'get',
+    params:params
+  })
+}
 export function addDeskBooking(params) {
   return request({
     url: `/cashier/desk/booking`,

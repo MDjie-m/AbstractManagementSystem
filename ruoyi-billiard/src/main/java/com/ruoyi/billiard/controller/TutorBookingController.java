@@ -78,7 +78,7 @@ public class TutorBookingController extends BaseController
     @PreAuthorize("@ss.hasPermi('billiard:booking:add')")
     @Log(title = "教练预约", businessType = BusinessType.INSERT)
     @PostMapping
-    public ResultVo<Integer> add(@RequestBody TutorBooking tutorBooking)
+    public ResultVo<TutorBooking> add(@RequestBody TutorBooking tutorBooking)
     {
         return ResultVo.success(tutorBookingService.insertTutorBooking(tutorBooking));
     }

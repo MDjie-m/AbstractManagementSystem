@@ -1,15 +1,22 @@
 <template>
-  <div class="   input-container">
+  <div class=" section-container   input-container">
     <el-tabs v-model="currentTitle" class="tab-container" @tab-click="onTabClick">
-      <el-tab-pane label="充值" name="0" >
-        <el-table v-loading="loading" :data="recharge.list" @change="getRechargeList"
-        >
-          <el-table-column label="订单编号" align="center" prop="orderNo" width="210"/>
-          <el-table-column label="充值金额" align="center" prop="rechargeAmount"/>
-          <el-table-column label="实际支付金额" align="center" prop="totalAmount"/>
-          <el-table-column label="支付折扣金额" align="center" prop="totalDiscountAmount"/>
-          <el-table-column label="充值日期" align="center" prop="createTime"/>
-        </el-table>
+      <el-tab-pane label="充值" name="0">
+        <div class="table-box">
+          <el-table v-loading="loading" :data="recharge.list" @change="getRechargeList" class="table" style="width: 100%;" height="100%"
+          >
+            <el-table-column label="序号" align="center" type="index" width="50">
+              <template v-slot="scope">
+                {{ (recharge.queryParams.pageNum - 1) * recharge.queryParams.pageSize + scope.$index + 1 }}
+              </template>
+            </el-table-column>
+            <el-table-column label="订单编号" align="center" prop="orderNo" width="210"/>
+            <el-table-column label="充值金额" align="center" prop="rechargeAmount"/>
+            <el-table-column label="实际支付金额" align="center" prop="totalAmount"/>
+            <el-table-column label="支付折扣金额" align="center" prop="totalDiscountAmount"/>
+            <el-table-column label="充值日期" align="center" prop="createTime"/>
+          </el-table>
+        </div>
         <pagination
           v-show="recharge.total>0"
           :total="recharge.total"
@@ -18,17 +25,23 @@
           @pagination="getRechargeList"
         />
       </el-tab-pane>
-      <el-tab-pane label="消费" name="1" >
-        <el-table v-loading="loading" :data="deduct.list" @change="getDeductList"
-        >
-          <el-table-column label="订单编号" align="center" prop="orderNo" width="210"/>
-          <el-table-column label="订单金额" align="center" prop="totalAmountDue"/>
-          <el-table-column label="实际支付金额" align="center" prop="totalAmount"/>
-          <el-table-column label="支付折扣金额" align="center" prop="totalDiscountAmount"/>
+      <el-tab-pane label="消费" name="1">
+        <div class="table-box">
+          <el-table v-loading="loading" :data="deduct.list" @change="getDeductList" class="table" style="width: 100%;" height="100%">
+            <el-table-column label="序号" align="center" type="index" width="50">
+              <template v-slot="scope">
+                {{ (deduct.queryParams.pageNum - 1) * deduct.queryParams.pageSize + scope.$index + 1 }}
+              </template>
+            </el-table-column>
+            <el-table-column label="订单编号" align="center" prop="orderNo" width="210"/>
+            <el-table-column label="订单金额" align="center" prop="totalAmountDue"/>
+            <el-table-column label="实际支付金额" align="center" prop="totalAmount"/>
+            <el-table-column label="支付折扣金额" align="center" prop="totalDiscountAmount"/>
 
-          <el-table-column label="消费日期" align="center" prop="updateTime"/>
+            <el-table-column label="消费日期" align="center" prop="updateTime"/>
 
-        </el-table>
+          </el-table>
+        </div>
         <pagination
           v-show="deduct.total>0"
           :total="deduct.total"
@@ -82,10 +95,10 @@ export default {
 
   },
   methods: {
-    onTabClick(){
-      if(this.currentTitle==='0'){
+    onTabClick() {
+      if (this.currentTitle === '0') {
         this.getRechargeList()
-      }else {
+      } else {
         this.getDeductList()
       }
     },
@@ -113,13 +126,38 @@ export default {
 <style scoped lang="scss">
 .input-container {
   display: flex;
-  align-items: start;
   justify-content: center;
   flex: 1;
-  width: 300px !important;
 }
-.tab-container{
+
+.tab-container {
+  flex-direction: column;
   flex: 1;
+  display: flex;
+  overflow: hidden;
+  ::v-deep.el-tabs__content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+
+    .el-tab-pane {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .table-box {
+       position: relative;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .table {
+      position: absolute;
+    }
+  }
 }
 
 

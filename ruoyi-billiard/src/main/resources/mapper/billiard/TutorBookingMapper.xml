@@ -6,29 +6,49 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <sql id="selectTutorBookingVo">
-        select * from t_tutor_booking
+        select   a.*, b.real_name as tutor_title
+        from t_tutor_booking a
+                 left join t_store_tutor b on a.tutor_id = b.store_tutor_id
     </sql>
 
     <select id="selectTutorBookingList" parameterType="TutorBooking" resultType="TutorBooking">
         <include refid="selectTutorBookingVo"/>
         <where>
-            <if test="storeId != null "> and store_id = #{storeId}</if>
-            <if test="startTime != null "> and start_time = #{startTime}</if>
-            <if test="endTime != null "> and end_time = #{endTime}</if>
-            <if test="tutorId != null "> and tutor_id = #{tutorId}</if>
-            <if test="bookingUserName != null  and bookingUserName != ''"> and booking_user_name like concat('%', #{bookingUserName}, '%')</if>
-            <if test="bookingUserMobile != null  and bookingUserMobile != ''"> and booking_user_mobile = #{bookingUserMobile}</if>
-            <if test="status != null "> and status = #{status}</if>
-            <if test="createById != null "> and create_by_id = #{createById}</if>
-            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+            <if test="storeId != null "> and a.store_id = #{storeId}</if>
+            <if test="startTime != null "> and a.start_time >= #{startTime}</if>
+            <if test="endTime != null "> and a.end_time  <![CDATA[<=]]>  #{endTime}</if>
+            <if test="tutorId != null "> and a.tutor_id = #{tutorId}</if>
+            <if test="bookingUserName != null  and bookingUserName != ''"> and a.booking_user_name like concat('%', #{bookingUserName}, '%')</if>
+            <if test="bookingUserMobile != null  and bookingUserMobile != ''"> and a.booking_user_mobile = #{bookingUserMobile}</if>
+            <if test="status != null "> and a.status = #{status}</if>
+            <if test="keyword != null  and keyword != ''"> and  (
+                a.booking_user_name like concat('%', #{keyword}, '%')
+                or
+                a.booking_user_mobile like concat('%', #{keyword}, '%')
+                )
+            </if>
         </where>
+        order by tutor_booking_id desc
     </select>
     
     <select id="selectTutorBookingByTutorBookingId" parameterType="Long" resultType="TutorBooking">
         <include refid="selectTutorBookingVo"/>
         where tutor_booking_id = #{tutorBookingId}
     </select>
+    <select id="selectBookingCount" resultType="com.ruoyi.common.core.domain.model.KeyValueVo">
+        select count(1) as value,tutor_id as `key`
+        from t_tutor_booking where status in (0,1)
+        and (
+        start_time between #{startTime} and #{endTime}
+        or end_time between #{startTime} and #{endTime}
+        )
+        and tutor_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
 
+        group by tutor_id;
+    </select>
 
 
     <delete id="deleteTutorBookingByTutorBookingId" parameterType="Long">

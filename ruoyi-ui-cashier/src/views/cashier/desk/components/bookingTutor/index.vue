@@ -2,7 +2,7 @@
   <div class="   input-container">
 
     <div class="  container-wrapper" v-show="showList">
-      <div class="section-container desk-filter-box">
+      <div class="section-container tutor-filter-box">
 
         <el-select v-model="queryParams.day" @change="getTutorList">
           <el-option :value="item" v-for="item in queryParams.dayList" :label="item"></el-option>
@@ -19,23 +19,24 @@
               }"/>
 
         <el-button v-loading="loading" type="primary" icon="el-icon-search" circle @click="getTutorList"></el-button>
-        <custom-tip content="选择时间段,可查询当前时间段台桌预约数量"></custom-tip>
+        <custom-tip content="选择时间段,可查询当前时间段教练预约数量"></custom-tip>
 
       </div>
-      <div class="section-container desk-items-box">
-        <div class="desk-container">
-          <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
-                   v-for="desk in tutorList">
-            <div class="item-status" :class="`item-status-${desk.status}`"></div>
+      <div class="section-container tutor-items-box">
+        <div class="tutor-container">
+          <el-card @click.native="onTutorClick(item)" class="tutor-item" :class="{'selected':item.selected}"
+                   v-for="item in tutorList">
+            <div class="item-status" :class="`item-status-${item.workStatus}`"></div>
+            <image-preview class="item-img big" :src="item.userImg"/>
             <div>
-              <div class="desk-item-name"> {{ desk.deskName }}</div>
-              <div class="desk-item-num"> {{ desk.deskNum }}</div>
-              <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
-              <div class="desk-item-price"> 预约: <span class="desk-item-count"
-                                                        :class="{'success':desk.bookingCount==='0' }">{{
-                  desk.bookingCount
-                }}</span></div>
+              <div class="tutor-item-name"> {{ item.realName }}</div>
+              <div class="tutor-item-price"> {{ item.price }}元/分钟</div>
             </div>
+            <div class="tutor-item-price"> 预约: <span class="tutor-item-count"
+                                                      :class="{'success':item.bookingCount==='0' }">
+                {{ item.bookingCount }}</span>
+            </div>
+
           </el-card>
 
         </div>
@@ -43,7 +44,7 @@
     </div>
     <div class="container-wrapper" v-if="selectedItem && !showList">
       <div class="section-container btn-container">
-        <el-button type="primary" icon="el-icon-back" @click="showList=true" circle></el-button>
+        <el-button type="primary" icon="el-icon-back" @click="onBackClick" circle></el-button>
         <div>当前台桌：{{ selectedItem.title }}</div>
         <div>
           <el-date-picker
@@ -84,7 +85,7 @@
 
 
                   <i class="el-icon-remove"
-                     v-if="item.status!==DeskBookingStatus.Used"
+                     v-if="item.status!==BookingStatus.Used"
                      @click="onRemoveBookingClick(day,idx)"/>
                 </div>
               </div>
@@ -135,19 +136,19 @@
 </template>
 <script>
 
-import {addDeskBooking, delDeskBooking, getBookingMap, listDesk} from "@/api/cashier/desk";
+import {addTutorBooking, delTutorBooking, getTutorBookingMap, listAllTutor} from "@/api/cashier/tutor";
 import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
-import {DeskBookingStatus, formatTime} from "@/views/cashier/components/constant";
+import {BookingStatus, formatTime} from "@/views/cashier/components/constant";
 import CustomTip from "@/views/cashier/components/customTip.vue";
 
 export default {
   components: {CustomTip, CustomDialog},
-  props: ['memberId'],
+
   emits: ["ok"],
-  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
+  dicts: [ ],
   computed: {
-    DeskBookingStatus() {
-      return DeskBookingStatus
+    BookingStatus() {
+      return BookingStatus
     }
   },
 
@@ -230,12 +231,17 @@ export default {
   mounted() {
     this.initDayList()
     this.onMonthChanged();
-    this.getTutorList();
-    this.queryParams.day=this.$time().format("YYYY-MM-DD")
+
+    this.queryParams.day = this.$time().format("YYYY-MM-DD")
     this.queryParams.startTime = this.$time().format("HH:00")
     this.queryParams.endTime = this.$time().add(2, 'hour').format("HH:00")
+    this.getTutorList();
   },
   methods: {
+    onBackClick(){
+      this.showList=true;
+      this.getTutorList();
+    },
     initDayList() {
       let time = this.$time();
       let list = [];
@@ -246,7 +252,7 @@ export default {
     },
     getTutorList() {
       this.loading = true
-      listDesk({
+      listAllTutor({
         bookingCount: 1,
         bookingStart: `${this.queryParams.day} ${this.queryParams.startTime}`,
         bookingEnd: `${this.queryParams.day} ${this.queryParams.endTime}`
@@ -256,13 +262,13 @@ export default {
     },
     onRemoveBookingClick(day, idx) {
       let item = this.bookingMap[day][idx];
-      let id = item.deskBookingId
+      let id = item.tutorBookingId
       this.$confirm(`确认删除${formatTime(item.startTime, 'HH:mm')}到${formatTime(item.endTime, 'HH:mm')}的预约？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delDeskBooking(id).then(res => {
+        delTutorBooking(id).then(res => {
           this.bookingMap[day].splice(idx, 1);
           this.$modal.msgSuccess("操作成功")
         })
@@ -288,8 +294,8 @@ export default {
         if (!valid) {
           return Promise.reject()
         }
-        return addDeskBooking({
-          deskId: this.selectedItem.deskId,
+        return addTutorBooking({
+          tutorId: this.selectedItem.storeTutorId,
           startTime: `${this.bookingForm.day} ${this.bookingForm.startTime}`,
           endTime: `${this.bookingForm.day} ${this.bookingForm.endTime}`,
           bookingUserName: this.bookingForm.bookingUserName,
@@ -313,7 +319,7 @@ export default {
       time = this.$time(time).format("YYYY-MM-DD");
       return time >= this.startTime && time <= this.endTime
     },
-    onDeskClick(item) {
+    onTutorClick(item) {
       this.selectedItem = item;
       this.showList = false;
       this.queryBookings();
@@ -335,8 +341,8 @@ export default {
     },
     queryBookings() {
 
-      getBookingMap({
-        deskId: this.selectedItem?.deskId ?? -1,
+      getTutorBookingMap({
+        storeTutorId: this.selectedItem?.storeTutorId ?? -1,
         startTime: this.$time(this.currentMonth).format('YYYY-MM-DD 00:00:00'),
         endTime: this.$time(this.currentMonth).add(7, 'day').format('YYYY-MM-DD 23:59:59'),
       }).then(res => {

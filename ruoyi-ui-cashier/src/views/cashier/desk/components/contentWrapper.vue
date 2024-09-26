@@ -91,12 +91,9 @@ export default {
     height: calc(100% - 120px);
     overflow: hidden;
     .slot-container{
-      padding: 20px;
-
-      padding-top: 10px;
+      padding: 10px 20px 20px;
       overflow: hidden;
       display: flex;
-      width: 100%;
       flex: 1;
     }
   }

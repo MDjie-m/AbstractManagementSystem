@@ -1,9 +1,12 @@
 package com.ruoyi.billiard.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.billiard.domain.TutorBooking;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 教练预约Mapper接口
@@ -46,4 +49,7 @@ public interface TutorBookingMapper extends MyBaseMapper<TutorBooking>
      * @return 结果
      */
     public int deleteTutorBookingByTutorBookingIds(Long[] tutorBookingIds);
+
+    List<KeyValueVo<Long,Long>> selectBookingCount(@Param("ids") List<Long> ids,
+                                             @Param("startTime")  Date startTime, @Param("endTime")Date endTime);
 }

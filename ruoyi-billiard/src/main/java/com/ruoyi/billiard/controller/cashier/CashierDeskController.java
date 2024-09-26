@@ -2,9 +2,7 @@ package com.ruoyi.billiard.controller.cashier;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.billiard.domain.*;
-import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
-import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
-import com.ruoyi.billiard.domain.vo.LineUpVo;
+import com.ruoyi.billiard.domain.vo.*;
 import com.ruoyi.billiard.service.IDeskBookingService;
 import com.ruoyi.billiard.service.ILightTimerService;
 import com.ruoyi.billiard.service.IStoreDeskService;
@@ -38,15 +36,20 @@ public class CashierDeskController extends BaseController {
 
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @GetMapping("/booking/map")
-    public ResultVo<Map<String, List<DeskBooking>>> bookingMap(@Validated(DeskBooking.IQuery.class) DeskBooking reqVo) {
+    public ResultVo<Map<String, List<DeskBooking>>> bookingMap(@Validated(IQuery.class) DeskBooking reqVo) {
 
         reqVo.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(deskBookingService.selectBookingDayMap(reqVo));
     }
-
+    @GetMapping("/booking/list")
+    public PageResVo<DeskBooking> bookingList(DeskBooking reqVo) {
+        startPage();
+        reqVo.setStoreId(getStoreIdWithThrow());
+        return PageResVo.success(deskBookingService.selectDeskBookingList(reqVo));
+    }
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @PostMapping("/booking")
-    public ResultVo<DeskBooking> addBooking(@Validated(DeskBooking.IAdd.class) @RequestBody DeskBooking reqVo) {
+    public ResultVo<DeskBooking> addBooking(@Validated(IAdd.class) @RequestBody DeskBooking reqVo) {
 
         reqVo.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(deskBookingService.insertDeskBooking(reqVo));

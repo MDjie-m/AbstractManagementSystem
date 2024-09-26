@@ -6,7 +6,7 @@
   flex-direction: column;
   flex: 1;
 }
-.desk-filter-box{
+.tutor-filter-box{
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -18,7 +18,7 @@
     width: 100px;
   }
 }
-.desk-items-box{
+.tutor-items-box{
   flex: 1;
   overflow-y:auto;
 }
@@ -158,14 +158,14 @@
   flex-direction: column;
 }
 
-.desk-container {
+.tutor-container {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
 
-  .desk-item {
+  .tutor-item {
     display: flex;
-    width: 110px;
+    width: 150px;
     min-height: 130px;
     margin: 10px;
     font-size: 14px;

@@ -1,8 +1,13 @@
 package com.ruoyi.billiard.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import  com.ruoyi.billiard.domain.TutorBooking;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 教练预约Service接口
@@ -34,7 +39,7 @@ public interface ITutorBookingService  extends IService<TutorBooking>
      * @param tutorBooking 教练预约
      * @return 结果
      */
-    public int insertTutorBooking(TutorBooking tutorBooking);
+    public TutorBooking insertTutorBooking(TutorBooking tutorBooking);
 
     /**
      * 修改教练预约
@@ -59,4 +64,9 @@ public interface ITutorBookingService  extends IService<TutorBooking>
      * @return 结果
      */
     public int deleteTutorBookingByTutorBookingId(Long tutorBookingId);
+
+    List<KeyValueVo<Long,Long>> selectBookingCount(@Param("ids") List<Long> ids,
+                                             @Param("startTime")  Date startTime, @Param("endTime")Date endTime);
+
+    Map<String, List<TutorBooking>> selectBookingDayMap(TutorBooking reqVo);
 }

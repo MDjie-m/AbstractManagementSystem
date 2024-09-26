@@ -38,7 +38,7 @@ export default {
   created() {
     this.$eventBus.$on("global.refresh", this.onReload);
     this.intervalId = setInterval(async () => {
-      this.queryLightTimer()
+     // this.queryLightTimer()
     }, 5000);
     this.queryLightTimer();
   },

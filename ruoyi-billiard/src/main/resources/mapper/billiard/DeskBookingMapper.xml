@@ -6,23 +6,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <sql id="selectDeskBookingVo">
-        select * from t_desk_booking
+        select a.*, concat(b.desk_name, '(', b.desk_num, ')') as desk_title
+        from t_desk_booking a
+                 left join t_store_desk b on a.desk_id = b.desk_id
+
+
     </sql>
 
     <select id="selectDeskBookingList" parameterType="DeskBooking" resultType="DeskBooking">
         <include refid="selectDeskBookingVo"/>
         <where>
-            <if test="storeId != null "> and store_id = #{storeId}</if>
-            <if test="startTime != null "> and start_time >= #{startTime}</if>
-            <if test="endTime != null "> and end_time  <![CDATA[<=]]>  #{endTime}</if>
-            <if test="deskId != null "> and desk_id = #{deskId}</if>
-            <if test="bookingUserName != null  and bookingUserName != ''"> and booking_user_name like concat('%', #{bookingUserName}, '%')</if>
-            <if test="bookingUserMobile != null  and bookingUserMobile != ''"> and booking_user_mobile = #{bookingUserMobile}</if>
-            <if test="status != null "> and status = #{status}</if>
-            <if test="createById != null "> and create_by_id = #{createById}</if>
-            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+            <if test="storeId != null "> and  a.store_id = #{storeId}</if>
+            <if test="startTime != null "> and  a.start_time >= #{startTime}</if>
+            <if test="endTime != null "> and  a.end_time  <![CDATA[<=]]>  #{endTime}</if>
+            <if test="deskId != null "> and  a.desk_id = #{deskId}</if>
+            <if test="bookingUserName != null  and bookingUserName != ''"> and  a.booking_user_name like concat('%', #{bookingUserName}, '%')</if>
+            <if test="bookingUserMobile != null  and bookingUserMobile != ''"> and  a.booking_user_mobile = #{bookingUserMobile}</if>
+            <if test="status != null "> and  a.status = #{status}</if>
+            <if test="keyword != null  and keyword != ''"> and  (
+                a.booking_user_name like concat('%', #{keyword}, '%')
+                or
+                a.booking_user_mobile like concat('%', #{keyword}, '%')
+                )
+             </if>
+
         </where>
-        order by  start_time asc
+        order by desk_booking_id desc
     </select>
     
     <select id="selectDeskBookingByDeskBookingId" parameterType="Long" resultType="DeskBooking">

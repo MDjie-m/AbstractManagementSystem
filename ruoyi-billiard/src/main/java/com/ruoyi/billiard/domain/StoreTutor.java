@@ -9,6 +9,7 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -129,4 +130,14 @@ public class StoreTutor extends MyBaseEntity {
 
     @TableField(exist = false)
     private BigDecimal price;
+
+    @TableField(exist = false)
+    private Date bookingStart;
+
+    @TableField(exist = false)
+    private Date bookingEnd;
+
+
+    @TableField(exist = false)
+    private Long bookingCount;
 }
