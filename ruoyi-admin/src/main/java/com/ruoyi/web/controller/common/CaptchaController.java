@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ruoyi.common.annotation.Anonymous;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +43,6 @@ public class CaptchaController
     /**
      * 生成验证码
      */
-    @Anonymous
     @GetMapping({"/captchaImage","api/mini-app/captchaImage"})
     public AjaxResult getCode(HttpServletResponse response) throws IOException
     {

@@ -108,7 +108,9 @@ public class OrderRechargeServiceImpl implements IOrderRechargeService
 
     @Override
     public List<OrderRecharge> selectOrderRechargeListByOrderId(Long orderId) {
-        return Optional.ofNullable(orderRechargeMapper.selectList(orderRechargeMapper.query().eq(OrderRecharge::getOrderId, orderId))).orElse(Collections.emptyList());
+        return Optional.ofNullable(orderRechargeMapper.selectList(orderRechargeMapper.query()
+                .eq(OrderRecharge::getOrderId, orderId).orderByDesc(OrderRecharge::getCreateTime)))
+                .orElse(Collections.emptyList());
     }
 
     @Override

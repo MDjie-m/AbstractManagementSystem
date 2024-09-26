@@ -95,7 +95,9 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService {
 
     @Override
     public List<OrderDeskTime> selectOrderDeskTimeListByOrderId(Long orderId) {
-        List<OrderDeskTime> orderDeskTimes = Optional.ofNullable(orderDeskTimeMapper.selectList(orderDeskTimeMapper.query().eq(OrderDeskTime::getOrderId, orderId))).orElse(Collections.emptyList());
+        List<OrderDeskTime> orderDeskTimes = Optional.ofNullable(orderDeskTimeMapper.selectList(orderDeskTimeMapper.query()
+                        .eq(OrderDeskTime::getOrderId, orderId).orderByDesc(OrderDeskTime::getCreateTime)))
+                .orElse(Collections.emptyList());
         return orderDeskTimes.stream().map(orderDeskTime -> {
             Long deskId = orderDeskTime.getDeskId();
             StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(deskId)).orElse(new StoreDesk());

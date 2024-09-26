@@ -106,7 +106,9 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService {
 
     @Override
     public List<OrderGoods> selectOrderGoodsListByOrderId(Long orderId) {
-        List<OrderGoods> orderGoodsList = Optional.ofNullable(orderGoodsMapper.selectList(orderGoodsMapper.query().eq(OrderGoods::getOrderId, orderId))).orElse(Collections.emptyList());
+        List<OrderGoods> orderGoodsList = Optional.ofNullable(orderGoodsMapper.selectList(orderGoodsMapper.query()
+                .eq(OrderGoods::getOrderId, orderId).orderByDesc(OrderGoods::getCreateTime)))
+                .orElse(Collections.emptyList());
         return orderGoodsList.stream().map(p -> {
             Long goodsId = p.getGoodsId();
             Goods goods = Optional.ofNullable(goodsService.selectGoodsByGoodsId(goodsId)).orElse(new Goods());

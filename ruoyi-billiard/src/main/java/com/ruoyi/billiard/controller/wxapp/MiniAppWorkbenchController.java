@@ -1,9 +1,15 @@
 package com.ruoyi.billiard.controller.wxapp;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.ruoyi.billiard.domain.dto.HomeReportDto;
+import com.ruoyi.billiard.domain.vo.HomeReportVo;
+import com.ruoyi.billiard.service.IOrderService;
+import com.ruoyi.common.core.domain.ResultVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: zhoukeu
@@ -14,14 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/mini-app/workbench")
 public class MiniAppWorkbenchController {
 
+    @Autowired
+    private IOrderService orderService;
+
+
     /**
      * 获取报表流水数据
      *
-     * @param storeId
+     * @param
      * @return
      */
-    @GetMapping("/reportData/{storeId}")
-    public Object getReportData(@PathVariable("storeId") Integer storeId) {
-        return null;
+    @PreAuthorize("@ss.hasPermi('miniapp:index:query')")
+    @PostMapping("/homeReport")
+    public ResultVo<HomeReportVo> getReportData(@RequestBody HomeReportDto dto) {
+        return ResultVo.success(orderService.selectOrderData2Report(dto));
     }
 }

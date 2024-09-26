@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.constant.OrderErrorMsg;
 import com.ruoyi.billiard.domain.*;
-import com.ruoyi.billiard.domain.vo.FinishOrderReqVo;
-import com.ruoyi.billiard.domain.vo.OrderCommandResVo;
-import com.ruoyi.billiard.domain.vo.OrderPrePayReqVo;
-import com.ruoyi.billiard.domain.vo.StopDeskResVo;
+import com.ruoyi.billiard.domain.dto.HomeReportDto;
+import com.ruoyi.billiard.domain.vo.*;
+import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsume;
+import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsumeDetail;
 import com.ruoyi.billiard.enums.*;
 import com.ruoyi.billiard.mapper.*;
 import com.ruoyi.billiard.service.*;
@@ -960,5 +960,171 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         res.setRechargeAmount(recharge);
         res.calcAndSetFee(discountValue);
         return res;
+    }
+
+    @Override
+    public HomeReportVo selectOrderData2Report(HomeReportDto dto) {
+        Integer timeType = dto.getTimeType();
+        HomeReportVo homeReportVo = new HomeReportVo();
+        HomeReportVoConsume homeReportVoConsume = new HomeReportVoConsume();
+        List<HomeReportVoConsumeDetail> typeList = new ArrayList<>();
+
+        // 挂起订单统计
+        HomeReportVoConsumeDetail suspend = null;
+
+        String nowDay = DateUtils.getDate();
+        String endTime = nowDay + " 23:59";
+        if (!Objects.equals(timeType, ReportTimeType.YEAR.getValue())) {
+            String startTime = "";
+            List<Order> orders;
+            List<Order> suspendedOrder;
+            if (Objects.equals(timeType, ReportTimeType.DAY.getValue())) {
+                startTime = nowDay + " 00:00";
+            }
+            if (Objects.equals(timeType, ReportTimeType.WEEK.getValue())) {
+                // 根据当前时间往前推一周
+                String beforWeekDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addWeeks(new Date(), -1));
+                startTime = beforWeekDay + " 00:00";
+
+            }
+            if (Objects.equals(timeType, ReportTimeType.MONTH.getValue())) {
+                // 根据当前时间往前推一个月
+                String beforMonthDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addMonths(new Date(), -1));
+                startTime = beforMonthDay + " 00:00";
+
+            }
+            if (Objects.equals(timeType, ReportTimeType.CUSTOM.getValue())) {
+                startTime = dto.getStartTime() + " 00:00";
+                endTime = dto.getEndTime() + " 23:59";
+            }
+            // 查询总订单
+            orders = selectOrderByPayStatus(OrderStatus.SETTLED.getValue(), dto.getStoreId() ,startTime, endTime);
+            BigDecimal totalAmount = orders.stream().map(Order::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+            HomeReportVoConsumeDetail totalConsum = HomeReportVoConsumeDetail.builder().consumeDetail(orders)
+                    .consumeName(OrderType.AGGREGATE_CONSUMPTION.getDesc())
+                    .consumeCount(orders.size())
+                    .consumeAmount(totalAmount)
+                    .consumePercent(new BigDecimal(100)).build();
+            homeReportVoConsume.setTotal(totalConsum);
+
+            // 查询挂起订单
+            suspendedOrder = selectOrderByPayStatus(OrderStatus.SUSPEND.getValue(), dto.getStoreId() ,startTime, endTime);
+            Map<String, Object> subOrderConsumeDetail = getSubOrderConsumeDetail(orders, totalAmount, suspendedOrder);
+            typeList = (List<HomeReportVoConsumeDetail>) subOrderConsumeDetail.get("typeList");
+            suspend = (HomeReportVoConsumeDetail) subOrderConsumeDetail.get("suspend");
+        }
+
+
+        homeReportVoConsume.setTypeList(typeList);
+        homeReportVo.setConsume(homeReportVoConsume);
+        homeReportVo.setSuspend(suspend);
+
+        return homeReportVo;
+    }
+
+    @Override
+    public List<Order> selectOrderByPayStatus(Integer payStatus, Long storeId, String startTime, String endTime) {
+        return Optional.ofNullable(orderMapper.selectList(orderMapper.query()
+                        .eq(Objects.nonNull(storeId), Order::getStoreId, storeId)
+                        .between(Order::getPayTime, startTime, endTime)
+                        .eq(Order::getStatus, payStatus)
+                        .orderByDesc(Order::getPayTime)))
+                .orElse(Collections.emptyList());
+    }
+
+    /**
+     * 子订单数据统计
+     */
+    public Map<String, Object> getSubOrderConsumeDetail(List<Order> orders, BigDecimal totalAmount, List<Order> suspendedOrder) {
+
+        List<HomeReportVoConsumeDetail> typeList = new ArrayList<>();
+        // 订单关联球桌列表
+        List<OrderDeskTime> orderDeskTimes = new ArrayList<>();
+        // 订单关联陪练列表
+        List<OrderTutorTime> orderTutorTimes = new ArrayList<>();
+        // 订单关联
+        // 订单关联商品列表
+        List<OrderGoods> orderCommodityTimes = new ArrayList<>();
+        // 订单关联会员充值列表
+        List<OrderRecharge> orderRechargeTimes = new ArrayList<>();
+
+        // 查询子订单
+        for (Order p : orders) {
+            Order order = selectOrderByOrderId(p.getOrderId());
+            List<OrderTutorTime> tutorTimes = order.getOrderTutorTimes();
+            List<OrderGoods> orderGoods = order.getOrderGoods();
+            List<OrderRecharge> orderRecharge = order.getOrderRecharges();
+            List<OrderDeskTime> deskTimes = order.getOrderDeskTimes();
+            orderTutorTimes.addAll(tutorTimes);
+            orderCommodityTimes.addAll(orderGoods);
+            orderRechargeTimes.addAll(orderRecharge);
+            orderDeskTimes.addAll(deskTimes);
+        }
+
+        // 订单去除空值
+        orderTutorTimes = orderTutorTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        orderCommodityTimes = orderCommodityTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        orderRechargeTimes = orderRechargeTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        orderDeskTimes = orderDeskTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+
+        // 球桌订单
+        BigDecimal deskTotalAmount = orderDeskTimes.stream().map(OrderDeskTime::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal deskPercent = totalAmount.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : deskTotalAmount.divide(totalAmount, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
+        HomeReportVoConsumeDetail tableCharge = HomeReportVoConsumeDetail.builder()
+                .consumeName(OrderType.TABLE_CHARGE.getDesc())
+                .consumeCount(Integer.valueOf(String.valueOf(orderDeskTimes.stream().map(OrderDeskTime::getOrderId).distinct().count())))
+                .consumeAmount(deskTotalAmount)
+                .consumeDetail(orderDeskTimes)
+                .consumePercent(deskPercent).build();
+        typeList.add(tableCharge);
+
+        // 商品订单
+        BigDecimal commodityTotalAmount = orderCommodityTimes.stream().map(OrderGoods::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal goodsPercent = totalAmount.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : commodityTotalAmount.divide(totalAmount, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
+        HomeReportVoConsumeDetail commodityPurchase = HomeReportVoConsumeDetail.builder()
+                .consumeName(OrderType.COMMODITY_PURCHASE.getDesc())
+                .consumeCount(Integer.valueOf(String.valueOf(orderCommodityTimes.stream().map(OrderGoods::getOrderId).distinct().count())))
+                .consumeAmount(commodityTotalAmount)
+                .consumeDetail(orderCommodityTimes)
+                .consumePercent(goodsPercent).build();
+        typeList.add(commodityPurchase);
+
+        // 会员充值
+        BigDecimal rechargeTotalAmount = orderRechargeTimes.stream().map(OrderRecharge::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal rechargePercent = totalAmount.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : rechargeTotalAmount.divide(totalAmount, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
+        HomeReportVoConsumeDetail memberRecharge = HomeReportVoConsumeDetail.builder()
+                .consumeName(OrderType.MEMBER_RECHARGE.getDesc())
+                .consumeCount(Integer.valueOf(String.valueOf(orderRechargeTimes.stream().map(OrderRecharge::getOrderId).distinct().count())))
+                .consumeAmount(rechargeTotalAmount)
+                .consumeDetail(orderRechargeTimes)
+                .consumePercent(rechargePercent).build();
+        typeList.add(memberRecharge);
+
+        // 助教费用
+        BigDecimal tutorTotalAmount = orderTutorTimes.stream().map(OrderTutorTime::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal tutorPercent = totalAmount.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : tutorTotalAmount.divide(totalAmount, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
+        HomeReportVoConsumeDetail teachFee = HomeReportVoConsumeDetail.builder()
+                .consumeName(OrderType.TEACHING_ASSISTANT_FEE.getDesc())
+                .consumeCount(Integer.valueOf(String.valueOf(orderTutorTimes.stream().map(OrderTutorTime::getOrderId).distinct().count())))
+                .consumeAmount(tutorTotalAmount)
+                .consumeDetail(orderTutorTimes)
+                .consumePercent(tutorPercent).build();
+        typeList.add(teachFee);
+
+
+        // 挂起订单
+//        BigDecimal suspendedOrderTotalAmount = suspendedOrder.stream().map(Order::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        HomeReportVoConsumeDetail suspend = HomeReportVoConsumeDetail.builder()
+                .consumeName(OrderStatus.SUSPEND.getDesc())
+                .consumeCount(Integer.valueOf(String.valueOf(suspendedOrder.stream().map(Order::getOrderId).distinct().count())))
+//                .consumeAmount(suspendedOrderTotalAmount)
+                .consumeDetail(suspendedOrder).build();
+
+        return new HashMap<String, Object>() {
+            {
+                put("typeList", typeList);
+                put("suspend", suspend);
+            }
+        };
     }
 }
