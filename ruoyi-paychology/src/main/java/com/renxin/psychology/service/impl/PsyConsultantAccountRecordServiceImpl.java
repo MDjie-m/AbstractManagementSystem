@@ -56,13 +56,15 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
     
     //翻译任务类型名
     private String transforScheduleType(String scheduleType){
-        switch (scheduleType){
-            case "12":
-                return "咨询";
-            case "22":
-                return "个人督导";
-            case "23":
-                return "个人体验";
+        if (ObjectUtils.isNotEmpty(scheduleType)){
+            switch (scheduleType){
+                case "12":
+                    return "咨询";
+                case "22":
+                    return "个人督导";
+                case "23":
+                    return "个人体验";
+            }
         }
         return "";
     }

@@ -27,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="payUserId"    column="pay_user_id"    />
         <result property="payUserType"    column="pay_user_type"    />
         <result property="payAndChargeNum"    column="pay_and_charge_num"    />
+        <result property="useTime"    column="use_time"    />
     </resultMap>
 
     <sql id="selectPsyConsultantAccountRecordVo">
@@ -38,6 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         red.record_id, red.consultant_id, red.status, red.pay_type, red.bill_item_id, red.account_amount, red.pay_amount, red.pay_message,
                red.create_by, red.create_time, red.update_by, red.update_time , 
                bItem.schedule_type, bItem.pay_user_id, bItem.pay_user_type, bItem.pay_and_charge_num, ifnull(user.name,con.nick_name) as payUserName,
+                bItem.use_time ,
                team.title as serverTitle 
         from psy_consultant_account_record red
             left join psy_consult_bill_item bItem on red.bill_item_id = bItem.id

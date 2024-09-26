@@ -98,5 +98,7 @@ public class PsyConsultantAccountRecord extends BaseEntity
     private Integer payAndChargeNum;//收费人付费人之间第几次合作/团督第几次讲课
     @TableField(exist = false)
     private String serverTitle;//服务类型标题
+    @TableField(exist = false)
+    private String useTime;//使用时间
     
 }

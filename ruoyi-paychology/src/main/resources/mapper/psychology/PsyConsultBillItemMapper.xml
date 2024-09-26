@@ -72,7 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             a.consult_id  consult_id,
             b.nick_name  consult_name,
             CASE WHEN c.type = 1 THEN '合作型' ELSE '签约型' END type,
-            c.ratio  ratio,
+            cf.consultant_ratio*100 as ratio,
             d.order_no  order_no,
             d.create_time  order_time,
             d.serve_name  serve_name,
@@ -108,6 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 INNER JOIN psy_consult_contract c on a.consult_id = c.consult_id
                 INNER JOIN psy_consult_order d on a.order_id = d.id
                 INNER JOIN psy_consult_order_serve e on a.order_id = e.order_id
+                left  join psy_consult_server_config cf on cf.id = e.serve_id
         WHERE
             a.`status` = '1' and f.id is null and c.`status` = '5'
         order by a.order_id asc,a.real_time asc
@@ -122,7 +123,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             sc.consult_id  consult_id,
             b.nick_name  consult_name,
             CASE WHEN c.type = 1 THEN '合作型' ELSE '签约型' END type,
-            d.consultant_ratio ratio,
+            d.consultant_ratio*100 ratio,
             team.lecture_amount as brokerage,
             d.order_no  order_no,
             d.create_time  order_time,
