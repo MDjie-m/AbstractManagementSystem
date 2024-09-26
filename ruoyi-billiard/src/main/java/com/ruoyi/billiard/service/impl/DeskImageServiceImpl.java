@@ -1,6 +1,8 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.mapper.DeskImageMapper;
@@ -11,50 +13,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.domain.DeskImage;
 import com.ruoyi.billiard.service.IDeskImageService;
+
 /**
  * 球桌抓拍等Service业务层处理
- * 
+ *
  * @author ruoyi
  * @date 2024-09-25
  */
 @Service
-public class DeskImageServiceImpl extends ServiceImpl<DeskImageMapper,DeskImage> implements IDeskImageService
-{
+public class DeskImageServiceImpl extends ServiceImpl<DeskImageMapper, DeskImage> implements IDeskImageService {
 
 
     /**
      * 查询球桌抓拍等
-     * 
+     *
      * @param deskMultimediaId 球桌抓拍等主键
      * @return 球桌抓拍等
      */
     @Override
-    public DeskImage selectDeskImageByDeskMultimediaId(Long deskMultimediaId)
-    {
+    public DeskImage selectDeskImageByDeskMultimediaId(Long deskMultimediaId) {
         return baseMapper.selectById(deskMultimediaId);
     }
 
     /**
      * 查询球桌抓拍等列表
-     * 
+     *
      * @param deskImage 球桌抓拍等
      * @return 球桌抓拍等
      */
     @Override
-    public List<DeskImage> selectDeskImageList(DeskImage deskImage)
-    {
+    public List<DeskImage> selectDeskImageList(DeskImage deskImage) {
         return baseMapper.selectDeskImageList(deskImage);
     }
 
     /**
      * 新增球桌抓拍等
-     * 
+     *
      * @param deskImage 球桌抓拍等
      * @return 结果
      */
     @Override
-    public int insertDeskImage(DeskImage deskImage)
-    {
+    public int insertDeskImage(DeskImage deskImage) {
         SecurityUtils.fillCreateUser(deskImage);
         deskImage.setDeskMultimediaId(IdUtils.singleNextId());
         return baseMapper.insert(deskImage);
@@ -62,13 +61,12 @@ public class DeskImageServiceImpl extends ServiceImpl<DeskImageMapper,DeskImage>
 
     /**
      * 修改球桌抓拍等
-     * 
+     *
      * @param deskImage 球桌抓拍等
      * @return 结果
      */
     @Override
-    public int updateDeskImage(DeskImage deskImage)
-    {
+    public int updateDeskImage(DeskImage deskImage) {
         SecurityUtils.fillUpdateUser(deskImage);
 
         return baseMapper.updateById(deskImage);
@@ -76,25 +74,34 @@ public class DeskImageServiceImpl extends ServiceImpl<DeskImageMapper,DeskImage>
 
     /**
      * 批量删除球桌抓拍等
-     * 
+     *
      * @param deskMultimediaIds 需要删除的球桌抓拍等主键
      * @return 结果
      */
     @Override
-    public int deleteDeskImageByDeskMultimediaIds(Long[] deskMultimediaIds)
-    {
+    public int deleteDeskImageByDeskMultimediaIds(Long[] deskMultimediaIds) {
         return baseMapper.deleteDeskImageByDeskMultimediaIds(deskMultimediaIds);
     }
 
     /**
      * 删除球桌抓拍等信息
-     * 
+     *
      * @param deskMultimediaId 球桌抓拍等主键
      * @return 结果
      */
     @Override
-    public int deleteDeskImageByDeskMultimediaId(Long deskMultimediaId)
-    {
+    public int deleteDeskImageByDeskMultimediaId(Long deskMultimediaId) {
         return baseMapper.deleteDeskImageByDeskMultimediaId(deskMultimediaId);
+    }
+
+    @Override
+    public Boolean addCapture(Long storeId, Long deskId, Long orderId, Long cameraId) {
+        DeskImage img = new DeskImage();
+        img.setDeskId(deskId);
+        img.setCaptureTime(new Date());
+        img.setDeskMultimediaId(IdUtils.singleNextId());
+        img.setCameraId(Optional.ofNullable(cameraId).orElse(0L));
+        img.setOrderId(orderId);
+        return insertDeskImage(img) > 0;
     }
 }

@@ -24,7 +24,20 @@ export function saveLineUp(params) {
     data: params
   })
 }
-
+export function deskAddScore(params) {
+  return request({
+    url: '/cashier/desk/score',
+    method: 'post',
+    data: params
+  })
+}
+export function deskCapture(params) {
+  return request({
+    url: '/cashier/desk/capture',
+    method: 'post',
+    data: params
+  })
+}
 export function listDeskDashboard() {
   return request({
     url: '/cashier/desk/dashboard',

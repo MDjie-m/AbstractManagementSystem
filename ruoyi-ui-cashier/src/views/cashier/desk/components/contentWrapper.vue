@@ -6,7 +6,7 @@
     </div>
 
     <div class="content-box">
-      <div class="split-line"></div>
+<!--      <div class="split-line"></div>-->
       <div class="slot-container">
         <slot/>
       </div>
@@ -46,7 +46,9 @@ export default {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.3);
 
-
+   .content-header,.content-box{
+     box-shadow: inset 3px 1px 5px rgba(0, 21, 41, 0.18);
+   }
   .content-header {
     height: 60px;
     margin-top: 60px;
@@ -79,7 +81,8 @@ export default {
       margin-left: 20px;
       margin-right: 20px;
     }
-    background-color: #FFFFFF;
+
+    background-color: #f3f3f4;
     display: flex;
     z-index: 20;
     width: 100%;

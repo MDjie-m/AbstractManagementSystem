@@ -6,12 +6,18 @@ export const DeviceMethodNames = {
   LightSwitch: 'light.switch',
   LightStateQuery: 'light.state.query.all',
   Speech: "speech",
-  Score:"score"
+  CallAddScore: "score",
+}
+export const DeviceCallbackMethodName = {
+
+  AddScore: "desk.score",
+  UserCall: "desk.user.call",
+  UserCapture: "desk.user.capture",
 }
 export function registerMethod(methodName, func) {
   if (PcCallMethods[methodName]) {
-    Vue.prototype.$modal.msgWarning("方法名重复，无法注册");
-    return false;
+    //Vue.prototype.$modal.msgWarning("方法名重复，无法注册");
+    //return false;
   }
   PcCallMethods[methodName] = func;
   return true;
@@ -32,7 +38,7 @@ function getUuid() {
 }
 
 export function callPCMethod(type, data, timeout = 5000) {
-  console.log("pc调用参数：",type,JSON.stringify(data))
+  console.log("pc调用参数：", type, JSON.stringify(data))
 
   let msgId = getUuid();
   let res = window.DeviceMethod?.callMethd(type, (typeof (data) === "string") ? data : JSON.stringify(data), msgId);
@@ -45,8 +51,8 @@ export function callPCMethod(type, data, timeout = 5000) {
       resolve(res)
     })
   }, reject => {
-    timeId = setTimeout(()=>{
-      throw  new Error(`${type}:${msgId},调用超时`)
+    timeId = setTimeout(() => {
+      throw new Error(`${type}:${msgId},调用超时`)
     }, timeout || 5000)
   }).finally(() => {
     removeMethod(type + msgId)

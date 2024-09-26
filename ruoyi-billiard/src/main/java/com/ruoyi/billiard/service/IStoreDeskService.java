@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.ruoyi.billiard.domain.AddDeskScoreReqVo;
+import com.ruoyi.billiard.domain.DeskCaptureReqVo;
 import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
@@ -13,15 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 球桌Service接口
- * 
+ *
  * @author ruoyi
  * @date 2024-09-07
  */
-public interface IStoreDeskService 
-{
+public interface IStoreDeskService {
     /**
      * 查询球桌
-     * 
+     *
      * @param deskId 球桌主键
      * @return 球桌
      */
@@ -29,7 +30,7 @@ public interface IStoreDeskService
 
     /**
      * 查询球桌列表
-     * 
+     *
      * @param storeDesk 球桌
      * @return 球桌集合
      */
@@ -37,7 +38,7 @@ public interface IStoreDeskService
 
     /**
      * 新增球桌
-     * 
+     *
      * @param storeDesk 球桌
      * @return 结果
      */
@@ -45,7 +46,7 @@ public interface IStoreDeskService
 
     /**
      * 修改球桌
-     * 
+     *
      * @param storeDesk 球桌
      * @return 结果
      */
@@ -53,7 +54,7 @@ public interface IStoreDeskService
 
     /**
      * 批量删除球桌
-     * 
+     *
      * @param deskIds 需要删除的球桌主键集合
      * @return 结果
      */
@@ -61,7 +62,7 @@ public interface IStoreDeskService
 
     /**
      * 删除球桌信息
-     * 
+     *
      * @param deskId 球桌主键
      * @return 结果
      */
@@ -71,9 +72,9 @@ public interface IStoreDeskService
 
     CashierDeskDashboardResVo getDeskDashboard(Long storeId);
 
-    Map<Integer,LineUpVo> getLineUpInfo(Long storeId);
+    Map<Integer, LineUpVo> getLineUpInfo(Long storeId);
 
-    Boolean saveLineUpInfo(Long storeId, Map<Integer,LineUpVo> reqVo);
+    Boolean saveLineUpInfo(Long storeId, Map<Integer, LineUpVo> reqVo);
 
     DeskQueryResVo queryDestCurrentInfo(Long deskId, Long storeId);
 
@@ -88,4 +89,8 @@ public interface IStoreDeskService
     DeskQueryResVo resumeDesk(Long deskId, Long storeId);
 
     DeskQueryResVo mergeToNewDesk(Long deskId, Long storeId, Long orderId, Long newDeskId);
+
+    Boolean addScore(AddDeskScoreReqVo reqVo, Long storeId);
+
+    Boolean addCapture(DeskCaptureReqVo reqVo, Long storeId );
 }

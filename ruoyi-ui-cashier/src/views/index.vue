@@ -88,7 +88,7 @@ export default {
   },
   methods: {
     onSendScore(){
-      callPCMethod(DeviceMethodNames.Score,{deskNum:2,btnType:0})
+      callPCMethod(DeviceMethodNames.CallAddScore,{deskNum:2,btnType:0})
     },
     goTarget(href) {
       window.open(href, "_blank");

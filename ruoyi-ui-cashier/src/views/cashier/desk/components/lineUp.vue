@@ -1,5 +1,5 @@
 <template>
-  <div class="line-up-container">
+  <div class=" section-container line-up-container">
     <el-tabs v-model="currentTitle">
       <el-tab-pane :label="place.label" name="basic" :key="'line_up'+place.value" :name="place.value"
                    v-for="place in dict.type.store_desk_place" style="height:90%;overflow-y:auto;overflow-x:hidden;">

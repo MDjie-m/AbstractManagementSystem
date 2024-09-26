@@ -40,7 +40,6 @@ export default {
         if(this.onOk){
           await this.onOk();
         }
-        debugger
         this.onCancel();
       }catch (e){
         this.loading=false;

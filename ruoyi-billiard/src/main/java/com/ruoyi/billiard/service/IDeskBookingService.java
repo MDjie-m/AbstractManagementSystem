@@ -1,5 +1,7 @@
 package com.ruoyi.billiard.service;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -66,5 +68,5 @@ public interface IDeskBookingService extends IService<DeskBooking> {
 
     void checkBookingExpire(Integer timeMinutes);
 
-    List<KeyValueVo<Long, Long>> selectBookingCount(List<Long> ids);
+    List<KeyValueVo<Long, Long>> selectBookingCount(List<Long> ids, Date startTime, Date endTime);
 }

@@ -1,7 +1,10 @@
 package com.ruoyi.billiard.service;
 
 import java.util.List;
+
+import com.ruoyi.billiard.domain.AddDeskScoreReqVo;
 import com.ruoyi.billiard.domain.OrderDeskScore;
+import com.ruoyi.billiard.enums.ScorerBtnType;
 
 /**
  * 台球桌比分Service接口
@@ -43,4 +46,5 @@ public interface IOrderDeskScoreService
      */
     public int updateOrderDeskScore(OrderDeskScore orderDeskScore);
 
+    Boolean addScore(ScorerBtnType btnType, Long storeId, Long deskId, Long orderId);
 }

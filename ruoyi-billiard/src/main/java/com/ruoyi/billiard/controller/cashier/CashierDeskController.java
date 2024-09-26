@@ -1,9 +1,7 @@
 package com.ruoyi.billiard.controller.cashier;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.ruoyi.billiard.domain.DeskBooking;
-import com.ruoyi.billiard.domain.LightTimer;
-import com.ruoyi.billiard.domain.StoreDesk;
+import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.LineUpVo;
@@ -36,6 +34,7 @@ public class CashierDeskController extends BaseController {
 
     @Autowired
     private IDeskBookingService deskBookingService;
+
 
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @GetMapping("/booking/map")
@@ -201,5 +200,16 @@ public class CashierDeskController extends BaseController {
         List<LightTimer> list = lightTimerService.selectLightTimerList(LightTimer.builder().storeId(getStoreIdWithThrow())
                 .endTime(time).build());
         return ResultVo.success(list);
+    }
+
+    @PreAuthorize("@ss.hasRole('cashier')")
+    @PostMapping("/score")
+    public ResultVo<Boolean> addScore(@RequestBody AddDeskScoreReqVo reqVo) {
+        return ResultVo.success(storeDeskService.addScore(reqVo, getStoreIdWithThrow()));
+    }
+    @PreAuthorize("@ss.hasRole('cashier')")
+    @PostMapping("/capture")
+    public ResultVo<Boolean> addCapture(@RequestBody DeskCaptureReqVo reqVo) {
+        return ResultVo.success(storeDeskService.addCapture(reqVo, getStoreIdWithThrow()));
     }
 }

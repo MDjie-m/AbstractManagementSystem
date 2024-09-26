@@ -31,10 +31,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="selectBookingCount" resultType="com.ruoyi.common.core.domain.model.KeyValueVo">
         select count(1) as value,desk_id as `key`
-        from t_desk_booking where status in (0,1)  and desk_id in
+        from t_desk_booking where status in (0,1)
+        and (
+        start_time between #{startTime} and #{endTime}
+        or end_time between #{startTime} and #{endTime}
+        )
+        and desk_id in
         <foreach item="id" collection="deskIds" open="(" separator="," close=")">
             #{id}
         </foreach>
+
         group by desk_id;
     </select>
 

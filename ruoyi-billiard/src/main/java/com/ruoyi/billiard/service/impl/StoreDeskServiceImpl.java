@@ -69,6 +69,12 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     @Resource
     private RedisCache redisCacheService;
 
+    @Resource
+    private IOrderDeskScoreService orderDeskScoreService;
+
+    @Resource
+    private IDeskImageService  deskImageService;
+
     /**
      * 查询台桌
      *
@@ -95,25 +101,27 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
                 .eq(Objects.nonNull(storeDesk.getDeskNum()), "a.desk_num", storeDesk.getDeskNum())
                 .eq(Objects.nonNull(storeDesk.getStoreId()), "a.store_id", storeDesk.getStoreId())
                 .in(CollectionUtils.isNotEmpty(storeDesk.getStatusList()), "a.status", storeDesk.getStatusList());
-        if (Objects.nonNull(storeDesk.getBookingStart())
-                && Objects.nonNull(storeDesk.getBookingEnd())) {
-            String start = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_00, storeDesk.getBookingStart());
-            String end = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_00, storeDesk.getBookingEnd());
-            String startLimit = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, storeDesk.getBookingStart());
-            String existSql = StringUtils.format("(select 1  from t_desk_booking b\n" +
-                    "                 where a.desk_id = b.desk_id\n" +
-                    "                   and ((b.start_time < '{}' and b.end_time > '{}')\n" +
-                    "                     or ('{}' between b.start_time and b.end_time))\n" +
-                    "                   and b.status in (0, 1) and b.start_time >{} )", start, start, end, startLimit);
-            ;
-            queryWrapper.notExists(existSql);
-        }
+//        if (O
+//        bjects.nonNull(storeDesk.getBookingStart())
+//                && Objects.nonNull(storeDesk.getBookingEnd())) {
+//            String start = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_00, storeDesk.getBookingStart());
+//            String end = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_00, storeDesk.getBookingEnd());
+//            String startLimit = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, storeDesk.getBookingStart());
+//            String existSql = StringUtils.format("(select 1  from t_desk_booking b\n" +
+//                    "                 where a.desk_id = b.desk_id\n" +
+//                    "                   and ((b.start_time < '{}' and b.end_time > '{}')\n" +
+//                    "                     or ('{}' between b.start_time and b.end_time))\n" +
+//                    "                   and b.status in (0, 1) and b.start_time >{} )", start, start, end, startLimit);
+//            ;
+//            queryWrapper.notExists(existSql);
+//        }
 
 
         List<StoreDesk> res = storeDeskMapper.selectStoreDeskList(queryWrapper);
         if (Objects.nonNull(storeDesk.getBookingCount()) && CollectionUtils.isNotEmpty(res)) {
             Map<Long, Long> map = ArrayUtil.toMap(deskBookingService
-                            .selectBookingCount(res.stream().map(StoreDesk::getDeskId).collect(Collectors.toList())),
+                            .selectBookingCount(res.stream().map(StoreDesk::getDeskId).collect(Collectors.toList()),
+                                    storeDesk.getBookingStart(), storeDesk.getBookingEnd()),
                     KeyValueVo::getKey, KeyValueVo::getValue);
             res.forEach(p -> {
                 p.setBookingCount(map.getOrDefault(p.getDeskId(), 0L));
@@ -385,6 +393,32 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         return resVo;
     }
 
+    @Override
+    public Boolean addScore(AddDeskScoreReqVo reqVo, Long storeId) {
+
+        StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getDeskNum, reqVo.getDeskNum())
+                .eq(StoreDesk::getStoreId, storeId).last(" limit 1"));
+        if (Objects.isNull(desk)) {
+            return false;
+        }
+        if (Objects.isNull(desk.getCurrentOrderId())) {
+            return false;
+        }
+        return orderDeskScoreService.addScore(reqVo.getBtnType(), storeId, desk.getDeskId(), desk.getCurrentOrderId());
+    }
+
+    @Override
+    public Boolean addCapture(DeskCaptureReqVo reqVo, Long storeId) {
+        StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getDeskNum, reqVo.getDeskNum())
+                .eq(StoreDesk::getStoreId, storeId).last(" limit 1"));
+        if (Objects.isNull(desk)) {
+            return false;
+        }
+        if (Objects.isNull(desk.getCurrentOrderId())) {
+            return false;
+        }
+        return deskImageService.addCapture(  storeId, desk.getDeskId(),   desk.getCurrentOrderId(),desk.getCameraDeviceId());
+    }
     private StoreDesk queryEnableDesk(Long deskId, Long storeId) {
         StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query()
                 .eq(StoreDesk::getDeskId, deskId).eq(StoreDesk::getStoreId, storeId));

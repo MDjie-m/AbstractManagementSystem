@@ -99,4 +99,5 @@ public class OrderDeskScore extends MyBaseEntity {
     private Long updateById;
 
 
+
 }

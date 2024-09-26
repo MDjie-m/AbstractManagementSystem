@@ -4,50 +4,47 @@
     <div class="  container-wrapper" v-show="showList">
       <div class="section-container desk-filter-box">
 
-        <el-select v-model="deskQueryParams.day" @change="getDeskList">
+        <el-select v-model="deskQueryParams.day" @change="getTutorList">
           <el-option :value="item" v-for="item in deskQueryParams.dayList" :label="item"></el-option>
         </el-select>
         <el-time-select
           placeholder="起始时间" :clearable="false"
-          v-model="deskQueryParams.startTime" @change="getDeskList"
+          v-model="deskQueryParams.startTime" @change="getTutorList"
           :picker-options="{  start: '00:00',  step: '00:30',  end: '24:00'  }">
         </el-time-select>
         <el-time-select
-          placeholder="结束时间" @change="getDeskList"
+          placeholder="结束时间" @change="getTutorList"
           v-model="deskQueryParams.endTime" :clearable="false"
           :picker-options="{  start: '00:00', step: '00:30',   end: '24:00',  minTime: deskQueryParams.startTime
               }"/>
 
-        <el-button v-loading="loading" type="primary" icon="el-icon-search" circle @click="getDeskList"></el-button>
+        <el-button v-loading="loading" type="primary" icon="el-icon-search" circle @click="getTutorList"></el-button>
         <custom-tip content="选择时间段,可查询当前时间段台桌预约数量"></custom-tip>
 
       </div>
       <div class="section-container desk-items-box">
-        <template v-for="placeItem in dict.type.store_desk_place">
-          <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
-          <div class="desk-container">
-            <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
-                     v-for="desk in deskList.filter(p=>  p.placeType === parseInt(placeItem.value))">
-              <div class="item-status" :class="`item-status-${desk.status}`"></div>
-              <div>
-                <div class="desk-item-name"> {{ desk.deskName }}</div>
-                <div class="desk-item-num"> {{ desk.deskNum }}</div>
-                <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
-                <div class="desk-item-price"> 预约: <span class="desk-item-count"
-                                                          :class="{'success':desk.bookingCount==='0' }">{{
-                    desk.bookingCount
-                  }}</span></div>
-              </div>
-            </el-card>
+        <div class="desk-container">
+          <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
+                   v-for="desk in tutorList">
+            <div class="item-status" :class="`item-status-${desk.status}`"></div>
+            <div>
+              <div class="desk-item-name"> {{ desk.deskName }}</div>
+              <div class="desk-item-num"> {{ desk.deskNum }}</div>
+              <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
+              <div class="desk-item-price"> 预约: <span class="desk-item-count"
+                                                        :class="{'success':desk.bookingCount==='0' }">{{
+                  desk.bookingCount
+                }}</span></div>
+            </div>
+          </el-card>
 
-          </div>
-        </template>
+        </div>
       </div>
     </div>
-    <div class="container-wrapper" v-if="selectedDesk && !showList">
+    <div class="container-wrapper" v-if="selectedItem && !showList">
       <div class="section-container btn-container">
         <el-button type="primary" icon="el-icon-back" @click="showList=true" circle></el-button>
-        <div>当前台桌：{{ selectedDesk.title }}</div>
+        <div>当前台桌：{{ selectedItem.title }}</div>
         <div>
           <el-date-picker
             v-model="currentMonth" @change="onMonthChanged"
@@ -172,7 +169,7 @@ export default {
 
     };
     return {
-      deskList: [],
+      tutorList: [],
       showAdd: false,
       timeOptions: {
         start: '00:01',
@@ -217,7 +214,7 @@ export default {
       },
       calendarValue: this.$time().startOf('d').format('YYYY-MM-DD'),
       showList: true,
-      selectedDesk: null,
+      selectedItem: null,
       currentMonth: this.$time().format('YYYY-MM-DD'),
       startTime: this.$time().startOf('d').format('YYYY-MM-DD'),
       endTime: this.$time().startOf('d').add(7, 'd').format('YYYY-MM-DD'),
@@ -233,7 +230,7 @@ export default {
   mounted() {
     this.initDayList()
     this.onMonthChanged();
-    this.getDeskList();
+    this.getTutorList();
     this.deskQueryParams.startTime = this.$time().format("HH:00")
     this.deskQueryParams.endTime = this.$time().add(2, 'hour').format("HH:00")
   },
@@ -246,14 +243,14 @@ export default {
       }
       this.deskQueryParams.dayList = list;
     },
-    getDeskList() {
+    getTutorList() {
       this.loading = true
       listDesk({
         bookingCount: 1,
         bookingStart: `${this.deskQueryParams.day} ${this.deskQueryParams.startTime}`,
         bookingEnd: `${this.deskQueryParams.day} ${this.deskQueryParams.endTime}`
       }).then(res => {
-        this.deskList = res.data;
+        this.tutorList = res.data;
       }).finally(() => this.loading = false)
     },
     onRemoveBookingClick(day, idx) {
@@ -291,7 +288,7 @@ export default {
           return Promise.reject()
         }
         return addDeskBooking({
-          deskId: this.selectedDesk.deskId,
+          deskId: this.selectedItem.deskId,
           startTime: `${this.bookingForm.day} ${this.bookingForm.startTime}`,
           endTime: `${this.bookingForm.day} ${this.bookingForm.endTime}`,
           bookingUserName: this.bookingForm.bookingUserName,
@@ -316,7 +313,7 @@ export default {
       return time >= this.startTime && time <= this.endTime
     },
     onDeskClick(item) {
-      this.selectedDesk = item;
+      this.selectedItem = item;
       this.showList = false;
       this.queryBookings();
     },
@@ -338,7 +335,7 @@ export default {
     queryBookings() {
 
       getBookingMap({
-        deskId: this.selectedDesk?.deskId ?? -1,
+        deskId: this.selectedItem?.deskId ?? -1,
         startTime: this.$time(this.currentMonth).format('YYYY-MM-DD 00:00:00'),
         endTime: this.$time(this.currentMonth).add(7, 'day').format('YYYY-MM-DD 23:59:59'),
       }).then(res => {
@@ -350,7 +347,7 @@ export default {
 }
 </script>
 
-<style scoped lang="scss" src="./bookingDesk.scss">
+<style scoped lang="scss" src="./index.scss">
 
 
 </style>

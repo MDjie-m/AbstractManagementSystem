@@ -1,6 +1,7 @@
 package com.ruoyi.billiard.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -130,7 +131,7 @@ public class DeskBookingServiceImpl extends ServiceImpl<DeskBookingMapper, DeskB
     }
 
     @Override
-    public List<KeyValueVo<Long, Long>>selectBookingCount(List<Long> deskIds) {
-        return baseMapper.selectBookingCount (deskIds) ;
+    public List<KeyValueVo<Long, Long>>selectBookingCount(List<Long> deskIds,  Date startTime, Date endTime) {
+        return baseMapper.selectBookingCount (deskIds,   startTime,   endTime) ;
     }
 }

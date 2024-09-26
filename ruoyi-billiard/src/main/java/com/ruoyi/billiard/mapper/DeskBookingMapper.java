@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.mapper;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.billiard.domain.DeskBooking;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
@@ -49,5 +50,6 @@ public interface DeskBookingMapper extends MyBaseMapper<DeskBooking>
      */
     public int deleteDeskBookingByDeskBookingIds(Long[] deskBookingIds);
 
-    List<KeyValueVo<Long, Long>> selectBookingCount(@Param("deskIds") List<Long> deskIds);
+    List<KeyValueVo<Long, Long>> selectBookingCount(@Param("deskIds") List<Long> deskIds,
+                                                    @Param("startTime")  Date startTime, @Param("endTime")Date endTime);
 }

@@ -146,7 +146,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     /**
      * 计算相差天数
      */
-    public static int differentDaysByMillisecond(Date date1, Date date2)
+    public static int diffDays(Date date1, Date date2)
     {
         return Math.abs((int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24)));
     }
@@ -154,6 +154,10 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     public static int diffMinutes(Date start, Date end)
     {
         return Math.abs((int) ((end.getTime() - start.getTime()) / (1000 * 60)));
+    }
+    public static int diffSeconds(Date start, Date end)
+    {
+        return Math.abs((int) ((end.getTime() - start.getTime()) / (1000)));
     }
     public static int deskTimeDiffMinutes(Date start, Date end)
     {
