@@ -122,7 +122,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
                 //.antMatchers("/consultant/user/login","/consulted/user/wechatProgram/login","/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
                 //登录和回调, webSocket可匿名访问
-                .antMatchers("/**/login","/**/callback","/message").permitAll()
+                .antMatchers("/**/login","/**/callback","/**/wechatPayNotify","/message").permitAll()
                 // 对于登录login 注册register 验证码captchaImage 允许匿名访问
                 .antMatchers( "/register", "/captchaImage","/token/**","/**/sendSms","/**/loginBySmsCode").permitAll()
                 //.antMatchers("/system/**","/consultant/**").permitAll()
