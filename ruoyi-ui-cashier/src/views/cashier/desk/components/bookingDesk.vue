@@ -233,9 +233,10 @@ export default {
   mounted() {
     this.initDayList()
     this.onMonthChanged();
-    this.getDeskList();
+    this.deskQueryParams.day=this.$time().format("YYYY-MM-DD")
     this.deskQueryParams.startTime = this.$time().format("HH:00")
     this.deskQueryParams.endTime = this.$time().add(2, 'hour').format("HH:00")
+    this.getDeskList();
   },
   methods: {
     initDayList() {

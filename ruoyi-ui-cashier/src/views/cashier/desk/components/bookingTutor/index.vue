@@ -4,18 +4,18 @@
     <div class="  container-wrapper" v-show="showList">
       <div class="section-container desk-filter-box">
 
-        <el-select v-model="deskQueryParams.day" @change="getTutorList">
-          <el-option :value="item" v-for="item in deskQueryParams.dayList" :label="item"></el-option>
+        <el-select v-model="queryParams.day" @change="getTutorList">
+          <el-option :value="item" v-for="item in queryParams.dayList" :label="item"></el-option>
         </el-select>
         <el-time-select
           placeholder="起始时间" :clearable="false"
-          v-model="deskQueryParams.startTime" @change="getTutorList"
+          v-model="queryParams.startTime" @change="getTutorList"
           :picker-options="{  start: '00:00',  step: '00:30',  end: '24:00'  }">
         </el-time-select>
         <el-time-select
           placeholder="结束时间" @change="getTutorList"
-          v-model="deskQueryParams.endTime" :clearable="false"
-          :picker-options="{  start: '00:00', step: '00:30',   end: '24:00',  minTime: deskQueryParams.startTime
+          v-model="queryParams.endTime" :clearable="false"
+          :picker-options="{  start: '00:00', step: '00:30',   end: '24:00',  minTime: queryParams.startTime
               }"/>
 
         <el-button v-loading="loading" type="primary" icon="el-icon-search" circle @click="getTutorList"></el-button>
@@ -176,7 +176,7 @@ export default {
         step: '00:30',
         end: '24:00',
       },
-      deskQueryParams: {
+      queryParams: {
         day: this.$time().format("YYYY-MM-DD"),
         startTime: "00:00",
         endTime: "24:00",
@@ -231,8 +231,9 @@ export default {
     this.initDayList()
     this.onMonthChanged();
     this.getTutorList();
-    this.deskQueryParams.startTime = this.$time().format("HH:00")
-    this.deskQueryParams.endTime = this.$time().add(2, 'hour').format("HH:00")
+    this.queryParams.day=this.$time().format("YYYY-MM-DD")
+    this.queryParams.startTime = this.$time().format("HH:00")
+    this.queryParams.endTime = this.$time().add(2, 'hour').format("HH:00")
   },
   methods: {
     initDayList() {
@@ -241,14 +242,14 @@ export default {
       for (let i = 0; i < 7; i++) {
         list.push(time.add(i, 'day').format("YYYY-MM-DD"))
       }
-      this.deskQueryParams.dayList = list;
+      this.queryParams.dayList = list;
     },
     getTutorList() {
       this.loading = true
       listDesk({
         bookingCount: 1,
-        bookingStart: `${this.deskQueryParams.day} ${this.deskQueryParams.startTime}`,
-        bookingEnd: `${this.deskQueryParams.day} ${this.deskQueryParams.endTime}`
+        bookingStart: `${this.queryParams.day} ${this.queryParams.startTime}`,
+        bookingEnd: `${this.queryParams.day} ${this.queryParams.endTime}`
       }).then(res => {
         this.tutorList = res.data;
       }).finally(() => this.loading = false)
