@@ -245,9 +245,9 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int delete(Long id) {
-        int i = psyConsultServeConfigMapper.deleteById(id);
+        int i = psyConsultServeConfigMapper.tombstonedByIds(new Long[]{id});
         //刷新关联的咨询师缓存
-        consultService.refreshCacheByIdList(getConsultantIdListByConfigId(id));
+       // consultService.refreshCacheByIdList(getConsultantIdListByConfigId(id));
         return i;
     }
     

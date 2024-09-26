@@ -182,6 +182,12 @@
             @click="changeStatus(scope.row)"
             v-hasPermi="['psychology:consult:edit']"
           >{{ scope.row.status === '0' ? '下架' : '上架' }}</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['psychology:consult:edit']"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>

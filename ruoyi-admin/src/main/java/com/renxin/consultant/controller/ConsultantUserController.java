@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/consultant/user")
@@ -83,16 +84,25 @@ public class ConsultantUserController extends BaseController {
     
     }
 
+    //获取登录验证码
     @PostMapping("/sendSms")
     public AjaxResult sendSms(@RequestBody ConsultLoginDTO req) {
+        //若旧验证码尚未过期, 拒绝再次发送
+        String phone = req.getPhone();
+        String oldCode = redisCache.getCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + phone);
+        if (ObjectUtils.isNotEmpty(oldCode)){
+            throw new ServiceException("请勿重复发送");
+        }
+        
         Random random = new Random();
         // 生成一个6位数，范围从100000到999999
         int code = 100000 + random.nextInt(999999);
         String smsCode=code+"";
         //String code = UUID.randomUUID().toString().substring(0, 6);
-        boolean isSend = new CloudFunctions().sendSms(req.getPhone(),smsCode);
+        boolean isSend = new CloudFunctions().sendSms(phone,smsCode);
         if(isSend){
-            redisCache.setCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + req.getPhone(), smsCode);
+            //向redis中写入该手机对应的验证码, 有效期10分钟
+            redisCache.setCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + phone, smsCode,10, TimeUnit.MINUTES);
             return AjaxResult.success("发送成功");
         }else {
             return AjaxResult.error("发送失败");
@@ -103,8 +113,9 @@ public class ConsultantUserController extends BaseController {
     @PostMapping("/loginBySmsCode")
     public AjaxResult loginBySmsCode(@RequestBody ConsultLoginDTO req) {
         String code = redisCache.getCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + req.getPhone());
-        System.out.println("code------------------"+code);
-        if (!req.getSmsCode().equals(code)) {
+        String reqCode = req.getSmsCode();
+        log.info("code------------------"+code);
+        if (ObjectUtils.isEmpty(reqCode) || !reqCode.equals(code)) {
             throw new ServiceException("验证码与手机号不相符");
         }
 

@@ -100,29 +100,29 @@
         <el-input v-model="form.remark" placeholder="请输入备注" />
       </el-form-item>
 
-      <el-form-item label="标签" prop="label">
+<!--      <el-form-item label="标签" prop="label">
         <el-tag
           v-for="tag in labelList"
           :key="tag"
           closable
           :disable-transitions="false"
-          @close="handleClose(tag)"
+          @close="deleteTag(tag)"
         >
           {{ tag }}
         </el-tag>
         <el-input
-          v-if="inputVisible"
+          v-if="tagInputVisible"
           ref="InputRef"
-          v-model="inputValue"
+          v-model="tagInputValue"
           class="w-20"
           size="small"
-          @keyup.enter="handleInputConfirm"
-          @blur="handleInputConfirm"
+          @keyup.enter="handleTagInputConfirm"
+          @blur="handleTagInputConfirm"
         />
-        <el-button v-else class="button-new-tag" size="small" @click="showInput">
+        <el-button v-else class="button-new-tag" size="small" @click="showInputTag">
           + New Tag
         </el-button>
-      </el-form-item>
+      </el-form-item>-->
 
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -152,7 +152,9 @@ export default {
       supervisionType: this.$constants.supervisionType,
       weekDay: this.$constants.weekDay,
       teamSupLabelList: this.$constants.teamSupLabel,
-      labelList: ['111','222'],
+      labelList: [],
+      tagInputVisible: false,
+      tagInputValue: '',
       selectedLabelList:[],
       form: {
       },
@@ -234,7 +236,22 @@ export default {
       this.open = true
     },
 
-
+    //删除标签
+    deleteTag(tag){
+      this.labelList.splice(this.labelList.indexOf(tag),1);
+    },
+    //显示标签输入框
+    showInputTag(){
+      this.tagInputVisible = true;
+    },
+    //添加标签
+    handleTagInputConfirm(){
+      if(this.tagInputValue){
+         this.labelList.push(this.tagInputValue)
+      }
+      this.tagInputVisible = false;
+      this.tagInputValue = '';
+    },
     onChangeTime(val) {
       if (val && val.length > 0) {
         this.form.startTime = val[0] + ' 00:00:00'
