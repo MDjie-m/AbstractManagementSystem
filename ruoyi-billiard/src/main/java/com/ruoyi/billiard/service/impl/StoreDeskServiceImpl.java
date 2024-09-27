@@ -394,30 +394,30 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     }
 
     @Override
-    public Boolean addScore(AddDeskScoreReqVo reqVo, Long storeId) {
+    public Boolean addScore(AddDeskScoreReqVo reqVo ) {
 
         StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getDeskNum, reqVo.getDeskNum())
-                .eq(StoreDesk::getStoreId, storeId).last(" limit 1"));
+                .eq(StoreDesk::getStoreId, reqVo.getStoreId()).last(" limit 1"));
         if (Objects.isNull(desk)) {
             return false;
         }
         if (Objects.isNull(desk.getCurrentOrderId())) {
             return false;
         }
-        return orderDeskScoreService.addScore(reqVo.getBtnType(), storeId, desk.getDeskId(), desk.getCurrentOrderId());
+        return orderDeskScoreService.addScore(reqVo.getBtnType(), reqVo.getStoreId(), desk.getDeskId(), desk.getCurrentOrderId());
     }
 
     @Override
-    public Boolean addCapture(DeskCaptureReqVo reqVo, Long storeId) {
+    public Boolean addCapture(DeskCaptureReqVo reqVo ) {
         StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getDeskNum, reqVo.getDeskNum())
-                .eq(StoreDesk::getStoreId, storeId).last(" limit 1"));
+                .eq(StoreDesk::getStoreId, reqVo.getStoreId()).last(" limit 1"));
         if (Objects.isNull(desk)) {
             return false;
         }
         if (Objects.isNull(desk.getCurrentOrderId())) {
             return false;
         }
-        return deskImageService.addCapture(  storeId, desk.getDeskId(),   desk.getCurrentOrderId(),desk.getCameraDeviceId());
+        return deskImageService.addCapture( reqVo.getStoreId(), desk.getDeskId(),   desk.getCurrentOrderId(),desk.getCameraDeviceId());
     }
     private StoreDesk queryEnableDesk(Long deskId, Long storeId) {
         StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query()

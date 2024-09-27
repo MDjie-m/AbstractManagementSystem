@@ -175,3 +175,6 @@ mqtt:
   clientId: TUMkhhBnfEEP
   broker: tcp://mqtt.geek-smart.cn:1883
   cleanSession: true
+
+cashier:
+  aes-key: 1234567890123456

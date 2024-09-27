@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 
 @Data
-public class DeskCaptureReqVo implements Serializable {
+public class DeskCaptureReqVo extends BaseDeviceReqVo {
 
     @NotNull(message = "台桌编号不能为空")
     private Integer deskNum;

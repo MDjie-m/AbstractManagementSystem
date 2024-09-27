@@ -54,7 +54,9 @@ public class DeskImageServiceImpl extends ServiceImpl<DeskImageMapper, DeskImage
      */
     @Override
     public int insertDeskImage(DeskImage deskImage) {
-        SecurityUtils.fillCreateUser(deskImage);
+         deskImage.setCreateById(0L );
+         deskImage.setCreateBy("system");
+        deskImage.setCaptureTime(new Date());
         deskImage.setDeskMultimediaId(IdUtils.singleNextId());
         return baseMapper.insert(deskImage);
     }
@@ -98,10 +100,12 @@ public class DeskImageServiceImpl extends ServiceImpl<DeskImageMapper, DeskImage
     public Boolean addCapture(Long storeId, Long deskId, Long orderId, Long cameraId) {
         DeskImage img = new DeskImage();
         img.setDeskId(deskId);
+        img.setStoreId(storeId);
         img.setCaptureTime(new Date());
         img.setDeskMultimediaId(IdUtils.singleNextId());
         img.setCameraId(Optional.ofNullable(cameraId).orElse(0L));
         img.setOrderId(orderId);
+        img.setFilePath("");
         return insertDeskImage(img) > 0;
     }
 }

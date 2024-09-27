@@ -2,16 +2,21 @@ package com.ruoyi.billiard.domain;
 
 import com.ruoyi.billiard.enums.ScorerBtnType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class AddDeskScoreReqVo implements Serializable {
+public class AddDeskScoreReqVo extends BaseDeviceReqVo {
 
     @NotNull(message = "台桌编号不能为空")
     private Integer deskNum;
     @NotNull(message = "按钮类型不能为空")
     private ScorerBtnType btnType;
+
+
+
+
 
 }

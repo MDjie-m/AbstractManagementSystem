@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -113,7 +114,9 @@ public class OrderDeskScoreServiceImpl implements IOrderDeskScoreService {
             newScore.setScoreA(0);
             newScore.setScoreB(0);
         }
-        SecurityUtils.fillCreateUser(newScore);
+        newScore.setCreateById(0L);
+        newScore.setCreateBy("system");
+        newScore.setCreateTime(LocalDateTime.now());
         orderDeskScoreMapper.insert(newScore);
         return true;
     }

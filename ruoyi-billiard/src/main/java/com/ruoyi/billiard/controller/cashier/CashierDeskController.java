@@ -6,6 +6,7 @@ import com.ruoyi.billiard.domain.vo.*;
 import com.ruoyi.billiard.service.IDeskBookingService;
 import com.ruoyi.billiard.service.ILightTimerService;
 import com.ruoyi.billiard.service.IStoreDeskService;
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
 import com.ruoyi.common.core.page.PageResVo;
@@ -205,14 +206,7 @@ public class CashierDeskController extends BaseController {
         return ResultVo.success(list);
     }
 
-    @PreAuthorize("@ss.hasRole('cashier')")
-    @PostMapping("/score")
-    public ResultVo<Boolean> addScore(@RequestBody AddDeskScoreReqVo reqVo) {
-        return ResultVo.success(storeDeskService.addScore(reqVo, getStoreIdWithThrow()));
-    }
-    @PreAuthorize("@ss.hasRole('cashier')")
-    @PostMapping("/capture")
-    public ResultVo<Boolean> addCapture(@RequestBody DeskCaptureReqVo reqVo) {
-        return ResultVo.success(storeDeskService.addCapture(reqVo, getStoreIdWithThrow()));
-    }
+
+
+
 }

@@ -90,7 +90,7 @@ public interface IStoreDeskService {
 
     DeskQueryResVo mergeToNewDesk(Long deskId, Long storeId, Long orderId, Long newDeskId);
 
-    Boolean addScore(AddDeskScoreReqVo reqVo, Long storeId);
+    Boolean addScore(AddDeskScoreReqVo reqVo );
 
-    Boolean addCapture(DeskCaptureReqVo reqVo, Long storeId );
+    Boolean addCapture(DeskCaptureReqVo reqVo  );
 }
