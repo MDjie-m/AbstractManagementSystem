@@ -46,10 +46,10 @@ public class SysMenu extends BaseEntity
     private String routeName;
 
     /** 是否为外链（0是 1否） */
-    private String isFrame;
+    private Integer isFrame;
 
     /** 是否缓存（0缓存 1不缓存） */
-    private String isCache;
+    private Integer isCache;
 
     /** 类型（M目录 C菜单 F按钮） */
     private String menuType;
@@ -164,22 +164,22 @@ public class SysMenu extends BaseEntity
         this.routeName = routeName;
     }
 
-    public String getIsFrame()
+    public Integer getIsFrame()
     {
         return isFrame;
     }
 
-    public void setIsFrame(String isFrame)
+    public void setIsFrame(Integer isFrame)
     {
         this.isFrame = isFrame;
     }
 
-    public String getIsCache()
+    public Integer getIsCache()
     {
         return isCache;
     }
 
-    public void setIsCache(String isCache)
+    public void setIsCache(Integer isCache)
     {
         this.isCache = isCache;
     }
