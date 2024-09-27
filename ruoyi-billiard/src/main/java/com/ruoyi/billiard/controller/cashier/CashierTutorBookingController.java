@@ -5,6 +5,7 @@ import com.ruoyi.billiard.domain.TutorBooking;
 import com.ruoyi.billiard.domain.TutorBooking;
 import com.ruoyi.billiard.domain.vo.IAdd;
 import com.ruoyi.billiard.domain.vo.IQuery;
+import com.ruoyi.billiard.enums.BookingStatus;
 import com.ruoyi.billiard.service.ITutorBookingService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
@@ -46,10 +47,17 @@ public class CashierTutorBookingController extends BaseController {
         return ResultVo.success(tutorBookingService.insertTutorBooking(reqVo));
     }
 
+    @PostMapping("/{bookingId}/verify")
+    public ResultVo<Boolean> verifyBooking(@PathVariable Long bookingId) {
+
+        return ResultVo.success(tutorBookingService.verifyBooking(bookingId, getStoreIdWithThrow()));
+    }
+
     @DeleteMapping("/{bookingId}")
     public ResultVo<Boolean> remove(@PathVariable Long bookingId) {
 
         return ResultVo.success(tutorBookingService.getBaseMapper().delete(Wrappers.<TutorBooking>lambdaQuery()
+                .in(TutorBooking::getStatus, BookingStatus.ACTIVE, BookingStatus.EXPIRE)
                 .eq(TutorBooking::getTutorBookingId, bookingId).eq(TutorBooking::getStoreId, getStoreIdWithThrow())) > 0);
     }
 }

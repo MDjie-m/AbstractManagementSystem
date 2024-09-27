@@ -274,7 +274,6 @@ export default {
         })
       }).catch(() => {
       });
-
     },
     onAddClick(day) {
       this.bookingForm = {

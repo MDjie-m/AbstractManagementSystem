@@ -140,3 +140,9 @@ export function delDeskBooking(bookingId) {
     method: 'delete',
   })
 }
+export function verifyDeskBooking(bookingId) {
+  return request({
+    url: `/cashier/desk/booking/${bookingId}/verify`,
+    method: 'post',
+  })
+}

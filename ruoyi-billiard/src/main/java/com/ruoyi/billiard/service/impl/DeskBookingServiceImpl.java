@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.enums.BookingStatus;
 import com.ruoyi.billiard.mapper.DeskBookingMapper;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.utils.ArrayUtil;
 import com.ruoyi.common.utils.AssertUtil;
@@ -131,7 +132,21 @@ public class DeskBookingServiceImpl extends ServiceImpl<DeskBookingMapper, DeskB
     }
 
     @Override
-    public List<KeyValueVo<Long, Long>>selectBookingCount(List<Long> deskIds,  Date startTime, Date endTime) {
-        return baseMapper.selectBookingCount (deskIds,   startTime,   endTime) ;
+    public List<KeyValueVo<Long, Long>> selectBookingCount(List<Long> deskIds, Date startTime, Date endTime) {
+        return baseMapper.selectBookingCount(deskIds, startTime, endTime);
+    }
+
+    @Override
+    public Boolean verifyBooking(Long bookingId, Long storeId) {
+
+        MyBaseEntity entity = new MyBaseEntity();
+        SecurityUtils.fillUpdateUser(entity);
+        return baseMapper.update(null, baseMapper.updateWrapper()
+                .set(DeskBooking::getStatus, BookingStatus.USED)
+                .set(DeskBooking::getUpdateById, entity.getUpdateById())
+                .set(BaseEntity::getUpdateBy, entity.getUpdateBy())
+                .set(BaseEntity::getUpdateTime, entity.getUpdateTime())
+                .eq(DeskBooking::getDeskBookingId, bookingId)
+                .eq(DeskBooking::getStoreId, storeId).eq(DeskBooking::getStatus, BookingStatus.ACTIVE)) > 0;
     }
 }

@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.domain.TutorBooking;
 import com.ruoyi.billiard.enums.BookingStatus;
 import com.ruoyi.billiard.mapper.TutorBookingMapper;
+import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.utils.ArrayUtil;
 import com.ruoyi.common.utils.AssertUtil;
@@ -15,7 +17,6 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.stereotype.Service;
-import com.ruoyi.billiard.domain.TutorBooking;
 import com.ruoyi.billiard.service.ITutorBookingService;
 /**
  * 教练预约Service业务层处理
@@ -126,5 +127,18 @@ public class TutorBookingServiceImpl extends ServiceImpl<TutorBookingMapper,Tuto
     public Map<String, List<TutorBooking>> selectBookingDayMap(TutorBooking reqVo) {
         return ArrayUtil.groupBy(selectTutorBookingList(reqVo), p -> DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, p.getStartTime()));
 
+    }
+    @Override
+    public Boolean verifyBooking(Long bookingId, Long storeId) {
+
+        MyBaseEntity entity = new MyBaseEntity();
+        SecurityUtils.fillUpdateUser(entity);
+        return baseMapper.update(null, baseMapper.updateWrapper()
+                .set(TutorBooking::getStatus, BookingStatus.USED)
+                .set(TutorBooking::getUpdateById, entity.getUpdateById())
+                .set(BaseEntity::getUpdateBy, entity.getUpdateBy())
+                .set(BaseEntity::getUpdateTime, entity.getUpdateTime())
+                .eq(TutorBooking::getTutorBookingId, bookingId)
+                .eq(TutorBooking::getStoreId, storeId).eq(TutorBooking::getStatus, BookingStatus.ACTIVE)) > 0;
     }
 }

@@ -52,11 +52,12 @@
                   {{ (desk.queryParams.pageNum - 1) * desk.queryParams.pageSize + scope.$index + 1 }}
                 </template>
               </el-table-column>
+              <el-table-column label="预约人" align="center" prop="bookingUserName"/>
+              <el-table-column label="联系电话" align="center" prop="bookingUserMobile"/>
               <el-table-column label="预约开始时间" align="center" prop="startTime"/>
               <el-table-column label="预约结束时间" align="center" prop="endTime"/>
               <el-table-column label="预约台桌" align="center" prop="deskTitle"/>
-              <el-table-column label="预约人" align="center" prop="bookingUserName"/>
-              <el-table-column label="联系电话" align="center" prop="bookingUserMobile"/>
+
               <el-table-column label="状态" align="center" prop="status">
                 <template v-slot="scope">
                   <dict-tag :options="dict.type.booking_status" :value="scope.row.status"/>
@@ -70,14 +71,14 @@
                   <el-button
                     size="mini"
                     type="danger"
-                    icon="el-icon-delete" round
+                    icon="el-icon-delete" round  v-if="scope.row.status===BookingStatus.Active || scope.row.status===BookingStatus.Expire"
                     @click="onRemoveDeskBookingClick(scope.row)"
                   > </el-button>
                   <el-button
                     size="mini"
                     type="success"
-                    icon="el-icon-s-check" round
-                    @click="onRemoveDeskBookingClick(scope.row)"
+                    icon="el-icon-s-check" round  v-if="scope.row.status===BookingStatus.Active "
+                    @click="onVerifyDeskBookingClick(scope.row)"
                   > </el-button>
 
                 </template>
@@ -137,11 +138,12 @@
                   {{ (tutor.queryParams.pageNum - 1) * tutor.queryParams.pageSize + scope.$index + 1 }}
                 </template>
               </el-table-column>
+              <el-table-column label="预约人" align="center" prop="bookingUserName"/>
+              <el-table-column label="联系电话" align="center" prop="bookingUserMobile"/>
               <el-table-column label="预约开始时间" align="center" prop="startTime"/>
               <el-table-column label="预约结束时间" align="center" prop="endTime"/>
               <el-table-column label="预约助教" align="center" prop="tutorTitle"/>
-              <el-table-column label="预约人" align="center" prop="bookingUserName"/>
-              <el-table-column label="联系电话" align="center" prop="bookingUserMobile"/>
+
               <el-table-column label="状态" align="center" prop="status">
                 <template v-slot="scope">
                   <dict-tag :options="dict.type.booking_status" :value="scope.row.status"/>
@@ -153,16 +155,16 @@
                 <template v-slot="scope">
 
                   <el-button
-                    size="mini"
+                    size="mini" v-if="scope.row.status===BookingStatus.Active || scope.row.status===BookingStatus.Expire"
                     type="danger"
                     icon="el-icon-delete" round
-                    @click="onRemoveDeskBookingClick(scope.row)"
+                    @click="onRemoveTutorBookingClick(scope.row)"
                   > </el-button>
                   <el-button
                     size="mini"
                     type="success"
-                    icon="el-icon-s-check" round
-                    @click="onRemoveDeskBookingClick(scope.row)"
+                    icon="el-icon-s-check" round  v-if="scope.row.status===BookingStatus.Active "
+                    @click="onVerifyTutorBookingClick(scope.row)"
                   > </el-button>
 
                 </template>
@@ -185,10 +187,16 @@
 <script>
 
 
-import {getDeskBookingList, listDesk} from "@/api/cashier/desk";
-import {getTutorBookingList, listAllTutor} from "@/api/cashier/tutor";
+import {delDeskBooking, getDeskBookingList, listDesk, verifyDeskBooking} from "@/api/cashier/desk";
+import {delTutorBooking, getTutorBookingList, listAllTutor, verifyTutorBooking} from "@/api/cashier/tutor";
+import {BookingStatus, formatTime} from "@/views/cashier/components/constant";
 
 export default {
+  computed: {
+    BookingStatus() {
+      return BookingStatus
+    }
+  },
   emits: ["ok"],
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place','store_tutor_work_status',"booking_status"],
   data() {
@@ -238,6 +246,61 @@ export default {
   methods: {
     onRemoveDeskBookingClick(item){
 
+      let id = item.deskBookingId
+      this.$confirm(`确认删除${formatTime(item.startTime, 'HH:mm')}到${formatTime(item.endTime, 'HH:mm')}的预约？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delDeskBooking(id).then(res => {
+          this.$modal.msgSuccess("操作成功");
+          this.queryDeskBookingList()
+        })
+      }).catch(() => {
+      });
+    },
+    onVerifyDeskBookingClick(item){
+
+      let id = item.deskBookingId
+      this.$confirm(`确认核销${formatTime(item.startTime, 'HH:mm')}到${formatTime(item.endTime, 'HH:mm')}的预约？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        verifyDeskBooking( id).then(res => {
+          this.$modal.msgSuccess("操作成功");
+          this.queryDeskBookingList()
+        })
+      }).catch(() => {
+      });
+    },
+    onRemoveTutorBookingClick(item) {
+      let id = item.tutorBookingId
+      this.$confirm(`确认删除${formatTime(item.startTime, 'HH:mm')}到${formatTime(item.endTime, 'HH:mm')}的预约？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delTutorBooking(id).then(res => {
+          this.$modal.msgSuccess("操作成功")
+          this.queryTutorBookingList()
+        })
+      }).catch(() => {
+      });
+    },
+    onVerifyTutorBookingClick(item) {
+      let id = item.tutorBookingId
+      this.$confirm(`确认核销${formatTime(item.startTime, 'HH:mm')}到${formatTime(item.endTime, 'HH:mm')}的预约？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        verifyTutorBooking(id).then(res => {
+          this.$modal.msgSuccess("操作成功")
+          this.queryTutorBookingList()
+        })
+      }).catch(() => {
+      });
     },
     onTabClick() {
       if (this.currentTitle === '0') {

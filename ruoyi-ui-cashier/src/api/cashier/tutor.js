@@ -35,3 +35,9 @@ export function delTutorBooking(bookingId) {
     method: 'delete',
   })
 }
+export function verifyTutorBooking(bookingId) {
+  return request({
+    url: `/cashier/tutor/booking/${bookingId}/verify`,
+    method: 'post',
+  })
+}

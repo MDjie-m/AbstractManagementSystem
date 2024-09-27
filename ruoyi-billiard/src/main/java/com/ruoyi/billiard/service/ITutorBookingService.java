@@ -69,4 +69,6 @@ public interface ITutorBookingService  extends IService<TutorBooking>
                                              @Param("startTime")  Date startTime, @Param("endTime")Date endTime);
 
     Map<String, List<TutorBooking>> selectBookingDayMap(TutorBooking reqVo);
+
+    Boolean verifyBooking(Long bookingId, Long storeId);
 }

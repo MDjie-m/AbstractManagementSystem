@@ -3,6 +3,7 @@ package com.ruoyi.billiard.controller.cashier;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.vo.*;
+import com.ruoyi.billiard.enums.BookingStatus;
 import com.ruoyi.billiard.service.IDeskBookingService;
 import com.ruoyi.billiard.service.ILightTimerService;
 import com.ruoyi.billiard.service.IStoreDeskService;
@@ -55,12 +56,20 @@ public class CashierDeskController extends BaseController {
         reqVo.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(deskBookingService.insertDeskBooking(reqVo));
     }
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/booking/{bookingId}/verify")
+    public ResultVo<Boolean> verifyBooking(@PathVariable Long bookingId) {
+
+
+        return ResultVo.success(deskBookingService.verifyBooking(bookingId,getStoreIdWithThrow()));
+    }
 
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @DeleteMapping("/booking/{bookingId}")
     public ResultVo<Boolean> remove(@PathVariable Long bookingId) {
 
         return ResultVo.success(deskBookingService.getBaseMapper().delete(Wrappers.<DeskBooking>lambdaQuery()
+                .in(DeskBooking::getStatus, BookingStatus.ACTIVE, BookingStatus.EXPIRE)
                 .eq(DeskBooking::getDeskBookingId, bookingId).eq(DeskBooking::getStoreId, getStoreIdWithThrow())) > 0);
     }
 
