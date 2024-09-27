@@ -40,10 +40,10 @@ public class SysRole extends BaseEntity
     private String dataScope;
 
     /** 菜单树选择项是否关联显示（ 0：父子不互相关联显示 1：父子互相关联显示） */
-    private boolean menuCheckStrictly;
+    private String menuCheckStrictly;
 
     /** 部门树选择项是否关联显示（0：父子不互相关联显示 1：父子互相关联显示 ） */
-    private boolean deptCheckStrictly;
+    private String deptCheckStrictly;
 
     /** 角色状态（0正常 1停用） */
     @Excel(name = "角色状态", readConverterExp = "0=正常,1=停用")
@@ -139,22 +139,22 @@ public class SysRole extends BaseEntity
         this.dataScope = dataScope;
     }
 
-    public boolean isMenuCheckStrictly()
+    public String isMenuCheckStrictly()
     {
         return menuCheckStrictly;
     }
 
-    public void setMenuCheckStrictly(boolean menuCheckStrictly)
+    public void setMenuCheckStrictly(String menuCheckStrictly)
     {
         this.menuCheckStrictly = menuCheckStrictly;
     }
 
-    public boolean isDeptCheckStrictly()
+    public String isDeptCheckStrictly()
     {
         return deptCheckStrictly;
     }
 
-    public void setDeptCheckStrictly(boolean deptCheckStrictly)
+    public void setDeptCheckStrictly(String deptCheckStrictly)
     {
         this.deptCheckStrictly = deptCheckStrictly;
     }
