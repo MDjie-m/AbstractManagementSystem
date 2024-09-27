@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.TimeZone;
 
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.ruoyi.common.enums.IEnum;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +33,10 @@ public class ApplicationConfig
         return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder.timeZone(TimeZone.getDefault())
                 .serializerByType(Long.class, ToStringSerializer.instance)
                 .serializerByType(BigInteger.class, ToStringSerializer.instance)
+                .serializerByType(IEnum.class,BaseEnumSerializer.instance)
+                .deserializerByType(IEnum.class,BaseEnumDeserializer.instance)
                 .serializerByType(BigDecimal.class,ToPlainTextString.instance);
+
     }
 
 

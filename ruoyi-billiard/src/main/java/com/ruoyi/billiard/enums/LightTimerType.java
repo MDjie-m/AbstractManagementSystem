@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.enums;
 
+import com.ruoyi.common.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,7 +9,7 @@ import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
-public enum LightTimerType implements IEnum{
+public enum LightTimerType implements IEnum {
     TEMP(0,"临时灯"),
     CALC_FEE(1,"计费灯"),
     ;

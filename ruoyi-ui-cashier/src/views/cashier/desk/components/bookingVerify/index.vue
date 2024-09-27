@@ -19,6 +19,28 @@
                 </el-option>
               </el-select>
             </el-form-item>
+            <el-form-item>
+              <el-select v-model="desk.queryParams.status" placeholder="请选择状态" @change="queryDeskBookingList">
+                <el-option :value="null" label="预约状态"/>
+                <el-option :value="parseInt(item.value)" :key="item.value+'deskStatus'" :label="item.label" v-for="item in dict.type.booking_status">
+
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-date-picker
+                v-model="desk.queryParams.startTime" @change="queryDeskBookingList"  value-format="yyyy-MM-dd 00:00:00" format="yyyy-MM-dd"
+                type="date" :clearable="false"
+                placeholder="预约开始时间">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-date-picker :clearable="false"
+                v-model="desk.queryParams.endTime"  @change="queryDeskBookingList" value-format="yyyy-MM-dd 24:00:00"  format="yyyy-MM-dd"
+                type="date"
+                placeholder="预约结束时间">
+              </el-date-picker>
+            </el-form-item>
           </el-form>
 
           <div class="table-box">
@@ -35,6 +57,11 @@
               <el-table-column label="预约台桌" align="center" prop="deskTitle"/>
               <el-table-column label="预约人" align="center" prop="bookingUserName"/>
               <el-table-column label="联系电话" align="center" prop="bookingUserMobile"/>
+              <el-table-column label="状态" align="center" prop="status">
+                <template v-slot="scope">
+                  <dict-tag :options="dict.type.booking_status" :value="scope.row.status"/>
+                </template>
+              </el-table-column>
               <el-table-column label="创建时间" align="center" prop="createTime"/>
               <el-table-column label="操作" align="center" type="index"  width="120" >
 
@@ -79,6 +106,28 @@
                 </el-option>
               </el-select>
             </el-form-item>
+            <el-form-item>
+              <el-select v-model="tutor.queryParams.status" placeholder="请选择状态" @change="queryTutorBookingList">
+                <el-option :value="null" label="预约状态"/>
+                <el-option :value="parseInt(item.value)" :key="item.value+'tttStatus'" :label="item.label" v-for="item in dict.type.booking_status">
+
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-date-picker
+                v-model="tutor.queryParams.startTime" @change="queryTutorBookingList"  value-format="yyyy-MM-dd 00:00:00" format="yyyy-MM-dd"
+                type="date" :clearable="false"
+                placeholder="预约开始时间">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-date-picker :clearable="false"
+                              v-model="tutor.queryParams.endTime"  @change="queryTutorBookingList" value-format="yyyy-MM-dd 24:00:00"  format="yyyy-MM-dd"
+                              type="date"
+                              placeholder="预约结束时间">
+              </el-date-picker>
+            </el-form-item>
           </el-form>
           <div class="table-box">
             <el-table v-loading="loading" :data="tutor.list" @change="queryTutorBookingList" class="table"
@@ -93,6 +142,11 @@
               <el-table-column label="预约助教" align="center" prop="tutorTitle"/>
               <el-table-column label="预约人" align="center" prop="bookingUserName"/>
               <el-table-column label="联系电话" align="center" prop="bookingUserMobile"/>
+              <el-table-column label="状态" align="center" prop="status">
+                <template v-slot="scope">
+                  <dict-tag :options="dict.type.booking_status" :value="scope.row.status"/>
+                </template>
+              </el-table-column>
               <el-table-column label="创建时间" align="center" prop="createTime"/>
               <el-table-column label="操作" align="center" type="index"  width="120" >
 
@@ -136,7 +190,7 @@ import {getTutorBookingList, listAllTutor} from "@/api/cashier/tutor";
 
 export default {
   emits: ["ok"],
-  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place','store_tutor_work_status'],
+  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place','store_tutor_work_status',"booking_status"],
   data() {
 
     return {
@@ -145,8 +199,11 @@ export default {
         total: 0,
         deskList: [],
         queryParams: {
+          status: null,
           keyword: null,
           deskId: null,
+          startTime:this.$time().format("YYYY-MM-DD 00:00:00"),
+          endTime:this.$time().add(7,'days').format("YYYY-MM-DD 00:00:00"),
           pageSize: 10,
           pageNum: 1,
         }
@@ -156,8 +213,11 @@ export default {
         total: 0,
         tutorList: [],
         queryParams: {
+          status: null,
           keyword: null,
           tutorId: null,
+          startTime:this.$time().format("YYYY-MM-DD 00:00:00"),
+          endTime:this.$time().add(7,'days').format("YYYY-MM-DD 24:00:00"),
           pageSize: 10,
           pageNum: 1,
         }
@@ -196,8 +256,17 @@ export default {
         this.tutor.tutorList = res.data || []
       })
     },
+    checkTimes(params){
+      if(!params.startTime){
+        params.startTime=this.$time().format("YYYY-MM-DD 00:00:00");
+      }
+      if(!params.endTime){
+        params.endTime=this.$time().add(7,'days').format("YYYY-MM-DD 00:00:00");
+      }
+    },
     queryDeskBookingList() {
       this.loading = true
+      this.checkTimes(this.desk.queryParams);
       getDeskBookingList(this.desk.queryParams).then(res => {
         let list = res.rows || [];
         this.desk.list =   list;
@@ -206,7 +275,8 @@ export default {
     },
     queryTutorBookingList() {
       this.loading = true
-      getTutorBookingList(this.desk.queryParams).then(res => {
+      this.checkTimes(this.tutor.queryParams);
+      getTutorBookingList(this.tutor.queryParams).then(res => {
         let list = res.rows || [];
         this.tutor.list = list;
         this.tutor.total = res.total;

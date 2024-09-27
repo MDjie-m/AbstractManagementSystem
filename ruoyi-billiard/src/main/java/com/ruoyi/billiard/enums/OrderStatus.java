@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.enums;
 
+import com.ruoyi.common.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +11,7 @@ import java.util.Map;
 
 @Getter
 @AllArgsConstructor
-public enum OrderStatus implements IEnum{
+public enum OrderStatus implements IEnum {
     CHARGING(0,"计费中"),
     WAIT_SETTLED(1,"待结算"),
     SETTLED(2,"已结算"),

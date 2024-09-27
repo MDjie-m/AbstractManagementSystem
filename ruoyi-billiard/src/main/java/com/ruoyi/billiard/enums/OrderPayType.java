@@ -1,6 +1,6 @@
 package com.ruoyi.billiard.enums;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.ruoyi.common.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

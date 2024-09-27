@@ -87,8 +87,6 @@ public class DeskBooking extends MyBaseEntity {
     /**
      * 0=有效，1=预约生效,2=过期
      */
-    @Excel(name = "0=有效，1=预约生效,2=过期")
-
     @TableField("status")
     private BookingStatus status;
 

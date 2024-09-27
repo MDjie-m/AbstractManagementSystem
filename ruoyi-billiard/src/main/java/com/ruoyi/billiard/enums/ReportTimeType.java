@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.enums;
 
+import com.ruoyi.common.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

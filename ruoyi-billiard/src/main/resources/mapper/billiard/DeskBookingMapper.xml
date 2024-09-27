@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              </if>
 
         </where>
-        order by desk_booking_id desc
+        order by start_time  asc
     </select>
     
     <select id="selectDeskBookingByDeskBookingId" parameterType="Long" resultType="DeskBooking">

@@ -1,4 +1,4 @@
-package com.ruoyi.billiard.enums;
+package com.ruoyi.common.enums;
 
 
 import com.fasterxml.jackson.annotation.JsonValue;
