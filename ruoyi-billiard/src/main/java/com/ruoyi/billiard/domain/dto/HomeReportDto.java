@@ -1,5 +1,7 @@
 package com.ruoyi.billiard.domain.dto;
 
+import com.ruoyi.billiard.enums.OrderType;
+import com.ruoyi.billiard.enums.ReportTimeType;
 import lombok.Data;
 
 
@@ -15,13 +17,16 @@ public class HomeReportDto {
     private Long storeId;
 
     /** 时间类型 */
-    private Integer timeType;
+    private ReportTimeType timeType;
 
     /** 查询开始时间 */
     private String startTime;
 
     /** 查询结束时间 */
     private String endTime;
+
+    /** 订单类型枚举 */
+    private OrderType orderType;
 
 
 //    /** 台桌Id */

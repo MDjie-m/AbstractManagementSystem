@@ -65,4 +65,11 @@ public interface IOrderGoodsService
      * @return
      */
     List<OrderGoods> selectOrderGoodsListByOrderId(Long orderId);
+
+    /**
+     * 根据订单ids查询订单商品列表
+     * @param orderIds
+     * @return
+     */
+    List<OrderGoods> selectOrderGoodsListByOrderIds(List<Long> orderIds);
 }

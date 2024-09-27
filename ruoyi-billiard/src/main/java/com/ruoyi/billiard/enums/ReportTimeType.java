@@ -12,8 +12,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ReportTimeType implements IEnum {
 
-    DAY(1, "当天"),
-    WEEK(2, "周"),
+    DAY(0, "当天"),
+    WEEK(1, "周"),
     MONTH(2, "月"),
     YEAR(3, "年"),
     CUSTOM(4, "自定义");

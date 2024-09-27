@@ -72,4 +72,11 @@ public interface IOrderRechargeService
      * @return 会员充值列表
      */
     List<OrderRecharge> selectOrderRechargeByMemberIds(Long[] memberIds);
+
+    /**
+     * 根据订单ids查询订单会员充值列表
+     * @param orderIds
+     * @return
+     */
+    List<OrderRecharge> selectOrderRechargeListByOrderIds(List<Long> orderIds);
 }

@@ -1809,4 +1809,54 @@ public class ExcelUtil<T>
         }
         return method;
     }
+
+    // 新增方法，用于导出包含多个不同数据的工作表的 Excel 文件
+    public AjaxResult exportExcelWithMultipleSheets(List<List<T>> multipleLists, String[] sheetNames, String title) {
+        try {
+            Workbook wb = new SXSSFWorkbook(500);
+            for (int i = 0; i < multipleLists.size(); i++) {
+                List<T> list = multipleLists.get(i);
+                Sheet sheet = wb.createSheet();
+                wb.setSheetName(i, sheetNames[i]);
+                init(list, sheetNames[i], title, Type.EXPORT);
+                writeSheetForMultipleSheets(sheet, list);
+            }
+            String filename = encodingFilename("MultipleSheetsExcel");
+            OutputStream out = new FileOutputStream(getAbsoluteFile(filename));
+            wb.write(out);
+            return AjaxResult.success(filename);
+        } catch (Exception e) {
+            log.error("导出 Excel 异常{}", e.getMessage());
+            throw new UtilException("导出 Excel 失败，请联系网站管理员！");
+        }
+    }
+
+    private void writeSheetForMultipleSheets(Sheet sheet, List<T> list) {
+        // 取出一共有多少个sheet.
+        int sheetNo = Math.max(1, (int) Math.ceil(list.size() * 1.0 / sheetSize));
+        for (int index = 0; index < sheetNo; index++) {
+            createSheet(sheetNo, index);
+
+            // 产生一行
+            Row row = sheet.createRow(rownum);
+            int column = 0;
+            // 写入各个字段的列头名称
+            for (Object[] os : fields) {
+                Field field = (Field) os[0];
+                Excel excel = (Excel) os[1];
+                if (Collection.class.isAssignableFrom(field.getType())) {
+                    for (Field subField : subFields) {
+                        Excel subExcel = subField.getAnnotation(Excel.class);
+                        this.createHeadCell(subExcel, row, column++);
+                    }
+                } else {
+                    this.createHeadCell(excel, row, column++);
+                }
+            }
+            if (Type.EXPORT.equals(type)) {
+                fillExcelData(index, row);
+                addStatisticsRow();
+            }
+        }
+    }
 }

@@ -57,4 +57,11 @@ public interface IOrderDeskTimeService
      * @return
      */
     List<OrderDeskTime> selectOrderDeskTimeListByOrderId(Long orderId);
+
+    /**
+     * 根据订单ids查询球桌计时数据
+     * @param orderIds
+     * @return
+     */
+    List<OrderDeskTime> selectOrderDeskTimeListByOrderIds(List<Long> orderIds);
 }

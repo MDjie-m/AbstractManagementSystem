@@ -65,4 +65,11 @@ public interface IOrderTutorTimeService
      * @return
      */
     List<OrderTutorTime> selectOrderTutorTimeListByOrderId(Long orderId);
+
+    /**
+     * 根据订单ids查询订单教练计时列表
+     * @param orderIds
+     * @return
+     */
+    List<OrderTutorTime> selectOrderTutorTimeListByOrderIds(List<Long> orderIds);
 }

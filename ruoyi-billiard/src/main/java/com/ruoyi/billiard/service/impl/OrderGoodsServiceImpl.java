@@ -5,14 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.ruoyi.billiard.domain.Goods;
+import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.service.IGoodsService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.OrderGoodsMapper;
-import com.ruoyi.billiard.domain.OrderGoods;
 import com.ruoyi.billiard.service.IOrderGoodsService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,6 +108,18 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService {
         List<OrderGoods> orderGoodsList = Optional.ofNullable(orderGoodsMapper.selectList(orderGoodsMapper.query()
                 .eq(OrderGoods::getOrderId, orderId).orderByDesc(OrderGoods::getCreateTime)))
                 .orElse(Collections.emptyList());
+        return getOrderGoodses(orderGoodsList);
+    }
+
+    @Override
+    public List<OrderGoods> selectOrderGoodsListByOrderIds(List<Long> orderIds) {
+        List<OrderGoods> orderGoodsList = Optional.ofNullable(orderGoodsMapper.selectList(orderGoodsMapper.query()
+                        .in(OrderGoods::getOrderId, orderIds).orderByDesc(OrderGoods::getCreateTime)))
+                .orElse(Collections.emptyList());
+        return getOrderGoodses(orderGoodsList);
+    }
+
+    private List<OrderGoods> getOrderGoodses(List<OrderGoods> orderGoodsList) {
         return orderGoodsList.stream().map(p -> {
             Long goodsId = p.getGoodsId();
             Goods goods = Optional.ofNullable(goodsService.selectGoodsByGoodsId(goodsId)).orElse(new Goods());

@@ -964,55 +964,55 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public HomeReportVo selectOrderData2Report(HomeReportDto dto) {
-        Integer timeType = dto.getTimeType();
+        ReportTimeType timeType = dto.getTimeType();
         HomeReportVo homeReportVo = new HomeReportVo();
         HomeReportVoConsume homeReportVoConsume = new HomeReportVoConsume();
-        List<HomeReportVoConsumeDetail> typeList = new ArrayList<>();
-
-        // 挂起订单统计
-        HomeReportVoConsumeDetail suspend = null;
 
         String nowDay = DateUtils.getDate();
         String endTime = nowDay + " 23:59";
-        if (!Objects.equals(timeType, ReportTimeType.YEAR.getValue())) {
-            String startTime = "";
-            List<Order> orders;
-            List<Order> suspendedOrder;
-            if (Objects.equals(timeType, ReportTimeType.DAY.getValue())) {
-                startTime = nowDay + " 00:00";
-            }
-            if (Objects.equals(timeType, ReportTimeType.WEEK.getValue())) {
-                // 根据当前时间往前推一周
-                String beforWeekDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addWeeks(new Date(), -1));
-                startTime = beforWeekDay + " 00:00";
-
-            }
-            if (Objects.equals(timeType, ReportTimeType.MONTH.getValue())) {
-                // 根据当前时间往前推一个月
-                String beforMonthDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addMonths(new Date(), -1));
-                startTime = beforMonthDay + " 00:00";
-
-            }
-            if (Objects.equals(timeType, ReportTimeType.CUSTOM.getValue())) {
-                startTime = dto.getStartTime() + " 00:00";
-                endTime = dto.getEndTime() + " 23:59";
-            }
-            // 查询总订单
-            orders = selectOrderByPayStatus(OrderStatus.SETTLED.getValue(), dto.getStoreId() ,startTime, endTime);
-            BigDecimal totalAmount = orders.stream().map(Order::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-            HomeReportVoConsumeDetail totalConsum = HomeReportVoConsumeDetail.builder().consumeDetail(orders)
-                    .consumeName(OrderType.AGGREGATE_CONSUMPTION.getDesc())
-                    .consumeCount(orders.size())
-                    .consumeAmount(totalAmount)
-                    .consumePercent(new BigDecimal(100)).build();
-            homeReportVoConsume.setTotal(totalConsum);
-
-            // 查询挂起订单
-            suspendedOrder = selectOrderByPayStatus(OrderStatus.SUSPEND.getValue(), dto.getStoreId() ,startTime, endTime);
-            Map<String, Object> subOrderConsumeDetail = getSubOrderConsumeDetail(orders, totalAmount, suspendedOrder);
-            typeList = (List<HomeReportVoConsumeDetail>) subOrderConsumeDetail.get("typeList");
-            suspend = (HomeReportVoConsumeDetail) subOrderConsumeDetail.get("suspend");
+        String startTime = "";
+        if (Objects.equals(timeType, ReportTimeType.DAY)) {
+            startTime = nowDay + " 00:00";
         }
+        if (Objects.equals(timeType, ReportTimeType.WEEK)) {
+            // 根据当前时间往前推一周
+            String beforWeekDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addWeeks(new Date(), -1));
+            startTime = beforWeekDay + " 00:00";
+
+        }
+        if (Objects.equals(timeType, ReportTimeType.MONTH)) {
+            // 根据当前时间往前推一个月
+            String beforMonthDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addMonths(new Date(), -1));
+            startTime = beforMonthDay + " 00:00";
+
+        }
+        if (Objects.equals(timeType, ReportTimeType.YEAR)) {
+            // 根据当前时间往前推一年
+            String beforYearDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addYears(new Date(), -1));
+            startTime = beforYearDay + " 00:00";
+
+        }
+        if (Objects.equals(timeType, ReportTimeType.CUSTOM)) {
+            startTime = dto.getStartTime() + " 00:00";
+            endTime = dto.getEndTime() + " 23:59";
+        }
+        // 查询总订单
+        List<Order> orders= selectOrderByPayStatus(OrderStatus.SETTLED.getValue(), dto.getStoreId(), startTime, endTime);
+        BigDecimal totalAmount = orders.stream().map(Order::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        HomeReportVoConsumeDetail totalConsum = HomeReportVoConsumeDetail.builder().consumeDetail(orders)
+                .consumeName(OrderType.AGGREGATE_CONSUMPTION.getDesc())
+                .consumeCount(orders.size())
+                .consumeAmount(totalAmount)
+                .consumePercent(new BigDecimal(100)).build();
+        homeReportVoConsume.setTotal(totalConsum);
+
+        // 查询挂起订单
+        List<Order> suspendedOrder = selectOrderByPayStatus(OrderStatus.SUSPEND.getValue(), dto.getStoreId(), startTime, endTime);
+        Map<String, Object> subOrderConsumeDetail = getSubOrderConsumeDetail(orders, totalAmount, suspendedOrder);
+        // 消费类型统计
+        List<HomeReportVoConsumeDetail> typeList = (List<HomeReportVoConsumeDetail>) subOrderConsumeDetail.get("typeList");
+        // 挂起订单统计
+        HomeReportVoConsumeDetail suspend = (HomeReportVoConsumeDetail) subOrderConsumeDetail.get("suspend");
 
 
         homeReportVoConsume.setTypeList(typeList);
@@ -1038,28 +1038,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public Map<String, Object> getSubOrderConsumeDetail(List<Order> orders, BigDecimal totalAmount, List<Order> suspendedOrder) {
 
         List<HomeReportVoConsumeDetail> typeList = new ArrayList<>();
-        // 订单关联球桌列表
-        List<OrderDeskTime> orderDeskTimes = new ArrayList<>();
-        // 订单关联陪练列表
-        List<OrderTutorTime> orderTutorTimes = new ArrayList<>();
-        // 订单关联
-        // 订单关联商品列表
-        List<OrderGoods> orderCommodityTimes = new ArrayList<>();
-        // 订单关联会员充值列表
-        List<OrderRecharge> orderRechargeTimes = new ArrayList<>();
-
         // 查询子订单
-        for (Order p : orders) {
-            Order order = selectOrderByOrderId(p.getOrderId());
-            List<OrderTutorTime> tutorTimes = order.getOrderTutorTimes();
-            List<OrderGoods> orderGoods = order.getOrderGoods();
-            List<OrderRecharge> orderRecharge = order.getOrderRecharges();
-            List<OrderDeskTime> deskTimes = order.getOrderDeskTimes();
-            orderTutorTimes.addAll(tutorTimes);
-            orderCommodityTimes.addAll(orderGoods);
-            orderRechargeTimes.addAll(orderRecharge);
-            orderDeskTimes.addAll(deskTimes);
-        }
+        List<Long> orderIds = orders.stream().map(Order::getOrderId).distinct().collect(Collectors.toList());
+
+        Order sonOrder = getsTheSuborderBasedOnOrderIds(orderIds);
+        // 订单关联陪练列表
+        List<OrderTutorTime> orderTutorTimes = sonOrder.getOrderTutorTimes();
+        // 订单关联商品列表
+        List<OrderGoods> orderCommodityTimes = sonOrder.getOrderGoods();
+        // 订单关联会员充值列表
+        List<OrderRecharge> orderRechargeTimes = sonOrder.getOrderRecharges();
+        // 订单关联球桌列表
+        List<OrderDeskTime> orderDeskTimes = sonOrder.getOrderDeskTimes();
 
         // 订单去除空值
         orderTutorTimes = orderTutorTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
@@ -1126,5 +1116,24 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 put("suspend", suspend);
             }
         };
+    }
+
+    private Order getsTheSuborderBasedOnOrderIds(List<Long> orderIds) {
+        Order order = new Order();
+        if (CollectionUtils.isNotEmpty(orderIds)) {
+            // 查询球桌计时列表
+            List<OrderDeskTime> orderDeskTimeList = orderDeskTimeService.selectOrderDeskTimeListByOrderIds(orderIds);
+            order.setOrderDeskTimes(orderDeskTimeList);
+            // 查询订单商品列表
+            List<OrderGoods> orderGoodsList = orderGoodsService.selectOrderGoodsListByOrderIds(orderIds);
+            order.setOrderGoods(orderGoodsList);
+            // 查询订单会员充值列表
+            List<OrderRecharge> orderRechargeList = orderRechargeService.selectOrderRechargeListByOrderIds(orderIds);
+            order.setOrderRecharges(orderRechargeList);
+            // 查询订单教练计时列表
+            List<OrderTutorTime> orderTutorTimeList = orderTutorTimeService.selectOrderTutorTimeListByOrderIds(orderIds);
+            order.setOrderTutorTimes(orderTutorTimeList);
+        }
+        return order;
     }
 }

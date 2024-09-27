@@ -9,6 +9,8 @@ import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.OrderDeskTimeMapper;
@@ -98,6 +100,22 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService {
         List<OrderDeskTime> orderDeskTimes = Optional.ofNullable(orderDeskTimeMapper.selectList(orderDeskTimeMapper.query()
                         .eq(OrderDeskTime::getOrderId, orderId).orderByDesc(OrderDeskTime::getCreateTime)))
                 .orElse(Collections.emptyList());
+        return getOrderDeskTimes(orderDeskTimes);
+    }
+
+    @Override
+    public List<OrderDeskTime> selectOrderDeskTimeListByOrderIds(List<Long> orderIds) {
+        List<OrderDeskTime> orderDeskTimes = Lists.newArrayList();
+
+        if (CollectionUtils.isNotEmpty(orderIds)) {
+            orderDeskTimes = Optional.ofNullable(orderDeskTimeMapper.selectList(orderDeskTimeMapper.query()
+                            .in(OrderDeskTime::getOrderId, orderIds).orderByDesc(OrderDeskTime::getCreateTime)))
+                    .orElse(Collections.emptyList());
+        }
+        return getOrderDeskTimes(orderDeskTimes);
+    }
+
+    private List<OrderDeskTime> getOrderDeskTimes(List<OrderDeskTime> orderDeskTimes) {
         return orderDeskTimes.stream().map(orderDeskTime -> {
             Long deskId = orderDeskTime.getDeskId();
             StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(deskId)).orElse(new StoreDesk());

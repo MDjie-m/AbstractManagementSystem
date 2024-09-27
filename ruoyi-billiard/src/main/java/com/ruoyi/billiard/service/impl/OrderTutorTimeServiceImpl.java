@@ -122,6 +122,18 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
         List<OrderTutorTime> orderTutorTimes = Optional.ofNullable(orderTutorTimeMapper.selectList(orderTutorTimeMapper.query()
                 .eq(OrderTutorTime::getOrderId, orderId).orderByDesc(OrderTutorTime::getCreateTime)))
                 .orElse(Collections.emptyList());
+        return getOrderTutorTimes(orderTutorTimes);
+    }
+
+    @Override
+    public List<OrderTutorTime> selectOrderTutorTimeListByOrderIds(List<Long> orderIds) {
+        List<OrderTutorTime> orderTutorTimes = Optional.ofNullable(orderTutorTimeMapper.selectList(orderTutorTimeMapper.query()
+                        .in(OrderTutorTime::getOrderId, orderIds).orderByDesc(OrderTutorTime::getCreateTime)))
+                .orElse(Collections.emptyList());
+        return getOrderTutorTimes(orderTutorTimes);
+    }
+
+    private List<OrderTutorTime> getOrderTutorTimes(List<OrderTutorTime> orderTutorTimes) {
         return orderTutorTimes.stream().map(p -> {
             // 获取球桌信息
             Long deskId = p.getDeskId();
