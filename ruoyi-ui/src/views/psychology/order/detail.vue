@@ -27,8 +27,13 @@
       <el-table :data="items" size="mini">
         <el-table-column label="咨询次数" align="center" prop="num" />
         <el-table-column label="用户预约时间" align="center" prop="time"/>
-        <el-table-column label="实际咨询时间" align="center" prop="realTime"/>
-        <el-table-column label="操作人" align="center" prop="updateBy"/>
+        <el-table-column label="预约执行状态" align="center" prop="time">
+          <template slot-scope="scope">
+            <dict-tag :options="dict.type.schedule_status" :value="scope.row.status"/>
+          </template>
+        </el-table-column>
+<!--        <el-table-column label="实际咨询时间" align="center" prop="realTime"/>-->
+<!--        <el-table-column label="操作人" align="center" prop="updateBy"/>-->
       </el-table>
       <el-divider/>
     </template>
@@ -78,6 +83,7 @@ import { checkPermi } from "@/utils/permission";
 export default {
   components: { times },
   name: 'OrderDetail',
+  dicts: ['schedule_status'],
   data() {
     return {
       logName: this.$constants.logName,
@@ -133,18 +139,18 @@ export default {
           const len = items.length
           const num = this.order.serve.num - len
 
-          if (num > 0) {
-            for (let i = 1; i <= num; i++) {
-              const tt = {
-                num: len + i,
-                time: '用户未预约',
-                realTime: '',
-                status: '',
-                updateBy: ''
-              }
-              items.push(tt)
-            }
-          }
+          // if (num > 0) {
+          //   for (let i = 1; i <= num; i++) {
+          //     const tt = {
+          //       num: len + i,
+          //       time: '用户未预约',
+          //       realTime: '',
+          //       status: '',
+          //       updateBy: ''
+          //     }
+          //     items.push(tt)
+          //   }
+          // }
         }
 
         this.items = items

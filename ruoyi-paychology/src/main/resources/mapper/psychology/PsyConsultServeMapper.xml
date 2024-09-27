@@ -5,7 +5,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.renxin.psychology.mapper.PsyConsultServeMapper">
 
     <delete id="deleteAll">
-        delete from psy_consult_serve where serve_id is not null;
+        update from psy_consult_serve 
+        set del_flag = 0
+        where serve_id is not null;
     </delete>
 
     <select id="getServeRef" resultType="com.renxin.psychology.vo.PsyConsultServeVO">
@@ -13,6 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (SELECT count(id) FROM psy_consult_order WHERE consult_id = a.consult_id and serve_id = a.serve_id and pay_status = '2') num
         from psy_consult_serve a inner join psy_consult b on a.consult_id = b.id
         <where>
+            a.del_flag = 0
             <if test="consultId != null  and consultId != ''"> and a.consult_id = #{consultId}</if>
             <if test="serveId != null  and serveId != ''"> and a.serve_id = #{serveId}</if>
         </where>
@@ -21,6 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getConsultServeRef" resultType="com.renxin.psychology.vo.PsyConsultServeVO">
         select distinct a.consult_id,b.nick_name, b.user_name from psy_consult_serve a inner join psy_consult b on a.consult_id = b.id
         <where>
+            a.del_flag = 0
             <if test="consultId != null  and consultId != ''"> and a.consult_id = #{consultId}</if>
             <if test="serveId != null  and serveId != ''"> and a.serve_id = #{serveId}</if>
         </where>
@@ -53,6 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join psy_consult_server_config cf on re.serve_id = cf.id 
         left join psy_consult con on re.consult_id = con.id
         where
+            re.del_flag = 0 and 
             re.relation_id = #{id}
         
     </select>

@@ -58,7 +58,7 @@ public class PsyConsultOrderItemServiceImpl extends ServiceImpl<PsyConsultOrderI
     public List<PsyConsultOrderItem> getList(Long orderId) {
         LambdaQueryWrapper<PsyConsultOrderItem> wp = new LambdaQueryWrapper<>();
         wp.eq(PsyConsultOrderItem::getOrderId, orderId);
-        wp.between(PsyConsultOrderItem::getStatus, ConsultConstant.ONSULT_ORDER_ITEM_CREATED, ConsultConstant.ONSULT_ORDER_ITEM_FINISHED);
+       // wp.between(PsyConsultOrderItem::getStatus, ConsultConstant.ONSULT_ORDER_ITEM_CREATED, ConsultConstant.ONSULT_ORDER_ITEM_FINISHED);
         return psyConsultOrderItemMapper.selectList(wp);
     }
 

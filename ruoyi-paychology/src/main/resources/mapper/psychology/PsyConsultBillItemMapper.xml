@@ -55,6 +55,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         and NOW() > concat(day," ",time_end)
     </update>
     
+    <update id="finishConsultantOrder">
+        update
+            psy_consultant_order
+        set
+            status = 2
+        where
+                order_no in
+                (SELECT a.order_no
+                 FROM
+                     (SELECT
+                          orde.order_no,
+                          cf.num AS totalNum,
+                          COUNT(sc.id) AS usedNum,
+                          orde.status
+                      FROM
+                          psy_consultant_order orde
+                              LEFT JOIN psy_consultant_schedule sc ON orde.order_no = sc.order_id AND sc.`status` = 1
+                              LEFT JOIN psy_consult_serve ser ON ser.relation_id = orde.server_id
+                              LEFT JOIN psy_consult_server_config cf ON ser.serve_id = cf.id
+                      WHERE 1=1 AND orde.`status` = 1 AND orde.server_type IN (2,3)
+                      GROUP BY orde.order_no , cf.num, orde.status ) a
+                 WHERE a.usedNum >= a.totalNum )
+    </update>
+
+
     <update id="finishOrderItem">
         update
             psy_consult_order_item
@@ -63,6 +88,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where
             status = 0
         and NOW() > concat(day," ",time_end)
+    </update>
+
+
+    <update id="finishConsultOrder">
+        update
+            psy_consult_order
+        set
+            status = 2
+        where
+                order_no in
+                (SELECT a.order_no
+                 FROM
+                     (SELECT
+                          orde.order_no,
+                          cf.num AS totalNum,
+                          COUNT(item.id) AS usedNum,
+                          orde.status
+                      FROM
+                          psy_consult_order orde
+                              LEFT JOIN psy_consult_order_item item ON orde.id = item.order_id AND item.`status` = 1
+                              LEFT JOIN psy_consult_server_config cf ON orde.serve_id = cf.id
+                      WHERE 1=1 AND orde.`status` = 1
+                      GROUP BY orde.order_no , cf.num, orde.status ) a
+                 WHERE a.usedNum >= a.totalNum )
     </update>
 
     <select id="getOrderItems" resultType="com.renxin.psychology.domain.PsyConsultBillItem">
