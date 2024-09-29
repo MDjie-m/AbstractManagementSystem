@@ -818,7 +818,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                     .paid(Boolean.TRUE)
                     .returnPayType(reqVo.getPayType())
                     .returnPayTime(new Date())
-                    .amount(order.getRepayAmount().compareTo(BigDecimal.ZERO) > 0 ? order.getRepayAmount() : order.getTotalAmount())
+                    .amount(order.getRefundAmount())
                     .build());
         } else {
             orderPayService.insertOrderPay(OrderPay.builder()

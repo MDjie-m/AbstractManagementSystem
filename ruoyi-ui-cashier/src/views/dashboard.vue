@@ -57,7 +57,6 @@
           <el-badge :value="info.refundOrderCount" :hidden="!info.refundOrderCount" type="primary">
       <span>
                   {{ info.refundAmount }}
-                  {{ info.refundAmount }}
       </span>
 
 
@@ -237,10 +236,9 @@ export default {
   gap: 20px;
 
   .el-card {
-    flex: 1;
     display: flex;
     flex-direction: column;
-
+    min-width: 500px;
     .card-item {
       display: flex;
       flex-direction: column;

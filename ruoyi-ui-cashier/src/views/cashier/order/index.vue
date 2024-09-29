@@ -262,10 +262,11 @@
     <CustomDialog title="确认" :visible.sync="showFinishOrder" :onOk="onFinishOrderOkClick" width="500px">
       <el-form v-if="currentOrder ">
 
-        <el-form-item label="支付方式:">
+        <el-form-item :label="currentOrder.refundAmount>0?'退款方式':'支付方式'">
           <template v-for="item in dict.type.order_pay_type">
             <el-radio
-              v-if="(currentOrder.memberId && parseInt(item.value)===OrderPayType.MEMBER) || (parseInt(item.value)!==OrderPayType.MEMBER)"
+              v-if="((currentOrder.memberId && parseInt(item.value)===OrderPayType.MEMBER) || (parseInt(item.value)!==OrderPayType.MEMBER))
+||(currentOrder.refundAmount>0 &&parseInt(item.value)!==OrderPayType.MEMBER )"
               v-model="finishOrderForm.payType" :label="item.value">{{ item.label }}
             </el-radio>
           </template>
