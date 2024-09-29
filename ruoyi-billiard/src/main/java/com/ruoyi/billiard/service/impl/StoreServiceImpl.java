@@ -196,6 +196,7 @@ public class StoreServiceImpl implements IStoreService {
         Map<Integer, Tuple3<BigDecimal, Long, Integer>> payList = ArrayUtil.toMap(
                 storeMapper.queryOrderTotalGroupBy("total_amount", "pay_type", queryWrapper),
                 Tuple3::getValue2, (Tuple3<BigDecimal, Long, Integer> p) -> p);
+
         resVo.setPayList(Arrays.stream(OrderPayType.values())
                 .map(p -> {
                     Tuple3<BigDecimal, Long, Integer> item = payList.get(p.getValue());

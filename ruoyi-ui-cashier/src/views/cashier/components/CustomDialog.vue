@@ -5,7 +5,7 @@
      <template>
        <slot/>
      </template>
-    <div slot="footer" class="dialog-footer"  >
+    <div slot="footer" class="dialog-footer"  v-if="!hideFooter" >
       <template v-if="!$slots.footer">
         <el-button v-loading="loading" type="primary" @click="onOkClick()">确认</el-button>
         <el-button @click="onCancel">取 消</el-button>
@@ -20,8 +20,8 @@
 import {listMembers} from "@/api/cashier/member";
 
 export default {
-  emits: ["onOk","onCancel"],
-  props: ['visible','title','width','onOk'],
+  emits: ["onOk","onCancel" ],
+  props: ['visible','title','width','onOk','hideFooter'],
   data() {
     return {
       loading:false

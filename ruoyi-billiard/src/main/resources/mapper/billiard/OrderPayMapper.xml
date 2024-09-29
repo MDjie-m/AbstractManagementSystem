@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.OrderPayMapper">
+
+
+    <sql id="selectOrderPayVo">
+        select * from t_order_pay
+    </sql>
+
+    <select id="selectOrderPayList" parameterType="OrderPay" resultType="OrderPay">
+        <include refid="selectOrderPayVo"/>
+        <where>  
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="payType != null "> and pay_type = #{payType}</if>
+            <if test="prePay != null "> and pre_pay = #{prePay}</if>
+            <if test="paid != null "> and paid = #{paid}</if>
+            <if test="payTime != null "> and pay_time = #{payTime}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectOrderPayByOrderPrePayId" parameterType="Long" resultType="OrderPay">
+        <include refid="selectOrderPayVo"/>
+        where order_pre_pay_id = #{orderPrePayId}
+    </select>
+
+
+
+    <delete id="deleteOrderPayByOrderPrePayId" parameterType="Long">
+        delete from t_order_pay where order_pre_pay_id = #{orderPrePayId}
+    </delete>
+
+    <delete id="deleteOrderPayByOrderPrePayIds" parameterType="String">
+        delete from t_order_pay where order_pre_pay_id in 
+        <foreach item="orderPrePayId" collection="array" open="(" separator="," close=")">
+            #{orderPrePayId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.OrderRefundMapper">
+
+
+    <sql id="selectOrderRefundVo">
+        select * from t_order_refund
+    </sql>
+
+    <select id="selectOrderRefundList" parameterType="OrderRefund" resultType="OrderRefund">
+        <include refid="selectOrderRefundVo"/>
+        <where>  
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="returnPayType != null "> and return_pay_type = #{returnPayType}</if>
+            <if test="paid != null "> and paid = #{paid}</if>
+            <if test="returnPayTime != null "> and return_pay_time = #{returnPayTime}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectOrderRefundByOrderRefundId" parameterType="Long" resultType="OrderRefund">
+        <include refid="selectOrderRefundVo"/>
+        where order_refund_id = #{orderRefundId}
+    </select>
+
+
+
+    <delete id="deleteOrderRefundByOrderRefundId" parameterType="Long">
+        delete from t_order_refund where order_refund_id = #{orderRefundId}
+    </delete>
+
+    <delete id="deleteOrderRefundByOrderRefundIds" parameterType="String">
+        delete from t_order_refund where order_refund_id in 
+        <foreach item="orderRefundId" collection="array" open="(" separator="," close=")">
+            #{orderRefundId}
+        </foreach>
+    </delete>
+</mapper>

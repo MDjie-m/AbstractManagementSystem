@@ -41,6 +41,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private OrderMapper orderMapper;
 
     @Autowired
+    private IOrderPayService orderPayService;
+
+
+    @Autowired
+    private IOrderRefundService orderRefundService;
+    @Autowired
     private OrderRechargeMapper orderRechargeMapper;
 
     @Autowired
@@ -513,11 +519,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if (Objects.nonNull(order.getPrePayAmount())) {
             AssertUtil.isTrue(order.getPrePayAmount().compareTo(new BigDecimal("9999")) < 0, "预付费不能超过9999");
         }
+        AssertUtil.isTrue(!Objects.equals(OrderPayType.MEMBER, reqVo.getPayType()), "不能为会员支付");
         Order newOrder = new Order();
         newOrder.setOrderId(order.getOrderId());
         newOrder.setPrePayAmount(Optional.ofNullable(order.getPrePayAmount())
                 .orElse(BigDecimal.ZERO).add(reqVo.getAmount())
                 .setScale(2, RoundingMode.DOWN));
+        orderPayService.insertOrderPay(OrderPay.builder()
+                .orderId(reqVo.getOrderId())
+                .paid(Boolean.TRUE)
+                .prePay(Boolean.TRUE)
+                .payType(reqVo.getPayType())
+                .payTime(new Date())
+                .amount(reqVo.getAmount())
+                .build());
         SecurityUtils.fillUpdateUser(newOrder);
         orderMapper.updateById(newOrder);
         return newOrder.getPrePayAmount();
@@ -539,6 +554,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         //关闭所有计费
         order = stopAllCalcTimes(orderId, true, stopByTimer);
+
 
         //更新订单状态
         order.setStatus(OrderStatus.WAIT_SETTLED.getValue());
@@ -747,6 +763,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .set(Order::getTotalAmountDue, order.getTotalAmountDue())
                 .set(Order::getTotalDiscountAmount, order.getTotalDiscountAmount())
                 .set(Order::getTotalAmount, order.getTotalAmount())
+                .set(Order::getRefundAmount, order.getRefundAmount())
+                .set(Order::getRepayAmount, order.getRepayAmount())
                 .set(Order::getTotalWipeZero, order.getTotalWipeZero())
                 .eq(Order::getOrderId, orderId));
         return order;
@@ -793,7 +811,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
         order.setStatus(OrderStatus.SETTLED.getValue());
         order.setPayTime(new Date());
-        SecurityUtils.fillUpdateUser(order);
+
+        if (order.getRefundAmount().compareTo(BigDecimal.ZERO) > 0) {
+            orderRefundService.insertOrderRefund(OrderRefund.builder()
+                    .orderId(order.getOrderId())
+                    .paid(Boolean.TRUE)
+                    .returnPayType(reqVo.getPayType())
+                    .returnPayTime(new Date())
+                    .amount(order.getRepayAmount().compareTo(BigDecimal.ZERO) > 0 ? order.getRepayAmount() : order.getTotalAmount())
+                    .build());
+        } else {
+            orderPayService.insertOrderPay(OrderPay.builder()
+                    .orderId(reqVo.getOrderId())
+                    .paid(Boolean.TRUE)
+                    .prePay(Boolean.FALSE)
+                    .payType(reqVo.getPayType())
+                    .payTime(new Date())
+                    .amount(order.getRepayAmount().compareTo(BigDecimal.ZERO) > 0 ? order.getRepayAmount() : order.getTotalAmount())
+                    .build());
+        }
+
         orderMapper.updateById(order);
         return true;
     }

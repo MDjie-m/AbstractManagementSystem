@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.domain.vo;
 
+import com.ruoyi.billiard.enums.OrderPayType;
 import lombok.Data;
 
 import javax.validation.constraints.DecimalMax;
@@ -19,4 +20,7 @@ public class OrderPrePayReqVo {
     @DecimalMin(value = "10", message = "预付费金额不能低于10元")
     @DecimalMax(value = "9999",message = "预付费金额不能超过9999元")
     private BigDecimal amount;
+
+    @NotNull(  message = "支付方式不能为空")
+    private OrderPayType payType;
 }

@@ -161,10 +161,27 @@
       </content-wrapper>
     </div>
 
+    <custom-dialog title="确认预充值金额" :visible.sync="openPrePay" :onOk="onPrePaySubmit" width="500px">
+      <el-form v-if="currentDesk ">
+
+        <el-form-item label="支付方式:">
+          <template v-for="item in dict.type.order_pay_type">
+            <el-radio
+              v-if="  (parseInt(item.value)!==OrderPayType.MEMBER)"
+              v-model="prePayForm.payType" :label="item.value">{{ item.label }}
+            </el-radio>
+          </template>
+        </el-form-item>
+
+        <el-form-item label="充值金额:">
+          <el-input-number  :min="100"  :max="9999" v-model="prePayForm.amount">
+          </el-input-number>
+        </el-form-item>
+      </el-form>
+
+    </custom-dialog>
     <!-- 换台确认框 -->
-    <el-dialog title="换台/并台" class="custom-dialog" :visible.sync="openSwapDesk" width="700px" append-to-body
-               :close-on-click-modal="false"
-               :close-on-press-escape="false" :show-close="false">
+    <custom-dialog title="换台/并台" class="custom-dialog" :visible.sync="openSwapDesk" width="700px" append-to-body  >
       <el-form ref="form" :model="targetDesk" label-width="120px">
         <el-row v-if="currentDesk">
           <el-col :span="12">
@@ -212,7 +229,7 @@
         <el-button type="primary" @click="onSwapDeskSubmit()">换台</el-button>
         <el-button @click="openSwapDesk=false">取 消</el-button>
       </div>
-    </el-dialog>
+    </custom-dialog>
   </div>
 
 </template>
@@ -239,14 +256,25 @@ import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import {MessageBox} from "element-ui";
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
 import {orderPrePay, orderStopDesk, stopOrder, suspendOrder, voidOrder} from "@/api/cashier/order";
-import {OrderStatus, DeskStatus, LightType, ChooseType, DeskDialogTitle} from "@/views/cashier/components/constant";
+import {
+  OrderStatus,
+  DeskStatus,
+  LightType,
+  ChooseType,
+  DeskDialogTitle,
+  OrderPayType
+} from "@/views/cashier/components/constant";
 import BookingDesk from "@/views/cashier/desk/components/bookingDesk.vue";
 
 import BookingTutor from "@/views/cashier/desk/components/bookingTutor/index.vue";
 import BookingVerify from "@/views/cashier/desk/components/bookingVerify/index.vue";
+import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
 export default {
   name: "Desk",
   computed: {
+    OrderPayType() {
+      return OrderPayType
+    },
     DeskDialogTitle() {
       return DeskDialogTitle
     },
@@ -254,11 +282,18 @@ export default {
       return ChooseType
     }
   },
-  components: {BookingVerify,BookingDesk,BookingTutor, LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
-  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
+  components: {
+    CustomDialog,
+    BookingVerify,BookingDesk,BookingTutor, LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
+  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place','order_pay_type'],
 
   data() {
     return {
+      prePayForm:{
+        payType: '0',
+        amount: null,
+        orderId: null,
+      },
       orderLoading: false,
       DeskStatus: DeskStatus,
       storeInfo: {storeName: '', userList: [], tutorList: []},
@@ -273,6 +308,7 @@ export default {
       title: "",
       // 是否显示弹出层
       openSwapDesk: false,
+      openPrePay:false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -401,32 +437,22 @@ export default {
       });
 
     },
-    onPrePayClick() {
+    onPrePaySubmit(){
       if( this.currentDesk.lastActiveOrder.prePayAmount>=9999){
-        return this.$modal.msgWarning("预付金额不能超过9999")
+        this.$modal.msgWarning("预付金额不能超过9999")
+        return Promise.reject();
       }
-      debugger
-      this.$prompt("请输入预付费金额", "预付费确认", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        closeOnClickModal: false,
-        inputPattern: /^[1-9]\d{2,3}$/,
-        inputErrorMessage: "预付费金额限制在100~9999元之间整额",
-        inputValidator: (value) => {
-          if (!/^[1-9]\d{2,3}$/.test(value)) {
-            return "预付费金额限制在100~9999之间的整额"
-          }
-        },
-      }).then(({value}) => {
-        orderPrePay({
-          amount: value,
-          orderId: this.currentDesk?.currentOrderId,
-        }).then(response => {
-          this.currentDesk.lastActiveOrder.prePayAmount = response.data;
-          this.$modal.msgSuccess(`预付费成功`);
-        });
-      }).catch(() => {
+     return   orderPrePay({
+        amount: this.prePayForm.amount,
+        payType:this.prePayForm.payType,
+        orderId: this.currentDesk?.currentOrderId,
+      }).then(response => {
+        this.currentDesk.lastActiveOrder.prePayAmount = response.data;
+        this.$modal.msgSuccess(`预付费成功`);
       });
+    },
+    onPrePayClick() {
+        this.openPrePay=true
     },
     onSwitchLight(deskNum, open) {
       if (deskNum === null || deskNum === undefined) {
