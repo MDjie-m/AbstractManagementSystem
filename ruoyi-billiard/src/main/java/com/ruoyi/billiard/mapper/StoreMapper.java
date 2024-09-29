@@ -1,18 +1,16 @@
 package com.ruoyi.billiard.mapper;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.ruoyi.billiard.domain.Order;
+import com.ruoyi.billiard.domain.OrderPay;
+import com.ruoyi.billiard.domain.OrderRefund;
 import com.ruoyi.billiard.domain.Store;
-import com.ruoyi.billiard.domain.StoreDesk;
-import com.ruoyi.billiard.enums.OrderStatus;
 import com.ruoyi.common.core.domain.model.Tuple;
 import com.ruoyi.common.core.domain.model.Tuple3;
-import com.ruoyi.common.core.domain.model.Tuple4;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -73,6 +71,11 @@ public interface StoreMapper extends MyBaseMapper<Store> {
 
     Tuple<BigDecimal, Long> queryOrderTotal(@Param("amount") String amount, @Param(Constants.WRAPPER) QueryWrapper<Order> queryWrapper);
 
-   <T> List<Tuple3<BigDecimal, Long, T>> queryOrderTotalGroupBy(@Param("amount") String amount, @Param("groupColumn") String groupColumn,
-                                                                   @Param(Constants.WRAPPER) QueryWrapper<Order> queryWrapper);
+    <T> List<Tuple3<BigDecimal, Long, T>> queryPayTotal(@Param("amount") String amount,
+                                                        @Param("groupColumn") String groupColumn,
+                                                        @Param(Constants.WRAPPER) QueryWrapper<OrderPay> queryWrapper);
+
+    <T> List<Tuple3<BigDecimal, Long, T>> queryRefundTotal(@Param("amount") String amount,
+                                                           @Param("groupColumn") String groupColumn,
+                                                           @Param(Constants.WRAPPER) QueryWrapper<OrderRefund> queryWrapper);
 }

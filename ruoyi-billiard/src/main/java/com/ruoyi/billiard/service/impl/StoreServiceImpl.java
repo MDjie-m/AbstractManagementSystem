@@ -23,8 +23,6 @@ import com.ruoyi.common.core.domain.model.Tuple;
 import com.ruoyi.common.core.domain.model.Tuple3;
 import com.ruoyi.common.utils.*;
 import com.ruoyi.common.utils.uuid.IdUtils;
-import org.apache.commons.compress.utils.Lists;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.StoreMapper;
 import com.ruoyi.billiard.service.IStoreService;
@@ -190,11 +188,11 @@ public class StoreServiceImpl implements IStoreService {
                 .orElse(BigDecimal.ZERO.setScale(2, RoundingMode.DOWN)));
 
         //支付方式统计
-        queryWrapper.clear();
-        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getPayTime, startTime, endTime)
-                .eq(Order::getStatus, OrderStatus.SETTLED.getValue()).groupBy(Order::getPayType);
+        QueryWrapper<OrderPay> payQueryWrapper =   new QueryWrapper<OrderPay>();
+        payQueryWrapper.lambda().eq(OrderPay::getStoreId, storeId).between(OrderPay::getPayTime, startTime, endTime)
+                .groupBy(OrderPay::getPayType);
         Map<Integer, Tuple3<BigDecimal, Long, Integer>> payList = ArrayUtil.toMap(
-                storeMapper.queryOrderTotalGroupBy("total_amount", "pay_type", queryWrapper),
+                storeMapper.queryPayTotal("amount", "pay_type", payQueryWrapper),
                 Tuple3::getValue2, (Tuple3<BigDecimal, Long, Integer> p) -> p);
 
         resVo.setPayList(Arrays.stream(OrderPayType.values())
@@ -207,6 +205,27 @@ public class StoreServiceImpl implements IStoreService {
                     return PayDetailVo.builder().type(p).amount(item.getValue())
                             .count(item.getValue1()).build();
                 }).collect(Collectors.toList()));
+        resVo.setPayTotalAmount(resVo.getPayList().stream().map(PayDetailVo::getAmount).reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO.setScale(2, RoundingMode.DOWN)));
+        //退款统计
+        QueryWrapper<OrderRefund> refundQueryWrapper =   new QueryWrapper<OrderRefund>();
+        refundQueryWrapper.lambda().eq(OrderRefund::getStoreId, storeId).between(OrderRefund::getReturnPayTime, startTime, endTime)
+                .groupBy(OrderRefund::getReturnPayType);
+        Map<Integer, Tuple3<BigDecimal, Long, Integer>> refundList = ArrayUtil.toMap(
+                storeMapper.queryRefundTotal("amount", "return_pay_type", refundQueryWrapper),
+                Tuple3::getValue2, (Tuple3<BigDecimal, Long, Integer> p) -> p);
+
+        resVo.setRefundList(Arrays.stream( new OrderPayType[]{OrderPayType.CASH,OrderPayType.SCAN_QRCODE})
+                .map(p -> {
+                    Tuple3<BigDecimal, Long, Integer> item = refundList.get(p.getValue());
+                    if (Objects.isNull(item)) {
+                        return PayDetailVo.builder().type(p).amount(BigDecimal.ZERO.setScale(2, RoundingMode.DOWN))
+                                .count(0L).build();
+                    }
+                    return PayDetailVo.builder().type(p).amount(item.getValue())
+                            .count(item.getValue1()).build();
+                }).collect(Collectors.toList()));
+
         return resVo;
     }
 }

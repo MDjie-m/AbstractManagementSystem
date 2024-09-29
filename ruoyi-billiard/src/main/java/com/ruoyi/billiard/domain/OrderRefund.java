@@ -38,6 +38,9 @@ public class OrderRefund extends MyBaseEntity
     @TableField("order_id")
     private Long orderId;
 
+    @TableField("store_id")
+    private Long storeId;
+
     /** 金额 */
     @Excel(name = "金额")
 

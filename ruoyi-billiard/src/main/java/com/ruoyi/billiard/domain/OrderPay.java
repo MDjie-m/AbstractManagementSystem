@@ -38,6 +38,10 @@ public class OrderPay extends MyBaseEntity
     @TableField("order_id")
     private Long orderId;
 
+
+    @TableField("store_id")
+    private Long storeId;
+
     /** 预付费 */
     @Excel(name = "预付费")
 

@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div class="time-container">
+    <div class="time-container" v-loading="loading">
       <el-radio-group v-model="activeName" @change="queryData" style="margin-bottom: 30px;">
         <el-radio-button label="today">当天班次</el-radio-button>
         <el-radio-button label="week">最近一周</el-radio-button>
@@ -75,7 +75,7 @@
         <div class="card-item">
           <div slot="header" class="card-item-row header">
             <div>支付方式</div>
-            <div>{{info.totalAmount}}</div>
+            <div>{{ info.totalAmount }}</div>
           </div>
           <div class="card-item-row " v-for="item in info.payList">
             <div>{{ item.typeText }}</div>
@@ -87,10 +87,23 @@
         <div class="card-item">
           <div slot="header" class="card-item-row header">
             <div>优惠金额</div>
-            <div>{{info.preferentialTotal}}</div>
+            <div>{{ info.preferentialTotal }}</div>
           </div>
 
           <div class="card-item-row" v-for="item in info.preferentialList">
+            <div>{{ item.typeText }}</div>
+            <div>{{ item.amount }}</div>
+          </div>
+        </div>
+      </el-card>
+      <el-card>
+        <div class="card-item">
+          <div slot="header" class="card-item-row header">
+            <div>退款金额</div>
+            <div>{{ info.refundAmount }}</div>
+          </div>
+
+          <div class="card-item-row" v-for="item in info.refundList">
             <div>{{ item.typeText }}</div>
             <div>{{ item.amount }}</div>
           </div>
@@ -105,6 +118,7 @@ import {queryDashboard} from "@/api/cashier/store";
 export default {
   data() {
     return {
+      loading: false,
       info: {
         "totalOrderCount": 0,
         "totalAmount": 0.00,
@@ -115,6 +129,7 @@ export default {
         "cashOrderAmount": 0,
         "cashOrderCount": 0,
         "payList": [],
+        "refundList": [],
         "preferentialList": []
       },
       customTime: [this.$time().format("YYYY-MM-DD"), this.$time().format("YYYY-MM-DD")],
@@ -153,6 +168,7 @@ export default {
   },
   methods: {
     queryData() {
+
       let startTime, endTime;
       if (this.activeName === "today") {
         startTime = this.$time().format("YYYY-MM-DD");
@@ -173,11 +189,15 @@ export default {
         startTime = this.customTime[0];
         endTime = this.customTime[1]
       }
+      if (this.loading) {
+        return
+      }
+      this.loading = true;
       queryDashboard({
         startTime, endTime
       }).then(res => {
         this.info = res.data
-      })
+      }).finally(() => this.loading = false)
     }
   }
 }
@@ -238,7 +258,8 @@ export default {
   .el-card {
     display: flex;
     flex-direction: column;
-    min-width: 500px;
+    flex: 1;
+
     .card-item {
       display: flex;
       flex-direction: column;
@@ -246,10 +267,12 @@ export default {
       gap: 10px;
       font-size: 15px;
       color: $sub-text-color;
-      .header{
+
+      .header {
         color: $main-text-color;
         font-weight: bold;
       }
+
       &-row {
         display: flex;
 

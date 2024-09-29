@@ -188,6 +188,7 @@ create table t_order_pay
 (
     order_pre_pay_id bigint                                   not null comment '预支付id' primary key,
     order_id         bigint                                   not null comment '订单 ',
+    store_id         bigint                                   not null comment '门店',
     amount           decimal(20, 2) default 0.00              not null default 0.00 not null comment '预付费',
     pay_type         int                                      null comment '支付方式：0=扫码，1=现金',
     pre_pay          tinyint                                  not null comment '是否是预付',
@@ -207,6 +208,7 @@ create table t_order_refund
 (
     order_refund_id bigint                                   not null comment '预支付id' primary key,
     order_id        bigint                                   not null comment '订单 ',
+    store_id         bigint                                   not null comment '门店',
     amount          decimal(20, 2) default 0.00              not null default 0.00 not null comment '金额',
     return_pay_type int                                      null comment '支付方式：0=扫码，1=现金',
     paid            tinyint                                  null comment '是否支付',

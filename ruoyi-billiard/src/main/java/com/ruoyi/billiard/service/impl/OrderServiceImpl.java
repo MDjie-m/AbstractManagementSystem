@@ -816,6 +816,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderRefundService.insertOrderRefund(OrderRefund.builder()
                     .orderId(order.getOrderId())
                     .paid(Boolean.TRUE)
+                    .storeId(order.getStoreId())
                     .returnPayType(reqVo.getPayType())
                     .returnPayTime(new Date())
                     .amount(order.getRefundAmount())
@@ -823,6 +824,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         } else {
             orderPayService.insertOrderPay(OrderPay.builder()
                     .orderId(reqVo.getOrderId())
+                    .storeId(order.getStoreId())
                     .paid(Boolean.TRUE)
                     .prePay(Boolean.FALSE)
                     .payType(reqVo.getPayType())

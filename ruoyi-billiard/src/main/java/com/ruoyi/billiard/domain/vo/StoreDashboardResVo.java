@@ -27,6 +27,8 @@ public class StoreDashboardResVo implements Serializable {
     private BigDecimal preferentialTotal=BigDecimal.ZERO.setScale(0, RoundingMode.DOWN);
     private List<PayDetailVo> payList;
 
-
+    private BigDecimal payTotalAmount;
     private List<PreferentialVo> preferentialList= Lists.newArrayList();
+
+    private List<PayDetailVo> refundList;
 }
