@@ -44,8 +44,8 @@ public class ArrayUtil {
      * @return String
      */
 
-    public static <T, K, V> Map<K, V> toMap(List<T> list, Function<? super T, ? extends K> keyMapper,
-                                            Function<? super T, ? extends V> valueMapper) {
+    public static <T, K, V> Map<K, V> toMap(List<T> list, Function<? super T, ? extends K>
+            keyMapper,     Function<? super T, ? extends V> valueMapper) {
         if (CollectionUtils.isEmpty(list)) {
             return new HashMap<>();
         }

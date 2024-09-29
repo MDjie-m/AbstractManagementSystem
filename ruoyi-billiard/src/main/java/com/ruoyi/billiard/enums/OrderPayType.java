@@ -12,9 +12,9 @@ import java.util.Map;
 @Getter
 @AllArgsConstructor
 public enum OrderPayType implements IEnum {
-    SCAN_QRCODE(0, "扫码"),
-    CASH(1, "现金"),
-    MEMBER(2, "会员"),
+    SCAN_QRCODE(0, "扫码支付"),
+    CASH(1, "现金支付"),
+    MEMBER(2, "会员支付"),
 
     ;
     private final Integer value;

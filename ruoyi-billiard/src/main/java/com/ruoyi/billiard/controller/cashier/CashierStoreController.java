@@ -4,6 +4,7 @@ import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.StoreTutor;
 import com.ruoyi.billiard.domain.StoreUser;
+import com.ruoyi.billiard.domain.vo.StoreDashboardResVo;
 import com.ruoyi.billiard.enums.EmployeeStatus;
 import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.billiard.service.IStoreTutorService;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("cashier/store")
@@ -40,5 +43,13 @@ public class CashierStoreController  extends BaseController {
         res.setTutorList(storeTutorService.selectStoreTutorList(StoreTutor.builder()
                 .storeId(res.getStoreId()).status(EmployeeStatus.WORK.getValue()).build()));
         return ResultVo.success(res);
+    }
+
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @GetMapping("/dashboard")
+    public ResultVo<StoreDashboardResVo> dashboard(@RequestParam Date startTime, @RequestParam Date endTime) {
+
+
+        return ResultVo.success(storeService.queryStoreDashboard( getStoreIdWithThrow(),startTime,endTime));
     }
 }

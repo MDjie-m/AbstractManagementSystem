@@ -10,7 +10,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 @Slf4j
-public abstract class BaseTask<T> implements ITask<T> {
+public abstract class  BaseTask<T> implements ITask<T> {
     private Class<T> type;
 
     public BaseTask() {
@@ -19,13 +19,13 @@ public abstract class BaseTask<T> implements ITask<T> {
 
     @Override
     public void run(String params) {
-        log.info(StringUtils.format("-----【{}】任务开始,参数:{}---------",getTaskName(),params) );
+//        log.info(StringUtils.format("-----【{}】任务开始,参数:{}---------",getTaskName(),params) );
         StopWatch watch=new StopWatch();
         watch.start();
         try {
             exec(StringUtils.isEmpty(params)?null:JSON.parseObject(params, this.type));
             watch.stop();
-            log.info(StringUtils.format("-----【{}】任务结束,耗时:{}秒--------",getTaskName(),watch.getTotalTimeSeconds()) );
+//            log.info(StringUtils.format("-----【{}】任务结束,耗时:{}秒--------",getTaskName(),watch.getTotalTimeSeconds()) );
         }catch (Exception e) {
             watch.stop();
             log.error(StringUtils.format("-----【{}】任务异常,耗时:{}秒--------", getTaskName(),

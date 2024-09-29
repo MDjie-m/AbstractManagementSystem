@@ -7,3 +7,10 @@ export function queryStoreBaseInfo(needEmployees) {
     params:{needEmployees}
   })
 }
+export function queryDashboard(params) {
+  return request({
+    url: '/cashier/store/dashboard',
+    method: 'get',
+    params:params
+  })
+}

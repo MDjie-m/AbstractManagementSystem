@@ -1,7 +1,12 @@
 package com.ruoyi.billiard.service;
 
+import java.util.Date;
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.billiard.domain.StoreSchedule;
+import com.ruoyi.common.core.domain.model.Tuple;
+import org.springframework.stereotype.Service;
 
 /**
  * 门店班次Service接口
@@ -9,7 +14,7 @@ import com.ruoyi.billiard.domain.StoreSchedule;
  * @author zhoukeu
  * @date 2024-09-22
  */
-public interface IStoreScheduleService 
+public interface IStoreScheduleService  extends IService<StoreSchedule>
 {
     /**
      * 查询门店班次
@@ -58,4 +63,9 @@ public interface IStoreScheduleService
      * @return 结果
      */
     public int deleteStoreScheduleByStoreScheduleId(Long storeScheduleId);
+
+
+    Tuple<Date,Date> getDaySchedule(Long storeId,Date date);
+
+    Tuple<Date,Date> getDaySchedule(Long storeId,Date start,Date end);
 }

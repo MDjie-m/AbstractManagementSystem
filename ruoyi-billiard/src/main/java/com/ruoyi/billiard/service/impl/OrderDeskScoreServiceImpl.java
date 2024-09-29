@@ -121,5 +121,42 @@ public class OrderDeskScoreServiceImpl implements IOrderDeskScoreService {
         return true;
     }
 
+    @Override
+    public Boolean stopRecordScore(Long deskId, Long orderId) {
+        OrderDeskScore lastScore = orderDeskScoreMapper.selectOne(orderDeskScoreMapper.query()
+                .eq(OrderDeskScore::getDeskId, deskId).eq(OrderDeskScore::getOrderId, orderId)
+                .orderByDesc(OrderDeskScore::getOrderDeskScoreId).last(" limit 1"));
+        if (Objects.nonNull(lastScore) && Objects.isNull(lastScore.getEndTime())) {
+            lastScore.setEndTime(new Date());
+            lastScore.setUpdateTime(LocalDateTime.now());
+            lastScore.setUpdateById(0L);
+            lastScore.setUpdateBy("system");
+            lastScore.setUpdateTime(LocalDateTime.now());
+        }
+        return Boolean.TRUE;
+    }
 
+    @Override
+    public Boolean initScore(Long deskId, Long orderId) {
+        OrderDeskScore lastScore = orderDeskScoreMapper.selectOne(orderDeskScoreMapper.query()
+                .eq(OrderDeskScore::getDeskId, deskId).eq(OrderDeskScore::getOrderId, orderId)
+                .orderByDesc(OrderDeskScore::getOrderDeskScoreId).last(" limit 1"));
+        if (Objects.nonNull(lastScore)) {
+            return Boolean.TRUE;
+        }
+        OrderDeskScore newScore = OrderDeskScore
+                .builder()
+                .orderDeskScoreId(IdUtils.singleNextId())
+                .deskId(deskId)
+                .startTime(new Date())
+                .orderId(orderId)
+                .build();
+        newScore.setScoreA(0);
+        newScore.setScoreB(0);
+        newScore.setCreateById(0L);
+        newScore.setCreateBy("system");
+        newScore.setCreateTime(LocalDateTime.now());
+        orderDeskScoreMapper.insert(newScore);
+        return Boolean.TRUE;
+    }
 }

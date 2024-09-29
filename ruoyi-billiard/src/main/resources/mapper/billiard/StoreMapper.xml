@@ -51,6 +51,16 @@
         <include refid="selectStoreVo"/>
         where store_id = #{storeId}
     </select>
+    <select id="queryOrderTotal" resultType="com.ruoyi.common.core.domain.model.Tuple">
+        select ifnull(sum(${amount}),0.00) as value,count(1) as value1
+        from t_order    ${ew.customSqlSegment}
+
+    </select>
+    <select id="queryOrderTotalGroupBy" resultType="com.ruoyi.common.core.domain.model.Tuple3">
+        select  ifnull(sum(${amount}) ,0.00) as value,count(1) as value1,${groupColumn} as value2
+        from t_order    ${ew.customSqlSegment}
+    </select>
+
 
     <insert id="insertStore" parameterType="Store">
         insert into t_store

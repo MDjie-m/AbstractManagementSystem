@@ -1,7 +1,9 @@
 package com.ruoyi.billiard.service;
 
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.billiard.domain.Store;
+import com.ruoyi.billiard.domain.vo.StoreDashboardResVo;
 
 /**
  * 门店Service接口
@@ -62,4 +64,5 @@ public interface IStoreService
     List<Store> selectAll();
 
 
+    StoreDashboardResVo queryStoreDashboard(Long storeId,Date startTime, Date endTime);
 }

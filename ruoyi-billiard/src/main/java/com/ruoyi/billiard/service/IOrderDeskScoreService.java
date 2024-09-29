@@ -47,4 +47,8 @@ public interface IOrderDeskScoreService
     public int updateOrderDeskScore(OrderDeskScore orderDeskScore);
 
     Boolean addScore(ScorerBtnType btnType, Long storeId, Long deskId, Long orderId);
+
+    Boolean stopRecordScore(Long deskId,Long orderId);
+
+    Boolean initScore(Long deskId, Long orderId);
 }

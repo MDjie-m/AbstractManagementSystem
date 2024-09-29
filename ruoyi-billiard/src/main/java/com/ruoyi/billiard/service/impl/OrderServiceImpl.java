@@ -93,6 +93,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private IStockService stockService;
 
+    @Autowired
+    private IOrderDeskScoreService orderDeskScoreService;
+
 
     /**
      * 查询订单
@@ -253,9 +256,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderDeskTimeMapper.updateBatch(deskTimes);
 
         StoreDesk oldDesk = storeDeskMapper.selectById(oldDeskId);
+
         StoreDesk newDesk = storeDeskMapper.selectById(newDeskId);
 
+        //停止旧的计分
+        orderDeskScoreService.stopRecordScore(oldDeskId, orderId);
         //插入新的计费
+
         BigDecimal price = priceService.queryPriceByType(newDesk.getStoreId(), newDesk.getDeskType());
         AssertUtil.notNullOrEmpty(price, "目标台桌类型未设置价格无法换台.请联系管理员设置价格.");
         OrderDeskTime deskTime = OrderDeskTime.builder()
@@ -266,6 +273,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .status(CalcTimeStatus.BUSY.getValue())
                 .startTime(endTime)
                 .totalAmountDue(BigDecimal.ZERO).build();
+        orderDeskScoreService.initScore(newDeskId, orderId);
 
         deskTimeService.insertOrderDeskTime(deskTime);
 
@@ -525,6 +533,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
 
         List<StoreDesk> desks = storeDeskMapper.queryBusyDeskByOrderId(orderId);
+        desks.forEach(p -> {
+            orderDeskScoreService.stopRecordScore(p.getDeskId(), orderId);
+        });
 
         //关闭所有计费
         order = stopAllCalcTimes(orderId, true, stopByTimer);
@@ -997,7 +1008,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             endTime = dto.getEndTime() + " 23:59";
         }
         // 查询总订单
-        List<Order> orders= selectOrderByPayStatus(OrderStatus.SETTLED.getValue(), dto.getStoreId(), startTime, endTime);
+        List<Order> orders = selectOrderByPayStatus(OrderStatus.SETTLED.getValue(), dto.getStoreId(), startTime, endTime);
         BigDecimal totalAmount = orders.stream().map(Order::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
         HomeReportVoConsumeDetail totalConsum = HomeReportVoConsumeDetail.builder().consumeDetail(orders)
                 .consumeName(OrderType.AGGREGATE_CONSUMPTION.getDesc())

@@ -12,9 +12,9 @@ public class EnumUtil {
      * @param source     the source
      * @return the i enum
      */
-    public static <T extends IEnum> IEnum getIEnum(Class<T> targetType, Integer source) {
+    public static <T extends IEnum> T getIEnum(Class<T> targetType, Integer source) {
         for (T enumObj : targetType.getEnumConstants()) {
-            if (source.equals(enumObj.getValue())) {
+            if (enumObj.getValue().equals(source)) {
                 return enumObj;
             }
         }
