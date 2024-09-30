@@ -281,7 +281,7 @@
             <span> {{ currentOrder.totalAmount }}  </span>
           </el-form-item>
           <el-form-item label="请输入会员密码:">
-            <el-input maxlength="10" type="password" v-model="finishOrderForm.password">
+            <el-input maxlength="10" type="password"  autocomplete="off" v-model="finishOrderForm.password">
 
             </el-input>
           </el-form-item>

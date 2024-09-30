@@ -164,7 +164,7 @@ public class StoreServiceImpl implements IStoreService {
         queryWrapper.clear();
         queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getPayTime, startTime, endTime)
                 .eq(Order::getOrderType, OrderType.MEMBER_RECHARGE)
-                .eq(Order::getStatus, OrderStatus.SETTLED.getValue()).gt(Order::getRefundAmount, 0);
+                .eq(Order::getStatus, OrderStatus.SETTLED.getValue());
         orderInfo = storeMapper.queryOrderTotal("total_amount", queryWrapper);
         resVo.setRechargeAmount(orderInfo.getValue());
         resVo.setRechargeOrderCount(orderInfo.getValue1());

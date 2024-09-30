@@ -1,6 +1,6 @@
 <template>
   <div class=" section-container input-container">
-    <el-form label-width="100px" ref="form" :model="inputForm" :rules="rules">
+    <el-form label-width="100px" ref="form" :model="inputForm" :rules="rules" auto-complete="off">
       <el-form-item label="实际应付:">
         {{ inputForm.totalAmount }}
       </el-form-item>
@@ -11,8 +11,17 @@
         <el-input-number :min="100" :max="999999" v-model="inputForm.rechargeAmount" @change="onRechargeAmountChanged"
                          placeholder="请输入充值金额100~999999"/>
       </el-form-item>
+
+      <el-form-item label="支付方式:" prop="payType">
+        <template v-for="item in dict.type.order_pay_type">
+          <el-radio
+            v-if="  (parseInt(item.value)!==OrderPayType.MEMBER)"
+            v-model="inputForm.payType" :label="item.value">{{ item.label }}
+          </el-radio>
+        </template>
+      </el-form-item>
       <el-form-item label="支付密码:" prop="pwd">
-        <el-input type="password" min="6" maxlength="20" v-model="inputForm.pwd"/>
+        <el-input type="password" min="6" maxlength="20" v-model="inputForm.pwd" auto-complete="new-password"/>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="margin-left: 20px" round @click="onClick " v-loading="loading">
@@ -27,10 +36,17 @@
 <script>
 
 import {postRecharge,getPreRecharge} from "@/api/cashier/member";
+import {OrderPayType} from "@/views/cashier/components/constant";
 
 export default {
+  computed: {
+    OrderPayType() {
+      return OrderPayType
+    }
+  },
   props: ['memberId'],
   emits: ["ok"],
+  dicts:["order_pay_type"],
   data() {
 
     return {
@@ -43,6 +59,9 @@ export default {
           {min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"},
           {pattern: /^[^<>"'|\\]+$/, message: "不能包含非法字符：< > \" ' \\\ |", trigger: "blur"}
         ],
+        payType:[
+          {required: true, message: "请选择支付方式", trigger: "blur"},
+        ]
       },
       inputForm: {
         totalAmountDue: null,

@@ -43,7 +43,7 @@
         <div class="total-item-amount">
           <el-badge :value="info.rechargeOrderCount" :hidden="!info.rechargeOrderCount" type="primary">
             <span>
-                 {{ info.rechargeOrderCount }}
+                 {{ info.rechargeAmount }}
             </span>
           </el-badge>
         </div>

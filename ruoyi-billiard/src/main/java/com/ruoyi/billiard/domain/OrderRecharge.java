@@ -3,6 +3,7 @@ package com.ruoyi.billiard.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.billiard.enums.OrderPayType;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
@@ -112,6 +113,9 @@ public class OrderRecharge extends MyBaseEntity implements ITotalDueFee {
 
     @TableField(exist = false)
     private Long storeId;
+
+    @TableField(exist = false)
+    private OrderPayType payType;
 
     @Override
     public BigDecimal getTotalAmountDue() {

@@ -21,6 +21,13 @@ export default {
     height: {
       type: String,
       default: '300px'
+    },
+    chartData:{
+      type: Array,
+      default:{
+        expectedData:[],
+        actualData:[]
+      }
     }
   },
   data() {
@@ -28,9 +35,17 @@ export default {
       chart: null
     }
   },
+  watch: {
+    chartData: {
+      deep: true,
+      handler(val) {
+        this.setOptions(val)
+      }
+    }
+  },
   mounted() {
     this.$nextTick(() => {
-      this.initChart()
+      this.initChart(this.chartData)
     })
   },
   beforeDestroy() {
@@ -41,7 +56,7 @@ export default {
     this.chart = null
   },
   methods: {
-    initChart() {
+    initChart({ expectedData, actualData } = {}) {
       this.chart = echarts.init(this.$el, 'macarons')
 
       this.chart.setOption({
@@ -52,22 +67,16 @@ export default {
         legend: {
           left: 'center',
           bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
+          data: expectedData
         },
         series: [
           {
-            name: 'WEEKLY WRITE ARTICLES',
+
             type: 'pie',
             roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '38%'],
-            data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
-            ],
+            data:actualData,
             animationEasing: 'cubicInOut',
             animationDuration: 2600
           }

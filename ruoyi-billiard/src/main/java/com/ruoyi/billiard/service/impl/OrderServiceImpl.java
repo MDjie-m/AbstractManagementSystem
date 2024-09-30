@@ -528,6 +528,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderPayService.insertOrderPay(OrderPay.builder()
                 .orderId(reqVo.getOrderId())
                 .paid(Boolean.TRUE)
+                .storeId(order.getStoreId())
                 .prePay(Boolean.TRUE)
                 .payType(reqVo.getPayType())
                 .payTime(new Date())
@@ -970,16 +971,31 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setOrderNo(createOrderNum(OrderType.MEMBER_RECHARGE, order.getOrderId()));
         order.setOrderType(OrderType.MEMBER_RECHARGE);
         order.setStoreId(recharge.getStoreId());
+        order.setPayTime(new Date());
+        AssertUtil.isTrue(!Objects.equals(OrderPayType.MEMBER, recharge.getPayType()), "不能使用会员支付");
+        order.setPayType(recharge.getPayType());
         order.setTotalAmountDue(recharge.getRechargeAmount());
         SecurityUtils.fillCreateUser(order);
 
         recharge.setOrderId(order.getOrderId());
+
+
         SecurityUtils.fillCreateUser(recharge, order);
 
         orderMapper.insert(order);
+        orderPayService.insertOrderPay(OrderPay.builder()
+                .orderId(order.getOrderId())
+                .paid(Boolean.TRUE)
+                .storeId(order.getStoreId())
+                .prePay(Boolean.FALSE)
+                .payType(recharge.getPayType())
+                .payTime(new Date())
+                .amount(order.getTotalAmount())
+                .build());
         orderRechargeMapper.insert(recharge);
 
         memberService.recharge(recharge);
+
 
     }
 
