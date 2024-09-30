@@ -13,6 +13,8 @@ COPY app.jar /opt/
 COPY run.sh /opt/
 COPY dist/ /opt/dist/
 
+RUN mkdir /opt/uploadPath
+
 RUN chmod +x /opt/run.sh
 
 WORKDIR /opt
