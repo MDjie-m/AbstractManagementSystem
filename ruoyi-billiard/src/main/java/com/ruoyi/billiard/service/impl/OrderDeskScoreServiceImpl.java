@@ -114,6 +114,13 @@ public class OrderDeskScoreServiceImpl implements IOrderDeskScoreService {
             newScore.setScoreA(0);
             newScore.setScoreB(0);
         }
+        final int max = 99;
+        if (newScore.getScoreA() >= max) {
+            newScore.setScoreA(max);
+        }
+        if (newScore.getScoreB() >= max) {
+            newScore.setScoreB(max);
+        }
         newScore.setCreateById(0L);
         newScore.setCreateBy("system");
         newScore.setCreateTime(LocalDateTime.now());
