@@ -9,7 +9,7 @@
         <el-radio-button label="year">今年</el-radio-button>
         <el-radio-button label="custom"> 自定义</el-radio-button>
       </el-radio-group>
-      <el-date-picker v-show="activeName==='custom'" style="margin-left: 10px"
+      <el-date-picker v-if="activeName==='custom'" style="margin-left: 10px"
                       v-model="customTime" format="yyyy-MM-dd"
                       value-format="yyyy-MM-dd" @change="queryData"
                       type="datetimerange"

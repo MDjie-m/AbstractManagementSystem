@@ -41,7 +41,8 @@
                  v-if="currentDesk.status ===DeskStatus.PAUSE" :btnAble="true"/>
         <SvgItem svg-icon="desk_change" label="换台/并台" @click.native="onOpenSwapDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Busy" :btnAble="true"/>
-        <SvgItem svg-icon="timing" label="定时" :badge="currentDesk.lastCalcTime" @click.native="onTempLight( 1)" v-if="currentDesk.currentOrderId"
+        <SvgItem svg-icon="timing" label="定时" :badge="currentDesk.lastCalcTime" @click.native="onTempLight( 1)"
+                 v-if="currentDesk.currentOrderId"
                  :btnAble="true"/>
         <SvgItem svg-icon="pre_pay" label="预付"
                  :badge="currentDesk.lastActiveOrder &&  parseFloat( currentDesk.lastActiveOrder.prePayAmount)?currentDesk.lastActiveOrder.prePayAmount:0 "
@@ -50,7 +51,7 @@
                  @click.native="onPrePayClick  "/>
         <SvgItem svg-icon="light_on" label="开灯" :btnAble="true"
                  @click.native="onSwitchLight(currentDesk.deskNum,true)"/>
-        <SvgItem svg-icon="light_temp" label="临时灯" :btnAble="true"  :badge="currentDesk.lastTempTime"
+        <SvgItem svg-icon="light_temp" label="临时灯" :btnAble="true" :badge="currentDesk.lastTempTime"
                  @click.native="onTempLight( 0)"/>
         <SvgItem svg-icon="close_light" label="关灯" :btnAble="true"
                  @click.native="onSwitchLight(currentDesk.deskNum,false)"/>
@@ -71,7 +72,7 @@
       <Dashboard ref="dashboard" v-if="!currentDesk" :storeName="storeInfo?storeInfo.storeName:''"/>
 
       <ToolBar title="预约/排队" v-if="!(currentDesk &&currentDesk.lastActiveOrder)">
-        <SvgItem svg-icon="desk" label="台桌预约"  @click.native="onOpenLineUpClick(DeskDialogTitle.BookingDesk)"/>
+        <SvgItem svg-icon="desk" label="台桌预约" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingDesk)"/>
         <SvgItem svg-icon="tutor" label="教练预约" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingTutor)"/>
         <SvgItem svg-icon="qrcode" label="预约核销" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingVerify)"/>
         <SvgItem svg-icon="line_up" label="排队叫号" @click.native="onOpenLineUpClick(DeskDialogTitle.LineUp)"/>
@@ -174,14 +175,14 @@
         </el-form-item>
 
         <el-form-item label="充值金额:">
-          <el-input-number  :min="100"  :max="9999" v-model="prePayForm.amount">
+          <el-input-number :min="100" :max="9999" v-model="prePayForm.amount">
           </el-input-number>
         </el-form-item>
       </el-form>
 
     </custom-dialog>
     <!-- 换台确认框 -->
-    <custom-dialog title="换台/并台" class="custom-dialog" :visible.sync="openSwapDesk" width="700px" append-to-body  >
+    <custom-dialog title="换台/并台" class="custom-dialog" :visible.sync="openSwapDesk" width="700px" append-to-body>
       <el-form ref="form" :model="targetDesk" label-width="120px">
         <el-row v-if="currentDesk">
           <el-col :span="12">
@@ -246,7 +247,13 @@ import {
   startCalcFee,
   swapToNewDesk
 } from "@/api/cashier/desk";
-import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
+import {
+  callPCMethod,
+  DeviceCallbackMethodName,
+  DeviceMethodNames,
+  registerMethod,
+  removeMethod
+} from "@/utils/pcCommunication";
 import Dashboard from "@/views/cashier/desk/components/dashboard.vue";
 import ContentWrapper from "@/views/cashier/desk/components/contentWrapper.vue";
 import LineUp from "@/views/cashier/desk/components/lineUp.vue";
@@ -269,6 +276,7 @@ import BookingDesk from "@/views/cashier/desk/components/bookingDesk.vue";
 import BookingTutor from "@/views/cashier/desk/components/bookingTutor/index.vue";
 import BookingVerify from "@/views/cashier/desk/components/bookingVerify/index.vue";
 import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
+
 export default {
   name: "Desk",
   computed: {
@@ -284,12 +292,13 @@ export default {
   },
   components: {
     CustomDialog,
-    BookingVerify,BookingDesk,BookingTutor, LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard},
-  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place','order_pay_type'],
+    BookingVerify, BookingDesk, BookingTutor, LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard
+  },
+  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place', 'order_pay_type'],
 
   data() {
     return {
-      prePayForm:{
+      prePayForm: {
         payType: '0',
         amount: null,
         orderId: null,
@@ -297,7 +306,7 @@ export default {
       orderLoading: false,
       DeskStatus: DeskStatus,
       storeInfo: {storeName: '', userList: [], tutorList: []},
-      openNewDialog:false,
+      openNewDialog: false,
       lightStatus: null,
       currentDesk: null,
       loading: false,
@@ -308,7 +317,7 @@ export default {
       title: "",
       // 是否显示弹出层
       openSwapDesk: false,
-      openPrePay:false,
+      openPrePay: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -330,9 +339,23 @@ export default {
   },
   created() {
     this.getList();
-    this.getStoreInfo()
+    this.getStoreInfo();
+    this.initSomePCCallBackMethods();
+  },
+  beforeDestroy() {
+    removeMethod(DeviceCallbackMethodName.AddScore)
   },
   methods: {
+    initSomePCCallBackMethods() {
+      registerMethod(DeviceCallbackMethodName.AddScore, this.addScore);
+    },
+    addScore({data}) {
+      console.log("加分", JSON.stringify(data))
+      if (this.currentDesk) {
+        this.queryDeskById(this.currentDesk.deskId)
+      }
+    },
+
     onNavBuyClick(type) {
       this.$router.push({
         path: '/cashier/buy', query: {
@@ -398,7 +421,7 @@ export default {
       this.title = title
     },
     onOpenLineUpClick(title) {
-      this.title=title
+      this.title = title
       this.openNewDialog = true;
     },
     onTempLight(lightType) {
@@ -437,14 +460,14 @@ export default {
       });
 
     },
-    onPrePaySubmit(){
-      if( this.currentDesk.lastActiveOrder.prePayAmount>=9999){
+    onPrePaySubmit() {
+      if (this.currentDesk.lastActiveOrder.prePayAmount >= 9999) {
         this.$modal.msgWarning("预付金额不能超过9999")
         return Promise.reject();
       }
-     return   orderPrePay({
+      return orderPrePay({
         amount: this.prePayForm.amount,
-        payType:this.prePayForm.payType,
+        payType: this.prePayForm.payType,
         orderId: this.currentDesk?.currentOrderId,
       }).then(response => {
         this.currentDesk.lastActiveOrder.prePayAmount = response.data;
@@ -452,7 +475,7 @@ export default {
       });
     },
     onPrePayClick() {
-        this.openPrePay=true
+      this.openPrePay = true
     },
     onSwitchLight(deskNum, open) {
       if (deskNum === null || deskNum === undefined) {
@@ -709,6 +732,7 @@ export default {
             this.$message.success("当前台桌已结束开台,但是还有其他台桌在计费,如要结账，请结开另一个台桌。")
             return
           }
+          this.onSwitchLight(this.currentDesk.deskNum,false)
           this.navToOrder(res.data.orderId);
         })
     },
@@ -728,7 +752,11 @@ export default {
           })
           this.$message.success(`${deskTitle}已开台。`)
         }).then(res => {
-          this.onSwitchLight(this.currentDesk.deskNum, true)
+          this.onSwitchLight(this.currentDesk.deskNum, true);
+          callPCMethod(DeviceMethodNames.CallAddScore, {
+            deskNum: this.currentDesk.deskNum,
+            btnType: 1,
+          })
         })
       })
     }

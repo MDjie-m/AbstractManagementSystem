@@ -11,6 +11,6 @@ Vue.filter('numPad', function (value,len=2,prefix="0") {
   if (value===null ||value ===undefined) {
     return value;
   }
-  return  String(value).padEnd(len||2,prefix||'0')
+  return  String(value).padStart(len||2,prefix||'0')
 
 });

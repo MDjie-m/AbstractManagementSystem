@@ -14,24 +14,9 @@ export default {
   name: "App",
   components: {ThemePicker},
   created() {
-    this.initSomePCCallBackMethods()
   },
   methods: {
-    initSomePCCallBackMethods() {
-      registerMethod(DeviceCallbackMethodName.AddScore, this.addScore);
-      registerMethod(DeviceCallbackMethodName.UserCapture, this.userCapture)
-    },
-    addScore({data}) {
-      console.log("加分",JSON.stringify(data))
-      if(!data.result){
-        return
-      }
-      deskAddScore(data)
-    },
-    userCapture({data}) {
-      console.log("拍照",JSON.stringify(data))
-      deskCapture(data)
-    },
+
 
   },
   metaInfo() {
