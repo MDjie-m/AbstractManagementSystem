@@ -4,7 +4,7 @@
         <el-scrollbar :class="settings.sideTheme" wrap-class="scrollbar-wrapper">
             <el-menu
                 :default-active="activeMenu"
-                :collapse="false"
+                :collapse="true"
                 :background-color="settings.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"
                 :text-color="settings.sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
                 :unique-opened="true"
@@ -51,7 +51,7 @@ export default {
             return variables;
         },
         isCollapse() {
-            return !this.sidebar.opened;
+            return true;
         }
     }
 };

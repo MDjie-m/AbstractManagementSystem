@@ -62,6 +62,9 @@
             <if test="status != null and status != ''">
                 AND status = #{status}
             </if>
+            <if test="menuCategory != null and menuCategory != ''">
+                AND menu_category = #{menuCategory}
+            </if>
         </where>
         order by menu_category,parent_id, order_num
     </select>

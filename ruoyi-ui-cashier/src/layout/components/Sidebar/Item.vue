@@ -20,13 +20,6 @@ export default {
       vnodes.push(<svg-icon icon-class={icon}/>)
     }
 
-    if (title) {
-      if (title.length > 5) {
-        vnodes.push(<span slot='title' title={(title)}>{(title)}</span>)
-      } else {
-        vnodes.push(<span slot='title'>{(title)}</span>)
-      }
-    }
     return vnodes
   }
 }

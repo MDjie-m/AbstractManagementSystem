@@ -1,16 +1,21 @@
 <template>
   <div v-if="!item.hidden">
-    <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
+    <template
+      v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
-        <el-menu-item   :index="resolvePath(onlyOneChild.path)" class="custom-menu" :class="{'submenu-title-noDropdown':!isNest,'selected-menu':checkSelected(item)}">
-          <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
+        <el-menu-item :index="resolvePath(onlyOneChild.path)" class="custom-menu"
+                      :class="{'submenu-title-noDropdown':!isNest,'selected-menu':checkSelected(item)}">
+
+          <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)"/>
+          <span style="margin-top: 0">{{ onlyOneChild.meta.title }}</span>
         </el-menu-item>
       </app-link>
     </template>
 
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
-        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
+        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title"/>
+        <span style="height: 20px;line-height: 20px">{{ item.meta.title }}</span>
       </template>
       <sidebar-item
         v-for="(child, index) in item.children"
@@ -26,7 +31,7 @@
 
 <script>
 import path from 'path'
-import { isExternal } from '@/utils/validate'
+import {isExternal} from '@/utils/validate'
 import Item from './Item'
 import AppLink from './Link'
 import FixiOSBug from './FixiOSBug'
@@ -34,8 +39,8 @@ import variables from "@/assets/styles/variables.scss";
 
 export default {
   name: 'SidebarItem',
-  components: { Item, AppLink },
-  computed:{
+  components: {Item, AppLink},
+  computed: {
     variables() {
       return variables;
     },
@@ -61,17 +66,17 @@ export default {
     return {}
   },
   methods: {
-    checkSelected(item){
-      if(item.path===this.$route.path){
+    checkSelected(item) {
+      if (item.path === this.$route.path) {
         return true;
       }
-      let children= (item.children||[]);
+      let children = (item.children || []);
       for (let child of children) {
-        if(child.path ===this.$route.path){
-          return  true
+        if (child.path === this.$route.path) {
+          return true
         }
       }
-      return  false
+      return false
     },
     hasOneShowingChild(children = [], parent) {
       if (!children) {
@@ -94,7 +99,7 @@ export default {
 
       // Show parent if there are no child router to display
       if (showingChildren.length === 0) {
-        this.onlyOneChild = { ... parent, path: '', noShowingChildren: true }
+        this.onlyOneChild = {...parent, path: '', noShowingChildren: true}
         return true
       }
 
@@ -109,7 +114,7 @@ export default {
       }
       if (routeQuery) {
         let query = JSON.parse(routeQuery);
-        return { path: path.resolve(this.basePath, routePath), query: query }
+        return {path: path.resolve(this.basePath, routePath), query: query}
       }
       return path.resolve(this.basePath, routePath)
     }
@@ -118,23 +123,53 @@ export default {
 </script>
 <style lang="scss" scoped>
 
-.custom-menu{
+::v-deep.el-submenu .el-submenu__title {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 70px;
-  color:#1890ff!important;
+  padding: 0 !important;
+  color: #1890ff !important;
+  position: relative;
 
-  &>.svg-icon{
+  .el-submenu__icon-arrow {
+    display: block!important;
+    position: absolute;
+    top: 50%;
+    right: 5px;
+  }
+
+  .svg-icon {
     flex-shrink: 0;
-     display: flex;
-    margin: 0!important;
+    display: flex;
+    margin: 0 !important;
     box-sizing: border-box;
     font-size: 1.5em;
     width: auto;
   }
-  &>span{
+
+}
+
+.custom-menu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 70px;
+  color: #1890ff !important;
+
+
+  .svg-icon {
+    flex-shrink: 0;
+    display: flex;
+    margin: 0 !important;
+    box-sizing: border-box;
+    font-size: 1.5em;
+    width: auto;
+  }
+
+  & > span {
     line-height: 30px;
   }
 }
