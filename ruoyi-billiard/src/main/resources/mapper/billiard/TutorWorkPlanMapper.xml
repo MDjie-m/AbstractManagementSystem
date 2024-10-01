@@ -11,8 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectTutorWorkPlanList" parameterType="TutorWorkPlan" resultType="TutorWorkPlan">
         <include refid="selectTutorWorkPlanVo"/>
-        <where>
-            <if test="storeId != null "> and store_id = #{storeId}</if>
+        <where>  
             <if test="tutorId != null "> and tutor_id = #{tutorId}</if>
             <if test="day != null "> and day = #{day}</if>
             <if test="createById != null "> and create_by_id = #{createById}</if>

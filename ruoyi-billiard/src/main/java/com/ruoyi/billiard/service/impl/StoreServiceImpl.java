@@ -133,7 +133,7 @@ public class StoreServiceImpl implements IStoreService {
     @Override
     public StoreDashboardResVo queryStoreDashboard(Long storeId, Date startTime, Date endTime) {
         if (StringUtils.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, startTime), (DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, endTime)))) {
-            Tuple<Date, Date> time = storeScheduleService.getDaySchedule(storeId, startTime);
+            Tuple3<Date, Date,Date> time = storeScheduleService.getDaySchedule(storeId, startTime);
             startTime = time.getValue();
             endTime = time.getValue1();
         } else {

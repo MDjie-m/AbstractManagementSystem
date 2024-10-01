@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
  * 教练排班计划详细Mapper接口
  * 
  * @author ruoyi
- * @date 2024-09-25
+ * @date 2024-10-01
  */
 @Mapper
 public interface TutorWorkPlanDetailMapper extends MyBaseMapper<TutorWorkPlanDetail>

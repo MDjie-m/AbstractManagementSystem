@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.mapper.StoreScheduleMapper;
 import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.core.domain.model.Tuple;
+import com.ruoyi.common.core.domain.model.Tuple3;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
@@ -134,7 +135,7 @@ public class StoreScheduleServiceImpl extends ServiceImpl<StoreScheduleMapper, S
     }
 
     @Override
-    public Tuple<Date, Date> getDaySchedule(Long storeId, Date date) {
+    public Tuple3<Date, Date,Date> getDaySchedule(Long storeId, Date date) {
         QueryWrapper<StoreSchedule> queryWrapper = baseMapper.normalQuery();
 
         queryWrapper.eq("day", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, date))
@@ -148,7 +149,7 @@ public class StoreScheduleServiceImpl extends ServiceImpl<StoreScheduleMapper, S
             schedule.setEndTimeStr(getScheduleTimeStr(schedule.getDay(), schedule.getEndTime(), schedule.getEndTimeOffsetDay()));
             start = DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM, schedule.getStartTimeStr());
             end = DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM, schedule.getEndTimeStr());
-            return Tuple.<Date, Date>builder().value(start).value1(end).build();
+            return Tuple3.<Date, Date,Date>builder().value(start).value1(end).value(schedule.getDay()).build();
         }
 
         schedule = baseMapper.selectOne(baseMapper.query().eq(StoreSchedule::getStoreId, storeId)
@@ -159,11 +160,19 @@ public class StoreScheduleServiceImpl extends ServiceImpl<StoreScheduleMapper, S
             schedule.setEndTimeStr(getScheduleTimeStr(date, schedule.getEndTime(), schedule.getEndTimeOffsetDay()));
             start = DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM, schedule.getStartTimeStr());
             end = DateUtils.dateTime(DateUtils.YYYY_MM_DD_HH_MM, schedule.getEndTimeStr());
-            return Tuple.<Date, Date>builder().value(start).value1(end).build();
+            return Tuple3.<Date, Date,Date>builder().value(start).value1(end).value2(date).build();
         }
         start = DateUtils.toDate(LocalDateTime.of(LocalDate.now(), LocalTime.MIN));
         end = DateUtils.toDate(LocalDateTime.of(LocalDate.now(), LocalTime.MAX));
-        return Tuple.<Date, Date>builder().value(start).value1(end).build();
+        return Tuple3.<Date, Date,Date>builder().value(start).value1(end).value2(date).build();
+    }
+
+    @Override
+    public Tuple3<LocalDateTime, LocalDateTime,LocalDateTime> getDayScheduleLocalTime(Long storeId, Date date) {
+        Tuple3<Date, Date,Date> time = getDaySchedule(storeId, date);
+        return new Tuple3<>(DateUtils.toLocalDateTime(time.getValue()),
+                DateUtils.toLocalDateTime(time.getValue1()),
+                DateUtils.toLocalDateTime(time.getValue2()))    ;
     }
 
     @Override

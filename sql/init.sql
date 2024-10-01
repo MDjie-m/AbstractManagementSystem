@@ -208,7 +208,7 @@ create table t_order_refund
 (
     order_refund_id bigint                                   not null comment '预支付id' primary key,
     order_id        bigint                                   not null comment '订单 ',
-    store_id         bigint                                   not null comment '门店',
+    store_id        bigint                                   not null comment '门店',
     amount          decimal(20, 2) default 0.00              not null default 0.00 not null comment '金额',
     return_pay_type int                                      null comment '支付方式：0=扫码，1=现金',
     paid            tinyint                                  null comment '是否支付',
@@ -723,3 +723,28 @@ create table t_store_schedule
 
 create unique index t_store_schedule_store_id_index
     on t_store_schedule (store_id, day);
+
+
+drop table if exists t_tutor_punch_in;
+create table t_tutor_punch_in
+(
+    tutor_punch_in_id bigint                                not null comment 'ID'
+        primary key,
+    store_id       bigint                                not null comment '门店',
+    start_time     time                                    null comment '开始时间',
+    end_time       time                                    null comment '结束时间',
+    schedule_day  date not null  comment '班次',
+    tutor_id       bigint                                not null comment '助教',
+    create_by      varchar(64) default ''                null comment '创建者',
+    create_time    timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by      varchar(64) default ''                null comment '更新者',
+    update_time    timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id   bigint                                null comment '创建者Id',
+    update_by_id   bigint                                null comment '更新者Id',
+    remark         nvarchar(500)                         null comment '备注'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    comment '教练打卡';
+
+create unique index t_tutor_punch_in_store_id_index
+    on t_tutor_punch_in (store_id, tutor_id,  day);

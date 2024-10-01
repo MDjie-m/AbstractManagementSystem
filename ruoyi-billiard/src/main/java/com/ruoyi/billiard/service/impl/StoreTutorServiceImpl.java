@@ -9,6 +9,7 @@ import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.mapper.OrderTutorTimeMapper;
 import com.ruoyi.billiard.mapper.StoreUserMapper;
 import com.ruoyi.billiard.service.ITutorBookingService;
+import com.ruoyi.billiard.service.ITutorPunchInService;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
@@ -40,6 +41,9 @@ import javax.annotation.Resource;
 public class StoreTutorServiceImpl implements IStoreTutorService {
     @Autowired
     private StoreTutorMapper storeTutorMapper;
+
+    @Autowired
+    private ITutorPunchInService tutorPunchInService;
 
     @Resource
     private StoreUserMapper storeUserMapper;
@@ -200,4 +204,6 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         AssertUtil.isTrue(!orderTutorTimeMapper.exists(OrderTutorTime::getTutorId, storeTutorId), "教练已被使用,无法删除.");
         return storeTutorMapper.deleteById(storeTutorId);
     }
+
+
 }

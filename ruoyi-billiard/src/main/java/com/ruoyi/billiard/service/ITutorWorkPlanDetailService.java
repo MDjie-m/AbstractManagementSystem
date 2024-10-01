@@ -8,7 +8,7 @@ import  com.ruoyi.billiard.domain.TutorWorkPlanDetail;
  * 教练排班计划详细Service接口
  * 
  * @author ruoyi
- * @date 2024-09-25
+ * @date 2024-10-01
  */
 public interface ITutorWorkPlanDetailService  extends IService<TutorWorkPlanDetail>
 {

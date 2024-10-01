@@ -1,5 +1,7 @@
 package com.ruoyi.billiard.domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,51 +12,59 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
 /**
- * 教练排班计划详细对象 t_tutor_work_plan_detail
+ * 教练打卡对象 t_tutor_punch_in
  * 
  * @author ruoyi
  * @date 2024-10-01
  */
-@TableName("t_tutor_work_plan_detail")
+@TableName("t_tutor_punch_in")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TutorWorkPlanDetail extends MyBaseEntity
+public class TutorPunchIn extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** ID */
 
-    @TableId("tutor_work_plan_detail_id")
-    private Long tutorWorkPlanDetailId;
+    @TableId("tutor_punch_in_id")
+    private Long tutorPunchInId;
 
-    /** 计划id */
-    @Excel(name = "计划id")
+    /** 门店 */
+    @Excel(name = "门店")
 
-    @TableField("tutor_work_plan_id")
-    private Long tutorWorkPlanId;
-
-    /** 计划类型：4=陪练,5=教学 */
-    @Excel(name = "计划类型：4=陪练,5=教学")
-
-    @TableField("plan_type")
-    private Integer planType;
+    @TableField("store_id")
+    private Long storeId;
 
     /** 开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
 
     @TableField("start_time")
-    private Date startTime;
+    private LocalDateTime startTime;
 
     /** 结束时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
 
     @TableField("end_time")
-    private Date endTime;
+    private LocalDateTime endTime;
+
+    /** 哪一天 */
+
+
+    //班次
+    @TableField("schedule_day")
+    private LocalDate scheduleDay;
+
+
+    /** 助教 */
+    @Excel(name = "助教")
+
+    @TableField("tutor_id")
+    private Long tutorId;
 
     /** 创建者Id */
     @Excel(name = "创建者Id")
@@ -67,6 +77,7 @@ public class TutorWorkPlanDetail extends MyBaseEntity
 
     @TableField("update_by_id")
     private Long updateById;
+
 
 
 

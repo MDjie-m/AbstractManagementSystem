@@ -1,11 +1,13 @@
 package com.ruoyi.billiard.service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.billiard.domain.StoreSchedule;
 import com.ruoyi.common.core.domain.model.Tuple;
+import com.ruoyi.common.core.domain.model.Tuple3;
 import org.springframework.stereotype.Service;
 
 /**
@@ -65,7 +67,9 @@ public interface IStoreScheduleService  extends IService<StoreSchedule>
     public int deleteStoreScheduleByStoreScheduleId(Long storeScheduleId);
 
 
-    Tuple<Date,Date> getDaySchedule(Long storeId,Date date);
+    Tuple3<Date,Date,Date> getDaySchedule(Long storeId, Date date);
+
+    Tuple3<LocalDateTime,LocalDateTime,LocalDateTime> getDayScheduleLocalTime(Long storeId, Date date);
 
     Tuple<Date,Date> getDaySchedule(Long storeId,Date start,Date end);
 }

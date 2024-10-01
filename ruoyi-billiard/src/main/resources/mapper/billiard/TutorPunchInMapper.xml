@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.TutorPunchInMapper">
+
+
+    <sql id="selectTutorPunchInVo">
+        select * from t_tutor_punch_in
+    </sql>
+
+    <select id="selectTutorPunchInList" parameterType="TutorPunchIn" resultType="TutorPunchIn">
+        <include refid="selectTutorPunchInVo"/>
+        <where>  
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="startTime != null "> and start_time = #{startTime}</if>
+            <if test="endTime != null "> and end_time = #{endTime}</if>
+            <if test="day != null "> and day = #{day}</if>
+            <if test="tutorId != null "> and tutor_id = #{tutorId}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectTutorPunchInByTutorPunchInId" parameterType="Long" resultType="TutorPunchIn">
+        <include refid="selectTutorPunchInVo"/>
+        where tutor_punch_in_id = #{tutorPunchInId}
+    </select>
+
+
+
+    <delete id="deleteTutorPunchInByTutorPunchInId" parameterType="Long">
+        delete from t_tutor_punch_in where tutor_punch_in_id = #{tutorPunchInId}
+    </delete>
+
+    <delete id="deleteTutorPunchInByTutorPunchInIds" parameterType="String">
+        delete from t_tutor_punch_in where tutor_punch_in_id in 
+        <foreach item="tutorPunchInId" collection="array" open="(" separator="," close=")">
+            #{tutorPunchInId}
+        </foreach>
+    </delete>
+</mapper>

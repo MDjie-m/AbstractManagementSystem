@@ -1,9 +1,6 @@
 package com.ruoyi.billiard.service.impl;
 
 import java.util.List;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.billiard.mapper.TutorWorkPlanDetailMapper;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
@@ -11,14 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.domain.TutorWorkPlanDetail;
 import com.ruoyi.billiard.service.ITutorWorkPlanDetailService;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.billiard.mapper.TutorWorkPlanDetailMapper;
 /**
  * 教练排班计划详细Service业务层处理
  * 
  * @author ruoyi
- * @date 2024-09-25
+ * @date 2024-10-01
  */
 @Service
-public class TutorWorkPlanDetailServiceImpl extends ServiceImpl<TutorWorkPlanDetailMapper,TutorWorkPlanDetail> implements ITutorWorkPlanDetailService
+public class TutorWorkPlanDetailServiceImpl extends  ServiceImpl<TutorWorkPlanDetailMapper,TutorWorkPlanDetail> implements ITutorWorkPlanDetailService
 {
 
 

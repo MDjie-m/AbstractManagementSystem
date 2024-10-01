@@ -120,7 +120,7 @@
             <el-form-item label="上级菜单" prop="parentId">
               <treeselect
                 v-model="form.parentId"
-                :options="menuOptions"
+                :options="menuOptions "
                 :normalizer="normalizer"
                 :show-count="true"
                 placeholder="选择上级菜单"
@@ -136,9 +136,9 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
+          <el-col :span="24" v-if="form.parentId===0">
             <el-form-item label="所属系统" prop="menuCategory">
-              <el-radio-group v-model="form.menuCategory">
+              <el-radio-group v-model="form.menuCategory"  :disabled="form.menuId &&form.parentId>0">
                 <el-radio :label="0">后台管理</el-radio>
                 <el-radio :label="1">收银</el-radio>
                 <el-radio :label="2">小程序</el-radio>
@@ -383,8 +383,8 @@ export default {
       }
     },
     /** 查询菜单下拉树结构 */
-    getTreeselect() {
-      listMenu().then(response => {
+    getTreeselect( menuCategory) {
+      listMenu({menuCategory}).then(response => {
         this.menuOptions = []
         const menu = { menuId: 0, menuName: '主类目', children: [] }
         menu.children = this.handleTree(response.data, 'menuId')
@@ -425,12 +425,13 @@ export default {
     /** 新增按钮操作 */
     handleAdd(row) {
       this.reset()
-      this.getTreeselect()
+      this.getTreeselect(row.menuCategory)
       if (row != null && row.menuId) {
         this.form.parentId = row.menuId
       } else {
         this.form.parentId = 0
       }
+      this.form.menuCategory=row.menuCategory;
       this.open = true
       this.title = '添加菜单'
     },
@@ -445,7 +446,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      this.getTreeselect()
+      this.getTreeselect(row.menuCategory)
       getMenu(row.menuId).then(response => {
         this.form = response.data
         this.open = true

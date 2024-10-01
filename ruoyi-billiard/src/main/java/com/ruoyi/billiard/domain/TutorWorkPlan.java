@@ -13,7 +13,7 @@ import com.ruoyi.common.core.domain.MyBaseEntity;
  * 教练排班计划对象 t_tutor_work_plan
  * 
  * @author ruoyi
- * @date 2024-09-25
+ * @date 2024-10-01
  */
 @TableName("t_tutor_work_plan")
 @Data
@@ -57,8 +57,7 @@ public class TutorWorkPlan extends MyBaseEntity
 
 
 
-    @TableField("store_id")
-    private Long storeId;
+
 
 
 
