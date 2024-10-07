@@ -16,7 +16,7 @@
         <include refid="selectGoodsVo"/>
         <where>
             <if test="storeId != null ">and a.store_id = #{storeId}</if>
-            <if test="goodsName != null  and goodsName != ''">and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="goodsName != null  and goodsName != ''">and a.goods_name like concat('%', #{goodsName}, '%')</if>
             <if test="goodsImg != null  and goodsImg != ''">and goods_img = #{goodsImg}</if>
             <if test="sort != null ">and sort = #{sort}</if>
             <if test="barcode != null  and barcode != ''">and barcode like concat('%', #{barcode}, '%')</if>
