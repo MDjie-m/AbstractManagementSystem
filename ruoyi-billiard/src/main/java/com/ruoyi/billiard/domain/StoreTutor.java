@@ -140,4 +140,9 @@ public class StoreTutor extends MyBaseEntity {
 
     @TableField(exist = false)
     private Long bookingCount;
+
+    @TableField(exist = false)
+    private Boolean queryLastBooking;
+    @TableField(exist = false)
+    private TutorBooking booking;
 }

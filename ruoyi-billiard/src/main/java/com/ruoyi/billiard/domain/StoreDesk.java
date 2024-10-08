@@ -117,4 +117,11 @@ public class StoreDesk extends MyBaseEntity
     @TableField(exist = false)
     private Long bookingCount;
 
+
+    @TableField(exist = false)
+    private Boolean queryLastBooking;
+
+    @TableField(exist = false)
+    private DeskBooking booking;
+
 }

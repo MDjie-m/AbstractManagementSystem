@@ -49,6 +49,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         group by tutor_id;
     </select>
+    <select id="queryLastBooking" resultType="java.lang.Long">
+        select a.tutor_booking_id from ( select rank() over(partition by tutor_id order by start_time ) as
+        row_no,tutor_booking_id
+        from t_tutor_booking
+        where status in (0)
+        and(
+        #{time} between start_time and end_time
+        or now() between start_time and end_time
+        )
+        and  tutor_id in
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>)a where a.row_no=1
+
+    </select>
 
 
     <delete id="deleteTutorBookingByTutorBookingId" parameterType="Long">

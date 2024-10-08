@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.billiard.domain.DeskBooking;
 import com.ruoyi.billiard.domain.TutorBooking;
 import com.ruoyi.billiard.enums.BookingStatus;
 import com.ruoyi.billiard.mapper.TutorBookingMapper;
@@ -16,6 +17,8 @@ import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.service.ITutorBookingService;
 /**
@@ -140,5 +143,14 @@ public class TutorBookingServiceImpl extends ServiceImpl<TutorBookingMapper,Tuto
                 .set(BaseEntity::getUpdateTime, entity.getUpdateTime())
                 .eq(TutorBooking::getTutorBookingId, bookingId)
                 .eq(TutorBooking::getStoreId, storeId).eq(TutorBooking::getStatus, BookingStatus.ACTIVE)) > 0;
+    }
+
+    @Override
+    public List<TutorBooking> queryLastBooking(List<Long> tutorIds) {
+        List<Long> bookingIds = baseMapper.queryLastBooking( DateUtils.addMinutes(new Date(),30),tutorIds);
+        if (CollectionUtils.isEmpty(bookingIds)) {
+            return Lists.newArrayList();
+        }
+        return baseMapper.selectList(baseMapper.query().in(TutorBooking::getTutorBookingId, bookingIds));
     }
 }

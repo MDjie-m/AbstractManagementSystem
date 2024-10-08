@@ -52,4 +52,6 @@ public interface DeskBookingMapper extends MyBaseMapper<DeskBooking>
 
     List<KeyValueVo<Long, Long>> selectBookingCount(@Param("deskIds") List<Long> deskIds,
                                                     @Param("startTime")  Date startTime, @Param("endTime")Date endTime);
+
+    List<Long> queryLastDeskBooking(@Param("time") Date time,@Param("deskIds") List<Long> deskIds);
 }

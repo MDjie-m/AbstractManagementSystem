@@ -52,4 +52,6 @@ public interface TutorBookingMapper extends MyBaseMapper<TutorBooking>
 
     List<KeyValueVo<Long,Long>> selectBookingCount(@Param("ids") List<Long> ids,
                                              @Param("startTime")  Date startTime, @Param("endTime")Date endTime);
+
+    List<Long> queryLastBooking(@Param("time") Date time, @Param("ids") List<Long> tutorIds);
 }

@@ -16,6 +16,8 @@ import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.domain.DeskBooking;
@@ -148,5 +150,14 @@ public class DeskBookingServiceImpl extends ServiceImpl<DeskBookingMapper, DeskB
                 .set(BaseEntity::getUpdateTime, entity.getUpdateTime())
                 .eq(DeskBooking::getDeskBookingId, bookingId)
                 .eq(DeskBooking::getStoreId, storeId).eq(DeskBooking::getStatus, BookingStatus.ACTIVE)) > 0;
+    }
+
+    @Override
+    public List<DeskBooking> queryLastDeskBooking(List<Long> deskIds) {
+        List<Long> bookingIds = baseMapper.queryLastDeskBooking( DateUtils.addMinutes(new Date(),30),deskIds);
+        if (CollectionUtils.isEmpty(bookingIds)) {
+            return Lists.newArrayList();
+        }
+        return baseMapper.selectList(baseMapper.query().in(DeskBooking::getDeskBookingId, bookingIds));
     }
 }

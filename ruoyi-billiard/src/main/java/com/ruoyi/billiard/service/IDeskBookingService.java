@@ -71,4 +71,6 @@ public interface IDeskBookingService extends IService<DeskBooking> {
     List<KeyValueVo<Long, Long>> selectBookingCount(List<Long> ids, Date startTime, Date endTime);
 
     Boolean verifyBooking(Long bookingId, Long storeIdWithThrow);
+
+    List<DeskBooking> queryLastDeskBooking(List<Long> deskIds);
 }

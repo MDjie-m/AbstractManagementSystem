@@ -52,6 +52,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
         group by desk_id;
     </select>
+    <select id="queryLastDeskBooking" resultType="Long">
+        select a.desk_booking_id from ( select rank() over(partition by desk_id order by start_time ) as
+        row_no,desk_booking_id
+        from t_desk_booking
+        where status in (0)
+        and(
+        #{time} between start_time and end_time
+        or now() between start_time and end_time
+        )
+        and desk_id in
+        <foreach item="id" collection="deskIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>)a where a.row_no=1
+    </select>
 
 
     <delete id="deleteDeskBookingByDeskBookingId" parameterType="Long">

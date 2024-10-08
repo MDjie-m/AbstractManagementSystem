@@ -4,8 +4,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.ruoyi.billiard.domain.OrderTutorTime;
-import com.ruoyi.billiard.domain.StoreDesk;
+import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.mapper.OrderTutorTimeMapper;
 import com.ruoyi.billiard.mapper.StoreUserMapper;
 import com.ruoyi.billiard.service.ITutorBookingService;
@@ -25,7 +24,6 @@ import org.apache.commons.compress.utils.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
-import com.ruoyi.billiard.domain.StoreTutor;
 import com.ruoyi.billiard.service.IStoreTutorService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,6 +98,13 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
                     KeyValueVo::getKey, KeyValueVo::getValue);
             users.forEach(p -> {
                 p.setBookingCount(map.getOrDefault(p.getStoreTutorId(), 0L));
+            });
+        }
+        if (Objects.equals(Boolean.TRUE, storeTutor.getQueryLastBooking()) && CollectionUtils.isNotEmpty(users)) {
+            Map<Long, TutorBooking> map = ArrayUtil.toMap(tutorBookingService.queryLastBooking(users.stream().map(StoreTutor::getStoreTutorId).collect(Collectors.toList())),
+                    TutorBooking::getTutorId, p -> p);
+            users.forEach(p -> {
+                p.setBooking(map.get(p.getStoreTutorId()));
             });
         }
         return users;

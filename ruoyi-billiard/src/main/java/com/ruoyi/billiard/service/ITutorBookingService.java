@@ -71,4 +71,6 @@ public interface ITutorBookingService  extends IService<TutorBooking>
     Map<String, List<TutorBooking>> selectBookingDayMap(TutorBooking reqVo);
 
     Boolean verifyBooking(Long bookingId, Long storeId);
+
+    List<TutorBooking> queryLastBooking(List<Long> tutorIds);
 }

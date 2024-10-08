@@ -73,7 +73,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     private IOrderDeskScoreService orderDeskScoreService;
 
     @Resource
-    private IDeskImageService  deskImageService;
+    private IDeskImageService deskImageService;
 
     /**
      * 查询台桌
@@ -125,6 +125,13 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
                     KeyValueVo::getKey, KeyValueVo::getValue);
             res.forEach(p -> {
                 p.setBookingCount(map.getOrDefault(p.getDeskId(), 0L));
+            });
+        }
+        if (Objects.equals(Boolean.TRUE, storeDesk.getQueryLastBooking()) && CollectionUtils.isNotEmpty(res)) {
+            Map<Long, DeskBooking> map = ArrayUtil.toMap(deskBookingService.queryLastDeskBooking(res.stream().map(StoreDesk::getDeskId).collect(Collectors.toList())),
+                    DeskBooking::getDeskId, p -> p);
+            res.forEach(p -> {
+                p.setBooking(map.get(p.getDeskId()));
             });
         }
         return res;
@@ -250,6 +257,10 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         DeskQueryResVo resVo = new DeskQueryResVo();
         BeanUtils.copyProperties(desk, resVo);
         setTimer(deskId, resVo);
+        List<DeskBooking> bookingList = deskBookingService.queryLastDeskBooking(Collections.singletonList(deskId));
+        if (CollectionUtils.isNotEmpty(bookingList)) {
+            resVo.setBooking(bookingList.get(0));
+        }
 
         Order order = orderService.selectRelationOrderWithDetail(deskId);
         if (Objects.isNull(order)) {
@@ -262,8 +273,6 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
                         .eq(OrderDeskScore::getOrderId, order.getOrderId())
                         .orderByDesc(OrderDeskScore::getStartTime).last(" limit 1")))
                 .orElse(resVo.getScore()));
-
-
         return resVo;
 
     }
@@ -394,7 +403,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     }
 
     @Override
-    public Boolean addScore(AddDeskScoreReqVo reqVo ) {
+    public Boolean addScore(AddDeskScoreReqVo reqVo) {
 
         StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getDeskNum, reqVo.getDeskNum())
                 .eq(StoreDesk::getStoreId, reqVo.getStoreId()).last(" limit 1"));
@@ -408,7 +417,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     }
 
     @Override
-    public Boolean addCapture(DeskCaptureReqVo reqVo ) {
+    public Boolean addCapture(DeskCaptureReqVo reqVo) {
         StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query().eq(StoreDesk::getDeskNum, reqVo.getDeskNum())
                 .eq(StoreDesk::getStoreId, reqVo.getStoreId()).last(" limit 1"));
         if (Objects.isNull(desk)) {
@@ -417,8 +426,9 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         if (Objects.isNull(desk.getCurrentOrderId())) {
             return false;
         }
-        return deskImageService.addCapture( reqVo.getStoreId(), desk.getDeskId(),   desk.getCurrentOrderId(),desk.getCameraDeviceId());
+        return deskImageService.addCapture(reqVo.getStoreId(), desk.getDeskId(), desk.getCurrentOrderId(), desk.getCameraDeviceId());
     }
+
     private StoreDesk queryEnableDesk(Long deskId, Long storeId) {
         StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query()
                 .eq(StoreDesk::getDeskId, deskId).eq(StoreDesk::getStoreId, storeId));

@@ -239,6 +239,13 @@ export default {
     this.getDeskList();
   },
   methods: {
+    fillTitle(item) {
+      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) === item.deskType)?.label ?? '';
+      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value) === item.placeType)?.label ?? '';
+      item.shortTitle = `${item.deskName}(${item.deskNum})`
+      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`;
+      return item;
+    },
     onBackClick(){
       this.showList=true;
       this.getDeskList();
@@ -258,7 +265,7 @@ export default {
         bookingStart: `${this.deskQueryParams.day} ${this.deskQueryParams.startTime}`,
         bookingEnd: `${this.deskQueryParams.day} ${this.deskQueryParams.endTime}`
       }).then(res => {
-        this.deskList = res.data;
+        this.deskList = (res.data||[]).map(p=>this.fillTitle(p));
       }).finally(() => this.loading = false)
     },
     onRemoveBookingClick(day, idx) {

@@ -553,8 +553,10 @@ export default {
       }
       this.loading = true;
       let params = JSON.parse(JSON.stringify(this.queryParams));
+      params.queryLastBooking = true
       if (params.status === 1) {
         params.statusList = [1, 2]
+
       }
       listDesk(params).then(response => {
         this.deskList = (response.data || []).map(p => {
@@ -732,14 +734,28 @@ export default {
             this.$message.success("当前台桌已结束开台,但是还有其他台桌在计费,如要结账，请结开另一个台桌。")
             return
           }
-          this.onSwitchLight(this.currentDesk.deskNum,false)
+          this.onSwitchLight(this.currentDesk.deskNum, false)
           this.navToOrder(res.data.orderId);
         })
     },
     onStartDeskClick() {
       let deskTitle = this.currentDesk.title;
-      MessageBox.confirm(`${deskTitle}确认开台?`, '确认', {
+      let msgList = [];
+      const h = this.$createElement;
+      if (this.currentDesk.booking) {
+        let startTime = this.$time(this.currentDesk.booking.startTime).format('MM-DD HH:mm');
+        let endTime = this.$time(this.currentDesk.booking.endTime).format('MM-DD HH:mm');
+        msgList.push(h('p', null, `${deskTitle}有预约：`))
+        msgList.push(h('p', {style:{color:'#1890ff'}}, `${startTime}到${endTime},`))
+        msgList.push(h('p', null, "确认开台?"))
+      } else {
+        msgList = [`${deskTitle}确认开台?`]
+      }
+
+      this.$confirm('确认', {
+        title:"确认",
         confirmButtonText: '确认',
+        message: h('div', null, msgList),
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {

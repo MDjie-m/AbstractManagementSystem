@@ -232,8 +232,9 @@ import {listAllTutor} from "@/api/cashier/tutor";
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import {CalcTimeStatus, ChooseType, DeskStatus, TutorWorkStatus} from "@/views/cashier/components/constant";
 import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
-import {listDesk} from "@/api/cashier/desk";
+import {listDesk, startCalcFee} from "@/api/cashier/desk";
 import {orderBuy} from "@/api/cashier/order";
+import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
 
 export default {
   computed: {
@@ -353,6 +354,32 @@ export default {
 
     },
     addTutorToOrder(item) {
+      let deskTitle = item.realName;
+      let msgList = [];
+      const h = this.$createElement;
+      if (item.booking) {
+        let startTime = this.$time(item.booking.startTime).format('MM-DD HH:mm');
+        let endTime = this.$time(item.booking.endTime).format('MM-DD HH:mm');
+        msgList.push(h('p', null, `${deskTitle}有预约：`))
+
+        msgList.push(h('p', {style:{color:'#1890ff'}}, `${startTime}到${endTime},`))
+        msgList.push(h('p', null, "确认添加?"))
+      }
+      if(msgList.length){
+        this.$confirm('确认', {
+          title:"确认",
+          confirmButtonText: '确认',
+          message: h('div', null, msgList),
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.innerAddTutor(item);
+        })
+        return
+      }
+      this.innerAddTutor(item);
+    },
+    innerAddTutor(item){
       let findItem = this.order.orderTutorTimes.find(p => p.tutorId === item.storeTutorId && p.status !== CalcTimeStatus.Stop);
       if (findItem) {
         return this.$modal.msgWarning("教练已在订单内，无需重复添加")
@@ -421,7 +448,7 @@ export default {
       })
     },
     getTutorList() {
-      listAllTutor({workStatus: this.tutorStatus}).then(res => {
+      listAllTutor({workStatus: this.tutorStatus,queryLastBooking:true}).then(res => {
         this.tutorList = res.data
       })
     },
