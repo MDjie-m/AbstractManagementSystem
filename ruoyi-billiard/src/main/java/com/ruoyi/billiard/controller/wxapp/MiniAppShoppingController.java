@@ -3,8 +3,10 @@ package com.ruoyi.billiard.controller.wxapp;
 import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.service.IGoodsCategoryService;
 import com.ruoyi.billiard.service.IGoodsService;
+import com.ruoyi.billiard.service.IOrderService;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.core.domain.ResultVo;
+import com.ruoyi.common.utils.AssertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +32,9 @@ public class MiniAppShoppingController {
 
     @Autowired
     private IStoreDeskService storeDeskService;
+
+    @Autowired
+    private IOrderService orderService;
 
     /**
      * 根据门店id查询门店台桌使用情况列表
@@ -78,10 +83,13 @@ public class MiniAppShoppingController {
     @PostMapping("/upload-order")
     public ResultVo uploadOrder(@RequestBody Order order) {
         Long orderId = order.getOrderId();
-        List<OrderGoods> orderGoods = order.getOrderGoods().stream().map(p -> {
-            p.setOrderId(orderId);
-            return p;
-        }).collect(Collectors.toList());
+        Order newOrder = orderService.selectOrderByOrderId(orderId);
+        AssertUtil.notNullOrEmpty(newOrder, "订单不存在");
+        if (newOrder.getStatus() == 2 || newOrder.getStatus() == 3) {
+            AssertUtil.isTrue(newOrder.getStatus() != 2, "订单已结算");
+            AssertUtil.isTrue(newOrder.getStatus() != 3, "订单已作废");
+        }
+        orderService.addOrderGoods(orderId, order.getStoreId(), newOrder.getMemberId(), order.getOrderGoods());
         return ResultVo.success();
     }
 }
