@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -61,5 +62,8 @@ public interface ITutorPunchInService  extends IService<TutorPunchIn>
      */
     public int deleteTutorPunchInByTutorPunchInId(Long tutorPunchInId);
 
-    Boolean punchIn(Long storeId , Long tutorId, LocalDateTime scheduleTime, LocalDateTime time);
+    Boolean punchIn(Long storeId , Long tutorId, LocalDate  scheduleTime, LocalDateTime time);
+
+
+    List<TutorPunchIn> queryCurrentPunchIn(Long storeId, LocalDate scheduleDay );
 }

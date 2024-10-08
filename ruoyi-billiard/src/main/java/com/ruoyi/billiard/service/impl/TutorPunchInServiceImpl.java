@@ -1,12 +1,15 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import com.ruoyi.billiard.service.IStoreScheduleService;
 import com.ruoyi.common.core.domain.model.Tuple;
 import com.ruoyi.common.core.domain.model.Tuple3;
+import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
@@ -32,6 +35,7 @@ public class TutorPunchInServiceImpl extends ServiceImpl<TutorPunchInMapper, Tut
 
     @Resource
     private IStoreScheduleService storeScheduleService;
+
 
     /**
      * 查询教练打卡
@@ -104,13 +108,18 @@ public class TutorPunchInServiceImpl extends ServiceImpl<TutorPunchInMapper, Tut
     }
 
     @Override
-    public Boolean punchIn(Long storeId, Long tutorId, LocalDateTime scheduleTime, LocalDateTime time) {
+    public Boolean punchIn(Long storeId, Long tutorId, LocalDate scheduleTime, LocalDateTime time) {
+        Tuple3<LocalDateTime, LocalDateTime, LocalDateTime> scheduleLocalTime = storeScheduleService.getDayScheduleLocalTime(storeId, DateUtils.toDate(scheduleTime));
+        AssertUtil.isTrue(time.isAfter(scheduleLocalTime.getValue()), "当前班次还未到开始时间");
+        AssertUtil.isTrue(time.isBefore(scheduleLocalTime.getValue1()), "打卡时间已超出当前班次结束时间");
+
         TutorPunchIn punchIn = baseMapper.selectOne(baseMapper.query().eq(TutorPunchIn::getStoreId, storeId)
                 .eq(TutorPunchIn::getTutorId, tutorId)
-                .eq(TutorPunchIn::getScheduleDay, scheduleTime.toLocalDate()));
+
+                .eq(TutorPunchIn::getScheduleDay, scheduleTime));
         if (Objects.isNull(punchIn)) {
             punchIn = new TutorPunchIn();
-            punchIn.setScheduleDay(scheduleTime.toLocalDate());
+            punchIn.setScheduleDay(scheduleTime);
             punchIn.setTutorPunchInId(IdUtils.singleNextId());
             punchIn.setTutorId(tutorId);
             punchIn.setStoreId(storeId);
@@ -125,5 +134,10 @@ public class TutorPunchInServiceImpl extends ServiceImpl<TutorPunchInMapper, Tut
         }
         baseMapper.updateById(punchIn);
         return Boolean.TRUE;
+    }
+
+    @Override
+    public List<TutorPunchIn> queryCurrentPunchIn(Long storeId, LocalDate scheduleDay) {
+        return baseMapper.selectList(baseMapper.query().eq(TutorPunchIn::getScheduleDay, scheduleDay).eq(TutorPunchIn::getStoreId, storeId));
     }
 }

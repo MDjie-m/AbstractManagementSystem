@@ -3,6 +3,11 @@ package com.ruoyi.billiard.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 import com.ruoyi.common.utils.StringUtils;
 import lombok.*;
@@ -10,6 +15,7 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -37,9 +43,10 @@ public class StoreTutor extends MyBaseEntity {
     @TableField("tutor_num")
     private Integer tutorNum;
 
-    public String getTitle(){
-        return StringUtils.format("{}({})",realName,tutorNum);
+    public String getTitle() {
+        return StringUtils.format("{}({})", realName, tutorNum);
     }
+
     /**
      * 员工id
      */
@@ -152,4 +159,10 @@ public class StoreTutor extends MyBaseEntity {
     private Boolean queryLastBooking;
     @TableField(exist = false)
     private TutorBooking booking;
+
+    @TableField(exist = false)
+    private LocalDate scheduleDay;
+
+    @TableField(exist = false)
+    private TutorPunchIn punchIn;
 }

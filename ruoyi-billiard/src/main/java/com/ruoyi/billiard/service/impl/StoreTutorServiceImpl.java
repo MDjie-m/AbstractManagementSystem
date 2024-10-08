@@ -107,6 +107,14 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
                 p.setBooking(map.get(p.getStoreTutorId()));
             });
         }
+        if (Objects.nonNull(storeTutor.getScheduleDay()) && CollectionUtils.isNotEmpty(users)) {
+            Map<Long, TutorPunchIn> map = ArrayUtil.toMap(tutorPunchInService.queryCurrentPunchIn(storeTutor.getStoreId(),
+                            storeTutor.getScheduleDay()),
+                    TutorPunchIn::getTutorId, p -> p);
+            users.forEach(p -> {
+                p.setPunchIn(map.get(p.getStoreTutorId()));
+            });
+        }
         return users;
     }
 

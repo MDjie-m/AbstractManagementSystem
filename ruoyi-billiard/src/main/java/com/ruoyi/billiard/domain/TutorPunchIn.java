@@ -39,24 +39,23 @@ public class TutorPunchIn extends MyBaseEntity
     private Long storeId;
 
     /** 开始时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
 
     @TableField("start_time")
     private LocalDateTime startTime;
 
     /** 结束时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
 
     @TableField("end_time")
     private LocalDateTime endTime;
 
     /** 哪一天 */
-
-
     //班次
     @TableField("schedule_day")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate scheduleDay;
 
 

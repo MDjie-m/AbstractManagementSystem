@@ -7,6 +7,13 @@ export function listAllTutor(params) {
     params: params
   })
 }
+export function tutorPunchIn(params) {
+  return request({
+    url: `/cashier/tutor/${params.tutorId}/punch-in`,
+    method: 'post',
+    params: params
+  })
+}
 
 export function getTutorBookingMap(params) {
   return request({

@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,13 +35,12 @@ public class CashierTutorController extends BaseController {
     /***
      * 打卡
      * @param tutorId id
-     * @param scheduleTime  班次时间
-     * @param time time 打卡时间
+     * @param scheduleDay  班次时间
      * @return bool
      */
-    @GetMapping("/{tutorId}/punch-in")
-    public ResultVo<Boolean> punchIn(@PathVariable Long tutorId,@RequestParam LocalDateTime scheduleTime, @RequestParam LocalDateTime time) {
+    @PostMapping("/{tutorId}/punch-in")
+    public ResultVo<Boolean> punchIn(@PathVariable Long tutorId, @RequestParam LocalDate scheduleDay ) {
 
-        return ResultVo.success(tutorPunchInService.punchIn(getStoreIdWithThrow(),tutorId,scheduleTime,time));
+        return ResultVo.success(tutorPunchInService.punchIn(getStoreIdWithThrow(),tutorId,scheduleDay,LocalDateTime.now()));
     }
 }

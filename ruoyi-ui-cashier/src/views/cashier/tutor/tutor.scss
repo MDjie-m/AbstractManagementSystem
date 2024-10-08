@@ -1,0 +1,162 @@
+@import '@/assets/styles/variables.scss';
+
+
+.el-tag {
+  border-radius: 20px;
+  padding: 0px 10px;
+  min-width: 80px;
+  text-align: center;
+  letter-spacing: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.tag-container {
+  display: flex;
+  gap: 10px;
+}
+
+.tag-container:first-child {
+
+  margin-bottom: 10px;
+}
+
+.buy-box {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.buy-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+
+}
+
+.desk-status {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.desk-status-0 {
+  background-color: #8a8a8a;
+}
+
+.desk-status-1, .desk-status-2 {
+  background-color: #26dc51;
+}
+
+.desk-status-3 {
+  background-color: #E88E37;
+}
+
+.some-item {
+  display: flex;
+  min-width: 140px;
+  min-height: 130px;
+
+  margin: 10px;
+  font-size: 14px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.8);
+  border-radius: 10px;
+  position: relative;
+
+  .item-img {
+    height: 50px;
+    width: 50px;
+    &.big{
+      height: 100px;
+      width: 100px;
+    }
+    &.mid{
+      height: 80px;
+      width: 80px;
+    }
+  }
+
+  .item-btn {
+    font-size: 20px;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    color: $light-blue;
+
+    :hover {
+
+    }
+  }
+
+  .item-status {
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    border-radius: 50%;
+    background-color: #8a8a8a;
+    right: 10px;
+    top: 10px;
+  }
+
+  .item-status-0 {
+    background-color: #8a8a8a;
+  }
+
+  .item-status-1, .item-status-2 {
+    background-color: #26dc51;
+  }
+
+  .item-status-3 {
+    background-color: #E88E37;
+  }
+
+  &:hover, &.selected {
+    background-color: rgba(47, 46, 46, 0.1);;
+
+    cursor: pointer;
+  }
+
+  div + div {
+    margin-top: 10px;
+  }
+  &-punch-in{
+    display: flex;
+    color: #1890ff;
+    align-items: center;
+  }
+  &-name {
+    font-weight: bold;
+    font-size: 15px;
+    white-space: nowrap;
+    max-width: 150px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &>div{
+      white-space: nowrap;
+      max-width: 150px;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &-num {
+    font-weight: bold;
+    font-size: 15px;
+  }
+
+  &-price {
+    font-size: 12px;
+  }
+  &-svg {
+      margin-top: 10px;
+    color: #1890ff!important;
+    fill: #1890ff!important;
+  }
+}

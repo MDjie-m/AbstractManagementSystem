@@ -731,8 +731,8 @@ create table t_tutor_punch_in
     tutor_punch_in_id bigint                                not null comment 'ID'
         primary key,
     store_id       bigint                                not null comment '门店',
-    start_time     time                                    null comment '开始时间',
-    end_time       time                                    null comment '结束时间',
+    start_time     datetime                                    null comment '开始时间',
+    end_time       datetime                                    null comment '结束时间',
     schedule_day  date not null  comment '班次',
     tutor_id       bigint                                not null comment '助教',
     create_by      varchar(64) default ''                null comment '创建者',
@@ -747,4 +747,4 @@ create table t_tutor_punch_in
     comment '教练打卡';
 
 create unique index t_tutor_punch_in_store_id_index
-    on t_tutor_punch_in (store_id, tutor_id,  day);
+    on t_tutor_punch_in (store_id, tutor_id,  schedule_day);
