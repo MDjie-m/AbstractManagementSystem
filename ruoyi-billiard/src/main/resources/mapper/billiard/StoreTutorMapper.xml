@@ -26,6 +26,9 @@
             <if test="storeId != null ">and a.store_id = #{storeId}</if>
             <if test="workStatus != null ">and a.work_status = #{workStatus}</if>
 
+            <if test="keyword != null and  keyword != ''">and ( real_name like concat('%', #{keyword}, '%') or   tutor_num like concat('%', #{keyword}, '%') )</if>
+
+
         </where>
     </select>
 

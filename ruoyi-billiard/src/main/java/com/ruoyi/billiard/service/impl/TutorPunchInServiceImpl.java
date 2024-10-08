@@ -2,10 +2,12 @@ package com.ruoyi.billiard.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.ruoyi.billiard.service.IStoreScheduleService;
 import com.ruoyi.common.core.domain.model.Tuple;
 import com.ruoyi.common.core.domain.model.Tuple3;
@@ -117,6 +119,7 @@ public class TutorPunchInServiceImpl extends ServiceImpl<TutorPunchInMapper, Tut
                 .eq(TutorPunchIn::getTutorId, tutorId)
 
                 .eq(TutorPunchIn::getScheduleDay, scheduleTime));
+        LocalDateTime last = null;
         if (Objects.isNull(punchIn)) {
             punchIn = new TutorPunchIn();
             punchIn.setScheduleDay(scheduleTime);
@@ -127,11 +130,16 @@ public class TutorPunchInServiceImpl extends ServiceImpl<TutorPunchInMapper, Tut
             baseMapper.insert(punchIn);
         }
         SecurityUtils.fillUpdateUser(punchIn);
+        boolean isStart=false;
         if (Objects.isNull(punchIn.getStartTime())) {
             punchIn.setStartTime(time);
+            isStart=true;
+            last = time;
         } else {
+            last = punchIn.getEndTime();
             punchIn.setEndTime(time);
         }
+        AssertUtil.isTrue(isStart||Math.abs(LocalDateTimeUtil.between(last, time, ChronoUnit.MINUTES)) > 15L, "两次打卡时间间隔应不小于15分钟");
         baseMapper.updateById(punchIn);
         return Boolean.TRUE;
     }

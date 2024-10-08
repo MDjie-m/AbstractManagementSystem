@@ -25,6 +25,8 @@ public class TutorWorkPlanDetail extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+
+
     /** ID */
 
     @TableId("tutor_work_plan_detail_id")
@@ -70,6 +72,11 @@ public class TutorWorkPlanDetail extends MyBaseEntity
 
 
 
+    @TableField("tutor_id")
+    private Long tutorId;
+
+    @TableField("store_id")
+    private Long storeId;
 
 
 

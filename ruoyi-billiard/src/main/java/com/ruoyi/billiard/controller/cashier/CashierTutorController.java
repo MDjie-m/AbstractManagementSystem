@@ -29,6 +29,7 @@ public class CashierTutorController extends BaseController {
     @GetMapping("list")
     public ResultVo<List<StoreTutor>> list(StoreTutor tutor) {
         tutor.setStoreId(getStoreIdWithThrow());
+        tutor.setStatus(EmployeeStatus.WORK.getValue());
         return ResultVo.success(storeTutorService.selectStoreTutorList(tutor));
     }
 

@@ -43,15 +43,15 @@
 }
 
 .desk-status-0 {
-  background-color: #8a8a8a;
+  background-color: $gray;
 }
 
 .desk-status-1, .desk-status-2 {
-  background-color: #26dc51;
+  background-color: $green;
 }
 
 .desk-status-3 {
-  background-color: #E88E37;
+  background-color: $yellow;
 }
 
 .some-item {
@@ -71,11 +71,13 @@
   .item-img {
     height: 50px;
     width: 50px;
-    &.big{
+
+    &.big {
       height: 100px;
       width: 100px;
     }
-    &.mid{
+
+    &.mid {
       height: 80px;
       width: 80px;
     }
@@ -108,7 +110,7 @@
   }
 
   .item-status-1, .item-status-2 {
-    background-color: #26dc51;
+    background-color: $green;
   }
 
   .item-status-3 {
@@ -124,11 +126,17 @@
   div + div {
     margin-top: 10px;
   }
-  &-punch-in{
+  &-btn-box {
     display: flex;
-    color: #1890ff;
+    justify-content: flex-end;
     align-items: center;
   }
+  &-punch-in {
+    display: flex;
+    color: $light-blue;
+    align-items: center;
+  }
+
   &-name {
     font-weight: bold;
     font-size: 15px;
@@ -137,7 +145,8 @@
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
-    &>div{
+
+    & > div {
       white-space: nowrap;
       max-width: 150px;
       display: block;
@@ -154,9 +163,15 @@
   &-price {
     font-size: 12px;
   }
+
   &-svg {
-      margin-top: 10px;
-    color: #1890ff!important;
-    fill: #1890ff!important;
+    color: $gray !important;
+    font-size: 30px;
+    &.punch-in {
+      color: $light-blue!important;
+    }
+    &.success {
+      color: $green!important;
+    }
   }
 }

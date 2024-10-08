@@ -41,7 +41,7 @@ public class StoreTutor extends MyBaseEntity {
     private String storeName;
 
     @TableField("tutor_num")
-    private Integer tutorNum;
+    private String tutorNum;
 
     public String getTitle() {
         return StringUtils.format("{}({})", realName, tutorNum);
@@ -162,6 +162,9 @@ public class StoreTutor extends MyBaseEntity {
 
     @TableField(exist = false)
     private LocalDate scheduleDay;
+
+    @TableField(exist = false)
+    private String keyword;
 
     @TableField(exist = false)
     private TutorPunchIn punchIn;

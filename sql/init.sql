@@ -527,6 +527,7 @@ create table t_tutor_work_plan
     update_time        timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     create_by_id       bigint                                null comment '创建者Id',
     update_by_id       bigint                                null comment '更新者Id',
+    count int not null  comment '排课数量',
 
 
     remark             nvarchar(500)                         null comment '备注'
@@ -540,6 +541,8 @@ create table t_tutor_work_plan_detail
     tutor_work_plan_detail_id bigint                                not null comment 'ID'
         primary key,
     tutor_work_plan_id        bigint                                not null comment '计划id',
+    tutor_id           bigint                                not null comment '教练id',
+    store_id           bigint                                not null comment '门店',
     plan_type                 int                                   not null comment '计划类型：4=陪练,5=教学',
     start_time                datetime                              not null comment '开始时间',
     end_time                  datetime                              not null comment '结束时间',

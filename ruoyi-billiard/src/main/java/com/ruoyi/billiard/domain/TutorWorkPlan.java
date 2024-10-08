@@ -36,6 +36,9 @@ public class TutorWorkPlan extends MyBaseEntity
     @TableField("tutor_id")
     private Long tutorId;
 
+    @TableField("store_id")
+    private Long storeId;
+
     /** 日期 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "日期", width = 30, dateFormat = "yyyy-MM-dd")
@@ -57,7 +60,8 @@ public class TutorWorkPlan extends MyBaseEntity
 
 
 
-
+    @TableField("count")
+    private Integer count;
 
 
 
