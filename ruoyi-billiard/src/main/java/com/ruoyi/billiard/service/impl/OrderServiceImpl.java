@@ -930,7 +930,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
             p.calcAndSetFee(disCountValue);
             SecurityUtils.fillUpdateUser(p, baseEntity);
-            stockService.updateStock(storeId, p.getGoodsId(), 1L, StockChangeType.OUT, "商品售卖", p.getOrderId());
+            stockService.updateStock(storeId, p.getGoodsId(), Long.valueOf(p.getNum()), StockChangeType.OUT, "商品售卖", p.getOrderId());
             orderGoodsMapper.insert(p);
         }
     }
