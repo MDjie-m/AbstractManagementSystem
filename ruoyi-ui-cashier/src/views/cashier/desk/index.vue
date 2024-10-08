@@ -147,6 +147,9 @@
                 <div class="desk-item-name"> {{ desk.deskName }}</div>
                 <div class="desk-item-num"> {{ desk.deskNum }}</div>
                 <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
+                <div class="desk-item-booking" v-if="desk.booking">
+                  {{desk.booking.startTime |timeFormat("HH:mm")}} ~{{desk.booking.endTime |timeFormat("HH:mm")}}
+                </div>
               </div>
 
 

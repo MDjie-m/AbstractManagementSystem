@@ -83,7 +83,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
      */
     @Override
     public StoreDesk selectStoreDeskByDeskId(Long deskId) {
-        return storeDeskMapper.selectById(deskId);
+        return storeDeskMapper.selectStoreDeskByDeskId(deskId);
     }
 
     /**
@@ -96,11 +96,17 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     public List<StoreDesk> selectStoreDeskList(StoreDesk storeDesk) {
         QueryWrapper<StoreDesk> queryWrapper = this.storeDeskMapper.normalQuery();
         queryWrapper.likeRight(StringUtils.isNotEmpty(storeDesk.getDeskName()), "a.store_name", storeDesk.getStoreName())
-                .eq(Objects.nonNull(storeDesk.getStatus()), "a.status", storeDesk.getStatus())
-                .eq(Objects.nonNull(storeDesk.getPlaceType()), "a.place_type", storeDesk.getPlaceType())
+
                 .eq(Objects.nonNull(storeDesk.getDeskNum()), "a.desk_num", storeDesk.getDeskNum())
                 .eq(Objects.nonNull(storeDesk.getStoreId()), "a.store_id", storeDesk.getStoreId())
                 .in(CollectionUtils.isNotEmpty(storeDesk.getStatusList()), "a.status", storeDesk.getStatusList());
+        if (Objects.nonNull(storeDesk.getStatus())) {
+            queryWrapper.eq("a.status", storeDesk.getStatus().getValue());
+        }
+        if (Objects.nonNull(storeDesk.getPlaceType())) {
+            queryWrapper.eq("a.place_type", storeDesk.getPlaceType().getValue());
+        }
+
 //        if (O
 //        bjects.nonNull(storeDesk.getBookingStart())
 //                && Objects.nonNull(storeDesk.getBookingEnd())) {
@@ -235,7 +241,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
 
     private Integer getStatusCount(Long storeId, DeskStatus status) {
         return Math.toIntExact(storeDeskMapper.selectCount(storeDeskMapper.query().eq(StoreDesk::getStoreId, storeId)
-                .eq(StoreDesk::getEnable, Boolean.TRUE).eq(StoreDesk::getStatus, status.getValue())));
+                .eq(StoreDesk::getEnable, Boolean.TRUE).eq(StoreDesk::getStatus, status)));
     }
 
     private Integer getTutorStatusCount(Long storeId, TutorWorkStatus status) {
@@ -300,13 +306,13 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     public DeskQueryResVo startCalcFee(Long deskId, Long storeId) {
         StoreDesk desk = queryEnableDesk(deskId, storeId);
 
-        AssertUtil.isTrue(Objects.equals(desk.getStatus(), DeskStatus.WAIT.getValue()), "当前不是空闲状态，无法开台。");
+        AssertUtil.isTrue(Objects.equals(desk.getStatus(), DeskStatus.WAIT), "当前不是空闲状态，无法开台。");
         AssertUtil.isNullOrEmpty(storeDeskMapper.deskInUse(deskId), "台桌正在计费中");
         AssertUtil.isNullOrEmpty(desk.getCurrentOrderId(), "台桌正在计费中");
 
         Order order = orderService.createOrder(deskId);
         desk.setCurrentOrderId(order.getOrderId());
-        desk.setStatus(DeskStatus.BUSY.getValue());
+        desk.setStatus(DeskStatus.BUSY);
         this.storeDeskMapper.updateById(desk);
 
         DeskQueryResVo resVo = new DeskQueryResVo();
@@ -321,13 +327,13 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     public DeskQueryResVo pauseCalcFee(Long deskId, Long storeId) {
         StoreDesk desk = queryEnableDesk(deskId, storeId);
 
-        AssertUtil.isTrue(Objects.equals(desk.getStatus(), DeskStatus.BUSY.getValue()), "当前不是计费状态，无法暂停。");
+        AssertUtil.isTrue(Objects.equals(desk.getStatus(), DeskStatus.BUSY), "当前不是计费状态，无法暂停。");
         AssertUtil.notNullOrEmpty(storeDeskMapper.deskInUse(deskId), "台桌没有在计费,无法暂停");
 
         DeskQueryResVo resVo = new DeskQueryResVo();
         resVo.setLastActiveOrder(orderService.pauseCalcFee(deskId));
 
-        desk.setStatus(DeskStatus.PAUSE.getValue());
+        desk.setStatus(DeskStatus.PAUSE);
         this.storeDeskMapper.updateById(desk);
         BeanUtils.copyProperties(desk, resVo);
         resVo.calcFees();
@@ -339,13 +345,13 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     public DeskQueryResVo resumeDesk(Long deskId, Long storeId) {
         StoreDesk desk = queryEnableDesk(deskId, storeId);
 
-        AssertUtil.isTrue(Objects.equals(desk.getStatus(), DeskStatus.PAUSE.getValue()), "当前不是暂停状态，无法恢复计费。");
+        AssertUtil.isTrue(Objects.equals(desk.getStatus(), DeskStatus.PAUSE), "当前不是暂停状态，无法恢复计费。");
         AssertUtil.isNullOrEmpty(storeDeskMapper.deskInUse(deskId), "台桌正在计费,无法恢复计费.");
 
         DeskQueryResVo resVo = new DeskQueryResVo();
         resVo.setLastActiveOrder(orderService.resumeCalcFee(deskId));
 
-        desk.setStatus(DeskStatus.BUSY.getValue());
+        desk.setStatus(DeskStatus.BUSY);
         this.storeDeskMapper.updateById(desk);
         BeanUtils.copyProperties(desk, resVo);
         resVo.calcFees();
@@ -358,12 +364,12 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     public DeskQueryResVo swapToNewDesk(Long deskId, Long storeId, Long orderId, Long newDeskId) {
         StoreDesk currentDesk = queryEnableDesk(deskId, storeId);
 
-        AssertUtil.isTrue(Objects.equals(currentDesk.getStatus(), DeskStatus.BUSY.getValue()), "当前台桌不是计费状态，无法换台。");
+        AssertUtil.isTrue(Objects.equals(currentDesk.getStatus(), DeskStatus.BUSY), "当前台桌不是计费状态，无法换台。");
         AssertUtil.notNullOrEmpty(storeDeskMapper.deskInUse(deskId), "当前台桌正不是计费中,无法更换。");
 
         StoreDesk newDesk = queryEnableDesk(newDeskId, storeId);
 
-        AssertUtil.isTrue(Objects.equals(newDesk.getStatus(), DeskStatus.WAIT.getValue())
+        AssertUtil.isTrue(Objects.equals(newDesk.getStatus(), DeskStatus.WAIT)
                 && Objects.isNull(newDesk.getCurrentOrderId()), "目标台桌不是空闲状态，无法更换,请更换到其他台桌。");
 
         AssertUtil.isNullOrEmpty(storeDeskMapper.deskInUse(newDeskId), "目标台桌不是空闲状态，无法更换,请更换到其他台桌。");
@@ -382,12 +388,12 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     public DeskQueryResVo mergeToNewDesk(Long deskId, Long storeId, Long orderId, Long newDeskId) {
         StoreDesk currentDesk = queryEnableDesk(deskId, storeId);
 
-        AssertUtil.isTrue(Objects.equals(currentDesk.getStatus(), DeskStatus.BUSY.getValue()), "当前台桌不是计费状态，无法并台");
+        AssertUtil.isTrue(Objects.equals(currentDesk.getStatus(), DeskStatus.BUSY), "当前台桌不是计费状态，无法并台");
         AssertUtil.notNullOrEmpty(storeDeskMapper.deskInUse(deskId), "当前台桌正不是计费中,无法并台。");
 
         StoreDesk newDesk = queryEnableDesk(newDeskId, storeId);
 
-        AssertUtil.isTrue(Objects.equals(newDesk.getStatus(), DeskStatus.BUSY.getValue())
+        AssertUtil.isTrue(Objects.equals(newDesk.getStatus(), DeskStatus.BUSY)
                 && Objects.nonNull(newDesk.getCurrentOrderId()), "目标台桌不是计费中，无法并台,请更换到其他台桌。");
 
         AssertUtil.notNullOrEmpty(storeDeskMapper.deskInUse(newDeskId), "目标台桌不是计费中，无法并台,请更换到其他台桌。");
@@ -435,7 +441,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
 
         AssertUtil.notNullOrEmpty(desk, "非法参数");
         AssertUtil.isTrue(Objects.equals(desk.getEnable(), Boolean.TRUE), "台桌未启用");
-        desk.setPrice(deskPriceService.queryPriceByType(storeId, desk.getDeskType()));
+        desk.setPrice(deskPriceService.queryPriceByType(storeId, desk.getDeskType().getValue()));
         return desk;
     }
 

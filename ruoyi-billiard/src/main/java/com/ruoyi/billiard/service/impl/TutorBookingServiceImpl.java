@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -152,5 +153,16 @@ public class TutorBookingServiceImpl extends ServiceImpl<TutorBookingMapper,Tuto
             return Lists.newArrayList();
         }
         return baseMapper.selectList(baseMapper.query().in(TutorBooking::getTutorBookingId, bookingIds));
+    }
+
+    @Override
+    public void checkBookingExpire(Integer timeMinutes) {
+        //超时自动过期
+        baseMapper.update(null, baseMapper.updateWrapper().
+                le(TutorBooking::getStartTime, DateUtils.toDate(LocalDateTime.now().minusMinutes(timeMinutes)))
+                .eq(TutorBooking::getStatus, BookingStatus.ACTIVE)
+                .ge(TutorBooking::getStartTime, DateUtils.toDate(LocalDateTime.now().minusHours(24)))
+                .set(TutorBooking::getStatus, BookingStatus.EXPIRE)
+                .set(BaseEntity::getRemark, "系统检测超时，自动过期"));
     }
 }

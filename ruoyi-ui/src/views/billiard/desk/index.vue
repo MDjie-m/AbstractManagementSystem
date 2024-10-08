@@ -114,8 +114,6 @@
               </template>
             </el-table-column>
             <el-table-column label="备注" align="center" prop="remark"/>
-            <el-table-column label="灯光设备" align="center" prop="lightName"/>
-            <el-table-column label="摄像头设备" align="center" prop="cameraName"/>
             <el-table-column label="创建/更新" align="center" prop="updateTime" width="200">
               <template slot-scope="scope">
                 <div>
@@ -219,34 +217,7 @@
               </el-col>
 
             </el-row>
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="摄像头" prop="cameraDeviceId">
-                  <el-select v-model="form.cameraDeviceId" class="with100">
-                    <el-option
-                      v-for="dict in cameraList"
-                      :key="dict.deviceId"
-                      :disabled="dict.deskId&&  dict.deskId!==form.deskId"
-                      :label=" dict.deskId&& dict.deskId!==form.deskId?`${dict.deviceName}(已绑定)`:dict.deviceName"
-                      :value="dict.deviceId"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="灯光" prop="cameraDeviceId">
-                  <el-select v-model="form.lightDeviceId" type="textarea" placeholder="请输入内容" class="with100">
-                    <el-option
-                      v-for="dict in lightList"
-                      :key="dict.deviceId"
-                      :disabled="dict.deskId&&  dict.deskId!==form.deskId"
-                      :label="dict.deskId&&  dict.deskId!==form.deskId?`${dict.deviceName}(已绑定)`:dict.deviceName"
-                      :value="dict.deviceId"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
+
             <el-row>
               <el-col :span="12" >
                 <el-form-item label="是否启用" prop="enable" >

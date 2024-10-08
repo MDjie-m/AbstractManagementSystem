@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.domain.MyBaseEntity;
+import com.ruoyi.common.utils.StringUtils;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
@@ -33,6 +34,12 @@ public class StoreTutor extends MyBaseEntity {
     @TableField(exist = false)
     private String storeName;
 
+    @TableField("tutor_num")
+    private Integer tutorNum;
+
+    public String getTitle(){
+        return StringUtils.format("{}({})",realName,tutorNum);
+    }
     /**
      * 员工id
      */

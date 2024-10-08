@@ -121,7 +121,8 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         AssertUtil.isTrue(!storeTutorMapper.exists(storeTutorMapper.query().eq(StoreTutor::getMobile, storeTutor.getMobile())
                 .eq(StoreTutor::getStoreId, storeTutor.getStoreId())), "手机号已被其他用户使用");
 
-
+        AssertUtil.isTrue(!storeTutorMapper.exists(storeTutorMapper.query().eq(StoreTutor::getTutorNum, storeTutor.getTutorNum())
+                .eq(StoreTutor::getStoreId, storeTutor.getStoreId())), "编号重复");
         //手机号重复加字母
         List<String> nameSubList = Lists.newArrayList();
         nameSubList.add("");
@@ -165,6 +166,10 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         AssertUtil.isTrue(!storeTutorMapper.exists(storeTutorMapper.query().eq(StoreTutor::getMobile, storeTutor.getMobile())
                         .eq(StoreTutor::getStoreId, storeTutor.getStoreId()).notIn(StoreTutor::getStoreTutorId, storeTutor.getStoreTutorId())),
                 "手机号已被其他用户使用");
+
+        AssertUtil.isTrue(!storeTutorMapper.exists(storeTutorMapper.query().eq(StoreTutor::getTutorNum, storeTutor.getTutorNum())
+                        .eq(StoreTutor::getStoreId, storeTutor.getStoreId()).notIn(StoreTutor::getStoreTutorId, storeTutor.getStoreTutorId())),
+                "编号重复");
 
         SysUser user = sysUserService.selectUserById(storeTutor.getLoginUserId());
         user.setSex(storeTutor.getSex());

@@ -73,4 +73,6 @@ public interface ITutorBookingService  extends IService<TutorBooking>
     Boolean verifyBooking(Long bookingId, Long storeId);
 
     List<TutorBooking> queryLastBooking(List<Long> tutorIds);
+
+    void checkBookingExpire(Integer time);
 }

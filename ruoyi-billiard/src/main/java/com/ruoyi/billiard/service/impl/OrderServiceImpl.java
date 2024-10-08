@@ -223,7 +223,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         SecurityUtils.fillCreateUser(order);
         orderMapper.insert(order);
 
-        BigDecimal price = priceService.queryPriceByType(desk.getStoreId(), desk.getDeskType());
+        BigDecimal price = priceService.queryPriceByType(desk.getStoreId(), desk.getDeskType().getValue());
         AssertUtil.notNullOrEmpty(price, "未设置价格无法开台.请联系管理员设置价格.");
 
         Date startTime = DateUtils.removeSeconds(new Date());
@@ -269,7 +269,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderDeskScoreService.stopRecordScore(oldDeskId, orderId);
         //插入新的计费
 
-        BigDecimal price = priceService.queryPriceByType(newDesk.getStoreId(), newDesk.getDeskType());
+        BigDecimal price = priceService.queryPriceByType(newDesk.getStoreId(), newDesk.getDeskType().getValue());
         AssertUtil.notNullOrEmpty(price, "目标台桌类型未设置价格无法换台.请联系管理员设置价格.");
         OrderDeskTime deskTime = OrderDeskTime.builder()
                 .deskId(newDeskId)
@@ -291,10 +291,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 });
 
         //更新状态
-        oldDesk.setStatus(DeskStatus.WAIT.getValue());
+        oldDesk.setStatus(DeskStatus.WAIT );
         oldDesk.setCurrentOrderId(null);
 
-        newDesk.setStatus(DeskStatus.BUSY.getValue());
+        newDesk.setStatus(DeskStatus.BUSY );
         newDesk.setCurrentOrderId(orderId);
 
         SecurityUtils.fillUpdateUser(oldDesk);
@@ -495,7 +495,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 order.getStatus()), OrderErrorMsg.ORDER_NOT_CHARGING_OR_STOP);
 
         List<StoreDesk> desks = storeDeskMapper.queryBusyDeskByOrderId(orderId);
-        desks.forEach(p -> p.setStatus(CalcTimeStatus.STOP.getValue()));
+        desks.forEach(p -> p.setStatus(DeskStatus.STOP ));
 
         order = stopAllCalcTimes(orderId, true, false);
 
@@ -598,7 +598,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     private void clearDeskOrder(Long orderId) {
-        storeDeskMapper.update(null, storeDeskMapper.edit().lambda().set(StoreDesk::getStatus, DeskStatus.WAIT.getValue())
+        storeDeskMapper.update(null, storeDeskMapper.edit().lambda().set(StoreDesk::getStatus, DeskStatus.WAIT)
                 .set(StoreDesk::getCurrentOrderId, null)
                 .eq(StoreDesk::getCurrentOrderId, orderId));
     }
@@ -659,7 +659,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderDeskTimeMapper.updateById(time);
             if (needUpdateDesk && Objects.equals(oldStatus, CalcTimeStatus.BUSY.getValue())) {
                 storeDeskMapper.update(null, storeDeskMapper.edit().lambda()
-                        .set(StoreDesk::getStatus, DeskStatus.WAIT.getValue())
+                        .set(StoreDesk::getStatus, DeskStatus.WAIT )
                         .set(StoreDesk::getCurrentOrderId, null)
                         .eq(StoreDesk::getDeskId, time.getDeskId())
                         .eq(StoreDesk::getCurrentOrderId, time.getOrderId()));
@@ -856,7 +856,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
                 AssertUtil.notNullOrEmpty(desk, "台桌不存在");
                 AssertUtil.equal(desk.getStoreId(), order.getStoreId(), "台桌id不合法");
-                AssertUtil.equal(desk.getStatus(), DeskStatus.BUSY.getValue(), "台桌不是计费状态,无法添加");
+                AssertUtil.equal(desk.getStatus(), DeskStatus.BUSY , "台桌不是计费状态,无法添加");
                 AssertUtil.equal(desk.getCurrentOrderId(), order.getOrderId(), StringUtils.format("{}({})不在同一个订单", desk.getDeskName(), desk.getDeskNum()));
 
                 StoreTutor tutor = storeTutorMapper.selectById(p.getTutorId());

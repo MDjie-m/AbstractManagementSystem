@@ -7,6 +7,9 @@ import java.util.List;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.billiard.enums.DeskStatus;
+import com.ruoyi.billiard.enums.DeskType;
+import com.ruoyi.billiard.enums.PlaceType;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
@@ -48,13 +51,13 @@ public class StoreDesk extends MyBaseEntity
     @Excel(name = "球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌")
 
     @TableField("desk_type")
-    private Integer deskType;
+    private DeskType deskType;
 
     /** 位置：0=大厅，1=包厢 */
     @Excel(name = "位置：0=大厅，1=包厢")
 
     @TableField("place_type")
-    private Integer placeType;
+    private PlaceType placeType;
 
     /** 门店 */
     @Excel(name = "门店")
@@ -72,7 +75,7 @@ public class StoreDesk extends MyBaseEntity
     @Excel(name = "状态：0=空闲，1=计时中， 3=已停止")
 
     @TableField("status")
-    private Integer status;
+    private DeskStatus status;
 
     @TableField("current_order_id")
     private Long currentOrderId;

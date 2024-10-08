@@ -45,9 +45,9 @@ public class MiniAppShoppingController {
         storeDesk.setStoreId(storeId);
         List<StoreDesk> storeDesks = storeDeskService.selectStoreDeskList(storeDesk);
         storeDesks.forEach(desk -> {
-            Integer status = desk.getStatus();
+            DeskStatus status = desk.getStatus();
             // 计费中查询是否有订单
-            if (!Objects.equals(status, DeskStatus.WAIT.getValue())) {
+            if (!Objects.equals(status, DeskStatus.WAIT )) {
                 System.out.println("desk = " + desk);
             }
         });

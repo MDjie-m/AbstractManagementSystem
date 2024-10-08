@@ -44,7 +44,7 @@
 
 .desk-item {
   display: flex;
-  width: 110px;
+  width: 130px;
   min-height: 130px;
   margin: 10px;
   font-size: 14px;
@@ -80,8 +80,11 @@
   &:hover, &.selected {
     background-color: $light-blue;
     border: 1px solid $light-blue;
-    color: #FFFFFF;
+    color: #FFFFFF!important;
     cursor: pointer;
+    *{
+      color: #FFFFFF!important;
+    }
   }
 
   div + div {
@@ -92,7 +95,9 @@
     font-weight: bold;
     font-size: 15px;
   }
-
+  &-booking{
+    color: #1890ff;
+  }
   &-num {
     font-weight: bold;
     font-size: 15px;

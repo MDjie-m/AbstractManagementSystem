@@ -56,6 +56,7 @@
     <el-table v-loading="loading" :data="tutorList" @selection-change="handleSelectionChange">
       <el-table-column label="ID" align="center" prop="storeTutorId" />
       <el-table-column label="姓名" align="center" prop="realName" />
+      <el-table-column label="编号" align="center" prop="tutorNum" />
       <el-table-column label="头像" align="center" prop="userImg" width="100">
         <template slot-scope="scope">
           <image-preview :src="scope.row.userImg" :width="50" :height="50"/>
@@ -187,9 +188,8 @@
 
         <el-row >
           <el-col :span="12">
-            <el-form-item label="门店"  prop="storeId">
-              <el-tag>       {{ storeInfo?storeInfo.storeName:''}}</el-tag>
-
+            <el-form-item label="编号" prop="tutorNum">
+              <el-input v-model="form.tutorNum" placeholder="请输入编号" maxlength="3"/>
             </el-form-item>
           </el-col>
 
@@ -366,6 +366,19 @@ export default {
             }, trigger: 'blur'
           },
         ],
+        tutorNum:[
+          { required: true, message: "编号不能为空", trigger: "blur" },
+          {
+            validator: function(rule, value, callback) {
+              if (!/^[1-9]\d{0,2}$/.test(value)) {
+                callback(new Error('只能输入三位数字'))
+              } else {
+                //校验通过
+                callback()
+              }
+            }, trigger: 'blur'
+          }
+        ],
         userImg: [
           { required: true, message: "头像不能为空", trigger: "blur" }
         ],
@@ -448,6 +461,7 @@ export default {
         updateTime: null,
         loginUserId: null,
         remark: null,
+        tutorNum:null,
         storeId: null
       };
       this.resetForm("form");

@@ -188,9 +188,13 @@
             <div class="item-status" :class="`item-status-${item.workStatus}`"></div>
             <image-preview class="item-img big" :src="item.userImg"/>
             <div>
-              <div class="some-item-name"> {{ item.realName }}</div>
+              <div class="some-item-name"> {{ item.title }}</div>
               <div class="some-item-price"> {{ item.price }}元/分钟</div>
+              <div class="some-item-booking" v-if="item.booking">
+                  {{item.booking.startTime |timeFormat("HH:mm")}} ~{{item.booking.endTime |timeFormat("HH:mm")}}
+              </div>
             </div>
+
             <i class="el-icon-plus item-btn" v-if="isCreating &&item.workStatus===TutorWorkStatus.Wait"
                @click="addTutorToOrder(item)"></i>
 
