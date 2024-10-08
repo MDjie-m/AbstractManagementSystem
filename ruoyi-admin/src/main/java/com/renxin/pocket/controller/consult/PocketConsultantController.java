@@ -16,7 +16,10 @@ import com.renxin.psychology.service.IPsyConsultColumnService;
 import com.renxin.psychology.service.IPsyConsultServeConfigService;
 import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.vo.PsyConsultColumnVO;
+import com.renxin.system.domain.SysNotice;
+import com.renxin.system.service.ISysNoticeService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -45,6 +48,10 @@ public class PocketConsultantController extends BaseController
 
     @Resource
     private IPsyConsultServeConfigService psyConsultServeConfigService;
+
+    @Autowired
+    private ISysNoticeService noticeService;
+
 
     /**
      * 查询心理咨询师列表
@@ -144,8 +151,8 @@ public class PocketConsultantController extends BaseController
     @RateLimiter
     public AjaxResult getAgreement()
     {
-
-        return AjaxResult.success("succ",agreement);
+        SysNotice sysNotice=noticeService.selectNoticeById(3L);
+        return AjaxResult.success("succ",sysNotice.getNoticeContent());
     }
 
 }
