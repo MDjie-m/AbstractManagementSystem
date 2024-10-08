@@ -186,6 +186,16 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         return teamList;
     }
 
+/*    @Resource
+    private WxMsgUtils wxMsgUtils;*/
+/*        NoticeMessage noticeMessage = new NoticeMessage();
+        noticeMessage.setMessageType("WECHAT");
+        noticeMessage.setNoticeMethod(NoticeMethodEnum.WECHAT);
+        noticeMessage.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
+        noticeMessage.setTitle("111");
+        noticeMessage.setContent("222");
+        wxMsgUtils.send(noticeMessage);*/
+
     /**
      * 新增团队督导(组织)
      * 

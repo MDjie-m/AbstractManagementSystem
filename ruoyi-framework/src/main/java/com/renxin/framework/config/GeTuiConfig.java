@@ -18,15 +18,15 @@
 //@Component
 //public class GeTuiConfig {
 //
-//    @Value("${uniPush.AppID}")
+//    @Value("${geTui.AppID}")
 //    private String appID;
-//    @Value("${uniPush.AppKey}")
+//    @Value("${geTui.AppKey}")
 //    private String appKey;
-//    @Value("${uniPush.AppSecret}")
+//    @Value("${geTui.AppSecret}")
 //    private String appSecret;
-//    @Value("${uniPush.MasterSecret}")
+//    @Value("${geTui.MasterSecret}")
 //    private String masterSecret;
-//    @Value("${uniPush.Host}")
+//    @Value("${geTui.Host}")
 //    private String host;
 //
 //    /**

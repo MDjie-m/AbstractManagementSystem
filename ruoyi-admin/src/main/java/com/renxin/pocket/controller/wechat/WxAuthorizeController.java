@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -79,11 +80,14 @@ public class WxAuthorizeController {
      */
     @ApiOperation(value = "微信登录接口")
     @PostMapping("/wechatProgram/login")
-    public AjaxResult login(@RequestBody Map<String, String> params) throws UnsupportedEncodingException {
+    public AjaxResult login(@RequestBody Map<String, Object> reqMap) throws UnsupportedEncodingException {
+        log.info("/wechatProgram/login入参:" + reqMap);
+        
+        HashMap<String, String> params = new HashMap<>();
         params.put("appid", appid);
         params.put("secret", secret);
         params.put("grant_type", grant_type);
-        //params.put("js_code", "");
+        params.put("js_code", (String)reqMap.get("js_code"));
         String openId = "";
         
         // 构建URL
@@ -95,6 +99,7 @@ public class WxAuthorizeController {
         String urlString = urlJoiner.toString();
 
         //发起请求
+        log.info("微信登录urlString : " + urlString);
         JSONObject jsData = restTemplateUtil.getData(urlString);
         if (ObjectUtils.isNotEmpty(jsData.get("session_key"))){
             openId = jsData.get("openid").toString();

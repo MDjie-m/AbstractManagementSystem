@@ -125,24 +125,13 @@
             <artifactId>cos-sts_api</artifactId>
             <version>3.1.1</version>
         </dependency>
-       
         
-      <!--  <dependency>
-            <groupId>com.tencent.cloud</groupId>
-            <artifactId>cos-sts-java</artifactId>
-            <version>3.2.1</version> &lt;!&ndash; 使用最新版本 &ndash;&gt;
-        </dependency>-->
-    <!--    <dependency>
-            <groupId>com.qcloud</groupId>
-            <artifactId>sts-api</artifactId>
-            <version>3.2.1</version> &lt;!&ndash; 或者最新版本 &ndash;&gt;
-        </dependency>-->
-       
-      <!--  <dependency>
-            <groupId>com.qcloud</groupId>
-            <artifactId>java-sts-sdk</artifactId>
-            <version>3.0.0</version> &lt;!&ndash; 使用最新版本 &ndash;&gt;
-        </dependency>-->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        
 
     </dependencies>
 

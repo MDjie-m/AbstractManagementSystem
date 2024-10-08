@@ -125,7 +125,18 @@ wechat:
   secret: d8e628314926cc5e1563c6a39f95573d
   grant_type: authorization_code
   jsCodeLoginUrl: https://api.weixin.qq.com/sns/jscode2session
+  alarm_template_id: 111
+  common_template_id: xxkVfDGqKTt5CojlhLoFsAj2QjFRL7apYbWd3reEuOk
+  token_uri: https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=
+  user_list_uri: https://api.weixin.qq.com/cgi-bin/user/get?access_token=
+  send_message_uri: https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=
 
+geTui:
+  AppID: 3EOn07T0bU6LXV4W3xloK5
+  AppKey: nBZKhxJHeE7NCMRhc94Yl7
+  AppSecret: xL1iFuPy7Z58l9fPnTK5F8
+  MasterSecret: 111
+  Host: 111
 
 # token配置
 token:
