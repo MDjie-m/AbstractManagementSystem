@@ -922,7 +922,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             AssertUtil.notNullOrEmpty(goods, "商品不存在");
             AssertUtil.equal(goods.getStoreId(), storeId, "商品id不合法");
             AssertUtil.isTrue(goods.getSell(), "商品未上架");
-            p.setPrice(p.getPrice());
+            p.setPrice(goods.getPrice());
             p.setGoodsName(goods.getGoodsName());
             p.setOrderId(orderId);
             p.setOrderDetailId(IdUtils.singleNextId());
