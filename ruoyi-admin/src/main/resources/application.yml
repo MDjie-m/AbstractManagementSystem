@@ -269,3 +269,8 @@ wxchat:
 #    appId: wxb973c5107125a24b
 #    appSecret: ad2c1dd102b31f8d6ac942882180ae71
 #    redirectUri: http://192.168.137.1:8081/pages/logincallback
+
+uniPush:
+  AppID：3EOn07T0bU6LXV4W3xloK5
+  AppKey：nBZKhxJHeE7NCMRhc94Yl7
+  AppSecret：xL1iFuPy7Z58l9fPnTK5F8

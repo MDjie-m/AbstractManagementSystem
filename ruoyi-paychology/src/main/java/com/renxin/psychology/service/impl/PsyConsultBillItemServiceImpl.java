@@ -73,6 +73,8 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
     public void batchAdd() {
         //自动完成已到时的任务
         mapper.finishOrderItem();
+        //刷新主订单状态
+        mapper.finishConsultOrder();
         //来访者订单核销
         List<PsyConsultBillItem> orderItems = mapper.getOrderItems();
         if (CollectionUtils.isNotEmpty(orderItems)) {
@@ -95,8 +97,10 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
             allotToAcct(orderItems);
         }
         
-        //自动完成已到时的任务
+        //自动完成已到时的任务 (个督,个人体验)
         mapper.finishSchedule();
+        //刷新主订单状态
+        mapper.finishConsultantOrder();
         //咨询师订单核销
         List<PsyConsultBillItem> consultantOrderItemList = mapper.getConsultantOrderItems();
         if (CollectionUtils.isNotEmpty(consultantOrderItemList)) {

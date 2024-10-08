@@ -143,6 +143,7 @@ public class PsyGaugeQuestionsResultServiceImpl implements IPsyGaugeQuestionsRes
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String commitResult(GaugeCommitResultDTO gaugeCommitResultDTO ,Long userId) {
         //获取订单分值
         HashMap<String, Object> paramMap = new HashMap<>();

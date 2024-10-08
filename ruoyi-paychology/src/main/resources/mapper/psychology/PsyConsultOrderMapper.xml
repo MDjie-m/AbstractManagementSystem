@@ -125,7 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             COALESCE(a.serve_id, '') AS serve_id,
             COALESCE(a.serve_name, '') AS serve_name,
             COALESCE(a.user_id, '') AS user_id,
-            COALESCE(a.nick_name, '') AS nick_name,
+            COALESCE(b.name, '') AS nick_name,
             COALESCE(a.create_time, '') AS maxOrderDate,
             COALESCE(b.phone, '') AS phone,
             COALESCE(b.sex, '') AS userSex,

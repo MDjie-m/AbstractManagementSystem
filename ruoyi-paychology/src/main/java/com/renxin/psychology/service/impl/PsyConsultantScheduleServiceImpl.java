@@ -15,13 +15,11 @@ import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.domain.PsyConsultantOrder;
 import com.renxin.psychology.domain.PsyConsultantSchedule;
+import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.mapper.PsyConsultantScheduleMapper;
 import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.request.PsyWorkTimeRes;
-import com.renxin.psychology.service.IPsyConsultServeService;
-import com.renxin.psychology.service.IPsyConsultWorkService;
-import com.renxin.psychology.service.IPsyConsultantOrderService;
-import com.renxin.psychology.service.IPsyConsultantScheduleService;
+import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +48,9 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
 
     @Resource
     private IPsyConsultServeService consultServeService;
+    
+    @Resource
+    private IPsyConsultantTeamSupervisionService teamService;
 
     /**
      * 查询咨询师排班任务
@@ -98,15 +99,36 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     
 
     /**
-     * 修改咨询师排班任务
+     * 确认团督的预约讲课已完成
      * @param psyConsultantSchedule 咨询师排班任务
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updatePsyConsultantSchedule(PsyConsultantSchedule req)
     {
         req.setUpdateTime(DateUtils.getNowDate());
-        return psyConsultantScheduleMapper.updatePsyConsultantSchedule(req);
+        //修改团督预约的状态
+        int i = psyConsultantScheduleMapper.updatePsyConsultantSchedule(req);
+        
+        //刷新团督cache
+        PsyConsultantSchedule schedule = selectPsyConsultantScheduleById(req.getId());
+        teamService.refreshCacheById(schedule.getTeamId());
+
+        // 若该团督的所有课程都已完成, 则
+        // 将团督状态置为[已结束]
+        // 将consultant_order中, 申请加入该团督的订单, 也都置为[已完成]
+        PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(schedule.getTeamId());
+        if (ObjectUtils.isEmpty(team)){
+            throw new ServiceException("未查询到相关团督");
+        }
+        if (team.getSurplusNum() <= 0){
+            team.setStatus(2);//已结束
+            teamService.updatePsyConsultantTeamSupervision(team);
+            teamService.refreshCacheById(schedule.getTeamId());
+        }
+
+        return i;
     }
 
     /**
@@ -194,10 +216,10 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         psyConsultantScheduleMapper.insertPsyConsultantScheduleBatch(consultantScheduleList);
         
         //若订单的[剩余次数]被用完, 则修改订单状态
-        if (surplusNum == consultantScheduleList.size()){
+        /*if (surplusNum == consultantScheduleList.size()){
             order.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_FINISHED);//已完成
             consultantOrderService.updatePsyConsultantOrder(order);
-        }
+        }*/
         
     }
     
