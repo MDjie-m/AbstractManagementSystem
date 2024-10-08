@@ -1,9 +1,6 @@
 package com.ruoyi.billiard.controller.wxapp;
 
-import com.ruoyi.billiard.domain.Goods;
-import com.ruoyi.billiard.domain.GoodsCategory;
-import com.ruoyi.billiard.domain.StoreDesk;
-import com.ruoyi.billiard.enums.DeskStatus;
+import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.service.IGoodsCategoryService;
 import com.ruoyi.billiard.service.IGoodsService;
 import com.ruoyi.billiard.service.IStoreDeskService;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author: zhoukeu
@@ -44,14 +42,10 @@ public class MiniAppShoppingController {
         StoreDesk storeDesk = new StoreDesk();
         storeDesk.setStoreId(storeId);
         List<StoreDesk> storeDesks = storeDeskService.selectStoreDeskList(storeDesk);
-        storeDesks.forEach(desk -> {
-            DeskStatus status = desk.getStatus();
-            // 计费中查询是否有订单
-            if (!Objects.equals(status, DeskStatus.WAIT )) {
-                System.out.println("desk = " + desk);
-            }
-        });
-        return ResultVo.success(storeDesks);
+        List<StoreDesk> desks = storeDesks.stream()
+                .filter(p -> Objects.nonNull(p.getCurrentOrderId()))
+                .collect(Collectors.toList());
+        return ResultVo.success(desks);
     }
 
     /**
@@ -73,6 +67,7 @@ public class MiniAppShoppingController {
     @PreAuthorize("@ss.hasPermi('miniapp:shopping:list')")
     @PostMapping("/goods-list")
     public ResultVo<List<Goods>> getGoodsList(@RequestBody Goods goods) {
+        goods.setSell(Boolean.TRUE);
         return ResultVo.success(goodsService.selectGoodsList(goods));
     }
 
@@ -81,7 +76,12 @@ public class MiniAppShoppingController {
      */
     @PreAuthorize("@ss.hasPermi('miniapp:shopping:list')")
     @PostMapping("/upload-order")
-    public ResultVo uploadOrder(@RequestBody Goods goods) {
+    public ResultVo uploadOrder(@RequestBody Order order) {
+        Long orderId = order.getOrderId();
+        List<OrderGoods> orderGoods = order.getOrderGoods().stream().map(p -> {
+            p.setOrderId(orderId);
+            return p;
+        }).collect(Collectors.toList());
         return ResultVo.success();
     }
 }

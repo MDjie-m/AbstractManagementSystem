@@ -913,7 +913,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return order.getOrderId();
     }
 
-    private  void addOrderGoods(Long orderId, Long storeId,Long memberId,List<OrderGoods> goodsList){
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public  void addOrderGoods(Long orderId, Long storeId,Long memberId,List<OrderGoods> goodsList){
         BigDecimal disCountValue = memberService.getMemberDisCountValue(OrderType.COMMODITY_PURCHASE, memberId);
         MyBaseEntity baseEntity=new MyBaseEntity();
         SecurityUtils.fillUpdateUser(baseEntity);

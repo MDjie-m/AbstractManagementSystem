@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service;
 import java.math.BigDecimal;
 import java.util.List;
 import com.ruoyi.billiard.domain.Order;
+import com.ruoyi.billiard.domain.OrderGoods;
 import com.ruoyi.billiard.domain.OrderRecharge;
 import com.ruoyi.billiard.domain.dto.HomeReportDto;
 import com.ruoyi.billiard.domain.vo.*;
@@ -98,6 +99,9 @@ public interface IOrderService
     Boolean finishOrder(FinishOrderReqVo reqVo);
 
     Long orderShopping(Order reqVo);
+
+    @Transactional(rollbackFor = Exception.class)
+    void addOrderGoods(Long orderId, Long storeId,Long memberId,List<OrderGoods> goodsList);
 
     StopDeskResVo stopDesk(Long orderId, Long storeId, Long deskId);
 
