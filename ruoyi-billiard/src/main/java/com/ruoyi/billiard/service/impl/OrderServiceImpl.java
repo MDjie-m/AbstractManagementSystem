@@ -905,23 +905,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             SecurityUtils.fillCreateUser(order);
             orderMapper.insert(order);
         }
-        BigDecimal disCountValue = memberService.getMemberDisCountValue(OrderType.COMMODITY_PURCHASE, order.getMemberId());
-        for (OrderGoods p : reqVo.getOrderGoods()) {
-            Goods goods = goodsMapper.selectById(p.getGoodsId());
-            AssertUtil.notNullOrEmpty(goods, "商品不存在");
-            AssertUtil.equal(goods.getStoreId(), order.getStoreId(), "商品id不合法");
-            AssertUtil.isTrue(goods.getSell(), "商品未上架");
-            p.setPrice(p.getPrice());
-            p.setGoodsName(goods.getGoodsName());
-            p.setOrderId(order.getOrderId());
-            p.setOrderDetailId(IdUtils.singleNextId());
-            p.setGoods(goods);
-
-            p.calcAndSetFee(disCountValue);
-            SecurityUtils.fillUpdateUser(p, order);
-            stockService.updateStock(reqVo.getStoreId(), p.getGoodsId(), 1L, StockChangeType.OUT, "商品售卖", p.getOrderId());
-            orderGoodsMapper.insert(p);
-        }
+        addOrderGoods(order.getOrderId(), reqVo.getStoreId(), order.getMemberId(),reqVo.getOrderGoods());
         if (Objects.isNull(reqVo.getOrderId())) {
             stopAllCalcTimes(order.getOrderId(), true, false);
         }
@@ -929,6 +913,27 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return order.getOrderId();
     }
 
+    private  void addOrderGoods(Long orderId, Long storeId,Long memberId,List<OrderGoods> goodsList){
+        BigDecimal disCountValue = memberService.getMemberDisCountValue(OrderType.COMMODITY_PURCHASE, memberId);
+        MyBaseEntity baseEntity=new MyBaseEntity();
+        SecurityUtils.fillUpdateUser(baseEntity);
+        for (OrderGoods p : goodsList) {
+            Goods goods = goodsMapper.selectById(p.getGoodsId());
+            AssertUtil.notNullOrEmpty(goods, "商品不存在");
+            AssertUtil.equal(goods.getStoreId(), storeId, "商品id不合法");
+            AssertUtil.isTrue(goods.getSell(), "商品未上架");
+            p.setPrice(p.getPrice());
+            p.setGoodsName(goods.getGoodsName());
+            p.setOrderId(orderId);
+            p.setOrderDetailId(IdUtils.singleNextId());
+            p.setGoods(goods);
+
+            p.calcAndSetFee(disCountValue);
+            SecurityUtils.fillUpdateUser(p, baseEntity);
+            stockService.updateStock(storeId, p.getGoodsId(), 1L, StockChangeType.OUT, "商品售卖", p.getOrderId());
+            orderGoodsMapper.insert(p);
+        }
+    }
     @Override
     @Transactional(rollbackFor = Exception.class)
     public StopDeskResVo stopDesk(Long orderId, Long storeId, Long deskId) {
