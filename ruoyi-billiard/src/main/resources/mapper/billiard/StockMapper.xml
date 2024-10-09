@@ -4,32 +4,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.billiard.mapper.StockMapper">
 
-    <resultMap type="Stock" id="StockResult">
-        <result property="stockId"    column="stock_id"    />
-        <result property="goodsId"    column="goods_id"    />
-        <result property="goodsName"    column="goods_name"    />
-        <result property="storeId"    column="store_id"    />
-        <result property="total"    column="total"    />
-        <result property="totalIn"    column="total_in"    />
-        <result property="totalOut"    column="total_out"    />
-        <result property="lastCheckPointId"    column="last_check_point_id"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="createById"    column="create_by_id"    />
-        <result property="updateById"    column="update_by_id"    />
-        <result property="remark"    column="remark"    />
-        <result property="goodsImg"    column="goods_img"    />
-    </resultMap>
+
 
     <sql id="selectStockVo">
-        select  a.*
-        from t_stock a
+        select  a.*,b.goods_img,b.category_id
+        from t_stock a left join  t_goods b on a.goods_id=b.goods_id
     </sql>
 
-    <select id="selectStockList" parameterType="Stock" resultMap="StockResult">
-        select  a.*,b.goods_img
+    <select id="selectStockList" parameterType="Stock" resultType="Stock">
+        select  a.*,b.goods_img,b.category_id
         from t_stock a left join  t_goods b on a.goods_id=b.goods_id
         <where>
             <if test="goodsId != null "> and  a.goods_id = #{goodsId}</if>
@@ -42,69 +25,12 @@
         order by stock_id desc
     </select>
 
-    <select id="selectStockByStockId" parameterType="Long" resultMap="StockResult">
+    <select id="selectStockByStockId" parameterType="Long" resultType="Stock">
         <include refid="selectStockVo"/>
         where stock_id = #{stockId}
     </select>
 
-    <insert id="insertStock" parameterType="Stock">
-        insert into t_stock
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="stockId != null">stock_id,</if>
-            <if test="goodsId != null">goods_id,</if>
-            <if test="goodsName != null">goods_name,</if>
-            <if test="storeId != null">store_id,</if>
-            <if test="total != null">total,</if>
-            <if test="totalIn != null">total_in,</if>
-            <if test="totalOut != null">total_out,</if>
-            <if test="lastCheckPointId != null">last_check_point_id,</if>
-            <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="createById != null">create_by_id,</if>
-            <if test="updateById != null">update_by_id,</if>
-            <if test="remark != null">remark,</if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="stockId != null">#{stockId},</if>
-            <if test="goodsId != null">#{goodsId},</if>
-            <if test="goodsName != null">#{goodsName},</if>
-            <if test="storeId != null">#{storeId},</if>
-            <if test="total != null">#{total},</if>
-            <if test="totalIn != null">#{totalIn},</if>
-            <if test="totalOut != null">#{totalOut},</if>
-            <if test="lastCheckPointId != null">#{lastCheckPointId},</if>
-            <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="createById != null">#{createById},</if>
-            <if test="updateById != null">#{updateById},</if>
-            <if test="remark != null">#{remark},</if>
-        </trim>
-    </insert>
 
-    <update id="updateStock" parameterType="Stock">
-        update t_stock
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="goodsId != null">goods_id = #{goodsId},</if>
-            <if test="goodsName != null">goods_name = #{goodsName},</if>
-            <if test="storeId != null">store_id = #{storeId},</if>
-            <if test="total != null">total = #{total},</if>
-            <if test="totalIn != null">total_in = #{totalIn},</if>
-            <if test="totalOut != null">total_out = #{totalOut},</if>
-            <if test="lastCheckPointId != null">last_check_point_id = #{lastCheckPointId},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="createById != null">create_by_id = #{createById},</if>
-            <if test="updateById != null">update_by_id = #{updateById},</if>
-            <if test="remark != null">remark = #{remark},</if>
-        </trim>
-        where stock_id = #{stockId}
-    </update>
 
     <delete id="deleteStockByStockId" parameterType="Long">
         delete from t_stock where stock_id = #{stockId}

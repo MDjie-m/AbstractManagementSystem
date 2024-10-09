@@ -4,9 +4,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.domain.MyBaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import com.ruoyi.common.annotation.Excel;
+
+import java.util.List;
 
 /**
  * 商品分类对象 t_goods_category
@@ -17,6 +18,9 @@ import com.ruoyi.common.annotation.Excel;
 @TableName("t_goods_category")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class GoodsCategory extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -44,6 +48,9 @@ public class GoodsCategory extends MyBaseEntity
     @TableField("sort")
     private Long sort;
 
+
+    @TableField(exist = false)
+    private List<Stock> goodsStocks;
 
 
 

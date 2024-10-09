@@ -1,19 +1,23 @@
 package com.ruoyi.billiard.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ruoyi.billiard.domain.Goods;
+import com.ruoyi.billiard.domain.GoodsCategory;
 import com.ruoyi.billiard.domain.StockLog;
 import com.ruoyi.billiard.enums.StockChangeType;
+import com.ruoyi.billiard.mapper.GoodsCategoryMapper;
 import com.ruoyi.billiard.mapper.GoodsMapper;
 import com.ruoyi.billiard.mapper.StockLogMapper;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.exception.ExceptionCodeEnum;
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.ArrayUtil;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -30,6 +34,8 @@ import com.ruoyi.billiard.service.IStockService;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+
 /**
  * 库存Service业务层处理
  *
@@ -45,6 +51,9 @@ public class StockServiceImpl implements IStockService {
     private GoodsMapper goodsMapper;
     @Autowired
     private StockLogMapper stockLogMapper;
+
+    @Resource
+    private GoodsCategoryMapper goodsCategoryMapper;
 
     /**
      * 查询库存
@@ -78,12 +87,12 @@ public class StockServiceImpl implements IStockService {
     public int insertStock(Stock stock) {
         SecurityUtils.fillCreateUser(stock);
         stock.setStockId(IdUtils.singleNextId());
-        return stockMapper.insertStock(stock);
+        return stockMapper.insert(stock);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public int editStock(StockLog req) {
-        updateStock(req.getStoreId(), req.getGoodsId(), req.getChangeCount(), StockChangeType.valueOf(req.getChangeType()), req.getRemark(),null);
+        updateStock(req.getStoreId(), req.getGoodsId(), req.getChangeCount(), StockChangeType.valueOf(req.getChangeType()), req.getRemark(), null);
         return 1;
     }
 
@@ -131,7 +140,7 @@ public class StockServiceImpl implements IStockService {
             updateWrapper.setSql(StrUtil.format("total = total - {},total_out=total_out+{}", Math.abs(changeCount), Math.abs(changeCount)));
             updateWrapper.last(StrUtil.format(" and (total - {} >= 0)   ", Math.abs(changeCount)));
         }
-        addChangeLog(goodsId, changeCount, changeType, currentCount, stock.getStockId(), remark,orderId);
+        addChangeLog(goodsId, changeCount, changeType, currentCount, stock.getStockId(), remark, orderId);
 
         updateWrapper.lambda()
                 .set(Stock::getUpdateBy, user.getRealName())
@@ -144,7 +153,7 @@ public class StockServiceImpl implements IStockService {
         return true;
     }
 
-    private void addChangeLog(Long goodsId, Long changeCount, StockChangeType changeType, Long currentCount, Long stockId, String remark,Long orderId) {
+    private void addChangeLog(Long goodsId, Long changeCount, StockChangeType changeType, Long currentCount, Long stockId, String remark, Long orderId) {
         StockLog log = StockLog.builder()
                 .beforeCount(currentCount)
                 .currentCount(currentCount + changeCount)
@@ -207,5 +216,16 @@ public class StockServiceImpl implements IStockService {
             msgList.add(0, "其他商品已盘点成功,以下是盘点失败的商品。");
         }
         return msgList;
+    }
+
+    @Override
+    public List<GoodsCategory> getCategoryStock(Stock stock) {
+        Map<Long, List<Stock>> stocks = ArrayUtil.groupBy(stockMapper.selectStockList(stock), Stock::getCategoryId);
+        List<GoodsCategory> categories = goodsCategoryMapper.selectGoodsCategoryList(GoodsCategory.builder().storeId(stock.getStoreId())
+                .build());
+        categories.forEach(p -> {
+            p.setGoodsStocks(stocks.getOrDefault(p.getGoodsCategoryId(), Lists.newArrayList()));
+        });
+        return categories;
     }
 }

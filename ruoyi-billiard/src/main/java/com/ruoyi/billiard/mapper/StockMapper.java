@@ -31,21 +31,8 @@ public interface StockMapper extends MyBaseMapper<Stock> {
      */
     public List<Stock> selectStockList(Stock stock);
 
-    /**
-     * 新增库存
-     *
-     * @param stock 库存
-     * @return 结果
-     */
-    public int insertStock(Stock stock);
 
-    /**
-     * 修改库存
-     *
-     * @param stock 库存
-     * @return 结果
-     */
-    public int updateStock(Stock stock);
+
 
     /**
      * 删除库存

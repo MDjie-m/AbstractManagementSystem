@@ -65,17 +65,17 @@
       </ToolBar>
       <ToolBar title="订单操作" v-if="currentDesk &&currentDesk.lastActiveOrder" v-loading="orderLoading">
         <SvgItem svg-icon="trash" label="作废" :btnAble="true" @click.native="onVoidOrderClick"/>
-        <SvgItem svg-icon="suspend_order" label="挂单" :btnAble="true" @click.native="onSuspendOrderClick"/>
-        <SvgItem svg-icon="stop" label="停止" :btnAble="true" @click.native="onStopOrderClick"/>
+        <SvgItem svg-icon="suspend_order"  class="icon-blue" label="挂单" :btnAble="true" @click.native="onSuspendOrderClick"/>
+        <SvgItem svg-icon="stop" label="停止"   class="icon-blue" :btnAble="true" @click.native="onStopOrderClick"/>
         <SvgItem svg-icon="credit_card" label="去结算" :btnAble="true" @click.native="onNavToSettleOrderClick"/>
       </ToolBar>
       <Dashboard ref="dashboard" v-if="!currentDesk" :storeName="storeInfo?storeInfo.storeName:''"/>
 
       <ToolBar title="预约/排队" v-if="!(currentDesk &&currentDesk.lastActiveOrder)">
-        <SvgItem svg-icon="desk" label="台桌预约" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingDesk)"/>
-        <SvgItem svg-icon="tutor" label="教练预约" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingTutor)"/>
-        <SvgItem svg-icon="qrcode" label="预约核销" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingVerify)"/>
-        <SvgItem svg-icon="line_up" label="排队叫号" @click.native="onOpenLineUpClick(DeskDialogTitle.LineUp)"/>
+        <SvgItem svg-icon="desk" class="icon-blue" label="台桌预约"  @click.native="onOpenLineUpClick(DeskDialogTitle.BookingDesk)"/>
+        <SvgItem svg-icon="tutor"  class="icon-blue"label="教练预约" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingTutor)"/>
+        <SvgItem svg-icon="qrcode"  class="icon-blue"label="预约核销" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingVerify)"/>
+        <SvgItem svg-icon="line_up" class="icon-blue" label="排队叫号" @click.native="onOpenLineUpClick(DeskDialogTitle.LineUp)"/>
       </ToolBar>
     </left-container>
 

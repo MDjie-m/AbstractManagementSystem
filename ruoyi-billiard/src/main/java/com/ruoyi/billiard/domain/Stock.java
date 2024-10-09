@@ -86,6 +86,8 @@ public class Stock extends MyBaseEntity
     private String goodsImg;
 
 
+    @TableField(exist = false)
+    private Long categoryId;
 
 
 

@@ -11,7 +11,7 @@
         <div class="sub-item" v-for="item in menus" :key="item.label+'customMenu'">
           <el-badge :value="item.badge" :hidden="!item.badge" class="icon-tip"
                     type="primary">
-            <svg-icon :icon-class="item.svgIcon"/>
+            <svg-icon :icon-class="item.svgIcon" :class-name="item.className"/>
           </el-badge>
           <div class="sub-item-text">
             {{ item.label }}

@@ -58,15 +58,15 @@ export default {
         };
         let deskCount = res.data.deskCount || [];
         let tutorCount = res.data.tutorCount || [];
-        let deskIcons = ['clock_wait', 'clock_busy', 'clock', 'clock_stop'];
-        let tutorIcons = ['tutor_wait', 'tutor_busy', 'tutor', 'tutor_stop'];
+        let iconClass = ['icon-gray', 'icon-green', 'icon-blue', 'icon-yellow'];
 
          let tempDeskMenus =  this.dict.type.store_desk_status.map(p => {
           let item = deskCount.find(n => n.key === parseInt(p.value))
           return {
             label: p.label,
             badge: item?.value || 0,
-            svgIcon: deskIcons[p.value]
+            svgIcon:'clock',
+            className:iconClass[p.value]
           }
         });
         tempDeskMenus.push(lightItem);
@@ -76,7 +76,8 @@ export default {
           return {
             label: p.label,
             badge: item?.value || 0,
-            svgIcon: tutorIcons[p.value]
+            svgIcon: 'tutor',
+            className:iconClass[p.value]
           }
         });
         this.getOpenLightCount();

@@ -1,6 +1,8 @@
 package com.ruoyi.billiard.service;
 
 import java.util.List;
+
+import com.ruoyi.billiard.domain.GoodsCategory;
 import com.ruoyi.billiard.domain.Stock;
 import com.ruoyi.billiard.domain.StockLog;
 import com.ruoyi.billiard.enums.StockChangeType;
@@ -67,4 +69,6 @@ public interface IStockService
     public int deleteStockByStockId(Long stockId);
 
     List<String> checkStock(List<StockLog> list);
+
+    List<GoodsCategory> getCategoryStock(Stock stock);
 }
