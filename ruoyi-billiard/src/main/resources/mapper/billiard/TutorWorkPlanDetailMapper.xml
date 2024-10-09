@@ -11,13 +11,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectTutorWorkPlanDetailList" parameterType="TutorWorkPlanDetail" resultType="TutorWorkPlanDetail">
         <include refid="selectTutorWorkPlanDetailVo"/>
-        <where>  
+        <where>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="tutorId != null "> and tutor_id = #{tutorId}</if>
             <if test="tutorWorkPlanId != null "> and tutor_work_plan_id = #{tutorWorkPlanId}</if>
             <if test="planType != null "> and plan_type = #{planType}</if>
-            <if test="startTime != null "> and start_time = #{startTime}</if>
-            <if test="endTime != null "> and end_time = #{endTime}</if>
-            <if test="createById != null "> and create_by_id = #{createById}</if>
-            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+            <if test="startTime != null "> and start_time >= #{startTime}</if>
+            <if test="endTime != null "> and end_time <![CDATA[<=]]>  #{endTime}</if>
         </where>
     </select>
     

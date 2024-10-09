@@ -168,4 +168,7 @@ public class StoreTutor extends MyBaseEntity {
 
     @TableField(exist = false)
     private TutorPunchIn punchIn;
+
+    @TableField(exist = false)
+    private Integer planCount=0;
 }

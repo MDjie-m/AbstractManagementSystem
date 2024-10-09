@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
 import  com.ruoyi.billiard.domain.TutorWorkPlan;
+import com.ruoyi.billiard.domain.TutorWorkPlanDetail;
 
 /**
  * 教练排班计划Service接口
@@ -59,4 +60,8 @@ public interface ITutorWorkPlanService  extends IService<TutorWorkPlan>
      * @return 结果
      */
     public int deleteTutorWorkPlanByTutorWorkPlanId(Long tutorWorkPlanId);
+
+    TutorWorkPlanDetail addPlan(TutorWorkPlanDetail plan);
+
+    Boolean removePlan(Long storeId, Long detailId);
 }

@@ -2,12 +2,12 @@
 
   <div class="page-container">
 
-    <left-container @onRefreshClick="onRefreshClick" :hide-store-info="currentItem">
-    </left-container>
+    <!--    <left-container @onRefreshClick="onRefreshClick" :hide-store-info="currentItem">-->
+    <!--    </left-container>-->
     <div class="right-panel">
 
       <div class="  section-container ">
-        <el-form :inline="true"  autocomplete="off">
+        <el-form :inline="true" autocomplete="off">
           <el-form-item label="班次">
             <el-date-picker
               v-model=" queryParams.scheduleDay" @change="getTutorList" value-format="yyyy-MM-dd" format="yyyy-MM-dd"
@@ -16,10 +16,10 @@
             </el-date-picker>
           </el-form-item>
           <el-form-item label="姓名/编号">
-            <el-input maxlength="10"  auto-complete="new-password"
+            <el-input maxlength="10" auto-complete="new-password"
                       v-model=" queryParams.keyword" @change="getTutorList" @keydown.enter.native="getTutorList"
-               :clearable="true"
-              placeholder="输入姓名或者编号">
+                      :clearable="true"
+                      placeholder="输入姓名或者编号">
             </el-input>
           </el-form-item>
         </el-form>
@@ -33,50 +33,64 @@
                    v-for="item in  tutorList">
             <div class="item-status" :class="`item-status-${item.workStatus}`"></div>
             <image-preview class="item-img big" :src="item.userImg"/>
-            <div>
+
               <div class="some-item-name"> {{ item.title }}</div>
-              <div class="some-item-punch-in"  >
-                <span>上班:</span>
-                <span v-if="item.punchIn">{{ item.punchIn.startTime |timeFormat("HH:mm") }}
-                </span>
+              <div class="some-item-punch-in">
+                <div>上班:</div>
+                <div v-if="item.punchIn">{{ item.punchIn.startTime |timeFormat("MM-DD HH:mm") }}
+                </div>
 
               </div>
-              <div class="some-item-punch-in"  >
-                <span>下班:</span>
-                <span v-if="item.punchIn">{{ item.punchIn.endTime |timeFormat("HH:mm") }}
-                </span>
+              <div class="some-item-punch-in">
+                <div>下班:</div>
+                <div v-if="item.punchIn">{{ item.punchIn.endTime |timeFormat("MM-DD HH:mm") }}
+                </div>
 
               </div>
               <div class="some-item-btn-box">
-                <svg-icon class="some-item-svg" :class="{'punch-in':item.punchIn && item.punchIn.startTime ,success:item.punchIn && item.punchIn.startTime && item.punchIn.endTime}" icon-class="punch_in"
+                <svg-icon class="some-item-svg"
+                          :class="{'punch-in':item.punchIn && item.punchIn.startTime ,success:item.punchIn && item.punchIn.startTime && item.punchIn.endTime}"
+                          icon-class="punch_in"
                           @click.stop="onPunchInClick(item,true)"></svg-icon>
-                <svg-icon  class="some-item-svg punch-in"   icon-class="work_plan"
-                          @click.stop="onWorkPlanClick(item,true)"></svg-icon>
+                <el-badge :value="item.planCount" :hidden="!item.planCount" class="icon-tip"
+                          type="primary">
+                  <svg-icon class="some-item-svg punch-in" icon-class="work_plan"
+                            @click.stop="onWorkPlanClick(item,true)"></svg-icon>
+                </el-badge>
+
 
               </div>
 
-            </div>
+
 
 
           </el-card>
         </div>
       </div>
+      <content-wrapper :visible.sync="openNewDialog" title="排课" @onClose="getTutorList">
+        <work-plan :tutor="currentItem" :day="queryParams.scheduleDay"></work-plan>
+      </content-wrapper>
     </div>
+
   </div>
 </template>
 <script>
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
 import {listAllTutor, tutorPunchIn} from "@/api/cashier/tutor";
 import {MessageBox} from "element-ui";
+import ContentWrapper from "@/views/cashier/desk/components/contentWrapper.vue";
+import WorkPlan from "@/views/cashier/tutor/components/workPlan.vue";
 
 export default {
-  components: {LeftContainer},
+  components: {WorkPlan, ContentWrapper, LeftContainer},
   data() {
     return {
-      currentItem:null,
+
+      openNewDialog: false,
+      currentItem: null,
       queryParams: {
         scheduleDay: this.$time().format("YYYY-MM-DD"),
-        keyword:'',
+        keyword: '',
       },
       tutorList: [],
     }
@@ -85,16 +99,20 @@ export default {
     this.getTutorList()
   },
   methods: {
-    onItemClick(item){
-      this.currentItem=item
+    onItemClick(item) {
+      this.currentItem = item
     },
-    onWorkPlanClick(item){
+    onWorkPlanClick(item) {
+      this.currentItem = item;
+      this.openNewDialog = true;
 
     },
     onPunchInClick(item) {
-      this.$modal.confirm("确认打卡").then(()=>{
-        tutorPunchIn({tutorId:item.storeTutorId,
-          scheduleDay:this.queryParams.scheduleDay}).then(res=>{
+      this.$modal.confirm("确认打卡").then(() => {
+        tutorPunchIn({
+          tutorId: item.storeTutorId,
+          scheduleDay: this.queryParams.scheduleDay
+        }).then(res => {
           this.$modal.msgSuccess("打卡成功")
           this.getTutorList()
         })
@@ -102,8 +120,8 @@ export default {
 
     },
     getTutorList() {
-      if(!this.queryParams.scheduleDay){
-        this.queryParams.scheduleDay=this.$time().format("YYYY-MM-DD")
+      if (!this.queryParams.scheduleDay) {
+        this.queryParams.scheduleDay = this.$time().format("YYYY-MM-DD")
       }
       listAllTutor(this.queryParams).then(res => {
         this.tutorList = res.data

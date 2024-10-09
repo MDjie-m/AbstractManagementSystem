@@ -61,3 +61,15 @@ export const BookingStatus = Object.freeze({
   Used: 1,//已使用,
   Expire: 2 //"已过期"
 })
+//计划类型：4=陪练,5=教学
+export const WorkPlanType = Object.freeze({
+
+  Play: {
+    value:4,
+    label:'陪练'
+  },//陪练,
+  Teach: {
+    value:5,
+    label:'教学'
+  }//"教学"
+})

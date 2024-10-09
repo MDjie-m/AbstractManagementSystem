@@ -16,6 +16,7 @@
 </template>
 <script>
 export default {
+  emits:['onClose'],
   props: {
     title: {
       type: String,
@@ -29,6 +30,7 @@ export default {
   methods: {
     onClose() {
       this.$emit("update:visible", false)
+      this.$emit("onClose")
     }
   }
 }

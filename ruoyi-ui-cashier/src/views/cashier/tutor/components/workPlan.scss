@@ -1,0 +1,147 @@
+@import '@/assets/styles/variables.scss';
+.input-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.container-wrapper {
+  display: flex;
+  overflow-y: auto;
+  flex: 1;
+  flex-direction: column;
+}
+
+.cus-calendar {
+  flex: 1;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid #dfe6ec;
+  flex-direction: column;
+  display: flex;
+
+  .day-header-box {
+    display: flex;
+    width: 100%;
+
+    .day-header {
+      display: flex;
+      padding: 10px;
+      position: relative;
+      border-bottom: 1px solid #dfe6ec;
+
+      &:not(:last-child) {
+        border-right: 1px solid #dfe6ec
+      }
+
+      flex: 1;
+
+      & > div:first-child {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+      }
+
+      .btn {
+        position: absolute;
+        display: none;
+        right: 10px;
+        border: 20px;
+        cursor: pointer;
+
+      }
+
+      &:hover {
+        .btn {
+          display: block;
+        }
+      }
+    }
+
+  }
+
+  .day-content-box {
+    display: flex;
+    flex: 1;
+    overflow-y: auto;
+
+  }
+}
+
+.day-item {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-top: 10px;
+
+  &:not(:last-child) {
+    border-right: 1px solid #dfe6ec
+  }
+
+
+  .tag-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+
+    .tag-item {
+      background-color: #18aeff;
+      color: white;
+      border-radius: 5px;
+      font-size: 12px;
+      padding: 5px 5px;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+
+      .el-icon-remove {
+        display: none;
+        margin-left: auto;
+        color: #ff4949;
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      &:hover {
+        .el-icon-remove {
+          display: block;
+        }
+
+      }
+    }
+
+    .tag-item-4 {
+      background-color: $light-blue;
+      color: white;
+      box-shadow: 1px 1px 3px rgba(24, 174, 255, 0.17);
+    }
+
+    .tag-item-5 {
+      background-color: $green;
+      color: white;
+      box-shadow: 1px 1px 3px rgba(48, 176, 143, 0.42);
+    }
+
+    .tag-item-2 {
+      background-color: #dfdfe7;
+      color: #909399;
+    }
+  }
+
+
+}
+
+.btn-container {
+  display: flex;
+  padding: 10px 20px;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row;
+  .el-date-editor{
+    width: 150px;
+  }
+}

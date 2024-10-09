@@ -9,6 +9,7 @@ import com.ruoyi.billiard.mapper.OrderTutorTimeMapper;
 import com.ruoyi.billiard.mapper.StoreUserMapper;
 import com.ruoyi.billiard.service.ITutorBookingService;
 import com.ruoyi.billiard.service.ITutorPunchInService;
+import com.ruoyi.billiard.service.ITutorWorkPlanService;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
@@ -42,6 +43,9 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
 
     @Autowired
     private ITutorPunchInService tutorPunchInService;
+
+    @Autowired
+    private ITutorWorkPlanService tutorWorkPlanService;
 
     @Resource
     private StoreUserMapper storeUserMapper;
@@ -113,6 +117,14 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
                     TutorPunchIn::getTutorId, p -> p);
             users.forEach(p -> {
                 p.setPunchIn(map.get(p.getStoreTutorId()));
+            });
+
+            Map<Long, Integer> planCount = ArrayUtil.toMap(tutorWorkPlanService.selectTutorWorkPlanList(
+                            TutorWorkPlan.builder().storeId(storeTutor.getStoreId())
+                                    .day(storeTutor.getScheduleDay()).build()    ),
+                    TutorWorkPlan::getTutorId, TutorWorkPlan::getCount);
+            users.forEach(p -> {
+                p.setPlanCount(planCount.getOrDefault(p.getStoreTutorId(), 0));
             });
         }
         return users;

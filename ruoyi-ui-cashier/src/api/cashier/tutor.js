@@ -36,6 +36,26 @@ export function addTutorBooking(params) {
     data:params
   })
 }
+export function addTutorPlan(params) {
+  return request({
+    url: `/cashier/tutor/work-plan`,
+    method: 'post',
+    data:params
+  })
+}
+export function getTutorPlanMap(params) {
+  return request({
+    url: `/cashier/tutor/work-plan/map`,
+    method: 'get',
+    params:params
+  })
+}
+export function delTutorPlan(id) {
+  return request({
+    url: `/cashier/tutor/work-plan/${id}`,
+    method: 'delete',
+  })
+}
 export function delTutorBooking(bookingId) {
   return request({
     url: `/cashier/tutor/booking/${bookingId}`,

@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.domain;
 
+import java.time.LocalDate;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -44,7 +45,7 @@ public class TutorWorkPlan extends MyBaseEntity
     @Excel(name = "日期", width = 30, dateFormat = "yyyy-MM-dd")
 
     @TableField("day")
-    private Date day;
+    private LocalDate day;
 
     /** 创建者Id */
     @Excel(name = "创建者Id")
