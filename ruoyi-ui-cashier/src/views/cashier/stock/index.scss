@@ -1,0 +1,35 @@
+@import '@/assets/styles/variables.scss';
+.stock-wrapper{
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+  padding: 0;
+  margin: 10px;
+
+  .left-panel{
+
+    width: 200px;
+    height: 100%;
+    overflow-y: auto;
+    border-right: 1px solid rgba(128, 128, 128, 0.3);
+    >div{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 0;
+      &.selected{
+        background-color: $light-blue;
+        color: #FFFFFF;
+      }
+    }
+  }
+  .right-panel{
+    margin-left: 20px;
+    flex: 1;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+
+  }
+}

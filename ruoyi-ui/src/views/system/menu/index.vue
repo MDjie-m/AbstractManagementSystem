@@ -136,7 +136,7 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="24" v-if="form.parentId===0">
+          <el-col :span="24" >
             <el-form-item label="所属系统" prop="menuCategory">
               <el-radio-group v-model="form.menuCategory"  :disabled="form.menuId &&form.parentId>0">
                 <el-radio :label="0">后台管理</el-radio>

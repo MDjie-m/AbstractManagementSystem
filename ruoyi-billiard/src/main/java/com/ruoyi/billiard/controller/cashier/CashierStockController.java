@@ -29,21 +29,21 @@ public class CashierStockController extends BaseController {
     private IStockService stockService;
 
 
-    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PreAuthorize("@ss.hasPermi('cashier:stock:list')")
     @GetMapping("/list")
     public ResultVo<List<Stock>> getStoreInfo(Stock stock) {
         stock.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(stockService.selectStockList(stock));
     }
 
-    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PreAuthorize("@ss.hasPermi('cashier:stock:list')")
     @GetMapping("/category/list")
     public ResultVo<List<GoodsCategory>> getCategoryStock(Stock stock) {
         stock.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(stockService.getCategoryStock(stock));
     }
 
-    @PreAuthorize("@ss.hasPermi('cashier:desk:edit')")
+    @PreAuthorize("@ss.hasPermi('cashier:stock:edit')")
     @Log(title = "收银库存盘点", businessType = BusinessType.UPDATE)
     @PostMapping("/check")
     public ResultVo<List<String>> editStock(@RequestBody @Validated @Valid List<StockLog> req) {

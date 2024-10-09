@@ -264,7 +264,7 @@
         <if test="icon != null and icon != ''">#{icon},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
-        <if test="menuCategory != null ">menu_category = #{menuCategory},</if>
+        <if test="menuCategory != null "> #{menuCategory},</if>
         sysdate()
         )
     </insert>
