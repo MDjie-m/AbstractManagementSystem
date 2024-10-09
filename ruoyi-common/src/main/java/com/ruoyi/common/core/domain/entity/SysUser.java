@@ -7,8 +7,10 @@ import javax.validation.constraints.*;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
@@ -32,6 +34,8 @@ import com.ruoyi.common.xss.Xss;
 @TableName("sys_user")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class SysUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -121,11 +125,6 @@ public class SysUser extends BaseEntity
 
     @TableField(exist = false)
     private Long storeId;
-
-    public SysUser()
-    {
-
-    }
 
     public SysUser(Long userId)
     {
