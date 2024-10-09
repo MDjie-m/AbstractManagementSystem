@@ -58,4 +58,6 @@ public interface CourCourseLabelMapper
      * @return 结果
      */
     public int deleteCourCourseLabelByIds(Long[] ids);
+    
+    public int deleteCourCourseLabelByCourseIds(Long[] ids);
 }

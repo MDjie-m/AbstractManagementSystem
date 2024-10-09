@@ -15,6 +15,7 @@ import com.renxin.pocket.controller.wechat.utils.WechatProgramUtils;
 import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.psychology.domain.PsyUser;
 import com.renxin.psychology.service.IPsyUserService;
+import com.renxin.system.service.ISysConfigService;
 import com.renxin.wechat.utils.AuthUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +75,9 @@ public class WxAuthorizeController {
     
     @Value("${wechat.jsCodeLoginUrl}")
     private String jsCodeLoginUrl;
+
+    @Resource
+    private ISysConfigService configService;
     
     /**
      * 微信登录接口(新)
@@ -146,6 +150,8 @@ public class WxAuthorizeController {
         //否则先添加用户后使用
             PsyUser newUser = new PsyUser();
                 newUser.setWxOpenid(openId);
+                newUser.setName(configService.selectConfigByKey("pocket.init.name"));
+                newUser.setAvatar(configService.selectConfigByKey("pocket.init.avatar"));
               
             psyUserService.insertPsyUser(newUser);
             BeanUtils.copyProperties(newUser,loginDTO);
@@ -198,7 +204,7 @@ public class WxAuthorizeController {
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
         psyUser.setId(loginUser.getUserId());
-        psyUserService.updatePsyUser(psyUser);
+        //psyUserService.updatePsyUser(psyUser);
         pocketTokenService.refreshToken(loginUser ,null);
         return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS);
     }

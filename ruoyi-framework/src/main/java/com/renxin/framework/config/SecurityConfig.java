@@ -148,6 +148,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public CustomRequestRejectedHandler customRequestRejectedHandler() {
+        return new CustomRequestRejectedHandler();
+    }
+    
     /**
      * 身份认证接口
      */

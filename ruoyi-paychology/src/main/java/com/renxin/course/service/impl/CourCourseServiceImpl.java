@@ -18,6 +18,7 @@ import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.CourSection;
 import com.renxin.course.domain.CourUserCourseSection;
 import com.renxin.course.domain.dto.CourseQueryDTO;
+import com.renxin.course.mapper.CourCourseLabelMapper;
 import com.renxin.course.mapper.CourCourseMapper;
 import com.renxin.course.mapper.CourSectionMapper;
 import com.renxin.course.service.ICourCourseService;
@@ -57,6 +58,9 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
     
     @Autowired
     private CourCourseMapper courCourseMapper;
+    
+    @Autowired
+    private CourCourseLabelMapper courCourseLabelMapper;
 
     @Autowired
     private CourSectionMapper sectionMapper;
@@ -177,7 +181,11 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
     @Override
     public int deleteCourCourseByIds(Long[] ids)
     {
+        //删除课程
         int i = courCourseMapper.deleteCourCourseByIds(ids);
+        //删除课程标签
+        courCourseLabelMapper.deleteCourCourseLabelByCourseIds(ids);
+        
         //批量删除缓存
         redisCache.deleteMultiCache(CacheConstants.COURSE_BY_ID_KEY,Arrays.asList(ids));
         refreshIdList();

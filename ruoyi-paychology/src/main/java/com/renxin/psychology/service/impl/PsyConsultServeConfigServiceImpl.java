@@ -100,10 +100,12 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
         entity.setTypeName(typeName);
     }
 
-    private int checkName(String name, BigDecimal price, Long id) {
+    //校验服务重复
+    private int checkName(String name, Long id) {
         LambdaQueryWrapper<PsyConsultServeConfig> wp = new LambdaQueryWrapper<>();
         wp.eq(PsyConsultServeConfig::getName, name);
-        wp.eq(PsyConsultServeConfig::getPrice, price);
+       // wp.eq(PsyConsultServeConfig::getPrice, price);
+       // wp.eq(PsyConsultServeConfig::getLevel,level);
         wp.ne(id != null, PsyConsultServeConfig::getId, id);
         return psyConsultServeConfigMapper.selectCount(wp);
     }
@@ -129,8 +131,8 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int add(PsyConsultServeConfigVO req) {
-        if (checkName(req.getName(), req.getPrice(), null) > 0) {
-            throw new UtilException("服务已存在");
+        if (checkName(req.getName(),null) > 0) {
+            throw new UtilException("该名称的服务已存在");
         }
         //若为单次[个人督导/个人体验], 查询是否存在该级别的相同服务
         String serviceObject = req.getServiceObject();
@@ -155,8 +157,8 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int update(PsyConsultServeConfigVO req) {
-        if (checkName(req.getName(), req.getPrice(), req.getId()) > 0) {
-            throw new UtilException("服务已存在");
+        if (checkName(req.getName(), req.getId()) > 0) {
+            throw new UtilException("该名称的服务已存在");
         }
         
         //若为单次[个人督导/个人体验], 查询是否存在该级别的相同服务
