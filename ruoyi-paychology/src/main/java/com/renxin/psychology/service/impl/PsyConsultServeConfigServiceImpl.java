@@ -131,9 +131,9 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int add(PsyConsultServeConfigVO req) {
-        if (checkName(req.getName(),null) > 0) {
+       /* if (checkName(req.getName(),null) > 0) {
             throw new UtilException("该名称的服务已存在");
-        }
+        }*/
         //若为单次[个人督导/个人体验], 查询是否存在该级别的相同服务
         String serviceObject = req.getServiceObject();
         Integer type = req.getType();
@@ -157,9 +157,9 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int update(PsyConsultServeConfigVO req) {
-        if (checkName(req.getName(), req.getId()) > 0) {
+       /* if (checkName(req.getName(), req.getId()) > 0) {
             throw new UtilException("该名称的服务已存在");
-        }
+        }*/
         
         //若为单次[个人督导/个人体验], 查询是否存在该级别的相同服务
         String serviceObject = req.getServiceObject();
@@ -177,8 +177,14 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
         }
         
         //req.setServiceObject(ComUtil.listToString(req.getServiceObjectList()));
+        PsyConsultServeConfig oldServerConfig = psyConsultServeConfigMapper.selectById(req.getId());
         int i = psyConsultServeConfigMapper.updateById(BeanUtil.toBean(req, PsyConsultServeConfig.class));
-
+        
+        //若执行了上架操作, 则为该服务自动关联所有条件相符的咨询师
+        if ("1".equals(oldServerConfig.getStatus()) && "0".equals(req.getStatus())){
+            consultService.addAllRelation(req.getId());
+        }
+        
         //刷新关联的咨询师缓存
         consultService.refreshCacheByIdList(getConsultantIdListByConfigId(req.getId()));
         return i;

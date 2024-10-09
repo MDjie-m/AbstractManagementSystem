@@ -139,6 +139,7 @@
       <el-table-column label="售价(元)" align="center" prop="price" />
       <el-table-column label="销量" align="center" prop="sales" />
       <el-table-column label="咨询师级别" align="center" prop="level">
+<!--  todo  会导致控制台报错    -->
         <template slot-scope="scope">
           {{ levelList.find(i => i.value === scope.row.level).label }}
         </template>
@@ -163,7 +164,8 @@
       </el-table-column>
       <el-table-column label="服务状态" align="center" prop="status">
         <template slot-scope="scope">
-          {{scope.row.status === '0' ? '上架' : '下架' }}
+          <el-tag v-if="scope.row.status === '0'" type="success">上架</el-tag>
+          <el-tag v-else type="info">下架</el-tag>
         </template>
       </el-table-column>
       <el-table-column width="180" label="创建时间" align="center" prop="createTime"/>

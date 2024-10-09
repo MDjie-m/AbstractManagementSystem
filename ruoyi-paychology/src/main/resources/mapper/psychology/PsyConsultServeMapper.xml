@@ -5,9 +5,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.renxin.psychology.mapper.PsyConsultServeMapper">
 
     <delete id="deleteAll">
-        update from psy_consult_serve 
-        set del_flag = 0
-        where serve_id is not null;
+        delete from psy_consult_serve 
+        where serve_id is not null
+        <if test="serverConfigId != null and serverConfigId != ''">
+            and serve_id = #{serverConfigId}
+        </if>
     </delete>
 
     <select id="getServeRef" resultType="com.renxin.psychology.vo.PsyConsultServeVO">

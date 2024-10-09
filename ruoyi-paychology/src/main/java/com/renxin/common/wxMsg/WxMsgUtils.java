@@ -12,6 +12,7 @@ import com.github.pagehelper.util.StringUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -188,7 +189,7 @@ public class WxMsgUtils implements MessageService  {
     public String sendMessage(NoticeMessage noticeMessage){
         String result = null;
         // 模板参数
-        Map<String, WeChatTemplateMsg> sendMag = new HashMap<String, WeChatTemplateMsg>();
+        Map<String, WeChatTemplateMsg> sendMsg = new HashMap<String, WeChatTemplateMsg>();
         // openId代表一个唯一微信用户，即微信消息的接收人
         JSONObject wechatUserId = getWechatUserId(noticeMessage);
         String openId = null;
@@ -207,27 +208,39 @@ public class WxMsgUtils implements MessageService  {
         // 公众号的模板id(也有相应的接口可以查询到)
         validateToken();
         String requestUrl = this.sendMessageUri + this.enterpriseToken;
+        //String requestUrl = "https://api.weixin.qq.com/wxaapi/newtmpl/gettemplate?access_token=" + this.enterpriseToken; //模版清单
+        
         //拼接base参数
         Map<String, Object> sendBody = new HashMap<>();
         sendBody.put("touser", openId);
-        sendBody.put("data", sendMag);
+        sendBody.put("data", sendMsg);
         sendBody.put("appid", bkAppKey);
 
        /* if(noticeMessage instanceof AlarmMessage){
             AlarmMessage alarmMessage = (AlarmMessage)noticeMessage;
-            sendMag.put("message", new WeChatTemplateMsg(alarmMessage.getContent()));
-            sendMag.put("time",new WeChatTemplateMsg(alarmMessage.getTime()));
-            sendMag.put("level",new WeChatTemplateMsg(alarmMessage.getLevel(),"#FF69B4" ));
-            sendMag.put("type",new WeChatTemplateMsg(alarmMessage.getType() ,"#173177"));
-            sendMag.put("remark",new WeChatTemplateMsg(alarmMessage.getRemark(),"#173177"));
+            sendMsg.put("message", new WeChatTemplateMsg(alarmMessage.getContent()));
+            sendMsg.put("time",new WeChatTemplateMsg(alarmMessage.getTime()));
+            sendMsg.put("level",new WeChatTemplateMsg(alarmMessage.getLevel(),"#FF69B4" ));
+            sendMsg.put("type",new WeChatTemplateMsg(alarmMessage.getType() ,"#173177"));
+            sendMsg.put("remark",new WeChatTemplateMsg(alarmMessage.getRemark(),"#173177"));
             sendBody.put("template_id", this.alarmTemplateId);
         }else*/
         {
-            sendMag.put("content", new WeChatTemplateMsg(noticeMessage.getContent()));
-            sendMag.put("title",new WeChatTemplateMsg(noticeMessage.getTitle()));
+            sendMsg.put("content", new WeChatTemplateMsg(noticeMessage.getContent()));
+            sendMsg.put("title",new WeChatTemplateMsg(noticeMessage.getTitle()));
             String time = StringUtil.isEmpty(noticeMessage.getTime()) ? "2024-05-05" : noticeMessage.getTime();
-            sendMag.put("time",new WeChatTemplateMsg(time,"#FF69B4"));
+            sendMsg.put("time",new WeChatTemplateMsg(time,"#FF69B4"));
             sendBody.put("template_id", this.commonTemplateId);
+
+            sendMsg.put("time1",new WeChatTemplateMsg("2024-05-05"));
+            sendMsg.put("thing2",new WeChatTemplateMsg("aaa"));
+            sendMsg.put("thing3",new WeChatTemplateMsg("bbb"));
+            sendMsg.put("thing4",new WeChatTemplateMsg("ccc"));
+            sendMsg.put("thing5",new WeChatTemplateMsg("ddd"));
+            sendMsg.put("date3",new WeChatTemplateMsg("2019/10/14"));
+            sendMsg.put("time60",new WeChatTemplateMsg("2022年04月15日 13:00~14:00"));
+            sendMsg.put("thing94",new WeChatTemplateMsg("李老师"));
+            sendMsg.put("thing7",new WeChatTemplateMsg("ddd"));
         }
 
         try {
@@ -235,6 +248,7 @@ public class WxMsgUtils implements MessageService  {
             CloseableHttpClient client = HttpClients.createDefault();
             // 2.创建post对象
             HttpPost post = new HttpPost(requestUrl);
+            //HttpGet post = new HttpGet(requestUrl);
             StringEntity postingString = new StringEntity(JSONObject.toJSONString(sendBody), "utf-8");
             post.setEntity(postingString);
             // 3.执行post方法:得到结果
@@ -283,7 +297,7 @@ public class WxMsgUtils implements MessageService  {
             this.getOrRefreshToken();
         }else{
             Long diff = (now - tokenFreshTimeSt)/60;
-            if(diff > 600){
+            if(diff > 10){
                 // 超过十分钟重新获取一下
                 this.getOrRefreshToken();
             }

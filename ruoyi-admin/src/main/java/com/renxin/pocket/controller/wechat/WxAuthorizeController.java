@@ -204,7 +204,7 @@ public class WxAuthorizeController {
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
         psyUser.setId(loginUser.getUserId());
-        //psyUserService.updatePsyUser(psyUser);
+        psyUserService.updatePsyUser(psyUser);
         pocketTokenService.refreshToken(loginUser ,null);
         return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS);
     }

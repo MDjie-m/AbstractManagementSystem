@@ -53,7 +53,7 @@ public interface IPsyConsultService extends IService<PsyConsult> {
 
     int delete(Long id);
     
-    void addAllRelation();
+    void addAllRelation(Long serverConfigId);
 
     /**
      * 查询来访咨询师详情

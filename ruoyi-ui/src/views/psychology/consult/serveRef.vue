@@ -20,6 +20,11 @@
       <el-table-column type="selection" :reserve-selection="true" width="55" align="center" />
       <el-table-column label="服务信息" align="center" prop="name" width="150px"/>
       <el-table-column label="售价(元)" align="center" prop="price"/>
+      <el-table-column label="级别" align="center" prop="level">
+        <template slot-scope="scope">
+          {{ levelList.find(i => i.value === scope.row.level).label }}
+        </template>
+      </el-table-column>
       <el-table-column label="服务类型" align="center" prop="type">
         <template slot-scope="scope">
           {{ typeList.find(i => i.value === scope.row.type).label }}
@@ -59,6 +64,7 @@ export default {
       total: 0,
       loading: false,
       typeList: this.$constants.typeList,
+      levelList: this.$constants.levelList,
       // 查询参数
       queryParams: {
         name: '',

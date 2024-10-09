@@ -126,10 +126,11 @@ wechat:
   grant_type: authorization_code
   jsCodeLoginUrl: https://api.weixin.qq.com/sns/jscode2session
   alarm_template_id: 111
-  common_template_id: xxkVfDGqKTt5CojlhLoFsAj2QjFRL7apYbWd3reEuOk
+#  common_template_id: xxkVfDGqKTt5CojlhLoFsAj2QjFRL7apYbWd3reEuOk
+  common_template_id: 1lFm-IIBDKwbc5WCvKgmKMtGNumEAWb7eiPxqA_YPdI
   token_uri: https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=
   user_list_uri: https://api.weixin.qq.com/cgi-bin/user/get?access_token=
-  send_message_uri: https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=
+  send_message_uri: https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=
 
 geTui:
   AppID: 3EOn07T0bU6LXV4W3xloK5

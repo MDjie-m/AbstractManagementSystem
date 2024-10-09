@@ -557,18 +557,23 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addAllRelation(){
+    public void addAllRelation(Long serverConfigId){
         //清空旧的关联关系
-        serveService.deleteAll();
+        serveService.deleteAll(serverConfigId);
         
         //添加新的关联关系(全量)
         LambdaQueryWrapper<PsyConsult> wp = Wrappers.lambdaQuery();
             wp.eq(PsyConsult::getDelFlag, "0");
         List<PsyConsult> consultantList = psyConsultMapper.selectList(wp);//咨询师清单
-        List<PsyConsultServeConfig> serverList = serveConfigService.getList(new PsyConsultServeConfigReq());//服务清单
+
+        PsyConsultServeConfigReq serveConfigReq = new PsyConsultServeConfigReq();
+        if (ObjectUtils.isNotEmpty(serverConfigId)){serveConfigReq.setId(serverConfigId);}
+        List<PsyConsultServeConfig> serverList = serveConfigService.getList(serveConfigReq);//服务清单
         consultantList = consultantList.stream()
                 .filter(config -> ObjectUtils.isNotEmpty(config.getLevel()) && ObjectUtils.isNotEmpty(config.getServiceObject()))
                 .collect(Collectors.toList());
+        
+        //判断相符并添加关联
         for (PsyConsult constant : consultantList) {
             ArrayList<Long> serverConfigIdList = new ArrayList<>();
             for (PsyConsultServeConfig serveConfig : serverList) {

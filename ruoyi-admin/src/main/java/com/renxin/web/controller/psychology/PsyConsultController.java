@@ -185,7 +185,7 @@ public class PsyConsultController extends BaseController
         if (!SecurityUtils.isAdmin(getUserId())) {
             return error("必须是超级管理员才可以执行");
         }
-        psyConsultService.addAllRelation();
+        psyConsultService.addAllRelation(null);
         return AjaxResult.success();
     }
 

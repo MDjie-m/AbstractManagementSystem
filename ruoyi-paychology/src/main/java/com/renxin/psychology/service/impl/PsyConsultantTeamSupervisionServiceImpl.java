@@ -18,6 +18,9 @@ import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.domain.RelateInfo;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
+import com.renxin.common.wxMsg.NoticeMessage;
+import com.renxin.common.wxMsg.NoticeMethodEnum;
+import com.renxin.common.wxMsg.WxMsgUtils;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.*;
 import com.renxin.psychology.mapper.PsyConsultMapper;
@@ -182,19 +185,21 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         //查询"个人督导"或"个人体验"时, 直接查询咨询师数据
             teamList = psyConsultantTeamSupervisionMapper.selectPsyConsultantPersonSupervisionList(req);
         }
+
+//        NoticeMessage noticeMessage = new NoticeMessage();
+//        noticeMessage.setMessageType("WECHAT");
+//        noticeMessage.setNoticeMethod(NoticeMethodEnum.WECHAT);
+//        noticeMessage.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
+//        noticeMessage.setTitle("111");
+//        noticeMessage.setContent("222");
+//        wxMsgUtils.send(noticeMessage);
         
         return teamList;
     }
 
-/*    @Resource
-    private WxMsgUtils wxMsgUtils;*/
-/*        NoticeMessage noticeMessage = new NoticeMessage();
-        noticeMessage.setMessageType("WECHAT");
-        noticeMessage.setNoticeMethod(NoticeMethodEnum.WECHAT);
-        noticeMessage.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
-        noticeMessage.setTitle("111");
-        noticeMessage.setContent("222");
-        wxMsgUtils.send(noticeMessage);*/
+    @Resource
+    private WxMsgUtils wxMsgUtils;
+        
 
     /**
      * 新增团队督导(组织)
