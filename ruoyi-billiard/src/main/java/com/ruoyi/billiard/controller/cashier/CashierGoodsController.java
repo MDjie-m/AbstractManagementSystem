@@ -1,6 +1,8 @@
 package com.ruoyi.billiard.controller.cashier;
 
 import com.ruoyi.billiard.domain.Goods;
+import com.ruoyi.billiard.domain.GoodsCategory;
+import com.ruoyi.billiard.service.IGoodsCategoryService;
 import com.ruoyi.billiard.service.IGoodsService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
@@ -20,10 +22,19 @@ public class CashierGoodsController extends BaseController {
     @Resource
     private IGoodsService goodsService;
 
+    @Resource
+    private IGoodsCategoryService goodsCategoryService;
+
     @GetMapping("list")
-    public ResultVo<List<Goods>> list() {
-        return ResultVo.success(goodsService.selectGoodsList(Goods.builder()
-                        .sell(Boolean.TRUE)
+    public ResultVo<List<Goods>> list(Goods goods) {
+        goods.setStoreId(getStoreId());
+        goods.setSell(Boolean.TRUE);
+        return ResultVo.success(goodsService.selectGoodsList(goods));
+    }
+
+    @GetMapping("category/list")
+    public ResultVo<List<GoodsCategory>> listCategories() {
+        return ResultVo.success(goodsCategoryService.selectGoodsCategoryList(GoodsCategory.builder()
                 .storeId(getStoreIdWithThrow()).build()));
     }
 }

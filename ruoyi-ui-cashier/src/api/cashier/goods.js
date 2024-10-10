@@ -7,6 +7,13 @@ export function listAllGoods(params) {
     params: params
   })
 }
+export function listAllGoodsCategory(params) {
+  return request({
+    url: '/cashier/goods/category/list',
+    method: 'get',
+    params: params
+  })
+}
 export function listCategoryStock(params) {
   return request({
     url: '/cashier/stock/category/list',

@@ -155,6 +155,23 @@
             {{ item.label }}
           </el-tag>
         </el-row>
+        <el-row class="tag-container" v-if="isGoodsPanel">
+
+          <el-tag
+            type="primary"
+            @click="onCategoryClick(null)"
+            :effect="categoryId===null?'dark':'plain'"
+          >
+            全部
+          </el-tag>
+          <el-tag
+            type="primary" v-for="item in categoryList"
+            @click="onCategoryClick(item.goodsCategoryId)"
+            :effect="categoryId=== item.goodsCategoryId?'dark':'plain'"
+          >
+            {{ item.goodsCategoryName }}
+          </el-tag>
+        </el-row>
       </div>
 
 
@@ -165,12 +182,14 @@
                    v-for="item in  goodsList">
             <div class="goods-item-left">
               <image-preview class="item-img big" :src="item.goodsImg"/>
-              <svg-icon class="item-discount"   icon-class="discount_disable"
+              <svg-icon class="item-discount" icon-class="discount_disable"
                         v-if="item.discountDisable"/>
             </div>
             <div class="goods-item-right">
 
-              <div class="some-item-name"> <div>{{ item.goodsName }}</div></div>
+              <div class="some-item-name">
+                <div>{{ item.goodsName }}</div>
+              </div>
               <div class="some-item-price"> {{ item.price }}元</div>
 
               <div class="some-item-price">库存:{{ item.total }}</div>
@@ -191,7 +210,7 @@
               <div class="some-item-name"> {{ item.title }}</div>
               <div class="some-item-price"> {{ item.price }}元/分钟</div>
               <div class="some-item-booking" v-if="item.booking">
-                  {{item.booking.startTime |timeFormat("HH:mm")}} ~{{item.booking.endTime |timeFormat("HH:mm")}}
+                {{ item.booking.startTime |timeFormat("HH:mm") }} ~{{ item.booking.endTime |timeFormat("HH:mm") }}
               </div>
             </div>
 
@@ -231,7 +250,7 @@
 </template>
 <script>
 import LeftContainer from "@/views/cashier/components/leftContainer.vue";
-import {listAllGoods} from "@/api/cashier/goods";
+import {listAllGoods, listAllGoodsCategory} from "@/api/cashier/goods";
 import {listAllTutor} from "@/api/cashier/tutor";
 import SvgItem from "@/views/cashier/desk/components/svgItem.vue";
 import {CalcTimeStatus, ChooseType, DeskStatus, TutorWorkStatus} from "@/views/cashier/components/constant";
@@ -264,7 +283,9 @@ export default {
       TutorWorkStatus: TutorWorkStatus,
       isGoodsPanel: true,
       tutorStatus: null,
+      categoryId: null,
       goodsList: [],
+      categoryList: [],
       tutorList: [],
       isCreating: false,
       isChoosingGoods: true,
@@ -279,6 +300,7 @@ export default {
 
     this.getGoodsList();
     this.getTutorList();
+    this.getGoodsCategoryList();
 
     this.navDeskId = this.$route.query.deskId;
     this.navOrderId = this.$route.query.orderId;
@@ -366,12 +388,12 @@ export default {
         let endTime = this.$time(item.booking.endTime).format('MM-DD HH:mm');
         msgList.push(h('p', null, `${deskTitle}有预约：`))
 
-        msgList.push(h('p', {style:{color:'#1890ff'}}, `${startTime}到${endTime},`))
+        msgList.push(h('p', {style: {color: '#1890ff'}}, `${startTime}到${endTime},`))
         msgList.push(h('p', null, "确认添加?"))
       }
-      if(msgList.length){
+      if (msgList.length) {
         this.$confirm('确认', {
-          title:"确认",
+          title: "确认",
           confirmButtonText: '确认',
           message: h('div', null, msgList),
           cancelButtonText: '取消',
@@ -383,7 +405,7 @@ export default {
       }
       this.innerAddTutor(item);
     },
-    innerAddTutor(item){
+    innerAddTutor(item) {
       let findItem = this.order.orderTutorTimes.find(p => p.tutorId === item.storeTutorId && p.status !== CalcTimeStatus.Stop);
       if (findItem) {
         return this.$modal.msgWarning("教练已在订单内，无需重复添加")
@@ -447,17 +469,27 @@ export default {
       })
     },
     getGoodsList() {
-      listAllGoods(null).then(res => {
+      listAllGoods({categoryId:this.categoryId}).then(res => {
         this.goodsList = res.data || []
       })
     },
+    getGoodsCategoryList() {
+      listAllGoodsCategory(null).then(res => {
+        this.categoryList = res.data || []
+      })
+    },
     getTutorList() {
-      listAllTutor({workStatus: this.tutorStatus,queryLastBooking:true}).then(res => {
+      listAllTutor({workStatus: this.tutorStatus, queryLastBooking: true}).then(res => {
         this.tutorList = res.data
       })
     },
     onChooseTutorStatus(val) {
       this.tutorStatus = val;
+      this.getTutorList()
+    },
+    onCategoryClick(val) {
+      this.categoryId = val;
+      this.getGoodsList()
     },
     onChangePanel(val) {
       if (this.isCreating) {
