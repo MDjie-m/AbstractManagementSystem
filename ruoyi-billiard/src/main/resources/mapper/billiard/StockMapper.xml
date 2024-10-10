@@ -24,7 +24,19 @@
         </where>
         order by stock_id desc
     </select>
+    <select id="selectGoodsStockList" parameterType="Stock" resultType="Stock">
+        select  a.total,b.goods_name,a.goods_id,b.goods_img,b.category_id
+        from t_goods b   left join  t_stock a on a.goods_id=b.goods_id
+        <where>
+            <if test="goodsId != null "> and  b.goods_id = #{goodsId}</if>
+            <if test="goodsName != null  and goodsName != ''"> and b.goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="storeId != null "> and  b.store_id = #{storeId}</if>
 
+            <if test="lastCheckPointId != null "> and last_check_point_id = #{lastCheckPointId}</if>
+
+        </where>
+        order by stock_id desc
+    </select>
     <select id="selectStockByStockId" parameterType="Long" resultType="Stock">
         <include refid="selectStockVo"/>
         where stock_id = #{stockId}

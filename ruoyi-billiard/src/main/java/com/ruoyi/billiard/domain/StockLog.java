@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.billiard.enums.StockChangeType;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
@@ -50,7 +51,7 @@ public class StockLog extends MyBaseEntity
 
     @TableField("change_type")
     @NotNull(message = "入库类型不能为空")
-    private Integer changeType;
+    private StockChangeType changeType;
 
     /** 变化前数量 */
     @Excel(name = "变化前数量")
@@ -79,5 +80,6 @@ public class StockLog extends MyBaseEntity
     @TableField("order_id")
     private Long orderId;
 
-
+    @TableField("order_id")
+    private String msg;
 }

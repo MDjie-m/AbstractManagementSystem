@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.ruoyi.billiard.domain.Goods;
 import com.ruoyi.billiard.domain.GoodsCategory;
 import com.ruoyi.billiard.domain.StockLog;
+import com.ruoyi.billiard.domain.vo.StockCheckRes;
 import com.ruoyi.billiard.enums.StockChangeType;
 import com.ruoyi.billiard.mapper.GoodsCategoryMapper;
 import com.ruoyi.billiard.mapper.GoodsMapper;
@@ -92,7 +93,7 @@ public class StockServiceImpl implements IStockService {
 
     @Transactional(rollbackFor = Exception.class)
     public int editStock(StockLog req) {
-        updateStock(req.getStoreId(), req.getGoodsId(), req.getChangeCount(), StockChangeType.valueOf(req.getChangeType()), req.getRemark(), null);
+        updateStock(req.getStoreId(), req.getGoodsId(), req.getChangeCount(),  req.getChangeType() , req.getRemark(), null);
         return 1;
     }
 
@@ -149,7 +150,7 @@ public class StockServiceImpl implements IStockService {
                 .eq(Stock::getTotal, currentCount);
         int res = stockMapper.update(null, updateWrapper);
         AssertUtil.isTrue(res > 0, ExceptionCodeEnum.CHECK_STOCK_ERROR,
-                StringUtils.format("操作失败，{}库存为：{}。", goods.getGoodsName(), currentCount));
+                StringUtils.format("{}失败,库存为：{}。" , changeType.getDesc(), currentCount));
         return true;
     }
 
@@ -157,7 +158,7 @@ public class StockServiceImpl implements IStockService {
         StockLog log = StockLog.builder()
                 .beforeCount(currentCount)
                 .currentCount(currentCount + changeCount)
-                .changeType(changeType.getValue())
+                .changeType(changeType)
                 .changeCount(changeCount)
                 .goodsId(goodsId)
                 .orderId(orderId)
@@ -219,8 +220,33 @@ public class StockServiceImpl implements IStockService {
     }
 
     @Override
+    public StockCheckRes checkStockWithDetail(List<StockLog> list) {
+        StockCheckRes res = new StockCheckRes();
+        List<StockLog> checkList = list.stream().filter(p -> Objects.nonNull(p.getChangeCount()) && !Objects.equals(p.getChangeCount(), 0L)).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(list)) {
+            return res;
+        }
+        for (StockLog stockLog : checkList) {
+            try {
+                stockLog.setChangeType(StockChangeType.CHECK);
+                SpringUtils.getBean(StockServiceImpl.class).editStock(stockLog);
+                res.getSuccessList().add(stockLog);
+            } catch (ServiceException e) {
+                stockLog.setMsg(StringUtils.format("{}:{}", stockLog.getGoodsName(), e.getMessage()));
+                log.error("盘点库存异常,goodsId:{}", stockLog.getGoodsId(), e);
+                res.getFailList().add(stockLog);
+            } catch (Exception e) {
+                log.error("盘点库存异常,goodsId:{}", stockLog.getGoodsId(), e);
+                stockLog.setMsg(StringUtils.format("{}:盘点异常", stockLog.getGoodsName()));
+                res.getFailList().add(stockLog);
+            }
+        }
+        return res;
+    }
+
+    @Override
     public List<GoodsCategory> getCategoryStock(Stock stock) {
-        Map<Long, List<Stock>> stocks = ArrayUtil.groupBy(stockMapper.selectStockList(stock), Stock::getCategoryId);
+        Map<Long, List<Goods>> stocks = ArrayUtil.groupBy(goodsMapper.selectGoodsList(Goods.builder().storeId(stock.getStoreId()).build()), Goods::getCategoryId);
         List<GoodsCategory> categories = goodsCategoryMapper.selectGoodsCategoryList(GoodsCategory.builder().storeId(stock.getStoreId())
                 .build());
         categories.forEach(p -> {

@@ -14,3 +14,10 @@ export function listCategoryStock(params) {
     params: params
   })
 }
+export function checkStock(params) {
+  return request({
+    url: '/cashier/stock/check',
+    method: 'post',
+    data: params
+  })
+}

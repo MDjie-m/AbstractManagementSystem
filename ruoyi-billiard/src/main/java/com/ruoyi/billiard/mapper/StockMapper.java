@@ -31,7 +31,7 @@ public interface StockMapper extends MyBaseMapper<Stock> {
      */
     public List<Stock> selectStockList(Stock stock);
 
-
+    public List<Stock> selectGoodsStockList(Stock stock);
 
 
     /**

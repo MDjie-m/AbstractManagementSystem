@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import com.ruoyi.billiard.domain.Goods;
 import com.ruoyi.billiard.domain.StockLog;
+import com.ruoyi.billiard.domain.vo.StockCheckRes;
 import com.ruoyi.billiard.service.IGoodsService;
 import com.ruoyi.billiard.service.IStockLogService;
 import com.ruoyi.common.core.domain.ResultVo;
@@ -118,8 +119,8 @@ public class StockController extends BaseController {
     @PreAuthorize("@ss.hasPermi('billiard:stock:edit')")
     @Log(title = "库存盘点", businessType = BusinessType.UPDATE)
     @PostMapping("/check")
-    public ResultVo<List<String>> editStock(@RequestBody @Validated @Valid List<StockLog> req) {
-        return ResultVo.success(stockService.checkStock(req));
+    public ResultVo<StockCheckRes> editStock(@RequestBody @Validated @Valid List<StockLog> req) {
+        return ResultVo.success(stockService.checkStockWithDetail(req));
     }
 
     /**

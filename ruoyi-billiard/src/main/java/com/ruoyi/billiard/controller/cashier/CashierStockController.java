@@ -4,6 +4,7 @@ import com.ruoyi.billiard.domain.GoodsCategory;
 import com.ruoyi.billiard.domain.Stock;
 import com.ruoyi.billiard.domain.StockLog;
 import com.ruoyi.billiard.domain.Store;
+import com.ruoyi.billiard.domain.vo.StockCheckRes;
 import com.ruoyi.billiard.service.IStockService;
 import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.billiard.service.IStoreTutorService;
@@ -46,9 +47,9 @@ public class CashierStockController extends BaseController {
     @PreAuthorize("@ss.hasPermi('cashier:stock:edit')")
     @Log(title = "收银库存盘点", businessType = BusinessType.UPDATE)
     @PostMapping("/check")
-    public ResultVo<List<String>> editStock(@RequestBody @Validated @Valid List<StockLog> req) {
+    public ResultVo<StockCheckRes> editStock(@RequestBody @Validated @Valid List<StockLog> req) {
         Long storeId = getStoreIdWithThrow();
         req.forEach(p -> p.setStoreId(storeId));
-        return ResultVo.success(stockService.checkStock(req));
+        return ResultVo.success(stockService.checkStockWithDetail(req));
     }
 }

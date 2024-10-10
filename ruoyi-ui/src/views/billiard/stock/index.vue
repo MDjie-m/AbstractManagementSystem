@@ -419,20 +419,20 @@ export default {
         return this.$modal.msgWarning('没有需要盘点的商品')
       }
       checkStock(list).then(res => {
-        let msgList = res.data || []
-        if (msgList.length === 0) {
-          this.check.open = false
-          this.$modal.msgSuccess('盘点成功');
+        if (res.data?.failList?.length === 0) {
           this.getList();
-          return
+          return this.$modal.msgSuccess("盘点成功")
+        } else if (res.data?.failList?.length > 0) {
+          this.getList()
+          return this.$message({
+            duration: 5000,
+            dangerouslyUseHTMLString: true,
+            type: 'error',
+            message: ["<div> 其他商品已盘点成功，以下是盘点失败商品：</div> <br/>"].concat(res.data?.failList.map(p => `<div style="padding-bottom: 5px">${p.msg}</div> `)).join("")
+          });
+        } else {
+          this.$modal.msgWarning("盘点异常")
         }
-        this.$message({
-          dangerouslyUseHTMLString: true,
-          message: `<div>${msgList.join('</div><div>')}</div>`,
-          duration: 3000,
-          type: 'error'
-
-        })
         this.getCheckList()
       }).catch(p => {
         this.getCheckList()

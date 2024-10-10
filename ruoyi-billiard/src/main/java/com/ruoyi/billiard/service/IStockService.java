@@ -5,6 +5,7 @@ import java.util.List;
 import com.ruoyi.billiard.domain.GoodsCategory;
 import com.ruoyi.billiard.domain.Stock;
 import com.ruoyi.billiard.domain.StockLog;
+import com.ruoyi.billiard.domain.vo.StockCheckRes;
 import com.ruoyi.billiard.enums.StockChangeType;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +70,7 @@ public interface IStockService
     public int deleteStockByStockId(Long stockId);
 
     List<String> checkStock(List<StockLog> list);
+    StockCheckRes checkStockWithDetail(List<StockLog> list);
 
     List<GoodsCategory> getCategoryStock(Stock stock);
 }

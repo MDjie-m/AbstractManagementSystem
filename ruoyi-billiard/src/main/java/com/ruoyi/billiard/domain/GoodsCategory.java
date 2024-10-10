@@ -50,7 +50,7 @@ public class GoodsCategory extends MyBaseEntity
 
 
     @TableField(exist = false)
-    private List<Stock> goodsStocks;
+    private List<Goods> goodsStocks;
 
 
 
