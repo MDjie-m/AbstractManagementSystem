@@ -27,11 +27,9 @@
       <div class="total-item">
         <div class="total-item-amount">
           <el-badge :value="info.totalOrderCount" :hidden="!info.totalOrderCount" type="primary">
-    <span>
+             <span>
                 {{ info.totalAmount }}
-    </span>
-
-
+              </span>
           </el-badge>
         </div>
         <div class="total-item-label">
@@ -64,6 +62,23 @@
         </div>
         <div class="total-item-label">
           退款额/单数
+        </div>
+      </div>
+    </div>
+    <el-divider content-position="left">
+      营业构成
+    </el-divider>
+    <div class="section-container total-container">
+      <div class="total-item" v-for="item in info.orderSubItems">
+        <div class="total-item-amount">
+          <el-badge :value="item.count" :hidden="!item.count" type="primary">
+             <span>
+                {{ item.amount }}
+              </span>
+          </el-badge>
+        </div>
+        <div class="total-item-label">
+          {{item.typeText}}/单数
         </div>
       </div>
     </div>
@@ -120,6 +135,7 @@ export default {
     return {
       loading: false,
       info: {
+        orderSubItems:[],
         "totalOrderCount": 0,
         "totalAmount": 0.00,
         "rechargeAmount": 0.00,

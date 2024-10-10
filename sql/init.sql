@@ -527,7 +527,7 @@ create table t_tutor_work_plan
     update_time        timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     create_by_id       bigint                                null comment '创建者Id',
     update_by_id       bigint                                null comment '更新者Id',
-    count int not null  comment '排课数量',
+    count              int                                   not null comment '排课数量',
 
 
     remark             nvarchar(500)                         null comment '备注'
@@ -541,8 +541,8 @@ create table t_tutor_work_plan_detail
     tutor_work_plan_detail_id bigint                                not null comment 'ID'
         primary key,
     tutor_work_plan_id        bigint                                not null comment '计划id',
-    tutor_id           bigint                                not null comment '教练id',
-    store_id           bigint                                not null comment '门店',
+    tutor_id                  bigint                                not null comment '教练id',
+    store_id                  bigint                                not null comment '门店',
     plan_type                 int                                   not null comment '计划类型：4=陪练,5=教学',
     start_time                datetime                              not null comment '开始时间',
     end_time                  datetime                              not null comment '结束时间',
@@ -733,21 +733,51 @@ create table t_tutor_punch_in
 (
     tutor_punch_in_id bigint                                not null comment 'ID'
         primary key,
-    store_id       bigint                                not null comment '门店',
-    start_time     datetime                                    null comment '开始时间',
-    end_time       datetime                                    null comment '结束时间',
-    schedule_day  date not null  comment '班次',
-    tutor_id       bigint                                not null comment '助教',
-    create_by      varchar(64) default ''                null comment '创建者',
-    create_time    timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by      varchar(64) default ''                null comment '更新者',
-    update_time    timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id   bigint                                null comment '创建者Id',
-    update_by_id   bigint                                null comment '更新者Id',
-    remark         nvarchar(500)                         null comment '备注'
+    store_id          bigint                                not null comment '门店',
+    start_time        datetime                              null comment '开始时间',
+    end_time          datetime                              null comment '结束时间',
+    schedule_day      date                                  not null comment '班次',
+    tutor_id          bigint                                not null comment '助教',
+    create_by         varchar(64) default ''                null comment '创建者',
+    create_time       timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by         varchar(64) default ''                null comment '更新者',
+    update_time       timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id      bigint                                null comment '创建者Id',
+    update_by_id      bigint                                null comment '更新者Id',
+    remark            nvarchar(500)                         null comment '备注'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
     comment '教练打卡';
 
 create unique index t_tutor_punch_in_store_id_index
-    on t_tutor_punch_in (store_id, tutor_id,  schedule_day);
+    on t_tutor_punch_in (store_id, tutor_id, schedule_day);
+
+drop table if exists t_store_swap_record;
+create table t_store_swap_record
+(
+    swap_record_id       bigint                                not null comment 'id'
+        primary key,
+    total                nvarchar(60)                          not null comment '总营收',
+    cash_total           nvarchar(60)                          not null comment '现金',
+    desk_total           decimal(20, 2)                        null comment '台桌费用',
+    tutor_total          decimal(20, 2)                        null comment '教练费用',
+    goods_total          decimal(20, 2)                        null comment '教练费用',
+
+    total_wipe_zero      decimal(20, 2)                        null comment '抹零金额',
+    suspend_order_count  decimal(20, 2)                        not null comment '挂单单数',
+    suspend_order_amount decimal(20, 2)                        not null comment '挂单金额',
+    schedule_day         date                                  not null comment '班次',
+    store_id             bigint                                not null comment '门店',
+    create_by            varchar(64) default ''                null comment '创建者',
+    create_time          timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by            varchar(64) default ''                null comment '更新者',
+    update_time          timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    login_user_id        bigint                                not null comment '登录账户id',
+    create_by_id         bigint                                null comment '创建者Id',
+    update_by_id         bigint                                null comment '更新者Id',
+    remark               nvarchar(500)                         null comment '备注'
+)
+    comment '交班记录';
+
+create index t_store_swap_record_store_id_index
+    on t_store_swap_record (store_id, schedule_day);

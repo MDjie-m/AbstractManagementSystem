@@ -624,8 +624,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount));
 
-        order.setTotalWipeZero(order.getTotalAmount().remainder(BigDecimal.ONE));
-        order.setTotalAmount(BigDecimal.valueOf(order.getTotalAmount().intValue()));
+        order.setTotalWipeZero(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalWipeZero));
         if (Objects.nonNull(order.getPrePayAmount()) && order.getPrePayAmount().compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal refund = order.getPrePayAmount().subtract(order.getTotalAmount());
             if (refund.compareTo(BigDecimal.ZERO) >= 0) {
@@ -748,8 +747,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setTotalDiscountAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalDiscountAmount));
         order.setTotalAmount(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalAmount));
 
-        order.setTotalWipeZero(order.getTotalAmount().remainder(BigDecimal.ONE));
-        order.setTotalAmount(BigDecimal.valueOf(order.getTotalAmount().intValue()));
+        order.setTotalWipeZero(BaseFee.sumTotalFees(feeItems, ITotalDueFee::getTotalWipeZero));
+
         if (Objects.nonNull(order.getPrePayAmount()) && order.getPrePayAmount().compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal refund = order.getPrePayAmount().subtract(order.getTotalAmount());
             if (refund.compareTo(BigDecimal.ZERO) >= 0) {

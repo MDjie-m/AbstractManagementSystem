@@ -57,16 +57,21 @@
 
     </select>
     <select id="queryPayTotal" resultType="com.ruoyi.common.core.domain.model.Tuple3">
-        select  ifnull(sum(${amount}) ,0.00) as value,count(1) as value1,${groupColumn} as value2
-        from t_order_pay    ${ew.customSqlSegment}
+        select  ifnull(sum(a.${amount}) ,0.00) as value,count(1) as value1,a.${groupColumn} as value2
+        from t_order_pay  a join t_order b on a.store_id=b.store_id and a.order_id=b.order_id   ${ew.customSqlSegment}
     </select>
     <select id="queryRefundTotal" resultType="com.ruoyi.common.core.domain.model.Tuple3">
 
-        select  ifnull(sum(${amount}) ,0.00) as value,count(1) as value1,${groupColumn} as value2
-        from t_order_refund    ${ew.customSqlSegment}
+        select  ifnull(sum(a.${amount}) ,0.00) as value,count(1) as value1,a.${groupColumn} as value2
+        from t_order_refund a  join t_order b on a.store_id=b.store_id and a.order_id=b.order_id   ${ew.customSqlSegment}
     </select>
 
+    <select id="queryOrderSubItems" resultType="com.ruoyi.billiard.domain.vo.OrderSubTotalVo">
 
+        select  ifnull(sum(a.total_amount) ,0.00) as amount,count(distinct  a.order_id) as count
+        from ${tableName} a join t_order b on a.order_id=b.order_id
+                           ${ew.customSqlSegment}
+    </select>
     <insert id="insertStore" parameterType="Store">
         insert into t_store
         <trim prefix="(" suffix=")" suffixOverrides=",">

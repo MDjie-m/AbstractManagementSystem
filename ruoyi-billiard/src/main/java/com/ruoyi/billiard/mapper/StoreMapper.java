@@ -5,10 +5,8 @@ import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.ruoyi.billiard.domain.Order;
-import com.ruoyi.billiard.domain.OrderPay;
-import com.ruoyi.billiard.domain.OrderRefund;
-import com.ruoyi.billiard.domain.Store;
+import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.domain.vo.OrderSubTotalVo;
 import com.ruoyi.common.core.domain.model.Tuple;
 import com.ruoyi.common.core.domain.model.Tuple3;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
@@ -73,9 +71,16 @@ public interface StoreMapper extends MyBaseMapper<Store> {
 
     <T> List<Tuple3<BigDecimal, Long, T>> queryPayTotal(@Param("amount") String amount,
                                                         @Param("groupColumn") String groupColumn,
-                                                        @Param(Constants.WRAPPER) QueryWrapper<OrderPay> queryWrapper);
+                                                        @Param(Constants.WRAPPER) QueryWrapper<Order> queryWrapper);
 
     <T> List<Tuple3<BigDecimal, Long, T>> queryRefundTotal(@Param("amount") String amount,
                                                            @Param("groupColumn") String groupColumn,
-                                                           @Param(Constants.WRAPPER) QueryWrapper<OrderRefund> queryWrapper);
+                                                           @Param(Constants.WRAPPER) QueryWrapper<Order> queryWrapper);
+
+
+    OrderSubTotalVo queryOrderSubItems(@Param("tableName") String tableName,
+                                       @Param(Constants.WRAPPER) QueryWrapper<Order> queryWrapper);
+
+
+
 }

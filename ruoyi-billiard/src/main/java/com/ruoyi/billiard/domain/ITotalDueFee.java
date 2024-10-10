@@ -28,10 +28,18 @@ public interface ITotalDueFee {
 
     Integer getNum();
 
+    default RoundingMode getCalcMode() {
+        return RoundingMode.HALF_UP;
+    }
+
+    void setTotalWipeZero(BigDecimal val);
+
+    BigDecimal getTotalWipeZero();
+
     default BigDecimal calcFee() {
         int count = getNum();
         return Optional.ofNullable(this.getPrice()).orElse(BigDecimal.ZERO)
-                .multiply(new BigDecimal(String.valueOf(count)));
+                .multiply(new BigDecimal(String.valueOf(count))).setScale(2, getCalcMode());
     }
 
     default void calcAndSetFee(BigDecimal discountPercent) {
@@ -39,6 +47,7 @@ public interface ITotalDueFee {
         this.setTotalAmountDue(calcFee());
         this.setTotalDiscountAmount(calcDiscountAmount(this.getTotalAmountDue(), this.getDiscountValue()));
         this.setTotalAmount(this.getTotalAmountDue().subtract(this.getTotalDiscountAmount()));
+        this.setTotalWipeZero(BigDecimal.ZERO);
     }
 
     default BigDecimal calcDiscountAmount(BigDecimal total, BigDecimal discountPercent) {
@@ -48,7 +57,7 @@ public interface ITotalDueFee {
         }
         total = Optional.ofNullable(total).orElse(BigDecimal.ZERO);
         return total.multiply(Optional.ofNullable(discountPercent).orElse(BigDecimal.ZERO))
-                .divide(new BigDecimal("100"), RoundingMode.DOWN).setScale(2, RoundingMode.DOWN);
+                .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
 
     }
 

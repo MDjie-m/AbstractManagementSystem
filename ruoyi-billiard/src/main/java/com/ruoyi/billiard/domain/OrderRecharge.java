@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * 会员充值对象 t_order_recharge
@@ -150,5 +151,18 @@ public class OrderRecharge extends MyBaseEntity implements ITotalDueFee {
     @NotNull(groups = IRecharge.class, message = "密码不能为空")
     @Length(min = 6, max = 20, message = "密码长度在6-20之前")
     private String pwd;
+    @Override
+    public RoundingMode getCalcMode() {
+        return RoundingMode.DOWN;
+    }
 
+    @Override
+    public void setTotalWipeZero(BigDecimal val) {
+
+    }
+
+    @Override
+    public BigDecimal getTotalWipeZero() {
+        return BigDecimal.ZERO;
+    }
 }

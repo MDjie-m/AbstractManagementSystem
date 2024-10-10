@@ -101,6 +101,9 @@ public class OrderTutorTime extends BaseFee
     @TableField("total_amount")
     private BigDecimal totalAmount;
 
+    @TableField("total_wipe_zero")
+    private BigDecimal totalWipeZero;
+
     /** 实际赠送支付金额 */
     @Excel(name = "实际赠送支付金额")
 
@@ -133,4 +136,5 @@ public class OrderTutorTime extends BaseFee
 
     @TableField(exist = false)
     private StoreTutor storeTutor;
+
 }

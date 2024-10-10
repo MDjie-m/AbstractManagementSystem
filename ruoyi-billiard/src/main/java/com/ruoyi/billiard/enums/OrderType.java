@@ -10,7 +10,7 @@ import java.util.*;
 @AllArgsConstructor
 public enum OrderType implements IEnum {
     AGGREGATE_CONSUMPTION(0, "总消费",null),
-    TABLE_CHARGE(1, "球桌费用","D"),
+    TABLE_CHARGE(1, "台桌费用","D"),
     MEMBER_RECHARGE(2, "会员充值","R"),
     COMMODITY_PURCHASE(3, "商品购买","B"),
     SPARRING_FEE(4, "陪练费用","TA"),
