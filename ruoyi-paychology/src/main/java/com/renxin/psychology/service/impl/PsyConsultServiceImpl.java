@@ -559,7 +559,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     @Transactional(rollbackFor = Exception.class)
     public void addAllRelation(Long serverConfigId){
         //清空旧的关联关系
-        serveService.deleteAll(serverConfigId);
+        serveService.deleteAllRelation(serverConfigId);
         
         //添加新的关联关系(全量)
         LambdaQueryWrapper<PsyConsult> wp = Wrappers.lambdaQuery();

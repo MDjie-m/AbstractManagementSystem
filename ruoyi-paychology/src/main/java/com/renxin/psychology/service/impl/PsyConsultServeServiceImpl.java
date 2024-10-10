@@ -94,8 +94,8 @@ public class PsyConsultServeServiceImpl implements IPsyConsultServeService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int deleteAll(Long serverConfigId) {
-        return psyConsultServeMapper.deleteAll(serverConfigId);
+    public int deleteAllRelation(Long serverConfigId) {
+        return psyConsultServeMapper.deleteAllRelation(serverConfigId);
         //PsyConsultServiceImpl
         //清空旧的关联关系
         //serveService.deleteAll();

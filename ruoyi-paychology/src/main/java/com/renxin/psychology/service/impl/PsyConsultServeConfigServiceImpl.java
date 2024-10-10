@@ -52,6 +52,9 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
     @Resource
     private IPsyConsultService consultService;
 
+    @Resource
+    private IPsyConsultServeService serveService;
+
     @Override
     public PsyConsultServeConfigVO getOne(Long id) {
         PsyConsultServeConfigVO server = BeanUtil.toBean(psyConsultServeConfigMapper.selectById(id), PsyConsultServeConfigVO.class);
@@ -180,9 +183,13 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
         PsyConsultServeConfig oldServerConfig = psyConsultServeConfigMapper.selectById(req.getId());
         int i = psyConsultServeConfigMapper.updateById(BeanUtil.toBean(req, PsyConsultServeConfig.class));
         
-        //若执行了上架操作, 则为该服务自动关联所有条件相符的咨询师
+        //若执行了上架操作, 则自动为该服务关联所有条件相符的咨询师
         if ("1".equals(oldServerConfig.getStatus()) && "0".equals(req.getStatus())){
             consultService.addAllRelation(req.getId());
+        }
+        //若执行了下架操作, 则自动为该服务取消所有关联
+        if ("0".equals(oldServerConfig.getStatus()) && "1".equals(req.getStatus())){
+            serveService.deleteAllRelation(req.getId());
         }
         
         //刷新关联的咨询师缓存

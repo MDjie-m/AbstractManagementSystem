@@ -20,7 +20,7 @@ public interface PsyConsultServeMapper extends BaseMapper<PsyConsultServe>
     int batchServeRef(List<PsyConsultServe> refs);
 
     @InterceptorIgnore(blockAttack = "true")
-    int deleteAll(Long serverConfigId);
+    int deleteAllRelation(Long serverConfigId);
 
     List<PsyConsultServeVO> getServeRef(PsyConsultServe req);
 
