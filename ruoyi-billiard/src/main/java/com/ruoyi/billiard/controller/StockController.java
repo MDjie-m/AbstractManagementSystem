@@ -11,6 +11,7 @@ import com.ruoyi.billiard.service.IGoodsService;
 import com.ruoyi.billiard.service.IStockLogService;
 import com.ruoyi.common.core.domain.ResultVo;
 import com.ruoyi.common.core.page.PageResVo;
+import com.ruoyi.common.utils.AssertUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -113,6 +114,7 @@ public class StockController extends BaseController {
     @Log(title = "库存维护", businessType = BusinessType.UPDATE)
     @PostMapping("/change")
     public ResultVo<Integer> editStock(@RequestBody @Validated StockLog req) {
+        AssertUtil.notNullOrEmpty(req.getStockId(),"门店不能为空");
         return ResultVo.success(stockService.editStock(req));
     }
 
@@ -120,6 +122,7 @@ public class StockController extends BaseController {
     @Log(title = "库存盘点", businessType = BusinessType.UPDATE)
     @PostMapping("/check")
     public ResultVo<StockCheckRes> editStock(@RequestBody @Validated @Valid List<StockLog> req) {
+
         return ResultVo.success(stockService.checkStockWithDetail(req));
     }
 

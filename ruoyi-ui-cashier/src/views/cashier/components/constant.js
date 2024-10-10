@@ -73,3 +73,8 @@ export const WorkPlanType = Object.freeze({
     label:'教学'
   }//"教学"
 })
+export const ChangeType =  Object.freeze({
+  In: 0,
+  Out: 1,
+  Check: 2
+} )

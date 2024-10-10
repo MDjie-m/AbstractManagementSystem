@@ -73,7 +73,7 @@ public class StockLog extends MyBaseEntity
     private String goodsName;
 
     @TableField(exist = false)
-    @NotNull(message = "门店不能为空")
+
     private Long storeId;
 
 

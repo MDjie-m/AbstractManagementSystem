@@ -52,4 +52,11 @@ public class CashierStockController extends BaseController {
         req.forEach(p -> p.setStoreId(storeId));
         return ResultVo.success(stockService.checkStockWithDetail(req));
     }
+    @PreAuthorize("@ss.hasPermi('cashier:stock:edit')")
+    @Log(title = "收银库存维护", businessType = BusinessType.UPDATE)
+    @PostMapping("/change")
+    public ResultVo<Integer> editStock(@RequestBody @Validated StockLog req) {
+        req.setStoreId(getStoreIdWithThrow());
+        return ResultVo.success(stockService.editStock(req));
+    }
 }

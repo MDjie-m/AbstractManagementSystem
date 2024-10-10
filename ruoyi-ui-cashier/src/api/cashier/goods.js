@@ -21,3 +21,10 @@ export function checkStock(params) {
     data: params
   })
 }
+export function changeStock(data) {
+  return request({
+    url: '/cashier/stock/change',
+    method: 'post',
+    data: data
+  })
+}

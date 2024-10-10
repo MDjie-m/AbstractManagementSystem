@@ -130,16 +130,20 @@ public class TutorPunchInServiceImpl extends ServiceImpl<TutorPunchInMapper, Tut
             baseMapper.insert(punchIn);
         }
         SecurityUtils.fillUpdateUser(punchIn);
-        boolean isStart=false;
+        boolean isStart = false;
         if (Objects.isNull(punchIn.getStartTime())) {
             punchIn.setStartTime(time);
-            isStart=true;
+            isStart = true;
             last = time;
         } else {
             last = punchIn.getEndTime();
+            if (Objects.isNull(last)) {
+                last = punchIn.getStartTime();
+            }
+
             punchIn.setEndTime(time);
         }
-        AssertUtil.isTrue(isStart||Math.abs(LocalDateTimeUtil.between(last, time, ChronoUnit.MINUTES)) > 15L, "两次打卡时间间隔应不小于15分钟");
+        AssertUtil.isTrue(isStart || Math.abs(LocalDateTimeUtil.between(last, time, ChronoUnit.MINUTES)) > 15L, "两次打卡时间间隔应不小于15分钟");
         baseMapper.updateById(punchIn);
         return Boolean.TRUE;
     }
