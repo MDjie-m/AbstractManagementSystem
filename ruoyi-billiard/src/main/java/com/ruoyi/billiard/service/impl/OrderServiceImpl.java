@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.constant.OrderErrorMsg;
 import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.dto.HomeReportDto;
+import com.ruoyi.billiard.domain.dto.OrderTypeDetailDto;
 import com.ruoyi.billiard.domain.vo.*;
 import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsume;
 import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsumeDetail;
@@ -291,10 +292,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 });
 
         //更新状态
-        oldDesk.setStatus(DeskStatus.WAIT );
+        oldDesk.setStatus(DeskStatus.WAIT);
         oldDesk.setCurrentOrderId(null);
 
-        newDesk.setStatus(DeskStatus.BUSY );
+        newDesk.setStatus(DeskStatus.BUSY);
         newDesk.setCurrentOrderId(orderId);
 
         SecurityUtils.fillUpdateUser(oldDesk);
@@ -495,7 +496,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 order.getStatus()), OrderErrorMsg.ORDER_NOT_CHARGING_OR_STOP);
 
         List<StoreDesk> desks = storeDeskMapper.queryBusyDeskByOrderId(orderId);
-        desks.forEach(p -> p.setStatus(DeskStatus.STOP ));
+        desks.forEach(p -> p.setStatus(DeskStatus.STOP));
 
         order = stopAllCalcTimes(orderId, true, false);
 
@@ -658,7 +659,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderDeskTimeMapper.updateById(time);
             if (needUpdateDesk && Objects.equals(oldStatus, CalcTimeStatus.BUSY.getValue())) {
                 storeDeskMapper.update(null, storeDeskMapper.edit().lambda()
-                        .set(StoreDesk::getStatus, DeskStatus.WAIT )
+                        .set(StoreDesk::getStatus, DeskStatus.WAIT)
                         .set(StoreDesk::getCurrentOrderId, null)
                         .eq(StoreDesk::getDeskId, time.getDeskId())
                         .eq(StoreDesk::getCurrentOrderId, time.getOrderId()));
@@ -855,7 +856,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
                 AssertUtil.notNullOrEmpty(desk, "台桌不存在");
                 AssertUtil.equal(desk.getStoreId(), order.getStoreId(), "台桌id不合法");
-                AssertUtil.equal(desk.getStatus(), DeskStatus.BUSY , "台桌不是计费状态,无法添加");
+                AssertUtil.equal(desk.getStatus(), DeskStatus.BUSY, "台桌不是计费状态,无法添加");
                 AssertUtil.equal(desk.getCurrentOrderId(), order.getOrderId(), StringUtils.format("{}({})不在同一个订单", desk.getDeskName(), desk.getDeskNum()));
 
                 StoreTutor tutor = storeTutorMapper.selectById(p.getTutorId());
@@ -904,7 +905,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             SecurityUtils.fillCreateUser(order);
             orderMapper.insert(order);
         }
-        addOrderGoods(order.getOrderId(), reqVo.getStoreId(), order.getMemberId(),reqVo.getOrderGoods());
+        addOrderGoods(order.getOrderId(), reqVo.getStoreId(), order.getMemberId(), reqVo.getOrderGoods());
         if (Objects.isNull(reqVo.getOrderId())) {
             stopAllCalcTimes(order.getOrderId(), true, false);
         }
@@ -914,9 +915,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public  void addOrderGoods(Long orderId, Long storeId,Long memberId,List<OrderGoods> goodsList){
+    public void addOrderGoods(Long orderId, Long storeId, Long memberId, List<OrderGoods> goodsList) {
         BigDecimal disCountValue = memberService.getMemberDisCountValue(OrderType.COMMODITY_PURCHASE, memberId);
-        MyBaseEntity baseEntity=new MyBaseEntity();
+        MyBaseEntity baseEntity = new MyBaseEntity();
         SecurityUtils.fillUpdateUser(baseEntity);
         for (OrderGoods p : goodsList) {
             Goods goods = goodsMapper.selectById(p.getGoodsId());
@@ -935,6 +936,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             orderGoodsMapper.insert(p);
         }
     }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public StopDeskResVo stopDesk(Long orderId, Long storeId, Long deskId) {
@@ -1098,10 +1100,43 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public List<Order> selectOrderByPayStatus(Integer payStatus, Long storeId, String startTime, String endTime) {
         return Optional.ofNullable(orderMapper.selectList(orderMapper.query()
                         .eq(Objects.nonNull(storeId), Order::getStoreId, storeId)
-                        .between(Order::getPayTime, startTime, endTime)
+                        .between(Order::getCreateTime, startTime, endTime)
                         .eq(Order::getStatus, payStatus)
                         .orderByDesc(Order::getPayTime)))
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Object selectOrderTypeDetail(OrderTypeDetailDto dto) {
+        Long orderId = dto.getOrderId();
+        Order order = orderMapper.selectById(orderId);
+        AssertUtil.notNullOrEmpty(order, OrderErrorMsg.ORDER_NOT_FOUND);
+        Integer status = order.getStatus();
+        AssertUtil.isTrue(!Objects.equals(status, OrderStatus.VOID.getValue()), OrderErrorMsg.INVALID_ORDER);
+
+        if (Objects.equals(dto.getOrderType(), OrderType.AGGREGATE_CONSUMPTION)) {
+            // 查询总消费
+            return orderMapper.selectById(orderId);
+        }
+        if (Objects.equals(dto.getOrderType(), OrderType.TABLE_CHARGE)) {
+            // 查询球桌计时列表
+            return orderDeskTimeService.selectOrderDeskTimeListByOrderId(orderId);
+        }
+        if (Objects.equals(dto.getOrderType(), OrderType.COMMODITY_PURCHASE)) {
+            // 查询订单商品列表
+            return orderGoodsService.selectOrderGoodsListByOrderId(orderId);
+        }
+        if (Objects.equals(dto.getOrderType(), OrderType.TEACHING_COST)) {
+
+            // 查询订单教练计时列表
+            return orderTutorTimeService.selectOrderTutorTimeListByOrderId(orderId);
+        }
+        if (Objects.equals(dto.getOrderType(), OrderType.MEMBER_RECHARGE)) {
+            // 查询订单会员充值列表
+            return orderRechargeService.selectOrderRechargeListByOrderId(orderId);
+        }
+        AssertUtil.isTrue(Boolean.FALSE, OrderErrorMsg.ORDER_TYPE_ERROR);
+        return null;
     }
 
     /**

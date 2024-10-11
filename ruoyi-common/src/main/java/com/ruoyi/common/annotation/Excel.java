@@ -15,7 +15,7 @@ import com.ruoyi.common.utils.poi.ExcelHandlerAdapter;
  * @author ruoyi
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.METHOD, ElementType.FIELD})
 public @interface Excel
 {
     /**

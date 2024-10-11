@@ -139,11 +139,13 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
             Long deskId = p.getDeskId();
             StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(deskId)).orElse(new StoreDesk());
             p.setStoreDesk(storeDesk);
+            p.setDeskName(storeDesk.getDeskName() + " " + storeDesk.getDeskNum());
 
             // 获取教练信息
             Long tutorId = p.getTutorId();
             StoreTutor storeTutor = Optional.ofNullable(storeTutorService.selectStoreTutorByStoreTutorId(tutorId)).orElse(new StoreTutor());
             p.setStoreTutor(storeTutor);
+            p.setTutorName(storeTutor.getTutorNum() + " " + storeTutor.getRealName());
             return p;
         }).collect(Collectors.toList());
     }

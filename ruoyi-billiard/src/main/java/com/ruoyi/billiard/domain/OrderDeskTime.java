@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.core.domain.MyBaseEntity;
 
 /**
  * 订单计时对象 t_order_desk_time
@@ -43,6 +42,17 @@ public class OrderDeskTime extends BaseFee
     @TableField("desk_id")
     private Long deskId;
 
+    /** 球桌名称 */
+    @Excel(name = "球桌")
+
+    @TableField(exist = false)
+    private String deskName;
+
+    /** 是否转桌 */
+    @Excel(name = "是否转桌", readConverterExp = "true=是,false=否")
+    @TableField(exist = false)
+    private Boolean isTransfer;
+
     /** 转桌之前的Id */
     @Excel(name = "转桌之前的Id")
 
@@ -51,20 +61,20 @@ public class OrderDeskTime extends BaseFee
 
     /** 开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
 
     @TableField("start_time")
     private Date startTime;
 
     /** 结束时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
 
     @TableField("end_time")
     private Date endTime;
 
     /** 总时间分钟（开始时间去掉秒，结束时间多一秒加1分钟算） */
-    @Excel(name = "总时间分钟", readConverterExp = "开=始时间去掉秒，结束时间多一秒加1分钟算")
+    @Excel(name = "总时间分钟")
 
     @TableField("total_time")
     private Integer totalTime;

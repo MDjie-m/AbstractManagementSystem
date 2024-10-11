@@ -52,6 +52,11 @@ public class OrderGoods extends MyBaseEntity implements ITotalDueFee {
     @TableField("desk_id")
     private Long deskId;
 
+    /** 球桌 */
+    @Excel(name = "球桌")
+    @TableField(exist = false)
+    private String deskName;
+
     /**
      * 商品id
      */

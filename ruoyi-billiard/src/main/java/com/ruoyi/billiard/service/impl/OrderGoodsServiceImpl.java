@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.service.IGoodsService;
+import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService {
 
     @Autowired
     private IGoodsService goodsService;
+
+    @Autowired
+    private IStoreDeskService storeDeskService;
 
     /**
      * 查询购买商品
@@ -124,6 +128,8 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService {
             Long goodsId = p.getGoodsId();
             Goods goods = Optional.ofNullable(goodsService.selectGoodsByGoodsId(goodsId)).orElse(new Goods());
             p.setGoods(goods);
+            StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(p.getDeskId())).orElse(new StoreDesk());
+            p.setDeskName(storeDesk.getDeskName() + " " + storeDesk.getDeskNum());
             return p;
         }).collect(Collectors.toList());
     }

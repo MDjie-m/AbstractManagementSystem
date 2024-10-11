@@ -52,9 +52,12 @@ public class Order extends MyBaseEntity {
     /**
      * 类型：1=球桌费用，2=会员充值，3=商品购买,4=陪练费用，5=教学费用
      */
-    @Excel(name = "类型：1=球桌费用，2=会员充值，3=商品购买,4=陪练费用，5=教学费用")
     @TableField("order_type")
     private OrderType orderType;
+
+    @Excel(name = "类型：1=球桌费用，2=会员充值，3=商品购买,4=陪练费用，5=教学费用")
+    @TableField(exist = false)
+    private String orderTypeText;
 
     /**
      * 应付总金额
@@ -119,15 +122,18 @@ public class Order extends MyBaseEntity {
     /**
      * 支付方式：0=扫码，1=现金，2=会员
      */
-    @Excel(name = "支付方式：0=扫码，1=现金，2=会员")
-
     @TableField("pay_type")
     private OrderPayType payType;
+
+    @Excel(name = "支付方式：0=扫码，1=现金，2=会员")
+    @TableField(exist = false)
+    private String payTypeText;
+
 
     /**
      * 订单状态：0=计费中,1=待结算,2=已结算，3=作废
      */
-    @Excel(name = "订单状态：0=计费中,1=待结算,2=已结算，3=作废")
+    @Excel(name = "订单状态：0=计费中,1=待结算,2=已结算，3=作废", readConverterExp = "0=计费中,1=待结算,2=已结算,3=作废")
 
     @TableField("status")
     private Integer status;

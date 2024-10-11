@@ -10,7 +10,6 @@ import com.ruoyi.billiard.domain.vo.IBuy;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -47,29 +46,34 @@ public class OrderTutorTime extends BaseFee
     @NotNull(  groups = IBuy.class,message = "台桌不能为空")
     private Long deskId;
 
+    /** 球桌 */
+    @Excel(name = "球桌")
+    @TableField(exist = false)
+    private String deskName;
+
     /** 开始时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "开始时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
 
     @TableField("start_time")
     private Date startTime;
 
     /** 结束时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "结束时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
 
     @TableField("end_time")
     private Date endTime;
 
     /** 类型：4=陪练,5=教学 */
-    @Excel(name = "类型：4=陪练,5=教学")
+    @Excel(name = "类型", readConverterExp = "4=陪练,5=教学")
 
     @TableField("type")
     @NotNull(  groups = IBuy.class,message = "课程类型不能为空")
     private Integer type;
 
     /** 总时间分钟（开始时间去掉秒，结束时间多一秒加1分钟算） */
-    @Excel(name = "总时间分钟", readConverterExp = "开=始时间去掉秒，结束时间多一秒加1分钟算")
+    @Excel(name = "总时间分钟")
 
     @TableField("total_time")
     private Integer totalTime;
@@ -113,6 +117,11 @@ public class OrderTutorTime extends BaseFee
     @TableField("tutor_id")
     @NotNull(  groups = IBuy.class,message = "教练不能为空")
     private Long  tutorId;
+
+    /** 教练 */
+    @Excel(name = "教练")
+    @TableField(exist = false)
+    private String tutorName;
 
     /**
      * 状态:1=计费中，2=暂停，3=已结束

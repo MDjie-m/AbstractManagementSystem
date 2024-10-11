@@ -2,10 +2,12 @@ package com.ruoyi.billiard.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 import com.ruoyi.billiard.domain.Order;
 import com.ruoyi.billiard.domain.OrderGoods;
 import com.ruoyi.billiard.domain.OrderRecharge;
 import com.ruoyi.billiard.domain.dto.HomeReportDto;
+import com.ruoyi.billiard.domain.dto.OrderTypeDetailDto;
 import com.ruoyi.billiard.domain.vo.*;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,4 +126,7 @@ public interface IOrderService
      * @return 订单集合
      */
     List<Order> selectOrderByPayStatus(Integer payStatus, Long storeId, String startTime, String endTime);
+
+
+    Object selectOrderTypeDetail(OrderTypeDetailDto dto);
 }

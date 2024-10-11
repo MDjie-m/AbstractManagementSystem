@@ -2,6 +2,7 @@ package com.ruoyi.billiard.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -120,6 +121,8 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService {
             Long deskId = orderDeskTime.getDeskId();
             StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(deskId)).orElse(new StoreDesk());
             orderDeskTime.setStoreDesk(storeDesk);
+            orderDeskTime.setDeskName(storeDesk.getDeskName()+ " " +storeDesk.getDeskNum());
+            orderDeskTime.setIsTransfer(Objects.nonNull(orderDeskTime.getFromDeskId()));
             return orderDeskTime;
         }).collect(Collectors.toList());
     }
