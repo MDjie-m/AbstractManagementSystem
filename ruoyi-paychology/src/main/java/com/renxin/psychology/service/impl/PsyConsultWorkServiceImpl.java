@@ -6,10 +6,14 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.renxin.common.constant.Constants;
 import com.renxin.common.constant.NewConstants;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.utils.StringUtils;
+import com.renxin.common.wxMsg.NoticeMessage;
+import com.renxin.common.wxMsg.NoticeMethodEnum;
+import com.renxin.common.wxMsg.WxMsgUtils;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsultOrderItem;
 import com.renxin.psychology.domain.PsyConsultWork;
@@ -26,6 +30,7 @@ import com.renxin.psychology.vo.PsyConsultOrderItemVO;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import com.renxin.system.service.ISysConfigService;
+import com.renxin.wechat.vo.TemplateMessageItemVo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
@@ -61,6 +66,9 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
 
     @Resource
     private ISysConfigService configService;
+    
+    @Resource
+    private WxMsgUtils wxMsgUtils;
     
     @Override
     public List<PsyConsultWorkVO> getConsultWorks(PsyWorkReq req) {
@@ -487,7 +495,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
         Integer scheduleType = req.getScheduleType();
         Long scheduleId = req.getScheduleId();
         Long loginConsultId = req.getConsultId();
-        String loginUserId = req.getUserId();
+        Long loginUserId = req.getUserId();
 
         switch (scheduleType) {
             //个督/体验
@@ -532,16 +540,19 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                     throw new ServiceException("该预约已完成或已取消, 不可请假");
                 }
                 
+                String explain = "";
                 if (item.getUserId().equals(loginUserId)){
                     item.setStatus("2");//付费人请假
                     isBeforeTime(item.getServerStartTime());//判断请假提前时间是否足够
+                    explain = "来访者请假，本次预约取消";
                 }else if (item.getConsultId().equals(loginConsultId)){
                     item.setStatus("3");//收费人请假
+                    explain = "咨询师请假，本次预约取消";
                 }else{
                     throw new ServiceException("当前用户与该排程任务不相关.");
                 }
                 
-                //子订单/排程请假
+                //子订单请假
                 orderItemService.update(item);
                 
                 //主订单信息修改
@@ -561,6 +572,22 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                     workVO.setTimes(item.getTime()+"");
                     idleTime(workVO);
                 }
+                
+                //发送通知
+                NoticeMessage notice = new NoticeMessage();
+                notice.setMessageType(Constants.MSG_SCHEDULE_LEAVE);//预约取消
+                notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
+               // notice.setReceiverId(wxMsgUtils.getOpenId(item.getUserId()));
+                notice.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
+
+                HashMap<String, TemplateMessageItemVo> msgMap = new HashMap<>();
+                msgMap.put("thing1", new TemplateMessageItemVo(order.getServeName()));//主题
+                msgMap.put("date2", new TemplateMessageItemVo(item.getDay() + " " + item.getTimeStart()));//时间
+                msgMap.put("thing8", new TemplateMessageItemVo(item.getTimeStart() + "-" + item.getTimeEnd()));//时段
+                msgMap.put("thing4", new TemplateMessageItemVo(explain));//原因
+
+                notice.setMsgMap(msgMap);
+                wxMsgUtils.send(notice);
                 break;
                 
             //无匹配

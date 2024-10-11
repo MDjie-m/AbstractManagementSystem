@@ -9,8 +9,16 @@ import com.alibaba.fastjson2.JSONObject;
 //import com.yj.notice.message.NoticeMessage;
 //import com.yj.notice.service.MessageService;
 import com.github.pagehelper.util.StringUtil;
+import com.renxin.common.constant.Constants;
+import com.renxin.common.exception.ServiceException;
+import com.renxin.psychology.domain.PsyUser;
+import com.renxin.psychology.service.IPsyConsultService;
+import com.renxin.psychology.service.IPsyUserService;
+import com.renxin.psychology.vo.PsyConsultVO;
+import com.renxin.wechat.vo.TemplateMessageItemVo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -24,6 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.*;
 
@@ -49,32 +58,54 @@ public class WxMsgUtils implements MessageService  {
      */
     @Value(value = "${wechat.secret}")
     private String bkAppSecret;
-    /**
-     * 告警消息模板id
-     */
-    @Value(value = "${wechat.alarm_template_id}")
-    private String alarmTemplateId;
-    /**
-     * 普通消息模板id
-     */
-    @Value(value = "${wechat.common_template_id}")
-    private String commonTemplateId;
+
     /**
      * 获取token
      * "+ appId +"&secret=" + appIdSecret
      */
     @Value(value = "${wechat.token_uri}")
     private String tokenUri;
+    
     /**
-     * + accessToken;
+     * 用户清单链接;
      */
     @Value(value = "${wechat.user_list_uri}")
     private String userListUri;
+    
     /**
-     * + accessToken;
+     * 发送订阅消息链接;
      */
-    @Value(value = "${wechat.send_message_uri}")
-    private String sendMessageUri;
+    @Value(value = "${wechat.send_subscribe_message_uri}")
+    private String sendSubscribeMessageUri;
+
+    /**
+     * 咨询即将开始 - 消息模板id
+     */
+    @Value(value = "${wechat.consult_start_template_id}")
+    private String consultStartTemplateId;
+    /**
+     * 预约咨询成功 - 消息模板id
+     */
+    @Value(value = "${wechat.schedule_success_template_id}")
+    private String scheduleSuccessTemplateId;
+
+    /**
+     * 预约咨询请假 - 消息模板id
+     */
+    @Value(value = "${wechat.schedule_leave_template_id}")
+    private String scheduleLeaveTemplateId;
+
+    /**
+     * 未读消息 - 消息模板id
+     */
+    @Value(value = "${wechat.unread_msg_template_id}")
+    private String unreadMsgTemplateId;
+
+    @Resource
+    private IPsyConsultService psyConsultService;
+
+    @Resource
+    private IPsyUserService userService;
 
     @Autowired
     RestTemplate restTemplate;
@@ -170,7 +201,7 @@ public class WxMsgUtils implements MessageService  {
         JSONObject result = new JSONObject();
         String openId = alarmMessage.getReceiverId();
         if(StringUtil.isEmpty(openId)){
-            // todo 根据手机号码获取微信id --对应数据估计得手动维护
+            // todo 根据手机号码获取微信id -- 对应数据估计得手动维护
             String receiverPhone = alarmMessage.getReceiverPhone();
             if(StringUtil.isEmpty(receiverPhone)){
                 result.put("message","消息接收者手机号码+微信id都为空，消息无法发送");
@@ -188,11 +219,10 @@ public class WxMsgUtils implements MessageService  {
      */
     public String sendMessage(NoticeMessage noticeMessage){
         String result = null;
-        // 模板参数
-        Map<String, WeChatTemplateMsg> sendMsg = new HashMap<String, WeChatTemplateMsg>();
+        
         // openId代表一个唯一微信用户，即微信消息的接收人
-        JSONObject wechatUserId = getWechatUserId(noticeMessage);
-        String openId = null;
+        String openId = noticeMessage.getReceiverId();
+       /*// JSONObject wechatUserId = getWechatUserId(noticeMessage);
         if(wechatUserId.containsKey("message")){
             String message = wechatUserId.getString("message");
             log.error(message);
@@ -204,44 +234,34 @@ public class WxMsgUtils implements MessageService  {
                 return message;
             }
             openId = wechatUserId.getString("userId");
-        }
-        // 公众号的模板id(也有相应的接口可以查询到)
+        }*/
+        //刷新token
         validateToken();
-        String requestUrl = this.sendMessageUri + this.enterpriseToken;
-        //String requestUrl = "https://api.weixin.qq.com/wxaapi/newtmpl/gettemplate?access_token=" + this.enterpriseToken; //模版清单
+        String requestUrl = this.sendSubscribeMessageUri + this.enterpriseToken;
+
+        // 消息模板参数
+        Map<String, TemplateMessageItemVo> sendMsg = noticeMessage.getMsgMap();
+        String time = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        sendMsg.put("content", new TemplateMessageItemVo(noticeMessage.getContent()));
+        sendMsg.put("title",new TemplateMessageItemVo(noticeMessage.getTitle()));
+        sendMsg.put("time",new TemplateMessageItemVo(time));
+        
+       /* sendMsg.put("time1",new WeChatTemplateMsg("2024-05-05"));
+        sendMsg.put("thing2",new WeChatTemplateMsg("aaa"));
+        sendMsg.put("thing3",new WeChatTemplateMsg("bbb"));
+        sendMsg.put("thing4",new WeChatTemplateMsg("ccc"));
+        sendMsg.put("thing5",new WeChatTemplateMsg("ddd"));
+        sendMsg.put("date3",new WeChatTemplateMsg("2019/10/14"));
+        sendMsg.put("time60",new WeChatTemplateMsg("2022年04月15日 13:00~14:00"));
+        sendMsg.put("thing94",new WeChatTemplateMsg("李老师"));
+        sendMsg.put("thing7",new WeChatTemplateMsg("ddd"));*/
         
         //拼接base参数
         Map<String, Object> sendBody = new HashMap<>();
         sendBody.put("touser", openId);
         sendBody.put("data", sendMsg);
         sendBody.put("appid", bkAppKey);
-
-       /* if(noticeMessage instanceof AlarmMessage){
-            AlarmMessage alarmMessage = (AlarmMessage)noticeMessage;
-            sendMsg.put("message", new WeChatTemplateMsg(alarmMessage.getContent()));
-            sendMsg.put("time",new WeChatTemplateMsg(alarmMessage.getTime()));
-            sendMsg.put("level",new WeChatTemplateMsg(alarmMessage.getLevel(),"#FF69B4" ));
-            sendMsg.put("type",new WeChatTemplateMsg(alarmMessage.getType() ,"#173177"));
-            sendMsg.put("remark",new WeChatTemplateMsg(alarmMessage.getRemark(),"#173177"));
-            sendBody.put("template_id", this.alarmTemplateId);
-        }else*/
-        {
-            sendMsg.put("content", new WeChatTemplateMsg(noticeMessage.getContent()));
-            sendMsg.put("title",new WeChatTemplateMsg(noticeMessage.getTitle()));
-            String time = StringUtil.isEmpty(noticeMessage.getTime()) ? "2024-05-05" : noticeMessage.getTime();
-            sendMsg.put("time",new WeChatTemplateMsg(time,"#FF69B4"));
-            sendBody.put("template_id", this.commonTemplateId);
-
-            sendMsg.put("time1",new WeChatTemplateMsg("2024-05-05"));
-            sendMsg.put("thing2",new WeChatTemplateMsg("aaa"));
-            sendMsg.put("thing3",new WeChatTemplateMsg("bbb"));
-            sendMsg.put("thing4",new WeChatTemplateMsg("ccc"));
-            sendMsg.put("thing5",new WeChatTemplateMsg("ddd"));
-            sendMsg.put("date3",new WeChatTemplateMsg("2019/10/14"));
-            sendMsg.put("time60",new WeChatTemplateMsg("2022年04月15日 13:00~14:00"));
-            sendMsg.put("thing94",new WeChatTemplateMsg("李老师"));
-            sendMsg.put("thing7",new WeChatTemplateMsg("ddd"));
-        }
+        sendBody.put("template_id", getTempIdByMsgType(noticeMessage.getMessageType()));
 
         try {
             // 1.创建httpclient对象
@@ -274,6 +294,22 @@ public class WxMsgUtils implements MessageService  {
         }
         return result;
     }
+    
+    //根据消息类型获取TempId
+    private String getTempIdByMsgType(String msgType){
+        switch (msgType){
+            case Constants.MSG_CONSULT_START:
+                return consultStartTemplateId;
+            case Constants.MSG_SCHEDULE_SUCCESS:
+                return scheduleSuccessTemplateId;
+            case Constants.MSG_SCHEDULE_LEAVE:
+                return scheduleLeaveTemplateId;
+            case Constants.MSG_UNREAD_MSG:
+                return unreadMsgTemplateId;
+            default:
+                throw new ServiceException("获取消息类型templateId失败, msgType:" + msgType);
+        }
+    }
 
     /**
      * 根据手机号码获取用户id
@@ -302,5 +338,16 @@ public class WxMsgUtils implements MessageService  {
                 this.getOrRefreshToken();
             }
         }
+    }
+    public String getOpenId(Long cId) {
+        PsyConsultVO consultant = psyConsultService.getOne(cId);
+        if (ObjectUtils.isNotEmpty(consultant)){
+            return consultant.getOpenId();
+        }
+        PsyUser psyUser = userService.selectPsyUserById(cId);
+        if (ObjectUtils.isNotEmpty(psyUser)){
+            return psyUser.getWxOpenid();
+        }
+        throw new ServiceException("该用户id获取不到相应的openid");
     }
 }

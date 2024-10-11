@@ -98,11 +98,18 @@ INNER JOIN psy_user c ON c.id = d.user_id
             item.time,
             item.real_time as realTime,
             item.consult_id as consultId,
-            concat(item.day,' ',item.time_start) as serverStartTime,
-            od.user_id as userId
+            CONCAT(item.day, ' ',
+            LPAD(SUBSTRING_INDEX(item.time_start, ':', 1), 2, '0'), ':',
+            LPAD(SUBSTRING_INDEX(item.time_start, ':', -1), 2, '0')
+            ) AS serverStartTime,
+            od.user_id as userId,
+            con.user_name as consultantName,
+            user.name as userNickName   
         from
             psy_consult_order_item item
         left join psy_consult_order od on item.order_id = od.id
+        left join psy_consult con on item.consult_id = con.id
+        left join psy_user user on od.user_id = user.id
         where
             1=1
             <if test="id != null">and item.id = #{id}</if>

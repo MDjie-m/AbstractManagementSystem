@@ -102,5 +102,10 @@ public class PsyConsultOrderVO extends BaseValObj implements Serializable
     private String payParam;//支付参数
     //最后下单日期
     private String maxOrderDate;
+    
+    private String day;
+    private String timeStart;
+    private String timeEnd;
+    
 
 }

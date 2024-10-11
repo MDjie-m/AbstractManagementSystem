@@ -197,7 +197,7 @@ public class PsyUserServiceImpl implements IPsyUserService {
         if (ObjectUtils.isNotEmpty(req.getChargeConsultantId())){
             //查询该顾客与收款人之间的 咨询 记录
             itemReq.setConsultId(req.getChargeConsultantId());
-            itemReq.setUserId(psyUser.getId()+"");
+            itemReq.setUserId(psyUser.getId());
             itemReq.setOrderDir("desc");
             itemReq.setOrderBy("concat(item.day,' ',item.time_start)");
             List<OrderItemDTO> orderItemChargeList = orderItemService.queryOrderItemList(itemReq);

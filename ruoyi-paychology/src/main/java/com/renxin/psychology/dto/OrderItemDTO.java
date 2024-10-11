@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 public class OrderItemDTO extends PsyConsultOrderItem {
 
     /** 客户 */
-    private String userId;
+    private Long userId;
     private String userAvatar;
     private String userNickName;
     private String payUsername;

@@ -156,4 +156,12 @@ public class Constants
      */
     public static final String[] JOB_ERROR_STR = { "java.net.URL", "javax.naming.InitialContext", "org.yaml.snakeyaml",
             "org.springframework", "org.apache", "com.renxin.common.utils.file" };
+
+    /**
+     * 微信 - 消息类型
+     */
+    public static final String MSG_CONSULT_START  = "consult_start";//咨询即将开始通知
+    public static final String MSG_SCHEDULE_SUCCESS  = "schedule_success";//预约成功通知
+    public static final String MSG_SCHEDULE_LEAVE  = "schedule_leave";//预约请假通知
+    public static final String MSG_UNREAD_MSG  = "unread_msg";//未读消息通知
 }

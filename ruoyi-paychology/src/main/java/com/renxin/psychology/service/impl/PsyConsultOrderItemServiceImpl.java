@@ -62,6 +62,7 @@ public class PsyConsultOrderItemServiceImpl extends ServiceImpl<PsyConsultOrderI
         return psyConsultOrderItemMapper.selectList(wp);
     }
 
+    //查询指定订单的待办预约
     @Override
     public PsyConsultOrderItem getOneByOrderId(Long orderId) {
         LambdaQueryWrapper<PsyConsultOrderItem> wp = new LambdaQueryWrapper<>();
@@ -90,6 +91,14 @@ public class PsyConsultOrderItemServiceImpl extends ServiceImpl<PsyConsultOrderI
     @Override
     public List<OrderItemDTO> queryOrderItemList(OrderItemDTO req){
         List<OrderItemDTO> itemDTOList = psyConsultOrderItemMapper.queryOrderItemList(req);
+        /*for (OrderItemDTO itemDTO : itemDTOList) {
+            if (itemDTO.getTimeStart().length() == 4){
+                itemDTO.setTimeStart("0"+itemDTO.getTimeStart());
+            }
+            if (itemDTO.getTimeEnd().length() == 4){
+                itemDTO.setTimeEnd("0"+itemDTO.getTimeEnd());
+            }
+        }*/
         return itemDTOList;
     }
 

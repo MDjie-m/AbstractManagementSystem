@@ -125,12 +125,13 @@ wechat:
   secret: d8e628314926cc5e1563c6a39f95573d
   grant_type: authorization_code
   jsCodeLoginUrl: https://api.weixin.qq.com/sns/jscode2session
-  alarm_template_id: 111
-#  common_template_id: xxkVfDGqKTt5CojlhLoFsAj2QjFRL7apYbWd3reEuOk
-  common_template_id: 1lFm-IIBDKwbc5WCvKgmKMtGNumEAWb7eiPxqA_YPdI
   token_uri: https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=
   user_list_uri: https://api.weixin.qq.com/cgi-bin/user/get?access_token=
-  send_message_uri: https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=
+  send_subscribe_message_uri: https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=
+  consult_start_template_id: xxkVfDGqKTt5CojlhLoFsAj2QjFRL7apYbWd3reEuOk
+  schedule_success_template_id: 1lFm-IIBDKwbc5WCvKgmKMtGNumEAWb7eiPxqA_YPdI
+  schedule_leave_template_id: xqXpw0FPvkX8l1ZQ3qYNN1MXaGBvGFkInYy_68UU_5c
+  unread_msg_template_id: CDtpVBYOJz1SIrmK-B9nARLPUPVortQ0fCB0Nb6AwTU
 
 geTui:
   AppID: 3EOn07T0bU6LXV4W3xloK5

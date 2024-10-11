@@ -74,7 +74,7 @@ public class PocketConsultOrderController extends BaseController
     }
 
     /**
-     * 咨询
+     * 预约咨询
      */
     @PostMapping(value = "/doConsult/{id}/{workId}/{time}")
     @RateLimiter
@@ -101,7 +101,7 @@ public class PocketConsultOrderController extends BaseController
     public AjaxResult scheduleLeave(@RequestBody PsyWorkReq req, HttpServletRequest request)
     {
         Long userId = pocketTokenService.getUserId(request);
-            req.setUserId(userId+"");
+            req.setUserId(userId);
             req.setScheduleType(12);
         psyConsultWorkService.scheduleLeave(req);
         return AjaxResult.success();

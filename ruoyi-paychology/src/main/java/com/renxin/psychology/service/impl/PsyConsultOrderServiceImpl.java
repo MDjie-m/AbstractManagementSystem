@@ -3,20 +3,22 @@ package com.renxin.psychology.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.renxin.common.constant.Constants;
 import com.renxin.common.constant.NewConstants;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.domain.PsyOrderLog;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.service.IPsyOrderLogService;
 import com.renxin.common.utils.IDhelper;
 import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.utils.OrderIdUtils;
 import com.renxin.common.utils.SecurityUtils;
 import com.renxin.common.vo.DateLimitUtilVO;
+import com.renxin.common.wxMsg.NoticeMessage;
+import com.renxin.common.wxMsg.NoticeMethodEnum;
+import com.renxin.common.wxMsg.WxMsgUtils;
 import com.renxin.psychology.constant.ConsultConstant;
-import com.renxin.psychology.domain.PsyConsultOrder;
-import com.renxin.psychology.domain.PsyConsultOrderItem;
-import com.renxin.psychology.domain.PsyConsultOrderServe;
-import com.renxin.psychology.domain.PsyConsultWork;
+import com.renxin.psychology.domain.*;
 import com.renxin.psychology.dto.OrderDTO;
 import com.renxin.psychology.dto.OrderListDTO;
 import com.renxin.psychology.mapper.PsyConsultOrderMapper;
@@ -78,6 +80,12 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
     
     @Resource
     private IPsyCouponService couponService;
+    
+    @Resource
+    private IPsyUserService userService;
+
+    @Resource
+    private WxMsgUtils wxMsgUtils;
 
     @Override
     public List<PsyOrderLog> getLogs(String orderNo) {
@@ -145,8 +153,15 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
 
     @Override
     public String getOpenId(Long cId) {
-        PsyConsultVO one = psyConsultService.getOne(cId);
-        return one.getOpenId();
+        PsyConsultVO consultant = psyConsultService.getOne(cId);
+        if (ObjectUtils.isNotEmpty(consultant)){
+            return consultant.getOpenId();
+        }
+        PsyUser psyUser = userService.selectPsyUserById(cId);
+        if (ObjectUtils.isNotEmpty(psyUser)){
+            return psyUser.getWxOpenid();
+        }
+        throw new ServiceException("该用户id获取不到相应的openid");
     }
 
     @Override
@@ -330,6 +345,9 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         return update(order) > 0 && psyConsultOrderItemService.updateBatch(list) ? "ok" : "核销失败";
     }
 
+    /**
+     * 订单转介
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String modifyRef(PsyRefOrderReq req) {
@@ -434,6 +452,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
             return -1;
         }
 
+        //校验该订单下, 没有待办的预约
         PsyConsultOrderItem item = psyConsultOrderItemService.getOneByOrderId(id);
         if (item != null) {
             return -1;
@@ -441,12 +460,16 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
 
         order.setTime(time);
         order.setWorkId(workId);
-        handleItem(order, 1);
+        PsyConsultWork work = handleItem(order, 1);
 
-        if (StringUtils.isNotBlank(order.getOrderTime())) {
+        //if (StringUtils.isNotBlank(order.getOrderTime())) {
             // 消息推送
+            order.setDay(work.getDay());
+            order.setTimeStart(time + ":00");
+            order.setTimeEnd(time + ":50");
             sendPublicMsg(order);
-        }
+            
+       // }
 
         // 核销完成,才算完成
 //        if (order.getNum() == 0) {
@@ -458,7 +481,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         return update(order);
     }
 
-    private void handleItem(PsyConsultOrderVO req, int type) {
+    private PsyConsultWork handleItem(PsyConsultOrderVO req, int type) {
         PsyConsultWork work = psyConsultWorkService.handleWork(req.getWorkId(), req.getConsultId(), req.getTime(), type);
         // 插入子订单
         PsyConsultOrderItem orderItem = new PsyConsultOrderItem();
@@ -474,6 +497,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
 
         req.setOrderTime(StrUtil.format("{} {}~{}", work.getDay(), orderItem.getTimeStart(), orderItem.getTimeEnd()));
         psyConsultOrderItemService.add(orderItem);
+        return work;
     }
 
     @Override
@@ -569,7 +593,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
     }
 
     public Boolean sendPublicMsg(PsyConsultOrderVO psyOrder) {
-        TemplateMessageVo msg = new TemplateMessageVo();
+        /*TemplateMessageVo msg = new TemplateMessageVo();
         msg.setTemplate_id(PsyConstants.CONSULT_TEMPLATE_ID);
 
         HashMap<String, TemplateMessageItemVo> hashMap = new HashMap<>();
@@ -581,7 +605,25 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         msg.setData(hashMap);
         msg.setTouser(getOpenId(psyOrder.getConsultId()));
 //        return true;
-        return wechatService.sendPublicMsg(msg);
+        return wechatService.sendPublicMsg(msg);*/
+        
+        //发送微信小程序订阅消息
+        NoticeMessage notice = new NoticeMessage();
+        notice.setMessageType(Constants.MSG_SCHEDULE_SUCCESS);//预约成功
+        notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
+        //notice.setReceiverId(getOpenId(psyOrder.getUserId()));
+        notice.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
+        
+        HashMap<String, TemplateMessageItemVo> msgMap = new HashMap<>();
+        msgMap.put("thing5", new TemplateMessageItemVo(psyOrder.getServeName()));//主题
+        msgMap.put("date3", new TemplateMessageItemVo(psyOrder.getDay()));//日期
+        msgMap.put("time60", new TemplateMessageItemVo(psyOrder.getTimeStart() + "~" + psyOrder.getTimeEnd()));//时段
+        msgMap.put("thing94", new TemplateMessageItemVo(psyOrder.getConsultName()));//咨询师
+        msgMap.put("thing7", new TemplateMessageItemVo("无"));//备注
+        
+        notice.setMsgMap(msgMap);
+        wxMsgUtils.send(notice);
+        return true;
     }
 
     @Override

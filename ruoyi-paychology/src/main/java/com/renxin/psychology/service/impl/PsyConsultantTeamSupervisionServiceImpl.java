@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renxin.common.constant.CacheConstants;
+import com.renxin.common.constant.Constants;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.core.domain.model.LoginUser;
 import com.renxin.common.core.redis.RedisCache;
@@ -187,7 +188,7 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         }
 
 //        NoticeMessage noticeMessage = new NoticeMessage();
-//        noticeMessage.setMessageType("WECHAT");
+//        noticeMessage.setMessageType(Constants.MSG_CONSULT_START);
 //        noticeMessage.setNoticeMethod(NoticeMethodEnum.WECHAT);
 //        noticeMessage.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
 //        noticeMessage.setTitle("111");
@@ -197,8 +198,8 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         return teamList;
     }
 
-    @Resource
-    private WxMsgUtils wxMsgUtils;
+//    @Resource
+//    private WxMsgUtils wxMsgUtils;
         
 
     /**

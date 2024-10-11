@@ -1,6 +1,7 @@
 package com.renxin.common.wxMsg;
 
 import com.github.pagehelper.util.StringUtil;
+import com.renxin.wechat.vo.TemplateMessageItemVo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+
 /**
  * @author : dyg
  * @className : SmsMessageDTO
@@ -25,7 +28,7 @@ public class NoticeMessage implements Serializable {
 　　 **/
     private String messageType;
     /**
-     * 通知消息类型
+     * 通知消息渠道
      */
     protected NoticeMethodEnum noticeMethod;
 
@@ -35,6 +38,10 @@ public class NoticeMessage implements Serializable {
     protected String receiverPhone;
 
     protected String receiverId;
+    
+    protected Long consultantId;
+    protected Long userId;
+    
     /**
      * 接收者-用户名
      */
@@ -61,6 +68,9 @@ public class NoticeMessage implements Serializable {
      * 错误信息
      */
     protected String error;
+
+    //消息参数
+    protected Map<String, TemplateMessageItemVo> msgMap;
 
     public String wrapperMessage() {
         StringBuilder sub = new StringBuilder();
