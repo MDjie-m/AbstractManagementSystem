@@ -1,0 +1,23 @@
+.swap-wrapper {
+  flex-direction: column;
+  padding: 10px;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  .right-panel{
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .query-box{
+    padding-bottom: 0;
+  }
+  .table-box {
+    margin-top: 20px;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+  }
+}

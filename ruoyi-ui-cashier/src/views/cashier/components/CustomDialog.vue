@@ -7,7 +7,13 @@
      </template>
     <div slot="footer" class="dialog-footer"  v-if="!hideFooter" >
       <template v-if="!$slots.footer">
-        <el-button v-loading="loading" type="primary" @click="onOkClick()">确认</el-button>
+        <el-popconfirm v-if="confirmText"
+          icon-color="red" @confirm="onOkClick"
+          :title="confirmText"
+        >
+      <el-button   slot="reference"   v-loading="loading" type="primary"  style="margin-right: 10px" >确认</el-button>
+        </el-popconfirm>
+        <el-button v-else v-loading="loading" type="primary" @click="onOkClick">确认</el-button>
         <el-button @click="onCancel">取 消</el-button>
       </template>
       <template v-else>
@@ -21,7 +27,7 @@ import {listMembers} from "@/api/cashier/member";
 
 export default {
   emits: ["onOk","onCancel" ],
-  props: ['visible','title','width','onOk','hideFooter'],
+  props: ['visible','title','width','onOk','hideFooter','confirmText'],
   data() {
     return {
       loading:false

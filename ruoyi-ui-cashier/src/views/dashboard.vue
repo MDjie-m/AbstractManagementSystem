@@ -142,8 +142,7 @@ export default {
         "rechargeOrderCount": 0,
         "refundAmount": 0.00,
         "refundOrderCount": 0,
-        "cashOrderAmount": 0,
-        "cashOrderCount": 0,
+
         "payList": [],
         "refundList": [],
         "preferentialList": []

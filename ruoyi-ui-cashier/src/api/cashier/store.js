@@ -14,3 +14,24 @@ export function queryDashboard(params) {
     params:params
   })
 }
+export function querySwapRecordList(params) {
+  return request({
+    url: '/cashier/store/swap/list',
+    method: 'get',
+    params:params
+  })
+}
+export function getSwapPreview(params) {
+  return request({
+    url: '/cashier/store/swap/preview',
+    method: 'get',
+    params:params
+  })
+}
+export function addSwap (params) {
+  return request({
+    url: '/cashier/store/swap',
+    method: 'post',
+    data:params
+  })
+}

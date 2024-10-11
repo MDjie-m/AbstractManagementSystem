@@ -65,16 +65,23 @@ export const BookingStatus = Object.freeze({
 export const WorkPlanType = Object.freeze({
 
   Play: {
-    value:4,
-    label:'陪练'
+    value: 4,
+    label: '陪练'
   },//陪练,
   Teach: {
-    value:5,
-    label:'教学'
+    value: 5,
+    label: '教学'
   }//"教学"
 })
-export const ChangeType =  Object.freeze({
+export const ChangeType = Object.freeze({
   In: 0,
   Out: 1,
   Check: 2
-} )
+})
+
+export const TimeFormat = Object.freeze({
+  YYYY_MM_DD: 'YYYY-MM-DD',
+  YYYYcMMcDDc: 'YYYY年MM月DD日',
+  YYYY_MM_DD_HH_mm: 'YYYY-MM-DD HH:mm',
+  HH_mm: 'HH:mm'
+})

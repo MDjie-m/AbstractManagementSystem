@@ -173,4 +173,15 @@ export default {
     line-height: 30px;
   }
 }
+.nest-menu{
+  .custom-menu {
+    padding: 0;
+    height: 40px;
+    flex-direction: row;
+    justify-content: flex-start;
+    .svg-icon{
+      width: 50px;
+    }
+  }
+}
 </style>

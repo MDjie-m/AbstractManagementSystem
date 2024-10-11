@@ -33,23 +33,22 @@
         </el-table>
       </div>
       <div class="btn-container">
-        <el-button
+        <el-button round
           type="primary"
           icon="el-icon-plus"
-          size="mini"
+
           @click="handleAdd(ChangeType.In,'入库')"
           v-hasPermi="['cashier:stock:edit']"
         >入库
         </el-button>
-        <el-button
+        <el-button round
           type="primary"
-          icon="el-icon-plus"
-          size="mini"
+          icon="el-icon-minus"
           @click="handleAdd(ChangeType.Out,'出库')"
           v-hasPermi="['cashier:stock:edit']"
         >出库
         </el-button>
-        <el-button type="primary"     size="mini" v-hasPermi="['cashier:stock:edit']" icon="el-icon-edit" @click="onCheckClick">盘点
+        <el-button type="primary"   round    v-hasPermi="['cashier:stock:edit']" icon="el-icon-edit" @click="onCheckClick">盘点
         </el-button>
       </div>
     </div>
