@@ -12,21 +12,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectStoreSwapRecordList" parameterType="StoreSwapRecord" resultType="StoreSwapRecord">
         <include refid="selectStoreSwapRecordVo"/>
         <where>  
-            <if test="total != null  and total != ''"> and total = #{total}</if>
-            <if test="cashTotal != null  and cashTotal != ''"> and cash_total = #{cashTotal}</if>
-            <if test="deskTotal != null "> and desk_total = #{deskTotal}</if>
-            <if test="tutorTotal != null "> and tutor_total = #{tutorTotal}</if>
-            <if test="goodsTotal != null "> and goods_total = #{goodsTotal}</if>
-            <if test="totalWipeZero != null "> and total_wipe_zero = #{totalWipeZero}</if>
-            <if test="suspendOrderCount != null "> and suspend_order_count = #{suspendOrderCount}</if>
-            <if test="suspendOrderAmount != null "> and suspend_order_amount = #{suspendOrderAmount}</if>
+
             <if test="scheduleDay != null "> and schedule_day = #{scheduleDay}</if>
             <if test="startTime != null  and endTime != null "> and schedule_day  between #{startTime} and #{endTime}</if>
             <if test="storeId != null "> and store_id = #{storeId}</if>
-            <if test="loginUserId != null "> and login_user_id = #{loginUserId}</if>
-            <if test="createById != null "> and create_by_id = #{createById}</if>
-            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+            <if test="user != null and user!=''"> and create_by  like concat('%',#{user},'%')</if>
         </where>
+        order by schedule_day desc
     </select>
     
     <select id="selectStoreSwapRecordBySwapRecordId" parameterType="Long" resultType="StoreSwapRecord">

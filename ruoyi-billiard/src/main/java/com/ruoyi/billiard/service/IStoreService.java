@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service;
 import java.util.Date;
 import java.util.List;
 import com.ruoyi.billiard.domain.Store;
+import com.ruoyi.billiard.domain.StoreSwapRecord;
 import com.ruoyi.billiard.domain.vo.StoreDashboardResVo;
 
 /**
@@ -65,4 +66,6 @@ public interface IStoreService
 
 
     StoreDashboardResVo queryStoreDashboard(Long storeId,Date startTime, Date endTime);
+
+    StoreSwapRecord swapPreview(Long storeId, Date startTime, Date endTime);
 }

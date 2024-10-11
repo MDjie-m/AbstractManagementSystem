@@ -75,6 +75,7 @@ public class StoreSwapRecordController extends BaseController {
     @Log(title = "交班记录", businessType = BusinessType.INSERT)
     @PostMapping
     public ResultVo<Integer> add(@RequestBody StoreSwapRecord storeSwapRecord) {
+        storeSwapRecord.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(storeSwapRecordService.insertStoreSwapRecord(storeSwapRecord));
     }
 

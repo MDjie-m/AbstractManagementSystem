@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.billiard.domain.*;
@@ -142,6 +143,8 @@ public class StoreServiceImpl implements IStoreService {
             endTime = time.getValue1();
         }
         StoreDashboardResVo resVo = new StoreDashboardResVo();
+        resVo.setStarTime(startTime);
+        resVo.setEndTime(endTime);
         //总额
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
@@ -153,16 +156,25 @@ public class StoreServiceImpl implements IStoreService {
 
         // 退款
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getPayTime, startTime, endTime)
+        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue()).gt(Order::getRefundAmount, 0);
         orderInfo = storeMapper.queryOrderTotal("refund_amount", queryWrapper);
         resVo.setRefundAmount(orderInfo.getValue());
         resVo.setRefundOrderCount(orderInfo.getValue1());
 
 
+        // 挂单
+        queryWrapper.clear();
+        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+                .eq(Order::getStatus, OrderStatus.SUSPEND.getValue());
+        orderInfo = storeMapper.queryOrderTotal("total_amount", queryWrapper);
+        resVo.setSuspendAmount(orderInfo.getValue());
+        resVo.setSuspendOrderCount(orderInfo.getValue1());
+
+
         //充值
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getPayTime, startTime, endTime)
+        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getOrderType, OrderType.MEMBER_RECHARGE)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue());
         orderInfo = storeMapper.queryOrderTotal("total_amount", queryWrapper);
@@ -243,5 +255,46 @@ public class StoreServiceImpl implements IStoreService {
         resVo.getOrderSubItems().add(storeMapper.queryOrderSubItems("t_order_recharge", subQuery));
         resVo.getOrderSubItems().get(resVo.getOrderSubItems().size() - 1).setType(OrderType.MEMBER_RECHARGE);
         return resVo;
+    }
+
+    @Override
+    public StoreSwapRecord swapPreview(Long storeId, Date startTime, Date endTime) {
+        StoreDashboardResVo dashboardResVo = queryStoreDashboard(storeId, startTime, endTime);
+
+        StoreSwapRecord res = new StoreSwapRecord();
+        res.setTotal(dashboardResVo.getTotalAmount());
+        res.setStartTime(DateUtils.toLocalDateTime(dashboardResVo.getStarTime()));
+        res.setEndTime(DateUtils.toLocalDateTime(dashboardResVo.getEndTime()));
+        dashboardResVo.getPayList().stream().filter(payDetailVo -> Objects.equals(payDetailVo.getType(), OrderPayType.CASH))
+                .findFirst().ifPresent(p -> {
+                    res.setCashTotal(p.getAmount());
+                });
+        dashboardResVo.getOrderSubItems().stream().filter(p -> Objects.equals(p.getType(), OrderType.TABLE_CHARGE))
+                .findFirst().ifPresent(p -> {
+                    res.setDeskTotal(p.getAmount());
+                });
+        dashboardResVo.getOrderSubItems().stream().filter(p -> Objects.equals(p.getType(), OrderType.TEACHING_ASSISTANT_FEE))
+                .findFirst().ifPresent(p -> {
+                    res.setTutorTotal(p.getAmount());
+                });
+        dashboardResVo.getOrderSubItems().stream().filter(p -> Objects.equals(p.getType(), OrderType.COMMODITY_PURCHASE))
+                .findFirst().ifPresent(p -> {
+                    res.setGoodsTotal(p.getAmount());
+                });
+        dashboardResVo.getOrderSubItems().stream().filter(p -> Objects.equals(p.getType(), OrderType.COMMODITY_PURCHASE))
+                .findFirst().ifPresent(p -> {
+                    res.setGoodsTotal(p.getAmount());
+                });
+        res.setSuspendOrderAmount(dashboardResVo.getSuspendAmount());
+        res.setSuspendOrderCount(dashboardResVo.getSuspendOrderCount());
+
+
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, dashboardResVo.getStarTime(), dashboardResVo.getEndTime())
+                .in(Order::getStatus, OrderStatus.WAIT_SETTLED, OrderStatus.CHARGING);
+        Tuple<BigDecimal, Long> orderInfo = storeMapper.queryOrderTotal("total_amount", queryWrapper);
+        res.setNotSettledOrderAmount(orderInfo.getValue());
+        res.setNotSettledOrderCount(orderInfo.getValue1());
+        return res;
     }
 }

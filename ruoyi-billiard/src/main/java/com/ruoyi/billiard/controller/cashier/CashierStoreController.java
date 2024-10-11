@@ -1,6 +1,7 @@
 package com.ruoyi.billiard.controller.cashier;
 
 import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.domain.vo.IAdd;
 import com.ruoyi.billiard.domain.vo.StoreDashboardResVo;
 import com.ruoyi.billiard.enums.EmployeeStatus;
 import com.ruoyi.billiard.service.*;
@@ -10,11 +11,11 @@ import com.ruoyi.common.core.domain.model.Tuple3;
 import com.ruoyi.common.core.page.PageResVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Optional;
 
@@ -58,17 +59,26 @@ public class CashierStoreController extends BaseController {
         return ResultVo.success(storeService.queryStoreDashboard(getStoreIdWithThrow(), startTime, endTime));
     }
 
+    @GetMapping("/swap/preview")
+    @Validated
+    public ResultVo<StoreSwapRecord> swapPreview(@NotNull(message = "开始时间不能为空") Date startTime, @NotNull(message = "结束时间不能为空") Date endTime) {
+
+
+        return ResultVo.success(storeService.swapPreview(getStoreIdWithThrow(), startTime, endTime));
+    }
+
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @GetMapping("/swap/list")
     public PageResVo<StoreSwapRecord> dashboard(StoreSwapRecord reqVo) {
         reqVo.setStoreId(getStoreIdWithThrow());
         startPage();
+        startOrderBy();
         return PageResVo.success(storeSwapRecordService.selectStoreSwapRecordList(reqVo));
     }
 
-    @GetMapping("/swap")
-    public ResultVo<Integer> storeSwap(StoreSwapRecord reqVo) {
-
+    @PostMapping("/swap")
+    public ResultVo<Integer> storeSwap(@RequestBody @Validated(IAdd.class) StoreSwapRecord reqVo) {
+        reqVo.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(storeSwapRecordService.insertStoreSwapRecord(reqVo));
     }
 

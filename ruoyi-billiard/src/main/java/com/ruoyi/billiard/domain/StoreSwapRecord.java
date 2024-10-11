@@ -1,5 +1,7 @@
 package com.ruoyi.billiard.domain;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -8,9 +10,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.billiard.domain.vo.IAdd;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 
 /**
  * 交班记录对象 t_store_swap_record
@@ -40,7 +47,7 @@ public class StoreSwapRecord extends MyBaseEntity {
     @Excel(name = "总营收")
 
     @TableField("total")
-    private String total;
+    private BigDecimal total = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
 
     /**
      * 现金
@@ -48,7 +55,7 @@ public class StoreSwapRecord extends MyBaseEntity {
     @Excel(name = "现金")
 
     @TableField("cash_total")
-    private String cashTotal;
+    private BigDecimal cashTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
 
     /**
      * 台桌费用
@@ -56,7 +63,7 @@ public class StoreSwapRecord extends MyBaseEntity {
     @Excel(name = "台桌费用")
 
     @TableField("desk_total")
-    private Long deskTotal;
+    private BigDecimal deskTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
 
     /**
      * 教练费用
@@ -64,7 +71,7 @@ public class StoreSwapRecord extends MyBaseEntity {
     @Excel(name = "教练费用")
 
     @TableField("tutor_total")
-    private Long tutorTotal;
+    private BigDecimal tutorTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
 
     /**
      * 教练费用
@@ -72,7 +79,7 @@ public class StoreSwapRecord extends MyBaseEntity {
     @Excel(name = "教练费用")
 
     @TableField("goods_total")
-    private Long goodsTotal;
+    private BigDecimal goodsTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
 
     /**
      * 抹零金额
@@ -80,7 +87,7 @@ public class StoreSwapRecord extends MyBaseEntity {
     @Excel(name = "抹零金额")
 
     @TableField("total_wipe_zero")
-    private Long totalWipeZero;
+    private BigDecimal totalWipeZero = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
 
     /**
      * 挂单单数
@@ -88,7 +95,7 @@ public class StoreSwapRecord extends MyBaseEntity {
     @Excel(name = "挂单单数")
 
     @TableField("suspend_order_count")
-    private Long suspendOrderCount;
+    private Long suspendOrderCount = 0L;
 
     /**
      * 挂单金额
@@ -96,7 +103,16 @@ public class StoreSwapRecord extends MyBaseEntity {
     @Excel(name = "挂单金额")
 
     @TableField("suspend_order_amount")
-    private Long suspendOrderAmount;
+    private BigDecimal suspendOrderAmount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
+
+    @TableField("not_settled_order_count")
+    private Long notSettledOrderCount = 0L;
+
+
+    @TableField("not_settled_order_amount")
+    private BigDecimal notSettledOrderAmount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
+
+
 
     /**
      * 班次
@@ -105,6 +121,7 @@ public class StoreSwapRecord extends MyBaseEntity {
     @Excel(name = "班次", width = 30, dateFormat = "yyyy-MM-dd")
 
     @TableField("schedule_day")
+    @NotNull(groups = IAdd.class, message = "请选择班次")
     private LocalDate scheduleDay;
 
     /**
@@ -114,14 +131,6 @@ public class StoreSwapRecord extends MyBaseEntity {
 
     @TableField("store_id")
     private Long storeId;
-
-    /**
-     * 登录账户id
-     */
-    @Excel(name = "登录账户id")
-
-    @TableField("login_user_id")
-    private Long loginUserId;
 
     /**
      * 创建者Id
@@ -147,5 +156,13 @@ public class StoreSwapRecord extends MyBaseEntity {
     @TableField(exist = false)
     private LocalDateTime endTime;
 
+    @TableField(exist = false)
+    private String user;
 
+
+    @Override
+    @Length(groups = IAdd.class, max = 200, message = "备注内容超出200个字")
+    public String getRemark() {
+        return super.getRemark();
+    }
 }

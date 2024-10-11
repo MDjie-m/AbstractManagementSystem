@@ -1,7 +1,9 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -14,6 +16,8 @@ import com.ruoyi.billiard.service.IStoreSwapRecordService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.billiard.mapper.StoreSwapRecordMapper;
 
+import javax.annotation.Resource;
+
 /**
  * 交班记录Service业务层处理
  *
@@ -23,6 +27,8 @@ import com.ruoyi.billiard.mapper.StoreSwapRecordMapper;
 @Service
 public class StoreSwapRecordServiceImpl extends ServiceImpl<StoreSwapRecordMapper, StoreSwapRecord> implements IStoreSwapRecordService {
 
+    @Resource
+    private IStoreService storeService;
 
     /**
      * 查询交班记录
@@ -53,12 +59,16 @@ public class StoreSwapRecordServiceImpl extends ServiceImpl<StoreSwapRecordMappe
      * @return 结果
      */
     @Override
-    public int insertStoreSwapRecord(StoreSwapRecord storeSwapRecord) {
-        AssertUtil.isTrue(!baseMapper.exists(baseMapper.query().eq(StoreSwapRecord::getScheduleDay, storeSwapRecord.getScheduleDay())), "已经有交班记录，无需重复交班");
-
-
+    public int insertStoreSwapRecord(StoreSwapRecord reqVo) {
+        AssertUtil.isTrue(!baseMapper.exists(baseMapper.query()
+                .eq(StoreSwapRecord::getScheduleDay, reqVo.getScheduleDay())), "已经有交班记录，无需重复交班");
+        Date time = DateUtils.toDate(reqVo.getScheduleDay());
+        StoreSwapRecord storeSwapRecord = storeService.swapPreview(reqVo.getStoreId(), time, time);
+        storeSwapRecord.setStoreId(reqVo.getStoreId());
+        storeSwapRecord.setScheduleDay(reqVo.getScheduleDay());
         SecurityUtils.fillCreateUser(storeSwapRecord);
         storeSwapRecord.setSwapRecordId(IdUtils.singleNextId());
+        storeSwapRecord.setRemark(reqVo.getRemark());
         return baseMapper.insert(storeSwapRecord);
     }
 
