@@ -10,6 +10,7 @@ import com.alibaba.fastjson2.JSONObject;
 //import com.yj.notice.service.MessageService;
 import com.github.pagehelper.util.StringUtil;
 import com.renxin.common.constant.Constants;
+import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.psychology.domain.PsyUser;
 import com.renxin.psychology.service.IPsyConsultService;
@@ -34,7 +35,9 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 //import static com.yj.commons.tools.utils.DateUtils.DATE_TIME_PATTERN;
 
@@ -52,12 +55,12 @@ public class WxMsgUtils implements MessageService  {
      * 账号app_id
      */
     @Value(value = "${wechat.appid}")
-    private String bkAppKey;
+    private String appid;
     /**
      * 账户密钥
      */
     @Value(value = "${wechat.secret}")
-    private String bkAppSecret;
+    private String secret;
 
     /**
      * 获取token
@@ -110,10 +113,9 @@ public class WxMsgUtils implements MessageService  {
     @Autowired
     RestTemplate restTemplate;
 
-    /**
-     * 用户token
-     */
-    private String enterpriseToken = null;
+    @Autowired
+    private RedisCache redisCache;
+
     private Long tokenFreshTimeSt = 0L;
 
     //@Override
@@ -141,16 +143,36 @@ public class WxMsgUtils implements MessageService  {
     /**
      * 获取或者刷新token
      */
-    private void getOrRefreshToken() {
+/*    private void getOrRefreshToken() {
         try {
-            String requestUrl = this.tokenUri + this.bkAppKey +"&secret=" + this.bkAppSecret;
+            String requestUrl = this.tokenUri + this.appid +"&secret=" + this.secret;
             String res = HttpUtil.get(requestUrl);
             JSONObject jsonObject = JSONObject.parseObject(res);
             String accessToken = jsonObject.getString("access_token");
-            this.enterpriseToken = accessToken;
-            this.tokenFreshTimeSt = System.currentTimeMillis()/1000;
         } catch (Exception e) {
             log.error("---获取token出现异常{} {} ",e.getMessage(),e);
+        }
+    }*/
+
+    /**
+     * 获取Token
+     */
+    public String getAccessToken() {
+        
+        String access_token = redisCache.getCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY);
+
+        if (access_token != null) {
+            return access_token;
+        } else {
+            String requestUrl = this.tokenUri + this.appid +"&secret=" + this.secret;
+            String res = HttpUtil.get(requestUrl);
+            JSONObject jsonObject = JSONObject.parseObject(res);
+            String accessToken = jsonObject.getString("access_token");
+            Integer expires_in = jsonObject.getInteger("expires_in");
+            // 更新缓存
+            redisCache.setCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY, access_token, expires_in,
+                    TimeUnit.SECONDS);
+            return access_token;
         }
     }
 
@@ -159,7 +181,7 @@ public class WxMsgUtils implements MessageService  {
      */
     public void getUserList(){
         RestTemplate restTemplate = new RestTemplate();
-        String requestUrl = this.userListUri+ this.enterpriseToken;
+        String requestUrl = this.userListUri + getAccessToken();
         ResponseEntity<String> response = restTemplate.postForEntity(requestUrl, null, String.class);
         log.info("结果是: {}",response.getBody());
         com.alibaba.fastjson2.JSONObject result = com.alibaba.fastjson2.JSONObject.parseObject(response.getBody());
@@ -235,9 +257,7 @@ public class WxMsgUtils implements MessageService  {
             }
             openId = wechatUserId.getString("userId");
         }*/
-        //刷新token
-        validateToken();
-        String requestUrl = this.sendSubscribeMessageUri + this.enterpriseToken;
+        String requestUrl = this.sendSubscribeMessageUri + getAccessToken();
 
         // 消息模板参数
         Map<String, TemplateMessageItemVo> sendMsg = noticeMessage.getMsgMap();
@@ -260,7 +280,7 @@ public class WxMsgUtils implements MessageService  {
         Map<String, Object> sendBody = new HashMap<>();
         sendBody.put("touser", openId);
         sendBody.put("data", sendMsg);
-        sendBody.put("appid", bkAppKey);
+        sendBody.put("appid", appid);
         sendBody.put("template_id", getTempIdByMsgType(noticeMessage.getMessageType()));
 
         try {
@@ -324,7 +344,7 @@ public class WxMsgUtils implements MessageService  {
     /**
      * 验证并刷新token
      */
-    private void validateToken() {
+/*    private void validateToken() {
         if (StringUtil.isEmpty(this.enterpriseToken)) {
             this.getOrRefreshToken();
         }
@@ -338,7 +358,8 @@ public class WxMsgUtils implements MessageService  {
                 this.getOrRefreshToken();
             }
         }
-    }
+    }*/
+    
     public String getOpenId(Long cId) {
         PsyUser psyUser = userService.selectPsyUserById(cId);
         if (ObjectUtils.isEmpty(psyUser)){
