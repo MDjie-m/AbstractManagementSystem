@@ -101,4 +101,9 @@ public class LightTimerServiceImpl extends ServiceImpl<LightTimerMapper,LightTim
         lightTimerMapper.delete(lightTimerMapper.query().eq(LightTimer::getStoreId, storeId).le(LightTimer::getEndTime, time));
         return Boolean.TRUE;
     }
+
+    @Override
+    public void deleteById(Long id) {
+        lightTimerMapper.deleteById(id);
+    }
 }

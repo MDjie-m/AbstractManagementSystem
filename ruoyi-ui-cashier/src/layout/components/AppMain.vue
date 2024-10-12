@@ -38,7 +38,7 @@ export default {
   created() {
     this.$eventBus.$on("global.refresh", this.onReload);
     this.intervalId = setInterval(async () => {
-     // this.queryLightTimer()
+       this.queryLightTimer()
     }, 5000);
     this.queryLightTimer();
   },
@@ -55,6 +55,7 @@ export default {
       let timers = (res.data || []).filter(p => p.enable);
       timers.forEach(p => {
         try {
+          console.log("定时关灯",p)
           callPCMethod(DeviceMethodNames.LightSwitch, {deskNum: p.deskNum, open: false});
           if (p.lightType === 1) {
             stopOrder(p.orderId)
@@ -62,7 +63,7 @@ export default {
         } catch (e) {
         }
       })
-    //  removeLightTimer(time)
+      removeLightTimer(time)
 
     },
     onReload() {

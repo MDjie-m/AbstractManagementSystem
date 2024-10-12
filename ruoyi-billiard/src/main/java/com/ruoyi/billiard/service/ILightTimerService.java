@@ -39,4 +39,6 @@ public interface ILightTimerService  extends IService<LightTimer>
     public int insertLightTimer(LightTimer lightTimer);
 
     Boolean removeByTime(Date time, Long storeId);
+
+    void deleteById(Long id);
 }

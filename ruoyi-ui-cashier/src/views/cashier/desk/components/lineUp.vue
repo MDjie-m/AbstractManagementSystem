@@ -101,6 +101,9 @@ export default {
       callPCMethod(DeviceMethodNames.Print, {
         lines: lines
       }).then(res => {
+        if(!res?.data?.success){
+          this.$modal.msgWarning(res?.data?.msg||'打印失败')
+        }
         console.log(res)
       })
     },

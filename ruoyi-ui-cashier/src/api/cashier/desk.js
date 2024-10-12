@@ -53,6 +53,13 @@ export function listLightTimer(time) {
     params: {time}
   })
 }
+export function removeTimerById(timerId) {
+  return request({
+    headers: {noTip: true},
+    url: `/cashier/desk/light-timer/${timerId}`,
+    method: 'delete',
+  })
+}
 
 export function createLightTimer(data) {
   return request({

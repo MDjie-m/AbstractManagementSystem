@@ -289,9 +289,12 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         if (Objects.isNull(timer)) {
             return;
         }
-        int times = DateUtils.diffMinutes(DateUtils.getNowDate(), timer.getEndTime());
+        int times = DateUtils.diffSeconds(DateUtils.getNowDate(), timer.getEndTime());
         if (times <= 0) {
             times = 0;
+        } else {
+            int temp = times % 60 == 0 ? 0 : 1;
+            times = (times / 60) + temp;
         }
         if (Objects.equals(timer.getLightType(), LightTimerType.CALC_FEE)) {
             resVo.setLastCalcTime(times);

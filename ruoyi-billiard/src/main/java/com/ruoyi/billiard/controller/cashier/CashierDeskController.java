@@ -43,12 +43,14 @@ public class CashierDeskController extends BaseController {
         reqVo.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(deskBookingService.selectBookingDayMap(reqVo));
     }
+
     @GetMapping("/booking/list")
     public PageResVo<DeskBooking> bookingList(DeskBooking reqVo) {
         startPage();
         reqVo.setStoreId(getStoreIdWithThrow());
         return PageResVo.success(deskBookingService.selectDeskBookingList(reqVo));
     }
+
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @PostMapping("/booking")
     public ResultVo<DeskBooking> addBooking(@Validated(IAdd.class) @RequestBody DeskBooking reqVo) {
@@ -56,12 +58,13 @@ public class CashierDeskController extends BaseController {
         reqVo.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(deskBookingService.insertDeskBooking(reqVo));
     }
+
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @PostMapping("/booking/{bookingId}/verify")
     public ResultVo<Boolean> verifyBooking(@PathVariable Long bookingId) {
 
 
-        return ResultVo.success(deskBookingService.verifyBooking(bookingId,getStoreIdWithThrow()));
+        return ResultVo.success(deskBookingService.verifyBooking(bookingId, getStoreIdWithThrow()));
     }
 
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
@@ -207,6 +210,12 @@ public class CashierDeskController extends BaseController {
         return ResultVo.success(lightTimerService.removeByTime(time, getStoreIdWithThrow()));
     }
 
+    @DeleteMapping("/light-timer/{timerId}")
+    public ResultVo<Boolean> removeTimer(@PathVariable Long timerId) {
+        lightTimerService.deleteById(timerId);
+        return ResultVo.success(Boolean.TRUE);
+    }
+
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @GetMapping("/light-timer/list")
     public ResultVo<List<LightTimer>> list(@RequestParam Date time) {
@@ -214,8 +223,6 @@ public class CashierDeskController extends BaseController {
                 .endTime(time).build());
         return ResultVo.success(list);
     }
-
-
 
 
 }
