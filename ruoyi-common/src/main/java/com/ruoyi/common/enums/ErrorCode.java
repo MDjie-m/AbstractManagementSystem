@@ -9,7 +9,7 @@ package com.ruoyi.common.enums;
  */
 
 public enum ErrorCode {
-    CAPTCHA_ERROR(1001, "验证码状态配置错误");
+    CAPTCHA_ERROR(1001, "验证码开关状态配置错误");
 
     private final int code;
     private final String message;
