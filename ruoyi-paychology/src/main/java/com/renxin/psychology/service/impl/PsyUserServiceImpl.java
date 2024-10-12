@@ -6,6 +6,7 @@ import com.renxin.common.constant.IntegralRecordConstants;
 import com.renxin.common.core.domain.dto.LoginDTO;
 import com.renxin.common.core.domain.vo.LoginVO;
 import com.renxin.common.event.publish.IntegralPublisher;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.domain.PsyUser;
@@ -59,6 +60,9 @@ public class PsyUserServiceImpl implements IPsyUserService {
     @Override
     public PsyUser selectPsyUserById(Long id) {
         PsyUser psyUser = psyUserMapper.selectPsyUserById(id);
+        if (ObjectUtils.isEmpty(psyUser)){
+            throw new ServiceException("该id没有对应的用户信息:"+id);
+        }
         if (ObjectUtils.isEmpty(psyUser.getName())){
             psyUser.setName("");
         }
@@ -180,9 +184,10 @@ public class PsyUserServiceImpl implements IPsyUserService {
         PsyUser phoneUser = psyUserMapper.queryUserByAccount(loginDTO.getPhone());
         //若该手机号已经存在用户，直接将微信信息更新至该用户,并删除此微信用户
         if (phoneUser != null) {
-            psyUserMapper.updatePsyUser(PsyUser.builder().id(phoneUser.getId()).wxOpenid(user.getWxOpenid()).avatar(user.getAvatar()).name(user.getName()).build());
+            throw new ServiceException("此手机号已绑定其他用户");
+            /*psyUserMapper.updatePsyUser(PsyUser.builder().id(phoneUser.getId()).wxOpenid(user.getWxOpenid()).avatar(user.getAvatar()).name(user.getName()).build());
             psyUserMapper.deletePsyUserById(user.getId());
-            loginDTO.setUserId(phoneUser.getId());
+            loginDTO.setUserId(phoneUser.getId());*/
         } else {
             psyUserMapper.updatePsyUser(PsyUser.builder().id(user.getId()).phone(loginDTO.getPhone()).build());
             loginDTO.setUserId(user.getId());
