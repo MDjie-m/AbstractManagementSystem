@@ -3,7 +3,7 @@
 
   <div class="page-container">
 
-    <left-container @onRefreshClick="onRefreshClick" :hide-store-info="currentDesk">
+    <left-container ref="leftContainer" @onRefreshClick="onRefreshClick" :hide-store-info="currentDesk">
       <div class="score-info" v-if="currentDesk">
 
 
@@ -158,7 +158,7 @@
         </template>
       </div>
       <content-wrapper :visible.sync="openNewDialog" :title="title">
-        <line-up v-if="title===DeskDialogTitle.LineUp"/>
+        <line-up :storeName="storeInfo?storeInfo.storeName:''" v-if="title===DeskDialogTitle.LineUp"/>
         <booking-desk :desk-list="deskList" v-if="title===DeskDialogTitle.BookingDesk"/>
         <booking-tutor v-if="title===DeskDialogTitle.BookingTutor"/>
         <booking-verify v-if="title===DeskDialogTitle.BookingVerify"/>
@@ -349,6 +349,9 @@ export default {
     removeMethod(DeviceCallbackMethodName.AddScore)
   },
   methods: {
+    getStoreName(){
+      return this.$refs?.leftContainer.storeName
+    },
     initSomePCCallBackMethods() {
       registerMethod(DeviceCallbackMethodName.AddScore, this.addScore);
     },

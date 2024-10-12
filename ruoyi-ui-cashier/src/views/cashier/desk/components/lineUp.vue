@@ -18,7 +18,9 @@
               </el-button>
               <el-button class="num-item-btn" type="danger" circle @click="onRemoveNumClick(place.value,index)"> 过号
               </el-button>
-
+              <el-button class="num-item-btn" type="primary" circle @click="onPrintClick(place.value,place.label,index)">
+                打印
+              </el-button>
             </div>
           </div>
         </el-scrollbar>
@@ -30,7 +32,7 @@
         <el-badge :value="getLineUpList(item.value).numList.length" :hidden="!getLineUpList(item.value).numList.length"
                   class="icon-tip"
                   type="danger" :key="'btn'+item.value" v-for="item in dict.type.store_desk_place">
-          <el-button type="primary" style="margin-left: 20px" round @click="onCreateClick(item.value)"
+          <el-button type="primary" style="margin-left: 20px" round @click="onCreateClick(item.value,item.label)"
           >{{ item.label }}
           </el-button>
         </el-badge>
@@ -46,8 +48,10 @@ import {parseTime} from "@/utils/ruoyi";
 
 const PreNum = ["A", "B", "C", "D", "E", "F"]
 export default {
+  props: ['storeName'],
   dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
   data() {
+
     return {
       lineUpInfo: {},
       loading: false,
@@ -68,6 +72,38 @@ export default {
       let minute = Math.abs(this.$time(item.createTime).diff(new Date(), 'minute'));
       return minute > 0 ? `${minute}分钟` : '1分钟';
     },
+    onPrintClick(type, label, idx) {
+      let tempLineInfo = this.lineUpInfo[type].numList[idx];
+      let num = tempLineInfo.num;
+      let lines = [{
+        beforeLine: 1,
+        content: this.storeName || '',
+        align: true,
+        fontSize: 8,
+        afterLine: 1,
+        splitLine: 1,
+      }, {
+        beforeLine: 1,
+        content: "您的号码是",
+        align: true,
+        afterLine: 1,
+      }, {
+        content: num,
+        fontSize: 20,
+        align: true,
+        afterLine: 1,
+        splitLine: 1,
+      }, {
+        content: `台桌位置:${label}\r\n取号时间:${tempLineInfo.createTime}\r\n前方等待:${idx}`,
+
+        afterLine: 3,
+      } ]
+      callPCMethod(DeviceMethodNames.Print, {
+        lines: lines
+      }).then(res => {
+        console.log(res)
+      })
+    },
     onRemoveNumClick(type, idx) {
       if (this.loading) {
         return
@@ -86,7 +122,7 @@ export default {
     onSpeechClick(num) {
       callPCMethod(DeviceMethodNames.Speech, [{content: num, emphasis: 1}, {content: "号客户请到前台"}])
     },
-    onCreateClick(type) {
+    onCreateClick(type,label) {
       this.currentTitle = type;
       if (this.loading) {
         return
@@ -106,6 +142,7 @@ export default {
       tempLineInfo.currentNum += 1;
       saveLineUp(lineUp).then(p => {
         this.lineUpInfo = lineUp;
+        this.onPrintClick(type,label,tempLineInfo.numList.length-1)
       }).finally(this.closeLoading)
 
     },

@@ -7,6 +7,7 @@ export const DeviceMethodNames = {
   LightStateQuery: 'light.state.query.all',
   Speech: "speech",
   CallAddScore: "score",
+  Print:'print'
 }
 export const DeviceCallbackMethodName = {
 
