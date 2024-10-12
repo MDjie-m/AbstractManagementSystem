@@ -44,7 +44,12 @@ export function listDeskDashboard() {
     method: 'get',
   })
 }
-
+export function queryLightStatus() {
+  return request({
+    url: '/cashier/store/light/status',
+    method: 'get',
+  })
+}
 export function listLightTimer(time) {
   return request({
     headers: {noTip: true},

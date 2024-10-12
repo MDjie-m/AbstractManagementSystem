@@ -1,7 +1,5 @@
 package com.ruoyi.billiard.service.impl;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -9,9 +7,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.billiard.domain.*;
-import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
-import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
-import com.ruoyi.billiard.domain.vo.LineUpVo;
+import com.ruoyi.billiard.domain.vo.*;
 import com.ruoyi.billiard.enums.DeskStatus;
 import com.ruoyi.billiard.enums.EmployeeStatus;
 import com.ruoyi.billiard.enums.LightTimerType;
@@ -25,7 +21,6 @@ import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.*;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

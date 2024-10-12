@@ -103,10 +103,8 @@ public class StoreDesk extends MyBaseEntity
     private String storeName;
 
     @TableField(exist = false)
-    private String lightName;
+    private Boolean lightStatus;
 
-    @TableField(exist = false)
-    private String cameraName;
 
 
 

@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
 import  com.ruoyi.billiard.domain.StoreSwapRecord;
+import com.ruoyi.billiard.domain.vo.LightStatusResVo;
 
 /**
  * 交班记录Service接口
@@ -59,4 +60,5 @@ public interface IStoreSwapRecordService  extends IService<StoreSwapRecord>
      * @return 结果
      */
     public int deleteStoreSwapRecordBySwapRecordId(Long swapRecordId);
+
 }

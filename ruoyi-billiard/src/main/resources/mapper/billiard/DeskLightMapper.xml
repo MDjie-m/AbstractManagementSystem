@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.DeskLightMapper">
+
+
+    <sql id="selectDeskLightVo">
+        select * from t_desk_light
+    </sql>
+
+    <select id="selectDeskLightList" parameterType="DeskLight" resultType="DeskLight">
+        <include refid="selectDeskLightVo"/>
+        <where>  
+            <if test="open != null "> and open = #{open}</if>
+            <if test="deskNum != null "> and desk_num = #{deskNum}</if>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectDeskLightByLightId" parameterType="Long" resultType="DeskLight">
+        <include refid="selectDeskLightVo"/>
+        where light_id = #{lightId}
+    </select>
+    <select id="queryLightStatus" resultType="com.ruoyi.billiard.domain.vo.LightStatusResVo">
+
+        select ifnull(sum(if(b.open = 1, 1, 0)), 0) as open, ifnull(count(1), 0) as allCount
+        from t_store_desk a
+                 left join t_desk_light b on a.store_id = b.store_id and a.desk_num = b.desk_num
+        where a.store_id = #{storeId};
+
+
+    </select>
+
+
+    <delete id="deleteDeskLightByLightId" parameterType="Long">
+        delete from t_desk_light where light_id = #{lightId}
+    </delete>
+
+    <delete id="deleteDeskLightByLightIds" parameterType="String">
+        delete from t_desk_light where light_id in 
+        <foreach item="lightId" collection="array" open="(" separator="," close=")">
+            #{lightId}
+        </foreach>
+    </delete>
+</mapper>

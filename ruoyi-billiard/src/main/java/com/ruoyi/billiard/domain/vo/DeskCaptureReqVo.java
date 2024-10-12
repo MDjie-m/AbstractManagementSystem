@@ -1,10 +1,8 @@
-package com.ruoyi.billiard.domain;
+package com.ruoyi.billiard.domain.vo;
 
-import com.ruoyi.billiard.enums.ScorerBtnType;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 
 @Data

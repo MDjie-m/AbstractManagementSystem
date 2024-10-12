@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.billiard.domain.vo.LightStatusResVo;
 import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
@@ -106,4 +107,5 @@ public class StoreSwapRecordServiceImpl extends ServiceImpl<StoreSwapRecordMappe
     public int deleteStoreSwapRecordBySwapRecordId(Long swapRecordId) {
         return baseMapper.deleteStoreSwapRecordBySwapRecordId(swapRecordId);
     }
+
 }

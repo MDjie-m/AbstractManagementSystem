@@ -1,18 +1,18 @@
 package com.ruoyi.billiard.controller.cashier;
 
-import com.ruoyi.billiard.domain.AddDeskScoreReqVo;
-import com.ruoyi.billiard.domain.BaseDeviceReqVo;
-import com.ruoyi.billiard.domain.DeskCaptureReqVo;
-import com.ruoyi.billiard.service.IStockService;
+import com.ruoyi.billiard.domain.vo.AddDeskScoreReqVo;
+import com.ruoyi.billiard.domain.vo.BaseDeviceReqVo;
+import com.ruoyi.billiard.domain.vo.DeskCaptureReqVo;
+import com.ruoyi.billiard.domain.vo.LightSwitchReqVo;
+import com.ruoyi.billiard.service.IDeskLightService;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.domain.ResultVo;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.AESUtils;
 import com.ruoyi.common.utils.AssertUtil;
-import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,14 +32,24 @@ public class CashierDeviceAPiController {
     @Resource
     private IStoreDeskService storeDeskService;
 
+    @Resource
+    private IDeskLightService deskLightService;
+
     @PostMapping("/desk/score")
     @Anonymous
-    public ResultVo<Boolean> addScore(@RequestBody AddDeskScoreReqVo reqVo) {
+    public ResultVo<Boolean> addScore(@RequestBody @Validated AddDeskScoreReqVo reqVo) {
         fillStoreId(reqVo);
         return ResultVo.success(storeDeskService.addScore(reqVo));
     }
+
+    @PostMapping("/desk/light")
+    @Anonymous
+    public ResultVo<Boolean> lightSwitch(@RequestBody @Validated LightSwitchReqVo reqVo) {
+        fillStoreId(reqVo);
+        return ResultVo.success(deskLightService.switchLight(reqVo));
+    }
     @PostMapping("/desk/capture")
-    public ResultVo<Boolean> addCapture(@RequestBody DeskCaptureReqVo reqVo) {
+    public ResultVo<Boolean> addCapture(@RequestBody @Validated DeskCaptureReqVo reqVo) {
         fillStoreId(reqVo);
         return ResultVo.success(storeDeskService.addCapture(reqVo));
     }

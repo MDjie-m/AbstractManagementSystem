@@ -2,8 +2,10 @@ package com.ruoyi.billiard.mapper;
 
 import java.util.List;
 import com.ruoyi.billiard.domain.StoreSwapRecord;
+import com.ruoyi.billiard.domain.vo.LightStatusResVo;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 交班记录Mapper接口
@@ -46,4 +48,5 @@ public interface StoreSwapRecordMapper extends MyBaseMapper<StoreSwapRecord>
      * @return 结果
      */
     public int deleteStoreSwapRecordBySwapRecordIds(Long[] swapRecordIds);
+
 }

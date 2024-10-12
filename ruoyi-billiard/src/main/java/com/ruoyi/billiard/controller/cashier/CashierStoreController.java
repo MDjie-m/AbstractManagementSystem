@@ -2,6 +2,7 @@ package com.ruoyi.billiard.controller.cashier;
 
 import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.vo.IAdd;
+import com.ruoyi.billiard.domain.vo.LightStatusResVo;
 import com.ruoyi.billiard.domain.vo.StoreDashboardResVo;
 import com.ruoyi.billiard.enums.EmployeeStatus;
 import com.ruoyi.billiard.service.*;
@@ -28,6 +29,9 @@ public class CashierStoreController extends BaseController {
 
     @Autowired
     private IStoreSwapRecordService storeSwapRecordService;
+
+    @Autowired
+    private IDeskLightService deskLightService;
 
     @Autowired
     private IStoreScheduleService storeScheduleService;
@@ -86,4 +90,10 @@ public class CashierStoreController extends BaseController {
     public ResultVo<Tuple3<Date, Date, Date>> getSchedule(@RequestParam(required = false) Date date) {
         return ResultVo.success(storeScheduleService.getDaySchedule(getStoreIdWithThrow(), Optional.ofNullable(date).orElse(new Date())));
     }
+
+    @GetMapping("/light/status")
+    public ResultVo<LightStatusResVo> queryLightStatus( ) {
+        return ResultVo.success(deskLightService.queryLightStatus(getStoreIdWithThrow()));
+    }
+
 }

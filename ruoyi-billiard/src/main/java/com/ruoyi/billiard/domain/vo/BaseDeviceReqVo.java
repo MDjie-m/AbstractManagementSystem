@@ -1,4 +1,4 @@
-package com.ruoyi.billiard.domain;
+package com.ruoyi.billiard.domain.vo;
 
 import com.ruoyi.common.utils.AESUtils;
 import com.ruoyi.common.utils.AssertUtil;

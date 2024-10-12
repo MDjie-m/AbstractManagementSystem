@@ -2,7 +2,6 @@ package com.ruoyi.billiard.service;
 
 import java.util.List;
 
-import com.ruoyi.billiard.domain.AddDeskScoreReqVo;
 import com.ruoyi.billiard.domain.OrderDeskScore;
 import com.ruoyi.billiard.enums.ScorerBtnType;
 

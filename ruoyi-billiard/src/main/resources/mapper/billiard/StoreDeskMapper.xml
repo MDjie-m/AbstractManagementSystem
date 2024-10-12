@@ -7,10 +7,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <sql id="selectStoreDeskVo">
-        select   a.*,b.store_name,f.price ,c.device_name as light_name,d.device_name as camera_name
+        select   a.*,b.store_name,f.price
         from t_store_desk a join  t_store b on a.store_id=b.store_id
-        left join  t_device c on  c.device_id=a.light_device_id
-        left join  t_device d on  d.device_id=a.camera_device_id
+
         left join  t_desk_price f on  a.desk_type=f.desk_type and a.store_id=f.store_id
     </sql>
 

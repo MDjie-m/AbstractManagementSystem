@@ -1,17 +1,15 @@
 package com.ruoyi.billiard.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import com.ruoyi.billiard.domain.AddDeskScoreReqVo;
-import com.ruoyi.billiard.domain.DeskCaptureReqVo;
+import com.ruoyi.billiard.domain.vo.AddDeskScoreReqVo;
+import com.ruoyi.billiard.domain.vo.DeskCaptureReqVo;
 import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.vo.CashierDeskDashboardResVo;
 import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.domain.vo.LineUpVo;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 球桌Service接口

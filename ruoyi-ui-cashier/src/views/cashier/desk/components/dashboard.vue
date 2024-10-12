@@ -6,7 +6,7 @@
 </template>
 <script>
 
-import {listDeskDashboard} from "@/api/cashier/desk";
+import {listDeskDashboard, queryLightStatus} from "@/api/cashier/desk";
 import LineUp from "@/views/cashier/desk/components/lineUp.vue";
 import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
 import ToolBar from "@/views/cashier/desk/components/toolBar.vue";
@@ -85,8 +85,8 @@ export default {
     },
     getOpenLightCount() {
       let totalCount = 0;
-      callPCMethod(DeviceMethodNames.LightStateQuery, {}).then(res => {
-        totalCount = res?.data?.openCount || 0
+      queryLightStatus().then(res => {
+        totalCount = res?.data?.open || 0
       }).finally(() => {
         this.deskMenus[this.deskMenus.length - 1].badge = totalCount;
       })
