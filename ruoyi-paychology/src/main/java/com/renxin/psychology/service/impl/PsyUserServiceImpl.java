@@ -115,7 +115,7 @@ public class PsyUserServiceImpl implements IPsyUserService {
     public int updatePsyUser(PsyUser psyUser) {
         //判断头像信息的格式, 若为base64则需解析图片后上传获取url
         String avatar = psyUser.getAvatar();
-        if (ObjectUtils.isNotEmpty(avatar) && !avatar.contains("http")) {
+        if (ObjectUtils.isNotEmpty(avatar) && !avatar.contains("http") && avatar.length() > 500) {
             String module = "zx";
             String type = "avatar";
             UploadResult upload = null;
