@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class TemplateMessageItemVo {
-    public TemplateMessageItemVo() {}
-    public TemplateMessageItemVo(String value) {
+public class TemplateMessageItemOldVo {
+    public TemplateMessageItemOldVo() {}
+    public TemplateMessageItemOldVo(String value) {
         this.value = value;
     }
 

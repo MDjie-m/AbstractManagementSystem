@@ -22,5 +22,5 @@ public class TemplateMessageVo implements Serializable {
     private String client_msg_id;
 
     // 发送内容 keyword1 keyword2
-    private HashMap<String, TemplateMessageItemVo> data;
+    private HashMap<String, TemplateMessageItemOldVo> data;
 }

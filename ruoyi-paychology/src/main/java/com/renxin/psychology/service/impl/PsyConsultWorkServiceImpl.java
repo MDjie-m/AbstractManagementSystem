@@ -13,6 +13,7 @@ import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.utils.StringUtils;
 import com.renxin.common.wxMsg.NoticeMessage;
 import com.renxin.common.wxMsg.NoticeMethodEnum;
+import com.renxin.common.wxMsg.TemplateMessageItemVo;
 import com.renxin.common.wxMsg.WxMsgUtils;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsultOrderItem;
@@ -30,14 +31,13 @@ import com.renxin.psychology.vo.PsyConsultOrderItemVO;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import com.renxin.system.service.ISysConfigService;
-import com.renxin.wechat.vo.TemplateMessageItemVo;
+import com.renxin.wechat.vo.TemplateMessageItemOldVo;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -69,6 +69,9 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
     
     @Resource
     private WxMsgUtils wxMsgUtils;
+
+    @Resource
+    private IPsyUserService userService;
     
     @Override
     public List<PsyConsultWorkVO> getConsultWorks(PsyWorkReq req) {
@@ -577,7 +580,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                 NoticeMessage notice = new NoticeMessage();
                 notice.setMessageType(Constants.MSG_SCHEDULE_LEAVE);//预约取消
                 notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
-                notice.setReceiverId(wxMsgUtils.getOpenId(item.getUserId()));
+                notice.setReceiverId(userService.getOpenId(item.getUserId()));
                 //notice.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
 
                 HashMap<String, TemplateMessageItemVo> msgMap = new HashMap<>();

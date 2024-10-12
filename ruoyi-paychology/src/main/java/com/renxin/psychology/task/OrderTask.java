@@ -3,13 +3,15 @@ package com.renxin.psychology.task;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.wxMsg.NoticeMessage;
 import com.renxin.common.wxMsg.NoticeMethodEnum;
+import com.renxin.common.wxMsg.TemplateMessageItemVo;
 import com.renxin.common.wxMsg.WxMsgUtils;
 import com.renxin.psychology.domain.PsyConsultOrder;
 import com.renxin.psychology.dto.OrderItemDTO;
 import com.renxin.psychology.service.IPsyConsultOrderItemService;
 import com.renxin.psychology.service.IPsyConsultOrderService;
+import com.renxin.psychology.service.IPsyUserService;
 import com.renxin.system.service.ISysConfigService;
-import com.renxin.wechat.vo.TemplateMessageItemVo;
+import com.renxin.wechat.vo.TemplateMessageItemOldVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +37,9 @@ public class OrderTask {
 
     @Resource
     private WxMsgUtils wxMsgUtils;
+    
+    @Resource
+    private IPsyUserService userService;
 
     public void cancel()
     {
@@ -68,7 +73,7 @@ public class OrderTask {
             NoticeMessage notice = new NoticeMessage();
             notice.setMessageType(Constants.MSG_CONSULT_START);//咨询将开始
             notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
-            notice.setReceiverId(wxMsgUtils.getOpenId(item.getUserId()));
+            notice.setReceiverId(userService.getOpenId(item.getUserId()));
             //notice.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
 
             HashMap<String, TemplateMessageItemVo> msgMap = new HashMap<>();

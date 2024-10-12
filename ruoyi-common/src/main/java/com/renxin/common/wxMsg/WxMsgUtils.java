@@ -2,21 +2,10 @@ package com.renxin.common.wxMsg;
 
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSONObject;
-//import com.yj.commons.tools.utils.DateUtils;
-//import com.yj.commons.tools.utils.JsonUtil;
-//import com.yj.commons.tools.utils.StringUtil;
-//import com.yj.notice.message.AlarmMessage;
-//import com.yj.notice.message.NoticeMessage;
-//import com.yj.notice.service.MessageService;
 import com.github.pagehelper.util.StringUtil;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.exception.ServiceException;
-import com.renxin.psychology.domain.PsyUser;
-import com.renxin.psychology.service.IPsyConsultService;
-import com.renxin.psychology.service.IPsyUserService;
-import com.renxin.psychology.vo.PsyConsultVO;
-import com.renxin.wechat.vo.TemplateMessageItemVo;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -103,12 +92,7 @@ public class WxMsgUtils implements MessageService  {
      */
     @Value(value = "${wechat.unread_msg_template_id}")
     private String unreadMsgTemplateId;
-
-    @Resource
-    private IPsyConsultService psyConsultService;
-
-    @Resource
-    private IPsyUserService userService;
+    
 
     @Autowired
     RestTemplate restTemplate;
@@ -139,20 +123,6 @@ public class WxMsgUtils implements MessageService  {
     public String getNoticeMethod() {
         return NoticeMethodEnum.WECHAT.getName();
     }
-
-    /**
-     * 获取或者刷新token
-     */
-/*    private void getOrRefreshToken() {
-        try {
-            String requestUrl = this.tokenUri + this.appid +"&secret=" + this.secret;
-            String res = HttpUtil.get(requestUrl);
-            JSONObject jsonObject = JSONObject.parseObject(res);
-            String accessToken = jsonObject.getString("access_token");
-        } catch (Exception e) {
-            log.error("---获取token出现异常{} {} ",e.getMessage(),e);
-        }
-    }*/
 
     /**
      * 获取Token
@@ -244,20 +214,8 @@ public class WxMsgUtils implements MessageService  {
         
         // openId代表一个唯一微信用户，即微信消息的接收人
         String openId = noticeMessage.getReceiverId();
-       /*// JSONObject wechatUserId = getWechatUserId(noticeMessage);
-        if(wechatUserId.containsKey("message")){
-            String message = wechatUserId.getString("message");
-            log.error(message);
-            return message;
-        }else{
-            Object userId = wechatUserId.get("userId");
-            if(Objects.isNull(userId)){
-                String message = "未能根据手机号码"+noticeMessage.getReceiverPhone()+"成功获取用户的微信id";
-                return message;
-            }
-            openId = wechatUserId.getString("userId");
-        }*/
-        String requestUrl = this.sendSubscribeMessageUri + getAccessToken();
+       // String requestUrl = this.sendSubscribeMessageUri + getAccessToken();
+        String requestUrl = this.sendSubscribeMessageUri + "85_Fsyflug6uG5rv3NLJVt0GiLdjGwf7mk17kC1i73A-bKK2vzC7bUecSNXO5_g7BZcO4Q76EFt23krYwGud1CNc0sLQrczA7MP2_Q5Jc_gp3g_ccqE-8LKaW-J9HAHEEaACAPMM";
 
         // 消息模板参数
         Map<String, TemplateMessageItemVo> sendMsg = noticeMessage.getMsgMap();
@@ -265,16 +223,6 @@ public class WxMsgUtils implements MessageService  {
         sendMsg.put("content", new TemplateMessageItemVo(noticeMessage.getContent()));
         sendMsg.put("title",new TemplateMessageItemVo(noticeMessage.getTitle()));
         sendMsg.put("time",new TemplateMessageItemVo(time));
-        
-       /* sendMsg.put("time1",new WeChatTemplateMsg("2024-05-05"));
-        sendMsg.put("thing2",new WeChatTemplateMsg("aaa"));
-        sendMsg.put("thing3",new WeChatTemplateMsg("bbb"));
-        sendMsg.put("thing4",new WeChatTemplateMsg("ccc"));
-        sendMsg.put("thing5",new WeChatTemplateMsg("ddd"));
-        sendMsg.put("date3",new WeChatTemplateMsg("2019/10/14"));
-        sendMsg.put("time60",new WeChatTemplateMsg("2022年04月15日 13:00~14:00"));
-        sendMsg.put("thing94",new WeChatTemplateMsg("李老师"));
-        sendMsg.put("thing7",new WeChatTemplateMsg("ddd"));*/
         
         //拼接base参数
         Map<String, Object> sendBody = new HashMap<>();
@@ -340,31 +288,5 @@ public class WxMsgUtils implements MessageService  {
         String userId = null;
         return userId;
     }
-
-    /**
-     * 验证并刷新token
-     */
-/*    private void validateToken() {
-        if (StringUtil.isEmpty(this.enterpriseToken)) {
-            this.getOrRefreshToken();
-        }
-        Long now = System.currentTimeMillis()/1000;
-        if(this.tokenFreshTimeSt == 0L){
-            this.getOrRefreshToken();
-        }else{
-            Long diff = (now - tokenFreshTimeSt)/60;
-            if(diff > 10){
-                // 超过十分钟重新获取一下
-                this.getOrRefreshToken();
-            }
-        }
-    }*/
     
-    public String getOpenId(Long cId) {
-        PsyUser psyUser = userService.selectPsyUserById(cId);
-        if (ObjectUtils.isEmpty(psyUser)){
-            throw new ServiceException("该用户id获取不到相应的openid");
-        }
-        return psyUser.getWxOpenid();
-    }
 }

@@ -15,7 +15,7 @@
       </el-form-item>
 
       <el-form-item label="头部图片" prop="headPicUrl">
-        <my-cropper v-model="form.headPicUrl" sizeTip="宽504px 高254px" :extraData="extraData" :width="504" :height="254" disabled/>
+        <my-cropper v-model="form.headPicUrl" sizeTip="宽375px 高197px" :extraData="extraData" :width="375" :height="197"/>
       </el-form-item>
 
       <el-form-item label="详情图片" prop="detailPicUrl">

@@ -1,7 +1,6 @@
 package com.renxin.common.wxMsg;
 
 import com.github.pagehelper.util.StringUtil;
-import com.renxin.wechat.vo.TemplateMessageItemVo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

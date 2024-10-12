@@ -281,4 +281,15 @@ public class PsyUserServiceImpl implements IPsyUserService {
         }
         return psyUser;
     }
+    
+    //获取用户的openid
+    @Override
+    public String getOpenId(Long cId) {
+        PsyUser psyUser = selectPsyUserById(cId);
+        if (ObjectUtils.isEmpty(psyUser)){
+            throw new ServiceException("该用户id获取不到相应的openid");
+        }
+        return psyUser.getWxOpenid();
+    }
+
 }

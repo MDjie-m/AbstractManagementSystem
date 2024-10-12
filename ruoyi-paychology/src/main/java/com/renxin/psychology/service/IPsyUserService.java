@@ -73,4 +73,6 @@ public interface IPsyUserService {
      * 查询用户详情
      */
     public PsyUser queryUserDetail(VisitorDetailReq req);
+    
+    public String getOpenId(Long cId);
 }
