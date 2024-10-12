@@ -340,14 +340,10 @@ public class WxMsgUtils implements MessageService  {
         }
     }
     public String getOpenId(Long cId) {
-        PsyConsultVO consultant = psyConsultService.getOne(cId);
-        if (ObjectUtils.isNotEmpty(consultant)){
-            return consultant.getOpenId();
-        }
         PsyUser psyUser = userService.selectPsyUserById(cId);
-        if (ObjectUtils.isNotEmpty(psyUser)){
-            return psyUser.getWxOpenid();
+        if (ObjectUtils.isEmpty(psyUser)){
+            throw new ServiceException("该用户id获取不到相应的openid");
         }
-        throw new ServiceException("该用户id获取不到相应的openid");
+        return psyUser.getWxOpenid();
     }
 }

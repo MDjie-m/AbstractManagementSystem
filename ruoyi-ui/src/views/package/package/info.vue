@@ -10,8 +10,12 @@
         <my-cropper v-model="form.productPicUrl" sizeTip="宽172px 高172px" :extraData="extraData" :width="172" :height="172" disabled/>
       </el-form-item>
 
+      <el-form-item label="详情头部图片" prop="headPicUrl">
+        <my-cropper v-model="form.headPicUrl" sizeTip="宽504px 高254px" :extraData="extraData" :width="504" :height="254" disabled/>
+      </el-form-item>
+
       <el-form-item label="详情图片地址" prop="detailPicUrl">
-        <my-cropper v-model="form.detailPicUrl" sizeTip="宽500px 高500px" :extraData="extraData" :width="500" :height="500" disabled/>
+        <image-upload v-model="form.detailPicUrl" :extraData="extraData" />
       </el-form-item>
 
       <el-form-item label="套餐价格" prop="price">
