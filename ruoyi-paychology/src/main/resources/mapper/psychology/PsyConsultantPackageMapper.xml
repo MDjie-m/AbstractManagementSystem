@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="blurb"    column="blurb"    />
         <result property="productPicUrl"    column="product_pic_url"    />
         <result property="detailPicUrl"    column="detail_pic_url"    />
+        <result property="headPicUrl"    column="head_pic_url"    />
         <result property="teamSupNum"    column="team_sup_num"    />
         <result property="personSupNum"    column="person_sup_num"    />
         <result property="personExpNum"    column="person_exp_num"    />
@@ -28,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPsyConsultantPackageVo">
-        select package_id, product_name, product_pic_url, detail_pic_url,  status, del_flag, create_by, create_time,
+        select package_id, product_name, product_pic_url, detail_pic_url, head_pic_url, status, del_flag, create_by, create_time,
                update_by, update_time,
                team_sup_num , person_sup_num, person_exp_num, course_num,price,
                team_sup_coupon_template_id,person_sup_coupon_template_id,person_exp_coupon_template_id,course_coupon_template_id,blurb
@@ -40,8 +41,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             and del_flag = 0
             <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
-            <if test="productPicUrl != null  and productPicUrl != ''"> and product_pic_url = #{productPicUrl}</if>
-            <if test="detailPicUrl != null  and detailPicUrl != ''"> and detail_pic_url = #{detailPicUrl}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="packageIdList != null and packageIdList.size > 0">
                 and package_id in
@@ -64,6 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productName != null">product_name,</if>
             <if test="productPicUrl != null">product_pic_url,</if>
             <if test="detailPicUrl != null">detail_pic_url,</if>
+            <if test="headPicUrl != null">head_pic_url,</if>
             <if test="status != null">status,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
@@ -86,6 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productName != null">#{productName},</if>
             <if test="productPicUrl != null">#{productPicUrl},</if>
             <if test="detailPicUrl != null">#{detailPicUrl},</if>
+            <if test="headPicUrl != null">#{headPicUrl},</if>
             <if test="status != null">#{status},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -111,6 +112,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="productName != null">product_name = #{productName},</if>
             <if test="productPicUrl != null">product_pic_url = #{productPicUrl},</if>
             <if test="detailPicUrl != null">detail_pic_url = #{detailPicUrl},</if>
+            <if test="headPicUrl != null">head_pic_url = #{headPicUrl},</if>
             <if test="status != null">status = #{status},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createBy != null">create_by = #{createBy},</if>

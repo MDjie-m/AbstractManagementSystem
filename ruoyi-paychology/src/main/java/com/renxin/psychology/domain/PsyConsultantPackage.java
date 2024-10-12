@@ -38,6 +38,10 @@ public class PsyConsultantPackage extends BaseEntity
     @Excel(name = "套餐产品图片地址")
     private String productPicUrl;
 
+    /** 头部图片 */
+    @Excel(name = "头部图片")
+    private String headPicUrl;
+    
     /** 详情图片地址 */
     @Excel(name = "详情图片地址")
     private String detailPicUrl;

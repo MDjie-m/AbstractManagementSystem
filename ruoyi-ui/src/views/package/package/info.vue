@@ -10,11 +10,11 @@
         <my-cropper v-model="form.productPicUrl" sizeTip="宽172px 高172px" :extraData="extraData" :width="172" :height="172" disabled/>
       </el-form-item>
 
-      <el-form-item label="详情头部图片" prop="headPicUrl">
+      <el-form-item label="头部图片" prop="headPicUrl">
         <my-cropper v-model="form.headPicUrl" sizeTip="宽504px 高254px" :extraData="extraData" :width="504" :height="254" disabled/>
       </el-form-item>
 
-      <el-form-item label="详情图片地址" prop="detailPicUrl">
+      <el-form-item label="详情图片" prop="detailPicUrl">
         <image-upload v-model="form.detailPicUrl" :extraData="extraData" />
       </el-form-item>
 
