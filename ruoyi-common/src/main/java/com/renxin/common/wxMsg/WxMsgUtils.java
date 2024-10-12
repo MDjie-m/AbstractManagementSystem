@@ -215,7 +215,7 @@ public class WxMsgUtils implements MessageService  {
         // openId代表一个唯一微信用户，即微信消息的接收人
         String openId = noticeMessage.getReceiverId();
        // String requestUrl = this.sendSubscribeMessageUri + getAccessToken();
-        String requestUrl = this.sendSubscribeMessageUri + "85_Fsyflug6uG5rv3NLJVt0GiLdjGwf7mk17kC1i73A-bKK2vzC7bUecSNXO5_g7BZcO4Q76EFt23krYwGud1CNc0sLQrczA7MP2_Q5Jc_gp3g_ccqE-8LKaW-J9HAHEEaACAPMM";
+        String requestUrl = this.sendSubscribeMessageUri + getAccessToken();
 
         // 消息模板参数
         Map<String, TemplateMessageItemVo> sendMsg = noticeMessage.getMsgMap();
