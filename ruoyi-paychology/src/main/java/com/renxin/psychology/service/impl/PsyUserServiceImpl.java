@@ -102,6 +102,11 @@ public class PsyUserServiceImpl implements IPsyUserService {
      */
     @Override
     public int updatePsyUser(PsyUser psyUser) {
+        //判断头像信息的格式, 若为base64则需解析图片后上传获取url
+        String avatar = psyUser.getAvatar();
+        if (!avatar.contains("http")){
+            
+        }
         return psyUserMapper.updatePsyUser(psyUser);
     }
 

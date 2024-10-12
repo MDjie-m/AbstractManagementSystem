@@ -611,8 +611,8 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         NoticeMessage notice = new NoticeMessage();
         notice.setMessageType(Constants.MSG_SCHEDULE_SUCCESS);//预约成功
         notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
-        //notice.setReceiverId(getOpenId(psyOrder.getUserId()));
-        notice.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
+        notice.setReceiverId(getOpenId(psyOrder.getUserId()));
+        //notice.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
         
         HashMap<String, TemplateMessageItemVo> msgMap = new HashMap<>();
         msgMap.put("thing5", new TemplateMessageItemVo(psyOrder.getServeName()));//主题

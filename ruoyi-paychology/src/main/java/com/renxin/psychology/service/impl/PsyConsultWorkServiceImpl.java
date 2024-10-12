@@ -577,8 +577,8 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                 NoticeMessage notice = new NoticeMessage();
                 notice.setMessageType(Constants.MSG_SCHEDULE_LEAVE);//预约取消
                 notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
-               // notice.setReceiverId(wxMsgUtils.getOpenId(item.getUserId()));
-                notice.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
+                notice.setReceiverId(wxMsgUtils.getOpenId(item.getUserId()));
+                //notice.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
 
                 HashMap<String, TemplateMessageItemVo> msgMap = new HashMap<>();
                 msgMap.put("thing1", new TemplateMessageItemVo(order.getServeName()));//主题

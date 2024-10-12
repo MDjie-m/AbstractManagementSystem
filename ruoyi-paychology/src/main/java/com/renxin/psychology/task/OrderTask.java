@@ -68,8 +68,8 @@ public class OrderTask {
             NoticeMessage notice = new NoticeMessage();
             notice.setMessageType(Constants.MSG_CONSULT_START);//咨询将开始
             notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
-            //notice.setReceiverId(wxMsgUtils.getOpenId(item.getUserId()));
-            notice.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
+            notice.setReceiverId(wxMsgUtils.getOpenId(item.getUserId()));
+            //notice.setReceiverId("oP8146998AoIjkNMZx4s2vK4me5w");
 
             HashMap<String, TemplateMessageItemVo> msgMap = new HashMap<>();
             oneHourLater = oneHourLater.replace("|", " ");
