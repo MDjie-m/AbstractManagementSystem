@@ -98,8 +98,9 @@
                     trigger="hover">
                     <div class="menu-box">
                       <div v-if="item.status ===CalcTimeStatus.Busy"
-                           @click="onTutorHandleClick('stop','停止计费',item)"><i
-                        class="el-icon-video-pause icon-red "></i> 停止
+                           @click="onTutorHandleClick('stop','停止计费',item)">
+                        <svg-icon icon-class="stop"
+                        class-name=" icon-red "></svg-icon> 停止
                       </div>
                       <div v-if="item.status ===CalcTimeStatus.Pause"
                            @click="onTutorHandleClick('resume','恢复计费',item)"><i
