@@ -283,7 +283,9 @@ aside {
     font-size: 12px !important;
   }
 }
-
+.icon-red{
+  color: $red !important;
+}
 .icon-blue{
   color: $light-blue !important;
 }
@@ -292,4 +294,14 @@ aside {
 }
 .icon-yellow{
   color: $yellow !important;
+}
+.icon-white{
+  color: #FFFFFF !important;
+}
+.bg-blue{
+  background-color:  $light-blue !important;
+}
+.pop-auto{
+    min-width: auto!important;
+ padding: 0!important;
 }

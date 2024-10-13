@@ -27,7 +27,7 @@
         <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
           <span>{{ currentDesk.deskTotalTimeAmount }}</span>元 <i class="el-icon-info"/>
         </div>
-        <SvgItem svg-icon="clock" label="开台" @click.native="onStartDeskClick()"
+        <SvgItem svg-icon="clock" class="icon-blue" label="开台" @click.native="onStartDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Wait && !currentDesk.lastActiveOrder" :btnAble="true"/>
         <el-popconfirm v-if="currentDesk.status ===DeskStatus.Busy"
                        title="确认结束开台？" @confirm="onStopDeskClick">

@@ -14,6 +14,13 @@ export function tutorPunchIn(params) {
     params: params
   })
 }
+export function tutorOrderHandle(url,params) {
+  return request({
+    url: `/cashier/tutor/${params.tutorId}/${url}`,
+    method: 'post',
+    params: params
+  })
+}
 
 export function getTutorBookingMap(params) {
   return request({

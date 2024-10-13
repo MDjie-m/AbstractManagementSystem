@@ -3,6 +3,7 @@ package com.ruoyi.billiard.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.billiard.enums.DeskStatus;
 import com.ruoyi.billiard.enums.DeskType;
 import com.ruoyi.billiard.enums.PlaceType;
+import com.ruoyi.common.utils.StringUtils;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
@@ -125,4 +127,8 @@ public class StoreDesk extends MyBaseEntity
     @TableField(exist = false)
     private DeskBooking booking;
 
+
+    public String getLongTitle() {
+        return StringUtils.format("{}({})/{}", deskName, deskNum, Objects.nonNull(placeType)?placeType.getDesc():"");
+    }
 }

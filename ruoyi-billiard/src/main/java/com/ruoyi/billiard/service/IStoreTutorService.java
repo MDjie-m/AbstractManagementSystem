@@ -61,4 +61,11 @@ public interface IStoreTutorService
     public int deleteStoreTutorByStoreTutorId(Long storeTutorId);
 
 
+    void swapToNewDesk(Long tutorId, Long storeId,  Long newDeskId);
+
+    void tutorPause(Long tutorId, Long storeId);
+
+    void tutorResume(Long tutorId, Long storeId);
+
+    void tutorStop(Long tutorId, Long storeId);
 }

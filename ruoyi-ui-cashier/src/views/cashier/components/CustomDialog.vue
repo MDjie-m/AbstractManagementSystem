@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="title" class="custom-dialog" :visible.sync="visible" :width="dialogWidth" append-to-body
-             :close-on-click-modal="false"
+             :close-on-click-modal="false" @close="onCancel"
              :close-on-press-escape="false" :show-close="false">
      <template>
        <slot/>

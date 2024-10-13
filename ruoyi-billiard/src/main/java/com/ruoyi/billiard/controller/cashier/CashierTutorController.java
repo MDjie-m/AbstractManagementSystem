@@ -2,6 +2,7 @@ package com.ruoyi.billiard.controller.cashier;
 
 import com.ruoyi.billiard.domain.Goods;
 import com.ruoyi.billiard.domain.StoreTutor;
+import com.ruoyi.billiard.domain.vo.DeskQueryResVo;
 import com.ruoyi.billiard.enums.EmployeeStatus;
 import com.ruoyi.billiard.service.IGoodsService;
 import com.ruoyi.billiard.service.IStoreTutorService;
@@ -43,5 +44,36 @@ public class CashierTutorController extends BaseController {
     public ResultVo<Boolean> punchIn(@PathVariable Long tutorId, @RequestParam LocalDate scheduleDay ) {
 
         return ResultVo.success(tutorPunchInService.punchIn(getStoreIdWithThrow(),tutorId,scheduleDay,LocalDateTime.now()));
+    }
+
+    /**
+     * 换台
+     *
+     * @param tutorId 教练id
+     * @return 球桌基本信息
+     */
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/{tutorId}/swap")
+    public ResultVo<Boolean> swapToNewDesk(@PathVariable Long tutorId,  @RequestParam Long newDeskId) {
+         storeTutorService.swapToNewDesk(tutorId, getStoreIdWithThrow(),  newDeskId);
+        return ResultVo.success(Boolean.TRUE);
+    }
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/{tutorId}/pause")
+    public ResultVo<Boolean> pause(@PathVariable Long tutorId) {
+        storeTutorService.tutorPause(tutorId, getStoreIdWithThrow());
+        return ResultVo.success(Boolean.TRUE);
+    }
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/{tutorId}/resume")
+    public ResultVo<Boolean> resume(@PathVariable Long tutorId) {
+        storeTutorService.tutorResume(tutorId, getStoreIdWithThrow());
+        return ResultVo.success(Boolean.TRUE);
+    }
+    @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
+    @PostMapping("/{tutorId}/stop")
+    public ResultVo<Boolean> stop(@PathVariable Long tutorId) {
+        storeTutorService.tutorStop(tutorId, getStoreIdWithThrow());
+        return ResultVo.success(Boolean.TRUE);
     }
 }

@@ -326,7 +326,7 @@
             <div class="info-box" v-for="(item, idx) in form.orderTutorTimes" :key="item.orderTutorTimeId + idx">
               <div class="info-box-row">
                 <div class="info-box-row-middle">
-                  <div class="info-box-title">球桌：</div>
+                  <div class="info-box-title">台桌：</div>
                   <div class="info-box-row-left-content">{{ `${item.storeDesk.deskName}(${item.storeDesk.deskNum})` }}</div>
                 </div>
               </div>

@@ -63,8 +63,9 @@ export default {
         } catch (e) {
         }
       })
-      removeLightTimer(time)
-
+      if(timers.length){
+        removeLightTimer(time)
+      }
     },
     onReload() {
       this.reload();

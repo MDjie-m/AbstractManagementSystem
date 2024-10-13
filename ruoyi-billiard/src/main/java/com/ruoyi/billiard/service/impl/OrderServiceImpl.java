@@ -307,6 +307,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return selectOrderByOrderId(orderId);
     }
 
+
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Order mergeToNewDesk(Long oldDeskId, Long oldOrderId, Long newDeskId) {
@@ -875,6 +877,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 p.setOrderId(order.getOrderId());
                 p.setStartTime(startTime);
                 p.setStatus(CalcTimeStatus.BUSY.getValue());
+                p.setPrice(price);
                 SecurityUtils.fillCreateUser(p, order);
                 orderTutorTimeMapper.insert(p);
 

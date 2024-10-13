@@ -1,16 +1,18 @@
 package com.ruoyi.billiard.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.enums.CalcTimeStatus;
+import com.ruoyi.billiard.enums.DeskStatus;
+import com.ruoyi.billiard.enums.TutorWorkStatus;
 import com.ruoyi.billiard.mapper.OrderTutorTimeMapper;
+import com.ruoyi.billiard.mapper.StoreDeskMapper;
 import com.ruoyi.billiard.mapper.StoreUserMapper;
-import com.ruoyi.billiard.service.ITutorBookingService;
-import com.ruoyi.billiard.service.ITutorPunchInService;
-import com.ruoyi.billiard.service.ITutorWorkPlanService;
-import com.ruoyi.common.core.domain.entity.SysRole;
+import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.utils.ArrayUtil;
@@ -21,11 +23,9 @@ import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.service.ISysUserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.compress.utils.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
-import com.ruoyi.billiard.service.IStoreTutorService;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -56,8 +56,13 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
     private OrderTutorTimeMapper orderTutorTimeMapper;
 
     @Resource
+    private StoreDeskMapper storeDeskMapper;
+
+    @Resource
     private ITutorBookingService tutorBookingService;
 
+    @Resource
+    private IOrderService orderService;
 
     /**
      * 查询门店助教
@@ -121,7 +126,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
 
             Map<Long, Integer> planCount = ArrayUtil.toMap(tutorWorkPlanService.selectTutorWorkPlanList(
                             TutorWorkPlan.builder().storeId(storeTutor.getStoreId())
-                                    .day(storeTutor.getScheduleDay()).build()    ),
+                                    .day(storeTutor.getScheduleDay()).build()),
                     TutorWorkPlan::getTutorId, TutorWorkPlan::getCount);
             users.forEach(p -> {
                 p.setPlanCount(planCount.getOrDefault(p.getStoreTutorId(), 0));
@@ -235,5 +240,146 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         return storeTutorMapper.deleteById(storeTutorId);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void swapToNewDesk(Long tutorId, Long storeId, Long newDeskId) {
+        OrderTutorTime tutorTime = orderTutorTimeMapper.selectOne(orderTutorTimeMapper.query()
+                .eq(OrderTutorTime::getTutorId, tutorId).in(OrderTutorTime::getStatus, CalcTimeStatus.BUSY.getValue())
+                .last(" limit 1"));
+        AssertUtil.notNullOrEmpty(tutorTime, "教练不是计费状态");
+
+
+        StoreTutor tutor = storeTutorMapper.selectById(tutorId);
+        AssertUtil.notNullOrEmpty(tutor, "教练不存在");
+        AssertUtil.equal(tutor.getStoreId(), storeId, "非法参数");
+
+
+        StoreDesk newDesk = queryEnableDesk(newDeskId, storeId);
+        AssertUtil.isTrue(Objects.equals(newDesk.getStatus(), DeskStatus.BUSY)
+                && Objects.nonNull(newDesk.getCurrentOrderId()), "目标台桌不是计费状态，无法更换,请更换到其他台桌。");
+        AssertUtil.isTrue(!Objects.equals(newDesk.getDeskId(), tutorTime.getDeskId()), "不能更换到同一桌");
+
+
+        Date endTime = DateUtils.removeSeconds(new Date());
+        tutorTime.setEndTime(endTime);
+        tutorTime.setStatus(CalcTimeStatus.STOP.getValue());
+        BaseFee.calcFees(Collections.singletonList(tutorTime));
+        SecurityUtils.fillUpdateUser(tutorTime);
+        orderTutorTimeMapper.updateById(tutorTime);
+
+
+        BigDecimal price = storeTutorMapper.queryPrice(tutorId);
+        OrderTutorTime p = new OrderTutorTime();
+        AssertUtil.notNullOrEmpty(price, "未配置教练价格，请联系管理员添加");
+        p.setOrderTutorTimeId(IdUtils.singleNextId());
+        p.setOrderId(newDesk.getCurrentOrderId());
+        p.setStartTime(endTime);
+        p.setPrice(price);
+        p.setTutorId(tutorId);
+        p.setType(tutorTime.getType());
+        p.setDeskId(newDeskId);
+        p.setStatus(CalcTimeStatus.BUSY.getValue());
+        SecurityUtils.fillCreateUser(p);
+        orderTutorTimeMapper.insert(p);
+
+        tutor.setCurrentOrderId(newDesk.getCurrentOrderId());
+        SecurityUtils.fillUpdateUser(tutor, tutorTime);
+        storeTutorMapper.updateById(tutor);
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void tutorPause(Long tutorId, Long storeId) {
+
+        StoreTutor tutor = storeTutorMapper.selectById(tutorId);
+        AssertUtil.notNullOrEmpty(tutor, "教练不存在");
+        AssertUtil.equal(tutor.getStoreId(), storeId, "非法参数");
+        AssertUtil.notNullOrEmpty(tutor.getCurrentOrderId(), "教练不是计费状态");
+
+        OrderTutorTime tutorTime = orderTutorTimeMapper.selectOne(orderTutorTimeMapper.query().eq(OrderTutorTime::getOrderId, tutor.getCurrentOrderId())
+                .eq(OrderTutorTime::getTutorId, tutorId).in(OrderTutorTime::getStatus, CalcTimeStatus.BUSY.getValue())
+                .last(" limit 1"));
+        AssertUtil.notNullOrEmpty(tutorTime, "教练不是计费状态");
+
+
+        Date endTime = DateUtils.removeSeconds(new Date());
+        tutorTime.setEndTime(endTime);
+        tutorTime.setStatus(CalcTimeStatus.PAUSE.getValue());
+        BaseFee.calcFees(Collections.singletonList(tutorTime));
+        SecurityUtils.fillUpdateUser(tutorTime);
+        orderTutorTimeMapper.updateById(tutorTime);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void tutorResume(Long tutorId, Long storeId) {
+
+        StoreTutor tutor = storeTutorMapper.selectById(tutorId);
+        AssertUtil.notNullOrEmpty(tutor, "教练不存在");
+        AssertUtil.equal(tutor.getStoreId(), storeId, "非法参数");
+        AssertUtil.notNullOrEmpty(tutor.getCurrentOrderId(), "教练不是计费状态");
+
+        OrderTutorTime tutorTime = orderTutorTimeMapper.selectOne(orderTutorTimeMapper.query().eq(OrderTutorTime::getOrderId, tutor.getCurrentOrderId())
+                .eq(OrderTutorTime::getTutorId, tutorId).in(OrderTutorTime::getStatus, CalcTimeStatus.PAUSE.getValue())
+                .orderByDesc(OrderTutorTime::getOrderTutorTimeId)
+                .last(" limit 1"));
+        AssertUtil.notNullOrEmpty(tutorTime, "教练不是暂停状态");
+        tutorTime.setStatus(CalcTimeStatus.STOP.getValue());
+        SecurityUtils.fillCreateUser(tutorTime);
+        orderTutorTimeMapper.updateById(tutorTime);
+
+        Date startTime = DateUtils.removeSeconds(new Date());
+        BigDecimal price = storeTutorMapper.queryPrice(tutorId);
+        OrderTutorTime p = new OrderTutorTime();
+        AssertUtil.notNullOrEmpty(price, "未配置教练价格，请联系管理员添加");
+        p.setOrderTutorTimeId(IdUtils.singleNextId());
+        p.setOrderId(tutorTime.getOrderId());
+        p.setDeskId(tutorTime.getDeskId());
+        p.setTutorId(tutorId);
+        p.setStartTime(startTime);
+        p.setType(tutorTime.getType());
+        p.setPrice(price);
+        p.setStatus(CalcTimeStatus.BUSY.getValue());
+        SecurityUtils.fillCreateUser(p);
+        orderTutorTimeMapper.insert(p);
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void tutorStop(Long tutorId, Long storeId) {
+        StoreTutor tutor = storeTutorMapper.selectById(tutorId);
+        AssertUtil.notNullOrEmpty(tutor, "教练不存在");
+        AssertUtil.equal(tutor.getStoreId(), storeId, "非法参数");
+        AssertUtil.notNullOrEmpty(tutor.getCurrentOrderId(), "教练不是计费状态");
+
+        OrderTutorTime tutorTime = orderTutorTimeMapper.selectOne(orderTutorTimeMapper.query().eq(OrderTutorTime::getOrderId, tutor.getCurrentOrderId())
+                .eq(OrderTutorTime::getTutorId, tutorId).in(OrderTutorTime::getStatus, CalcTimeStatus.BUSY.getValue())
+                .last(" limit 1"));
+        AssertUtil.notNullOrEmpty(tutorTime, "教练不是计费状态");
+
+
+        Date endTime = DateUtils.removeSeconds(new Date());
+        tutorTime.setEndTime(endTime);
+        tutorTime.setStatus(CalcTimeStatus.STOP.getValue());
+        BaseFee.calcFees(Collections.singletonList(tutorTime));
+        SecurityUtils.fillUpdateUser(tutorTime);
+        orderTutorTimeMapper.updateById(tutorTime);
+
+        tutor.setWorkStatus(TutorWorkStatus.WAIT.getValue());
+        tutor.setCurrentOrderId(null);
+        SecurityUtils.fillUpdateUser(tutor);
+        storeTutorMapper.updateAllWithId(tutor);
+    }
+
+    private StoreDesk queryEnableDesk(Long deskId, Long storeId) {
+        StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query()
+                .eq(StoreDesk::getDeskId, deskId).eq(StoreDesk::getStoreId, storeId));
+
+        AssertUtil.notNullOrEmpty(desk, "非法参数");
+        AssertUtil.isTrue(Objects.equals(desk.getEnable(), Boolean.TRUE), "台桌未启用");
+        return desk;
+    }
 
 }

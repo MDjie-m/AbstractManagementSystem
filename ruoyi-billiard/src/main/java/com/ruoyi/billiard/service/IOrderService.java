@@ -70,7 +70,6 @@ public interface IOrderService
     Order createOrder(Long deskId);
 
     Order swapToNewDesk(Long deskId, Long orderId, Long newDeskId);
-
     Order mergeToNewDesk(Long deskId, Long orderId, Long newDeskId);
 
     Order pauseCalcFee(Long deskId);

@@ -1,3 +1,4 @@
+@import '@/assets/styles/variables.scss';
 .order-box {
   flex: 1;
   overflow-y: hidden;
@@ -12,10 +13,37 @@
 
 
 ::v-deep.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell{
-  background-color: #1890ff!important;
+  background-color: $light-blue!important;
   color: #fff!important;
 }
+.menu-box{
+  display: flex;
+  flex-direction: column;
+  color: $light-blue;
+  z-index: 3;
+  >div{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding:  5px 10px ;
+    border-radius: 5px;
+    &:hover{
+      color: #FFFFFF!important;
+      background-color:  $light-blue;;
+      svg{
+        color: #FFFFFF!important;
+      }
+    }
+  }
+  i {
+    font-size: 20px;
+  }
+ svg{
+    font-size: 18px;
+  }
 
+}
 .time-box-wrapper {
   display: flex;
   flex-direction: row;
@@ -31,6 +59,19 @@
     align-items: center;
     justify-content: center;
 
+  }
+  .tool-box{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 30px;
+    font-size: 20px;
+    color: $light-blue;
+    &:hover{
+      background-color: $light-blue;
+      color: #FFFFFF;
+    }
   }
 
   .time-box {

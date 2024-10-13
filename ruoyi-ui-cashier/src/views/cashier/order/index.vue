@@ -16,13 +16,13 @@
                 </div>
                 <div class="time-box">
                   <div class="time-box-row">
-                    充值金额:{{item.rechargeAmount}}
+                    充值金额:{{ item.rechargeAmount }}
                   </div>
                   <div class="time-box-row">
-                    折扣金额:{{item.totalDiscountAmount}}
+                    折扣金额:{{ item.totalDiscountAmount }}
                   </div>
                   <div class="time-box-row">
-                    实际支付金额:{{item.totalAmount}}
+                    实际支付金额:{{ item.totalAmount }}
                   </div>
                 </div>
               </div>
@@ -90,6 +90,37 @@
                     <el-tag type="info" size="mini">{{ item.status !== CalcTimeStatus.Stop ? '当前' : '结束' }}</el-tag>
                     <div>{{ item.endTime|timeFormat('MM-DD HH:mm') }}</div>
                   </div>
+                </div>
+                <div class="tool-box  "
+                     v-if="item.status ===CalcTimeStatus.Busy ||item.status ===CalcTimeStatus.Pause ">
+                  <el-popover
+                    placement="right" popper-class="pop-auto"
+                    trigger="hover">
+                    <div class="menu-box">
+                      <div v-if="item.status ===CalcTimeStatus.Busy"
+                           @click="onTutorHandleClick('stop','停止计费',item)"><i
+                        class="el-icon-video-pause icon-red "></i> 停止
+                      </div>
+                      <div v-if="item.status ===CalcTimeStatus.Pause"
+                           @click="onTutorHandleClick('resume','恢复计费',item)"><i
+                        class="el-icon-video-play  icon-green"></i> 恢复
+                      </div>
+                      <div v-if="item.status ===CalcTimeStatus.Busy"
+                           @click="onTutorHandleClick('pause','暂停计费',item)"><i
+                        class="el-icon-video-pause icon-yellow "></i> 暂停
+                      </div>
+                      <div v-if="item.status ===CalcTimeStatus.Busy" @click="onOpenSwapClick(item)">
+                        <svg-icon icon-class="change" class=" icon-blue "></svg-icon>
+                        换桌
+                      </div>
+                    </div>
+                    <div style="height: 130px;display: flex;align-items: center" slot="reference">
+                      <svg-icon icon-class="dot"/>
+                    </div>
+
+                  </el-popover>
+
+
                 </div>
               </div>
             </template>
@@ -281,7 +312,7 @@
             <span> {{ currentOrder.totalAmount }}  </span>
           </el-form-item>
           <el-form-item label="请输入会员密码:">
-            <el-input maxlength="10" type="password"  autocomplete="off" v-model="finishOrderForm.password">
+            <el-input maxlength="10" type="password" autocomplete="off" v-model="finishOrderForm.password">
 
             </el-input>
           </el-form-item>
@@ -291,6 +322,8 @@
       </el-form>
 
     </CustomDialog>
+
+    <swap-desk v-if="currentTutorTime" @onOk="refreshOrder" :tutor-id="currentTutorTime.tutorId" :desk-id="currentTutorTime.deskId" :open.sync="swapDeskShow"/>
   </div>
 </template>
 <script>
@@ -301,6 +334,8 @@ import {MessageBox} from "element-ui";
 import {listDesk, resumeCalcFee} from "@/api/cashier/desk";
 import {CalcTimeStatus, DeskStatus, OrderPayType, OrderStatus} from "@/views/cashier/components/constant";
 import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
+import {tutorOrderHandle} from "@/api/cashier/tutor";
+import SwapDesk from "@/views/cashier/order/components/swapDesk.vue";
 
 
 export default {
@@ -315,10 +350,12 @@ export default {
       return CalcTimeStatus
     }
   },
-  components: {CustomDialog, MemberSearch, LeftContainer},
+  components: {SwapDesk, CustomDialog, MemberSearch, LeftContainer},
   dicts: ['order_type', 'order_status', 'store_desk_status', 'store_desk_type', 'store_desk_place', 'order_pay_type'],
   data() {
     return {
+      currentTutorTime: null,
+      swapDeskShow: false,
       showFinishOrder: false,
       finishOrderForm: {
         payType: '0',
@@ -386,6 +423,22 @@ export default {
       })
 
     },
+    onOpenSwapClick(item) {
+      this.currentTutorTime = item;
+      this.swapDeskShow = true;
+    },
+    onTutorHandleClick(url, title, item) {
+      MessageBox.confirm(`确认${title}?`, '确认', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        tutorOrderHandle(url, {tutorId: item.tutorId}).then(res => {
+          this.$modal.msgSuccess("操作成功")
+          this.onRowClick(JSON.parse(JSON.stringify(this.currentOrder)));
+        })
+      })
+    },
     onOpenMemberClick() {
       if (![OrderStatus.Stop, OrderStatus.Suspend].includes(this.currentOrder.status)) {
         return
@@ -409,6 +462,9 @@ export default {
         this.onRowClick(this.currentOrder)
       })
 
+    },
+    refreshOrder(){
+      this.onRowClick(this.currentOrder)
     },
     onRefreshClick() {
       this.getList();
@@ -437,8 +493,6 @@ export default {
             idx++;
             p.idx = idx;
           })
-
-
         }
         this.currentOrder = item;
       }).catch(e => {
@@ -506,20 +560,22 @@ export default {
       background-color: rgba(204, 204, 204, 0.39);
       padding: 10px;
     }
+
     .tip-text {
       font-size: 20px !important;
       font-weight: bold;
     }
+
     .tip-red {
       font-size: 20px !important;
       font-weight: bold;
       color: #C03639;
     }
+
     .amount-item {
       display: flex;
       align-items: center;
       padding: 3px 10px;
-
 
 
       div:first-child {
