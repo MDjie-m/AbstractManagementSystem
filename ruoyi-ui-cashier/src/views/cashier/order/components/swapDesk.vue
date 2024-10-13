@@ -9,7 +9,7 @@
       <el-form-item label="目标台桌:">
         <el-select v-model="targetDesk.deskId" filterable @change="onDeskChange">
           <!--                <div slot="prefix"></div>-->
-          <el-option :value="item.deskId" :key="'targetDesk'+item.deskId"
+          <el-option :value="item.deskId" :key="'targetfffffDesk'+item.deskId"
                      :label="item.longTitle"
                      v-for="item in deskList">
             <div style="display: flex;flex-direction: row;align-items: center">
