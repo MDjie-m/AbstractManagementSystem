@@ -7,15 +7,12 @@ import com.ruoyi.billiard.domain.vo.HomeReportVo;
 import com.ruoyi.billiard.domain.vo.StockCheckRes;
 import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsume;
 import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsumeDetail;
+import com.ruoyi.billiard.enums.DeviceType;
 import com.ruoyi.billiard.enums.OrderType;
-import com.ruoyi.billiard.service.IGoodsService;
-import com.ruoyi.billiard.service.IOrderService;
-import com.ruoyi.billiard.service.IStockLogService;
-import com.ruoyi.billiard.service.IStockService;
+import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
-import com.ruoyi.common.core.page.PageResVo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -44,10 +41,9 @@ public class MiniAppWorkbenchController extends BaseController {
 
     @Autowired
     private IStockService stockService;
+
     @Autowired
-    private IGoodsService goodsService;
-    @Autowired
-    private IStockLogService stockLogService;
+    private IDeviceService deviceService;
 
 
     /**
@@ -164,10 +160,12 @@ public class MiniAppWorkbenchController extends BaseController {
      * 查询库存列表
      */
     @PreAuthorize("@ss.hasPermi('miniapp:stock:list')")
-    @GetMapping("/stockList")
-    public PageResVo<Stock> stockList(@RequestBody Stock stock) {
+    @GetMapping("/stockList/{storeId}")
+    public ResultVo<List<Stock>> stockList(@PathVariable("storeId") Long storeId) {
+        Stock stock = new Stock();
+        stock.setStoreId(storeId);
         List<Stock> list = stockService.selectStockList(stock);
-        return PageResVo.success(list);
+        return ResultVo.success(list);
     }
 
     @PreAuthorize("@ss.hasPermi('miniapp:stock:list')")
@@ -188,5 +186,17 @@ public class MiniAppWorkbenchController extends BaseController {
         AssertUtil.notNullOrEmpty(req.getStockId(),"门店不能为空");
         return ResultVo.success(stockService.editStock(req));
     }
-//    监控 miniapp:monitor:list
+
+    /**
+     * 查询监控列表
+     */
+    @PreAuthorize("@ss.hasPermi('miniapp:monitor:list')")
+    @GetMapping("/monitorList/{storeId}")
+    public ResultVo<List<Device>> monitorList(@PathVariable("storeId") Long storeId) {
+        Device device = new Device();
+        device.setStoreId(storeId);
+        device.setDeviceType(DeviceType.CAMERA.getValue());
+        List<Device> list = deviceService.selectDeviceList(device);
+        return ResultVo.success(list);
+    }
 }
