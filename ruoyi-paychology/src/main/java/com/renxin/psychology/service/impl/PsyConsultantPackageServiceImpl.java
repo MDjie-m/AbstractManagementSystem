@@ -88,14 +88,15 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
      * @return 结果
      */
     @Override
-    public int insertPsyConsultantPackage(PsyConsultantPackage psyConsultantPackage)
+    public int insertPsyConsultantPackage(PsyConsultantPackage req)
     {
         Long userId = SecurityUtils.getLoginUser().getUserId();
-        psyConsultantPackage.setCreateBy(userId+"");
-        psyConsultantPackage.setUpdateBy(userId+"");
-        psyConsultantPackage.setCreateTime(DateUtils.getNowDate());
-        psyConsultantPackage.setUpdateTime(DateUtils.getNowDate());
-        int i = psyConsultantPackageMapper.insertPsyConsultantPackage(psyConsultantPackage);
+        req.setCreateBy(userId+"");
+        req.setUpdateBy(userId+"");
+        req.setCreateTime(DateUtils.getNowDate());
+        req.setUpdateTime(DateUtils.getNowDate());
+        checkAndCleanTemId(req);
+        int i = psyConsultantPackageMapper.insertPsyConsultantPackage(req);
 
         refreshIdList();
         return i;
@@ -112,6 +113,7 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
     public int updatePsyConsultantPackage(PsyConsultantPackage req)
     {
         req.setUpdateTime(DateUtils.getNowDate());
+        checkAndCleanTemId(req);
         int i = psyConsultantPackageMapper.updatePsyConsultantPackage(req);
 
         refreshIdList();
@@ -236,5 +238,14 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
         ////完整id清单
         List<Long> allIdList = allCourseList.stream().map(p -> p.getPackageId()).collect(Collectors.toList());
         redisCache.setCacheList(CacheConstants.PACKAGE_ID_LIST + "::" + "all",allIdList);
+    }
+
+
+    //校验并清除券模版
+    private void checkAndCleanTemId(PsyConsultantPackage pack){
+        if (pack.getTeamSupNum() == 0){ pack.setTeamSupCouponTemplateId(null);};
+        if (pack.getPersonSupNum() == 0){ pack.setPersonSupCouponTemplateId(null);};
+        if (pack.getPersonExpNum() == 0){ pack.setPersonExpCouponTemplateId(null);};
+        if (pack.getCourseNum() == 0){ pack.setCourseCouponTemplateId(null);};
     }
 }

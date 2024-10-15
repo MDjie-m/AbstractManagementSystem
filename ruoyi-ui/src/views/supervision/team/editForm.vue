@@ -12,8 +12,8 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="督导标题" prop="title" v-if="isTeamType()" disabled>
-        <el-input v-model="form.title" placeholder="请输入督导标题" disabled/>
+      <el-form-item label="督导标题" prop="title" v-if="isTeamType()" >
+        <el-input v-model="form.title" placeholder="请输入督导标题" />
       </el-form-item>
 
       <el-form-item label="督导师" prop="consultantId">
