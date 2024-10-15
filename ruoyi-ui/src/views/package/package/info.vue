@@ -26,7 +26,7 @@
         <el-input-number v-model="form.teamSupNum" :min="0" :step="1" :precision="0" disabled/> 次
       </el-form-item>
 
-      <el-form-item label="个人督导券张数" prop="personSupNum" >
+      <el-form-item label="个案督导券张数" prop="personSupNum" >
         <el-input-number v-model="form.personSupNum" :min="0" :step="1" :precision="0" disabled/> 次
       </el-form-item>
 
@@ -82,7 +82,7 @@ export default {
           { required: true, message: "请输入团队督导券张数", trigger: "blur" }
         ],
         personSupNum: [
-          { required: true, message: "请输入个人督导券张数", trigger: "blur" }
+          { required: true, message: "请输入个案督导券张数", trigger: "blur" }
         ],
         personExpNum: [
           { required: true, message: "请输入个人体验券张数", trigger: "blur" }

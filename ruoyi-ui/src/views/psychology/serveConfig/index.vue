@@ -492,7 +492,7 @@ export default {
           }
 
           /*if (this.form.level != 5 && (this.form.serviceObject == 2 || this.form.serviceObject == 3) ){
-            this.$modal.msgWarning("级别为[督导师]才可支持[个人督导][个人体验]服务")
+            this.$modal.msgWarning("级别为[督导师]才可支持[个案督导][个人体验]服务")
             return
           }*/
 

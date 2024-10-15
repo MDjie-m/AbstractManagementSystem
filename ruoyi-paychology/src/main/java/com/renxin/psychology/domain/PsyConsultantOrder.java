@@ -97,7 +97,7 @@ public class PsyConsultantOrder extends BaseEntity
     private Integer time;
     
     
-    //以下三字段, 仅在类型为 个人督导/个人体验 时, 有值
+    //以下三字段, 仅在类型为 个案督导/个人体验 时, 有值
     @TableField(exist = false)
     private Integer totalNum;//总服务次数
     @TableField(exist = false)

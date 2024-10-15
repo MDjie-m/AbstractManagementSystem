@@ -478,9 +478,9 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 consultantOrder.setPayAmount(couponService.calcPayAmount(consultantOrder));
             }
             
-            // 个人督导服务
+            // 个案督导服务
             //Long id = consultantOrder.getOrderId() != null ? consultantOrder.getOrderId() : IDhelper.getNextId();
-            //consultantOrder.setServerName("个人督导服务");
+            //consultantOrder.setServerName("个案督导服务");
              newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
             couponService.useCoupon(consultantOrder.getCouponNo());//消耗优惠券
         } else if (PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)) {
@@ -555,7 +555,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 teamSupervisionService.handleOrder(consultantOrder);
             }
         } else if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_PERSON_SUP)) {
-            //个人督导 , 更新订单状态
+            //个案督导 , 更新订单状态
             if (ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(consultantOrder.getStatus())) {
                 consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);
                 consultantOrder.setPayStatus(ConsultConstant.PAY_STATUE_PAID);

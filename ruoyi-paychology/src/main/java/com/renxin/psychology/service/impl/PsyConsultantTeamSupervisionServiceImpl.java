@@ -183,7 +183,7 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
                 }
             }
         }else if (teamType == 2 || teamType ==3){
-        //查询"个人督导"或"个人体验"时, 直接查询咨询师数据
+        //查询"个案督导"或"个人体验"时, 直接查询咨询师数据
             teamList = psyConsultantTeamSupervisionMapper.selectPsyConsultantPersonSupervisionList(req);
         }
 

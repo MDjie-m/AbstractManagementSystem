@@ -8,7 +8,7 @@ package com.renxin.common.enums;
 public enum ServiceObjectEnum
 {
     CONSULTED("1", "来访者"),
-    PERSON_SUP("2", "个人督导"),
+    PERSON_SUP("2", "个案督导"),
     PERSON_EXP("3", "个人体验");
 
     private final String key;

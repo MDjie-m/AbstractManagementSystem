@@ -66,7 +66,7 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
                 case "21":
                     return "团队督导";
                 case "22":
-                    return "个人督导";
+                    return "个案督导";
                 case "23":
                     return "个人体验";
             }

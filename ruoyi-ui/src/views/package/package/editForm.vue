@@ -41,11 +41,11 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="个人督导券张数" prop="personSupNum" >
+      <el-form-item label="个案督导券张数" prop="personSupNum" >
         <el-input-number v-model="form.personSupNum" :min="0" :step="1" :precision="0"/> 张
       </el-form-item>
 
-      <el-form-item label="个人督导券" prop="personSupCouponTemplateId" v-show="form.personSupNum != 0">
+      <el-form-item label="个案督导券" prop="personSupCouponTemplateId" v-show="form.personSupNum != 0">
         <el-select v-model="form.personSupCouponTemplateId" clearable filterable>
           <el-option
             v-for="item in couponPersonSupTemplateList"
@@ -146,7 +146,7 @@ export default {
           { required: true, message: "请输入团队督导券张数", trigger: "blur" }
         ],
         personSupNum: [
-          { required: true, message: "请输入个人督导券张数", trigger: "blur" }
+          { required: true, message: "请输入个案督导券张数", trigger: "blur" }
         ],
         personExpNum: [
           { required: true, message: "请输入个人体验券张数", trigger: "blur" }
@@ -196,7 +196,7 @@ export default {
             return;
           }
           if (this.form.personSupNum > 0 && !this.form.personSupCouponTemplateId ){
-            that.$modal.msgWarning("个人督导券张数大于0, 请指定券名称.")
+            that.$modal.msgWarning("个案督导券张数大于0, 请指定券名称.")
             return;
           }
           if (this.form.personExpNum > 0 && !this.form.personExpCouponTemplateId ){

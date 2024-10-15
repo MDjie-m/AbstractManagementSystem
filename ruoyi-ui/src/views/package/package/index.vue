@@ -60,8 +60,8 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="个人督导券张数" align="center" prop="personSupNum"/>
-      <el-table-column label="个人督导券名称" align="center" prop="personSupCouponTemplateId" >
+      <el-table-column label="个案督导券张数" align="center" prop="personSupNum"/>
+      <el-table-column label="个案督导券名称" align="center" prop="personSupCouponTemplateId" >
         <template slot-scope="scope">
           <span>{{ (couponTemplateList.find(item => item.id === scope.row.personSupCouponTemplateId) || {couponName : '-'}).couponName }}</span>
         </template>

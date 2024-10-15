@@ -398,7 +398,7 @@ export default {
             this.$modal.msgWarning("[来访者用户]的服务类型仅可选[倾诉/咨询/测评/来访者课程],请重新选择")
           }
           if (this.form.userType == 2 &&  ['11', '12', '13', '14'].includes(this.form.serverType)){
-            this.$modal.msgWarning("[咨询师用户]的服务类型仅可选[团队督导/个人督导/个人体验/咨询师课程],请重新选择")
+            this.$modal.msgWarning("[咨询师用户]的服务类型仅可选[团队督导/个案督导/个人体验/咨询师课程],请重新选择")
           }
           if (this.form.id != null) {
             updateTemplate(this.form).then(response => {

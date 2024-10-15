@@ -163,7 +163,7 @@ public class PsyConsultantOrderController extends BaseController
                 //PsyConsultantTeamSupervision consultantExp = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
                 PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(consultantOrder.getServerId());
                 payAmount = serverDetail.getPrice();
-                serverName = "个人督导服务购买-" + serverDetail.getName() + "-" + serverDetail.getConsultantName();
+                serverName = "个案督导服务购买-" + serverDetail.getName() + "-" + serverDetail.getConsultantName();
 
                 // 支付单时需要校验服务库存
                 /*if (consultantOrder.getWorkId() > 0) {

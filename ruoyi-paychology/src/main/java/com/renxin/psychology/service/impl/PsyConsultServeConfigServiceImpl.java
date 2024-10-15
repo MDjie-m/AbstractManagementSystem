@@ -137,7 +137,7 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
        /* if (checkName(req.getName(),null) > 0) {
             throw new UtilException("该名称的服务已存在");
         }*/
-        //若为单次[个人督导/个人体验], 查询是否存在该级别的相同服务
+        //若为单次[个案督导/个人体验], 查询是否存在该级别的相同服务
         String serviceObject = req.getServiceObject();
         Integer type = req.getType();
         if(type == 1 && (ServiceObjectEnum.PERSON_SUP.getKey().equals(serviceObject) || ServiceObjectEnum.PERSON_EXP.getKey().equals(serviceObject))){
@@ -164,7 +164,7 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
             throw new UtilException("该名称的服务已存在");
         }*/
         
-        //若为单次[个人督导/个人体验], 查询是否存在该级别的相同服务
+        //若为单次[个案督导/个人体验], 查询是否存在该级别的相同服务
         String serviceObject = req.getServiceObject();
         Integer type = req.getType();
         if(type == 1 && (ServiceObjectEnum.PERSON_SUP.getKey().equals(serviceObject) || ServiceObjectEnum.PERSON_EXP.getKey().equals(serviceObject))){

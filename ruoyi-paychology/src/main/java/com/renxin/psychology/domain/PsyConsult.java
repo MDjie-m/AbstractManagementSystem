@@ -185,7 +185,7 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     @TableField(exist = false)
     private Integer teamSupNum;
 
-    /** 个人督导券张数 */
+    /** 个案督导券张数 */
     @TableField(exist = false)
     private Integer personSupNum;
 

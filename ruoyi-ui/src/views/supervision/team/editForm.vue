@@ -89,11 +89,13 @@
       </el-form-item>
 
       <el-form-item label="小组特色图片" prop="specialPicUrl">
-        <image-upload v-model="form.specialPicUrl" :extraData="extraData" />
+<!--        <image-upload v-model="form.specialPicUrl" :extraData="extraData" />-->
+        <editor v-model="form.specialPicUrl" :min-height="192" :extraData="extraData"/>
       </el-form-item>
 
       <el-form-item label="报名须知图片" prop="registerNoticePicUrl">
-        <image-upload  v-model="form.registerNoticePicUrl"  :extraData="extraData" />
+<!--        <image-upload  v-model="form.registerNoticePicUrl"  :extraData="extraData" />-->
+        <editor v-model="form.registerNoticePicUrl" :min-height="192" :extraData="extraData"/>
       </el-form-item>
 
       <el-form-item label="备注" prop="remark">

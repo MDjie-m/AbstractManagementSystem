@@ -28,8 +28,8 @@ public class PsyConsultantPackageEquity extends BaseEntity
     @Excel(name = "团队督导券张数")
     private Integer teamSupNum;
 
-    /** 个人督导券张数 */
-    @Excel(name = "个人督导券张数")
+    /** 个案督导券张数 */
+    @Excel(name = "个案督导券张数")
     private Integer personSupNum;
 
     /** 个人体验券张数 */

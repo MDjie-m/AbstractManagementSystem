@@ -52,7 +52,7 @@ export const levelList = [
 
 export const serviceObjectList = [
   { label: '来访者', value: "1" },
-  { label: '个人督导', value: "2" },
+  { label: '个案督导', value: "2" },
   { label: '个人体验', value: "3" },
 ]
 
@@ -270,7 +270,7 @@ export const weekDay = [
 // 服务类型
 export const serverType = [
   { label: '团队督导', value: '1' },
-  { label: '个人督导', value: '2' },
+  { label: '个案督导', value: '2' },
   { label: '个人体验', value: '3' },
   { label: '课程', value: '4' },
   { label: '成长套餐', value: '5' },

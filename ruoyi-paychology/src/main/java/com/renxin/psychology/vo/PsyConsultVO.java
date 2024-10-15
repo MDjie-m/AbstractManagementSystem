@@ -129,7 +129,7 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     /** 团队督导券张数 */
     private Integer teamSupNum;
 
-    /** 个人督导券张数 */
+    /** 个案督导券张数 */
     private Integer personSupNum;
 
     /** 个人体验券张数 */
