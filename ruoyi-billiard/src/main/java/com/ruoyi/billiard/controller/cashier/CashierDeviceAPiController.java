@@ -6,6 +6,7 @@ import com.ruoyi.billiard.domain.vo.DeskCaptureReqVo;
 import com.ruoyi.billiard.domain.vo.LightSwitchReqVo;
 import com.ruoyi.billiard.service.IDeskLightService;
 import com.ruoyi.billiard.service.IStoreDeskService;
+import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.domain.ResultVo;
 import com.ruoyi.common.exception.ServiceException;
@@ -13,10 +14,7 @@ import com.ruoyi.common.utils.AESUtils;
 import com.ruoyi.common.utils.AssertUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -27,13 +25,15 @@ import javax.annotation.Resource;
 @RequestMapping("cashier/device/api")
 @Anonymous
 public class CashierDeviceAPiController {
-    @Value("${cashier.aes-key}")
-    private String aesKey;
+
     @Resource
     private IStoreDeskService storeDeskService;
 
     @Resource
     private IDeskLightService deskLightService;
+
+    @Resource
+    private IStoreService storeService;
 
     @PostMapping("/desk/score")
     @Anonymous
@@ -53,5 +53,9 @@ public class CashierDeviceAPiController {
         return ResultVo.success(storeDeskService.addCapture(reqVo));
     }
 
-
+    @GetMapping("/api-key/{storeId}")
+    @Anonymous
+    public ResultVo<String> getApiKey(@PathVariable Long storeId) {
+        return ResultVo.success("",storeService.getApiKey(storeId));
+    }
 }

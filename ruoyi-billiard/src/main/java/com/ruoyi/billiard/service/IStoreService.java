@@ -68,4 +68,6 @@ public interface IStoreService
     StoreDashboardResVo queryStoreDashboard(Long storeId,Date startTime, Date endTime);
 
     StoreSwapRecord swapPreview(Long storeId, Date startTime, Date endTime);
+
+    String getApiKey(Long storeId);
 }

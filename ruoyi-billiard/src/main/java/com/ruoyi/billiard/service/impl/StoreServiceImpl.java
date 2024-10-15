@@ -24,6 +24,7 @@ import com.ruoyi.common.core.domain.model.Tuple;
 import com.ruoyi.common.core.domain.model.Tuple3;
 import com.ruoyi.common.utils.*;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.StoreMapper;
 import com.ruoyi.billiard.service.IStoreService;
@@ -52,6 +53,9 @@ public class StoreServiceImpl implements IStoreService {
 
     @Resource
     private IStoreScheduleService storeScheduleService;
+
+    @Value("${cashier.aes-key}")
+    private String aesKey;
 
 
     /**
@@ -296,5 +300,11 @@ public class StoreServiceImpl implements IStoreService {
         res.setNotSettledOrderAmount(orderInfo.getValue());
         res.setNotSettledOrderCount(orderInfo.getValue1());
         return res;
+    }
+
+    @Override
+    public String getApiKey(Long storeId) {
+        AssertUtil.isTrue(storeMapper.exists(Store::getStoreId, storeId), "非法参数");
+        return aesKey;
     }
 }
