@@ -766,7 +766,8 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         List<PsyConsultantTeamSupervision> personExpList = teamSupervisionService.selectPsyConsultantTeamSupervisionList(teamReq);
         List<Long> personExpIdList = personExpList.stream().map(p -> p.getConsultantId()).distinct().collect(Collectors.toList());
         last7dayPersonExpSet.retainAll(new HashSet<>(personExpIdList));*/
-        List<PsyConsult> personExpList = allConsultantList.stream().filter(p -> p.getServiceObject().contains("3")).collect(Collectors.toList());
+        List<PsyConsult> personExpList = allConsultantList.stream().filter(p -> 
+                ObjectUtils.isNotEmpty(p.getServiceObject()) && p.getServiceObject().contains("3")).collect(Collectors.toList());
         List<Long> personExpIdList = personExpList.stream().map(p -> p.getId()).distinct().collect(Collectors.toList());
         last7dayPersonExpSet.retainAll(new HashSet<>(personExpIdList));
         redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "personExp",new ArrayList<Long>(last7dayPersonExpSet));
