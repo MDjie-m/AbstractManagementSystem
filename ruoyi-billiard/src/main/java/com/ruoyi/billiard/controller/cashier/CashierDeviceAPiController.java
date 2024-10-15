@@ -38,28 +38,20 @@ public class CashierDeviceAPiController {
     @PostMapping("/desk/score")
     @Anonymous
     public ResultVo<Boolean> addScore(@RequestBody @Validated AddDeskScoreReqVo reqVo) {
-        fillStoreId(reqVo);
         return ResultVo.success(storeDeskService.addScore(reqVo));
     }
 
     @PostMapping("/desk/light")
     @Anonymous
     public ResultVo<Boolean> lightSwitch(@RequestBody @Validated LightSwitchReqVo reqVo) {
-        fillStoreId(reqVo);
+
         return ResultVo.success(deskLightService.switchLight(reqVo));
     }
     @PostMapping("/desk/capture")
     public ResultVo<Boolean> addCapture(@RequestBody @Validated DeskCaptureReqVo reqVo) {
-        fillStoreId(reqVo);
+
         return ResultVo.success(storeDeskService.addCapture(reqVo));
     }
 
-    private void fillStoreId(BaseDeviceReqVo reqVo) {
-        AssertUtil.notNullOrEmpty(reqVo.getApiKey(), "非法请求");
-        try {
-            reqVo.setStoreId(Long.parseLong(AESUtils.decryptECB(reqVo.getApiKey(), aesKey)));
-        } catch (Exception e) {
-            throw new ServiceException("非法请求");
-        }
-    }
+
 }
