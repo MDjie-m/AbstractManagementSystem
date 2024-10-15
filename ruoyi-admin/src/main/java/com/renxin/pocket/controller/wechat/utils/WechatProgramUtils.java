@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.utils.RestTemplateUtil;
+import com.renxin.common.wxMsg.WxMsgUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +41,17 @@ public class WechatProgramUtils {
 
     @Autowired
     private RedisCache redisCache;
+    
+    @Resource
+    private WxMsgUtils wxMsgUtils;
 
     /**
      * 获取Token
      */
     public String getAccessToken() throws Exception {
-
-        String access_token = redisCache.getCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY);
+        return wxMsgUtils.getAccessToken();
+        
+        /*String access_token = redisCache.getCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY);
 
         if (access_token != null) {
             return access_token;
@@ -75,8 +80,7 @@ public class WechatProgramUtils {
 
             return access_token;
 
-        }
-
+        }*/
     }
 
     public String getPhonenumber(String code) throws Exception {

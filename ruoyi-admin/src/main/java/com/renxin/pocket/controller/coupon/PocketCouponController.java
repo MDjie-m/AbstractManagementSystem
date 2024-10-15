@@ -62,7 +62,7 @@ public class PocketCouponController extends BaseController
         req.setUserId(userId);
         req.setIsCanGetChargeCoupon("N");
         psyCouponService.receiveFreeCoupon(req);
-        return AjaxResult.success();
+        return AjaxResult.success("领取成功，可以在我的卡券查看");
     }
 
 //    /**
