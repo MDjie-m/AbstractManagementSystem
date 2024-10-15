@@ -36,6 +36,10 @@ public class PsyWorkReq implements Serializable
     private Integer scheduleType;
     //请假时间点(逗号分隔)
     private String hours;
+    //订单id
+    private Long orderId;
+    private List<WorkTime> workTimeList;
+    
     
     //收费人工作记录
     private String workRecord;

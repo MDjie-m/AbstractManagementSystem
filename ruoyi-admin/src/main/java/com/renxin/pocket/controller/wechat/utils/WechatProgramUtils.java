@@ -83,12 +83,12 @@ public class WechatProgramUtils {
 
         String accessToken = this.getAccessToken();
 
-        getPhoneNumberUrl= getPhoneNumberUrl.replace("ACCESS_TOKEN", accessToken);
+        String getPhoneNumberUrl2 = getPhoneNumberUrl.replace("ACCESS_TOKEN", accessToken);
 
         JSONObject param = new JSONObject();
        // param.put("access_token", accessToken);
         param.put("code", code);
-        JSONObject data = restTemplateUtil.postJsonDataAndReturnJson(getPhoneNumberUrl, param);
+        JSONObject data = restTemplateUtil.postJsonDataAndReturnJson(getPhoneNumberUrl2, param);
         
         if (data.getIntValue("errcode") == 0) {
             JSONObject phone_info = data.getJSONObject("phone_info");

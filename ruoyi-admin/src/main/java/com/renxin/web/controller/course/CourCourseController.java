@@ -104,7 +104,9 @@ public class CourCourseController extends BaseController
         /*try {*/
             int res = courCourseService.updateCourCourse(courCourse);
 
-            courCourseService.selectCourCourseById(courCourse.getId());
+            if (courCourse.getOnSale() == 1){//上架
+                courCourseService.selectCourCourseById(courCourse.getId());
+            }
             return AjaxResult.success(res);
        /* } catch (Exception e) {
             return AjaxResult.error(500, "修改课程失败");

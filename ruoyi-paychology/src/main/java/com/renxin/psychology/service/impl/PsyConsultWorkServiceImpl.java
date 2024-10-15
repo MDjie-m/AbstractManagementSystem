@@ -75,9 +75,43 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
     
     @Override
     public List<PsyConsultWorkVO> getConsultWorks(PsyWorkReq req) {
-        return psyConsultWorkMapper.getWorks(req);
+        List<PsyConsultWorkVO> workList = psyConsultWorkMapper.getWorks(req);
+        for (PsyConsultWorkVO workVO : workList) {
+            workVO.setLive(sortStringNumbers(workVO.getLive()));
+        }
+        return workList;
     }
 
+    /**
+     * 将字符串中的数字按正序排序
+     * @param input 输入的字符串，例如"[2,3,5,,13,1,25,6]"
+     * @return 返回排序后的字符串，例如"[1,2,3,5,6,13,25]"
+     */
+    private String sortStringNumbers(String input) {
+        if (input == null || input.isEmpty()) {
+            throw new IllegalArgumentException("Input string cannot be null or empty");
+        }
+
+        // 去掉开头和结尾的方括号
+        String trimmedInput = input.substring(1, input.length() - 1);
+
+        // 按逗号分隔字符串，并过滤掉空字符串
+        List<String> stringList = Arrays.asList(trimmedInput.split(","));
+        List<Integer> numberList = new ArrayList<>();
+
+        for (String str : stringList) {
+            if (!str.trim().isEmpty()) {
+                numberList.add(Integer.parseInt(str.trim()));
+            }
+        }
+
+        // 对数字列表进行排序
+        Collections.sort(numberList);
+
+        // 连接排序后的列表并返回带有方括号的字符串
+        return numberList.toString();
+    }
+    
     @Override
     public void doSave(PsyConsultWorkReq req) {
         long num = NewDateUtil.getTwoDateDays(req.getStartDay(), req.getEndDay()) + 1;

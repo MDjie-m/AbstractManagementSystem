@@ -84,6 +84,16 @@ public class PocketConsultOrderController extends BaseController
     }
 
     /**
+     * 批量预约咨询
+     */
+    @PostMapping(value = "/doConsultList")
+    @RateLimiter
+    public AjaxResult doConsultList(@RequestBody PsyWorkReq req)
+    {
+        return AjaxResult.success(psyConsultOrderService.doConsultList(req));
+    }
+
+    /**
      * 取消
      */
     @PostMapping(value = "/cancel/{id}")

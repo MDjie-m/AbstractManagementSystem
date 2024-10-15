@@ -100,6 +100,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="source != null and source != ''"> and a.source = #{source}</if>
             <if test="delFlag != null  and delFlag != ''"> and a.del_flag = #{delFlag}</if>
         </where>
+        order by a.create_time desc
     </select>
 
     <select id="getOrderDetail" resultType="com.renxin.psychology.dto.OrderDTO">

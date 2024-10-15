@@ -362,7 +362,7 @@ public class PsyConsultantWorkTemplateServiceImpl implements IPsyConsultantWorkT
 
     //根据分类清单执行数据refresh
     private void refreshWorkData(Map<String, List<PsyConsultWork>> listMap, String createBy){
-        List<PsyConsultWork> commonList = listMap.get("common");//共有部分
+        List<PsyConsultWork> commonList = listMap.get("common");//共有部分 (新旧清单共有的日期)
         List<PsyConsultWork> onlyOldList = listMap.get("onlyOld");
         List<PsyConsultWork> onlyNewList = listMap.get("onlyNew");
 
@@ -479,7 +479,12 @@ public class PsyConsultantWorkTemplateServiceImpl implements IPsyConsultantWorkT
         uniqueValues.addAll(parseStringToSet(used));
         uniqueValues.addAll(parseStringToSet(live));
 
-        return uniqueValues.toString(); // 返回"[value1,value2,...]"格式的字符串
+        List<String> sortedValues = new ArrayList<>(uniqueValues);
+        Collections.sort(sortedValues);
+
+        // 使用String.join方法来获取逗号分隔的字符串
+        return "[" + String.join(",", sortedValues) + "]";// 返回"[value1,value2,...]"格式的字符串
+        // return uniqueValues.toString(); // 返回"[value1,value2,...]"格式的字符串
     }
 
     // 将 "[value1,value2,...]" 格式的字符串转为 Set<String>

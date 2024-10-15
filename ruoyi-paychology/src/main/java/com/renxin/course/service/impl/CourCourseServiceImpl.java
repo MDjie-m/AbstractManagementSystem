@@ -342,6 +342,7 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
         //获取完整id清单
         List<Long> courseIdList = courCourseMapper.selectList(new LambdaQueryWrapper<CourCourse>()
                 .select(CourCourse::getId)
+                .eq(CourCourse::getOnSale,1)//上架
                 .orderByDesc(CourCourse::getCreateTime)).stream().map(p -> p.getId()).collect(Collectors.toList());
 
         //刷新缓存
@@ -352,9 +353,10 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
     //刷新该对象 各种类型下的id清单
     @Override
     public void refreshIdList(){
-        //完整对象清单
+        //完整对象清单(已上架)
         List<CourCourse> allCourseList = courCourseMapper.selectList(new LambdaQueryWrapper<CourCourse>()
                 .select(CourCourse::getId,CourCourse::getType)
+                .eq(CourCourse::getOnSale,1)//上架
                 .orderByDesc(CourCourse::getCreateTime));
         
         //删除原先的所有idList

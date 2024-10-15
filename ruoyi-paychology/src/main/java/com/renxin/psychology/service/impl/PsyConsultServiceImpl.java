@@ -116,7 +116,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         req.setStart(sdf.format(calendar.getTime()));
-        calendar.add(Calendar.DATE, 7);
+        calendar.add(Calendar.DATE, 30);
         req.setEnd(sdf.format(calendar.getTime()));
 
         return psyConsultWorkService.getConsultWorks(req);

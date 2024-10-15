@@ -8,6 +8,7 @@ import com.renxin.psychology.dto.OrderListDTO;
 import com.renxin.psychology.request.PsyAdminOrderReq;
 import com.renxin.psychology.request.PsyHxOrderReq;
 import com.renxin.psychology.request.PsyRefOrderReq;
+import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.wechat.vo.WechatPayVO;
 
@@ -55,6 +56,7 @@ public interface IPsyConsultOrderService
     void wechatPayNotify(PsyConsultOrderVO req);
 
     int doConsult(Long id, Long workId, Integer time);
+    int doConsultList(PsyWorkReq req);
 
     int add(PsyConsultOrderVO req);
 

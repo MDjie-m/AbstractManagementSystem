@@ -63,6 +63,7 @@ public class PocketUserOrderController extends BaseController
     {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
         Long userId = loginUser.getUserId();
+        //咨询
         if(req.getOrderType()==1) {
 
             PsyConsultOrderVO psyConsultOrderVO = new PsyConsultOrderVO();
@@ -70,9 +71,11 @@ public class PocketUserOrderController extends BaseController
             psyConsultOrderVO.setStatus(req.getOrderStatus() == null ? null : req.getOrderStatus().toString());
             List<OrderListDTO> list = psyConsultOrderService.getOrderList(psyConsultOrderVO);
             return AjaxResult.success(list);
+        //课程
         } else if(req.getOrderType()==2){
             List<CourseOrderVO>  courOrderlist= courOrderService.getOrderListByUserId(userId,req.getOrderStatus());
             return AjaxResult.success(courOrderlist);
+        //测评
         }else if(req.getOrderType()==3){
             PsyOrder psyOrder =new PsyOrder();
             psyOrder.setUserId(loginUser.getUserId());
@@ -86,7 +89,6 @@ public class PocketUserOrderController extends BaseController
             }
             List<PsyOrder> list = psyOrderService.queryOrderInfo(psyOrder);
             return AjaxResult.success(list);
-
         }else{
             return null;
         }

@@ -85,15 +85,15 @@
       </el-form-item>
 
       <el-form-item label="团督head图片" prop="headPicUrl">
-        <my-cropper v-model="form.headPicUrl" sizeTip="宽750px 高394px" :extraData="extraData" :width="750" :height="394"/>
+        <my-cropper v-model="form.headPicUrl"  sizeTip="宽375px 高197px" :extraData="extraData" :width="375" :height="197"/>
       </el-form-item>
 
       <el-form-item label="小组特色图片" prop="specialPicUrl">
-        <my-cropper v-model="form.specialPicUrl" sizeTip="宽750px 高1000px" :extraData="extraData" :width="750" :height="1000"/>
+        <image-upload v-model="form.specialPicUrl" :extraData="extraData" />
       </el-form-item>
 
       <el-form-item label="报名须知图片" prop="registerNoticePicUrl">
-        <my-cropper v-model="form.registerNoticePicUrl" sizeTip="宽750px 高1000px" :extraData="extraData" :width="750" :height="1000"/>
+        <image-upload  v-model="form.registerNoticePicUrl"  :extraData="extraData" />
       </el-form-item>
 
       <el-form-item label="备注" prop="remark">

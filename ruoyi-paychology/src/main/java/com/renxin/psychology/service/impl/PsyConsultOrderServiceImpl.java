@@ -23,9 +23,7 @@ import com.renxin.psychology.domain.*;
 import com.renxin.psychology.dto.OrderDTO;
 import com.renxin.psychology.dto.OrderListDTO;
 import com.renxin.psychology.mapper.PsyConsultOrderMapper;
-import com.renxin.psychology.request.PsyAdminOrderReq;
-import com.renxin.psychology.request.PsyHxOrderReq;
-import com.renxin.psychology.request.PsyRefOrderReq;
+import com.renxin.psychology.request.*;
 import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultServeConfigVO;
@@ -449,10 +447,10 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         }
 
         //校验该订单下, 没有待办的预约
-        PsyConsultOrderItem item = psyConsultOrderItemService.getOneByOrderId(id);
+      /*  PsyConsultOrderItem item = psyConsultOrderItemService.getOneByOrderId(id);
         if (item != null) {
             return -1;
-        }
+        }*/
 
         order.setTime(time);
         order.setWorkId(workId);
@@ -475,6 +473,37 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         order.setNum(order.getNum()-1);
         order.setBuyNum(order.getBuyNum()+1);
         return update(order);
+    }
+
+    //来访者批量预约咨询
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int doConsultList(PsyWorkReq req){
+        List<WorkTime> workTimeList = req.getWorkTimeList();
+        PsyConsultOrderVO order = getOne(req.getOrderId());
+        if (order.getNum() < workTimeList.size()) {
+            throw new ServiceException("订单剩余的可用次数不足, 该订单剩余" + order.getNum() + "次预约可用");
+        }
+
+        for (WorkTime workTime : workTimeList) {
+            Integer time = workTime.getTime();
+            Long workId = workTime.getWorkId();
+            order.setTime(time);
+            order.setWorkId(workId);
+            PsyConsultWork work = handleItem(order, 1);
+
+            // 消息推送
+            order.setDay(work.getDay());
+            order.setTimeStart(time + ":00");
+            order.setTimeEnd(time + ":50");
+            sendPublicMsg(order);
+        }
+        
+        // 更新预约数量
+        order.setNum(order.getNum() - workTimeList.size());
+        order.setBuyNum(order.getBuyNum() + workTimeList.size());
+        return update(order);
+        
     }
 
     private PsyConsultWork handleItem(PsyConsultOrderVO req, int type) {
