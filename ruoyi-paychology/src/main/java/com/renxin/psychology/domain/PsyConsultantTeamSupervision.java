@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.renxin.common.filter.HtmlContentDeserializer;
 import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 @TableName("psy_consultant_team_supervision")
 @Data
-public class PsyConsultantTeamSupervision extends BaseEntity implements Serializable
+public class PsyConsultantTeamSupervision extends BaseEntity 
 {
     private static final long serialVersionUID = 1L;
 
@@ -43,11 +42,9 @@ public class PsyConsultantTeamSupervision extends BaseEntity implements Serializ
     private String headPicUrl;
     
     /** 小组特色(图片) */
-    @JsonDeserialize(using = HtmlContentDeserializer.class)
     private String specialPicUrl;
 
     /** 报名须知(图片) */
-    @JsonDeserialize(using = HtmlContentDeserializer.class)
     private String registerNoticePicUrl;
 
     /** 周期 */

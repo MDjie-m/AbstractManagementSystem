@@ -13,11 +13,13 @@ import com.renxin.common.utils.poi.ExcelUtil;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
+import com.renxin.system.domain.SysNotice;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -111,14 +113,14 @@ public class PsyConsultantTeamSupervisionController extends BaseController
      * 修改团队督导(组织)
      */
     @ApiOperation("修改团队督导(组织)")
-    //@PreAuthorize("@ss.hasPermi('system:supervision:edit')")
+    //@PreAuthorize("@ss.hasPermi('system:notice:edit')")
     @Log(title = "团队督导(组织)", businessType = BusinessType.UPDATE)
-    @PostMapping("/edit")
+    @PutMapping("/edit")
     public AjaxResult edit(@RequestBody PsyConsultantTeamSupervision req)
     {
         int i = psyConsultantTeamSupervisionService.updatePsyConsultantTeamSupervision(req);
         psyConsultantTeamSupervisionService.selectPsyConsultantTeamSupervisionById(req.getId());
-        return toAjax(i);
+        return toAjax(1);
     }
 
     /**

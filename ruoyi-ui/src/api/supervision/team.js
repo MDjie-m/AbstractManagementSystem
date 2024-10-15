@@ -24,7 +24,7 @@ export function addTeam(data) {
 export function editTeam(data) {
   return request({
     url: '/system/supervision-team/edit',
-    method: 'post',
+    method: 'put',
     data: data
   })
 }
