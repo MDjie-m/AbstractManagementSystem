@@ -140,9 +140,9 @@ public class WxMsgUtils implements MessageService  {
             String accessToken = jsonObject.getString("access_token");
             Integer expires_in = jsonObject.getInteger("expires_in");
             // 更新缓存
-            redisCache.setCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY, access_token, expires_in,
+            redisCache.setCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY, accessToken, expires_in,
                     TimeUnit.SECONDS);
-            return access_token;
+            return accessToken;
         }
     }
 
