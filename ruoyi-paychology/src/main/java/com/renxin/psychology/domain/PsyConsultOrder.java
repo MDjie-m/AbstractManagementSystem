@@ -124,6 +124,7 @@ public class PsyConsultOrder extends BasePlusEntity implements Serializable
 
     private BigDecimal originalPrice;//原价
     private String couponNo;//使用优惠券编号
+    private String couponName;//使用优惠券名称
 
     @TableField(exist = false)
     private String phone;
