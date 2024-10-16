@@ -20,6 +20,11 @@
           {{ levelList.find(i => i.value === scope.row.level).label }}
         </template>
       </el-table-column>
+      <el-table-column label="服务对象" align="center" prop="serviceObject">
+        <template slot-scope="scope">
+          {{ serviceObjectList.find(i => i.value === scope.row.serviceObject).label }}
+        </template>
+      </el-table-column>
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           {{ scope.row.status === '0' ? '上架' : '下架'}}
@@ -50,6 +55,7 @@
 
 <script>
 import { delConsultServeRef, listServeConfig } from "@/api/psychology/serveConfig";
+import {serviceObjectList} from "@/utils/constants";
 export default {
   props: {
     id: {
@@ -65,6 +71,7 @@ export default {
       modeList: this.$constants.modeList,
       typeList: this.$constants.typeList,
       levelList: this.$constants.levelList,
+      serviceObjectList: this.$constants.serviceObjectList,
       // 查询参数
       queryParams: {
         pageNum: 1,

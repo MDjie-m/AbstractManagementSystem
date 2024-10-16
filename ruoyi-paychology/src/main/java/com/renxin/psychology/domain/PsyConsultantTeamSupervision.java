@@ -37,6 +37,9 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     @Excel(name = "团督标题")
     private String title;
 
+    //头像
+    private String avatarPicUrl;
+    
     /** head图片 */
     @Excel(name = "head图片")
     private String headPicUrl;

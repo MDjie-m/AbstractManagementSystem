@@ -318,7 +318,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         wp.eq(PsyConsult::getDelFlag, "0");
 
         if (StringUtils.isNotEmpty(req.getUserName())) {
-            wp.eq(PsyConsult::getUserName, req.getUserName());
+            wp.like(PsyConsult::getUserName, req.getUserName());
         }
 
         if (StringUtils.isNotEmpty(req.getStatus())) {

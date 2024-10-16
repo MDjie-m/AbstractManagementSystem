@@ -84,6 +84,10 @@
         <el-input-number v-model="form.lectureAmount" :min="0" /> 元
       </el-form-item>
 
+      <el-form-item label="团督头像图片" prop="avatarPicUrl">
+        <my-cropper v-model="form.avatarPicUrl"  sizeTip="宽172px 高172px" :extraData="extraData" :width="172" :height="172"/>
+      </el-form-item>
+
       <el-form-item label="团督head图片" prop="headPicUrl">
         <my-cropper v-model="form.headPicUrl"  sizeTip="宽375px 高197px" :extraData="extraData" :width="375" :height="197"/>
       </el-form-item>

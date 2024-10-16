@@ -25,6 +25,11 @@
           {{ levelList.find(i => i.value === scope.row.level).label }}
         </template>
       </el-table-column>
+      <el-table-column label="服务对象" align="center" prop="serviceObject">
+        <template slot-scope="scope">
+          {{ serviceObjectList.find(i => i.value === scope.row.serviceObject).label }}
+        </template>
+      </el-table-column>
       <el-table-column label="服务类型" align="center" prop="type">
         <template slot-scope="scope">
           {{ typeList.find(i => i.value === scope.row.type).label }}
@@ -65,6 +70,7 @@ export default {
       loading: false,
       typeList: this.$constants.typeList,
       levelList: this.$constants.levelList,
+      serviceObjectList: this.$constants.serviceObjectList,
       // 查询参数
       queryParams: {
         name: '',
