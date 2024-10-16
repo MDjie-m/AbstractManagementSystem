@@ -723,7 +723,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     public void refreshIdList(){
         //完整对象清单
         List<PsyConsult> allConsultantList = psyConsultMapper.selectList(new LambdaQueryWrapper<PsyConsult>()
-                .select(PsyConsult::getId)
+                .select(PsyConsult::getId,PsyConsult::getServiceObject,PsyConsult::getLevel)
                 .eq(PsyConsult::getStatus,0)
                 .eq(PsyConsult::getIsShow,0)
                 .orderByDesc(PsyConsult::getCreateTime));
