@@ -1,4 +1,4 @@
-package com.renxin.common.wxMsg;
+package com.renxin.common.wechat.wxMsg;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

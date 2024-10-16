@@ -162,7 +162,7 @@
           >{{ scope.row.ref }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="服务状态" align="center" prop="status">
+      <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === '0'" type="success">上架</el-tag>
           <el-tag v-else type="info">下架</el-tag>
@@ -227,7 +227,7 @@
         </el-form-item>
         <el-form-item label="服务对象" prop="serviceObjectList">
           <el-radio-group v-model="form.serviceObject">
-            <el-radio v-for="item in serviceObjectList" :label="item.value">{{ item.label }}</el-radio>
+            <el-radio v-for="item in serviceObjectPartList" :label="item.value">{{ item.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="服务类型" prop="type">
@@ -300,6 +300,7 @@ export default {
       modeList: this.$constants.modeList,
       levelList: this.$constants.levelList,
       serviceObjectList: this.$constants.serviceObjectList,
+      serviceObjectPartList: this.$constants.serviceObjectPartList,
       statusList: this.$constants.comListStatus,
       // 选中数组
       ids: [],

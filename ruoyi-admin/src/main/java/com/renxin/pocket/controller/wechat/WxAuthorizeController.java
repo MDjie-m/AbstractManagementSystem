@@ -11,7 +11,7 @@ import com.renxin.common.enums.LoginType;
 import com.renxin.common.utils.RestTemplateUtil;
 import com.renxin.common.utils.StringUtils;
 import com.renxin.common.utils.spring.SpringUtils;
-import com.renxin.pocket.controller.wechat.utils.WechatProgramUtils;
+import com.renxin.common.wechat.wechatProgram.WechatProgramUtils;
 import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.psychology.domain.PsyUser;
 import com.renxin.psychology.service.IPsyUserService;

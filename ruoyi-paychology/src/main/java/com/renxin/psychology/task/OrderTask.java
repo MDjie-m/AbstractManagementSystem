@@ -1,17 +1,16 @@
 package com.renxin.psychology.task;
 
 import com.renxin.common.constant.Constants;
-import com.renxin.common.wxMsg.NoticeMessage;
-import com.renxin.common.wxMsg.NoticeMethodEnum;
-import com.renxin.common.wxMsg.TemplateMessageItemVo;
-import com.renxin.common.wxMsg.WxMsgUtils;
+import com.renxin.common.wechat.wxMsg.NoticeMessage;
+import com.renxin.common.wechat.wxMsg.NoticeMethodEnum;
+import com.renxin.common.wechat.wxMsg.TemplateMessageItemVo;
+import com.renxin.common.wechat.wxMsg.WxMsgUtils;
 import com.renxin.psychology.domain.PsyConsultOrder;
 import com.renxin.psychology.dto.OrderItemDTO;
 import com.renxin.psychology.service.IPsyConsultOrderItemService;
 import com.renxin.psychology.service.IPsyConsultOrderService;
 import com.renxin.psychology.service.IPsyUserService;
 import com.renxin.system.service.ISysConfigService;
-import com.renxin.wechat.vo.TemplateMessageItemOldVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

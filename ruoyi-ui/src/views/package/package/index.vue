@@ -80,7 +80,7 @@
           <span>{{ (couponTemplateList.find(item => item.id === scope.row.courseCouponTemplateId) || {couponName : '-'}).couponName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="服务状态" align="center" prop="status">
+      <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === '0'" type="success">上架</el-tag>
           <el-tag v-else type="info">下架</el-tag>

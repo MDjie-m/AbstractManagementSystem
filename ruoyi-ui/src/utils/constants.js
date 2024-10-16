@@ -56,6 +56,11 @@ export const serviceObjectList = [
   { label: '个人体验', value: "3" },
 ]
 
+export const serviceObjectPartList = [
+  { label: '来访者', value: "1" },
+  { label: '个案督导', value: "2" },
+]
+
 export const typeList = [
   { label: '全部', value: '' },
   { label: '单次', value: 1 },

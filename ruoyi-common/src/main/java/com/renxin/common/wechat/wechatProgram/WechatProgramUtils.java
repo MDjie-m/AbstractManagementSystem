@@ -1,20 +1,17 @@
-package com.renxin.pocket.controller.wechat.utils;
+package com.renxin.common.wechat.wechatProgram;
 
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.utils.RestTemplateUtil;
-import com.renxin.common.wxMsg.WxMsgUtils;
+import com.renxin.common.wechat.wxMsg.WxMsgUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,6 +30,13 @@ public class WechatProgramUtils {
     @Value("${wechat.secret}")
     private String secret;
 
+    /**
+     * 获取token
+     * "+ appId +"&secret=" + appIdSecret
+     */
+    @Value(value = "${wechat.token_uri}")
+    private String tokenUri;
+
     private String grant_type = "client_credential";
 
     private static String getAccessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
@@ -44,14 +48,35 @@ public class WechatProgramUtils {
     
     @Resource
     private WxMsgUtils wxMsgUtils;
-
+    
     /**
      * 获取Token
      */
-    public String getAccessToken() throws Exception {
+    public String getAccessToken() {
+        String access_token = redisCache.getCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY);
+
+        if (access_token != null) {
+            return access_token;
+        } else {
+            String requestUrl = this.tokenUri + this.appid +"&secret=" + this.secret;
+            String res = HttpUtil.get(requestUrl);
+            JSONObject jsonObject = JSONObject.parseObject(res);
+            String accessToken = jsonObject.getString("access_token");
+            Integer expires_in = jsonObject.getInteger("expires_in");
+            // 更新缓存
+            redisCache.setCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY, accessToken, expires_in,
+                    TimeUnit.SECONDS);
+            return accessToken;
+        }
+    }
+    
+    /**
+     * 获取Token
+     */
+ /*   public String getAccessToken() throws Exception {
         return wxMsgUtils.getAccessToken();
         
-        /*String access_token = redisCache.getCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY);
+        String access_token = redisCache.getCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY);
 
         if (access_token != null) {
             return access_token;
@@ -80,8 +105,8 @@ public class WechatProgramUtils {
 
             return access_token;
 
-        }*/
-    }
+        }
+    }*/
 
     public String getPhonenumber(String code) throws Exception {
 

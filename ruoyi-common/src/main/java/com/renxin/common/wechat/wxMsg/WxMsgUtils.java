@@ -1,4 +1,4 @@
-package com.renxin.common.wxMsg;
+package com.renxin.common.wechat.wxMsg;
 
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson2.JSONObject;
@@ -6,11 +6,10 @@ import com.github.pagehelper.util.StringUtil;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.exception.ServiceException;
+import com.renxin.common.wechat.wechatProgram.WechatProgramUtils;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -24,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -92,7 +90,9 @@ public class WxMsgUtils implements MessageService  {
      */
     @Value(value = "${wechat.unread_msg_template_id}")
     private String unreadMsgTemplateId;
-    
+
+    @Resource
+    private  WechatProgramUtils wechatProgramUtils;
 
     @Autowired
     RestTemplate restTemplate;
@@ -123,35 +123,14 @@ public class WxMsgUtils implements MessageService  {
     public String getNoticeMethod() {
         return NoticeMethodEnum.WECHAT.getName();
     }
-
-    /**
-     * 获取Token
-     */
-    public String getAccessToken() {
-        
-        String access_token = redisCache.getCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY);
-
-        if (access_token != null) {
-            return access_token;
-        } else {
-            String requestUrl = this.tokenUri + this.appid +"&secret=" + this.secret;
-            String res = HttpUtil.get(requestUrl);
-            JSONObject jsonObject = JSONObject.parseObject(res);
-            String accessToken = jsonObject.getString("access_token");
-            Integer expires_in = jsonObject.getInteger("expires_in");
-            // 更新缓存
-            redisCache.setCacheObject(Constants.WECHAT_PROGRAM_ACCESS_TOKEN_KEY, accessToken, expires_in,
-                    TimeUnit.SECONDS);
-            return accessToken;
-        }
-    }
+    
 
     /**
      * 获取用户列表openid
      */
     public void getUserList(){
         RestTemplate restTemplate = new RestTemplate();
-        String requestUrl = this.userListUri + getAccessToken();
+        String requestUrl = this.userListUri + wechatProgramUtils.getAccessToken();
         ResponseEntity<String> response = restTemplate.postForEntity(requestUrl, null, String.class);
         log.info("结果是: {}",response.getBody());
         com.alibaba.fastjson2.JSONObject result = com.alibaba.fastjson2.JSONObject.parseObject(response.getBody());
@@ -215,7 +194,7 @@ public class WxMsgUtils implements MessageService  {
         // openId代表一个唯一微信用户，即微信消息的接收人
         String openId = noticeMessage.getReceiverId();
        // String requestUrl = this.sendSubscribeMessageUri + getAccessToken();
-        String requestUrl = this.sendSubscribeMessageUri + getAccessToken();
+        String requestUrl = this.sendSubscribeMessageUri + wechatProgramUtils.getAccessToken();
 
         // 消息模板参数
         Map<String, TemplateMessageItemVo> sendMsg = noticeMessage.getMsgMap();
