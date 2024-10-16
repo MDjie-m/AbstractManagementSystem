@@ -22,6 +22,7 @@ import com.renxin.psychology.service.IPsyConsultantScheduleService;
 import com.renxin.psychology.service.IPsyUserService;
 import com.renxin.user.domain.PsyUserIntegralRecord;
 import com.renxin.user.service.IPsyUserIntegralRecordService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,7 @@ import java.util.*;
  * @date 2022-08-26
  */
 @Service
+@Slf4j
 public class PsyUserServiceImpl implements IPsyUserService {
     @Resource
     private PsyUserMapper psyUserMapper;
@@ -224,9 +226,11 @@ public class PsyUserServiceImpl implements IPsyUserService {
         return LoginVO.builder().userId(user.getId()).name(nickname).avatar(headImgUrl).build();
     }
 
+    //微信获取手机号码更新接口
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void bindPhone(LoginDTO loginDTO) {
+        log.info("微信获取手机号码更新接口, loginDTO:" + loginDTO.toString());
         PsyUser user = psyUserMapper.selectPsyUserById(loginDTO.getUserId());
         PsyUser phoneUser = psyUserMapper.queryUserByAccount(loginDTO.getPhone());
         //若该手机号已经存在用户，直接将微信信息更新至该用户,并删除此微信用户

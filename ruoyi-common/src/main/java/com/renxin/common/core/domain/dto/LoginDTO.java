@@ -158,4 +158,25 @@ public class LoginDTO implements UserDetails {
     {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "LoginDTO{" +
+                "account='" + account + '\'' +
+                ", code='" + code + '\'' +
+                ", validStr='" + validStr + '\'' +
+                ", token='" + token + '\'' +
+                ", loginTime=" + loginTime +
+                ", expireTime=" + expireTime +
+                ", ipaddr='" + ipaddr + '\'' +
+                ", loginLocation='" + loginLocation + '\'' +
+                ", browser='" + browser + '\'' +
+                ", os='" + os + '\'' +
+                ", userId=" + userId +
+                ", phone='" + phone + '\'' +
+                ", wxOpenId='" + wxOpenId + '\'' +
+                ", loginType=" + loginType +
+                ", clientType='" + clientType + '\'' +
+                '}';
+    }
 }

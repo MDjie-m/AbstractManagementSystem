@@ -182,10 +182,12 @@ public class WxAuthorizeController {
     @PostMapping("/wechatProgram/updatePhoneNumber")
     public AjaxResult getPhoneNumber(@RequestBody Map<String, String> params, HttpServletRequest request) throws UnsupportedEncodingException {
         try {
+            log.info("微信获取手机号码更新接口/wechatProgram/updatePhoneNumber" + params.toString());
             String phoneNumber=wechatTokenUtils.getPhonenumber(params.get("code"));
+            log.info("phoneNumber:" + phoneNumber);
             //更新用户信息
             LoginDTO loginUser = pocketTokenService.getLoginUser(request);
-            
+            log.info("loginUser:" + loginUser);
             loginUser.setPhone(phoneNumber);
             psyUserService.bindPhone(loginUser);
         } catch (Exception e) {
