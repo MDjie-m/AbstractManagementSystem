@@ -95,7 +95,7 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
         req.setUpdateBy(userId+"");
         req.setCreateTime(DateUtils.getNowDate());
         req.setUpdateTime(DateUtils.getNowDate());
-        checkAndCleanTemId(req);
+        checkAndCleanTemId(req);//校验并清除关联券模版
         int i = psyConsultantPackageMapper.insertPsyConsultantPackage(req);
 
         refreshIdList();
@@ -113,7 +113,7 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
     public int updatePsyConsultantPackage(PsyConsultantPackage req)
     {
         req.setUpdateTime(DateUtils.getNowDate());
-        checkAndCleanTemId(req);
+        checkAndCleanTemId(req);//校验并清除关联券模版
         int i = psyConsultantPackageMapper.updatePsyConsultantPackage(req);
 
         refreshIdList();
@@ -229,6 +229,7 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
         //完整对象清单
         List<PsyConsultantPackage> allCourseList = psyConsultantPackageMapper.selectList(new LambdaQueryWrapper<PsyConsultantPackage>()
                 .select(PsyConsultantPackage::getPackageId)
+                .eq(PsyConsultantPackage::getStatus,"0")//上架状态
                 .orderByDesc(PsyConsultantPackage::getCreateTime));
 
         //删除原先的所有idList
@@ -241,7 +242,7 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
     }
 
 
-    //校验并清除券模版
+    //校验并清除关联券模版
     private void checkAndCleanTemId(PsyConsultantPackage pack){
         if (pack.getTeamSupNum() == 0){ pack.setTeamSupCouponTemplateId(null);};
         if (pack.getPersonSupNum() == 0){ pack.setPersonSupCouponTemplateId(null);};

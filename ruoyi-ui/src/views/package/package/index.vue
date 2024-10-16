@@ -80,6 +80,12 @@
           <span>{{ (couponTemplateList.find(item => item.id === scope.row.courseCouponTemplateId) || {couponName : '-'}).couponName }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="服务状态" align="center" prop="status">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === '0'" type="success">上架</el-tag>
+          <el-tag v-else type="info">下架</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime"/>
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -98,7 +104,13 @@
             @click="edit(scope.row)"
             v-hasPermi="['system:package:edit']"
           >修改</el-button>
-
+          <el-button
+            size="mini"
+            type="text"
+            style="color: red"
+            @click="changeStatus(scope.row)"
+            v-hasPermi="['system:package:edit']"
+          >{{ scope.row.status === '0' ? '下架' : '上架' }}</el-button>
           <el-button
             size="mini"
             type="text"
@@ -129,12 +141,13 @@
 </template>
 
 <script>
-import { queryPackageList, deletePackage } from "@/api/package/package";
+import { queryPackageList, deletePackage, editPackage } from "@/api/package/package";
 import {getConsultAll} from "@/api/psychology/consult";
 import {listTemplate} from "@/api/marketing/coupon";
 import addForm from "./addForm";
 import editForm from "./editForm";
 import infoForm from "./info";
+import {updateServeConfig} from "@/api/psychology/serveConfig";
 
 export default {
   components: {
@@ -250,6 +263,17 @@ export default {
     /** 编辑套餐 */
     edit(row) {
       this.$refs.editForm.init(row)
+    },
+
+    changeStatus(row) {
+      const title = row.status === '0' ? '确认要下架选中的套餐吗？' : '确定要上架选中的套餐吗？'
+      this.$modal.confirm(title).then(function() {
+        row.status = row.status === '0' ? '1' : '0'
+        editPackage(row)
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("修改成功");
+      }).catch(() => {});
     },
 
     /** 删除套餐 */

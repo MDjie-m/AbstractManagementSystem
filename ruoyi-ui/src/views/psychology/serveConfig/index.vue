@@ -150,7 +150,7 @@
         </template>
       </el-table-column>
       <el-table-column label="服务次数" align="center" prop="num" />
-      <el-table-column label="服务时长(分钟）" align="center" prop="time" />
+      <el-table-column label="服务时长(分钟)" align="center" prop="time" />
       <el-table-column label="排序" align="center" prop="zindex" />
       <el-table-column label="关联咨询师" align="center" prop="ref">
         <template slot-scope="scope">
