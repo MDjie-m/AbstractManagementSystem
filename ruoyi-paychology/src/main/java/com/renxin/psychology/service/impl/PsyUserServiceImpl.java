@@ -231,9 +231,10 @@ public class PsyUserServiceImpl implements IPsyUserService {
         PsyUser phoneUser = psyUserMapper.queryUserByAccount(loginDTO.getPhone());
         //若该手机号已经存在用户，直接将微信信息更新至该用户,并删除此微信用户
         if (phoneUser != null) {
-            psyUserMapper.updatePsyUser(PsyUser.builder().id(phoneUser.getId()).wxOpenid(user.getWxOpenid()).avatar(user.getAvatar()).name(user.getName()).build());
+            throw new ServiceException("此手机号已绑定其他用户");
+            /*psyUserMapper.updatePsyUser(PsyUser.builder().id(phoneUser.getId()).wxOpenid(user.getWxOpenid()).avatar(user.getAvatar()).name(user.getName()).build());
             psyUserMapper.deletePsyUserById(user.getId());
-            loginDTO.setUserId(phoneUser.getId());
+            loginDTO.setUserId(phoneUser.getId());*/
         } else {
             psyUserMapper.updatePsyUser(PsyUser.builder().id(user.getId()).phone(loginDTO.getPhone()).build());
             loginDTO.setUserId(user.getId());
