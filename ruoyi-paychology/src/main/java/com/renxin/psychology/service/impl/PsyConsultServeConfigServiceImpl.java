@@ -185,11 +185,11 @@ public class PsyConsultServeConfigServiceImpl extends ServiceImpl<PsyConsultServ
         
         //若执行了上架操作, 则自动为该服务关联所有条件相符的咨询师
         if ("1".equals(oldServerConfig.getStatus()) && "0".equals(req.getStatus())){
-            consultService.addAllRelation(req.getId());
+            consultService.addAllRelation(req.getId(),null);
         }
         //若执行了下架操作, 则自动为该服务取消所有关联
         if ("0".equals(oldServerConfig.getStatus()) && "1".equals(req.getStatus())){
-            serveService.deleteAllRelation(req.getId());
+            serveService.deleteAllRelation(req.getId(),null);
         }
         
         //刷新关联的咨询师缓存

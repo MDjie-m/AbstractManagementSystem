@@ -26,6 +26,7 @@ public interface PsyConsultMapper extends BaseMapper<PsyConsult>
     PsyConsult queryById(Long id);
     
     void refreshServerNum();
+    void updateServerNumZero();
 
     List<PsyConsult> queryConsultantList(PsyConsultOrderVO req);
     

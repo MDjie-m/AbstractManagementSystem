@@ -3,6 +3,7 @@ package com.renxin.psychology.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.constant.NewConstants;
 import com.renxin.common.constant.PsyConstants;
@@ -175,11 +176,14 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
 
     @Override
     public List<PsyConsultOrder> getListForNotice(String last) {
+        Page<PsyConsultOrder> page = new Page<>(1, 10);
         LambdaQueryWrapper<PsyConsultOrder> wp = new LambdaQueryWrapper<>();
         wp.eq(PsyConsultOrder::getDelFlag, "0");
         wp.eq(PsyConsultOrder::getPayStatus, "2");
-        wp.last(last);
-        return psyConsultOrderMapper.selectList(wp);
+        wp.orderByDesc(PsyConsultOrder::getCreateTime);
+        
+       // wp.last(last);
+        return psyConsultOrderMapper.selectPage(page, wp).getRecords();
     }
 
     private void setNames(PsyConsultOrder entity) {

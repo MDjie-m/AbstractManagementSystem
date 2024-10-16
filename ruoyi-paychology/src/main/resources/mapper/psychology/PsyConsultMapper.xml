@@ -146,18 +146,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{item,jdbcType=BIGINT}
         </foreach>
     </update>
+
+    <update id="updateServerNumZero">
+        UPDATE psy_consult pc
+        set pc.serve = 0 where pc.id is not null
+    </update>
     
     <update id="refreshServerNum">
         UPDATE psy_consult pc
             LEFT JOIN (
                 SELECT consult_id, COUNT(*) AS serve_count
                 FROM psy_consult_serve
+                where del_flag = 0 
                 GROUP BY consult_id
             ) pcs
             ON pc.id = pcs.consult_id
         SET pc.serve = COALESCE(pcs.serve_count, 0) where pc.id is not null ;
     </update>
-
+    
     <resultMap type="PsyConsult" id="PsyConsultResult">
         <result property="id"    column="id"    />
         <result property="userName"    column="user_name"    />

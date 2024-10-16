@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.renxin.psychology.domain.PsyConsultServe;
 import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.vo.PsyConsultServeVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface PsyConsultServeMapper extends BaseMapper<PsyConsultServe>
     int batchServeRef(List<PsyConsultServe> refs);
 
     @InterceptorIgnore(blockAttack = "true")
-    int deleteAllRelation(Long serverConfigId);
+    int deleteAllRelation(@Param("serverConfigId") Long serverConfigId, @Param("consultantId")Long consultantId);
 
     List<PsyConsultServeVO> getServeRef(PsyConsultServe req);
 

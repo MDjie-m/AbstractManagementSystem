@@ -471,9 +471,17 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
 //        sysUser.setStatus(req.getStatus());
 //        userService.updateUserProfile(sysUser);
 
+        PsyConsult oldConsult = psyConsultMapper.selectById(req.getId());
         converToStr(req);
         int i = psyConsultMapper.updateById(BeanUtil.toBean(req, PsyConsult.class));
-
+        
+        //若修改了级别/服务对象, 则需重刷关联服务
+        if (ObjectUtils.isEmpty(oldConsult.getServiceObject()) || ObjectUtils.isEmpty(oldConsult.getLevel()) 
+        || !oldConsult.getServiceObject().equals(req.getServiceObject()) || !oldConsult.getLevel().equals(req.getLevel())){
+            //刷新该咨询师的关联服务
+            addAllRelation(null, req.getId());
+        }
+        
         refreshIdList();
         refreshRelateCache(req.getId());
         return AjaxResult.success(i);
@@ -557,13 +565,14 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addAllRelation(Long serverConfigId){
+    public void addAllRelation(Long serverConfigId, Long consultantId){
         //清空旧的关联关系
-        serveService.deleteAllRelation(serverConfigId);
+        serveService.deleteAllRelation(serverConfigId,consultantId);
         
-        //添加新的关联关系(全量)
+        //添加新的关联关系
         LambdaQueryWrapper<PsyConsult> wp = Wrappers.lambdaQuery();
             wp.eq(PsyConsult::getDelFlag, "0");
+            wp.eq(ObjectUtils.isNotEmpty(consultantId),PsyConsult::getId,consultantId);
         List<PsyConsult> consultantList = psyConsultMapper.selectList(wp);//咨询师清单
 
         PsyConsultServeConfigReq serveConfigReq = new PsyConsultServeConfigReq();
@@ -597,9 +606,16 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
             }
         }
         //更新[咨询师表]中, 各咨询师的"关联服务数量"
+        psyConsultMapper.updateServerNumZero();
         psyConsultMapper.refreshServerNum();
+
+        //刷新缓存
+        if (ObjectUtils.isNotEmpty(consultantId)){
+            refreshCacheByIdList(consultantList.stream().map(p -> p.getId()).collect(Collectors.toList()));
+        }else{
+            refreshCacheAll();
+        }
         
-        refreshCacheAll();
     }
     
     //查询指定咨询师的顾客清单
