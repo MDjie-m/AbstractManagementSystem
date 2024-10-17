@@ -40,6 +40,7 @@ public class NoticeMessage implements Serializable {
     
     protected Long consultantId;
     protected Long userId;
+    protected String push_clientid;
     
     /**
      * 接收者-用户名

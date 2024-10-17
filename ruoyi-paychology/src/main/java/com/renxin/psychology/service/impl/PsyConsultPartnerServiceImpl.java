@@ -137,7 +137,10 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int save(PsyConsultPartner entity) {
-        return psyConsultPartnerMapper.updateById(entity);
+        int i = psyConsultPartnerMapper.updateById(entity);
+        
+        //todo通知  咨询师
+        return 1;
     }
 
     /**

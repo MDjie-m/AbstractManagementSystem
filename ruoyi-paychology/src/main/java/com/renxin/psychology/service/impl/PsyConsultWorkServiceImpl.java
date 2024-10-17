@@ -562,6 +562,9 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                     consultantOrder.setStatus(ConsultConstant.CONSULT_ORDER_STATUE_PENDING);//进行中
                     consultantOrderService.updatePsyConsultantOrder(consultantOrder);
                 }
+                
+                //todo通知  双方咨询师
+                
                 break;
             //咨询
             case 12 :
@@ -624,6 +627,8 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
 
                 notice.setMsgMap(msgMap);
                 wxMsgUtils.send(notice);
+                
+                //todo通知 咨询师
                 break;
                 
             //无匹配

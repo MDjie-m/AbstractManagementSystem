@@ -37,7 +37,7 @@ public interface IPsyConsultOrderService
 
     List<PsyConsultOrder> getList(PsyAdminOrderReq req);
 
-    List<PsyConsultOrder> getListForNotice(String last);
+    List<PsyConsultOrder> getListForNotice();
 
     List<PsyConsultOrder> getCancelList(int num);
 

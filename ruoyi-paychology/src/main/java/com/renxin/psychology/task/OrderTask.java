@@ -85,7 +85,11 @@ public class OrderTask {
 
             notice.setMsgMap(msgMap);
             wxMsgUtils.send(notice);
+            
+            //todo通知 该预约的咨询师
         }
+        
+        //todo通知  查询scheduleList
     }
 
 }

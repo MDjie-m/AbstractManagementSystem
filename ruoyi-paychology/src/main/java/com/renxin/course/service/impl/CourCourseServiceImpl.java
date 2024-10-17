@@ -85,8 +85,8 @@ public class CourCourseServiceImpl extends ServiceImpl<CourCourseMapper, CourCou
     @Cacheable(value = CacheConstants.COURSE_BY_ID_KEY, key = "#id", unless = "#result == null")
     public CourCourse selectCourCourseById(Long id)
     {
-        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) 
-                + "--------------------------------连接MySQL查询课程:" + id);
+        /*log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) 
+                + "--------------------------------连接MySQL查询课程:" + id);*/
         CourCourse courCourse = courCourseMapper.selectCourCourseById(id);
         if (ObjectUtils.isEmpty(courCourse)){
             return null;

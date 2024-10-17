@@ -161,6 +161,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                  label.user_fill_label, label.consultant_fill_label, label.admin_fill_label, a.create_time
         order by a.create_time desc
     </select>
+    
+    <select id="getListForNotice" resultType="com.renxin.psychology.domain.PsyConsultOrder">
+        select
+            nick_name,
+            consult_name,
+            serve_name
+        from
+            psy_consult_order
+        where 
+            del_flag = 0 and pay_status = 2
+        order by create_time desc 
+        limit 10
+    </select>
 
 
 </mapper>

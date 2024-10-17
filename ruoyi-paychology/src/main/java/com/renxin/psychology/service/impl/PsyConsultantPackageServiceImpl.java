@@ -63,8 +63,8 @@ public class PsyConsultantPackageServiceImpl extends ServiceImpl<PsyConsultantPa
     @Cacheable(value = CacheConstants.PACKAGE_BY_ID_KEY, key = "#packageId", unless = "#result == null")
     public PsyConsultantPackage selectPsyConsultantPackageByPackageId(Long packageId)
     {
-        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                + "--------------------------------连接MySQL查询套餐:" + packageId);
+       /* log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                + "--------------------------------连接MySQL查询套餐:" + packageId);*/
         PsyConsultantPackage pack = psyConsultantPackageMapper.selectPsyConsultantPackageByPackageId(packageId);
         return pack;
     }

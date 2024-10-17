@@ -85,8 +85,8 @@ public class PsyGaugeServiceImpl extends ServiceImpl<PsyGaugeMapper, PsyGauge>
     @Cacheable(value = CacheConstants.GAUGE_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyGauge selectPsyGaugeById(Long id)
     {
-        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                + "--------------------------------连接MySQL查询测评:" + id);
+        /*log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                + "--------------------------------连接MySQL查询测评:" + id);*/
         return psyGaugeMapper.selectPsyGaugeById(id);
     }
 

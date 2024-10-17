@@ -202,6 +202,7 @@ export default {
           const firstColumnData = jsonData.slice(1).map(row => row[0]);
           const joinedData = firstColumnData.join(',');
           console.log(joinedData);
+          //todo通知  打款完成
         } else {
           this.$modal.msgError('Excel 表格为空或格式不正确');
         }

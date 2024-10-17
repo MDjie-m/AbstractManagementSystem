@@ -336,9 +336,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     }
 
     /**
-     * 新增团队督导(组织)订单
-     * 
-     * @param psyConsultantOrder 团队督导(组织)订单
+     * 新增订单
      * @return 结果
      */
     @Override
@@ -349,9 +347,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     }
 
     /**
-     * 修改团队督导(组织)订单
-     * 
-     * @param psyConsultantOrder 团队督导(组织)订单
+     * 修改订单
      * @return 结果
      */
     @Override

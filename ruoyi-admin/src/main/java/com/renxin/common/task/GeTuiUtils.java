@@ -11,7 +11,6 @@
 //import com.getui.push.v2.sdk.dto.req.message.PushDTO;
 //import com.getui.push.v2.sdk.dto.req.message.PushMessage;
 //import com.getui.push.v2.sdk.dto.req.message.android.AndroidDTO;
-//import com.getui.push.v2.sdk.dto.req.message.android.GTNotification;
 //import com.getui.push.v2.sdk.dto.req.message.android.ThirdNotification;
 //import com.getui.push.v2.sdk.dto.req.message.android.Ups;
 //import com.getui.push.v2.sdk.dto.req.message.ios.Alert;
@@ -20,7 +19,6 @@
 //import com.getui.push.v2.sdk.dto.res.TaskIdDTO;
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Component;
 //import org.springframework.stereotype.Service;
 //
 //import java.util.List;

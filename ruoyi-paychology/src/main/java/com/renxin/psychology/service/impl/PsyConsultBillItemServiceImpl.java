@@ -152,7 +152,9 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
         }
         accountRecordService.insertPsyConsultantAccountRecordBatch(acctRecordList);
         
-        //将相关的团督任务设为[已分账]
+        //todo通知  咨询师分账已完成
+        
+        //将schedule中的团督任务设为[已分账]
         List<Long> teamScheduleIdList = billList.stream().filter(p -> p.getScheduleType() == 21).map(PsyConsultBillItem::getId).collect(Collectors.toList());
         scheduleService.updateStatusBatch(teamScheduleIdList, "4");//团督已分账
     }

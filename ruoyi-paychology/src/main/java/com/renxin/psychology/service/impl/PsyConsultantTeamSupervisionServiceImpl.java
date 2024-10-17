@@ -18,6 +18,7 @@ import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.domain.RelateInfo;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
+import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.*;
 import com.renxin.psychology.mapper.PsyConsultMapper;
@@ -88,8 +89,8 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
     @Cacheable(value = CacheConstants.TEAM_SUP_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyConsultantTeamSupervision selectPsyConsultantTeamSupervisionById(Long id)
     {
-        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                + "--------------------------------连接MySQL查询团督:" + id);
+        /*log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                + "--------------------------------连接MySQL查询团督:" + id);*/
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(id);
 
         //查询成员信息
@@ -215,6 +216,13 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         
         //redisCache.setCacheObject(CacheConstants.TEAM_SUP_BY_ID_KEY + req.getId(),req);
         refreshIdList();
+        
+        //todo通知  新建团督
+        NoticeMessage notice = new NoticeMessage();
+        notice.setConsultantId(req.getConsultantId());
+        notice.setTitle("团督创建完成");
+        notice.setContent("您名下的团队督导[" + req.getTitle() +"], 已创建, 正在招生中.");
+        //new CloudFunctions()
         return i;
     }
 
@@ -375,6 +383,8 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         }
         consultantScheduleService.insertPsyConsultantScheduleList(scheduleList);
         consultantWorkTemplateService.savePsyConsultantWorkBatch(workDayList);
+        
+        //todo通知  团督报名完成
         
     }
 

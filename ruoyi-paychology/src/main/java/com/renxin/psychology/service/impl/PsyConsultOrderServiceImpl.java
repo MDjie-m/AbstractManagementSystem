@@ -174,15 +174,13 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
     }
 
     @Override
-    public List<PsyConsultOrder> getListForNotice(String last) {
-        Page<PsyConsultOrder> page = new Page<>(1, 10);
+    public List<PsyConsultOrder> getListForNotice() {
+     /*   Page<PsyConsultOrder> page = new Page<>(1, 10);
         LambdaQueryWrapper<PsyConsultOrder> wp = new LambdaQueryWrapper<>();
         wp.eq(PsyConsultOrder::getDelFlag, "0");
         wp.eq(PsyConsultOrder::getPayStatus, "2");
-        wp.orderByDesc(PsyConsultOrder::getCreateTime);
-        
-       // wp.last(last);
-        return psyConsultOrderMapper.selectPage(page, wp).getRecords();
+        wp.orderByDesc(PsyConsultOrder::getCreateTime);*/
+        return psyConsultOrderMapper.getListForNotice();
     }
 
     private void setNames(PsyConsultOrder entity) {
@@ -651,6 +649,8 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         
         notice.setMsgMap(msgMap);
         wxMsgUtils.send(notice);
+        
+        //todo通知  被约咨询师
         return true;
     }
 

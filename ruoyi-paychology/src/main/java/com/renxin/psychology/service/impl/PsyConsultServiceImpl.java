@@ -229,8 +229,8 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     @Override
     @Cacheable(value = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyConsultVO getOne(Long id) {
-        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                + "--------------------------------连接MySQL查询咨询师:" + id);
+      /*  log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                + "--------------------------------连接MySQL查询咨询师:" + id);*/
         PsyConsultVO consultVO = BeanUtil.toBean(psyConsultMapper.queryById(id), PsyConsultVO.class);
         //查询工作时长
         PsyWorkTimeRes psyWorkTimeRes = scheduleService.querySumTime(id);
@@ -480,6 +480,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         || !oldConsult.getServiceObject().equals(req.getServiceObject()) || !oldConsult.getLevel().equals(req.getLevel())){
             //刷新该咨询师的关联服务
             addAllRelation(null, req.getId());
+            //todo通知  级别/服务对象变动
         }
         
         refreshIdList();

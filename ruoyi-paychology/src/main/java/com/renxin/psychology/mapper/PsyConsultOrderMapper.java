@@ -27,4 +27,7 @@ public interface PsyConsultOrderMapper extends BaseMapper<PsyConsultOrder>
 
     //我的顾客清单
     public List<PsyConsultOrderVO> queryUserList(PsyConsultOrderVO req);
+
+    //最近通知清单
+    public List<PsyConsultOrder> getListForNotice();
 }

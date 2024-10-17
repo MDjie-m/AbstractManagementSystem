@@ -230,16 +230,20 @@ public class PsyUserServiceImpl implements IPsyUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void bindPhone(LoginDTO loginDTO) {
+        String phone = loginDTO.getPhone();
         log.info("微信获取手机号码更新接口, loginDTO:" + loginDTO.toString());
         PsyUser user = psyUserMapper.selectPsyUserById(loginDTO.getUserId());
-        PsyUser phoneUser = psyUserMapper.queryUserByAccount(loginDTO.getPhone());
+        PsyUser phoneUser = psyUserMapper.queryUserByAccount(phone);
         //若该手机号已经存在用户，直接将微信信息更新至该用户,并删除此微信用户
         if (phoneUser != null) {
             throw new ServiceException("此手机号已绑定其他用户");
             /*psyUserMapper.updatePsyUser(PsyUser.builder().id(phoneUser.getId()).wxOpenid(user.getWxOpenid()).avatar(user.getAvatar()).name(user.getName()).build());
             psyUserMapper.deletePsyUserById(user.getId());
             loginDTO.setUserId(phoneUser.getId());*/
-        } else {
+        } else if ("微信用户".equals(user.getName())){
+            psyUserMapper.updatePsyUser(PsyUser.builder().id(user.getId()).phone(loginDTO.getPhone()).name(user.getName() + phone.substring(phone.length()-4)).build());
+            loginDTO.setUserId(user.getId());
+        } else{
             psyUserMapper.updatePsyUser(PsyUser.builder().id(user.getId()).phone(loginDTO.getPhone()).build());
             loginDTO.setUserId(user.getId());
         }

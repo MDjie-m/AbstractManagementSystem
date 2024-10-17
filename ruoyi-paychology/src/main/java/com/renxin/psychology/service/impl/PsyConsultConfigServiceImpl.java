@@ -3,6 +3,7 @@ package com.renxin.psychology.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.renxin.common.core.domain.entity.SysDictData;
 import com.renxin.common.core.domain.entity.SysDictType;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.NewDateUtil;
 import com.renxin.psychology.domain.PsyConsultOrder;
 import com.renxin.psychology.dto.DateNumDTO;
@@ -12,6 +13,7 @@ import com.renxin.psychology.service.IPsyConsultOrderService;
 import com.renxin.psychology.vo.PsyConsultConfigByGroupVO;
 import com.renxin.psychology.vo.PsyConsultConfigVO;
 import com.renxin.system.service.ISysDictTypeService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
  * @date 2023-06-16
  */
 @Service
+@Slf4j
 public class PsyConsultConfigServiceImpl implements IPsyConsultConfigService
 {
 
@@ -96,16 +99,21 @@ public class PsyConsultConfigServiceImpl implements IPsyConsultConfigService
 
     @Override
     public List<String> getNotices() {
-        List<SysDictData> dictData = iSysDictTypeService.selectDictDataByType("consult_notice");
-        List<String> list = dictData.stream().map(SysDictData::getDictLabel).collect(Collectors.toList());
-
-        List<PsyConsultOrder> orders = orderService.getListForNotice("ORDER BY create_time DESC LIMIT 10");
-        orders.forEach(a -> {
-            list.add(StrUtil.format("{}** 下单了{}老师的{}!", getFirstEmoji(a.getNickName()), a.getConsultName(), a.getServeName()));
-        });
-
-        Collections.shuffle(list);
-        return list;
+        try{
+            List<SysDictData> dictData = iSysDictTypeService.selectDictDataByType("consult_notice");
+            List<String> list = dictData.stream().map(SysDictData::getDictLabel).collect(Collectors.toList());
+    
+            List<PsyConsultOrder> orders = orderService.getListForNotice();
+            orders.forEach(a -> {
+                list.add(StrUtil.format("{}** 下单了{}老师的{}!", getFirstEmoji(a.getNickName()), a.getConsultName(), a.getServeName()));
+            });
+    
+            Collections.shuffle(list);
+            return list;
+        }catch (Exception e){
+            log.info(e.getMessage());
+            throw new ServiceException("getNotices查看最近通知异常");
+        }
     }
 
     private String getFirstEmoji(String name) {

@@ -14,6 +14,7 @@ import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.PageUtils;
+import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.consultant.common.dcloud.CloudFunctions;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsult;
@@ -122,7 +123,7 @@ public class ConsultantUserController extends BaseController {
     public AjaxResult loginBySmsCode(@RequestBody ConsultLoginDTO req) {
         String code = redisCache.getCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + req.getPhone());
         String reqCode = req.getSmsCode();
-        log.info("code------------------"+code);
+        log.info("调用/loginBySmsCode, req:"+req + ",code:" + code);
         if (ObjectUtils.isEmpty(reqCode) || !reqCode.equals(code)) {
             throw new ServiceException("验证码与手机号不相符");
         }

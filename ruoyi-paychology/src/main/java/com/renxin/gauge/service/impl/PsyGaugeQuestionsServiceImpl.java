@@ -62,8 +62,8 @@ public class PsyGaugeQuestionsServiceImpl extends ServiceImpl<PsyGaugeQuestionsM
     @Override
     @Cacheable(value = CacheConstants.QUESTION_BY_ID_KEY, key = "#id", unless = "#result == null")
     public PsyGaugeQuestions selectPsyGaugeQuestionsById(Long id) {
-        log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                + "--------------------------------连接MySQL查询问题:" + id);
+        /*log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                + "--------------------------------连接MySQL查询问题:" + id);*/
         PsyGaugeQuestions question = psyGaugeQuestionsMapper.selectPsyGaugeQuestionsById(id);
 
         //查询选项清单

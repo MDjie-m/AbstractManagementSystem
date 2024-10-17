@@ -137,7 +137,7 @@ geTui:
   AppID: 3EOn07T0bU6LXV4W3xloK5
   AppKey: nBZKhxJHeE7NCMRhc94Yl7
   AppSecret: xL1iFuPy7Z58l9fPnTK5F8
-  MasterSecret: 111
+  MasterSecret: xL1iFuPy7Z58l9fPnTK5F8
   Host: 111
 
 # token配置

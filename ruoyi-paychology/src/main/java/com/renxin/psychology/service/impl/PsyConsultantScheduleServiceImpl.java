@@ -88,7 +88,10 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     public int insertPsyConsultantSchedule(PsyConsultantSchedule psyConsultantSchedule)
     {
         psyConsultantSchedule.setCreateTime(DateUtils.getNowDate());
-        return psyConsultantScheduleMapper.insertPsyConsultantSchedule(psyConsultantSchedule);
+        int i = psyConsultantScheduleMapper.insertPsyConsultantSchedule(psyConsultantSchedule);
+        
+        //todo通知 双方咨询师
+        return 1;
     }
 
     @Override
