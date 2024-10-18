@@ -178,3 +178,6 @@ mqtt:
 
 cashier:
   aes-key: 1234567890123456
+yingshi:
+  appKey: 1dc287d86f6747839c1759b5a2db992a
+  secret: e5942c70a57ee6b9f1385182bcd04f2a
