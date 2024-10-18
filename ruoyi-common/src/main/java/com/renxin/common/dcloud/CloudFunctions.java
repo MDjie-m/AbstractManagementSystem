@@ -52,20 +52,26 @@ public class CloudFunctions {
         }
     }
 
-    public static String sendGeTuiMessage(NoticeMessage notice) throws Exception {
-        Map<String, Object> params = new HashMap<>();
-        params.put("push_clientid", "f47f97fc871927931d848343a9c83f9a");
-        params.put("title", "分账通知");
-        params.put("content", "服务完成, 已分账5.00元到账户");
-        HashMap<String, String> payloadMap = new HashMap<>();
-            payloadMap.put("text","服务完成, 已分账5.00元到账户***");
-        params.put("payload", payloadMap);
-        String url = requestUrl + "/pushSendMessage";
-        Map<String, Object> requestParams = SignUtil.signMap(secret, params);
-        String res = HttpUtil.get(url, requestParams);
-        JSONObject jsonObject = new JSONObject(res);
-        System.out.println(jsonObject);
-        return null;
+    //发送个推通知
+    public static boolean sendGeTuiMessage(NoticeMessage notice)  {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("push_clientid", notice.getPush_clientid());
+            params.put("title", notice.getTitle());
+            params.put("content", notice.getContent());
+            HashMap<String, String> payloadMap = new HashMap<>();
+            payloadMap.put("text",notice.getContent());
+            params.put("payload", payloadMap);
+            String url = requestUrl + "/pushSendMessage";
+            Map<String, Object> requestParams = SignUtil.signMap(secret, params);
+            String res = HttpUtil.get(url, requestParams);
+            JSONObject jsonObject = new JSONObject(res);
+            System.out.println(jsonObject);
+            return true;
+        } catch (Exception e) {
+            log.error("发送个推通知失败, notice:" + notice);
+            return false;
+        }
     }
 
 

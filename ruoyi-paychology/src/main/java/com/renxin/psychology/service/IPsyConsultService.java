@@ -55,6 +55,9 @@ public interface IPsyConsultService extends IService<PsyConsult> {
     
     void addAllRelation(Long serverConfigId, Long consultantId);
 
+     String getClientIdByConsultantId(Long consutantId);
+     String getNameByConsultantId(Long consutantId);
+
     /**
      * 查询来访咨询师详情
      * @param req

@@ -1,19 +1,21 @@
 package com.renxin.psychology.task;
 
 import com.renxin.common.constant.Constants;
+import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.common.wechat.wxMsg.NoticeMethodEnum;
 import com.renxin.common.wechat.wxMsg.TemplateMessageItemVo;
 import com.renxin.common.wechat.wxMsg.WxMsgUtils;
 import com.renxin.psychology.domain.PsyConsultOrder;
+import com.renxin.psychology.domain.PsyConsultantSchedule;
+import com.renxin.psychology.domain.PsyConsultantSupervisionMember;
 import com.renxin.psychology.dto.OrderItemDTO;
-import com.renxin.psychology.service.IPsyConsultOrderItemService;
-import com.renxin.psychology.service.IPsyConsultOrderService;
-import com.renxin.psychology.service.IPsyUserService;
+import com.renxin.psychology.service.*;
 import com.renxin.system.service.ISysConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -40,6 +42,15 @@ public class OrderTask {
     @Resource
     private IPsyUserService userService;
 
+    @Autowired
+    private IPsyConsultService consultService;
+    
+    @Resource
+    private IPsyConsultantScheduleService scheduleService;
+
+    @Autowired
+    private IPsyConsultantSupervisionMemberService memberService;
+
     public void cancel()
     {
         String val = configService.selectConfigByKey("order.cancel.time");
@@ -57,6 +68,7 @@ public class OrderTask {
     //咨询开始前1小时, 发送通知消息
     public void sendNoticeMsg()
     {
+        CloudFunctions cloudFunctions = new CloudFunctions();
         //获取1小时后的时间
         String oneHourLater  = java.time.LocalDateTime.now().plusHours(1).withMinute(0).format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd|HH:mm"));
         String day = oneHourLater.split("\\|")[0];
@@ -68,7 +80,7 @@ public class OrderTask {
         orderItemReq.setTimeStart(time);
         List<OrderItemDTO> orderItemList = orderItemService.queryOrderItemList(orderItemReq);
         for (OrderItemDTO item : orderItemList) {
-            //发送微信小程序订阅消息
+            //发送微信小程序订阅消息--顾客
             NoticeMessage notice = new NoticeMessage();
             notice.setMessageType(Constants.MSG_CONSULT_START);//咨询将开始
             notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
@@ -80,16 +92,63 @@ public class OrderTask {
             msgMap.put("time1", new TemplateMessageItemVo(oneHourLater));//预约时间
             msgMap.put("thing2", new TemplateMessageItemVo(item.getConsultantName()));//被咨询人
             msgMap.put("thing3", new TemplateMessageItemVo(item.getUserNickName()));//咨询人
-            msgMap.put("thing4", new TemplateMessageItemVo("视频咨询"));//预约服务
-            msgMap.put("thing5", new TemplateMessageItemVo("您有一个咨询将在1小时内开始"));//温馨提示
+            msgMap.put("thing4", new TemplateMessageItemVo("视频咨询即将开始"));//预约服务
+            msgMap.put("thing5", new TemplateMessageItemVo("您有一个咨询预约将在1小时内开始, 请准时上线"));//温馨提示
 
             notice.setMsgMap(msgMap);
             wxMsgUtils.send(notice);
             
-            //todo通知 该预约的咨询师
+            //todo通知--  该预约的咨询师
+            NoticeMessage consultantNotice = new NoticeMessage();
+                consultantNotice.setPush_clientid(consultService.getClientIdByConsultantId(item.getConsultId()));
+                consultantNotice.setTitle("预约服务即将开始");
+                consultantNotice.setContent("您有一个咨询预约将在" + oneHourLater + "开始, 请准时上线, 客户:" + item.getUserNickName());
+            cloudFunctions.sendGeTuiMessage(consultantNotice);
         }
         
-        //todo通知  查询scheduleList
+        //todo通知--  查询scheduleList
+        PsyConsultantSchedule scheduleReq = new PsyConsultantSchedule();
+            scheduleReq.setDay(day);
+            scheduleReq.setTime(Integer.parseInt(time));
+            scheduleReq.setStatus("0");
+        List<PsyConsultantSchedule> scheduleList = scheduleService.selectPsyConsultantScheduleList(scheduleReq);
+
+        for (PsyConsultantSchedule schedule : scheduleList) {
+            if (schedule.getScheduleType() == 21){
+                //通知督导师
+                NoticeMessage consultantNotice = new NoticeMessage();
+                    consultantNotice.setPush_clientid(consultService.getClientIdByConsultantId(schedule.getConsultId()));
+                    consultantNotice.setTitle("团队督导课即将开始");   
+                    consultantNotice.setContent("您名下的团队督导[" +schedule.getServerName()+  "]将在" + schedule.getTimeStart() + "开课, 请准时上线.");
+                cloudFunctions.sendGeTuiMessage(consultantNotice);
+
+                //查询该团督的成员清单
+                PsyConsultantSupervisionMember memberReq = new PsyConsultantSupervisionMember();
+                    memberReq.setTeamSupervisionId(schedule.getTeamId());
+                List<PsyConsultantSupervisionMember> memberList = memberService.selectPsyConsultantSupervisionMemberList(memberReq);
+                //通知成员
+                consultantNotice.setContent("您参与的团队督导[" + schedule.getServerName() + "]将在" + schedule.getTimeStart()  + "开课, 请准时上线.");
+                for (PsyConsultantSupervisionMember member : memberList) {
+                    consultantNotice.setPush_clientid(consultService.getClientIdByConsultantId(member.getMemberId()));
+                    cloudFunctions.sendGeTuiMessage(consultantNotice);
+                }
+            }
+            if (schedule.getScheduleType() == 22 || schedule.getScheduleType() == 23){
+                //通知收费咨询师
+                NoticeMessage consultantNotice = new NoticeMessage();
+                    consultantNotice.setPush_clientid(consultService.getClientIdByConsultantId(schedule.getConsultId()));
+                    consultantNotice.setTitle("预约督导即将开始");
+                    consultantNotice.setContent("客户[" + schedule.getUserNickName() +  "]向您预约的督导服务将在" + schedule.getTimeStart() + "开始, 请准时上线.");
+                cloudFunctions.sendGeTuiMessage(consultantNotice);
+                
+                //通知付费咨询师
+                consultantNotice.setPush_clientid(consultService.getClientIdByConsultantId(Long.valueOf(schedule.getCreateBy())));
+                consultantNotice.setContent("您向[" + consultService.getNameByConsultantId(schedule.getConsultId()) + "]预约的督导服务将在" + 
+                        schedule.getTimeStart() + "开始, 请准时上线.");
+                cloudFunctions.sendGeTuiMessage(consultantNotice);
+            }
+            
+        }
     }
 
 }

@@ -87,7 +87,7 @@
       <el-table-column label="咨询师" width="100" align="center" prop="consultName" />
       <el-table-column label="用户名称" width="100" align="center" prop="nickName" />
       <el-table-column label="用户手机号" width="120" align="center" prop="phone" />
-      <el-table-column label="咨询类型" width="120" align="center" prop="consultTypeName" />
+<!--      <el-table-column label="咨询类型" width="120" align="center" prop="consultTypeName" />-->
       <el-table-column label="订单原价" width="100" align="center" prop="originalPrice">
         <template slot-scope="scope">
           {{ scope.row.originalPrice.toFixed(2) }}
@@ -99,7 +99,7 @@
         </template>
       </el-table-column>
       <el-table-column label="优惠券编号" width="200" align="center" prop="couponNo" />
-      <el-table-column label="优惠券名" width="100" align="center" prop="couponName" />
+      <el-table-column label="优惠券名" width="130" align="center" prop="couponName" />
       <el-table-column label="服务次数" width="100" align="center" prop="num">
         <template slot="header" slot-scope="{ column, $index }">
           <span>服务次数</span>

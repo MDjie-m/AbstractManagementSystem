@@ -1,5 +1,6 @@
 package com.renxin.psychology.domain;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,13 +43,14 @@ public class PsyConsultantSupervisionMember extends BaseEntity
 
     /** 成员ID(咨询师ID） */
     @Excel(name = "成员ID(咨询师ID）")
-    private String memberId;
+    private Long memberId;
 
     /** 备注 */
     @Excel(name = "备注")
     private String remark;
     
     /** 删除标志（0代表存在 1代表删除） */
+    @TableLogic
     private String delFlag;
 
     /** 成员姓名 */

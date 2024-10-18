@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.constant.NewConstants;
 import com.renxin.common.constant.PsyConstants;
+import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.common.domain.PsyOrderLog;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.service.IPsyOrderLogService;
@@ -633,7 +634,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
 //        return true;
         return wechatService.sendPublicMsg(msg);*/
         
-        //发送微信小程序订阅消息
+        //发送微信小程序订阅消息  通知客户
         NoticeMessage notice = new NoticeMessage();
         notice.setMessageType(Constants.MSG_SCHEDULE_SUCCESS);//预约成功
         notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
@@ -650,7 +651,14 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         notice.setMsgMap(msgMap);
         wxMsgUtils.send(notice);
         
-        //todo通知  被约咨询师
+        //todo通知--  被约咨询师
+        NoticeMessage consultantNotice = new NoticeMessage();
+            consultantNotice.setPush_clientid(psyConsultService.getClientIdByConsultantId(psyOrder.getConsultId()));
+            consultantNotice.setTitle("预约咨询通知");
+            consultantNotice.setContent("[" + psyOrder.getNickName() + "]向您预约了" + psyOrder.getDay() + " " + psyOrder.getTimeStart() + "~" + psyOrder.getTimeEnd()
+                    + "的咨询服务, 请记得准时上线");
+        new CloudFunctions().sendGeTuiMessage(consultantNotice);
+        
         return true;
     }
 

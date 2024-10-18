@@ -12,6 +12,7 @@ import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.IDhelper;
 import com.renxin.common.utils.cos.COSClientFactory;
+import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultantSchedule;
 import com.renxin.psychology.domain.PsyUser;
 import com.renxin.psychology.dto.OrderItemDTO;

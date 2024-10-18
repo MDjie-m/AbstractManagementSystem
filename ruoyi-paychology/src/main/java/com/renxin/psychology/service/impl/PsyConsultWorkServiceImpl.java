@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.constant.NewConstants;
+import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.utils.StringUtils;
@@ -33,6 +34,7 @@ import com.renxin.psychology.vo.PsyConsultWorkVO;
 import com.renxin.system.service.ISysConfigService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,6 +74,10 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
     @Resource
     private IPsyUserService userService;
     
+    @Autowired
+    private IPsyConsultService consultService;
+
+
     @Override
     public List<PsyConsultWorkVO> getConsultWorks(PsyWorkReq req) {
         List<PsyConsultWorkVO> workList = psyConsultWorkMapper.getWorks(req);
@@ -545,12 +551,15 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                     throw new ServiceException("该预约已完成或已取消, 不可请假");
                 }
                 
+                String explain1 = "";
                 if ((loginConsultId+"").equals(schedule.getCreateBy())){
                     schedule.setStatus("2");//付费人请假
                     isBeforeTime(schedule.getServerStartTime());//判断请假提前时间是否足够
+                    explain1 = "因付费咨询师请假, 本次预约取消";
                 }
                 else if (loginConsultId.equals(schedule.getConsultId())){
                     schedule.setStatus("3");//收费人请假
+                    explain1 = "因收费咨询师请假, 本次预约取消";
                 }else{
                     throw new ServiceException("当前用户与该排程任务不相关");
                 }
@@ -563,7 +572,16 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                     consultantOrderService.updatePsyConsultantOrder(consultantOrder);
                 }
                 
-                //todo通知  双方咨询师
+                //todo通知--  双方咨询师
+                NoticeMessage consultantNotice1 = new NoticeMessage();
+                ////收费咨询师
+                    consultantNotice1.setPush_clientid(consultService.getClientIdByConsultantId(schedule.getConsultId()));
+                    consultantNotice1.setTitle("咨询预约取消");
+                    consultantNotice1.setContent("原定"  + schedule.getDay() + " " + schedule.getTimeStart() + "的督导服务, " + explain1);
+                new CloudFunctions().sendGeTuiMessage(consultantNotice1);
+                ////付费咨询师
+                    consultantNotice1.setPush_clientid(consultService.getClientIdByConsultantId(Long.valueOf(schedule.getCreateBy())));
+                new CloudFunctions().sendGeTuiMessage(consultantNotice1);
                 
                 break;
             //咨询
@@ -583,10 +601,10 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                 if (item.getUserId().equals(loginUserId)){
                     item.setStatus("2");//付费人请假
                     isBeforeTime(item.getServerStartTime());//判断请假提前时间是否足够
-                    explain = "来访者请假，本次预约取消";
+                    explain = "因来访者请假，本次预约取消";
                 }else if (item.getConsultId().equals(loginConsultId)){
                     item.setStatus("3");//收费人请假
-                    explain = "咨询师请假，本次预约取消";
+                    explain = "因咨询师请假，本次预约取消";
                 }else{
                     throw new ServiceException("当前用户与该排程任务不相关.");
                 }
@@ -612,7 +630,7 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                     idleTime(workVO);
                 }
                 
-                //发送通知
+                //向客户发送通知
                 NoticeMessage notice = new NoticeMessage();
                 notice.setMessageType(Constants.MSG_SCHEDULE_LEAVE);//预约取消
                 notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
@@ -628,7 +646,13 @@ public class PsyConsultWorkServiceImpl extends ServiceImpl<PsyConsultWorkMapper,
                 notice.setMsgMap(msgMap);
                 wxMsgUtils.send(notice);
                 
-                //todo通知 咨询师
+                //todo通知-- 咨询师   预约请假
+                NoticeMessage consultantNotice = new NoticeMessage();
+                    consultantNotice.setPush_clientid(consultService.getClientIdByConsultantId(order.getConsultId()));
+                    consultantNotice.setTitle("咨询预约取消");
+                    consultantNotice.setContent("原定"  + item.getDay() + " " + item.getTimeStart() + "的预约咨询, " + explain);
+                new CloudFunctions().sendGeTuiMessage(consultantNotice);
+
                 break;
                 
             //无匹配

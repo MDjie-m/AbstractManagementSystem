@@ -2,19 +2,19 @@ package com.renxin.psychology.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.common.utils.bean.BeanUtils;
+import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.psychology.domain.PsyConsultBillItem;
 import com.renxin.psychology.domain.PsyConsultantAccountRecord;
 import com.renxin.psychology.dto.BillItemDTO;
 import com.renxin.psychology.mapper.PsyConsultBillItemMapper;
 import com.renxin.psychology.request.PsyAdminBillReq;
 import com.renxin.psychology.request.PsyWorkReq;
-import com.renxin.psychology.service.IPsyConsultBillItemService;
-import com.renxin.psychology.service.IPsyConsultantAccountRecordService;
-import com.renxin.psychology.service.IPsyConsultantScheduleService;
-import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
+import com.renxin.psychology.service.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +47,9 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
     
     @Resource
     IPsyConsultantAccountRecordService accountRecordService;
+
+    @Autowired
+    private IPsyConsultService consultService;
 
     @Override
     public List<PsyConsultBillItem> getItemListForDetail(PsyAdminBillReq req) {
@@ -151,12 +154,21 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
             acctRecordList.add(record);
         }
         accountRecordService.insertPsyConsultantAccountRecordBatch(acctRecordList);
-        
-        //todo通知  咨询师分账已完成
-        
+
         //将schedule中的团督任务设为[已分账]
         List<Long> teamScheduleIdList = billList.stream().filter(p -> p.getScheduleType() == 21).map(PsyConsultBillItem::getId).collect(Collectors.toList());
         scheduleService.updateStatusBatch(teamScheduleIdList, "4");//团督已分账
+
+        //todo通知--  咨询师分账已完成
+        CloudFunctions cloudFunctions = new CloudFunctions();
+        for (PsyConsultantAccountRecord record : acctRecordList) {
+            NoticeMessage notice = new NoticeMessage();
+                notice.setPush_clientid(consultService.getClientIdByConsultantId(record.getConsultantId()));
+                notice.setTitle("分账通知");
+                notice.setContent("您有一笔分成到账, 金额" + record.getPayAmount() + "元, 可申请提现.");
+            cloudFunctions.sendGeTuiMessage(notice);
+        }
+       
     }
 
     @Override

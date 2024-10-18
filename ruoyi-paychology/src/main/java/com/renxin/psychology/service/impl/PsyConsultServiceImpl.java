@@ -9,11 +9,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.constant.UserConstants;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.core.domain.entity.SysDictData;
 import com.renxin.common.core.domain.entity.SysUser;
 import com.renxin.common.core.redis.RedisCache;
+import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.common.event.publish.ConsultServePublisher;
 import com.renxin.common.utils.*;
 import com.renxin.common.vo.DateLimitUtilVO;
+import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.gauge.domain.PsyGauge;
 import com.renxin.gauge.mapper.PsyGaugeMapper;
 import com.renxin.gauge.service.IPsyGaugeService;
@@ -28,6 +31,7 @@ import com.renxin.psychology.vo.PsyConsultServeConfigVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.psychology.vo.PsyConsultWorkVO;
 import com.renxin.system.service.ISysConfigService;
+import com.renxin.system.service.ISysDictDataService;
 import com.renxin.system.service.ISysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -102,6 +106,9 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
 
     @Resource
     private IPsyConsultService consultService;
+    
+    @Resource
+    private ISysDictDataService dictDataService;
 
     @Override
     public List<PsyConsultWorkVO> getConsultWorksById(Long id) {
@@ -480,12 +487,58 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         || !oldConsult.getServiceObject().equals(req.getServiceObject()) || !oldConsult.getLevel().equals(req.getLevel())){
             //刷新该咨询师的关联服务
             addAllRelation(null, req.getId());
-            //todo通知  级别/服务对象变动
+            //todo通知--  级别/服务对象变动
+            NoticeMessage notice = new NoticeMessage();
+                notice.setPush_clientid(consultService.getClientIdByConsultantId(req.getId()));
+                notice.setTitle("个人信息变动通知");
+                notice.setContent("管理员对您的个人信息进行了调整, 调整后您的级别为[" + transforLevel(req.getLevel()) + "], 服务对象为["
+                        + transforServiceObjectStr(req.getServiceObject()) + "]");
+            new CloudFunctions().sendGeTuiMessage(notice);
         }
         
         refreshIdList();
         refreshRelateCache(req.getId());
         return AjaxResult.success(i);
+    }
+    
+    //翻译咨询师级别
+    private String transforLevel(Integer level){
+        SysDictData dictReq = new SysDictData();
+            dictReq.setDictType("consult_level");
+            dictReq.setDictValue(level+"");
+        List<SysDictData> dictDataList = dictDataService.selectDictDataList(dictReq);
+        if (ObjectUtils.isNotEmpty(dictDataList)){
+            return dictDataList.get(0).getDictLabel();
+        }
+        log.error("level = " +level + ", 咨询师没有该级别");
+        return null;
+    }
+    
+    //翻译服务对象
+    private String transforServiceObject(Integer no){
+        SysDictData dictReq = new SysDictData();
+        dictReq.setDictType("service_object");
+        dictReq.setDictValue(no+"");
+        List<SysDictData> dictDataList = dictDataService.selectDictDataList(dictReq);
+        if (ObjectUtils.isNotEmpty(dictDataList)){
+            return dictDataList.get(0).getDictLabel();
+        }
+        log.error("service_object = " + no + ", 没有该服务对象");
+        return null;
+    }
+
+    //翻译服务对象 , 字符串多个
+    private String transforServiceObjectStr(String serviceObject){
+        if (ObjectUtils.isEmpty(serviceObject)){
+            return null;
+        }
+        String result = "";
+        List<String> list = Arrays.asList(serviceObject.split(","));
+        for (String s : list) {
+            result = result + transforServiceObject(Integer.valueOf(s)) + ",";
+        }
+        result = result.substring(0,result.length()-1);
+        return result;
     }
     
 
@@ -798,6 +851,28 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
             redisCache.setCacheList(CacheConstants.CONSULTANT_ID_LIST + "::" + "gaugeClass" + entry.getKey(), entry.getValue());
         }*/
 
+    }
+
+    //查询咨询师的clientId
+    @Override
+    public String getClientIdByConsultantId(Long consutantId){
+        PsyConsult one = this.getById(consutantId);
+        if (ObjectUtils.isEmpty(one) || ObjectUtils.isEmpty(one.getPushClientId())){
+            log.error("查询咨询师的clientId , 咨询师consutantId没有维护clientId, 无法向其发送通知. consutantId: " + consutantId);
+            return null;
+        }
+        return one.getPushClientId();
+    }
+
+    //查询咨询师的name
+    @Override
+    public String getNameByConsultantId(Long consutantId){
+        PsyConsult one = this.getById(consutantId);
+        if (ObjectUtils.isEmpty(one)){
+            log.error("找不到指定咨询师, consutantId: " + consutantId);
+            return null;
+        }
+        return one.getUserName();
     }
     
 }

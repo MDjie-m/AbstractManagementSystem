@@ -9,8 +9,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
+import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsultServeConfig;
 import com.renxin.psychology.domain.PsyConsultantOrder;
@@ -51,6 +53,9 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     
     @Resource
     private IPsyConsultantTeamSupervisionService teamService;
+    
+    @Autowired
+    private IPsyConsultService consultService;
 
     /**
      * 查询咨询师排班任务
@@ -85,12 +90,31 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
      * @return 结果
      */
     @Override
-    public int insertPsyConsultantSchedule(PsyConsultantSchedule psyConsultantSchedule)
+    public int insertPsyConsultantSchedule(PsyConsultantSchedule schedule)
     {
-        psyConsultantSchedule.setCreateTime(DateUtils.getNowDate());
-        int i = psyConsultantScheduleMapper.insertPsyConsultantSchedule(psyConsultantSchedule);
+        schedule.setCreateTime(DateUtils.getNowDate());
+        int i = psyConsultantScheduleMapper.insertPsyConsultantSchedule(schedule);
         
-        //todo通知 双方咨询师
+        //todo通知-- 双方咨询师
+        CloudFunctions cloudFunctions = new CloudFunctions();
+        if (schedule.getScheduleType() != 21){////排除团督, 团督已在完成招生时进行了通知
+            NoticeMessage notice = new NoticeMessage();
+            ///通知收费咨询师
+            notice.setPush_clientid(consultService.getClientIdByConsultantId(schedule.getConsultId()));
+            notice.setTitle("预约督导通知");
+            notice.setContent("[" + consultService.getNameByConsultantId(Long.valueOf(schedule.getCreateBy()))+ "]向您预约了" 
+                    + schedule.getDay() + " " + schedule.getTimeStart() + "~" + schedule.getTimeEnd()
+                    + "的督导服务, 请记得准时上线");
+            cloudFunctions.sendGeTuiMessage(notice);
+            ////通知付费咨询师
+            notice.setPush_clientid(consultService.getClientIdByConsultantId(Long.valueOf(schedule.getCreateBy())));
+            notice.setContent("您向[" + consultService.getNameByConsultantId(schedule.getConsultId())+ "]预约过"
+                    + schedule.getDay() + " " + schedule.getTimeStart() + "~" + schedule.getTimeEnd()
+                    + "的督导服务, 请记得准时上线");
+            cloudFunctions.sendGeTuiMessage(notice);
+        }
+        
+        
         return 1;
     }
 

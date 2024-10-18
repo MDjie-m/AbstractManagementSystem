@@ -4,10 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.IDhelper;
 import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.vo.DateLimitUtilVO;
+import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.PsyConsultContract;
 import com.renxin.psychology.domain.PsyConsultPartner;
@@ -137,9 +139,27 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int save(PsyConsultPartner entity) {
+        //查询修改前的数据
+        PsyConsultPartner oldPartner = psyConsultPartnerMapper.selectById(entity.getId());
         int i = psyConsultPartnerMapper.updateById(entity);
+
+        //todo通知--  咨询师
+        String status = entity.getStatus();
+        String content = "";
+        if(ObjectUtils.isNotEmpty(status) && !status.equals(oldPartner.getStatus())){
+            if (status.equals("2")){
+                content = "您的入驻申请已审核通过";
+            }
+            if (status.equals("4")){
+                content = "您的入驻申请被审核驳回";
+            }
+        }
+        NoticeMessage notice = new NoticeMessage();
+            notice.setPush_clientid(consultService.getClientIdByConsultantId(entity.getId()));
+            notice.setTitle("入驻审核通知");
+            notice.setContent(content);
+        new CloudFunctions().sendGeTuiMessage(notice);
         
-        //todo通知  咨询师
         return 1;
     }
 

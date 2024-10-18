@@ -3,22 +3,23 @@ package com.renxin.psychology.service.impl;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renxin.common.constant.CacheConstants;
+import com.renxin.common.constant.Constants;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.core.domain.model.LoginUser;
 import com.renxin.common.core.redis.RedisCache;
+import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.common.domain.RelateInfo;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.utils.SecurityUtils;
 import com.renxin.common.wechat.wxMsg.NoticeMessage;
+import com.renxin.common.wechat.wxMsg.NoticeMethodEnum;
+import com.renxin.common.wechat.wxMsg.TemplateMessageItemVo;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.*;
 import com.renxin.psychology.mapper.PsyConsultMapper;
@@ -78,6 +79,8 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
     @Autowired
     private PsyConsultantOrderMapper psyConsultantOrderMapper;
     
+    @Autowired
+    private IPsyConsultService consultService;
     
     /**
      * 查询团队督导(组织)
@@ -217,12 +220,12 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         //redisCache.setCacheObject(CacheConstants.TEAM_SUP_BY_ID_KEY + req.getId(),req);
         refreshIdList();
         
-        //todo通知  新建团督
+        //todo通知--  新建团督
         NoticeMessage notice = new NoticeMessage();
-        notice.setConsultantId(req.getConsultantId());
-        notice.setTitle("团督创建完成");
-        notice.setContent("您名下的团队督导[" + req.getTitle() +"], 已创建, 正在招生中.");
-        //new CloudFunctions()
+            notice.setPush_clientid(consultService.getClientIdByConsultantId(req.getConsultantId()));
+            notice.setTitle("团督创建完成");
+            notice.setContent("您名下的团队督导[" + req.getTitle() +"], 已创建, 正在招生中.");
+        new CloudFunctions().sendGeTuiMessage(notice);
         return i;
     }
 
@@ -314,7 +317,7 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(consultantOrder.getServerType())){
             PsyConsultantSupervisionMember member = new PsyConsultantSupervisionMember();
                 member.setTeamSupervisionId(serverId);
-                member.setMemberId(consultantOrder.getPayConsultantId()+"");
+                member.setMemberId(consultantOrder.getPayConsultantId());
                 member.setSupervisionType(PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM);
                 member.setOrderNo(consultantOrder.getOrderNo());
             memberService.insertPsyConsultantSupervisionMember(member);
@@ -384,8 +387,26 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         consultantScheduleService.insertPsyConsultantScheduleList(scheduleList);
         consultantWorkTemplateService.savePsyConsultantWorkBatch(workDayList);
         
-        //todo通知  团督报名完成
+        //查询该团督的成员清单
+        PsyConsultantSupervisionMember memberReq = new PsyConsultantSupervisionMember();
+            memberReq.setTeamSupervisionId(teamId);
+        List<PsyConsultantSupervisionMember> memberList = memberService.selectPsyConsultantSupervisionMemberList(memberReq);
+
+        //todo通知--  通知讲师, 团督报名完成
+        NoticeMessage notice = new NoticeMessage();
+        notice.setPush_clientid(consultService.getClientIdByConsultantId(team.getConsultantId()));
+        notice.setTitle("团督报满开班");
+        notice.setContent("您名下的团队督导[" + team.getTitle() + "]已完成招生, 将在每" + getWeekday(team.getWeekDay()) + "的" +
+                team.getLectureStartTime() + "~" + team.getLectureEndTime() + "开课, 请关注通知.");
+        new CloudFunctions().sendGeTuiMessage(notice);
         
+        //通知成员, 团督报名完成
+        notice.setContent("您参与的团队督导[" + team.getTitle() + "]已完成招生, 将在每" + getWeekday(team.getWeekDay()) + "的" +
+                team.getLectureStartTime() + "~" + team.getLectureEndTime() + "开课, 请关注通知.");
+        for (PsyConsultantSupervisionMember member : memberList) {
+            notice.setPush_clientid(consultService.getClientIdByConsultantId(member.getMemberId()));
+            new CloudFunctions().sendGeTuiMessage(notice);
+        }
     }
 
     //获取指定时间段涉及的时间点

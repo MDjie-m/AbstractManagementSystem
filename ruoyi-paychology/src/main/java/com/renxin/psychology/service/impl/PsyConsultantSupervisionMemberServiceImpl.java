@@ -68,8 +68,8 @@ public class PsyConsultantSupervisionMemberServiceImpl  extends ServiceImpl<PsyC
     public int insertPsyConsultantSupervisionMember(PsyConsultantSupervisionMember req)
     {
         //LoginUser loginUser = SecurityUtils.getLoginUser();
-        req.setCreateBy(req.getMemberId());
-        req.setUpdateBy(req.getMemberId());
+        req.setCreateBy(req.getMemberId()+"");
+        req.setUpdateBy(req.getMemberId()+"");
         req.setCreateTime(DateUtils.getNowDate());
         req.setUpdateTime(DateUtils.getNowDate());
 
