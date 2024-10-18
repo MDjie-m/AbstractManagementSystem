@@ -74,20 +74,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column label="设备状态" align="center" prop="status">
-            <template slot-scope="scope">
-              <div style="display: flex;flex-direction: row;align-items: center;justify-content: center">
-                <dict-tag :options="dict.type.store_device_status" :value="scope.row.status"/>
-                <el-tooltip :content="scope.row.customStatus?'灯光已打开':'灯光已关闭'">
-                  <svg-icon class-name="icon-light" v-if="scope.row.deviceType===1"
-                            :icon-class="scope.row.customStatus?'light':'light_close'" style="margin-left: 10px"
-                  />
-                </el-tooltip>
-              </div>
 
-
-            </template>
-          </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
@@ -152,15 +139,15 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          <el-divider v-if="form.deviceType===1">设备自定义设置</el-divider>
-          <div v-if="form.deviceType===1">
-            <el-form-item label="订阅主题" prop="subTopic">
-              <el-input v-model="form.extendData.subTopic" placeholder="请输入订阅主题" maxlength="100"/>
-            </el-form-item>
-            <el-form-item label="发送主题" prop="pubTopic">
-              <el-input v-model="form.extendData.pubTopic" placeholder="请输入发送主题" maxlength="100"/>
-            </el-form-item>
-          </div>
+<!--          <el-divider v-if="form.deviceType===1">设备自定义设置</el-divider>-->
+<!--          <div v-if="form.deviceType===1">-->
+<!--            <el-form-item label="订阅主题" prop="subTopic">-->
+<!--              <el-input v-model="form.extendData.subTopic" placeholder="请输入订阅主题" maxlength="100"/>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="发送主题" prop="pubTopic">-->
+<!--              <el-input v-model="form.extendData.pubTopic" placeholder="请输入发送主题" maxlength="100"/>-->
+<!--            </el-form-item>-->
+<!--          </div>-->
         </el-form>
 
 
