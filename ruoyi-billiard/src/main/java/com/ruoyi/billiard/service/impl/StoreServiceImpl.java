@@ -137,21 +137,23 @@ public class StoreServiceImpl implements IStoreService {
 
     @Override
     public StoreDashboardResVo queryStoreDashboard(Long storeId, Date startTime, Date endTime) {
-        if (StringUtils.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, startTime), (DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, endTime)))) {
-            Tuple3<Date, Date, Date> time = storeScheduleService.getDaySchedule(storeId, startTime);
-            startTime = time.getValue();
-            endTime = time.getValue1();
-        } else {
-            Tuple<Date, Date> time = storeScheduleService.getDaySchedule(storeId, startTime, endTime);
-            startTime = time.getValue();
-            endTime = time.getValue1();
+        if(Objects.nonNull(storeId)) {
+            if (StringUtils.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, startTime), (DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, endTime)))) {
+                Tuple3<Date, Date, Date> time = storeScheduleService.getDaySchedule(storeId, startTime);
+                startTime = time.getValue();
+                endTime = time.getValue1();
+            } else {
+                Tuple<Date, Date> time = storeScheduleService.getDaySchedule(storeId, startTime, endTime);
+                startTime = time.getValue();
+                endTime = time.getValue1();
+            }
         }
         StoreDashboardResVo resVo = new StoreDashboardResVo();
         resVo.setStarTime(startTime);
         resVo.setEndTime(endTime);
         //总额
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId), Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue());
 
         Tuple<BigDecimal, Long> orderInfo = storeMapper.queryOrderTotal("total_amount", queryWrapper);
@@ -160,7 +162,7 @@ public class StoreServiceImpl implements IStoreService {
 
         // 退款
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue()).gt(Order::getRefundAmount, 0);
         orderInfo = storeMapper.queryOrderTotal("refund_amount", queryWrapper);
         resVo.setRefundAmount(orderInfo.getValue());
@@ -169,7 +171,7 @@ public class StoreServiceImpl implements IStoreService {
 
         // 挂单
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getStatus, OrderStatus.SUSPEND.getValue());
         orderInfo = storeMapper.queryOrderTotal("total_amount", queryWrapper);
         resVo.setSuspendAmount(orderInfo.getValue());
@@ -178,7 +180,7 @@ public class StoreServiceImpl implements IStoreService {
 
         //充值
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getOrderType, OrderType.MEMBER_RECHARGE)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue());
         orderInfo = storeMapper.queryOrderTotal("total_amount", queryWrapper);
@@ -187,12 +189,12 @@ public class StoreServiceImpl implements IStoreService {
 
         //优惠
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue()).gt(Order::getTotalWipeZero, 0);
         Tuple<BigDecimal, Long> wipeZeroInfo = storeMapper.queryOrderTotal("total_wipe_zero", queryWrapper);
 
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue()).gt(Order::getDiscountValue, 0);
         Tuple<BigDecimal, Long> disCountInfo = storeMapper.queryOrderTotal("discount_value", queryWrapper);
 
@@ -205,7 +207,7 @@ public class StoreServiceImpl implements IStoreService {
 
         //支付方式统计
         QueryWrapper<Order> payQueryWrapper = new QueryWrapper<>();
-        payQueryWrapper.eq("b.store_id", storeId).between("b.create_time", startTime, endTime)
+        payQueryWrapper.eq(Objects.nonNull(storeId),"b.store_id", storeId).between("b.create_time", startTime, endTime)
                 .groupBy("a.pay_type");
         Map<Integer, Tuple3<BigDecimal, Long, Integer>> payList = ArrayUtil.toMap(
                 storeMapper.queryPayTotal("amount", "pay_type", payQueryWrapper),
@@ -226,7 +228,7 @@ public class StoreServiceImpl implements IStoreService {
         //退款统计
         QueryWrapper<Order> refundQueryWrapper = new QueryWrapper<>();
         refundQueryWrapper.between("b.create_time", startTime, endTime)
-                .eq("b.store_id", storeId).groupBy("a.return_pay_type");
+                .eq(Objects.nonNull(storeId),"b.store_id", storeId).groupBy("a.return_pay_type");
         Map<Integer, Tuple3<BigDecimal, Long, Integer>> refundList = ArrayUtil.toMap(
                 storeMapper.queryRefundTotal("amount", "return_pay_type", refundQueryWrapper),
                 Tuple3::getValue2, (Tuple3<BigDecimal, Long, Integer> p) -> p);
@@ -246,7 +248,7 @@ public class StoreServiceImpl implements IStoreService {
         QueryWrapper<Order> subQuery = new QueryWrapper<>();
         subQuery.between("b.create_time", startTime, endTime)
                 .eq("b.status", OrderStatus.SETTLED.getValue())
-                .lambda().eq(Order::getStoreId, storeId);
+                .lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId);
         resVo.getOrderSubItems().add(storeMapper.queryOrderSubItems("t_order_desk_time", subQuery));
         resVo.getOrderSubItems().get(resVo.getOrderSubItems().size() - 1).setType(OrderType.TABLE_CHARGE);
 

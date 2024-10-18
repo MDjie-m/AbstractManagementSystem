@@ -8,7 +8,13 @@ export function listStore(query) {
     params: query
   })
 }
-
+export function queryDashboard(params) {
+  return request({
+    url: '/billiard/store/dashboard',
+    method: 'get',
+    params:params
+  })
+}
 // 查询所有门店列表
 export function listStoreAll() {
   return request({

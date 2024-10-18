@@ -1,20 +1,15 @@
 package com.ruoyi.billiard.controller;
 
+import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.billiard.domain.vo.StoreDashboardResVo;
 import com.ruoyi.common.core.domain.ResultVo;
 import com.ruoyi.common.core.page.PageResVo;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -105,4 +100,11 @@ public class StoreController extends BaseController {
     public AjaxResult remove(@PathVariable Long[] storeIds) {
         return toAjax(storeService.deleteStoreByStoreIds(storeIds));
     }
+
+    @GetMapping("/dashboard")
+    public ResultVo<StoreDashboardResVo> dashboard( @RequestParam(required = false) Long storeId,@RequestParam Date startTime, @RequestParam Date endTime) {
+
+        return ResultVo.success(storeService.queryStoreDashboard(storeId, startTime, endTime));
+    }
+
 }
