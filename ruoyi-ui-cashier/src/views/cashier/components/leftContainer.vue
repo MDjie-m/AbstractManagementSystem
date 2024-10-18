@@ -42,6 +42,7 @@ export default {
   display: flex;
   flex: 1;
   flex-direction: column;
+  overflow: hidden;
 }
 .left-header{
   background: #fff;
