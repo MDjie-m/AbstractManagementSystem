@@ -1,4 +1,4 @@
-package com.renxin.consultant.common.dcloud;
+package com.renxin.common.dcloud;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Map;

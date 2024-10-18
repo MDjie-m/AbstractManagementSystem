@@ -14,18 +14,14 @@ import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.PageUtils;
-import com.renxin.common.wechat.wxMsg.NoticeMessage;
-import com.renxin.consultant.common.dcloud.CloudFunctions;
+import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.domain.PsyConsultServeConfig;
-import com.renxin.psychology.mapper.PsyConsultMapper;
-import com.renxin.psychology.request.PsyAdminConsultReq;
 import com.renxin.psychology.request.PsyConsultReq;
 import com.renxin.psychology.request.PsyConsultServeConfigReq;
 import com.renxin.psychology.request.QueryListByTypeReq;
 import com.renxin.psychology.service.*;
-import com.renxin.psychology.vo.PsyConsultServeConfigVO;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.system.service.ISysDictDataService;
 import com.renxin.system.service.ISysDictTypeService;
@@ -34,17 +30,14 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RestController
