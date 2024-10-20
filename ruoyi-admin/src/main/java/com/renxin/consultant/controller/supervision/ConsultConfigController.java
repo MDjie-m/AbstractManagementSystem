@@ -63,6 +63,7 @@ public class ConsultConfigController extends BaseController
     @RateLimiter
     public AjaxResult getNotices()
     {
+        clearPage();
         return AjaxResult.success(psyConsultConfigService.getNotices());
     }
 

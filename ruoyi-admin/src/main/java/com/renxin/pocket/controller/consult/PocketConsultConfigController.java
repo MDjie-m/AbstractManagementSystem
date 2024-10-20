@@ -60,6 +60,7 @@ public class PocketConsultConfigController extends BaseController
     @RateLimiter
     public AjaxResult getNotices()
     {
+        clearPage();
         return AjaxResult.success(psyConsultConfigService.getNotices());
     }
 
