@@ -2,6 +2,7 @@ package com.ruoyi.billiard.service;
 
 import java.util.List;
 import com.ruoyi.billiard.domain.Device;
+import com.ruoyi.billiard.domain.vo.YingShiYunVo;
 
 /**
  * 设备信息Service接口
@@ -69,4 +70,6 @@ public interface IDeviceService
     void lightStatusCheckJob(Long time);
 
     Boolean switchLight(Long deviceId,Boolean isOpen);
+
+    YingShiYunVo selectDeviceStoreList();
 }

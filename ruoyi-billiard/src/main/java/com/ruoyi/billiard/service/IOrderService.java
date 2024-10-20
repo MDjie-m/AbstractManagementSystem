@@ -9,7 +9,10 @@ import com.ruoyi.billiard.domain.OrderRecharge;
 import com.ruoyi.billiard.domain.dto.HomeReportDto;
 import com.ruoyi.billiard.domain.dto.OrderTypeDetailDto;
 import com.ruoyi.billiard.domain.vo.*;
+import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsume;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 订单Service接口
@@ -128,4 +131,6 @@ public interface IOrderService
 
 
     Object selectOrderTypeDetail(OrderTypeDetailDto dto);
+
+    void exportConsumeDetail(HttpServletResponse response, HomeReportVoConsume consume, HomeReportDto dto);
 }

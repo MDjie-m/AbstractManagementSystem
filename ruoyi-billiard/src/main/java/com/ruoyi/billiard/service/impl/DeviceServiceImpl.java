@@ -1,32 +1,32 @@
 package com.ruoyi.billiard.service.impl;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ruoyi.billiard.domain.DeskDeviceRelation;
-import com.ruoyi.billiard.domain.StoreUser;
+import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.dto.LightDeviceExtendData;
+import com.ruoyi.billiard.domain.vo.Device2DeviceStoreVo;
+import com.ruoyi.billiard.domain.vo.YingShiYunVo;
 import com.ruoyi.billiard.enums.DeviceStatus;
 import com.ruoyi.billiard.enums.DeviceType;
 import com.ruoyi.billiard.enums.LightMQTTMsgType;
 import com.ruoyi.billiard.mapper.DeskDeviceRelationMapper;
-import com.ruoyi.billiard.service.IDeskDeviceRelationService;
 import com.ruoyi.billiard.service.IMQTTService;
+import com.ruoyi.billiard.service.IStoreService;
+import com.ruoyi.common.config.YingShiYunConfig;
+import com.ruoyi.common.config.YingShiYunEntity;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.bean.BeanUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.mapper.DeviceMapper;
@@ -53,6 +53,13 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
 
     @Resource
     private IMQTTService mqttService;
+
+    @Autowired
+    private YingShiYunConfig yingShiYunConfig;
+
+    @Autowired
+    private IStoreService storeService;
+
 
     /**
      * 查询设备信息
@@ -200,6 +207,32 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
 
     }
 
+    @Override
+    public YingShiYunVo selectDeviceStoreList() {
+        // 获取设备
+        List<Device> devices = Optional.ofNullable(deviceMapper.selectList(deviceMapper.query().eq(Device::getDeviceType, DeviceType.CAMERA.getValue()))).orElse(Collections.emptyList());
+        // 获取设备关联的店铺信息
+        List<Device2DeviceStoreVo> device2DeviceStoreVos = devices.stream().map(p -> {
+            Device2DeviceStoreVo device2DeviceStoreVo = new Device2DeviceStoreVo();
+            BeanUtils.copyBeanProp(device2DeviceStoreVo, p);
+            Store store = storeService.selectStoreByStoreId(p.getStoreId());
+            if (Objects.nonNull(store)) {
+                device2DeviceStoreVo.setStoreName(store.getStoreName());
+                device2DeviceStoreVo.setStoreAddress(store.getStoreAddress());
+                device2DeviceStoreVo.setStoreImg(store.getStoreImg());
+                device2DeviceStoreVo.setStoreStatus(store.getStatus());
+            }
+            return device2DeviceStoreVo;
+        }).collect(Collectors.toList());
+
+        // 获取萤石云token数据
+        YingShiYunEntity yingShiYunEntity = yingShiYunConfig.returnAppTokenData();
+
+        return YingShiYunVo.builder()
+                .appKey(yingShiYunEntity.getAppKey())
+                .accessToken(yingShiYunEntity.getAccessToken())
+                .device2DeviceStoreVos(device2DeviceStoreVos).build();
+    }
 
     @PostConstruct
     public void initMQTT() {

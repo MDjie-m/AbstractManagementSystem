@@ -22,6 +22,7 @@ import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -29,6 +30,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 订单Service业务层处理
@@ -1140,6 +1143,64 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
         AssertUtil.isTrue(Boolean.FALSE, OrderErrorMsg.ORDER_TYPE_ERROR);
         return null;
+    }
+
+    @Override
+    public void exportConsumeDetail(HttpServletResponse response, HomeReportVoConsume consume, HomeReportDto dto) {
+        OrderType orderType = dto.getOrderType();
+        if (Objects.equals(orderType, OrderType.AGGREGATE_CONSUMPTION)) {
+            List<Order> consumeDetail = (List<Order>) consume.getTotal().getConsumeDetail();
+            consumeDetail.forEach(item -> {
+                if (Objects.nonNull(item.getOrderType())) {
+                    item.setOrderTypeText(item.getOrderType().getDesc());
+                }
+                if (Objects.nonNull(item.getPayType())) {
+                    item.setPayTypeText(item.getPayType().getDesc());
+                }
+            });
+            ExcelUtil<Order> util = new ExcelUtil<>(Order.class);
+            util.exportExcel(response, consumeDetail, "订单总消费明细");
+        }
+        if (Objects.equals(orderType, OrderType.TABLE_CHARGE)) {
+            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
+                    .stream()
+                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.TABLE_CHARGE.getDesc()))
+                    .findFirst().orElse(null);
+            List<OrderDeskTime> consumeDetail = (List<OrderDeskTime>) reportVoConsumeDetail.getConsumeDetail();
+            AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单球桌费用数据");
+            ExcelUtil<OrderDeskTime> util = new ExcelUtil<>(OrderDeskTime.class);
+            util.exportExcel(response, consumeDetail, "订单球桌费用明细");
+        }
+        if (Objects.equals(orderType, OrderType.COMMODITY_PURCHASE)) {
+            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
+                    .stream()
+                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.COMMODITY_PURCHASE.getDesc()))
+                    .findFirst().orElse(null);
+            List<OrderGoods> consumeDetail = (List<OrderGoods>) reportVoConsumeDetail.getConsumeDetail();
+            AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单商品消费费用数据");
+            ExcelUtil<OrderGoods> util = new ExcelUtil<>(OrderGoods.class);
+            util.exportExcel(response, consumeDetail, "订单商品消费明细");
+        }
+        if (Objects.equals(orderType, OrderType.MEMBER_RECHARGE)) {
+            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
+                    .stream()
+                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.MEMBER_RECHARGE.getDesc()))
+                    .findFirst().orElse(null);
+            List<OrderRecharge> consumeDetail = (List<OrderRecharge>) reportVoConsumeDetail.getConsumeDetail();
+            AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单会员充值费用数据");
+            ExcelUtil<OrderRecharge> util = new ExcelUtil<>(OrderRecharge.class);
+            util.exportExcel(response, consumeDetail, "订单会员充值费用明细");
+        }
+        if (Objects.equals(orderType, OrderType.TEACHING_ASSISTANT_FEE)) {
+            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
+                    .stream()
+                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.TEACHING_ASSISTANT_FEE.getDesc()))
+                    .findFirst().orElse(null);
+            List<OrderTutorTime> consumeDetail = (List<OrderTutorTime>) reportVoConsumeDetail.getConsumeDetail();
+            AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单助教费用数据");
+            ExcelUtil<OrderTutorTime> util = new ExcelUtil<>(OrderTutorTime.class);
+            util.exportExcel(response, consumeDetail, "订单助教费用明细");
+        }
     }
 
     /**

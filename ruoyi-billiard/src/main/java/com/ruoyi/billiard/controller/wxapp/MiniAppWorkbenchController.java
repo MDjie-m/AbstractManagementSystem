@@ -1,14 +1,14 @@
 package com.ruoyi.billiard.controller.wxapp;
 
+import com.alibaba.fastjson2.JSON;
 import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.dto.HomeReportDto;
 import com.ruoyi.billiard.domain.dto.OrderTypeDetailDto;
 import com.ruoyi.billiard.domain.vo.HomeReportVo;
 import com.ruoyi.billiard.domain.vo.StockCheckRes;
+import com.ruoyi.billiard.domain.vo.YingShiYunVo;
 import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsume;
 import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsumeDetail;
-import com.ruoyi.billiard.enums.DeviceType;
-import com.ruoyi.billiard.enums.OrderType;
 import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author: zhoukeu
@@ -44,6 +43,7 @@ public class MiniAppWorkbenchController extends BaseController {
 
     @Autowired
     private IDeviceService deviceService;
+
 
 
     /**
@@ -98,62 +98,7 @@ public class MiniAppWorkbenchController extends BaseController {
     public void exportConsumeDetail(HttpServletResponse response, @RequestBody HomeReportDto dto) {
         HomeReportVo homeReportVo = orderService.selectOrderData2Report(dto);
         HomeReportVoConsume consume = homeReportVo.getConsume();
-
-        OrderType orderType = dto.getOrderType();
-        if (Objects.equals(orderType, OrderType.AGGREGATE_CONSUMPTION)) {
-            List<Order> consumeDetail = (List<Order>) consume.getTotal().getConsumeDetail();
-            consumeDetail.forEach(item -> {
-                if (Objects.nonNull(item.getOrderType())) {
-                    item.setOrderTypeText(item.getOrderType().getDesc());
-                }
-                if (Objects.nonNull(item.getPayType())) {
-                    item.setPayTypeText(item.getPayType().getDesc());
-                }
-            });
-            ExcelUtil<Order> util = new ExcelUtil<>(Order.class);
-            util.exportExcel(response, consumeDetail, "订单总消费明细");
-        }
-        if (Objects.equals(orderType, OrderType.TABLE_CHARGE)) {
-            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
-                    .stream()
-                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.TABLE_CHARGE.getDesc()))
-                    .findFirst().orElse(null);
-            List<OrderDeskTime> consumeDetail = (List<OrderDeskTime>) reportVoConsumeDetail.getConsumeDetail();
-            AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单球桌费用数据");
-            ExcelUtil<OrderDeskTime> util = new ExcelUtil<>(OrderDeskTime.class);
-            util.exportExcel(response, consumeDetail, "订单球桌费用明细");
-        }
-        if (Objects.equals(orderType, OrderType.COMMODITY_PURCHASE)) {
-            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
-                    .stream()
-                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.COMMODITY_PURCHASE.getDesc()))
-                    .findFirst().orElse(null);
-            List<OrderGoods> consumeDetail = (List<OrderGoods>) reportVoConsumeDetail.getConsumeDetail();
-            AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单商品消费费用数据");
-            ExcelUtil<OrderGoods> util = new ExcelUtil<>(OrderGoods.class);
-            util.exportExcel(response, consumeDetail, "订单商品消费明细");
-        }
-        if (Objects.equals(orderType, OrderType.MEMBER_RECHARGE)) {
-            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
-                    .stream()
-                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.MEMBER_RECHARGE.getDesc()))
-                    .findFirst().orElse(null);
-            List<OrderRecharge> consumeDetail = (List<OrderRecharge>) reportVoConsumeDetail.getConsumeDetail();
-            AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单会员充值费用数据");
-            ExcelUtil<OrderRecharge> util = new ExcelUtil<>(OrderRecharge.class);
-            util.exportExcel(response, consumeDetail, "订单会员充值费用明细");
-        }
-        if (Objects.equals(orderType, OrderType.TEACHING_ASSISTANT_FEE)) {
-            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
-                    .stream()
-                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.TEACHING_ASSISTANT_FEE.getDesc()))
-                    .findFirst().orElse(null);
-            List<OrderTutorTime> consumeDetail = (List<OrderTutorTime>) reportVoConsumeDetail.getConsumeDetail();
-            AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单助教费用数据");
-            ExcelUtil<OrderTutorTime> util = new ExcelUtil<>(OrderTutorTime.class);
-            util.exportExcel(response, consumeDetail, "订单助教费用明细");
-        }
-
+        orderService.exportConsumeDetail(response, consume, dto);
     }
 
     /**
@@ -191,12 +136,10 @@ public class MiniAppWorkbenchController extends BaseController {
      * 查询监控列表
      */
     @PreAuthorize("@ss.hasPermi('miniapp:monitor:list')")
-    @GetMapping("/monitorList/{storeId}")
-    public ResultVo<List<Device>> monitorList(@PathVariable("storeId") Long storeId) {
-        Device device = new Device();
-        device.setStoreId(storeId);
-        device.setDeviceType(DeviceType.CAMERA.getValue());
-        List<Device> list = deviceService.selectDeviceList(device);
-        return ResultVo.success(list);
+    @GetMapping("/monitorList")
+    public ResultVo<YingShiYunVo> monitorList() {
+        YingShiYunVo yingShiYunVo = deviceService.selectDeviceStoreList();
+        logger.info("yingShiYunVo:{}", JSON.toJSONString(yingShiYunVo));
+        return ResultVo.success(yingShiYunVo);
     }
 }
