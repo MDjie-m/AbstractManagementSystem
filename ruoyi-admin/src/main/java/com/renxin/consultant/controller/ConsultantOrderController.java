@@ -288,7 +288,19 @@ public class ConsultantOrderController extends BaseController
         if (newOrder.getPayAmount().compareTo(BigDecimal.ZERO) == 0){
             return AjaxResult.success("应付金额为0, 无需发起支付");
         }
-        return AjaxResult.success();
+
+        //初次发起支付
+        AjaxResult result = AlipayPayUtil.alipayAppPay(out_trade_no, newOrder.getPayAmount(), newOrder.getServerName());
+        if ((Integer) result.get("code") == 200) {
+            String msg = (String) result.get("msg");
+            // Map<String, String> parameters = parseQueryString(msg);
+            newOrder.setPayParam(msg);
+            psyConsultantOrderService.updatePsyConsultantOrder(newOrder);
+            return AjaxResult.success(msg);
+        } else {
+            log.error("发起支付失败, result : " + result);
+            throw new ServiceException("发起支付失败");
+        }
         
         
         

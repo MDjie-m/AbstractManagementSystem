@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/consultant/aliPay")
+@RequestMapping("/consultant/order/aliPay")
 @Slf4j
 @Api(value = "ConsultantAlipayController" ,tags = {"支付宝Api"})
 public class ConsultantAlipayController {
@@ -40,7 +40,7 @@ public class ConsultantAlipayController {
     /**
      * 支付咨询师端指定订单
      */
-    @PostMapping("/payOrder")
+    @PostMapping("/pay")
     @RateLimiter(limitType = LimitType.IP)
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult payOrder(@RequestBody WechatPayDTO req, HttpServletRequest request) {
@@ -58,10 +58,10 @@ public class ConsultantAlipayController {
         AjaxResult result = AlipayPayUtil.alipayAppPay(order.getOrderNo(), order.getPayAmount(), order.getServerName());
         if ((Integer) result.get("code") == 200) {
             String msg = (String) result.get("msg");
-            Map<String, String> parameters = parseQueryString(msg);
+            // Map<String, String> parameters = parseQueryString(msg);
             order.setPayParam(msg);
             psyConsultantOrderService.updatePsyConsultantOrder(order);
-            return AjaxResult.success(parameters);
+            return AjaxResult.success(msg);
         } else {
             log.error("发起支付失败, result : " + result);
             throw new ServiceException("发起支付失败");
