@@ -483,6 +483,9 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
     public int doConsultList(PsyWorkReq req){
         List<WorkTime> workTimeList = req.getWorkTimeList();
         PsyConsultOrderVO order = getOne(req.getOrderId());
+        //订单可用次数校正
+        
+        
         if (order.getNum() < workTimeList.size()) {
             throw new ServiceException("订单剩余的可用次数不足, 该订单剩余" + order.getNum() + "次预约可用");
         }
@@ -506,6 +509,16 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         order.setBuyNum(order.getBuyNum() + workTimeList.size());
         return update(order);
         
+    }
+    
+    //订单可用次数校正
+    private void reviseOrderNum(PsyConsultOrderVO order){
+        Integer num = order.getNum();//剩余可约数量
+        Integer buyNum = order.getBuyNum();//已约数量
+
+        PsyWorkReq psyWorkReq = new PsyWorkReq();
+            psyWorkReq.setOrderId(order.getId());
+        Integer trueBuyNum = psyConsultOrderItemService.getTimeNumForConsulted(psyWorkReq);
     }
 
     private PsyConsultWork handleItem(PsyConsultOrderVO req, int type) {

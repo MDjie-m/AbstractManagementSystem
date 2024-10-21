@@ -63,7 +63,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join psy_consult_server_config cf on re.serve_id = cf.id 
         left join psy_consult con on re.consult_id = con.id
         where
-            re.del_flag = 0 and 
             re.relation_id = #{id}
         
     </select>

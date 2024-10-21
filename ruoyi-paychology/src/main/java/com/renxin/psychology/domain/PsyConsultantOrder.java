@@ -125,11 +125,13 @@ public class PsyConsultantOrder extends BaseEntity
     @TableField(exist = false)
     private PsyConsultantSchedule lastSchedule;
     
-    
-
     //课程详情
     @TableField(exist = false)
     private CourCourse courseDetail;
+
+    //课程详情
+    @TableField(exist = false)
+    private PsyConsultantPackage packageDetail;
 
     /** 创建时间止 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

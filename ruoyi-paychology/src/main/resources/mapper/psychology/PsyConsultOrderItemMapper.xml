@@ -74,10 +74,19 @@ INNER JOIN psy_user c ON c.id = d.user_id
         left join psy_consult con on con.id = item.consult_id
         left join psy_consult_order orde on orde.id = item.order_id
         where
-            item.consult_id =  #{consultId}
-            and item.status in (0,1)
-            and orde.user_id = #{userId}
-            and concat(item.day , ' ', item.time_start) &lt;= #{realTime}
+            item.status in (0,1)
+            <if test="orderId != '' and orderId != null">
+                and item.order_id =  #{orderId}
+            </if>
+            <if test="consultId != '' and consultId != null">
+                and item.consult_id =  #{consultId}
+            </if>
+            <if test="userId != '' and userId != null">
+                and orde.user_id = #{userId}
+            </if>
+            <if test="realTime != '' and realTime != null">
+                and concat(item.day , ' ', item.time_start) &lt;= #{realTime}
+            </if>
     </select>
 
 

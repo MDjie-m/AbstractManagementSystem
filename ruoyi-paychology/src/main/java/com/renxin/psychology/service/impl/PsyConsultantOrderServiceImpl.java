@@ -105,10 +105,8 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     private IPsyConsultWorkService psyConsultWorkService;
     
     @Resource
-    private IPsyConsultantPackageEquityService packageEquityService;
+    private IPsyConsultantPackageService packageService;
     
-    @Resource
-    private IPsyConsultantPackageEquityService consultantPackageEquityService;
     
     @Resource
     private IPsyCouponService couponService;
@@ -323,6 +321,14 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                     }*/
                    // course.setSectionList(sectionList);
                     order.setCourseDetail(course);
+                }
+                //套餐
+                else if (PsyConstants.CONSULTANT_ORDER_PACKAGE_NUM.equals(serverType)){
+                    PsyConsultantPackage aPackage = packageService.selectPsyConsultantPackageByPackageId(Long.valueOf(order.getServerId()));
+                    if (ObjectUtils.isEmpty(aPackage)){
+                        continue;
+                    }
+                    order.setPackageDetail(aPackage);
                 }
             }
             
