@@ -9,6 +9,7 @@ import cn.hutool.json.JSONObject;
 import com.renxin.common.core.domain.dto.ConsultLoginDTO;
 import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 
 @Slf4j
 public class CloudFunctions {
@@ -54,6 +55,9 @@ public class CloudFunctions {
 
     //发送个推通知
     public static boolean sendGeTuiMessage(NoticeMessage notice)  {
+        if (ObjectUtils.isEmpty(notice.getPush_clientid())){
+            return false;
+        }
         try {
             Map<String, Object> params = new HashMap<>();
             params.put("push_clientid", notice.getPush_clientid());

@@ -157,11 +157,11 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
                 content = "您的入驻申请被审核驳回";
             }
         }
-        NoticeMessage notice = new NoticeMessage();
+/*        NoticeMessage notice = new NoticeMessage();
             notice.setPush_clientid(consultService.getClientIdByConsultantId(entity.getConsultId()));
             notice.setTitle("入驻审核通知");
             notice.setContent(content);
-        new CloudFunctions().sendGeTuiMessage(notice);
+        new CloudFunctions().sendGeTuiMessage(notice);*/
         
         return 1;
     }
