@@ -673,7 +673,7 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         }
 
         // 消息推送
-        sendPublicMsg(req);
+       // sendPublicMsg(req);
 //        {"errcode":47003,"errmsg":"argument invalid! data.thing5.value invalid rid: 64d4912a-5e4f2ce4-13323c1a"}
         // 增加预约人数 支付成功后+1
         psyConsultService.updateNum(req.getConsultId(), 1);

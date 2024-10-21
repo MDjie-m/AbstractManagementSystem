@@ -12,6 +12,7 @@ import com.renxin.common.utils.PageUtils;
 import com.renxin.framework.web.service.ConsultantTokenService;
 import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
 import com.renxin.psychology.request.QueryListByTypeReq;
+import com.renxin.psychology.service.IPsyConsultService;
 import com.renxin.psychology.service.IPsyConsultantTeamSupervisionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +40,9 @@ public class ConsultantTeamSupervisionController extends BaseController
 
     @Resource
     private ConsultantTokenService consultantTokenService;
+    
+    @Resource
+    private IPsyConsultService consultService;
     
     @Resource
     private RedisCache redisCache;

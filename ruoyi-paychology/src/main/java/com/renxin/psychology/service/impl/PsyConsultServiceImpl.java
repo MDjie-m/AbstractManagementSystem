@@ -858,7 +858,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     public String getClientIdByConsultantId(Long consutantId){
         PsyConsult one = this.getById(consutantId);
         if (ObjectUtils.isEmpty(one) || ObjectUtils.isEmpty(one.getPushClientId())){
-            log.error("查询咨询师的clientId , 咨询师consutantId没有维护clientId, 无法向其发送通知. consutantId: " + consutantId);
+            log.error("查询咨询师的clientId , 咨询师没有维护clientId, 无法向其发送通知. consutantId: " + consutantId);
             return null;
         }
         return one.getPushClientId();

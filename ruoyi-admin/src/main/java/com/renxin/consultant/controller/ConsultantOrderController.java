@@ -352,6 +352,21 @@ public class ConsultantOrderController extends BaseController
     }
 
     /**
+     * 支付宝 - 支付完成回调
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/aliPaySuccess/callback")
+    public Map<String, String> aliPayCallback(@RequestBody Map<String,Object> map, HttpServletRequest request) {
+        log.info("支付宝, 支付完成回调");
+        log.info(map.toString());
+        log.info(request.toString());
+        
+        return null;
+    }
+    
+    /**
      * 支付完成回调
      *
      * @param request
