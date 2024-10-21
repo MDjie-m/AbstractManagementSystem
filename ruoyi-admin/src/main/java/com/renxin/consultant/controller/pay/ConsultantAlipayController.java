@@ -50,8 +50,8 @@ public class ConsultantAlipayController {
         
         ////若已发起过支付, 则直接返回相关参数
         if (ObjectUtils.isNotEmpty(order.getPayParam())){
-            Map<String, String> parameters = parseQueryString(order.getPayParam());
-            return AjaxResult.success(parameters);
+            //Map<String, String> parameters = parseQueryString(order.getPayParam());
+            return AjaxResult.success(order.getPayParam());
         }
         
         //初次发起支付
