@@ -49,6 +49,7 @@
     <el-table v-loading="loading" :data="partnerList">
       <el-table-column label="申请编号" align="center" prop="id" />
       <el-table-column label="申请人姓名" align="center" prop="name" />
+      <el-table-column label="手机号" align="center" prop="phone" />
       <el-table-column label="性别" align="center" prop="sex">
         <template slot-scope="scope">
           {{ scope.row.sex==1 ? '男' : '女' }}
