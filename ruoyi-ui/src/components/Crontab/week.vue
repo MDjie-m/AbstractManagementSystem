@@ -81,31 +81,31 @@ export default {
 			checkboxList: [],
 			weekList: [
 				{
-					key: 2,
+					key: 1,
 					value: '星期一'
 				},
 				{
-					key: 3,
+					key: 2,
 					value: '星期二'
 				},
 				{
-					key: 4,
+					key: 3,
 					value: '星期三'
 				},
 				{
-					key: 5,
+					key: 4,
 					value: '星期四'
 				},
 				{
-					key: 6,
+					key: 5,
 					value: '星期五'
 				},
 				{
-					key: 7,
+					key: 6,
 					value: '星期六'
 				},
 				{
-					key: 1,
+					key: 7,
 					value: '星期日'
 				}
 			],
