@@ -1,4 +1,4 @@
-package com.renxin.consultant.controller.wechat;
+package com.renxin.consultant.controller.pay;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSONObject;
@@ -51,8 +51,8 @@ import java.util.Map;
  * 文档地址 https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_1.shtml
  */
 @RestController
-@RequestMapping("/consultant/wechatConsultantPay/v3/")
-public class WechatConsultantPayV3ApiController extends BaseController {
+@RequestMapping("/consultant/wechatPay")
+public class ConsultantWechatPayController extends BaseController {
  
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
  

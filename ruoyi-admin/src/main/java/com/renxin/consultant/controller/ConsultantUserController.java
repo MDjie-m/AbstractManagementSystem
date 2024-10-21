@@ -93,7 +93,8 @@ public class ConsultantUserController extends BaseController {
         
         String oldCode = redisCache.getCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + phone);
         if (ObjectUtils.isNotEmpty(oldCode)){
-            throw new ServiceException("请勿重复发送");
+            log.info("请勿重复发送:" + phone + "短期内多次调用了/sendSms获取验证码");
+            return AjaxResult.error("请勿重复发送");
         }
         
         Random random = new Random();

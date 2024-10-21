@@ -23,8 +23,8 @@ public interface IPsyConsultPartnerService {
     // 确认并提交资料
 
     void draft(Long userId);
-    
-    Long consultantDraft(Long consultId);
+
+    AjaxResult consultantDraft(Long consultId);
 
     int addItem(PsyConsultPartnerItem item);
 

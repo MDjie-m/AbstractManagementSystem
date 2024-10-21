@@ -72,8 +72,7 @@ public class ConsultantPartnerController {
     public AjaxResult draft(HttpServletRequest request)
     {
         Long consultId = consultantTokenService.getConsultId(request);
-        Long pid = partnerService.consultantDraft(consultId);
-        return AjaxResult.success(pid);
+        return partnerService.consultantDraft(consultId);
     }
 
     //修改申请单主体信息

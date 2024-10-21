@@ -44,7 +44,7 @@ export default {
     return {
       open: false,
       status: [
-        { label: '审核通过', value: '3' },
+        { label: '审核通过', value: '2' },
         { label: '审核不通过', value: '4' }
       ],
       types: this.$constants.partnerTypes,

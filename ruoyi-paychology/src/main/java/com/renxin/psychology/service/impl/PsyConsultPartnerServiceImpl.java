@@ -112,7 +112,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long consultantDraft(Long consultantId)
+    public AjaxResult consultantDraft(Long consultantId)
     {
         PartnerDTO one = getInfoByConsultId(consultantId);
         
@@ -128,11 +128,12 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
             //PsyConsultVO consultant = consultService.getOne(consultantId);
             //partner.setPhone(consultant.getPhonenumber());
             psyConsultPartnerMapper.insert(partner);
-            return id;
+            return AjaxResult.success(id);
         } else if (ConsultConstant.PARTNER_STATUS_1.equals(one.getStatus())){
-            throw new ServiceException("入驻申请已在审核中",123);
+            //throw new ServiceException("入驻申请已在审核中",123);
+            return AjaxResult.error(123,"入驻申请已在审核中");
         } else {
-            return one.getId();
+            return AjaxResult.success(one.getId());
         }
     }
     
@@ -149,13 +150,15 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         if(ObjectUtils.isNotEmpty(status) && !status.equals(oldPartner.getStatus())){
             if (status.equals("2")){
                 content = "您的入驻申请已审核通过";
+                //创建咨询师用户
+                createUser(entity.getId());
             }
             if (status.equals("4")){
                 content = "您的入驻申请被审核驳回";
             }
         }
         NoticeMessage notice = new NoticeMessage();
-            notice.setPush_clientid(consultService.getClientIdByConsultantId(entity.getId()));
+            notice.setPush_clientid(consultService.getClientIdByConsultantId(entity.getConsultId()));
             notice.setTitle("入驻审核通知");
             notice.setContent(content);
         new CloudFunctions().sendGeTuiMessage(notice);

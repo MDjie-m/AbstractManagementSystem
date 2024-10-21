@@ -1,5 +1,6 @@
 package com.renxin.psychology.service.impl;
 
+import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -8,9 +9,11 @@ import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.renxin.common.aliPay.AlipayPayUtil;
 import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.constant.PsyConstants;
+import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.model.LoginUser;
 import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.dcloud.CloudFunctions;
@@ -159,6 +162,8 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
     @Override
     public List<PsyConsultantTeamSupervision> selectPsyConsultantTeamSupervisionList(PsyConsultantTeamSupervision req)
     {
+        AlipayPayUtil.alipayAppPay("testPay111111",new BigDecimal("0.01"),"testpay");
+        //AjaxResult queryRe = AlipayPayUtil.alipayQuery("testPay111111");
         if (ObjectUtils.isNotEmpty(req.getIdList())){
             List<PsyConsultantTeamSupervision> cacheList = redisCache.getMultiCacheMapValue(CacheConstants.TEAM_SUP_BY_ID_KEY, req.getIdList());
             return cacheList;

@@ -50,9 +50,9 @@ public class ConsultConstant {
     public static final String PARTNER_STATUS_1 = "1";
     public static final String PARTNER_STATUS_1_STR = "审核中";
     public static final String PARTNER_STATUS_2 = "2";
-    public static final String PARTNER_STATUS_2_STR = "审核通过-已开通账号";
+    public static final String PARTNER_STATUS_2_STR = "审核通过";
     public static final String PARTNER_STATUS_3 = "3";
-    public static final String PARTNER_STATUS_3_STR = "审核通过-未开通账号";
+    public static final String PARTNER_STATUS_3_STR = "审核通过";
     public static final String PARTNER_STATUS_4 = "4";
     public static final String PARTNER_STATUS_4_STR = "审核驳回";
 

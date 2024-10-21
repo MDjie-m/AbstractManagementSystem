@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.renxin.common.aliPay.AlipayPayUtil;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.constant.PsyConstants;
 import com.renxin.common.constant.RespMessageConstants;
@@ -31,6 +32,7 @@ import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.wechat.service.WechatPayV3ApiService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,8 +42,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -53,6 +57,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/consultant/order")
+@Slf4j
 @Api(value = "ConsultantCourseController" ,tags = {"咨询师订单Api"})
 public class ConsultantOrderController extends BaseController
 {
@@ -271,9 +276,8 @@ public class ConsultantOrderController extends BaseController
             default:
                 throw new ServiceException("没有相应的服务类型, 请检查ServerType为1~5之间的整数");
         }
-
-        //发起支付
-        // 将订单、支付单放入事务中
+        
+        //创建订单
         String attach = "订单号: " + out_trade_no; //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
             consultantOrder.setOrderNo(out_trade_no);
             consultantOrder.setServerName(serverName);
@@ -284,6 +288,8 @@ public class ConsultantOrderController extends BaseController
         if (newOrder.getPayAmount().compareTo(BigDecimal.ZERO) == 0){
             return AjaxResult.success("应付金额为0, 无需发起支付");
         }
+        return AjaxResult.success();
+        
         
         
     /*    String content = "咨询师端订单demoo";
@@ -330,9 +336,11 @@ public class ConsultantOrderController extends BaseController
         psyConsultantOrderService.updatePsyConsultantOrder(newOrder);
         
         return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS ,result);*/
-        return AjaxResult.success();
+        
     }
 
+ 
+    
     /**
      * 金额元转分字符串
      * @param cny 元
