@@ -161,11 +161,18 @@ public class GenUtils
      * @param tableName 表名
      * @return 业务名
      */
-    public static String getBusinessName(String tableName)
-    {
-        int lastIndex = tableName.lastIndexOf("_");
-        int nameLength = tableName.length();
-        return StringUtils.substring(tableName, lastIndex + 1, nameLength);
+    public static String getBusinessName(String tableName) {
+        String tablePrefix = GenConfig.getTablePrefix();
+        if (StringUtils.isNotEmpty(tablePrefix)) {
+            String[] searchList = tableName.split(tablePrefix);
+            if (searchList != null && searchList.length > 1) return StringUtils.toCamelCase(searchList[1]);
+            else {
+                int lastIndex = tableName.lastIndexOf("_");
+                int nameLength = tableName.length();
+                return StringUtils.substring(tableName, lastIndex + 1, nameLength);
+            }
+        }
+        return tableName;
     }
 
     /**
