@@ -7,7 +7,7 @@
             <el-radio v-for="(item,index) in status" :label="item.value">{{ item.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="申请类型" prop="type">
+<!--        <el-form-item label="申请类型" prop="type">
           <el-select v-model="form.type" placeholder="请选择申请类型" @change="changeType">
             <el-option
               v-for="item in types"
@@ -22,7 +22,7 @@
         </el-form-item>
         <el-form-item label="结算比率" prop="ratio">
           <el-input-number size="mini" v-model="form.ratio" :min="0" /> %
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="审核说明" prop="remark">
           <el-input type="textarea" :rows="4" size="mini" maxlength="255" show-word-limit v-model="form.remark" placeholder="请填写审核不通过原因，用于告知申请人。" />
         </el-form-item>
@@ -53,7 +53,7 @@ export default {
         status: [
           { required: true, message: "请选择审核结果", trigger: "change" }
         ],
-        type: [
+        /*type: [
           { required: true, message: "请选择申请类型", trigger: "change" }
         ],
         money: [
@@ -61,7 +61,7 @@ export default {
         ],
         ratio: [
           { required: true, message: "请输入结算比例", trigger: "blur" }
-        ]
+        ]*/
       }
     }
   },
