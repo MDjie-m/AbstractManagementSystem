@@ -6,6 +6,8 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.renxin.common.changeLog.BeanChangeUtil;
+import com.renxin.common.changeLog.ChangePropertyMsg;
 import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.constant.UserConstants;
 import com.renxin.common.core.domain.AjaxResult;
@@ -103,6 +105,9 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     
     @Resource
     private IPsyConsultantSupervisionMemberService memberService;
+    
+    @Resource
+    private IPsyConsultHistoryService historyService;
 
     @Resource
     private IPsyConsultService consultService;
@@ -480,7 +485,27 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
 
         PsyConsult oldConsult = psyConsultMapper.selectById(req.getId());
         converToStr(req);
-        int i = psyConsultMapper.updateById(BeanUtil.toBean(req, PsyConsult.class));
+        PsyConsult newConsult = BeanUtil.toBean(req, PsyConsult.class);
+        Boolean isUpdateByAdmin = req.getIsUpdateByAdmin();
+
+        // 调用监听属性变化工具类
+        BeanChangeUtil<PsyConsult> t = new BeanChangeUtil<>();
+        ChangePropertyMsg cfs = t.contrastObj(oldConsult, newConsult);
+        if (StringUtils.isNotBlank(cfs.getChangeMsg())) {
+            PsyConsultHistory history = new PsyConsultHistory();
+            history.setConsultantId(req.getId());
+            history.setUpdateColumn(cfs.getProperties().toString());
+            history.setUpdateDetail(cfs.getChangeMsg());
+            history.setCreateBy(isUpdateByAdmin ? "admin" : req.getId()+"");
+            history.setCreateTime(new Date());
+            Boolean needApproval = isNeedApproval(isUpdateByAdmin, history.getUpdateColumn());
+            history.setExecuteStatus(needApproval ? 1 : 2);//若需要审核, 则状态置为[审核中];否则[已完成]
+            //记录日志
+            historyService.insertPsyConsultHistory(history);
+            if (needApproval) return AjaxResult.success("已发起修改申请");
+        }
+        
+        int i = psyConsultMapper.updateById(newConsult);
         
         //若修改了级别/服务对象, 则需重刷关联服务
         if (ObjectUtils.isEmpty(oldConsult.getServiceObject()) || ObjectUtils.isEmpty(oldConsult.getLevel()) 
@@ -499,6 +524,14 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         refreshIdList();
         refreshRelateCache(req.getId());
         return AjaxResult.success(i);
+    }
+    
+    //判断是否需要审核
+    private Boolean isNeedApproval(Boolean isUpdateByAdmin, String updateColumn){
+        //来自咨询师的修改申请 + 变更了[受训经历experience], 则需要审核
+        if (isUpdateByAdmin) return false;
+        if (!updateColumn.contains("experience")) return false;
+        return true;
     }
     
     //翻译咨询师级别

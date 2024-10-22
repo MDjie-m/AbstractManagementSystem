@@ -94,7 +94,7 @@ public class PsyConsultServeConfig extends BasePlusEntity implements Serializabl
     //咨询师级别 1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师
     private Integer level;
     
-    //服务对象   1来访者  2咨询师(督导)   3咨询师(体验)
+    //服务对象   1来访者  2个案督导   3个人体验
     private String serviceObject;
     
     //咨询师-服务 关联id

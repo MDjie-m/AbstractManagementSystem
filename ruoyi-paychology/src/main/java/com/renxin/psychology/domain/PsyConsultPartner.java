@@ -55,7 +55,7 @@ public class PsyConsultPartner extends BasePlusEntity implements Serializable
     @Excel(name = "姓名")
     private String name;
 
-    /** 用户性别（0男 1女 2未知） */
+    /** 用户性别 */
     @Excel(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
     private Integer sex;
 

@@ -41,7 +41,7 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     /** 手机号码 */
     private String phonenumber;
 
-    /** 用户性别（0男 1女 2未知） */
+    /** 用户性别 */
     private String sex;
 
     /** 标签 */
@@ -120,7 +120,7 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     /** 级别  1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师*/
     private Integer level;
 
-    //服务对象   1来访者  2咨询师(督导)   3咨询师(体验)
+    //服务对象   1来访者  2个案督导   3个人体验
     private String serviceObject;
     
     //筛选最近几天内可约
@@ -162,5 +162,8 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     private BigDecimal minPersonSupPrice;
     //最低个人体验价格
     private BigDecimal minPersonExpPrice;
+    
+    //是否来自管理员的修改
+    private Boolean isUpdateByAdmin;
     
 }

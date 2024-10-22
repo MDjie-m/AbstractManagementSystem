@@ -36,7 +36,7 @@ public interface IPsyConsultPartnerService {
 
     int save(PsyConsultPartner entity);
     
-    int saveByConsultId(PsyConsultPartner entity);
+    AjaxResult saveByConsultId(PsyConsultPartner entity);
 
     AjaxResult createUser(Long id);
 

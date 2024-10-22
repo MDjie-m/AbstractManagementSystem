@@ -153,6 +153,7 @@ public class PsyConsultController extends BaseController
     @PutMapping
     public AjaxResult edit(@RequestBody PsyConsultVO psyConsult)
     {
+        psyConsult.setIsUpdateByAdmin(true);//管理员发起的修改
         AjaxResult update = psyConsultService.update(psyConsult);
         psyConsultService.getOne(psyConsult.getId());
         return update;

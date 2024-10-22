@@ -176,7 +176,7 @@ public class ConsultantUserController extends BaseController {
        
     }
 
-
+    //我的信息
     @PostMapping("/info")
     public AjaxResult getUserInfo(HttpServletRequest request) {
         try {
@@ -189,11 +189,46 @@ public class ConsultantUserController extends BaseController {
             one.setUpdateBy(null);
             return AjaxResult.success(one);
         } catch (Exception e) {
-            log.error("login error", e);
-            return AjaxResult.error("login error");
+            log.error("getUserInfo error", e);
+            return AjaxResult.error("getUserInfo error");
+        }
+    }
+    
+    //修改我的信息
+    @PostMapping("/update")
+    public AjaxResult updateUserInfo(@RequestBody PsyConsultVO consult, HttpServletRequest request) {
+        try {
+            consult.setIsUpdateByAdmin(false);//非管理员发起的修改
+            Long consultId = consultantTokenService.getConsultId(request);
+            consult.setId(consultId);//填充token中的咨询师id
+            
+            consult.setExperience(null);//该接口不修改受训经历
+            psyConsultService.update(consult);
+            
+            return AjaxResult.success();
+        } catch (Exception e) {
+            log.error("updateUserInfo error", e);
+            return AjaxResult.error("updateUserInfo error");
         }
     }
 
+    //修改我的信息
+    @PostMapping("/updateSensitiveInfo")
+    public AjaxResult updateSensitiveInfo(@RequestBody PsyConsultVO consult, HttpServletRequest request) {
+        try {
+            consult.setIsUpdateByAdmin(false);//非管理员发起的修改
+            Long consultId = consultantTokenService.getConsultId(request);
+            consult.setId(consultId);//填充token中的咨询师id
+
+            AjaxResult update = psyConsultService.update(consult);
+            return update;
+        } catch (Exception e) {
+            log.error("updateSensitiveInfo error", e);
+            return AjaxResult.error("updateSensitiveInfo error");
+        }
+    }
+    
+    
     /**
      * 根据类型  查询咨询师列表
      */

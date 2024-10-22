@@ -173,7 +173,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int saveByConsultId(PsyConsultPartner entity) {
+    public AjaxResult saveByConsultId(PsyConsultPartner entity) {
         //获取申请单id
         Long id = getInfoByConsultId(entity.getConsultId()).getId();
         entity.setId(id);
@@ -181,11 +181,18 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         //若要将状态修改为"审核中"
         if (ConsultConstant.PARTNER_STATUS_1.equals(entity.getStatus())){
             PsyConsultPartner oldPartner = psyConsultPartnerMapper.selectById(id);
-            if (!ConsultConstant.CONSULT_ORDER_STATUE_CREATED.equals(oldPartner.getStatus())){
-                throw new ServiceException("入驻申请已在审核中或已审核结束");
+            if (ConsultConstant.PARTNER_STATUS_4.equals(oldPartner.getStatus()) ){
+                return AjaxResult.error("入驻申请已在审核中, 不可修改");
             }
+            if (ConsultConstant.PARTNER_STATUS_2.equals(oldPartner.getStatus()) || ConsultConstant.PARTNER_STATUS_3.equals(oldPartner.getStatus()) ){
+                return AjaxResult.error("入驻申请已审核通过, 不可修改");
+            }
+            if (ConsultConstant.PARTNER_STATUS_4.equals(oldPartner.getStatus()) ){
+                return AjaxResult.error("入驻申请已审核驳回, 不可修改");
+            }
+            
         }
-        return psyConsultPartnerMapper.updateById(entity);
+        return AjaxResult.success(psyConsultPartnerMapper.updateById(entity));
     }
 
     /**

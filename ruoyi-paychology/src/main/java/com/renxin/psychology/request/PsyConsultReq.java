@@ -25,7 +25,7 @@ public class PsyConsultReq extends BaseValObj implements Serializable
     /** 登录名 */
     private String userName;
 
-    /** 用户性别（0男 1女 2未知） */
+    /** 用户性别 */
     private String sex;
 
     /** 城市 */
@@ -66,7 +66,7 @@ public class PsyConsultReq extends BaseValObj implements Serializable
     //筛选最近几天内可约
     private Integer ableWaitDay;
 
-    //服务对象   1来访者  2咨询师(督导)   3咨询师(体验)
+    //服务对象   1来访者  2个案督导   3个人体验
     private List<String> serviceObjectList;
 
 }

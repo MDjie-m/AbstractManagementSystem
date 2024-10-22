@@ -191,7 +191,7 @@ ALTER TABLE `psy_consultant_schedule`
     ADD COLUMN `schedule_type` INT NOT NULL DEFAULT 0 COMMENT '任务类型  1.团督开课   2.咨询服务' AFTER `team_id`;
 
 ALTER TABLE `psy_consult_server_config`
-    CHANGE COLUMN `service_object` `service_object` INT(10) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' AFTER `level`;
+    CHANGE COLUMN `service_object` `service_object` INT(10) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2个案督导   3个人体验' AFTER `level`;
 
 
 ALTER TABLE `psy_consult_server_config`
@@ -199,15 +199,15 @@ ALTER TABLE `psy_consult_server_config`
 
 
 ALTER TABLE `psy_consult`
-    CHANGE COLUMN `server_to` `server_to` VARCHAR(255) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' COLLATE 'utf8mb4_0900_ai_ci' AFTER `level`,
+    CHANGE COLUMN `server_to` `server_to` VARCHAR(255) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2个案督导   3个人体验' COLLATE 'utf8mb4_0900_ai_ci' AFTER `level`,
     CHANGE COLUMN `work_num` `work_num` INT(10) NOT NULL DEFAULT '0' COMMENT '咨询人数' AFTER `detail`;
 
 ALTER TABLE `psy_consult_server_config`
-    CHANGE COLUMN `service_object` `service_object` VARCHAR(50) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' AFTER `level`;
+    CHANGE COLUMN `service_object` `service_object` VARCHAR(50) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2个案督导   3个人体验' AFTER `level`;
 
 
 ALTER TABLE `psy_consult`
-    CHANGE COLUMN `server_to` `service_object` VARCHAR(255) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2咨询师(督导)   3咨询师(体验)' COLLATE 'utf8mb4_0900_ai_ci' AFTER `level`;
+    CHANGE COLUMN `server_to` `service_object` VARCHAR(255) NULL DEFAULT NULL COMMENT '服务对象   1来访者  2个案督导   3个人体验' COLLATE 'utf8mb4_0900_ai_ci' AFTER `level`;
 
 
 /*原服务清空*/

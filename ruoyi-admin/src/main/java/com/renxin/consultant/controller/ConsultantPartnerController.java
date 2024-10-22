@@ -82,7 +82,7 @@ public class ConsultantPartnerController {
     {
         Long consultId = consultantTokenService.getConsultId(request);
         entity.setConsultId(consultId);
-        return AjaxResult.success(partnerService.saveByConsultId(entity));
+        return partnerService.saveByConsultId(entity);
     }
 
     @PostMapping(value = "/getInfo")

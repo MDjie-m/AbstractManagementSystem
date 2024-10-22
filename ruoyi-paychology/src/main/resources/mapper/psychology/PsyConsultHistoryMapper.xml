@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.renxin.psychology.mapper.PsyConsultHistoryMapper">
+
+    <resultMap type="PsyConsultHistory" id="PsyConsultHistoryResult">
+        <result property="id"    column="id"    />
+        <result property="consultantId"    column="consultant_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="executeStatus"    column="execute_status"    />
+        <result property="updateColumn"    column="update_column"    />
+        <result property="updateDetail"    column="update_detail"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="spare1"    column="spare1"    />
+        <result property="spare2"    column="spare2"    />
+        <result property="spare3"    column="spare3"    />
+        <result property="spare4"    column="spare4"    />
+        <result property="spare5"    column="spare5"    />
+    </resultMap>
+
+    <sql id="selectPsyConsultHistoryVo">
+        select id, consultant_id, create_by, create_time, execute_status, update_column, update_detail, update_by, update_time, spare1, spare2, spare3, spare4, spare5 from psy_consult_history
+    </sql>
+
+    <select id="selectPsyConsultHistoryList" parameterType="PsyConsultHistory" resultMap="PsyConsultHistoryResult">
+        <include refid="selectPsyConsultHistoryVo"/>
+        <where>
+            <if test="consultantId != null "> and consultant_id = #{consultantId}</if>
+            <if test="executeStatus != null "> and execute_status = #{executeStatus}</if>
+            <if test="updateColumn != null  and updateColumn != ''"> and update_column = #{updateColumn}</if>
+            <if test="updateDetail != null  and updateDetail != ''"> and update_detail = #{updateDetail}</if>
+            <if test="spare1 != null  and spare1 != ''"> and spare1 = #{spare1}</if>
+            <if test="spare2 != null  and spare2 != ''"> and spare2 = #{spare2}</if>
+            <if test="spare3 != null  and spare3 != ''"> and spare3 = #{spare3}</if>
+            <if test="spare4 != null  and spare4 != ''"> and spare4 = #{spare4}</if>
+            <if test="spare5 != null  and spare5 != ''"> and spare5 = #{spare5}</if>
+        </where>
+    </select>
+
+    <select id="selectPsyConsultHistoryById" parameterType="Long" resultMap="PsyConsultHistoryResult">
+        <include refid="selectPsyConsultHistoryVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertPsyConsultHistory" parameterType="PsyConsultHistory" useGeneratedKeys="true" keyProperty="id">
+        insert into psy_consult_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="executeStatus != null">execute_status,</if>
+            <if test="updateColumn != null and updateColumn != ''">update_column,</if>
+            <if test="updateDetail != null">update_detail,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="spare1 != null">spare1,</if>
+            <if test="spare2 != null">spare2,</if>
+            <if test="spare3 != null">spare3,</if>
+            <if test="spare4 != null">spare4,</if>
+            <if test="spare5 != null">spare5,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="consultantId != null">#{consultantId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="executeStatus != null">#{executeStatus},</if>
+            <if test="updateColumn != null and updateColumn != ''">#{updateColumn},</if>
+            <if test="updateDetail != null">#{updateDetail},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="spare1 != null">#{spare1},</if>
+            <if test="spare2 != null">#{spare2},</if>
+            <if test="spare3 != null">#{spare3},</if>
+            <if test="spare4 != null">#{spare4},</if>
+            <if test="spare5 != null">#{spare5},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePsyConsultHistory" parameterType="PsyConsultHistory">
+        update psy_consult_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consultantId != null">consultant_id = #{consultantId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="executeStatus != null">execute_status = #{executeStatus},</if>
+            <if test="updateColumn != null and updateColumn != ''">update_column = #{updateColumn},</if>
+            <if test="updateDetail != null">update_detail = #{updateDetail},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="spare1 != null">spare1 = #{spare1},</if>
+            <if test="spare2 != null">spare2 = #{spare2},</if>
+            <if test="spare3 != null">spare3 = #{spare3},</if>
+            <if test="spare4 != null">spare4 = #{spare4},</if>
+            <if test="spare5 != null">spare5 = #{spare5},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePsyConsultHistoryById" parameterType="Long">
+        delete from psy_consult_history where id = #{id}
+    </delete>
+
+    <delete id="deletePsyConsultHistoryByIds" parameterType="String">
+        delete from psy_consult_history where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
