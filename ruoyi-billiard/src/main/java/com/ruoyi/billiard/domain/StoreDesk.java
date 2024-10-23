@@ -134,4 +134,10 @@ public class StoreDesk extends MyBaseEntity
     public String getLongTitle() {
         return StringUtils.format("{}({})/{}", deskName, deskNum, Objects.nonNull(placeType)?placeType:"");
     }
+    public String getTitle() {
+        return StringUtils.format("{}({})/{}", deskName, deskNum, Objects.nonNull(placeType)?placeType:"");
+    }
+    public String shortTitle() {
+        return StringUtils.format("{}({})", deskName, deskNum);
+    }
 }

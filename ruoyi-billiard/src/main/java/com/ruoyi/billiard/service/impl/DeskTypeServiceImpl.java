@@ -1,10 +1,12 @@
 package com.ruoyi.billiard.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.ruoyi.billiard.domain.DeskPlace;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.mapper.StoreDeskMapper;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.DateUtils;
@@ -112,5 +114,15 @@ public class DeskTypeServiceImpl extends ServiceImpl<DeskTypeMapper, DeskType> i
         AssertUtil.isTrue(!storeDeskMapper.exists(storeDeskMapper.query().eq(StoreDesk::getDeskType, deskTypeId)), "区域名称已被使用，无法删除");
 
         return baseMapper.deleteDeskTypeByDeskTypeId(deskTypeId);
+    }
+
+    @Override
+    public List<KeyValueVo<Long, Long>> selectListByStoreId(Long storeId) {
+
+        List<DeskType> list=selectDeskTypeList(DeskType.builder().storeId(storeId).build());
+        return list.stream().map(p->{
+            KeyValueVo<Long, Long> item=new KeyValueVo<>(p.getDeskTypeId(),p.getDeskTypeId(),p.getName());
+            return  item;
+        }).collect(Collectors.toList());
     }
 }

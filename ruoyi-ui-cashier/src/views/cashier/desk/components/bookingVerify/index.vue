@@ -198,7 +198,7 @@ export default {
     }
   },
   emits: ["ok"],
-  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place','store_tutor_work_status',"booking_status"],
+  dicts: ['store_desk_status','store_tutor_work_status',"booking_status"],
   data() {
 
     return {
@@ -345,13 +345,7 @@ export default {
         this.tutor.total = res.total;
       }).finally(() => this.loading = false)
     },
-    fillTitle(item) {
-      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) === item.deskType)?.label ?? '';
-      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value) === item.placeType)?.label ?? '';
-      item.shortTitle = `${item.deskName}(${item.deskNum})`
-      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`;
-      return item;
-    },
+
   }
 
 }

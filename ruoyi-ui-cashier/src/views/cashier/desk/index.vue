@@ -297,7 +297,7 @@ export default {
     CustomDialog,
     BookingVerify, BookingDesk, BookingTutor, LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard
   },
-  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place', 'order_pay_type'],
+  dicts: ['store_desk_status',   'order_pay_type'],
 
   data() {
     return {

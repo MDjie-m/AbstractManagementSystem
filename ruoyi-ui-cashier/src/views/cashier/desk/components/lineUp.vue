@@ -2,7 +2,7 @@
   <div class=" section-container line-up-container">
     <el-tabs v-model="currentTitle">
       <el-tab-pane :label="place.label" name="basic" :key="'line_up'+place.value" :name="place.value"
-                   v-for="place in dict.type.store_desk_place" style="height:90%;overflow-y:auto;overflow-x:hidden;">
+                   v-for="place in placeTypeList" style="height:90%;overflow-y:auto;overflow-x:hidden;">
         <el-scrollbar class="right-scrollbar">
           <div class="num-container">
             <div class="num-item" :key="place.value+'line_item_key'+item.num"
@@ -43,16 +43,17 @@
 </template>
 <script>
 import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
-import {listLineUp, saveLineUp} from "@/api/cashier/desk";
+import {listLineUp, listPlaceTypeAll, saveLineUp} from "@/api/cashier/desk";
 import {parseTime} from "@/utils/ruoyi";
 
 const PreNum = ["A", "B", "C", "D", "E", "F"]
 export default {
   props: ['storeName'],
-  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
+  dicts: ['store_desk_status',  ],
   data() {
 
     return {
+      placeTypeList:[],
       lineUpInfo: {},
       loading: false,
       currentTitle: '0'
@@ -60,8 +61,14 @@ export default {
   },
   created() {
     this.getList();
+    this.getPlaceTypeList();
   },
   methods: {
+    getPlaceTypeList(){
+      listPlaceTypeAll().then(res=>{
+        this.placeTypeList=res.data||[];
+      })
+    },
     getList() {
       this.loading = true;
       listLineUp().then(p => {

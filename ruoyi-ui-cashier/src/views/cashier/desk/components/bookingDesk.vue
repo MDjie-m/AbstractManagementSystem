@@ -23,11 +23,11 @@
 
       </div>
       <div class="section-container desk-items-box">
-        <template v-for="placeItem in dict.type.store_desk_place">
+        <template v-for="placeItem in placeTypeList">
           <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
           <div class="desk-container">
             <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
-                     v-for="desk in deskList.filter(p=>  p.placeType === parseInt(placeItem.value))">
+                     v-for="desk in deskList.filter(p=>  p.placeType ===  placeItem.value)">
               <div class="item-status" :class="`item-status-${desk.status}`"></div>
               <div>
                 <div class="desk-item-name"> {{ desk.deskName }}</div>
@@ -138,7 +138,7 @@
 </template>
 <script>
 
-import {addDeskBooking, delDeskBooking, getBookingMap, listDesk} from "@/api/cashier/desk";
+import {addDeskBooking, delDeskBooking, getBookingMap, listDesk, listPlaceTypeAll} from "@/api/cashier/desk";
 import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
 import {BookingStatus, formatTime} from "@/views/cashier/components/constant";
 import CustomTip from "@/views/cashier/components/customTip.vue";
@@ -147,7 +147,7 @@ export default {
   components: {CustomTip, CustomDialog},
   props: ['memberId'],
   emits: ["ok"],
-  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
+  dicts: ['store_desk_status', ],
   computed: {
     DeskBookingStatus() {
       return BookingStatus
@@ -172,6 +172,7 @@ export default {
 
     };
     return {
+      placeTypeList:[],
       deskList: [],
       showAdd: false,
       timeOptions: {
@@ -230,6 +231,7 @@ export default {
 
 
   },
+
   mounted() {
     this.initDayList()
     this.onMonthChanged();
@@ -237,14 +239,13 @@ export default {
     this.deskQueryParams.startTime = this.$time().format("HH:00")
     this.deskQueryParams.endTime = this.$time().add(2, 'hour').format("HH:00")
     this.getDeskList();
+    this.getPlaceTypeList();
   },
   methods: {
-    fillTitle(item) {
-      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) === item.deskType)?.label ?? '';
-      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value) === item.placeType)?.label ?? '';
-      item.shortTitle = `${item.deskName}(${item.deskNum})`
-      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`;
-      return item;
+    getPlaceTypeList(){
+      listPlaceTypeAll().then(res=>{
+        this.placeTypeList=res.data||[];
+      })
     },
     onBackClick(){
       this.showList=true;

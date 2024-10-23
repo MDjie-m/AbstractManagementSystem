@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
 import  com.ruoyi.billiard.domain.DeskPlace;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 
 /**
  * 台桌区域Service接口
@@ -59,4 +60,6 @@ public interface IDeskPlaceService  extends IService<DeskPlace>
      * @return 结果
      */
     public int deleteDeskPlaceByDeskPlaceId(Long deskPlaceId);
+
+    List<KeyValueVo<Long, Long>> selectListByStoreId(Long storeId);
 }

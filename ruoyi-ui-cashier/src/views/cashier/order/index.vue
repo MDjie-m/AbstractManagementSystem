@@ -352,7 +352,7 @@ export default {
     }
   },
   components: {SwapDesk, CustomDialog, MemberSearch, LeftContainer},
-  dicts: ['order_type', 'order_status', 'store_desk_status', 'store_desk_type', 'store_desk_place', 'order_pay_type'],
+  dicts: ['order_type', 'order_status', 'store_desk_status', 'order_pay_type'],
   data() {
     return {
       currentTutorTime: null,
@@ -404,12 +404,7 @@ export default {
         });
       })
     },
-    fillTitle(item) {
-      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) === item.deskType)?.label ?? '';
-      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value) === item.placeType)?.label ?? '';
-      item.shortTitle = `${item.deskName}(${item.deskNum})`
-      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`
-    },
+
     onFinishOrderOkClick() {
       if (parseInt(this.finishOrderForm.payType) === OrderPayType.MEMBER && !String(this.finishOrderForm.password).trim()) {
         this.$modal.msgWarning("请输入密码");

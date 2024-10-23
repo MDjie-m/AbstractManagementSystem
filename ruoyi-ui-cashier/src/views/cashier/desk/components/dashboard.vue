@@ -17,7 +17,7 @@ export const InvokeMethodName = {
   LineUp: "lineUp"
 }
 export default {
-  dicts: ['store_desk_status', 'store_desk_type', 'store_tutor_work_status'],
+  dicts: ['store_desk_status',   'store_tutor_work_status'],
   emits: [OnBtnClickEvent],
   components: {SvgItem, ToolBar, LineUp},
   props: {

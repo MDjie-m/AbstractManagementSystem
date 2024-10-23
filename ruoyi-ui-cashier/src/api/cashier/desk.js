@@ -16,7 +16,18 @@ export function listLineUp() {
     method: 'get',
   })
 }
-
+export function listDeskTypeAll() {
+  return request({
+    url: '/cashier/desk/deskType/list',
+    method: 'get',
+  })
+}
+export function listPlaceTypeAll() {
+  return request({
+    url: '/cashier/desk/placeType/list',
+    method: 'get',
+  })
+}
 export function saveLineUp(params) {
   return request({
     url: '/cashier/desk/line-up',

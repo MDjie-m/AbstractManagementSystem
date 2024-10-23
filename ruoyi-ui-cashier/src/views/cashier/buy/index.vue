@@ -266,7 +266,7 @@ export default {
     }
   },
   components: {CustomDialog, SvgItem, LeftContainer},
-  dicts: ['store_tutor_work_status', 'store_desk_type', 'store_desk_place'],
+  dicts: ['store_tutor_work_status',  ],
   data() {
     return {
       navOrderId: null,
@@ -324,12 +324,7 @@ export default {
         });
       })
     },
-    fillTitle(item) {
-      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) === item.deskType)?.label ?? '';
-      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value) === item.placeType)?.label ?? '';
-      item.shortTitle = `${item.deskName}(${item.deskNum})`
-      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`
-    },
+
     onRefreshClick() {
       this.getGoodsList();
       this.getTutorList();
