@@ -60,7 +60,8 @@
               <image-preview :src="scope.row.goodsImg" :width="50" :height="50"/>
             </template>
           </el-table-column>
-          <el-table-column label="价格" align="center" prop="price" />
+          <el-table-column label="成本价" align="center" prop="cost" />
+          <el-table-column label="销售价格" align="center" prop="price" />
 
           <el-table-column label="商品条码" align="center" prop="barcode" />
           <el-table-column label="商品分类" align="center" prop="categoryName" />
@@ -132,16 +133,25 @@
         </el-form-item>
         <el-row>
           <el-col :span="12">
+            <el-form-item label="固定成本价" prop="price">
+              <el-input-number controls-position="right"  v-model="form.cost"    :precision="2" :step="0.1" :max="100" :min="0.00"  ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="销售价格" prop="price">
+              <el-input-number controls-position="right"  v-model="form.price"    :precision="2" :step="0.1" :max="100" :min="0.00"  ></el-input-number>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="价格" prop="price">
               <el-input-number controls-position="right"  v-model="form.price"    :precision="2" :step="0.1" :max="100" :min="0.00"  ></el-input-number>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="排序" prop="sort">
-              <el-input-number controls-position="right" v-model="form.sort" placeholder="请输入排序"  :min="1" :max="99999" />
-            </el-form-item>
-          </el-col>
+
         </el-row>
+
         <el-form-item label="禁止折扣" prop="discountDisable" >
           <el-radio-group v-model="form.discountDisable">
             <el-radio-button     :label="true"   >
@@ -237,8 +247,11 @@ export default {
         sell: [
           { required: true, message: "是否上架销售不能为空", trigger: "change" }
         ],
+        cost: [
+          { required: true, message: "成本价格不能为空", trigger: "blur" }
+        ],
         price: [
-          { required: true, message: "价格不能为空", trigger: "blur" }
+          { required: true, message: "销售价格不能为空", trigger: "blur" }
         ],
         discountDisable: [
           { required: true, message: "价格不能为空", trigger: "blur" }
@@ -287,6 +300,7 @@ export default {
         storeId: this.storeInfo?.storeId,
         goodsName: null,
         goodsImg:null,
+        cost:null,
         sort: null,
         barcode: null,
         categoryId: null,
