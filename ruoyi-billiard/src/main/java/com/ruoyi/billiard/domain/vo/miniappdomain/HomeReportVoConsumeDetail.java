@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.domain.vo.miniappdomain;
 
+import com.ruoyi.billiard.enums.OrderType;
 import com.ruoyi.common.annotation.Excel;
 import lombok.Builder;
 import lombok.Data;
@@ -35,4 +36,7 @@ public class HomeReportVoConsumeDetail  implements Serializable {
 
     /** 消费明细 */
     private List<?> consumeDetail;
+
+    /** 订单类型 */
+    private OrderType orderType;
 }

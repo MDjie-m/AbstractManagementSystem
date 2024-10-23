@@ -1084,6 +1084,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .consumeCount(orders.size())
                 .consumeAmount(totalAmount)
                 .consumePercent(new BigDecimal(100)).build();
+        totalConsum.setOrderType(OrderType.AGGREGATE_CONSUMPTION);
         homeReportVoConsume.setTotal(totalConsum);
 
         // 查询挂起订单
@@ -1237,6 +1238,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .consumeAmount(deskTotalAmount)
                 .consumeDetail(orderDeskTimes)
                 .consumePercent(deskPercent).build();
+        tableCharge.setOrderType(OrderType.TABLE_CHARGE);
         typeList.add(tableCharge);
 
         // 商品订单
@@ -1248,6 +1250,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .consumeAmount(commodityTotalAmount)
                 .consumeDetail(orderCommodityTimes)
                 .consumePercent(goodsPercent).build();
+        commodityPurchase.setOrderType(OrderType.COMMODITY_PURCHASE);
         typeList.add(commodityPurchase);
 
         // 会员充值
@@ -1259,6 +1262,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .consumeAmount(rechargeTotalAmount)
                 .consumeDetail(orderRechargeTimes)
                 .consumePercent(rechargePercent).build();
+        memberRecharge.setOrderType(OrderType.MEMBER_RECHARGE);
         typeList.add(memberRecharge);
 
         // 助教费用
@@ -1270,6 +1274,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .consumeAmount(tutorTotalAmount)
                 .consumeDetail(orderTutorTimes)
                 .consumePercent(tutorPercent).build();
+        teachFee.setOrderType(OrderType.TEACHING_ASSISTANT_FEE);
         typeList.add(teachFee);
 
 
