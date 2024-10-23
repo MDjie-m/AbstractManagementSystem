@@ -311,7 +311,7 @@ export default {
     },
     queryDeskList() {
       listDesk({}).then(res => {
-        this.desk.deskList = (res.data || []).map(p=>this.fillTitle(p));
+        this.desk.deskList = (res.data || []) ;
       })
     },
     queryTutorList() {

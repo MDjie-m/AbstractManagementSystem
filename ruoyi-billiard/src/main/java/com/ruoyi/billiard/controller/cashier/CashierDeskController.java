@@ -4,12 +4,11 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.vo.*;
 import com.ruoyi.billiard.enums.BookingStatus;
-import com.ruoyi.billiard.service.IDeskBookingService;
-import com.ruoyi.billiard.service.ILightTimerService;
-import com.ruoyi.billiard.service.IStoreDeskService;
+import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
+import com.ruoyi.common.core.domain.model.KeyValueVo;
 import com.ruoyi.common.core.page.PageResVo;
 import com.ruoyi.common.utils.ArrayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,22 @@ public class CashierDeskController extends BaseController {
     @Autowired
     private IDeskBookingService deskBookingService;
 
+    @Autowired
+    private IDeskPlaceService deskPlaceService;
 
+    @Autowired
+    private IDeskTypeService  deskTypeService;
+
+    @GetMapping("/placeType/list")
+    public ResultVo<List<KeyValueVo<Long,Long>>> getPlaceTypeList( ) {
+
+        return ResultVo.success( deskPlaceService.selectListByStoreId(getStoreIdWithThrow()));
+    }
+    @GetMapping("/deskType/list")
+    public ResultVo<List<KeyValueVo<Long,Long>>> getDeskTypeList( ) {
+
+        return ResultVo.success( deskTypeService.selectListByStoreId(getStoreIdWithThrow()));
+    }
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @GetMapping("/booking/map")
     public ResultVo<Map<String, List<DeskBooking>>> bookingMap(@Validated(IQuery.class) DeskBooking reqVo) {

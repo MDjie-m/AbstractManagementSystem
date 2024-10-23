@@ -398,10 +398,7 @@ export default {
   methods: {
     getDeskList() {
       return listDesk({}).then(response => {
-        this.deskList = (response.data || []).map(p => {
-          this.fillTitle(p);
-          return p;
-        });
+        this.deskList = (response.data || []);
       })
     },
 

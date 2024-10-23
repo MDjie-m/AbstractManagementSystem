@@ -132,10 +132,10 @@ public class StoreDesk extends MyBaseEntity
     @TableField(exist = false)
     private String deskTypeName;
     public String getLongTitle() {
-        return StringUtils.format("{}({})/{}", deskName, deskNum, Objects.nonNull(placeType)?placeType:"");
+        return StringUtils.format("{}({})/{}", deskName, deskNum, Objects.nonNull(placeTypeName)?placeTypeName:"");
     }
     public String getTitle() {
-        return StringUtils.format("{}({})/{}", deskName, deskNum, Objects.nonNull(placeType)?placeType:"");
+        return getLongTitle();
     }
     public String shortTitle() {
         return StringUtils.format("{}({})", deskName, deskNum);

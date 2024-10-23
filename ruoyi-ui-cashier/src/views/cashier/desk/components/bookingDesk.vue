@@ -266,7 +266,7 @@ export default {
         bookingStart: `${this.deskQueryParams.day} ${this.deskQueryParams.startTime}`,
         bookingEnd: `${this.deskQueryParams.day} ${this.deskQueryParams.endTime}`
       }).then(res => {
-        this.deskList = (res.data||[]).map(p=>this.fillTitle(p));
+        this.deskList = (res.data||[]);
       }).finally(() => this.loading = false)
     },
     onRemoveBookingClick(day, idx) {

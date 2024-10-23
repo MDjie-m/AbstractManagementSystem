@@ -28,7 +28,7 @@ public interface StoreDeskMapper extends MyBaseMapper<StoreDesk>
      * @return 球桌
      */
     public StoreDesk selectStoreDeskByDeskId(Long deskId);
-
+    public StoreDesk selectStoreDeskByDeskIdAndStoreId(@Param("deskId") Long deskId,@Param("storeId") Long storeId);
     /**
      * 查询球桌列表
      * 

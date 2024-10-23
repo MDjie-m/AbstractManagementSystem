@@ -434,9 +434,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     }
 
     private StoreDesk queryEnableDesk(Long deskId, Long storeId) {
-        StoreDesk desk = storeDeskMapper.selectOne(storeDeskMapper.query()
-                .eq(StoreDesk::getDeskId, deskId).eq(StoreDesk::getStoreId, storeId));
-
+        StoreDesk desk = storeDeskMapper.selectStoreDeskByDeskIdAndStoreId( deskId , storeId);
         AssertUtil.notNullOrEmpty(desk, "非法参数");
         AssertUtil.isTrue(Objects.equals(desk.getEnable(), Boolean.TRUE), "台桌未启用");
         desk.setPrice(deskPriceService.queryPriceByType(storeId, desk.getDeskType()));

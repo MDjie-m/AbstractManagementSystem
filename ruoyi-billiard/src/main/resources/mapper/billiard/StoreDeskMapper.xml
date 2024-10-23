@@ -61,6 +61,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                              where b.status = 1
                                and b.order_id = #{orderId})
     </select>
+    <select id="selectStoreDeskByDeskIdAndStoreId" resultType="com.ruoyi.billiard.domain.StoreDesk">
+        <include refid="selectStoreDeskVo"/>
+        where a.desk_id = #{deskId} and a.store_id=#{storeId}
+    </select>
 
 
     <delete id="deleteStoreDeskByDeskId" parameterType="Long">

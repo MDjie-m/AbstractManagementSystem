@@ -92,19 +92,19 @@
               全部
             </el-tag>
 
-            <el-tag v-for="dict in dict.type.store_desk_type"
+            <el-tag v-for="dict in deskTypeList"
                     :key="dict.value+'deskType'"
                     :label="dict.label"
                     type="primary"
                     @click="onChooseClick('deskType',dict.value)"
-                    :effect="parseInt(dict.value )===queryParams.deskType?'dark':'plain'"
+                    :effect=" dict.value  ===queryParams.deskType?'dark':'plain'"
                     round>
               {{ dict.label }}
             </el-tag>
-            <el-tag v-for="dict in dict.type.store_desk_place"
+            <el-tag v-for="dict in placeTypeList"
                     :key="dict.value+'deskPlace'"
                     :label="dict.label"
-                    :effect="parseInt(dict.value)===queryParams.placeType?'dark':'plain'"
+                    :effect="dict.value===queryParams.placeType?'dark':'plain'"
                     @click="onChooseClick('placeType',dict.value)"
                     type="primary"
             >
@@ -137,11 +137,11 @@
 
       <div class="  section-container desk-box">
 
-        <template class="box-card" v-for="placeItem in dict.type.store_desk_place">
+        <template class="box-card" v-for="placeItem in placeTypeList">
           <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
           <div class="desk-container">
             <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
-                     v-for="desk in deskList.filter(p=>  p.placeType === parseInt(placeItem.value))">
+                     v-for="desk in deskList.filter(p=>  p.placeType === (placeItem.value))">
               <div class="item-status" :class="`item-status-${desk.status}`"></div>
               <div>
                 <div class="desk-item-name"> {{ desk.deskName }}</div>
@@ -244,7 +244,7 @@
 import {
   createLightTimer,
   getDeskBaseInfo,
-  listDesk, mergeToNewDesk,
+  listDesk, listDeskTypeAll, listPlaceTypeAll, mergeToNewDesk,
   pauseCalcFee,
   resumeCalcFee,
   startCalcFee,
@@ -301,6 +301,8 @@ export default {
 
   data() {
     return {
+      placeTypeList:[],
+      deskTypeList:[],
       prePayForm: {
         payType: '0',
         amount: null,
@@ -341,6 +343,8 @@ export default {
     };
   },
   created() {
+    this.getPlaceTypeList();
+    this.getDeskTypeList();
     this.getList();
     this.getStoreInfo();
     this.initSomePCCallBackMethods();
@@ -351,6 +355,16 @@ export default {
   methods: {
     getStoreName(){
       return this.$refs?.leftContainer.storeName
+    },
+    getPlaceTypeList(){
+      listPlaceTypeAll().then(res=>{
+        this.placeTypeList=res.data||[];
+      })
+    },
+    getDeskTypeList(){
+      listDeskTypeAll().then(res=>{
+        this.deskTypeList=res.data||[];
+      })
     },
     initSomePCCallBackMethods() {
       registerMethod(DeviceCallbackMethodName.AddScore, this.addScore);
@@ -521,7 +535,7 @@ export default {
     },
     queryDeskById(deskId) {
       return getDeskBaseInfo(deskId).then(res => {
-        this.currentDesk = this.fillTitle(res.data);
+        this.currentDesk = res.data||[];
         this.deskList.forEach(p => {
           if (p.deskId === deskId) {
             p.status = this.currentDesk.status;
@@ -566,7 +580,7 @@ export default {
       }
       listDesk(params).then(response => {
         this.deskList = (response.data || []).map(p => {
-          this.fillTitle(p);
+
           p.selected = this.currentDesk?.deskId === p.deskId;
           return p;
         });
@@ -574,13 +588,7 @@ export default {
         this.loading = false;
       }).finally(() => this.loading = false);
     },
-    fillTitle(item) {
-      let type = this.dict.type.store_desk_type.find(p => parseInt(p.value) === item.deskType)?.label ?? '';
-      let place = this.dict.type.store_desk_place.find(p => parseInt(p.value) === item.placeType)?.label ?? '';
-      item.shortTitle = `${item.deskName}(${item.deskNum})`
-      item.title = `${item.deskName}(${item.deskNum})/${type}/${place}`;
-      return item;
-    },
+
     onOpenSwapDeskClick() {
       this.getList();
       this.openSwapDesk = true;

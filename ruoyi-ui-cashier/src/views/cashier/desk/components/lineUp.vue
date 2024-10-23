@@ -31,7 +31,7 @@
       <el-col style="text-align: center;">
         <el-badge :value="getLineUpList(item.value).numList.length" :hidden="!getLineUpList(item.value).numList.length"
                   class="icon-tip"
-                  type="danger" :key="'btn'+item.value" v-for="item in dict.type.store_desk_place">
+                  type="danger" :key="'btn'+item.value" v-for="item in placeTypeList">
           <el-button type="primary" style="margin-left: 20px" round @click="onCreateClick(item.value,item.label)"
           >{{ item.label }}
           </el-button>

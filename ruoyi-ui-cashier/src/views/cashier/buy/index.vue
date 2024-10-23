@@ -266,7 +266,7 @@ export default {
     }
   },
   components: {CustomDialog, SvgItem, LeftContainer},
-  dicts: ['store_tutor_work_status',  ],
+  dicts: ['store_tutor_work_status', 'store_desk_status' ],
   data() {
     return {
       navOrderId: null,
@@ -319,7 +319,7 @@ export default {
     getDeskList() {
       return listDesk({}).then(response => {
         this.deskList = (response.data || []).map(p => {
-          this.fillTitle(p);
+
           return p;
         });
       })
