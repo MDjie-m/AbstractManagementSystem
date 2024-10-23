@@ -25,20 +25,20 @@
             <el-form-item label="球桌类型" prop="deskType">
               <el-select v-model="queryParams.deskType" placeholder="请选择球桌类型" clearable>
                 <el-option
-                  v-for="dict in dict.type.store_desk_type"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
+                  v-for="dict in deskTypeList"
+                  :key="dict.deskTypeId"
+                  :label="dict.name"
+                  :value="dict.deskTypeId"
                 />
               </el-select>
             </el-form-item>
             <el-form-item label="位置" prop="placeType">
               <el-select v-model="queryParams.placeType" placeholder="请选择位置" clearable>
                 <el-option
-                  v-for="dict in dict.type.store_desk_place"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
+                  v-for="dict in deskPlaceList"
+                  :key="dict.deskPlaceId"
+                  :label="dict.name"
+                  :value="dict.deskPlaceId"
                 />
               </el-select>
             </el-form-item>
@@ -86,15 +86,9 @@
             <el-table-column label="Id" align="center" prop="deskId"/>
             <el-table-column label="球桌名" align="center" prop="deskName"/>
             <el-table-column label="编号" align="center" prop="deskNum"/>
-            <el-table-column label="球桌类型" align="center" prop="deskType">
-              <template slot-scope="scope">
-                <dict-tag :options="dict.type.store_desk_type" :value="scope.row.deskType"/>
-              </template>
+            <el-table-column label="球桌类型" align="center" prop="deskTypeName">
             </el-table-column>
-            <el-table-column label="位置" align="center" prop="placeType">
-              <template slot-scope="scope">
-                <dict-tag :options="dict.type.store_desk_place" :value="scope.row.placeType"/>
-              </template>
+            <el-table-column label="位置" align="center" prop="placeTypeName">
             </el-table-column>
             <el-table-column label="门店" align="center" prop="storeName"/>
             <el-table-column label="价格" align="center" prop="price">
@@ -176,11 +170,11 @@
                 <el-form-item label="球桌类型" prop="deskType">
                   <el-select v-model="form.deskType" placeholder="请选择球桌类型" class="with100">
                     <el-option
-                      v-for="dict in dict.type.store_desk_type"
-                      :key="dict.value"
-                      :label="dict.label"
-                      :value="parseInt(dict.value)"
-                    ></el-option>
+                      v-for="dict in deskTypeList"
+                      :key="dict.deskTypeId"
+                      :label="dict.name"
+                      :value="dict.deskTypeId"
+                    />
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -188,10 +182,10 @@
                 <el-form-item label="位置" prop="placeType">
                   <el-select v-model="form.placeType" placeholder="请选择位置" class="with100">
                     <el-option
-                      v-for="dict in dict.type.store_desk_place"
-                      :key="dict.value"
-                      :label="dict.label"
-                      :value="parseInt(dict.value)"
+                      v-for="dict in deskPlaceList"
+                      :key="dict.deskPlaceId"
+                      :label="dict.name"
+                      :value="dict.deskPlaceId"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -265,13 +259,17 @@ import { listDesk, getDesk, delDesk, addDesk, updateDesk } from '@/api/billiard/
 import { listAllStore } from '@/api/billiard/store'
 import StoreContainer from '@/views/billiard/component/storeContainer.vue'
 import { listAllDevice } from '@/api/billiard/device'
+import { listDeskPlaceAll } from '@/api/billiard/deskPlace'
+import { listDeskTypeAll } from '@/api/billiard/deskType'
 
 export default {
   name: 'Desk',
   components: { StoreContainer },
-  dicts: ['store_desk_status', 'store_desk_type', 'store_desk_place'],
+  dicts: ['store_desk_status',  ],
   data() {
     return {
+      deskTypeList:[],
+      deskPlaceList:[],
       storeOptions: [],
       storeInfo: null,
       // 遮罩层
@@ -356,6 +354,8 @@ export default {
       this.storeInfo = store
       this.queryParams.storeId = store?.storeId || -1
       this.getList()
+      this.queryDeskTypeList();
+      this.queryPlaceList();
       this.getAllDevices()
     },
     queryStores() {
@@ -382,6 +382,16 @@ export default {
         })
         this.lightList = this.deviceList.filter(p => p.deviceType === 1)
         this.cameraList = this.deviceList.filter(p => p.deviceType === 0)
+      })
+    },
+    queryDeskTypeList(){
+      listDeskTypeAll({ storeId: this.storeInfo?.storeId || -1 }).then(res=>{
+        this.deskTypeList=res.data||[]
+      })
+    },
+    queryPlaceList(){
+      listDeskPlaceAll({ storeId: this.storeInfo?.storeId || -1 }).then(res=>{
+        this.deskPlaceList=res.data||[]
       })
     },
     // 取消按钮

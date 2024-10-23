@@ -99,7 +99,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
             queryWrapper.eq("a.status", storeDesk.getStatus().getValue());
         }
         if (Objects.nonNull(storeDesk.getPlaceType())) {
-            queryWrapper.eq("a.place_type", storeDesk.getPlaceType().getValue());
+            queryWrapper.eq("a.place_type", storeDesk.getPlaceType());
         }
 
 //        if (O
@@ -439,7 +439,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
 
         AssertUtil.notNullOrEmpty(desk, "非法参数");
         AssertUtil.isTrue(Objects.equals(desk.getEnable(), Boolean.TRUE), "台桌未启用");
-        desk.setPrice(deskPriceService.queryPriceByType(storeId, desk.getDeskType().getValue()));
+        desk.setPrice(deskPriceService.queryPriceByType(storeId, desk.getDeskType()));
         return desk;
     }
 

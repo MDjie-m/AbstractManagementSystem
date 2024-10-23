@@ -3,86 +3,25 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.billiard.mapper.DeskPriceMapper">
-    
-    <resultMap type="DeskPrice" id="DeskPriceResult">
-        <result property="deskPriceId"    column="desk_price_id"    />
-        <result property="storeId"    column="store_id"    />
-        <result property="deskType"    column="desk_type"    />
-        <result property="price"    column="price"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="createById"    column="create_by_id"    />
-        <result property="updateById"    column="update_by_id"    />
-        <result property="remark"    column="remark"    />
-    </resultMap>
+
 
     <sql id="selectDeskPriceVo">
-        select desk_price_id, store_id, desk_type, price, create_by, create_time, update_by, update_time, create_by_id, update_by_id, remark from t_desk_price
+        select a.*,b.name as desk_type_name
+        from t_desk_price a left join t_desk_type b on a.desk_type=b.desk_type_id
     </sql>
 
-    <select id="selectDeskPriceList" parameterType="DeskPrice" resultMap="DeskPriceResult">
+    <select id="selectDeskPriceList" parameterType="DeskPrice" resultType="DeskPrice">
         <include refid="selectDeskPriceVo"/>
         <where>  
-            <if test="deskType != null "> and desk_type = #{deskType}</if>
-            <if test="storeId != null "> and store_id = #{storeId}</if>
-            <if test="createById != null "> and create_by_id = #{createById}</if>
-            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+            <if test="deskType != null "> and a.desk_type = #{deskType}</if>
+            <if test="storeId != null "> and a.store_id = #{storeId}</if>
         </where>
     </select>
     
-    <select id="selectDeskPriceByDeskPriceId" parameterType="Long" resultMap="DeskPriceResult">
+    <select id="selectDeskPriceByDeskPriceId" parameterType="Long" resultType="DeskPrice">
         <include refid="selectDeskPriceVo"/>
         where desk_price_id = #{deskPriceId}
     </select>
-
-    <insert id="insertDeskPrice" parameterType="DeskPrice">
-        insert into t_desk_price
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="deskPriceId != null">desk_price_id,</if>
-            <if test="storeId != null">store_id,</if>
-            <if test="deskType != null">desk_type,</if>
-            <if test="price != null">price,</if>
-            <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="createById != null">create_by_id,</if>
-            <if test="updateById != null">update_by_id,</if>
-            <if test="remark != null">remark,</if>
-         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="deskPriceId != null">#{deskPriceId},</if>
-            <if test="storeId != null">#{storeId},</if>
-            <if test="deskType != null">#{deskType},</if>
-            <if test="price != null">#{price},</if>
-            <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="createById != null">#{createById},</if>
-            <if test="updateById != null">#{updateById},</if>
-            <if test="remark != null">#{remark},</if>
-         </trim>
-    </insert>
-
-    <update id="updateDeskPrice" parameterType="DeskPrice">
-        update t_desk_price
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="storeId != null">store_id = #{storeId},</if>
-            <if test="deskType != null">desk_type = #{deskType},</if>
-            <if test="price != null">price = #{price},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="createById != null">create_by_id = #{createById},</if>
-            <if test="updateById != null">update_by_id = #{updateById},</if>
-            <if test="remark != null">remark = #{remark},</if>
-        </trim>
-        where desk_price_id = #{deskPriceId}
-    </update>
 
     <delete id="deleteDeskPriceByDeskPriceId" parameterType="Long">
         delete from t_desk_price where desk_price_id = #{deskPriceId}

@@ -66,7 +66,7 @@ public class DeskPriceServiceImpl implements IDeskPriceService {
         deskPrice.setDeskPriceId(IdUtils.singleNextId());
         Long num = deskPriceMapper.selectCount(deskPriceMapper.query().eq(DeskPrice::getStoreId, deskPrice.getStoreId()).eq(DeskPrice::getDeskType, deskPrice.getDeskType()));
         AssertUtil.isTrue(num == 0, "该球桌类型已存在");
-        return deskPriceMapper.insertDeskPrice(deskPrice);
+        return deskPriceMapper.insert(deskPrice);
     }
 
     /**
@@ -80,7 +80,7 @@ public class DeskPriceServiceImpl implements IDeskPriceService {
         SecurityUtils.fillUpdateUser(deskPrice);
         Long num = deskPriceMapper.selectCount(deskPriceMapper.query().eq(DeskPrice::getStoreId, deskPrice.getStoreId()).eq(DeskPrice::getDeskType, deskPrice.getDeskType()).ne(DeskPrice::getDeskPriceId, deskPrice.getDeskPriceId()));
         AssertUtil.isTrue(num == 0, "该球桌类型已存在");
-        return deskPriceMapper.updateDeskPrice(deskPrice);
+        return deskPriceMapper.updateById(deskPrice);
     }
 
     /**
@@ -106,7 +106,7 @@ public class DeskPriceServiceImpl implements IDeskPriceService {
     }
 
     @Override
-    public BigDecimal queryPriceByType(Long storeId, Integer deskType) {
+    public BigDecimal queryPriceByType(Long storeId, Long  deskType) {
         DeskPrice price = deskPriceMapper.selectOne(
                 deskPriceMapper.query()
                         .eq(DeskPrice::getStoreId, storeId)

@@ -136,8 +136,8 @@ create table t_store_desk
         primary key,
     desk_name        nvarchar(60)                          not null comment '球桌名',
     desk_num         int                                   not null comment '编号',
-    desk_type        int                                   not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
-    place_type       int                                   not null comment '位置：0=大厅，1=包厢',
+    desk_type        bigint                                   not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
+    place_type       bigint                                   not null comment '位置：0=大厅，1=包厢',
     store_id         bigint                                not null comment '门店',
     light_device_id  bigint                                null comment '灯光id',
     camera_device_id bigint                                null comment '摄像头设备id',
@@ -635,7 +635,7 @@ create table t_desk_price
     desk_price_id bigint                                not null comment 'ID'
         primary key,
     store_id      bigint                                not null not null comment '抓拍时间',
-    desk_type     int                                   not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
+    desk_type     bigint                                   not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
     price         decimal(10, 2)                        null comment '价格',
 
     create_by     varchar(64) default ''                null comment '创建者',
@@ -806,3 +806,43 @@ create table t_desk_light
     comment '灯光';
 create unique index t_desk_light_store_id_desk_num_uindex
     on t_desk_light (store_id, desk_num);
+
+
+DROP TABLE IF EXISTS t_desk_place;
+create table t_desk_place
+(
+    desk_place_id   bigint                                not null comment 'ID'
+        primary key,
+    name varchar(64) charset utf8mb4           not null comment '区域名称',
+    store_id            bigint                                not null comment '门店',
+    sort                int                                   not null comment '排序',
+    create_by           varchar(64) default ''                null comment '创建者',
+    create_time         timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by           varchar(64) default ''                null comment '更新者',
+    update_time         timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id        bigint                                null comment '创建者Id',
+    update_by_id        bigint                                null comment '更新者Id',
+    remark              nvarchar(500)                         null comment '备注'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    comment '台桌区域';
+
+
+DROP TABLE IF EXISTS t_desk_type;
+create table t_desk_type
+(
+    desk_type_id   bigint                                not null comment 'ID'
+        primary key,
+    name varchar(64) charset utf8mb4           not null comment '类型名称',
+    store_id            bigint                                not null comment '门店',
+    sort                int                                   not null comment '排序',
+    create_by           varchar(64) default ''                null comment '创建者',
+    create_time         timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by           varchar(64) default ''                null comment '更新者',
+    update_time         timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id        bigint                                null comment '创建者Id',
+    update_by_id        bigint                                null comment '更新者Id',
+    remark              nvarchar(500)                         null comment '备注'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    comment '台桌类型';

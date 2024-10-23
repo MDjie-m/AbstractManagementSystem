@@ -7,28 +7,32 @@ import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
-import java.math.BigDecimal;
-
 /**
- * 球桌价格对象 t_desk_price
+ * 台桌区域对象 t_desk_place
  * 
- * @author zhoukeu
- * @date 2024-09-14
+ * @author ruoyi
+ * @date 2024-10-23
  */
-@TableName("t_desk_price")
+@TableName("t_desk_place")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeskPrice extends MyBaseEntity
+public class DeskPlace extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** ID */
 
-    @TableId("desk_price_id")
-    private Long deskPriceId;
+    @TableId("desk_place_id")
+    private Long deskPlaceId;
+
+    /** 区域名称 */
+    @Excel(name = "区域名称")
+
+    @TableField("name")
+    private String name;
 
     /** 门店 */
     @Excel(name = "门店")
@@ -36,17 +40,11 @@ public class DeskPrice extends MyBaseEntity
     @TableField("store_id")
     private Long storeId;
 
-    /** 球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌 */
-    @Excel(name = "球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌")
+    /** 排序 */
+    @Excel(name = "排序")
 
-    @TableField("desk_type")
-    private Long deskType;
-
-    /** 价格 */
-    @Excel(name = "价格")
-
-    @TableField("price")
-    private BigDecimal price;
+    @TableField("sort")
+    private Integer sort;
 
     /** 创建者Id */
     @Excel(name = "创建者Id")
@@ -60,12 +58,7 @@ public class DeskPrice extends MyBaseEntity
     @TableField("update_by_id")
     private Long updateById;
 
-    @TableField(exist = false)
-    private String storeName;
 
-
-    @TableField(exist = false)
-    private String deskTypeName;
 
 
 

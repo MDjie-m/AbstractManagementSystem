@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.DeskPlaceMapper">
+
+
+    <sql id="selectDeskPlaceVo">
+        select * from t_desk_place
+    </sql>
+
+    <select id="selectDeskPlaceList" parameterType="DeskPlace" resultType="DeskPlace">
+        <include refid="selectDeskPlaceVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="sort != null "> and sort = #{sort}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+        order by sort desc
+    </select>
+    
+    <select id="selectDeskPlaceByDeskPlaceId" parameterType="Long" resultType="DeskPlace">
+        <include refid="selectDeskPlaceVo"/>
+        where desk_place_id = #{deskPlaceId}
+    </select>
+
+
+
+    <delete id="deleteDeskPlaceByDeskPlaceId" parameterType="Long">
+        delete from t_desk_place where desk_place_id = #{deskPlaceId}
+    </delete>
+
+    <delete id="deleteDeskPlaceByDeskPlaceIds" parameterType="String">
+        delete from t_desk_place where desk_place_id in 
+        <foreach item="deskPlaceId" collection="array" open="(" separator="," close=")">
+            #{deskPlaceId}
+        </foreach>
+    </delete>
+</mapper>

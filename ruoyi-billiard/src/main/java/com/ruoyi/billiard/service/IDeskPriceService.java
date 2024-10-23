@@ -60,5 +60,5 @@ public interface IDeskPriceService
      */
     public int deleteDeskPriceByDeskPriceId(Long deskPriceId);
 
-    BigDecimal queryPriceByType(Long storeId, Integer deskType);
+    BigDecimal queryPriceByType(Long storeId, Long deskType);
 }

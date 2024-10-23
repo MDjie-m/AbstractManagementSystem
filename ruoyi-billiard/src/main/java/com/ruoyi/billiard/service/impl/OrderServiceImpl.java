@@ -227,7 +227,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         SecurityUtils.fillCreateUser(order);
         orderMapper.insert(order);
 
-        BigDecimal price = priceService.queryPriceByType(desk.getStoreId(), desk.getDeskType().getValue());
+        BigDecimal price = priceService.queryPriceByType(desk.getStoreId(), desk.getDeskType() );
         AssertUtil.notNullOrEmpty(price, "未设置价格无法开台.请联系管理员设置价格.");
 
         Date startTime = DateUtils.removeSeconds(new Date());
@@ -273,7 +273,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderDeskScoreService.stopRecordScore(oldDeskId, orderId);
         //插入新的计费
 
-        BigDecimal price = priceService.queryPriceByType(newDesk.getStoreId(), newDesk.getDeskType().getValue());
+        BigDecimal price = priceService.queryPriceByType(newDesk.getStoreId(), newDesk.getDeskType() );
         AssertUtil.notNullOrEmpty(price, "目标台桌类型未设置价格无法换台.请联系管理员设置价格.");
         OrderDeskTime deskTime = OrderDeskTime.builder()
                 .deskId(newDeskId)

@@ -9,8 +9,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.billiard.enums.DeskStatus;
-import com.ruoyi.billiard.enums.DeskType;
-import com.ruoyi.billiard.enums.PlaceType;
 import com.ruoyi.common.utils.StringUtils;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
@@ -53,13 +51,13 @@ public class StoreDesk extends MyBaseEntity
     @Excel(name = "球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌")
 
     @TableField("desk_type")
-    private DeskType deskType;
+    private Long  deskType;
 
     /** 位置：0=大厅，1=包厢 */
     @Excel(name = "位置：0=大厅，1=包厢")
 
     @TableField("place_type")
-    private PlaceType placeType;
+    private Long  placeType;
 
     /** 门店 */
     @Excel(name = "门店")
@@ -128,7 +126,12 @@ public class StoreDesk extends MyBaseEntity
     private DeskBooking booking;
 
 
+    @TableField(exist = false)
+    private String placeTypeName;
+
+    @TableField(exist = false)
+    private String deskTypeName;
     public String getLongTitle() {
-        return StringUtils.format("{}({})/{}", deskName, deskNum, Objects.nonNull(placeType)?placeType.getDesc():"");
+        return StringUtils.format("{}({})/{}", deskName, deskNum, Objects.nonNull(placeType)?placeType:"");
     }
 }

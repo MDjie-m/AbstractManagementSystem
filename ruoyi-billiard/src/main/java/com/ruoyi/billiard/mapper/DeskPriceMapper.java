@@ -31,21 +31,6 @@ public interface DeskPriceMapper extends MyBaseMapper<DeskPrice>
      */
     public List<DeskPrice> selectDeskPriceList(DeskPrice deskPrice);
 
-    /**
-     * 新增球桌价格
-     * 
-     * @param deskPrice 球桌价格
-     * @return 结果
-     */
-    public int insertDeskPrice(DeskPrice deskPrice);
-
-    /**
-     * 修改球桌价格
-     * 
-     * @param deskPrice 球桌价格
-     * @return 结果
-     */
-    public int updateDeskPrice(DeskPrice deskPrice);
 
     /**
      * 删除球桌价格

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.DeskTypeMapper">
+
+
+    <sql id="selectDeskTypeVo">
+        select * from t_desk_type
+    </sql>
+
+    <select id="selectDeskTypeList" parameterType="DeskType" resultType="DeskType">
+        <include refid="selectDeskTypeVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="sort != null "> and sort = #{sort}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+        order by sort desc
+    </select>
+    
+    <select id="selectDeskTypeByDeskTypeId" parameterType="Long" resultType="DeskType">
+        <include refid="selectDeskTypeVo"/>
+        where desk_type_id = #{deskTypeId}
+    </select>
+
+
+
+    <delete id="deleteDeskTypeByDeskTypeId" parameterType="Long">
+        delete from t_desk_type where desk_type_id = #{deskTypeId}
+    </delete>
+
+    <delete id="deleteDeskTypeByDeskTypeIds" parameterType="String">
+        delete from t_desk_type where desk_type_id in 
+        <foreach item="deskTypeId" collection="array" open="(" separator="," close=")">
+            #{deskTypeId}
+        </foreach>
+    </delete>
+</mapper>

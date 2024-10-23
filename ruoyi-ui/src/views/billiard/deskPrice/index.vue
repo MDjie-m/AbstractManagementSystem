@@ -7,10 +7,10 @@
           <el-form-item label="球桌类型" prop="deskType">
             <el-select v-model="queryParams.deskType" placeholder="请选择球桌类型" clearable @change="handleQuery">
               <el-option
-                v-for="dict in dict.type.store_desk_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
+                v-for="dict in deskTypeList"
+                :key="dict.deskTypeId+'ffsdsdf'"
+                :label="dict.name"
+                :value="dict.deskTypeId"
               />
             </el-select>
           </el-form-item>
@@ -56,10 +56,7 @@
         <el-table v-loading="loading" :data="deskPriceList" @selection-change="handleSelectionChange">
           <el-table-column label="ID" align="center" prop="deskPriceId"/>
           <el-table-column label="门店" align="center" prop="storeName"/>
-          <el-table-column label="球桌类型" align="center" prop="deskType">
-            <template slot-scope="scope">
-              <dict-tag :options="dict.type.store_desk_type" :value="scope.row.deskType"/>
-            </template>
+          <el-table-column label="球桌类型" align="center" prop="deskTypeName">
           </el-table-column>
           <el-table-column label="价格" align="center" prop="price"/>
           <el-table-column label="创建/更新" align="center" prop="createById" width="250">>
@@ -115,11 +112,11 @@
           <el-form-item label="球桌类型" prop="deskType">
             <el-select v-model="form.deskType" placeholder="请选择球桌类型" class="with100">
               <el-option
-                v-for="dict in dict.type.store_desk_type"
-                :key="dict.value"
-                :label="dict.label"
-                :value="parseInt(dict.value)"
-              ></el-option>
+                v-for="dict in deskTypeList"
+                :key="dict.deskTypeId+'ffsdsdffff'"
+                :label="dict.name"
+                :value="dict.deskTypeId"
+              />
             </el-select>
           </el-form-item>
           <el-form-item label="价格" prop="price">
@@ -143,13 +140,15 @@
 <script>
 import {listDeskPrice, getDeskPrice, delDeskPrice, addDeskPrice, updateDeskPrice} from "@/api/billiard/deskPrice";
 import StoreContainer from "@/views/billiard/component/storeContainer.vue";
+import { listDeskTypeAll } from '@/api/billiard/deskType'
 
 export default {
   name: "DeskPrice",
   components: {StoreContainer},
-  dicts: ['store_desk_type'],
+
   data() {
     return {
+      deskTypeList:[],
       storeInfo: null,
       // 遮罩层
       loading: true,
@@ -208,7 +207,8 @@ export default {
     onStoreChanged(store) {
       this.storeInfo = store;
       this.queryParams.storeId = store?.storeId || -1;
-      this.initData()
+      this.initData();
+      this.queryDeskTypeList();
     },
     initData() {
       this.getList();
@@ -226,6 +226,11 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+    },
+    queryDeskTypeList(){
+      listDeskTypeAll({ storeId: this.storeInfo?.storeId || -1 }).then(res=>{
+        this.deskTypeList=res.data||[]
+      })
     },
     // 表单重置
     reset() {
@@ -259,6 +264,7 @@ export default {
       if (!this.storeInfo?.storeId) {
         return this.$modal.msgWarning("请选择门店");
       }
+      this.queryDeskTypeList();
       this.reset();
       this.open = true;
       this.title = "添加球桌价格";
@@ -266,6 +272,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
+      this.queryDeskTypeList();
       const deskPriceId = row.deskPriceId || this.ids
       getDeskPrice(deskPriceId).then(response => {
         this.form = response.data;
