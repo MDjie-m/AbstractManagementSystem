@@ -463,6 +463,7 @@ create table t_goods
     barcode          nvarchar(64)                          null comment '商品条码',
     category_id      bigint                                not null null comment '商品分类',
     sell             tinyint                               not null comment '是否上架销售',
+    cost             decimal(10, 2)                        not null comment '成本价',
     price            decimal(10, 2)                        not null comment '价格',
     create_by        varchar(64) default ''                null comment '创建者',
     create_time      timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
@@ -792,7 +793,7 @@ create table t_desk_light
     light_id     bigint                                not null comment 'id'
         primary key,
     open         tinyint                               not null comment '总营收',
-    desk_num     int                     not null comment '台桌编号',
+    desk_num     int                                   not null comment '台桌编号',
     store_id     bigint                                not null comment '门店',
     create_by    varchar(64) default ''                null comment '创建者',
     create_time  timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',

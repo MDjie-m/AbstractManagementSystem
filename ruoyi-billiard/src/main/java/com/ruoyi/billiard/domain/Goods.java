@@ -76,6 +76,9 @@ public class Goods extends MyBaseEntity
     @TableField("sell")
     private Boolean sell;
 
+
+    @TableField("成本")
+    private BigDecimal cost;
     /** 价格 */
     @Excel(name = "价格")
 
