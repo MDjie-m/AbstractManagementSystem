@@ -70,7 +70,7 @@
           <el-button
             size="mini"
             type="text"
-            :disabled="scope.row.status !== '1'"
+            :disabled="scope.row.status !== '1' && scope.row.status !== '3'"
             @click="openApp(scope.row)"
             v-hasPermi="['psychology:partner:edit']"
           >审核</el-button>

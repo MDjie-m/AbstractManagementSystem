@@ -49,6 +49,12 @@
                              width="150px" height="150px"/>
             </template>
           </el-table-column>
+          <el-table-column label="是否已审过" align="center" prop="status">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.status === '1'" type="success">审核通过</el-tag>
+              <el-tag v-else type="danger">初次提审</el-tag>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
 
@@ -76,6 +82,12 @@
                              width="150px" height="150px"/>
             </template>
           </el-table-column>
+          <el-table-column label="是否已审过" align="center" prop="status">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.status === '1'" type="success">审核通过</el-tag>
+              <el-tag v-else type="danger">初次提审</el-tag>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
 
@@ -94,6 +106,12 @@
             <template slot-scope="scope" v-if="scope.row.img">
               <image-preview style="margin-right: 10px" v-for="(item,index) in scope.row.img.split(',')" :src="item"
                              width="150px" height="150px"/>
+            </template>
+          </el-table-column>
+          <el-table-column label="是否已审过" align="center" prop="status">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.status === '1'" type="success">审核通过</el-tag>
+              <el-tag v-else type="danger">初次提审</el-tag>
             </template>
           </el-table-column>
         </el-table>
@@ -117,6 +135,12 @@
                              width="150px" height="150px"/>
             </template>
           </el-table-column>
+          <el-table-column label="是否已审过" align="center" prop="status">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.status === '1'" type="success">审核通过</el-tag>
+              <el-tag v-else type="danger">初次提审</el-tag>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
 
@@ -138,6 +162,12 @@
                              width="150px" height="150px"/>
             </template>
           </el-table-column>
+          <el-table-column label="是否已审过" align="center" prop="status">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.status === '1'" type="success">审核通过</el-tag>
+              <el-tag v-else type="danger">初次提审</el-tag>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
 
@@ -145,6 +175,12 @@
         <div class="title">个人体验经历</div>
         <el-table border :data="info.items.filter(a => a.type === 7)" size="mini">
           <el-table-column label="说明" align="center" prop="param1"/>
+          <el-table-column label="是否已审过" align="center" prop="status">
+            <template slot-scope="scope">
+              <el-tag v-if="scope.row.status === '1'" type="success">审核通过</el-tag>
+              <el-tag v-else type="danger">初次提审</el-tag>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
     </el-row>

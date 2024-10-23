@@ -35,7 +35,7 @@ public class PartnerReq extends BaseValObj implements Serializable
     /** 资质证明 */
     private String name;
 
-    /** 0-草稿,1-审核中,2-审核通过-已开通账号,3-审核通过-未开通账号,4-审核驳回 */
+    /** 0-草稿,1-入驻审核中,2-审核通过,3-修改审核中,4-审核驳回 */
     private String status;
 
     /** 0-未缴费,1-已缴费 */

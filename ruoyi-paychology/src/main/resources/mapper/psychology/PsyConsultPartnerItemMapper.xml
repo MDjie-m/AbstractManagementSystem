@@ -105,5 +105,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where id = #{id}
     </update>
+    
+    <update id="updateStatusByPartnerId" parameterType="PsyConsultPartnerItem">
+        update
+            psy_consult_partner_item
+        set
+            status = #{status}
+        where
+            p_id = #{pId}
+    </update>
 
 </mapper>

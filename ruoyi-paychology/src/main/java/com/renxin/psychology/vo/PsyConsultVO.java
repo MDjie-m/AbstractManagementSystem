@@ -165,5 +165,8 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     
     //是否来自管理员的修改
     private Boolean isUpdateByAdmin;
+
+    //入驻状态   0未入驻   1已入驻
+    private Integer settleStatus;
     
 }

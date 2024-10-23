@@ -278,6 +278,7 @@ public class ConsultantOrderController extends BaseController
         }
         
         //创建订单
+        PsyConsultantOrder result = new PsyConsultantOrder();
         String attach = "订单号: " + out_trade_no; //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
             consultantOrder.setOrderNo(out_trade_no);
             consultantOrder.setServerName(serverName);
@@ -286,19 +287,23 @@ public class ConsultantOrderController extends BaseController
             consultantOrder.setConsultantPrice(consultantPrice);
         PsyConsultantOrder newOrder = psyConsultantOrderService.createConsultantOrder(consultantOrder);
         if (newOrder.getPayAmount().compareTo(BigDecimal.ZERO) == 0){
-            return AjaxResult.success("应付金额为0, 无需发起支付");
+                result.setPayAmount(newOrder.getPayAmount());
+            return AjaxResult.success(result);
         }
 
         //初次发起支付
-        AjaxResult result = AlipayPayUtil.alipayAppPay(out_trade_no, newOrder.getPayAmount(), newOrder.getServerName());
-        if ((Integer) result.get("code") == 200) {
-            String msg = (String) result.get("msg");
+        AjaxResult aliResult = AlipayPayUtil.alipayAppPay(out_trade_no, newOrder.getPayAmount(), newOrder.getServerName());
+        if ((Integer) aliResult.get("code") == 200) {
+            String msg = (String) aliResult.get("msg");
             // Map<String, String> parameters = parseQueryString(msg);
             newOrder.setPayParam(msg);
             psyConsultantOrderService.updatePsyConsultantOrder(newOrder);
-            return AjaxResult.success(msg);
+                result.setOrderNo(newOrder.getOrderNo());
+                result.setPayAmount(newOrder.getPayAmount());
+                result.setPayParam(newOrder.getPayParam());
+            return AjaxResult.success(result);
         } else {
-            log.error("发起支付失败, result : " + result);
+            log.error("发起支付失败, result : " + aliResult);
             throw new ServiceException("发起支付失败");
         }
         
@@ -454,10 +459,10 @@ public class ConsultantOrderController extends BaseController
     /**
      * 支付咨询师端指定订单
      */
-    @PostMapping("/payOrder")
+    @PostMapping("/payOrderWx")
     @RateLimiter(limitType = LimitType.IP)
     @Transactional(rollbackFor = Exception.class)
-    public AjaxResult payOrder(@RequestBody WechatPayDTO req, HttpServletRequest request) {
+    public AjaxResult payOrderWx(@RequestBody WechatPayDTO req, HttpServletRequest request) {
         Long consultId = consultantTokenService.getConsultId(request);
 
         //查询订单应付金额
@@ -509,5 +514,48 @@ public class ConsultantOrderController extends BaseController
         result.put("out_trade_no", req.getOutTradeNo()); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
 
         return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS, result);
+    }
+
+
+
+    /**
+     * 支付咨询师端指定订单
+     */
+    @PostMapping("/payOrder")
+    @RateLimiter(limitType = LimitType.IP)
+    @Transactional(rollbackFor = Exception.class)
+    public AjaxResult payOrder(@RequestBody WechatPayDTO req, HttpServletRequest request) {
+        Long consultId = consultantTokenService.getConsultId(request);
+        //查询订单
+        PsyConsultantOrder order = psyConsultantOrderService.selectPsyConsultantOrderByOrderNo(req.getOutTradeNo());
+        PsyConsultantOrder result = new PsyConsultantOrder();
+
+        ////若已发起过该渠道的支付, 则直接返回相关参数
+        if ("aliPay".equals(req.getPaymentChannel())){
+            result.setOrderNo(order.getOrderNo());
+            result.setPayAmount(order.getPayAmount());
+            result.setPayParam(order.getPayParam());
+        }
+        
+        return AjaxResult.success(result);
+     
+    }
+
+    //String 转 map
+    private Map<String, String> parseQueryString(String queryString) {
+        Map<String, String> queryPairs = new HashMap<>();
+        String[] pairs = queryString.split("&");
+        try {
+            for (String pair : pairs) {
+                int idx = pair.indexOf("=");
+                String key = URLDecoder.decode(pair.substring(0, idx), "UTF-8");
+                String value = URLDecoder.decode(pair.substring(idx + 1), "UTF-8");
+                queryPairs.put(key, value);
+            }
+            return queryPairs;
+        } catch (Exception e) {
+            log.error("发起支付返回结果解析异常, queryString: " + queryString);
+            throw new ServiceException("发起支付返回结果解析异常");
+        }
     }
 }

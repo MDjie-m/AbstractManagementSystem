@@ -201,6 +201,8 @@ public class PsyConsult extends BasePlusEntity implements Serializable
 
     private String sourceChannelId;//来源渠道id
     private Long introduceUserId;//介绍人id
+    //入驻状态   0未入驻   1已入驻
+    private Integer settleStatus;
 
     // 今日可约
     @TableField(exist = false)

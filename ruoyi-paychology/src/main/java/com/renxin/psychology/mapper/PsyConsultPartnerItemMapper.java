@@ -11,5 +11,5 @@ import com.renxin.psychology.domain.PsyConsultPartnerItem;
  */
 public interface PsyConsultPartnerItemMapper extends BaseMapper<PsyConsultPartnerItem>
 {
-
+     int updateStatusByPartnerId(PsyConsultPartnerItem req);
 }

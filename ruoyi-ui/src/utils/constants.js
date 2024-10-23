@@ -73,13 +73,12 @@ export const comListStatus = [
   { label: '禁用', value: '1' }
 ]
 
-// 0-草稿,1-审核中,2-审核通过-已开通账号,3-审核通过-未开通账号,4-审核驳回
 export const partnerStatus = [
   { label: '全部', value: '' },
   { label: '草稿', value: '0' },
-  { label: '审核中', value: '1' },
+  { label: '入驻审核中', value: '1' },
   { label: '审核通过', value: '2' },
-  { label: '审核通过', value: '3' },
+  { label: '修改审核中', value: '3' },
   { label: '审核驳回', value: '4' },
 ]
 

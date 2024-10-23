@@ -26,8 +26,8 @@ public class PsyConsultPartnerItem extends BasePlusEntity implements Serializabl
     /** 主键 */
     private Long id;
 
-    /** 主键 */
-    @Excel(name = "主键")
+    /** 主申请单id */
+    @Excel(name = "主申请单id")
     private Long pId;
 
     /** 申请类型1-7 */

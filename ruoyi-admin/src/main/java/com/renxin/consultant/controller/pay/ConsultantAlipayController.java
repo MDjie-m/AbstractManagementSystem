@@ -49,12 +49,15 @@ public class ConsultantAlipayController {
         PsyConsultantOrder order = psyConsultantOrderService.selectPsyConsultantOrderByOrderNo(req.getOutTradeNo());
         
         ////若已发起过支付, 则直接返回相关参数
-        if (ObjectUtils.isNotEmpty(order.getPayParam())){
-            //Map<String, String> parameters = parseQueryString(order.getPayParam());
-            return AjaxResult.success(order.getPayParam());
-        }
+        //if (ObjectUtils.isNotEmpty(order.getPayParam())){
+            PsyConsultantOrder result = new PsyConsultantOrder();
+                result.setOrderNo(order.getOrderNo());
+                result.setPayAmount(order.getPayAmount());
+                result.setPayParam(order.getPayParam());
+            return AjaxResult.success(result);
+        //}
         
-        //初次发起支付
+       /* //初次发起支付
         AjaxResult result = AlipayPayUtil.alipayAppPay(order.getOrderNo(), order.getPayAmount(), order.getServerName());
         if ((Integer) result.get("code") == 200) {
             String msg = (String) result.get("msg");
@@ -65,7 +68,7 @@ public class ConsultantAlipayController {
         } else {
             log.error("发起支付失败, result : " + result);
             throw new ServiceException("发起支付失败");
-        }
+        }*/
     }
 
     //String 转 map

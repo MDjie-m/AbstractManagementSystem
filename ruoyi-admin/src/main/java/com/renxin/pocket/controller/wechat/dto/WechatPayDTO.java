@@ -35,4 +35,5 @@ public class WechatPayDTO implements Serializable {
     private String orderServerId;//下单服务id
     private String couponNo;//使用优惠券编号
     private String isUseGaugeAnalyse;//是否使用测评解析  Y是  N否
+    private String paymentChannel;//支付渠道  aliPay   wechatPay
 }

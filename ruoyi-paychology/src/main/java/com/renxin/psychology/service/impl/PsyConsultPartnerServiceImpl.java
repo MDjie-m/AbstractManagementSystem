@@ -71,6 +71,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
 
     @Override
     public int saveItem(PsyConsultPartnerItem item) {
+        item.setStatus("0");//未审核
         if (ObjectUtils.isNotEmpty(item.getId())){
             partnerItemService.edit(item);
         }else{
@@ -125,6 +126,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
             partner.setCreateTime(new Date());
             partner.setUpdateTime(new Date());
             partner.setConsultId(consultantId);
+            partner.setPhone(one.getPhone());
             //PsyConsultVO consultant = consultService.getOne(consultantId);
             //partner.setPhone(consultant.getPhonenumber());
             psyConsultPartnerMapper.insert(partner);
@@ -146,15 +148,31 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
 
         //todo通知--  咨询师
         String status = entity.getStatus();
+        String oldStatus = oldPartner.getStatus();
         String content = "";
-        if(ObjectUtils.isNotEmpty(status) && !status.equals(oldPartner.getStatus())){
-            if (status.equals("2")){
+
+        PsyConsultPartnerItem updateItem = new PsyConsultPartnerItem();
+            updateItem.setPId(entity.getId());
+            updateItem.setStatus("1");//已审核
+        
+        if(ObjectUtils.isNotEmpty(status) && !status.equals(oldStatus)){
+            //status : 入驻申请中 --> 审核通过
+            if (status.equals("2") && oldStatus.equals("1")){
                 content = "您的入驻申请已审核通过";
-                //创建咨询师用户
-                createUser(entity.getId());
+                partnerItemMapper.updateStatusByPartnerId(updateItem);//将该申请单下的子表信息都置为"已审核"
+                createUser(entity.getId());//修改咨询师用户
             }
-            if (status.equals("4")){
+            ////status : 修改申请中 --> 审核通过
+            if (status.equals("2") && oldStatus.equals("3")){
+                content = "您的修改申请已审核通过";
+                partnerItemMapper.updateStatusByPartnerId(updateItem);//将该申请单下的子表信息都置为"已审核"
+                createUser(entity.getId());//修改咨询师用户
+            }
+            if (status.equals("4") && oldStatus.equals("1")){
                 content = "您的入驻申请被审核驳回";
+            }
+            if (status.equals("4") && oldStatus.equals("3")){
+                content = "您的修改申请被审核驳回";
             }
         }
 /*        NoticeMessage notice = new NoticeMessage();
@@ -178,18 +196,31 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         Long id = getInfoByConsultId(entity.getConsultId()).getId();
         entity.setId(id);
         
-        //若要将状态修改为"审核中"
-        if (ConsultConstant.PARTNER_STATUS_1.equals(entity.getStatus())){
-            PsyConsultPartner oldPartner = psyConsultPartnerMapper.selectById(id);
-            if (ConsultConstant.PARTNER_STATUS_4.equals(oldPartner.getStatus()) ){
-                return AjaxResult.error("入驻申请已在审核中, 不可修改");
+        PsyConsultPartner oldPartner = psyConsultPartnerMapper.selectById(id);
+        PsyConsultVO consultant = consultService.getOne(oldPartner.getConsultId());
+
+        //入驻申请/修改申请 已在审核中, 则不可改动
+        if (ConsultConstant.PARTNER_STATUS_1.equals(oldPartner.getStatus()) ||  ConsultConstant.PARTNER_STATUS_3.equals(oldPartner.getStatus())){
+            return AjaxResult.error("已在审核中");
+        }
+        
+        //若修改草稿
+        if (ConsultConstant.PARTNER_STATUS_0.equals(entity.getStatus())){
+            //不做限制
+        }
+        
+        //若要将状态修改为"审核中" (提交审核) , 且已入驻, 则状态切换为[修改审核中]
+        if (ConsultConstant.PARTNER_STATUS_1.equals(entity.getStatus()) && consultant.getSettleStatus() == 1 ){
+            entity.setStatus(ConsultConstant.PARTNER_STATUS_3);
+            
+           /* //旧申请单已审核通过, 则此时状态切换到[修改审核中]
+            if (ConsultConstant.PARTNER_STATUS_2.equals(oldPartner.getStatus()) ){
+                entity.setStatus(ConsultConstant.PARTNER_STATUS_3);
             }
-            if (ConsultConstant.PARTNER_STATUS_2.equals(oldPartner.getStatus()) || ConsultConstant.PARTNER_STATUS_3.equals(oldPartner.getStatus()) ){
-                return AjaxResult.error("入驻申请已审核通过, 不可修改");
-            }
-            if (ConsultConstant.PARTNER_STATUS_4.equals(oldPartner.getStatus()) ){
-                return AjaxResult.error("入驻申请已审核驳回, 不可修改");
-            }
+            //旧申请单已被拒绝, 则根据consultId判断此时为[入驻申请中]还是[修改申请中]
+            if (ConsultConstant.PARTNER_STATUS_4.equals(oldPartner.getStatus()) && ObjectUtils.isNotEmpty(oldPartner.getConsultId()) ){
+                entity.setStatus(ConsultConstant.PARTNER_STATUS_3);
+            }*/
             
         }
         return AjaxResult.success(psyConsultPartnerMapper.updateById(entity));
@@ -202,7 +233,6 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveItemList(PsyConsultPartner req){
-        
         //若为步骤2, 则更新类型为1/2/3的子信息
         if (req.getStep() == 2){
             partnerItemMapper.delete(new LambdaQueryWrapper<PsyConsultPartnerItem>()
@@ -226,7 +256,6 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         if (ObjectUtils.isNotEmpty(partner.getConsultId())){
             return updateConsultant(partner);
         }
-        
         
         List<PsyConsultPartnerItem> items = partnerItemService.getListById(id);
         if (!ConsultConstant.PARTNER_STATUS_2.equals(partner.getStatus()) && !ConsultConstant.PARTNER_STATUS_3.equals(partner.getStatus())
@@ -295,6 +324,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         vo.setQualification(items.stream().filter(a -> a.getType() == 2).map(PsyConsultPartnerItem::getParam1).collect(Collectors.joining(",")));
         vo.setGenre(partner.getGenre());
         vo.setWorkHours(partner.getWorkHours());
+        vo.setSettleStatus(1);//已入驻
         AjaxResult result = consultService.add(vo);
         if ((int) result.get("code") != 200) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
@@ -384,6 +414,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         vo.setQualification(items.stream().filter(a -> a.getType() == 2).map(PsyConsultPartnerItem::getParam1).collect(Collectors.joining(",")));
         vo.setGenre(partner.getGenre());
         vo.setWorkHours(partner.getWorkHours());
+        vo.setSettleStatus(1);//已入驻
         //AjaxResult result = consultService.add(vo);
         AjaxResult result = consultService.update(vo);
         if ((int) result.get("code") != 200) {
