@@ -44,7 +44,18 @@ public class MiniAppWorkbenchController extends BaseController {
     @Autowired
     private IDeviceService deviceService;
 
+    @Autowired
+    private IStoreService storeService;
 
+
+    /**
+     * 获取门店列表
+     */
+    @PreAuthorize("@ss.hasPermi('miniapp:index:query')")
+    @GetMapping("/getStoreList")
+    public ResultVo<List<Store>> getStoreList() {
+        return ResultVo.success(storeService.findAListOfStoresByRole());
+    }
 
     /**
      * 获取报表页面数据

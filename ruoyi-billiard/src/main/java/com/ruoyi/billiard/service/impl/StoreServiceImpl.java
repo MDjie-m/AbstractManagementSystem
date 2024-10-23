@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.billiard.domain.*;
@@ -20,6 +19,8 @@ import com.ruoyi.billiard.mapper.StoreDeskMapper;
 import com.ruoyi.billiard.mapper.StoreTutorMapper;
 import com.ruoyi.billiard.mapper.StoreUserMapper;
 import com.ruoyi.billiard.service.IStoreScheduleService;
+import com.ruoyi.common.core.domain.entity.SysRole;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.model.Tuple;
 import com.ruoyi.common.core.domain.model.Tuple3;
 import com.ruoyi.common.utils.*;
@@ -308,5 +309,26 @@ public class StoreServiceImpl implements IStoreService {
     public String getApiKey(Long storeId) {
         AssertUtil.isTrue(storeMapper.exists(Store::getStoreId, storeId), "非法参数");
         return aesKey;
+    }
+
+    @Override
+    public List<Store> findAListOfStoresByRole() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        List<SysRole> roles = loginUser.getUser().getRoles();
+        Set<String> roleKeys = roles.stream().map(SysRole::getRoleKey).collect(Collectors.toSet());
+        boolean copartner = roleKeys.stream().anyMatch(roleKey -> roleKey.equals("copartner"));
+        List<Store> stores;
+        if (copartner) {
+            stores = Optional.ofNullable(storeMapper.selectStoreList(new Store()))
+                    .orElse(Collections.emptyList());
+        } else {
+            Long storeId = loginUser.getUser().getStoreId();
+            Store store = new Store();
+            store.setStoreId(storeId);
+            stores = Optional.ofNullable(storeMapper.selectList(storeMapper.query()
+                            .eq(Store::getStoreId, storeId)))
+                    .orElse(Collections.emptyList());
+        }
+        return stores;
     }
 }

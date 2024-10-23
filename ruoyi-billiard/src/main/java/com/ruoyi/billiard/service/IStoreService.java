@@ -70,4 +70,6 @@ public interface IStoreService
     StoreSwapRecord swapPreview(Long storeId, Date startTime, Date endTime);
 
     String getApiKey(Long storeId);
+
+    List<Store> findAListOfStoresByRole();
 }
