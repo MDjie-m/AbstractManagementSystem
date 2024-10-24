@@ -366,7 +366,7 @@ public class ConsultantOrderController extends BaseController
      * @return
      */
     @PostMapping("/aliPaySuccess/callback")
-    public Map<String, String> aliPayCallback(@RequestBody Map<String,Object> map, HttpServletRequest request) {
+    public Map<String, String> aliPayCallback(@RequestParam Map<String,Object> map, HttpServletRequest request) {
         log.info("支付宝, 支付完成回调");
         log.info(map.toString());
         log.info(request.toString());
