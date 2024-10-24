@@ -13,6 +13,7 @@ import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.ResultVo;
+import com.ruoyi.common.core.page.PageResVo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -67,6 +68,17 @@ public class MiniAppWorkbenchController extends BaseController {
     @PostMapping("/homeReport")
     public ResultVo<HomeReportVo> getReportData(@RequestBody HomeReportDto dto) {
         return ResultVo.success(orderService.selectOrderData2Report(dto));
+    }
+
+    /**
+     * 分页查询报表类型数据列表
+     */
+    @PreAuthorize("@ss.hasPermi('miniapp:index:query')")
+    @PostMapping("/homeReport/selectOrderTypeList")
+    public PageResVo<?> selectOrderTypeList(@RequestBody HomeReportDto dto) {
+        startPage();
+        List<?> list = orderService.selectOrderTypeList(dto);
+        return PageResVo.success(list);
     }
 
     /**
@@ -139,7 +151,7 @@ public class MiniAppWorkbenchController extends BaseController {
     @Log(title = "库存维护", businessType = BusinessType.UPDATE)
     @PostMapping("/stockChange")
     public ResultVo<Integer> editStock(@RequestBody @Validated StockLog req) {
-        AssertUtil.notNullOrEmpty(req.getStockId(),"门店不能为空");
+        AssertUtil.isNullOrEmpty(req.getStockId(),"门店不能为空");
         return ResultVo.success(stockService.editStock(req));
     }
 

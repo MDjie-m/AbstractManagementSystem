@@ -133,4 +133,6 @@ public interface IOrderService
     Object selectOrderTypeDetail(OrderTypeDetailDto dto);
 
     void exportConsumeDetail(HttpServletResponse response, HomeReportVoConsume consume, HomeReportDto dto);
+
+    List<?> selectOrderTypeList(HomeReportDto dto);
 }

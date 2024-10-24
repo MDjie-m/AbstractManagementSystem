@@ -1120,28 +1120,28 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         AssertUtil.notNullOrEmpty(order, OrderErrorMsg.ORDER_NOT_FOUND);
         Integer status = order.getStatus();
         AssertUtil.isTrue(!Objects.equals(status, OrderStatus.VOID.getValue()), OrderErrorMsg.INVALID_ORDER);
-
+        AssertUtil.isTrue(Objects.equals(dto.getOrderType(), OrderType.AGGREGATE_CONSUMPTION), OrderErrorMsg.ORDER_TYPE_ERROR);
         if (Objects.equals(dto.getOrderType(), OrderType.AGGREGATE_CONSUMPTION)) {
             // 查询总消费
             return orderMapper.selectById(orderId);
         }
-        if (Objects.equals(dto.getOrderType(), OrderType.TABLE_CHARGE)) {
-            // 查询球桌计时列表
-            return orderDeskTimeService.selectOrderDeskTimeListByOrderId(orderId);
-        }
-        if (Objects.equals(dto.getOrderType(), OrderType.COMMODITY_PURCHASE)) {
-            // 查询订单商品列表
-            return orderGoodsService.selectOrderGoodsListByOrderId(orderId);
-        }
-        if (Objects.equals(dto.getOrderType(), OrderType.TEACHING_COST)) {
-
-            // 查询订单教练计时列表
-            return orderTutorTimeService.selectOrderTutorTimeListByOrderId(orderId);
-        }
-        if (Objects.equals(dto.getOrderType(), OrderType.MEMBER_RECHARGE)) {
-            // 查询订单会员充值列表
-            return orderRechargeService.selectOrderRechargeListByOrderId(orderId);
-        }
+//        if (Objects.equals(dto.getOrderType(), OrderType.TABLE_CHARGE)) {
+//            // 查询球桌计时列表
+//            return orderDeskTimeService.selectOrderDeskTimeListByOrderId(orderId);
+//        }
+//        if (Objects.equals(dto.getOrderType(), OrderType.COMMODITY_PURCHASE)) {
+//            // 查询订单商品列表
+//            return orderGoodsService.selectOrderGoodsListByOrderId(orderId);
+//        }
+//        if (Objects.equals(dto.getOrderType(), OrderType.TEACHING_COST)) {
+//
+//            // 查询订单教练计时列表
+//            return orderTutorTimeService.selectOrderTutorTimeListByOrderId(orderId);
+//        }
+//        if (Objects.equals(dto.getOrderType(), OrderType.MEMBER_RECHARGE)) {
+//            // 查询订单会员充值列表
+//            return orderRechargeService.selectOrderRechargeListByOrderId(orderId);
+//        }
         AssertUtil.isTrue(Boolean.FALSE, OrderErrorMsg.ORDER_TYPE_ERROR);
         return null;
     }
@@ -1202,6 +1202,67 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             ExcelUtil<OrderTutorTime> util = new ExcelUtil<>(OrderTutorTime.class);
             util.exportExcel(response, consumeDetail, "订单助教费用明细");
         }
+    }
+
+    @Override
+    public List<?> selectOrderTypeList(HomeReportDto dto) {
+        ReportTimeType timeType = dto.getTimeType();
+        String nowDay = DateUtils.getDate();
+        String endTime = nowDay + " 23:59";
+        String startTime = "";
+        if (Objects.equals(timeType, ReportTimeType.DAY)) {
+            startTime = nowDay + " 00:00";
+        }
+        if (Objects.equals(timeType, ReportTimeType.WEEK)) {
+            // 根据当前时间往前推一周
+            String beforWeekDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addWeeks(new Date(), -1));
+            startTime = beforWeekDay + " 00:00";
+
+        }
+        if (Objects.equals(timeType, ReportTimeType.MONTH)) {
+            // 根据当前时间往前推一个月
+            String beforMonthDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addMonths(new Date(), -1));
+            startTime = beforMonthDay + " 00:00";
+
+        }
+        if (Objects.equals(timeType, ReportTimeType.YEAR)) {
+            // 根据当前时间往前推一年
+            String beforYearDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addYears(new Date(), -1));
+            startTime = beforYearDay + " 00:00";
+
+        }
+        if (Objects.equals(timeType, ReportTimeType.CUSTOM)) {
+            startTime = dto.getStartTime() + " 00:00";
+            endTime = dto.getEndTime() + " 23:59";
+        }
+        OrderType orderType = dto.getOrderType();
+        List<Order> orders = selectOrderByPayStatus(OrderStatus.SETTLED.getValue(), dto.getStoreId(), startTime, endTime);
+        if (Objects.equals(orderType, OrderType.AGGREGATE_CONSUMPTION)) {
+            // 查询总订单
+            return orders;
+        }
+        // 查询子订单
+        List<Long> orderIds = orders.stream().map(Order::getOrderId).distinct().collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(orderIds)) {
+
+            if (Objects.equals(orderType, OrderType.TABLE_CHARGE)) {
+
+                return orderDeskTimeService.selectOrderDeskTimeListByOrderIds(orderIds);
+            }
+            if (Objects.equals(orderType, OrderType.MEMBER_RECHARGE)) {
+
+                return orderRechargeService.selectOrderRechargeListByOrderIds(orderIds);
+            }
+            if (Objects.equals(orderType, OrderType.COMMODITY_PURCHASE)) {
+
+                return orderGoodsService.selectOrderGoodsListByOrderIds(orderIds);
+            }
+            if (Objects.equals(orderType, OrderType.TEACHING_ASSISTANT_FEE)) {
+
+                return orderTutorTimeService.selectOrderTutorTimeListByOrderIds(orderIds);
+            }
+        }
+        return Collections.emptyList();
     }
 
     /**

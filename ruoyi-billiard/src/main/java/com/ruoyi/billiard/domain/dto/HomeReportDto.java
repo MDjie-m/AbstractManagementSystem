@@ -2,6 +2,7 @@ package com.ruoyi.billiard.domain.dto;
 
 import com.ruoyi.billiard.enums.OrderType;
 import com.ruoyi.billiard.enums.ReportTimeType;
+import com.ruoyi.common.core.domain.MyBaseEntity;
 import lombok.Data;
 
 
@@ -11,7 +12,7 @@ import lombok.Data;
  * @className: HomeReportDto 小程序首页报表Dti
  */
 @Data
-public class HomeReportDto {
+public class HomeReportDto extends MyBaseEntity {
 
     /** 门店Id */
     private Long storeId;

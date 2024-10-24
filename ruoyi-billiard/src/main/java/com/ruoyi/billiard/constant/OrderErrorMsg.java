@@ -10,4 +10,6 @@ public class OrderErrorMsg {
 
     public static final String ORDER_NOT_CHARGING_OR_STOP = "订单不在计费或者待结算状态,不允许操作.";
     public static final String ORDER_TYPE_ERROR = "订单类型错误";
+
+    public static final String FOR_ORDER_DETAILS_CHECK_THE_TOTAL_ORDER = "订单详情需查询总订单";
 }
