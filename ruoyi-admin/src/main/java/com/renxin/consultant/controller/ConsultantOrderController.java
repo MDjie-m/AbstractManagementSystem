@@ -319,8 +319,11 @@ public class ConsultantOrderController extends BaseController
         if ("wechatPay".equals(consultantOrder.getPaymentChannel())){
             Map<String, Object> wxResult = wechatPaymentService.weChatDoUnifiedOrder(out_trade_no, newOrder.getPayAmount(), newOrder.getServerName());
             if ((Integer) wxResult.get("code") == 200) {
+                //获取支付参数后, 将其保存
                 Map<String,String> dataMap = (Map)wxResult.get("data");
                 String wxPayParam = JSONObject.toJSONString(dataMap);
+                    newOrder.setWxPayParam(wxPayParam);
+                psyConsultantOrderService.updatePsyConsultantOrder(newOrder);
                 
                 result.setWxPayParam(wxPayParam);
                 return AjaxResult.success(result);
