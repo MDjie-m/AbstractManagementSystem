@@ -159,6 +159,9 @@ public class OrderGoods extends MyBaseEntity implements ITotalDueFee {
     @TableField(exist = false)
     private String storeName;
 
+    @TableField(exist = false)
+    private String orderNo;
+
     @Override
     public Boolean getDiscountDisable() {
         if (Objects.isNull(goods)) {

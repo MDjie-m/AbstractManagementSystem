@@ -136,6 +136,7 @@ public class OrderRechargeServiceImpl implements IOrderRechargeService
             Long orderId = p.getOrderId();
             Order order = orderMapper.selectById(orderId);
             if (Objects.nonNull(order)) {
+                p.setOrderNo(order.getOrderNo());
                 Long storeId = order.getStoreId();
                 Store store = storeService.selectStoreByStoreId(storeId);
                 if (Objects.nonNull(store)) {

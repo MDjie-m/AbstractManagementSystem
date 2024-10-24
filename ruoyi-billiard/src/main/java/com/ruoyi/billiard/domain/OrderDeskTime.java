@@ -145,6 +145,9 @@ public class OrderDeskTime extends BaseFee
     @TableField(exist = false)
     private String storeName;
 
+    @TableField(exist = false)
+    private String orderNo;
+
 
 
 }

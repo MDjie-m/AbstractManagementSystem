@@ -2,10 +2,12 @@ package com.ruoyi.billiard.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.mapper.OrderMapper;
 import com.ruoyi.billiard.service.IGoodsService;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -32,6 +34,8 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService {
 
     @Autowired
     private IStoreDeskService storeDeskService;
+    @Autowired
+    private OrderMapper orderMapper;
 
     /**
      * 查询购买商品
@@ -128,9 +132,15 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService {
             Long goodsId = p.getGoodsId();
             Goods goods = Optional.ofNullable(goodsService.selectGoodsByGoodsId(goodsId)).orElse(new Goods());
             p.setGoods(goods);
-            StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(p.getDeskId())).orElse(new StoreDesk());
-            p.setDeskName(storeDesk.getDeskName() + " " + storeDesk.getDeskNum());
-            p.setStoreName(storeDesk.getStoreName());
+            StoreDesk storeDesk = storeDeskService.selectStoreDeskByDeskId(p.getDeskId());
+            if (Objects.nonNull(storeDesk)) {
+                p.setDeskName(storeDesk.getDeskName() + " " + storeDesk.getDeskNum());
+                p.setStoreName(storeDesk.getStoreName());
+            }
+            Order order = orderMapper.selectById(p.getOrderId());
+            if (Objects.nonNull(order)) {
+                p.setOrderNo(order.getOrderNo());
+            }
             return p;
         }).collect(Collectors.toList());
     }

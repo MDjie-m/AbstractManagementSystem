@@ -6,7 +6,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.ruoyi.billiard.domain.Order;
 import com.ruoyi.billiard.domain.StoreDesk;
+import com.ruoyi.billiard.mapper.OrderMapper;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
@@ -32,6 +34,8 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService {
 
     @Autowired
     private IStoreDeskService storeDeskService;
+    @Autowired
+    private OrderMapper orderMapper;
 
     /**
      * 查询订单计时
@@ -118,6 +122,10 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService {
 
     private List<OrderDeskTime> getOrderDeskTimes(List<OrderDeskTime> orderDeskTimes) {
         return orderDeskTimes.stream().map(orderDeskTime -> {
+            Order order = orderMapper.selectById(orderDeskTime.getOrderId());
+            if (Objects.nonNull(order)) {
+                orderDeskTime.setOrderNo(order.getOrderNo());
+            }
             Long deskId = orderDeskTime.getDeskId();
             StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(deskId)).orElse(new StoreDesk());
             orderDeskTime.setStoreDesk(storeDesk);

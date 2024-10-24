@@ -1,13 +1,12 @@
 package com.ruoyi.billiard.service.impl;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.ruoyi.billiard.domain.Order;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.domain.StoreTutor;
+import com.ruoyi.billiard.mapper.OrderMapper;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.billiard.service.IStoreTutorService;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -36,6 +35,8 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
 
     @Autowired
     private IStoreTutorService storeTutorService;
+    @Autowired
+    private OrderMapper orderMapper;
 
     /**
      * 查询订单计时
@@ -148,6 +149,12 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
             StoreTutor storeTutor = Optional.ofNullable(storeTutorService.selectStoreTutorByStoreTutorId(tutorId)).orElse(new StoreTutor());
             p.setStoreTutor(storeTutor);
             p.setTutorName(storeTutor.getTutorNum() + " " + storeTutor.getRealName());
+
+            // 获取订单信息
+            Order order = orderMapper.selectById(p.getOrderId());
+            if (Objects.nonNull(order)) {
+                p.setOrderNo(order.getOrderNo());
+            }
             return p;
         }).collect(Collectors.toList());
     }
