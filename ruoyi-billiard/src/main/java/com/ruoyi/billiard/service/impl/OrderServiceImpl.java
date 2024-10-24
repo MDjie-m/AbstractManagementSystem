@@ -1079,7 +1079,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 //        List<Order> orders = selectOrderByPayStatus(OrderStatus.SETTLED.getValue(), dto.getStoreId(), startTime, endTime);
 //        BigDecimal totalAmount = orders.stream().map(Order::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
         Long storeId = dto.getStoreId();
-        List<Map<String, Object>> maps = orderMapper.selectMaps(orderMapper.normalQuery().select("COUNT(*) as count, SUM(total_amount) as totalAmount").eq("status", OrderStatus.SETTLED.getValue())
+        List<Map<String, Object>> maps = orderMapper.selectMaps(orderMapper.normalQuery().select("COUNT(*) as count, COALESCE(SUM(total_amount), 0) as totalAmount").eq("status", OrderStatus.SETTLED.getValue())
                 .eq(Objects.nonNull(storeId), "store_id", storeId)
                 .between("create_time", startTime, endTime)
                 .orderByDesc("create_time"));
