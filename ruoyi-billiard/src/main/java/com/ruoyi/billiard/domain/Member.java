@@ -3,10 +3,14 @@ package com.ruoyi.billiard.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.billiard.domain.vo.IAdd;
+import com.ruoyi.billiard.domain.vo.IEdit;
 import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 /**
@@ -37,13 +41,14 @@ public class Member extends MyBaseEntity {
     @Excel(name = "姓名")
 
     @TableField("real_name")
+    @NotBlank(message = "姓名不能为空",groups = {IAdd.class, IEdit.class})
     private String realName;
 
     /**
      * 手机号
      */
     @Excel(name = "手机号")
-
+    @NotBlank(message = "手机号不能为空",groups ={IAdd.class, IEdit.class})
     @TableField("mobile")
     private String mobile;
 
@@ -63,6 +68,7 @@ public class Member extends MyBaseEntity {
     @TableField("total_amount")
     private BigDecimal totalAmount;
 
+    @NotBlank(message = "支付密码不能为空",groups = IAdd.class)
     @TableField("pay_password")
     private String payPassword;
 
@@ -70,7 +76,7 @@ public class Member extends MyBaseEntity {
      * 性别（0=男，1=女，2=未知）
      */
     @Excel(name = "性别", readConverterExp = "0==男，1=女，2=未知")
-
+    @NotNull(message = "性别不能为空",groups = {IAdd.class, IEdit.class})
     @TableField("sex")
     private String sex;
 
@@ -86,7 +92,7 @@ public class Member extends MyBaseEntity {
      * 会员等级
      */
     @Excel(name = "会员等级")
-
+    @NotNull(message = "会员等级不能为空",groups = {IAdd.class, IEdit.class})
     @TableField("level_id")
     private Long levelId;
 

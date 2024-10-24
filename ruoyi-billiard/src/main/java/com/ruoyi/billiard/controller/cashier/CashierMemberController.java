@@ -1,11 +1,11 @@
 package com.ruoyi.billiard.controller.cashier;
 
-import com.ruoyi.billiard.domain.Member;
-import com.ruoyi.billiard.domain.Order;
-import com.ruoyi.billiard.domain.OrderMemberDeduct;
-import com.ruoyi.billiard.domain.OrderRecharge;
+import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.domain.vo.IAdd;
+import com.ruoyi.billiard.domain.vo.IEdit;
 import com.ruoyi.billiard.domain.vo.MemberPwdReqVo;
 import com.ruoyi.billiard.mapper.MemberMapper;
+import com.ruoyi.billiard.service.IMemberLevelService;
 import com.ruoyi.billiard.service.IMemberService;
 import com.ruoyi.billiard.service.IOrderService;
 import com.ruoyi.common.core.controller.BaseController;
@@ -31,6 +31,9 @@ public class CashierMemberController extends BaseController {
     @Resource
     private IOrderService orderService;
 
+    @Resource
+    private IMemberLevelService memberLevelService;
+
     @PreAuthorize("@ss.hasRole('cashier')")
     @GetMapping("/{memberId}/recharge/list")
     public PageResVo<OrderRecharge> queryRechargeList(@PathVariable Long memberId) {
@@ -51,6 +54,33 @@ public class CashierMemberController extends BaseController {
     }
 
     @PreAuthorize("@ss.hasRole('cashier')")
+    @PostMapping("/register")
+    public ResultVo<Boolean> register(@Validated(IAdd.class) @RequestBody Member reqVo) {
+        reqVo.setStoreId(getStoreIdWithThrow());
+        reqVo.setStatus(0);
+        memberService.insertMember(reqVo);
+
+        return ResultVo.success(true);
+    }
+    @PreAuthorize("@ss.hasRole('cashier')")
+    @PostMapping("/edit")
+    public ResultVo<Boolean> edit(@Validated(IEdit.class) @RequestBody Member reqVo) {
+        reqVo.setPayPassword(null);
+        reqVo.setTotalAmount(null);
+        reqVo.setCurrentAmount(null);
+        memberService.updateMember(reqVo);
+
+        return ResultVo.success(true);
+    }
+    @PreAuthorize("@ss.hasRole('cashier')")
+    @GetMapping("/level/list")
+    public ResultVo<List<MemberLevel>> getLeveList() {
+        List<MemberLevel> res =
+                memberLevelService.selectMemberLevelList(MemberLevel.builder().storeId(getStoreIdWithThrow()).build());
+        return ResultVo.success(res);
+    }
+
+    @PreAuthorize("@ss.hasRole('cashier')")
     @PostMapping("/recharge")
     public ResultVo<Boolean> recharge(@RequestBody @Validated(OrderRecharge.IRecharge.class)
                                       OrderRecharge recharge) {
@@ -65,7 +95,7 @@ public class CashierMemberController extends BaseController {
     public ResultVo<OrderRecharge> recharge(@PathVariable Long memberId,
                                             @RequestParam @Validated @DecimalMin(value = "1.00", message = "充值最小金额为1")
                                             BigDecimal recharge) {
-        OrderRecharge res = orderService.getPreRecharge(getStoreIdWithThrow(),memberId,recharge);
+        OrderRecharge res = orderService.getPreRecharge(getStoreIdWithThrow(), memberId, recharge);
         return ResultVo.success(res);
     }
 

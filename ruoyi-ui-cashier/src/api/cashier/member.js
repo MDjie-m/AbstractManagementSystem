@@ -49,3 +49,24 @@ export function postRecharge(params) {
     data:params
   })
 }
+export function getAllMemberLevel(){
+  return request({
+    url: `/cashier/member/level/list`,
+    method: 'get',
+  })
+
+}
+export function registerMember(params) {
+  return request({
+    url: `/cashier/member/register`,
+    method: 'post',
+    data:params
+  })
+}
+export function updateMember(params) {
+  return request({
+    url: `/cashier/member/edit`,
+    method: 'post',
+    data:params
+  })
+}

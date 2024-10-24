@@ -1,6 +1,7 @@
 package com.ruoyi.billiard.service.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 import cn.hutool.core.util.StrUtil;
@@ -62,7 +63,7 @@ public class MemberServiceImpl implements IMemberService {
         Member member = memberMapper.selectById(memberId);
         if (Objects.nonNull(member)) {
             member.setPayPassword(null);
-            Optional.ofNullable(memberLevelMapper.selectById(member.getLevelId())).ifPresent(p->{
+            Optional.ofNullable(memberLevelMapper.selectById(member.getLevelId())).ifPresent(p -> {
                 member.setLevelName(p.getLevelName());
             });
         }
@@ -96,6 +97,8 @@ public class MemberServiceImpl implements IMemberService {
         if (StringUtils.isNotEmpty(member.getPayPassword())) {
             member.setPayPassword(SecurityUtils.encryptPassword(member.getPayPassword()));
         }
+        member.setTotalAmount(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN));
+        member.setCurrentAmount(BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN));
         // 查询当前门店是否存在会员
         Long count = memberMapper.selectCount(memberMapper.query().eq(Member::getMobile, member.getMobile())
                 .eq(Member::getStoreId, member.getStoreId()));

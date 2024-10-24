@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="title" class="custom-dialog" :visible.sync="visible" :width="dialogWidth" append-to-body
              :close-on-click-modal="false" @close="onCancel"
-             :close-on-press-escape="false" :show-close="false">
+             :close-on-press-escape="false" :show-close="!hideClose">
      <template>
        <slot/>
      </template>
@@ -27,7 +27,7 @@ import {listMembers} from "@/api/cashier/member";
 
 export default {
   emits: ["onOk","onCancel" ],
-  props: ['visible','title','width','onOk','hideFooter','confirmText'],
+  props: ['visible','title','width','onOk','hideFooter','confirmText','hideClose'],
   data() {
     return {
       loading:false
