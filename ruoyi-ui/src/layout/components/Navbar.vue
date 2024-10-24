@@ -9,6 +9,10 @@
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
 
+        <el-tooltip content="消息" effect="dark" placement="bottom">
+           <header-notice id="message" class="right-menu-item-message hover-effect" />
+        </el-tooltip>
+
         <el-tooltip content="源码地址" effect="dark" placement="bottom">
           <ruo-yi-git id="ruoyi-git" class="right-menu-item hover-effect" />
         </el-tooltip>
@@ -50,6 +54,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import TopNav from '@/components/TopNav'
+import HeaderNotice from '@/components/HeaderNotice'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
@@ -66,7 +71,13 @@ export default {
     SizeSelect,
     Search,
     RuoYiGit,
-    RuoYiDoc
+    RuoYiDoc,
+    HeaderNotice,
+  },
+  data () {
+    return {
+      msgCount: 0,
+    }
   },
   computed: {
     ...mapGetters([
@@ -95,6 +106,12 @@ export default {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
+    /*toNotice () {
+      this.$router.push({
+        path: '/system/notice/index'
+      })
+      this.msgCount = 0
+    },*/
     async logout() {
       this.$confirm('确定注销并退出系统吗？', '提示', {
         confirmButtonText: '确定',
@@ -102,7 +119,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('LogOut').then(() => {
-          location.href = '/index';
+          location.href = process.env.VUE_APP_CONTEXT_PATH + "index";
         })
       }).catch(() => {});
     }
@@ -166,6 +183,25 @@ export default {
         cursor: pointer;
         transition: background .3s;
 
+        &:hover {
+          background: rgba(0, 0, 0, .025)
+        }
+      }
+    }
+    
+    .right-menu-item-message {
+      display: inline-block;
+      padding: 0 8px;
+      height: 100%;
+      font-size: 18px;
+      color: #5a5e66;
+      vertical-align: text-bottom;
+      width: 36px;
+    
+      &.hover-effect {
+        cursor: pointer;
+        transition: background .3s;
+    
         &:hover {
           background: rgba(0, 0, 0, .025)
         }

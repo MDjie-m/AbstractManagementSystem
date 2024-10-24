@@ -3,7 +3,7 @@
     <template v-for="(item, index) in options">
       <template v-if="values.includes(item.value)">
         <span
-          v-if="(item.raw.listClass == 'default' || item.raw.listClass == '') && (item.raw.cssClass == '' || item.raw.cssClass == null)"
+          v-if="item.raw.listClass == 'default' || item.raw.listClass == ''"
           :key="item.value"
           :index="index"
           :class="item.raw.cssClass"
@@ -40,10 +40,6 @@ export default {
     showValue: {
       type: Boolean,
       default: true,
-    },
-    separator: {
-      type: String,
-      default: ","
     }
   },
   data() {
@@ -53,28 +49,36 @@ export default {
   },
   computed: {
     values() {
-      if (this.value === null || typeof this.value === 'undefined' || this.value === '') return []
-      return Array.isArray(this.value) ? this.value.map(item => '' + item) : String(this.value).split(this.separator)
+      if (this.value !== null && typeof this.value !== 'undefined') {
+        return Array.isArray(this.value) ? this.value : [String(this.value)];
+      } else {
+        return [];
+      }
     },
-    unmatch() {
-      this.unmatchArray = []
-      // 没有value不显示
-      if (this.value === null || typeof this.value === 'undefined' || this.value === '' || this.options.length === 0) return false
-      // 传入值为数组
-      let unmatch = false // 添加一个标志来判断是否有未匹配项
-      this.values.forEach(item => {
-        if (!this.options.some(v => v.value === item)) {
-          this.unmatchArray.push(item)
-          unmatch = true // 如果有未匹配项，将标志设置为true
+    unmatch(){
+      this.unmatchArray = [];
+      if (this.value !== null && typeof this.value !== 'undefined') {
+        // 传入值为非数组
+        if(!Array.isArray(this.value)){
+          //console.log("unmatch this.options,this.value",this.options,this.value);
+          if(this.options.some(v=> v.value == this.value )) return false;
+          this.unmatchArray.push(this.value);
+          return true;
         }
-      })
-      return unmatch // 返回标志的值
+        // 传入值为Array
+        this.value.forEach(item => {
+          if (!this.options.some(v=> v.value == item )) this.unmatchArray.push(item)
+        });
+        return true;
+      }
+      // 没有value不显示
+      return false;
     },
 
   },
   filters: {
     handleArray(array) {
-      if (array.length === 0) return '';
+      if(array.length===0) return '';
       return array.reduce((pre, cur) => {
         return pre + ' ' + cur;
       })

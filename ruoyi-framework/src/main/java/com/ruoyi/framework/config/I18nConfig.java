@@ -1,43 +1,46 @@
 package com.ruoyi.framework.config;
 
+import cn.hutool.core.util.StrUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-import com.ruoyi.common.constant.Constants;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 /**
- * 资源文件配置加载
- * 
- * @author ruoyi
+ * 国际化配置
+ *
+ * @author Lion Li
  */
 @Configuration
-public class I18nConfig implements WebMvcConfigurer
-{
-    @Bean
-    public LocaleResolver localeResolver()
-    {
-        SessionLocaleResolver slr = new SessionLocaleResolver();
-        // 默认语言
-        slr.setDefaultLocale(Constants.DEFAULT_LOCALE);
-        return slr;
-    }
+public class I18nConfig {
 
     @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor()
-    {
-        LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        // 参数名
-        lci.setParamName("lang");
-        return lci;
+    public LocaleResolver localeResolver() {
+        return new I18nLocaleResolver();
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry)
-    {
-        registry.addInterceptor(localeChangeInterceptor());
+    /**
+     * 获取请求头国际化信息
+     */
+    static class I18nLocaleResolver implements LocaleResolver {
+
+        @Override
+        public Locale resolveLocale(HttpServletRequest httpServletRequest) {
+            String language = httpServletRequest.getHeader("content-language");
+            Locale locale = Locale.getDefault();
+            if (StrUtil.isNotBlank(language)) {
+                String[] split = language.split("_");
+                locale = new Locale(split[0], split[1]);
+            }
+            return locale;
+        }
+
+        @Override
+        public void setLocale(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Locale locale) {
+
+        }
     }
 }

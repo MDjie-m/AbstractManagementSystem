@@ -10,6 +10,23 @@ export function listUser(query) {
   })
 }
 
+// 查询用户列表，用于流程里的用户选择
+export function selectUser(query) {
+  return request({
+    url: '/system/user/selectUser',
+    method: 'get',
+    params: query
+  })
+}
+
+// 根据部门编号获取用户列表,作为部门编辑负责人时使用
+export function selectUserForDept() {
+  return request({
+    url: '/system/user/listForDept',
+    method: 'get'
+  })
+}
+
 // 查询用户详细
 export function getUser(userId) {
   return request({
@@ -105,7 +122,6 @@ export function uploadAvatar(data) {
   return request({
     url: '/system/user/profile/avatar',
     method: 'post',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     data: data
   })
 }

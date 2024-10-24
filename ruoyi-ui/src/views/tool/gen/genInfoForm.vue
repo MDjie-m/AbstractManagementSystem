@@ -7,16 +7,7 @@
           <el-select v-model="info.tplCategory" @change="tplSelectChange">
             <el-option label="单表（增删改查）" value="crud" />
             <el-option label="树表（增删改查）" value="tree" />
-            <el-option label="主子表（增删改查）" value="sub" />
-          </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item prop="tplWebType">
-          <span slot="label">前端类型</span>
-          <el-select v-model="info.tplWebType">
-            <el-option label="Vue2 Element UI 模版" value="element-ui" />
-            <el-option label="Vue3 Element Plus 模版" value="element-plus" />
+<!--            <el-option label="主子表（增删改查）" value="sub" />-->
           </el-select>
         </el-form-item>
       </el-col>
@@ -69,19 +60,6 @@
       </el-col>
 
       <el-col :span="12">
-        <el-form-item prop="genType">
-          <span slot="label">
-            生成代码方式
-            <el-tooltip content="默认为zip压缩包下载，也可以自定义生成路径" placement="top">
-              <i class="el-icon-question"></i>
-            </el-tooltip>
-          </span>
-          <el-radio v-model="info.genType" label="0">zip压缩包</el-radio>
-          <el-radio v-model="info.genType" label="1">自定义路径</el-radio>
-        </el-form-item>
-      </el-col>
-
-      <el-col :span="12">
         <el-form-item>
           <span slot="label">
             上级菜单
@@ -97,6 +75,19 @@
             :show-count="true"
             placeholder="请选择系统菜单"
           />
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="12">
+        <el-form-item prop="genType">
+          <span slot="label">
+            生成代码方式
+            <el-tooltip content="默认为zip压缩包下载，也可以自定义生成路径" placement="top">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </span>
+          <el-radio v-model="info.genType" label="0">zip压缩包</el-radio>
+          <el-radio v-model="info.genType" label="1">自定义路径</el-radio>
         </el-form-item>
       </el-col>
 
@@ -264,14 +255,10 @@ export default {
       }
     };
   },
+  created() {},
   watch: {
     'info.subTableName': function(val) {
       this.setSubTableColumns(val);
-    },
-    'info.tplWebType': function(val) {
-      if (val === '') {
-        this.info.tplWebType = "element-ui";
-      }
     }
   },
   methods: {

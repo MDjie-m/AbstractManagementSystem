@@ -1,144 +1,91 @@
 package com.ruoyi.system.domain;
 
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.common.annotation.ExcelDictFormat;
+import com.ruoyi.common.convert.ExcelDictConvert;
+import lombok.Data;
+
+import java.io.Serializable;
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.common.annotation.Excel;
-import com.ruoyi.common.annotation.Excel.ColumnType;
-import com.ruoyi.common.core.domain.BaseEntity;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 系统访问记录表 sys_logininfor
- * 
- * @author ruoyi
+ *
+ * @author Lion Li
  */
-public class SysLogininfor extends BaseEntity
-{
+
+@Data
+@TableName("sys_logininfor")
+@ExcelIgnoreUnannotated
+public class SysLogininfor implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /** ID */
-    @Excel(name = "序号", cellType = ColumnType.NUMERIC)
+    /**
+     * ID
+     */
+    @ExcelProperty(value = "序号")
+    @TableId(value = "info_id")
     private Long infoId;
 
-    /** 用户账号 */
-    @Excel(name = "用户账号")
+    /**
+     * 用户账号
+     */
+    @ExcelProperty(value = "用户账号")
     private String userName;
 
-    /** 登录状态 0成功 1失败 */
-    @Excel(name = "登录状态", readConverterExp = "0=成功,1=失败")
+    /**
+     * 登录状态 0成功 1失败
+     */
+    @ExcelProperty(value = "登录状态", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(dictType = "sys_common_status")
     private String status;
 
-    /** 登录IP地址 */
-    @Excel(name = "登录地址")
+    /**
+     * 登录IP地址
+     */
+    @ExcelProperty(value = "登录地址")
     private String ipaddr;
 
-    /** 登录地点 */
-    @Excel(name = "登录地点")
+    /**
+     * 登录地点
+     */
+    @ExcelProperty(value = "登录地点")
     private String loginLocation;
 
-    /** 浏览器类型 */
-    @Excel(name = "浏览器")
+    /**
+     * 浏览器类型
+     */
+    @ExcelProperty(value = "浏览器")
     private String browser;
 
-    /** 操作系统 */
-    @Excel(name = "操作系统")
+    /**
+     * 操作系统
+     */
+    @ExcelProperty(value = "操作系统")
     private String os;
 
-    /** 提示消息 */
-    @Excel(name = "提示消息")
+    /**
+     * 提示消息
+     */
+    @ExcelProperty(value = "提示消息")
     private String msg;
 
-    /** 访问时间 */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @Excel(name = "访问时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    /**
+     * 访问时间
+     */
+    @ExcelProperty(value = "访问时间")
     private Date loginTime;
 
-    public Long getInfoId()
-    {
-        return infoId;
-    }
+    /**
+     * 请求参数
+     */
+    @TableField(exist = false)
+    private Map<String, Object> params = new HashMap<>();
 
-    public void setInfoId(Long infoId)
-    {
-        this.infoId = infoId;
-    }
-
-    public String getUserName()
-    {
-        return userName;
-    }
-
-    public void setUserName(String userName)
-    {
-        this.userName = userName;
-    }
-
-    public String getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(String status)
-    {
-        this.status = status;
-    }
-
-    public String getIpaddr()
-    {
-        return ipaddr;
-    }
-
-    public void setIpaddr(String ipaddr)
-    {
-        this.ipaddr = ipaddr;
-    }
-
-    public String getLoginLocation()
-    {
-        return loginLocation;
-    }
-
-    public void setLoginLocation(String loginLocation)
-    {
-        this.loginLocation = loginLocation;
-    }
-
-    public String getBrowser()
-    {
-        return browser;
-    }
-
-    public void setBrowser(String browser)
-    {
-        this.browser = browser;
-    }
-
-    public String getOs()
-    {
-        return os;
-    }
-
-    public void setOs(String os)
-    {
-        this.os = os;
-    }
-
-    public String getMsg()
-    {
-        return msg;
-    }
-
-    public void setMsg(String msg)
-    {
-        this.msg = msg;
-    }
-
-    public Date getLoginTime()
-    {
-        return loginTime;
-    }
-
-    public void setLoginTime(Date loginTime)
-    {
-        this.loginTime = loginTime;
-    }
 }

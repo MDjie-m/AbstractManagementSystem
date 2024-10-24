@@ -75,6 +75,33 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/tool',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'formdesigner/index',
+        component: () => import('@/views/tool/formdesigner/index'),
+        name: 'FormBuild',
+        meta: { title: '表单设计', icon: '' }
+      }
+    ]
+  },
+  {
+    path: '/system',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'notice',
+        component: () => import('@/views/system/notice/index'),
+        name: 'notice',
+        meta: { title: '通知通告', icon: 'message' }
+      }
+    ]
+  },
+  {
     path: '/user',
     component: Layout,
     hidden: true,
@@ -135,16 +162,16 @@ export const dynamicRoutes = [
     ]
   },
   {
-    path: '/monitor/job-log',
+    path: '/system/oss-config',
     component: Layout,
     hidden: true,
-    permissions: ['monitor:job:list'],
+    permissions: ['system:oss:list'],
     children: [
       {
-        path: 'index/:jobId(\\d+)',
-        component: () => import('@/views/monitor/job/log'),
-        name: 'JobLog',
-        meta: { title: '调度日志', activeMenu: '/monitor/job' }
+        path: 'index',
+        component: () => import('@/views/system/oss/config'),
+        name: 'OssConfig',
+        meta: { title: '配置管理', activeMenu: '/system/oss' }
       }
     ]
   },
@@ -161,7 +188,27 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  }
+  },
+  {
+    path: '/workflow/process',
+    component: Layout,
+    hidden: true,
+    permissions: ['workflow:process:query'],
+    children: [
+      {
+        path: 'start/:deployId([\\w|\\-]+)',
+        component: () => import('@/views/workflow/work/start'),
+        name: 'WorkStart',
+        meta: { title: '发起流程', icon: '' }
+      },
+      {
+        path: 'detail/:procInsId([\\w|\\-]+)',
+        component: () => import('@/views/workflow/work/detail'),
+        name: 'WorkDetail',
+        meta: { title: '流程详情', activeMenu: '/work/own' }
+      }
+    ]
+  },
 ]
 
 // 防止连续点击多次路由报错
@@ -177,6 +224,7 @@ Router.prototype.replace = function push(location) {
 }
 
 export default new Router({
+  base: process.env.VUE_APP_CONTEXT_PATH,
   mode: 'history', // 去掉url中的#
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes

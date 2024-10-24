@@ -2,6 +2,10 @@ import Vue from 'vue'
 
 import Cookies from 'js-cookie'
 
+import Antd, { version } from 'ant-design-vue'
+import Viser from 'viser-vue'
+import 'ant-design-vue/dist/antd.less';  // or 'ant-design-vue/dist/antd.less'
+
 import Element from 'element-ui'
 import './assets/styles/element-variables.scss'
 
@@ -17,7 +21,7 @@ import { download } from '@/utils/request'
 import './assets/icons' // icon
 import './permission' // permission control
 import { getDicts } from "@/api/system/dict/data";
-import { getConfigKey } from "@/api/system/config";
+import { getConfigKey, updateConfigByKey } from "@/api/system/config";
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
 // 分页组件
 import Pagination from "@/components/Pagination";
@@ -38,9 +42,14 @@ import VueMeta from 'vue-meta'
 // 字典数据组件
 import DictData from '@/components/DictData'
 
+//for formdesigner  add by nbchang 2023-09-10
+import formDesigner from '@/components/formdesigner/components/index'
+import '@/components/formdesigner/assets/iconfont/iconfont.js'
+
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey
+Vue.prototype.updateConfigByKey = updateConfigByKey
 Vue.prototype.parseTime = parseTime
 Vue.prototype.resetForm = resetForm
 Vue.prototype.addDateRange = addDateRange
@@ -58,9 +67,13 @@ Vue.component('FileUpload', FileUpload)
 Vue.component('ImageUpload', ImageUpload)
 Vue.component('ImagePreview', ImagePreview)
 
+Vue.use(Antd)
+Vue.use(Viser)
 Vue.use(directive)
 Vue.use(plugins)
 Vue.use(VueMeta)
+//for formdesigner  add by nbchang 2023-09-10
+Vue.use(formDesigner);
 DictData.install()
 
 /**
@@ -71,6 +84,9 @@ DictData.install()
  * Currently MockJs will be used in the production environment,
  * please remove it before going online! ! !
  */
+
+// 修改 el-dialog 默认点击遮照为不关闭
+Element.Dialog.props.closeOnClickModal.default = false
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
