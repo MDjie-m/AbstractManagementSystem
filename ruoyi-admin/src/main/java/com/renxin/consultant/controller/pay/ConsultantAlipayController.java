@@ -53,7 +53,7 @@ public class ConsultantAlipayController {
             PsyConsultantOrder result = new PsyConsultantOrder();
                 result.setOrderNo(order.getOrderNo());
                 result.setPayAmount(order.getPayAmount());
-                result.setPayParam(order.getPayParam());
+                result.setAliPayParam(order.getAliPayParam());
             return AjaxResult.success(result);
         //}
         

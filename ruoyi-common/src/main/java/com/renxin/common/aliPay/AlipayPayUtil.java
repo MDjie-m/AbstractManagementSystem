@@ -19,7 +19,7 @@ public class AlipayPayUtil {
      *
      * @return
      */
-    public static AjaxResult alipayAppPay(String orderNum, BigDecimal price, String title){
+    public static AjaxResult alipayAppPay(String orderNo, BigDecimal price, String title){
         try{
             AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfigLocal.alipayGateway, AlipayConfigLocal.appId,  AlipayConfigLocal.privateKey, AlipayConfigLocal.format, 
                     AlipayConfigLocal.input_charset_utf,  AlipayConfigLocal.alipayPublicKey, AlipayConfigLocal.sign_type_rsa2);
@@ -32,7 +32,7 @@ public class AlipayPayUtil {
             /******必传参数******/
             JSONObject bizContent = new JSONObject();
             //商户订单号，商家自定义，保持唯一性
-            bizContent.put("out_trade_no",orderNum);
+            bizContent.put("out_trade_no",orderNo);
             //支付金额，最小值0.01元
             bizContent.put("total_amount", price);
             //订单标题，不可使用特殊符号

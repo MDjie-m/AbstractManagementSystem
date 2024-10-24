@@ -26,14 +26,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="payType"    column="pay_type"    />
         <result property="originalPrice"    column="original_price"    />
         <result property="couponNo"    column="coupon_no"    />
-        <result property="payParam"    column="pay_param"    />
+        <result property="aliPayParam"    column="ali_pay_param"    />
+        <result property="wxPayParam"    column="wx_pay_param"    />
         <result property="consultantRatio"    column="consultant_ratio"    />
         <result property="consultantPrice"    column="consultant_price"    />
     </resultMap>
 
     <sql id="selectPsyConsultantOrderVo">
         select id, order_no, server_id, server_type, server_name, status, pay_consultant_id, pay_consultant_name, pay_amount, pay_datetime, pay_status, 
-               remark, del_flag, create_by, create_time, update_by, update_time,pay_id, pay_type,original_price,coupon_no, pay_param, consultant_ratio, consultant_price
+               remark, del_flag, create_by, create_time, update_by, update_time,pay_id, pay_type,original_price,coupon_no, ali_pay_param, wx_pay_param, consultant_ratio, consultant_price
         from psy_consultant_order
     </sql>
 
@@ -91,7 +92,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payType != null">pay_type,</if>
             <if test="originalPrice != null">original_price,</if>
             <if test="couponNo != null">coupon_no,</if>
-            <if test="payParam != null">pay_param,</if>
+            <if test="aliPayParam != null">ali_pay_param,</if>
+            <if test="wxPayParam != null">wx_pay_param,</if>
             <if test="consultantRatio != null">consultant_ratio,</if>
             <if test="consultantPrice != null">consultant_price,</if>
          </trim>
@@ -116,7 +118,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payType != null">#{payType},</if>
             <if test="originalPrice != null">#{originalPrice},</if>
             <if test="couponNo != null">#{couponNo},</if>
-            <if test="payParam != null">#{payParam},</if>
+            <if test="aliPayParam != null">#{aliPayParam},</if>
+            <if test="wxPayParam != null">#{wxPayParam},</if>
             <if test="consultantRatio != null">#{consultantRatio},</if>
             <if test="consultantPrice != null">#{consultantPrice},</if>
 
@@ -144,7 +147,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="payType != null">pay_type = #{payType},</if>
             <if test="originalPrice != null">original_price = #{originalPrice},</if>
             <if test="couponNo != null">coupon_no = #{couponNo},</if>
-            <if test="payParam != null">pay_param = #{payParam},</if>
+            <if test="aliPayParam != null">ali_pay_param = #{aliPayParam},</if>
+            <if test="wxPayParam != null">wx_pay_param = #{wxPayParam},</if>
             <if test="consultantRatio != null">consultant_ratio = #{consultantRatio},</if>
             <if test="consultantPrice != null">consultant_price = #{consultantPrice},</if>
         </trim>

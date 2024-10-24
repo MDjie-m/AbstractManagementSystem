@@ -13,6 +13,7 @@ import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.enums.LimitType;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.OrderIdUtils;
+import com.renxin.common.wechat.wxPay.WechatPaymentService;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.CourOrder;
@@ -96,6 +97,9 @@ public class ConsultantOrderController extends BaseController
 
     @Resource
     public WechatPayV3Utils wechatPayV3Utils;
+    
+    @Resource
+    private WechatPaymentService wechatPaymentService;
 
     @Value("${wechat.appid}")
     private String WECHAT_MP_APPID;
@@ -278,7 +282,6 @@ public class ConsultantOrderController extends BaseController
         }
         
         //创建订单
-        PsyConsultantOrder result = new PsyConsultantOrder();
         String attach = "订单号: " + out_trade_no; //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
             consultantOrder.setOrderNo(out_trade_no);
             consultantOrder.setServerName(serverName);
@@ -286,74 +289,46 @@ public class ConsultantOrderController extends BaseController
             consultantOrder.setConsultantRatio(consultantRatio);
             consultantOrder.setConsultantPrice(consultantPrice);
         PsyConsultantOrder newOrder = psyConsultantOrderService.createConsultantOrder(consultantOrder);
+        PsyConsultantOrder result = new PsyConsultantOrder();
+            result.setPayAmount(newOrder.getPayAmount());
+            result.setOrderNo(newOrder.getOrderNo());
+        //应付金额为0, 直接返回
         if (newOrder.getPayAmount().compareTo(BigDecimal.ZERO) == 0){
-                result.setPayAmount(newOrder.getPayAmount());
             return AjaxResult.success(result);
         }
 
         //初次发起支付
-        AjaxResult aliResult = AlipayPayUtil.alipayAppPay(out_trade_no, newOrder.getPayAmount(), newOrder.getServerName());
-        if ((Integer) aliResult.get("code") == 200) {
-            String msg = (String) aliResult.get("msg");
-            // Map<String, String> parameters = parseQueryString(msg);
-            newOrder.setPayParam(msg);
-            psyConsultantOrderService.updatePsyConsultantOrder(newOrder);
-                result.setOrderNo(newOrder.getOrderNo());
-                result.setPayAmount(newOrder.getPayAmount());
-                result.setPayParam(newOrder.getPayParam());
-            return AjaxResult.success(result);
-        } else {
-            log.error("发起支付失败, result : " + aliResult);
-            throw new ServiceException("发起支付失败");
+        ////支付宝
+        if ("aliPay".equals(consultantOrder.getPaymentChannel())){
+            AjaxResult aliResult = AlipayPayUtil.alipayAppPay(out_trade_no, newOrder.getPayAmount(), newOrder.getServerName());
+            if ((Integer) aliResult.get("code") == 200) {
+                //获取支付参数后, 将其保存
+                String msg = (String) aliResult.get("msg");
+                    newOrder.setAliPayParam(msg);
+                psyConsultantOrderService.updatePsyConsultantOrder(newOrder);
+                
+                result.setAliPayParam(newOrder.getAliPayParam());
+                return AjaxResult.success(result);
+            } else {
+                log.error("发起支付宝支付失败, result : " + aliResult);
+                throw new ServiceException("发起支付宝支付失败");
+            }
         }
         
-        
-        
-    /*    String content = "咨询师端订单demoo";
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, 1);// 1天
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-
-        JSONObject params = new JSONObject();
-        params.put("appid", WECHAT_MP_APPID); //小程序appid
-        params.put("mchid", WechatMCHConstants.WECHAT_MCH_ID); //商户号
-        params.put("description", content); //商品描述
-        params.put("out_trade_no", out_trade_no); //商户订单号
-        params.put("time_expire", sdf.format(calendar.getTime())); //交易结束时间 选填 时间到了之后将不能再支付 遵循rfc3339标准格式
-        params.put("attach", attach); //附加数据 选填 在查询API和支付通知中原样返回 可作为自定义参数使用
-        params.put("notify_url", WechatUrlConstants.CONSULTANT_PAY_V3_NOTIFY); //支付结果异步通知接口
-        JSONObject amount_json = new JSONObject();
-        amount_json.put("total", Integer.parseInt(amount_fee(newOrder.getPayAmount()))); //支付金额 单位：分
-        params.put("amount", amount_json); //订单金额信息
-        JSONObject payer = new JSONObject();
-        //payer.put("openid", openid); //用户在小程序侧的openid
-        params.put("payer", payer); //支付者信息
-        JSONObject res = wechatPayV3Utils.sendPost(WechatUrlConstants.PAY_V3_JSAPI, params); //发起请求
-        if (res == null || StringUtils.isEmpty(res.getString("prepay_id"))) {
-            //@TODO 支付发起失败可以将订单数据回滚
-            return error("支付发起失败");
+        ////微信
+        if ("wechatPay".equals(consultantOrder.getPaymentChannel())){
+            Map<String, Object> wxResult = wechatPaymentService.weChatDoUnifiedOrder(out_trade_no, newOrder.getPayAmount(), newOrder.getServerName());
+            if ((Integer) wxResult.get("code") == 200) {
+                
+                result.setWxPayParamMap((Map)wxResult.get("data"));
+                return AjaxResult.success(result);
+            }else {
+                log.error("发起微信支付失败, result : " + wxResult);
+                throw new ServiceException("发起微信支付失败");
+            }
         }
-        StringBuilder sb = new StringBuilder();
-        //返回给小程序拉起微信支付的参数
-        Map<String, String> result = new HashMap<>();
-        result.put("appId", WECHAT_MP_APPID); //小程序appid
-        sb.append(result.get("appId")).append("\n");
-        result.put("timeStamp", (new Date().getTime() / 1000) + ""); //时间戳
-        sb.append(result.get("timeStamp")).append("\n");
-        result.put("nonceStr", RandomStringUtils.randomAlphanumeric(32)); //32位随机字符串
-        sb.append(result.get("nonceStr")).append("\n");
-        result.put("package", "prepay_id=" + res.getString("prepay_id")); //预支付id 格式为 prepay_id=xxx
-        sb.append(result.get("package")).append("\n");
-        result.put("paySign", wechatPayV3Utils.signRSA(sb.toString())); //签名
-        result.put("signType", "RSA"); //加密方式 固定RSA
-        result.put("out_trade_no", out_trade_no); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
-
-        String payParam = JSON.toJSONString(result);
-        newOrder.setPayParam(payParam);
-        psyConsultantOrderService.updatePsyConsultantOrder(newOrder);
         
-        return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS ,result);*/
-        
+        return AjaxResult.error("该支付方式不存在.");
     }
 
  
@@ -380,6 +355,15 @@ public class ConsultantOrderController extends BaseController
         log.info(map.toString());
         log.info(request.toString());
         
+        return null;
+    }
+
+    @PostMapping("/wxPaySuccess/callback")
+    public Map<String, String> wxPayCallback(@RequestBody Map<String,Object> map, HttpServletRequest request) {
+        log.info("微信, 支付完成回调");
+        log.info(map.toString());
+        log.info(request.toString());
+
         return null;
     }
     
@@ -534,7 +518,7 @@ public class ConsultantOrderController extends BaseController
         if ("aliPay".equals(req.getPaymentChannel())){
             result.setOrderNo(order.getOrderNo());
             result.setPayAmount(order.getPayAmount());
-            result.setPayParam(order.getPayParam());
+            result.setAliPayParam(order.getAliPayParam());
         }
         
         return AjaxResult.success(result);

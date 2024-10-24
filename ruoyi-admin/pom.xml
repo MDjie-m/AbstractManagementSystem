@@ -73,10 +73,16 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+
+        <dependency>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-java</artifactId>
+            <version>0.2.14</version>
+        </dependency>
         <dependency>
             <groupId>com.github.wechatpay-apiv3</groupId>
             <artifactId>wechatpay-apache-httpclient</artifactId>
-            <version>0.4.7</version>
+            <version>0.4.9</version>
         </dependency>
         <!--测试-->
         <dependency>

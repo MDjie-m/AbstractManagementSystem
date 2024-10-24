@@ -3,6 +3,7 @@ package com.renxin.psychology.domain;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -91,10 +92,14 @@ public class PsyConsultantOrder extends BaseEntity
     private String delFlag;
 
     private String payId;
-    private String payParam;
+    private String aliPayParam;//阿里支付参数
+    private String wxPayParam;//微信支付参数
+    @TableField(exist = false)
+    private Map<String,String> wxPayParamMap;
     // 咨询服务
     private Long workId;
     private Integer time;
+    private String paymentChannel;//支付渠道  aliPay   wechatPay
     
     
     //以下三字段, 仅在类型为 个案督导/个人体验 时, 有值
