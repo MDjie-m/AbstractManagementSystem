@@ -227,7 +227,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         SecurityUtils.fillCreateUser(order);
         orderMapper.insert(order);
 
-        BigDecimal price = priceService.queryPriceByType(desk.getStoreId(), desk.getDeskType() );
+        BigDecimal price = priceService.queryPriceByType(desk.getStoreId(), desk.getDeskType());
         AssertUtil.notNullOrEmpty(price, "未设置价格无法开台.请联系管理员设置价格.");
 
         Date startTime = DateUtils.removeSeconds(new Date());
@@ -273,7 +273,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderDeskScoreService.stopRecordScore(oldDeskId, orderId);
         //插入新的计费
 
-        BigDecimal price = priceService.queryPriceByType(newDesk.getStoreId(), newDesk.getDeskType() );
+        BigDecimal price = priceService.queryPriceByType(newDesk.getStoreId(), newDesk.getDeskType());
         AssertUtil.notNullOrEmpty(price, "目标台桌类型未设置价格无法换台.请联系管理员设置价格.");
         OrderDeskTime deskTime = OrderDeskTime.builder()
                 .deskId(newDeskId)
@@ -309,7 +309,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         return selectOrderByOrderId(orderId);
     }
-
 
 
     @Override
@@ -1049,39 +1048,45 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         HomeReportVoConsume homeReportVoConsume = new HomeReportVoConsume();
 
         String nowDay = DateUtils.getDate();
-        String endTime = nowDay + " 23:59";
+        String endTime = nowDay + " 23:59:59";
         String startTime = "";
         if (Objects.equals(timeType, ReportTimeType.DAY)) {
-            startTime = nowDay + " 00:00";
+            startTime = nowDay + " 00:00:00";
         }
         if (Objects.equals(timeType, ReportTimeType.WEEK)) {
             // 根据当前时间往前推一周
             String beforWeekDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addWeeks(new Date(), -1));
-            startTime = beforWeekDay + " 00:00";
+            startTime = beforWeekDay + " 00:00:00";
 
         }
         if (Objects.equals(timeType, ReportTimeType.MONTH)) {
             // 根据当前时间往前推一个月
             String beforMonthDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addMonths(new Date(), -1));
-            startTime = beforMonthDay + " 00:00";
+            startTime = beforMonthDay + " 00:00:00";
 
         }
         if (Objects.equals(timeType, ReportTimeType.YEAR)) {
             // 根据当前时间往前推一年
             String beforYearDay = DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, DateUtils.addYears(new Date(), -1));
-            startTime = beforYearDay + " 00:00";
+            startTime = beforYearDay + " 00:00:00";
 
         }
         if (Objects.equals(timeType, ReportTimeType.CUSTOM)) {
-            startTime = dto.getStartTime() + " 00:00";
-            endTime = dto.getEndTime() + " 23:59";
+            startTime = dto.getStartTime() + " 00:00:00";
+            endTime = dto.getEndTime() + " 23:59:59";
         }
         // 查询总订单
-        List<Order> orders = selectOrderByPayStatus(OrderStatus.SETTLED.getValue(), dto.getStoreId(), startTime, endTime);
-        BigDecimal totalAmount = orders.stream().map(Order::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-        HomeReportVoConsumeDetail totalConsum = HomeReportVoConsumeDetail.builder().consumeDetail(orders)
+//        List<Order> orders = selectOrderByPayStatus(OrderStatus.SETTLED.getValue(), dto.getStoreId(), startTime, endTime);
+//        BigDecimal totalAmount = orders.stream().map(Order::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        Long storeId = dto.getStoreId();
+        List<Map<String, Object>> maps = orderMapper.selectMaps(orderMapper.normalQuery().select("COUNT(*) as count, SUM(total_amount) as totalAmount").eq("status", OrderStatus.SETTLED.getValue())
+                .eq(Objects.nonNull(storeId), "store_id", storeId)
+                .between("create_time", startTime, endTime)
+                .orderByDesc("create_time"));
+        BigDecimal totalAmount = (BigDecimal) maps.get(0).get("totalAmount");
+        HomeReportVoConsumeDetail totalConsum = HomeReportVoConsumeDetail.builder()
                 .consumeName(OrderType.AGGREGATE_CONSUMPTION.getDesc())
-                .consumeCount(orders.size())
+                .consumeCount(Integer.valueOf(maps.get(0).get("count").toString()))
                 .consumeAmount(totalAmount)
                 .consumePercent(new BigDecimal(100)).build();
         totalConsum.setOrderType(OrderType.AGGREGATE_CONSUMPTION);
@@ -1089,7 +1094,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         // 查询挂起订单
         List<Order> suspendedOrder = selectOrderByPayStatus(OrderStatus.SUSPEND.getValue(), dto.getStoreId(), startTime, endTime);
-        Map<String, Object> subOrderConsumeDetail = getSubOrderConsumeDetail(orders, totalAmount, suspendedOrder);
+        Map<String, Object> subOrderConsumeDetail = getSubOrderConsumeDetail(storeId, startTime, endTime, totalAmount, suspendedOrder);
         // 消费类型统计
         List<HomeReportVoConsumeDetail> typeList = (List<HomeReportVoConsumeDetail>) subOrderConsumeDetail.get("typeList");
         // 挂起订单统计
@@ -1268,74 +1273,78 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     /**
      * 子订单数据统计
      */
-    public Map<String, Object> getSubOrderConsumeDetail(List<Order> orders, BigDecimal totalAmount, List<Order> suspendedOrder) {
+    public Map<String, Object> getSubOrderConsumeDetail(Long storeId, String startTime, String endTime, BigDecimal totalAmount, List<Order> suspendedOrder) {
 
         List<HomeReportVoConsumeDetail> typeList = new ArrayList<>();
         // 查询子订单
-        List<Long> orderIds = orders.stream().map(Order::getOrderId).distinct().collect(Collectors.toList());
+//        List<Long> orderIds = orders.stream().map(Order::getOrderId).distinct().collect(Collectors.toList());
 
-        Order sonOrder = getsTheSuborderBasedOnOrderIds(orderIds);
-        // 订单关联陪练列表
-        List<OrderTutorTime> orderTutorTimes = sonOrder.getOrderTutorTimes();
-        // 订单关联商品列表
-        List<OrderGoods> orderCommodityTimes = sonOrder.getOrderGoods();
-        // 订单关联会员充值列表
-        List<OrderRecharge> orderRechargeTimes = sonOrder.getOrderRecharges();
-        // 订单关联球桌列表
-        List<OrderDeskTime> orderDeskTimes = sonOrder.getOrderDeskTimes();
+//        Order sonOrder = getsTheSuborderBasedOnOrderIds(orderIds);
+//        // 订单关联陪练列表
+//        List<OrderTutorTime> orderTutorTimes = sonOrder.getOrderTutorTimes();
+//        // 订单关联商品列表
+//        List<OrderGoods> orderCommodityTimes = sonOrder.getOrderGoods();
+//        // 订单关联会员充值列表
+//        List<OrderRecharge> orderRechargeTimes = sonOrder.getOrderRecharges();
+//        // 订单关联球桌列表
+//        List<OrderDeskTime> orderDeskTimes = sonOrder.getOrderDeskTimes();
 
         // 订单去除空值
-        orderTutorTimes = orderTutorTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
-        orderCommodityTimes = orderCommodityTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
-        orderRechargeTimes = orderRechargeTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
-        orderDeskTimes = orderDeskTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
-
-        // 球桌订单
-        BigDecimal deskTotalAmount = orderDeskTimes.stream().map(OrderDeskTime::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+//        orderTutorTimes = orderTutorTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+//        orderCommodityTimes = orderCommodityTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+//        orderRechargeTimes = orderRechargeTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+//        orderDeskTimes = orderDeskTimes.stream().filter(Objects::nonNull).collect(Collectors.toList());
+//
+//        // 球桌订单
+//        BigDecimal deskTotalAmount = orderDeskTimes.stream().map(OrderDeskTime::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        Map<String, Object> deskMap = orderDeskTimeMapper.selectOrderDeskTimeStatistics(OrderStatus.SETTLED.getValue(), storeId, startTime, endTime);
+        BigDecimal deskTotalAmount = (BigDecimal) deskMap.get("totalAmount");
         BigDecimal deskPercent = totalAmount.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : deskTotalAmount.divide(totalAmount, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
         HomeReportVoConsumeDetail tableCharge = HomeReportVoConsumeDetail.builder()
                 .consumeName(OrderType.TABLE_CHARGE.getDesc())
-                .consumeCount(Integer.valueOf(String.valueOf(orderDeskTimes.stream().map(OrderDeskTime::getOrderId).distinct().count())))
+                .consumeCount(Integer.valueOf(deskMap.get("count").toString()))
                 .consumeAmount(deskTotalAmount)
-                .consumeDetail(orderDeskTimes)
+                .orderType(OrderType.TABLE_CHARGE)
                 .consumePercent(deskPercent).build();
-        tableCharge.setOrderType(OrderType.TABLE_CHARGE);
         typeList.add(tableCharge);
-
-        // 商品订单
-        BigDecimal commodityTotalAmount = orderCommodityTimes.stream().map(OrderGoods::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//        // 商品订单
+//        BigDecimal commodityTotalAmount = orderCommodityTimes.stream().map(OrderGoods::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        Map<String, Object> goodsMap = orderGoodsMapper.selectOrderGoodsStatistics(OrderStatus.SETTLED.getValue(), storeId, startTime, endTime);
+        BigDecimal commodityTotalAmount = (BigDecimal) goodsMap.get("totalAmount");
         BigDecimal goodsPercent = totalAmount.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : commodityTotalAmount.divide(totalAmount, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
         HomeReportVoConsumeDetail commodityPurchase = HomeReportVoConsumeDetail.builder()
                 .consumeName(OrderType.COMMODITY_PURCHASE.getDesc())
-                .consumeCount(Integer.valueOf(String.valueOf(orderCommodityTimes.stream().map(OrderGoods::getOrderId).distinct().count())))
+                .consumeCount(Integer.valueOf(goodsMap.get("count").toString()))
                 .consumeAmount(commodityTotalAmount)
-                .consumeDetail(orderCommodityTimes)
+                .orderType(OrderType.COMMODITY_PURCHASE)
                 .consumePercent(goodsPercent).build();
-        commodityPurchase.setOrderType(OrderType.COMMODITY_PURCHASE);
         typeList.add(commodityPurchase);
-
-        // 会员充值
-        BigDecimal rechargeTotalAmount = orderRechargeTimes.stream().map(OrderRecharge::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//        // 会员充值
+//        BigDecimal rechargeTotalAmount = orderRechargeTimes.stream().map(OrderRecharge::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        Map<String, Object> orderRechargeMap = orderRechargeMapper.selectOrderGoodsStatistics(OrderStatus.SETTLED.getValue(), storeId, startTime, endTime);
+        BigDecimal rechargeTotalAmount = (BigDecimal) orderRechargeMap.get("totalAmount");
         BigDecimal rechargePercent = totalAmount.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : rechargeTotalAmount.divide(totalAmount, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
         HomeReportVoConsumeDetail memberRecharge = HomeReportVoConsumeDetail.builder()
                 .consumeName(OrderType.MEMBER_RECHARGE.getDesc())
-                .consumeCount(Integer.valueOf(String.valueOf(orderRechargeTimes.stream().map(OrderRecharge::getOrderId).distinct().count())))
+                .consumeCount(Integer.valueOf(orderRechargeMap.get("count").toString()))
                 .consumeAmount(rechargeTotalAmount)
-                .consumeDetail(orderRechargeTimes)
+                .orderType(OrderType.MEMBER_RECHARGE)
                 .consumePercent(rechargePercent).build();
-        memberRecharge.setOrderType(OrderType.MEMBER_RECHARGE);
         typeList.add(memberRecharge);
-
-        // 助教费用
-        BigDecimal tutorTotalAmount = orderTutorTimes.stream().map(OrderTutorTime::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//        // 助教费用
+//        BigDecimal tutorTotalAmount = orderTutorTimes.stream().map(OrderTutorTime::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        Map<String, Object> orderTutorTimeMap = orderTutorTimeMapper.selectOrderGoodsStatistics(OrderStatus.SETTLED.getValue(), storeId, startTime, endTime);
+        BigDecimal tutorTotalAmount = (BigDecimal) orderTutorTimeMap.get("totalAmount");
         BigDecimal tutorPercent = totalAmount.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : tutorTotalAmount.divide(totalAmount, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
         HomeReportVoConsumeDetail teachFee = HomeReportVoConsumeDetail.builder()
                 .consumeName(OrderType.TEACHING_ASSISTANT_FEE.getDesc())
-                .consumeCount(Integer.valueOf(String.valueOf(orderTutorTimes.stream().map(OrderTutorTime::getOrderId).distinct().count())))
+                .consumeCount(Integer.valueOf(orderTutorTimeMap.get("count").toString()))
                 .consumeAmount(tutorTotalAmount)
-                .consumeDetail(orderTutorTimes)
+                .orderType(OrderType.TEACHING_ASSISTANT_FEE)
                 .consumePercent(tutorPercent).build();
-        teachFee.setOrderType(OrderType.TEACHING_ASSISTANT_FEE);
         typeList.add(teachFee);
 
 

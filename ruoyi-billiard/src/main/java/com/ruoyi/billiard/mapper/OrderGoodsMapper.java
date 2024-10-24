@@ -1,9 +1,12 @@
 package com.ruoyi.billiard.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.billiard.domain.OrderGoods;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 购买商品Mapper接口
@@ -61,4 +64,7 @@ public interface OrderGoodsMapper extends MyBaseMapper<OrderGoods>
      * @return 结果
      */
     public int deleteOrderGoodsByOrderDetailIds(Long[] orderDetailIds);
+
+    Map<String, Object> selectOrderGoodsStatistics(@Param("status") Integer status, @Param("storeId") Long storeId, @Param("startTime") String startTime, @Param("endTime") String endTime);
+
 }

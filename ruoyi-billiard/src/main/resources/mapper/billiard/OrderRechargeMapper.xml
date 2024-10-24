@@ -39,4 +39,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{orderRechargeId}
         </foreach>
     </delete>
+
+    <select id="selectOrderGoodsStatistics" resultType="java.util.Map">
+        SELECT COUNT(1) as count, COALESCE(SUM(a.total_amount), 0) as totalAmount
+        FROM t_order_recharge a INNER JOIN t_order b ON a.order_id = b.order_id
+        <where>
+            <if test="status != null "> and b.status = #{status}</if>
+            <if test="storeId != null"> and b.store_id = #{storeId}</if>
+            <if test="startTime != null and endTime != null"> and b.create_time between #{startTime} and #{endTime}</if>
+        </where>
+        ORDER BY b.create_time DESC
+    </select>
 </mapper>

@@ -1,9 +1,12 @@
 package com.ruoyi.billiard.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.ruoyi.billiard.domain.OrderDeskTime;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 订单计时Mapper接口
@@ -23,4 +26,5 @@ public interface OrderDeskTimeMapper extends MyBaseMapper<OrderDeskTime>
      */
     public List<OrderDeskTime> selectOrderDeskTimeList(OrderDeskTime orderDeskTime);
 
+    Map<String, Object> selectOrderDeskTimeStatistics(@Param("status") Integer status, @Param("storeId") Long storeId, @Param("startTime") String startTime, @Param("endTime") String endTime);
 }
