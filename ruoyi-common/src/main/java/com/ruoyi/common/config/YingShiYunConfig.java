@@ -4,10 +4,12 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.AssertUtil;
 import com.ruoyi.common.utils.http.HttpUtils;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -18,6 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @className: YinShiYunConfig
  */
 @Component
+@Data
 public class YingShiYunConfig {
 
     @Autowired

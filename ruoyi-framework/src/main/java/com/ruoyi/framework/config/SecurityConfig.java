@@ -1,6 +1,8 @@
 package com.ruoyi.framework.config;
 
+import com.ruoyi.common.config.YingShiYunConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,7 +30,7 @@ import com.ruoyi.framework.security.handle.LogoutSuccessHandlerImpl;
  */
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Configuration
-public class SecurityConfig {
+public class SecurityConfig  {
     /**
      * 自定义用户认证逻辑
      */
@@ -65,6 +67,8 @@ public class SecurityConfig {
     @Autowired
     private PermitAllUrlProperties permitAllUrl;
 
+
+
     /**
      * 身份验证实现
      */
@@ -96,9 +100,10 @@ public class SecurityConfig {
         return httpSecurity
                 // CSRF禁用，因为不使用session
                 .csrf(csrf -> csrf.disable())
+
                 // 禁用HTTP响应标头
                 .headers((headersCustomizer) -> {
-                    headersCustomizer.cacheControl(cache -> cache.disable()).frameOptions(options -> options.sameOrigin());
+                    headersCustomizer.cacheControl(cache -> cache.disable()).frameOptions(options -> options.disable());
                 })
                 // 认证失败处理类
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
