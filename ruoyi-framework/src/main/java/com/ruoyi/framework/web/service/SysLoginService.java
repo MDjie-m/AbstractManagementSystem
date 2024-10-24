@@ -89,7 +89,7 @@ public class SysLoginService
                 List<String> roleKeys = user.getRoles().stream().map(SysRole::getRoleKey).collect(Collectors.toList());
                 boolean result = containsInMiniAppRolekeys(Constants.CASHIER_ROLEKEYS, roleKeys);
                 if (!result) {
-                    AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.miniapp.not.roles")));
+                    AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, "此账号没有权限"));
                     throw new ServiceException("此账号没有权限.");
                 }
             }
@@ -101,7 +101,7 @@ public class SysLoginService
 
                 boolean result = containsInMiniAppRolekeys(miniAppRolekeys, roleKeys);
                 if (!result) {
-                    AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.miniapp.not.roles")));
+                    AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, "此账号没有权限"));
                     throw new ServiceException("此账号没有权限.");
                 }
 
