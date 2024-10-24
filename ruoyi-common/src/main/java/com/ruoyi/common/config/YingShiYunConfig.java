@@ -39,24 +39,15 @@ public class YingShiYunConfig {
 
     public synchronized YingShiYunEntity returnAppTokenData() {
         YingShiYunEntity tokenData = redisCache.getCacheObject(redisKey);
-        if (Objects.isNull(tokenData)) {
-            // 再次检查，因为可能在等待锁的过程中其他线程已经获取了数据
-            tokenData = redisCache.getCacheObject(redisKey);
-            if (Objects.isNull(tokenData)) {
-                tokenData = getAppToken();
-                redisCache.setCacheObject(redisKey, tokenData, 7, TimeUnit.DAYS);
-            }
-        } else {
-            long newCurrentTime = System.currentTimeMillis() - 60 * 1000 * 30;
+        long newCurrentTime = System.currentTimeMillis() - 60 * 1000 * 30;//提前三十分钟刷新
+        if (Objects.nonNull(tokenData)) {
             if (newCurrentTime > tokenData.getExpireTime()) {
-                // 再次检查，因为可能在等待锁的过程中其他线程已经更新了数据
-                tokenData = redisCache.getCacheObject(redisKey);
-                if (newCurrentTime > tokenData.getExpireTime()) {
-                    tokenData = getAppToken();
-                    redisCache.setCacheObject(redisKey, tokenData, 7, TimeUnit.DAYS);
-                }
+                tokenData.setAppKey(appKey);
+                return tokenData;
             }
         }
+        tokenData = getAppToken();
+        redisCache.setCacheObject(redisKey, tokenData, tokenData.getExpireTime() - newCurrentTime, TimeUnit.MICROSECONDS);
         tokenData.setAppKey(appKey);
         return tokenData;
     }
