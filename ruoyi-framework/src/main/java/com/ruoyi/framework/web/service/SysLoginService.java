@@ -83,6 +83,16 @@ public class SysLoginService
             AuthenticationContextHolder.setContext(authenticationToken);
             // 该方法会去调用UserDetailsServiceImpl.loadUserByUsername
             authentication = authenticationManager.authenticate(authenticationToken);
+            if (Objects.equals(loginSystem, LoginSystem.CASHIER_SYSTEM)) {
+                LoginUser principal = (LoginUser) authentication.getPrincipal();
+                SysUser user = principal.getUser();
+                List<String> roleKeys = user.getRoles().stream().map(SysRole::getRoleKey).collect(Collectors.toList());
+                boolean result = containsInMiniAppRolekeys(Constants.CASHIER_ROLEKEYS, roleKeys);
+                if (!result) {
+                    AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.miniapp.not.roles")));
+                    throw new ServiceException("此账号没有权限.");
+                }
+            }
             if (Objects.equals(loginSystem, LoginSystem.MINI_APP_SYSTEM)) {
                 LoginUser principal = (LoginUser) authentication.getPrincipal();
                 SysUser user = principal.getUser();

@@ -174,4 +174,5 @@ public class Constants
 
     /** 小程序用户权限标识 */
     public static final String[] MINI_APP_ROLEKEYS = {"storeManager", "copartner", "cashier", "treasurer"};
+    public static final String[] CASHIER_ROLEKEYS = {"storeManager",  "cashier"  };
 }
