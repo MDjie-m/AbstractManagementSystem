@@ -37,34 +37,23 @@ public class YingShiYunConfig {
 
     private final ReentrantLock lock = new ReentrantLock();
 
-    public YingShiYunEntity returnAppTokenData() {
-
+    public synchronized YingShiYunEntity returnAppTokenData() {
         YingShiYunEntity tokenData = redisCache.getCacheObject(redisKey);
         if (Objects.isNull(tokenData)) {
-            try {
-                lock.lock();
-                // 再次检查，因为可能在等待锁的过程中其他线程已经获取了数据
-                tokenData = redisCache.getCacheObject(redisKey);
-                if (Objects.isNull(tokenData)) {
-                    tokenData = getAppToken();
-                    redisCache.setCacheObject(redisKey, tokenData, 7, TimeUnit.DAYS);
-                }
-            } finally {
-                lock.unlock();
+            // 再次检查，因为可能在等待锁的过程中其他线程已经获取了数据
+            tokenData = redisCache.getCacheObject(redisKey);
+            if (Objects.isNull(tokenData)) {
+                tokenData = getAppToken();
+                redisCache.setCacheObject(redisKey, tokenData, 7, TimeUnit.DAYS);
             }
         } else {
-            long newCurrentTime = System.currentTimeMillis();
+            long newCurrentTime = System.currentTimeMillis() - 60 * 1000 * 30;
             if (newCurrentTime > tokenData.getExpireTime()) {
-                try {
-                    lock.lock();
-                    // 再次检查，因为可能在等待锁的过程中其他线程已经更新了数据
-                    tokenData = redisCache.getCacheObject(redisKey);
-                    if (newCurrentTime > tokenData.getExpireTime()) {
-                        tokenData = getAppToken();
-                        redisCache.setCacheObject(redisKey, tokenData, 7, TimeUnit.DAYS);
-                    }
-                } finally {
-                    lock.unlock();
+                // 再次检查，因为可能在等待锁的过程中其他线程已经更新了数据
+                tokenData = redisCache.getCacheObject(redisKey);
+                if (newCurrentTime > tokenData.getExpireTime()) {
+                    tokenData = getAppToken();
+                    redisCache.setCacheObject(redisKey, tokenData, 7, TimeUnit.DAYS);
                 }
             }
         }
