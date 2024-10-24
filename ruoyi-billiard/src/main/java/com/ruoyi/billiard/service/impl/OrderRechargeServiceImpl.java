@@ -1,10 +1,11 @@
 package com.ruoyi.billiard.service.impl;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import com.ruoyi.billiard.domain.Order;
+import com.ruoyi.billiard.domain.Store;
+import com.ruoyi.billiard.mapper.OrderMapper;
+import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,12 @@ public class OrderRechargeServiceImpl implements IOrderRechargeService
 {
     @Autowired
     private OrderRechargeMapper orderRechargeMapper;
+
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private IStoreService storeService;
 
     /**
      * 查询会员充值
@@ -122,8 +129,20 @@ public class OrderRechargeServiceImpl implements IOrderRechargeService
 
     @Override
     public List<OrderRecharge> selectOrderRechargeListByOrderIds(List<Long> orderIds) {
-        return Optional.ofNullable(orderRechargeMapper.selectList(orderRechargeMapper.query()
+        List<OrderRecharge> orderRechargeList = Optional.ofNullable(orderRechargeMapper.selectList(orderRechargeMapper.query()
                         .in(OrderRecharge::getOrderId, orderIds).orderByDesc(OrderRecharge::getCreateTime)))
                 .orElse(Collections.emptyList());
+        orderRechargeList.forEach(p -> {
+            Long orderId = p.getOrderId();
+            Order order = orderMapper.selectById(orderId);
+            if (Objects.nonNull(order)) {
+                Long storeId = order.getStoreId();
+                Store store = storeService.selectStoreByStoreId(storeId);
+                if (Objects.nonNull(store)) {
+                    p.setStoreName(store.getStoreName());
+                }
+            }
+        });
+        return orderRechargeList;
     }
 }

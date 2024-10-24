@@ -142,6 +142,9 @@ public class OrderDeskTime extends BaseFee
     @TableField("status")
     private Integer  status;
 
+    @TableField(exist = false)
+    private String storeName;
+
 
 
 }

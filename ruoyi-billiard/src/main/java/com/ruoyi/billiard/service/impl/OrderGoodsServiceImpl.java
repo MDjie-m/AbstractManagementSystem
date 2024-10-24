@@ -130,6 +130,7 @@ public class OrderGoodsServiceImpl implements IOrderGoodsService {
             p.setGoods(goods);
             StoreDesk storeDesk = Optional.ofNullable(storeDeskService.selectStoreDeskByDeskId(p.getDeskId())).orElse(new StoreDesk());
             p.setDeskName(storeDesk.getDeskName() + " " + storeDesk.getDeskNum());
+            p.setStoreName(storeDesk.getStoreName());
             return p;
         }).collect(Collectors.toList());
     }

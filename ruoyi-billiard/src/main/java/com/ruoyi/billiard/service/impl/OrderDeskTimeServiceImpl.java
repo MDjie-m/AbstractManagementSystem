@@ -123,6 +123,7 @@ public class OrderDeskTimeServiceImpl implements IOrderDeskTimeService {
             orderDeskTime.setStoreDesk(storeDesk);
             orderDeskTime.setDeskName(storeDesk.getDeskName()+ " " +storeDesk.getDeskNum());
             orderDeskTime.setIsTransfer(Objects.nonNull(orderDeskTime.getFromDeskId()));
+            orderDeskTime.setStoreName(storeDesk.getStoreName());
             return orderDeskTime;
         }).collect(Collectors.toList());
     }

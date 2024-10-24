@@ -146,4 +146,7 @@ public class OrderTutorTime extends BaseFee
     @TableField(exist = false)
     private StoreTutor storeTutor;
 
+    @TableField(exist = false)
+    private String storeName;
+
 }

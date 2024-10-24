@@ -1110,12 +1110,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public List<Order> selectOrderByPayStatus(Integer payStatus, Long storeId, String startTime, String endTime) {
-        return Optional.ofNullable(orderMapper.selectList(orderMapper.query()
+        List<Order> orders = Optional.ofNullable(orderMapper.selectList(orderMapper.query()
                         .eq(Objects.nonNull(storeId), Order::getStoreId, storeId)
                         .between(Order::getCreateTime, startTime, endTime)
                         .eq(Order::getStatus, payStatus)
                         .orderByDesc(Order::getPayTime)))
                 .orElse(Collections.emptyList());
+        orders.forEach(p -> {
+            Store store = storeService.selectStoreByStoreId(p.getStoreId());
+            if (Objects.nonNull(store)) {
+                p.setStoreName(store.getStoreName());
+            }
+        });
+        return orders;
     }
 
     @Override

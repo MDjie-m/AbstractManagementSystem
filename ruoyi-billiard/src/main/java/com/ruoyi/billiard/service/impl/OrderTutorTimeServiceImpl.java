@@ -141,6 +141,8 @@ public class OrderTutorTimeServiceImpl implements IOrderTutorTimeService
             p.setStoreDesk(storeDesk);
             p.setDeskName(storeDesk.getDeskName() + " " + storeDesk.getDeskNum());
 
+            p.setStoreName(storeDesk.getStoreName());
+
             // 获取教练信息
             Long tutorId = p.getTutorId();
             StoreTutor storeTutor = Optional.ofNullable(storeTutorService.selectStoreTutorByStoreTutorId(tutorId)).orElse(new StoreTutor());

@@ -118,6 +118,9 @@ public class OrderRecharge extends MyBaseEntity implements ITotalDueFee {
     @TableField(exist = false)
     private OrderPayType payType;
 
+    @TableField(exist = false)
+    private String storeName;
+
     @Override
     public BigDecimal getTotalAmountDue() {
         return rechargeAmount;
