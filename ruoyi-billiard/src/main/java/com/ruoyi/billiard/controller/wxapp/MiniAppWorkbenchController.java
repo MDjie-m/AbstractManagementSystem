@@ -139,7 +139,7 @@ public class MiniAppWorkbenchController extends BaseController {
         return ResultVo.success(list);
     }
     @PreAuthorize("@ss.hasPermi('miniapp:stock:list')")
-    @GetMapping("/category/list/{storeId}")
+    @GetMapping("/goods/category/list/{storeId}")
     public ResultVo<List<GoodsCategory>> listCategories(@PathVariable("storeId") Long storeId) {
         return ResultVo.success(goodsCategoryService.selectGoodsCategoryList(GoodsCategory.builder()
                 .storeId(storeId).build()));
