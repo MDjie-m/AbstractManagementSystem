@@ -257,10 +257,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         //更新上一桌计费时间
         List<OrderDeskTime> deskTimes = orderDeskTimeMapper.selectList(orderDeskTimeMapper.query().eq(OrderDeskTime::getDeskId, oldDeskId)
-                .eq(OrderDeskTime::getOrderId, orderId));
+                .eq(OrderDeskTime::getOrderId, orderId)
+                .eq(OrderDeskTime::getStatus, CalcTimeStatus.BUSY.getValue()));
         Date endTime = DateUtils.removeSeconds(DateUtils.getNowDate());
         deskTimes.forEach(p -> {
             p.setEndTime(endTime);
+            p.setStatus(CalcTimeStatus.STOP.getValue());
             SecurityUtils.fillUpdateUser(p);
         });
         orderDeskTimeMapper.updateBatch(deskTimes);
