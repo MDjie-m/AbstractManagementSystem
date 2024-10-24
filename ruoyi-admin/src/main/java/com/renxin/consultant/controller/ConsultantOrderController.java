@@ -518,16 +518,56 @@ public class ConsultantOrderController extends BaseController
         //查询订单
         PsyConsultantOrder order = psyConsultantOrderService.selectPsyConsultantOrderByOrderNo(req.getOutTradeNo());
         PsyConsultantOrder result = new PsyConsultantOrder();
-
-        ////若已发起过该渠道的支付, 则直接返回相关参数
-        if ("aliPay".equals(req.getPaymentChannel())){
             result.setOrderNo(order.getOrderNo());
             result.setPayAmount(order.getPayAmount());
+
+        //支付宝支付
+        if ("aliPay".equals(req.getPaymentChannel()) && ObjectUtils.isNotEmpty(order.getAliPayParam())){
+            ////若已发起过该渠道的支付, 则直接返回相关参数
             result.setAliPayParam(order.getAliPayParam());
+            return AjaxResult.success(result);
+        }
+            ////否则发起支付宝支付
+        if("aliPay".equals(req.getPaymentChannel()) && ObjectUtils.isEmpty(order.getAliPayParam())){
+            AjaxResult aliResult = AlipayPayUtil.alipayAppPay(order.getOrderNo(), order.getPayAmount(), order.getServerName());
+            if ((Integer) aliResult.get("code") == 200) {
+                //获取支付参数后, 将其保存
+                String msg = (String) aliResult.get("msg");
+                    order.setAliPayParam(msg);
+                psyConsultantOrderService.updatePsyConsultantOrder(order);
+
+                result.setAliPayParam(order.getAliPayParam());
+                return AjaxResult.success(result);
+            } else {
+                log.error("发起支付宝支付失败, result : " + aliResult);
+                throw new ServiceException("发起支付宝支付失败");
+            }
         }
         
-        return AjaxResult.success(result);
-     
+        //微信支付
+        if ("wechatPay".equals(req.getPaymentChannel()) && ObjectUtils.isNotEmpty(order.getWxPayParam())){
+            ////若已发起过该渠道的支付, 则直接返回相关参数
+            result.setWxPayParam(order.getWxPayParam());
+            return AjaxResult.success(result);
+        }
+            ////否则发起微信支付
+        if ("wechatPay".equals(req.getPaymentChannel()) && ObjectUtils.isEmpty(order.getWxPayParam())){
+            Map<String, Object> wxResult = wechatPaymentService.weChatDoUnifiedOrder(order.getOrderNo(), order.getPayAmount(), order.getServerName());
+            if ((Integer) wxResult.get("code") == 200) {
+                //获取支付参数后, 将其保存
+                Map<String,String> dataMap = (Map)wxResult.get("data");
+                String wxPayParam = JSONObject.toJSONString(dataMap);
+                    order.setWxPayParam(wxPayParam);
+                psyConsultantOrderService.updatePsyConsultantOrder(order);
+
+                result.setWxPayParam(wxPayParam);
+                return AjaxResult.success(result);
+            }else {
+                log.error("发起微信支付失败, result : " + wxResult);
+                throw new ServiceException("发起微信支付失败");
+            }
+        }
+        return AjaxResult.error("不存在该支付方式:" + req.getPaymentChannel());
     }
 
     //String 转 map
