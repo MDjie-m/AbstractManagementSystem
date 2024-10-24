@@ -1,8 +1,10 @@
 package com.ruoyi.common.config;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.common.core.domain.YingshiPic;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.AssertUtil;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.http.HttpUtils;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +36,13 @@ public class YingShiYunConfig {
 
     @Value("${yingshi.redisKey}")
     private String redisKey;
+    private final String redisCapturePrefix = "yingshi:device:pic:";
 
     @Value("${yingshi.tokenUrl}")
     private String tokenUrl;
+    @Value("${yingshi.captureUrl}")
+    private String captureUrl;
+
 
     private final ReentrantLock lock = new ReentrantLock();
 
@@ -55,6 +61,25 @@ public class YingShiYunConfig {
         return tokenData;
     }
 
+    public String getDeviceCaptureImg(String serialNum) {
+        if (org.apache.commons.lang3.StringUtils.isEmpty(serialNum)) {
+            return "";
+        }
+        String url = redisCache.getCacheObject(redisCapturePrefix.concat(serialNum));
+        if (Objects.isNull(url)) {
+
+
+            YingshiPic pic = getAppPic(serialNum);
+            if (Objects.nonNull(pic)) {
+                redisCache.setCacheObject(redisCapturePrefix.concat(serialNum), pic.getPicUrl(), 20, TimeUnit.MINUTES);
+                return pic.getPicUrl();
+            } else {
+                return "";
+            }
+        }
+        return url;
+    }
+
     private YingShiYunEntity getAppToken() {
 
         String sendParam = "appKey=" + appKey + "&appSecret=" + appSecret;
@@ -66,5 +91,16 @@ public class YingShiYunConfig {
         return pres.getObject("data", YingShiYunEntity.class);
     }
 
+    private YingshiPic getAppPic(String serialNum) {
+
+        String sendParam = StringUtils.format("appKey={}&accessToken={}&deviceSerial={}&channelNo=1&quality=0&appSecret={}", appKey, getAppToken().getAccessToken(),
+                serialNum.toUpperCase(),appSecret);
+        String res = HttpUtils.sendPost(captureUrl, sendParam);
+
+        JSONObject pres = JSONObject.parseObject(res);
+        String code = pres.getString("code");
+        AssertUtil.equal(code, "200", pres.getString("msg"));
+        return pres.getObject("data", YingshiPic.class);
+    }
 }
 

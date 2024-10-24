@@ -26,4 +26,6 @@ public class Device2DeviceStoreVo extends Device {
     /** 门店状态（0正常 1闭店） */
     private Integer storeStatus;
 
+    private String deviceImg;
+
 }

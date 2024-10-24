@@ -189,3 +189,4 @@ yingshi:
   secret: e5942c70a57ee6b9f1385182bcd04f2a
   redisKey: yingshi:token
   tokenUrl: https://open.ys7.com/api/lapp/token/get
+  captureUrl: https://open.ys7.com/api/lapp/device/capture

@@ -221,6 +221,7 @@ public class DeviceServiceImpl implements IDeviceService, MQTTServiceImpl.Device
                 device2DeviceStoreVo.setStoreAddress(store.getStoreAddress());
                 device2DeviceStoreVo.setStoreImg(store.getStoreImg());
                 device2DeviceStoreVo.setStoreStatus(store.getStatus());
+                device2DeviceStoreVo.setDeviceImg(yingShiYunConfig.getDeviceCaptureImg(p.getDeviceSerialNum()));
             }
             return device2DeviceStoreVo;
         }).collect(Collectors.toList());
