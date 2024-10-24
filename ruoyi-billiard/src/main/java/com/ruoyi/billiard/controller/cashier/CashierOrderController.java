@@ -33,7 +33,7 @@ public class CashierOrderController extends BaseController {
     public PageResVo<Order> orderList(@Validated Order reqVo) {
         reqVo.setStoreId(getStoreIdWithThrow());
         startPage();
-        List<Order> res = orderService.selectOrderList(reqVo);
+        List<Order> res = orderService.selectOrderListByCashier(reqVo);
         return PageResVo.success(res);
     }
 

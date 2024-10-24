@@ -225,5 +225,6 @@ public class Order extends MyBaseEntity {
         return !(CollectionUtils.isEmpty(orderGoods) && CollectionUtils.isEmpty(orderTutorTimes));
     }
 
-
+    @TableField(exist = false)
+    private String deskNames;
 }

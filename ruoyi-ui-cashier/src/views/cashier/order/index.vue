@@ -260,11 +260,13 @@
             <el-table @row-click="onRowClick" v-loading="loading" :data="orderList" @change="getList"
                       :row-style="rowStyle">
               <el-table-column label="订单号" align="center" prop="orderNo" width="210"/>
+
               <el-table-column label="订单类型" align="center" prop="orderType">
                 <template slot-scope="scope">
                   <dict-tag :options="dict.type.order_type" :value="scope.row.orderType"/>
                 </template>
               </el-table-column>
+              <el-table-column label="台桌" align="center" prop="deskNames"/>
               <el-table-column label="应付金额(元)" align="center" prop="totalAmountDue"/>
               <el-table-column label="实际支付金额(元)" align="center" prop="totalAmount"/>
 

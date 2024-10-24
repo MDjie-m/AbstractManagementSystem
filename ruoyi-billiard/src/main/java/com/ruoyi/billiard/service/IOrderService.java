@@ -37,7 +37,7 @@ public interface IOrderService
      * @return 订单集合
      */
     public List<Order> selectOrderList(Order order);
-
+    List<Order> selectOrderListByCashier(Order order);
     /**
      * 新增订单
      * 

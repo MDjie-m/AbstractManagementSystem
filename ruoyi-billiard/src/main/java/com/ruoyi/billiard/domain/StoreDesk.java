@@ -137,7 +137,7 @@ public class StoreDesk extends MyBaseEntity
     public String getTitle() {
         return getLongTitle();
     }
-    public String shortTitle() {
+    public String getShortTitle() {
         return StringUtils.format("{}({})", deskName, deskNum);
     }
 }

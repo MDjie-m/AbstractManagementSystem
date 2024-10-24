@@ -48,4 +48,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY b.create_time DESC
 
     </select>
+    <select id="selectDeskByOrderIds" resultType="com.ruoyi.billiard.domain.StoreDesk">
+        select a.desk_id,a.desk_num ,a.desk_name,c.name as desk_type_name ,d.name as place_type_name , b.order_id as
+        current_order_id from t_store_desk a join t_order_desk_time b on a.desk_id=b.desk_id
+        join t_desk_type c on a.desk_type=c.desk_type_id
+        join t_desk_place d on d.desk_place_id=a.place_type
+        where b.order_id in
+        <foreach item="id" collection="orderIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+    </select>
 </mapper>

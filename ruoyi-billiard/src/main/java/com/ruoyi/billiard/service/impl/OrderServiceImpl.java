@@ -18,10 +18,7 @@ import com.ruoyi.billiard.mapper.*;
 import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.domain.MyBaseEntity;
-import com.ruoyi.common.utils.AssertUtil;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.SecurityUtils;
-import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.*;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -156,7 +153,29 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public List<Order> selectOrderList(Order order) {
         List<Order> orders = Optional.ofNullable(orderMapper.selectOrderList(order)).orElse(Collections.emptyList());
+        if(CollectionUtils.isEmpty(orders)){
+            return  orders;
+        }
         orders.forEach(p -> p.setStoreName(storeService.selectStoreByStoreId(p.getStoreId()).getStoreName()));
+        return orders;
+    }
+
+    @Override
+    public List<Order> selectOrderListByCashier(Order order) {
+
+        List<Order> orders = selectOrderList(order);
+        if(CollectionUtils.isEmpty(orders)){
+            return  orders;
+        }
+        Map<Long,List<StoreDesk>> times = ArrayUtil.groupBy( orderDeskTimeMapper
+                .selectDeskByOrderIds(
+                orders.stream().map(Order::getOrderId).collect(Collectors.toList())),StoreDesk::getCurrentOrderId);
+        orders.forEach(p->{
+            Optional.ofNullable(times.get(p.getOrderId())).ifPresent(list->{
+                p.setDeskNames(list.stream().map(StoreDesk::getShortTitle).collect(Collectors.joining("、")));
+            });
+        });
+
         return orders;
     }
 
