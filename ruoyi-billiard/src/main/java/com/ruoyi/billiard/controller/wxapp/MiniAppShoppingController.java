@@ -58,7 +58,7 @@ public class MiniAppShoppingController {
      * @param storeId
      * @return 商品分类列表
      */
-//    @PreAuthorize("@ss.hasPermi('miniapp:shopping:list')")
+    @PreAuthorize("@ss.hasPermi('miniapp:shopping:list')")
     @GetMapping("/goods-category-list/{storeId}")
     public ResultVo<List<GoodsCategory>> getGoodsCategoryList(@PathVariable("storeId") Long storeId) {
         GoodsCategory goodsCategory = new GoodsCategory();
