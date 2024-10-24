@@ -39,6 +39,7 @@ import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.psychology.vo.PsyConsultServeConfigVO;
 import com.renxin.user.domain.PsyUserIntegralRecord;
 import com.renxin.user.service.IPsyUserIntegralRecordService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,7 @@ import javax.annotation.Resource;
  * @date 2024-06-26
  */
 @Service
+@Slf4j
 public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService 
 {
     @Autowired
@@ -534,9 +536,10 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     @Transactional(rollbackFor = Exception.class)
     public void paySuccessCallback(String outTradeNo, String payId) {
         PsyConsultantOrder consultantOrder = consultantOrderService.selectPsyConsultantOrderByOrderNo(outTradeNo);
-        /*if (!consultantOrder.getPayId().equals(payId)){
-            throw new ServiceException("payId不相符, 请确认已付款成功");
-        }*/
+        if (consultantOrder.getStatus().equals(ConsultConstant.PAY_STATUE_PAID)){
+            log.info(consultantOrder.getOrderNo() + "该订单已支付完成, 无需重复执行回调");
+            return;
+        }
 
         if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_TEAM_SUP)) {
             //团队督导 , 更新订单状态

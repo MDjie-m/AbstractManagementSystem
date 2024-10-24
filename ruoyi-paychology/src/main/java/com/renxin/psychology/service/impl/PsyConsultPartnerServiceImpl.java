@@ -115,9 +115,8 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult consultantDraft(Long consultantId)
     {
-        PartnerDTO one = getInfoByConsultId(consultantId);
-        
-        if (one == null) {
+        PartnerDTO oldPartner = getInfoByConsultId(consultantId);
+        if (oldPartner == null) {
             Long  id = IDhelper.getNextId();
             PsyConsultPartner partner = new PsyConsultPartner();
             partner.setId(id);
@@ -126,16 +125,17 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
             partner.setCreateTime(new Date());
             partner.setUpdateTime(new Date());
             partner.setConsultId(consultantId);
-            partner.setPhone(one.getPhone());
+            PsyConsultVO consultant = consultService.getOne(consultantId);
+            partner.setPhone(consultant.getPhonenumber());
             //PsyConsultVO consultant = consultService.getOne(consultantId);
             //partner.setPhone(consultant.getPhonenumber());
             psyConsultPartnerMapper.insert(partner);
             return AjaxResult.success(id);
-        } else if (ConsultConstant.PARTNER_STATUS_1.equals(one.getStatus())){
+        } else if (ConsultConstant.PARTNER_STATUS_1.equals(oldPartner.getStatus())){
             //throw new ServiceException("入驻申请已在审核中",123);
             return AjaxResult.error(123,"入驻申请已在审核中");
         } else {
-            return AjaxResult.success(one.getId());
+            return AjaxResult.success(oldPartner.getId());
         }
     }
     
