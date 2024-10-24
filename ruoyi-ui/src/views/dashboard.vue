@@ -219,9 +219,9 @@ export default {
       if (this.activeName === 'today') {
         startTime = this.$time().format('YYYY-MM-DD')
         endTime = this.$time().format('YYYY-MM-DD')
-      } else if (this.activeName === 'month') {
-        startTime = this.$time().startOf('week').format('YYYY-MM-DD')
-        endTime = this.$time().endOf('week').format('YYYY-MM-DD')
+      } else if (this.activeName === "week") {
+        startTime = this.$time().add(-7,'days').format("YYYY-MM-DD");
+        endTime = this.$time().format("YYYY-MM-DD");
       } else if (this.activeName === 'month') {
         startTime = this.$time().startOf('month').format('YYYY-MM-DD')
         endTime = this.$time().endOf('month').format('YYYY-MM-DD')
