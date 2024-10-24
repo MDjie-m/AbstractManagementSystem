@@ -67,6 +67,7 @@ export default {
     getPlaceTypeList(){
       listPlaceTypeAll().then(res=>{
         this.placeTypeList=res.data||[];
+        this.currentTitle=this.placeTypeList[0].value;
       })
     },
     getList() {

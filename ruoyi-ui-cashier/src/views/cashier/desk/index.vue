@@ -557,10 +557,10 @@ export default {
       this.getList();
     },
     onChooseClick(field, val) {
-      if (this.queryParams[field] === parseInt(val)) {
+      if (this.queryParams[field] ===  val ) {
         this.queryParams[field] = null;
       } else {
-        this.queryParams[field] = parseInt(val);
+        this.queryParams[field] =  val ;
       }
       this.currentDesk = null;
       this.getList()

@@ -101,7 +101,9 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
         if (Objects.nonNull(storeDesk.getPlaceType())) {
             queryWrapper.eq("a.place_type", storeDesk.getPlaceType());
         }
-
+        if (Objects.nonNull(storeDesk.getDeskType())) {
+            queryWrapper.eq("a.desk_type", storeDesk.getDeskType());
+        }
 //        if (O
 //        bjects.nonNull(storeDesk.getBookingStart())
 //                && Objects.nonNull(storeDesk.getBookingEnd())) {
