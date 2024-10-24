@@ -1,6 +1,6 @@
 package com.renxin.consultant.controller;
 
-import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -319,8 +319,10 @@ public class ConsultantOrderController extends BaseController
         if ("wechatPay".equals(consultantOrder.getPaymentChannel())){
             Map<String, Object> wxResult = wechatPaymentService.weChatDoUnifiedOrder(out_trade_no, newOrder.getPayAmount(), newOrder.getServerName());
             if ((Integer) wxResult.get("code") == 200) {
+                Map<String,String> dataMap = (Map)wxResult.get("data");
+                String wxPayParam = JSONObject.toJSONString(dataMap);
                 
-                result.setWxPayParamMap((Map)wxResult.get("data"));
+                result.setWxPayParam(wxPayParam);
                 return AjaxResult.success(result);
             }else {
                 log.error("发起微信支付失败, result : " + wxResult);
