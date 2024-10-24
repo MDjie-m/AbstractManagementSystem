@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.AssertUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +86,22 @@ public class TokenService
             }
         }
         return null;
+    }
+    public  void verifyToken(String token){
+        try
+        {
+            Claims claims = parseToken(token);
+            // 解析对应的权限以及用户信息
+            String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
+            String userKey = getTokenKey(uuid);
+            LoginUser user = redisCache.getCacheObject(userKey);
+            AssertUtil.notNullOrEmpty(user,"非法请求");
+        }
+        catch (Exception e)
+        {
+            log.error("获取用户信息异常'{}'", e.getMessage());
+            throw  new ServiceException("非法请求");
+        }
     }
 
     /**
