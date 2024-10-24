@@ -67,11 +67,9 @@ public class YingShiYunConfig {
         }
         String url = redisCache.getCacheObject(redisCapturePrefix.concat(serialNum));
         if (Objects.isNull(url)) {
-
-
             YingshiPic pic = getAppPic(serialNum);
             if (Objects.nonNull(pic)) {
-                redisCache.setCacheObject(redisCapturePrefix.concat(serialNum), pic.getPicUrl(), 20, TimeUnit.MINUTES);
+                redisCache.setCacheObject(redisCapturePrefix.concat(serialNum), pic.getPicUrl(), 20, TimeUnit.DAYS);
                 return pic.getPicUrl();
             } else {
                 return "";
