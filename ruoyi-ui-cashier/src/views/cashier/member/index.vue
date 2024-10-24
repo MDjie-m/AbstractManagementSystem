@@ -193,7 +193,6 @@ export default {
         this.memberList = list;
         this.total = response.total;
         if(this.current){
-          debugger
           this.current=this.memberList.find(p=>p.memberId===this.current.memberId)
         }
       }).finally(() => this.loading = false)
