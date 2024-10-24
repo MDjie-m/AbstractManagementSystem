@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.renxin.common.aliPay.AlipayPayUtil;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.constant.PsyConstants;
@@ -14,6 +15,7 @@ import com.renxin.common.enums.LimitType;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.OrderIdUtils;
 import com.renxin.common.wechat.wxPay.WechatPaymentService;
+import com.renxin.common.wechat.wxPay.WxV3PayConfig;
 import com.renxin.course.constant.CourConstant;
 import com.renxin.course.domain.CourCourse;
 import com.renxin.course.domain.CourOrder;
@@ -37,16 +39,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -365,10 +376,33 @@ public class ConsultantOrderController extends BaseController
 
     @PostMapping("/wxPaySuccess/callback")
     public Map<String, String> wxPayCallback(@RequestBody Map<String,Object> map, HttpServletRequest request) {
+        Map<String, String> result = new HashMap<>(2);
         log.info("微信, 支付完成回调");
         log.info(map.toString());
         log.info(request.toString());
 
+        //回调数据解密
+        Map<String,Object> resource = (Map)map.get("resource");
+        String associatedData = (String)resource.get("associated_data");
+        String nonce = (String)resource.get("nonce"); 
+        String ciphertext = (String)resource.get("ciphertext");
+        String decryptedData = decryptWeChatCiphertext(WxV3PayConfig.apiV3Key, associatedData, nonce, ciphertext);
+
+        // 将解密后的数据进行JSON解析
+        Gson gson = new Gson();
+        Map<String, Object> decryptedJson = gson.fromJson(decryptedData, Map.class);
+        String orderNo = (String)decryptedJson.get("out_trade_no");
+        String tradeState = (String)decryptedJson.get("trade_state");
+        if (ObjectUtils.isNotEmpty(orderNo) && tradeState.equals("SUCCESS")){
+            //支付成功
+            psyConsultantOrderService.paySuccessCallback(orderNo, null);
+            result.put("code", "SUCCESS");
+            result.put("message", "OK");
+            log.info("微信支付, 回调结果成功. decryptedData: " + gson.toJson(decryptedJson));
+            return result;
+        }else{
+            log.error("微信支付, 回调结果失败. decryptedData: " + gson.toJson(decryptedJson));
+        }
         return null;
     }
     
@@ -586,5 +620,32 @@ public class ConsultantOrderController extends BaseController
             log.error("发起支付返回结果解析异常, queryString: " + queryString);
             throw new ServiceException("发起支付返回结果解析异常");
         }
+    }
+    
+    public String decryptWeChatCiphertext(String apiV3Key, String associatedData, String nonce, String ciphertext)  {
+        // 将API V3密钥转换为字节数组
+        try {
+            byte[] keyBytes = apiV3Key.getBytes(StandardCharsets.UTF_8);
+
+            // 将密文从base64解码
+            byte[] ciphertextBytes = Base64.getDecoder().decode(ciphertext);
+
+            // 初始化BC Provider
+            Security.addProvider(new BouncyCastleProvider());
+
+            // 创建AES-GCM对象
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding", "BC");
+            SecretKeySpec keySpec = new SecretKeySpec(keyBytes, "AES");
+            GCMParameterSpec gcmSpec = new GCMParameterSpec(128, nonce.getBytes(StandardCharsets.UTF_8));
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, gcmSpec);
+            cipher.updateAAD(associatedData.getBytes(StandardCharsets.UTF_8));
+
+            // 解密并验证
+            byte[] plaintextBytes = cipher.doFinal(ciphertextBytes);
+            return new String(plaintextBytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new ServiceException("解析回调异常. apiV3Key:" + apiV3Key + ";  associatedData:" + associatedData + ";  nonce:" + nonce
+            + ";  ciphertext:" + ciphertext);
+        } 
     }
 }
