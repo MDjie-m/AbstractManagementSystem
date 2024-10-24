@@ -1159,10 +1159,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public void exportConsumeDetail(HttpServletResponse response, HomeReportVoConsume consume, HomeReportDto dto) {
+    public void exportConsumeDetail(HttpServletResponse response, HomeReportDto dto) {
         OrderType orderType = dto.getOrderType();
+        List<?> list = selectOrderTypeList(dto);
         if (Objects.equals(orderType, OrderType.AGGREGATE_CONSUMPTION)) {
-            List<Order> consumeDetail = (List<Order>) consume.getTotal().getConsumeDetail();
+            List<Order> consumeDetail = (List<Order>) list;
             consumeDetail.forEach(item -> {
                 if (Objects.nonNull(item.getOrderType())) {
                     item.setOrderTypeText(item.getOrderType().getDesc());
@@ -1175,41 +1176,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             util.exportExcel(response, consumeDetail, "订单总消费明细");
         }
         if (Objects.equals(orderType, OrderType.TABLE_CHARGE)) {
-            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
-                    .stream()
-                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.TABLE_CHARGE.getDesc()))
-                    .findFirst().orElse(null);
-            List<OrderDeskTime> consumeDetail = (List<OrderDeskTime>) reportVoConsumeDetail.getConsumeDetail();
+            List<OrderDeskTime> consumeDetail = (List<OrderDeskTime>) list;
             AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单球桌费用数据");
             ExcelUtil<OrderDeskTime> util = new ExcelUtil<>(OrderDeskTime.class);
             util.exportExcel(response, consumeDetail, "订单球桌费用明细");
         }
         if (Objects.equals(orderType, OrderType.COMMODITY_PURCHASE)) {
-            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
-                    .stream()
-                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.COMMODITY_PURCHASE.getDesc()))
-                    .findFirst().orElse(null);
-            List<OrderGoods> consumeDetail = (List<OrderGoods>) reportVoConsumeDetail.getConsumeDetail();
+            List<OrderGoods> consumeDetail = (List<OrderGoods>) list;
             AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单商品消费费用数据");
             ExcelUtil<OrderGoods> util = new ExcelUtil<>(OrderGoods.class);
             util.exportExcel(response, consumeDetail, "订单商品消费明细");
         }
         if (Objects.equals(orderType, OrderType.MEMBER_RECHARGE)) {
-            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
-                    .stream()
-                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.MEMBER_RECHARGE.getDesc()))
-                    .findFirst().orElse(null);
-            List<OrderRecharge> consumeDetail = (List<OrderRecharge>) reportVoConsumeDetail.getConsumeDetail();
+            List<OrderRecharge> consumeDetail = (List<OrderRecharge>) list;
             AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单会员充值费用数据");
             ExcelUtil<OrderRecharge> util = new ExcelUtil<>(OrderRecharge.class);
             util.exportExcel(response, consumeDetail, "订单会员充值费用明细");
         }
         if (Objects.equals(orderType, OrderType.TEACHING_ASSISTANT_FEE)) {
-            HomeReportVoConsumeDetail reportVoConsumeDetail = consume.getTypeList()
-                    .stream()
-                    .filter(item -> Objects.equals(item.getConsumeName(), OrderType.TEACHING_ASSISTANT_FEE.getDesc()))
-                    .findFirst().orElse(null);
-            List<OrderTutorTime> consumeDetail = (List<OrderTutorTime>) reportVoConsumeDetail.getConsumeDetail();
+            List<OrderTutorTime> consumeDetail = (List<OrderTutorTime>) list;
             AssertUtil.notNullOrEmpty(consumeDetail, "未找到订单助教费用数据");
             ExcelUtil<OrderTutorTime> util = new ExcelUtil<>(OrderTutorTime.class);
             util.exportExcel(response, consumeDetail, "订单助教费用明细");

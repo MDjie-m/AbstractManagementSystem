@@ -122,9 +122,7 @@ public class MiniAppWorkbenchController extends BaseController {
     @Log(title = "报表流水分类数据详情导出", businessType = BusinessType.EXPORT)
     @PostMapping("/homeReport/exportConsumeDetail")
     public void exportConsumeDetail(HttpServletResponse response, @RequestBody HomeReportDto dto) {
-        HomeReportVo homeReportVo = orderService.selectOrderData2Report(dto);
-        HomeReportVoConsume consume = homeReportVo.getConsume();
-        orderService.exportConsumeDetail(response, consume, dto);
+        orderService.exportConsumeDetail(response, dto);
     }
 
     /**
