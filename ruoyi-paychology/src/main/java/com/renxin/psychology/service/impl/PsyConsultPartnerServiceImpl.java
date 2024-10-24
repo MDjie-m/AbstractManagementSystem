@@ -11,10 +11,7 @@ import com.renxin.common.utils.NewDateUtil;
 import com.renxin.common.vo.DateLimitUtilVO;
 import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.psychology.constant.ConsultConstant;
-import com.renxin.psychology.domain.PsyConsultContract;
-import com.renxin.psychology.domain.PsyConsultPartner;
-import com.renxin.psychology.domain.PsyConsultPartnerItem;
-import com.renxin.psychology.domain.PsyUser;
+import com.renxin.psychology.domain.*;
 import com.renxin.psychology.dto.ExperienceDTO;
 import com.renxin.psychology.dto.PartnerDTO;
 import com.renxin.psychology.mapper.PsyConsultPartnerItemMapper;
@@ -197,7 +194,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         entity.setId(id);
         
         PsyConsultPartner oldPartner = psyConsultPartnerMapper.selectById(id);
-        PsyConsultVO consultant = consultService.getOne(oldPartner.getConsultId());
+        PsyConsult consultant = consultService.getBaseMapper().selectById(oldPartner.getConsultId());
 
         //入驻申请/修改申请 已在审核中, 则不可改动
         if (ConsultConstant.PARTNER_STATUS_1.equals(oldPartner.getStatus()) ||  ConsultConstant.PARTNER_STATUS_3.equals(oldPartner.getStatus())){
@@ -210,7 +207,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         }
         
         //若要将状态修改为"审核中" (提交审核) , 且已入驻, 则状态切换为[修改审核中]
-        if (ConsultConstant.PARTNER_STATUS_1.equals(entity.getStatus()) && consultant.getSettleStatus() == 1 ){
+        if (ConsultConstant.PARTNER_STATUS_1.equals(entity.getStatus()) && consultant.getSettleStatus() == 1){
             entity.setStatus(ConsultConstant.PARTNER_STATUS_3);
             
            /* //旧申请单已审核通过, 则此时状态切换到[修改审核中]
