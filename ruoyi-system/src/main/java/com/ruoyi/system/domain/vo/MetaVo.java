@@ -29,6 +29,8 @@ public class MetaVo
      */
     private String link;
 
+    private String remark;
+
     public MetaVo()
     {
     }
@@ -102,5 +104,13 @@ public class MetaVo
     public void setLink(String link)
     {
         this.link = link;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
