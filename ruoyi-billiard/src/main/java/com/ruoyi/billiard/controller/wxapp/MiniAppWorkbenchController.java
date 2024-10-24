@@ -23,6 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
@@ -47,7 +48,8 @@ public class MiniAppWorkbenchController extends BaseController {
 
     @Autowired
     private IStoreService storeService;
-
+    @Resource
+    private IGoodsCategoryService goodsCategoryService;
 
     /**
      * 获取门店列表
@@ -57,6 +59,7 @@ public class MiniAppWorkbenchController extends BaseController {
     public ResultVo<List<Store>> getStoreList() {
         return ResultVo.success(storeService.findAListOfStoresByRole());
     }
+
 
     /**
      * 获取报表页面数据
@@ -135,6 +138,13 @@ public class MiniAppWorkbenchController extends BaseController {
         List<Stock> list = stockService.selectStockList(stock);
         return ResultVo.success(list);
     }
+    @PreAuthorize("@ss.hasPermi('miniapp:stock:list')")
+    @GetMapping("/category/list")
+    public ResultVo<List<GoodsCategory>> listCategories() {
+        return ResultVo.success(goodsCategoryService.selectGoodsCategoryList(GoodsCategory.builder()
+                .storeId(getStoreIdWithThrow()).build()));
+    }
+
 
     @PreAuthorize("@ss.hasPermi('miniapp:stock:list')")
     @Log(title = "库存盘点", businessType = BusinessType.UPDATE)
