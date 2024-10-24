@@ -184,9 +184,10 @@ mqtt:
 cashier:
   aes-key: 1234567890123456
 yingshi:
-  allowUrls: http://localhost:9090
   appKey: 1dc287d86f6747839c1759b5a2db992a
   secret: e5942c70a57ee6b9f1385182bcd04f2a
   redisKey: yingshi:token
   tokenUrl: https://open.ys7.com/api/lapp/token/get
   captureUrl: https://open.ys7.com/api/lapp/device/capture
+  template: 3f893dbcab5944c0bb21242986fce071
+  #  template: mobileRec

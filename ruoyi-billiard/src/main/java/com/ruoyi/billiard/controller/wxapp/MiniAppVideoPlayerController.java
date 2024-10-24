@@ -31,6 +31,7 @@ public class MiniAppVideoPlayerController {
         tokenService.verifyToken(jwtToken);
         YingShiYunEntity token = yingShiYunConfig.returnAppTokenData();
         model.addAttribute("serialNum", serialNum);
+        model.addAttribute("template", yingShiYunConfig.getTemplate());
         model.addAttribute("title", title);
         model.addAttribute("accessToken", token.getAccessToken());
         return "player";

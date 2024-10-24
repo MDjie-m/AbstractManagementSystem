@@ -30,7 +30,8 @@ public class YingShiYunConfig {
 
     @Value("${yingshi.appKey}")
     private String appKey;
-
+    @Value("${yingshi.template}")
+    private String template;
     @Value("${yingshi.secret}")
     private String appSecret;
 
