@@ -137,6 +137,17 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
                 p.setBooking(map.get(p.getDeskId()));
             });
         }
+        if (Objects.equals(Boolean.TRUE, storeDesk.getQueryTime()) && CollectionUtils.isNotEmpty(res)) {
+            List<Long> orderIds = res.stream().map(StoreDesk::getCurrentOrderId).filter(Objects::nonNull).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(orderIds)) {
+                Map<Long, Long> map = ArrayUtil.toMap(orderDeskTimeMapper.getDeskCalcTimes(orderIds),
+                        KeyValueVo::getKey, KeyValueVo::getValue);
+                res.forEach(p -> {
+                    p.setMinutes(map.get(p.getDeskId()));
+                });
+            }
+
+        }
         return res;
     }
 
@@ -436,7 +447,7 @@ public class StoreDeskServiceImpl implements IStoreDeskService {
     }
 
     private StoreDesk queryEnableDesk(Long deskId, Long storeId) {
-        StoreDesk desk = storeDeskMapper.selectStoreDeskByDeskIdAndStoreId( deskId , storeId);
+        StoreDesk desk = storeDeskMapper.selectStoreDeskByDeskIdAndStoreId(deskId, storeId);
         AssertUtil.notNullOrEmpty(desk, "非法参数");
         AssertUtil.isTrue(Objects.equals(desk.getEnable(), Boolean.TRUE), "台桌未启用");
         desk.setPrice(deskPriceService.queryPriceByType(storeId, desk.getDeskType()));

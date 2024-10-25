@@ -59,4 +59,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
 
     </select>
+    <select id="getDeskCalcTimes" resultType="com.ruoyi.common.core.domain.model.KeyValueVo">
+        select  convert(ceil(sum(timestampdiff(second ,start_time,now()))/60),signed  )  as value, order_id as label ,desk_id as `key`
+        from t_order_desk_time where order_id in
+        <foreach item="id" collection="orderIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        group by  order_id,desk_id
+    </select>
 </mapper>

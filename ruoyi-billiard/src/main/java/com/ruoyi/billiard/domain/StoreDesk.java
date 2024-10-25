@@ -140,4 +140,10 @@ public class StoreDesk extends MyBaseEntity
     public String getShortTitle() {
         return StringUtils.format("{}({})", deskName, deskNum);
     }
+
+
+    @TableField(exist = false)
+    private Boolean queryTime;
+    @TableField(exist = false)
+    private Long minutes;
 }

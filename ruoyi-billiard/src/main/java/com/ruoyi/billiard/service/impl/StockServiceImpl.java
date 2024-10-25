@@ -150,7 +150,7 @@ public class StockServiceImpl implements IStockService {
                 .eq(Stock::getTotal, currentCount);
         int res = stockMapper.update(null, updateWrapper);
         AssertUtil.isTrue(res > 0, ExceptionCodeEnum.CHECK_STOCK_ERROR,
-                StringUtils.format("{}失败,库存为：{}。" , changeType.getDesc(), currentCount));
+                StringUtils.format("操作失败,当前库存为：{}。" , currentCount));
         return true;
     }
 
