@@ -40,6 +40,7 @@ import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
 import com.renxin.wechat.service.WechatPayV3ApiService;
 import com.renxin.wechat.vo.WechatPayVO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +70,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/pocket/wechatProgram")
+@Slf4j
 public class WechatProgramPayController extends BaseController {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -133,6 +135,7 @@ public class WechatProgramPayController extends BaseController {
         LoginDTO loginUser = pocketTokenService.getLoginUser(request);
         Long userId = loginUser.getUserId();//用户id
         wechatPayDTO.setUserId(userId);
+        log.info("来访者" + userId + "创建订单" + wechatPayDTO.toString());
 
         String out_trade_no = null;
         // BigDecimal amount = wechatPayDTO.getAmount(); //单位：元

@@ -128,6 +128,7 @@ public class WxAuthorizeController {
         }*/
 
         if (ObjectUtils.isEmpty(openId)){
+            log.error("来访者用户登录失败, 未能获取到openId,  reqMap:" + reqMap);
             return AjaxResult.success("请求失败, 未获取到js_code对应的openId, 请刷新后重试");
         }
 
@@ -147,6 +148,7 @@ public class WxAuthorizeController {
             token = pocketTokenService.createToken(loginDTO, 360000);
             psyUser = queryUserList.get(0);
         }else{
+            log.info("来访者用户初次登录, openId:" + openId +". reqMap:" + reqMap.toString());
         //否则先添加用户后使用
             PsyUser newUser = new PsyUser();
                 newUser.setWxOpenid(openId);
@@ -163,14 +165,14 @@ public class WxAuthorizeController {
         }
          
         //更新设备信息
-        psyUser.setDeviceId(params.get("deviceId"));
-        psyUser.setPushClientId(params.get("pushClientId"));
-        psyUser.setDeviceBrand(params.get("deviceBrand"));
-        psyUser.setDeviceModel(params.get("deviceModel"));
-        psyUser.setLastLoginIp(params.get("lastLoginIp"));
-        psyUser.setSourceChannelId(params.get("sourceChannelId"));
+        psyUser.setDeviceId((String)reqMap.get("deviceId"));
+        psyUser.setPushClientId((String)reqMap.get("pushClientId"));
+        psyUser.setDeviceBrand((String)reqMap.get("deviceBrand"));
+        psyUser.setDeviceModel((String)reqMap.get("deviceModel"));
+        psyUser.setLastLoginIp((String)reqMap.get("lastLoginIp"));
+        psyUser.setSourceChannelId((String)reqMap.get("sourceChannelId"));
         try {
-            psyUser.setIntroduceUserId(Long.valueOf(params.get("introduceUserId")));
+            psyUser.setIntroduceUserId(Long.valueOf((String)reqMap.get("introduceUserId")));
         }catch (Exception e){
         }
         psyUserService.updatePsyUser(psyUser);

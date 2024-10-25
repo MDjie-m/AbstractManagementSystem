@@ -175,7 +175,8 @@ public class ConsultantOrderController extends BaseController
         if (consultId == -1) {
             return error("用户信息异常,请登录后重试");
         }
-
+        log.info("咨询师" + consultId + "创建了订单:" + consultantOrder.toString());
+        
         consultantOrder.setPayConsultantId(consultId);
         String out_trade_no = "";
 

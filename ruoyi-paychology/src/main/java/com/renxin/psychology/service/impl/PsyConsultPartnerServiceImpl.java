@@ -20,6 +20,7 @@ import com.renxin.psychology.request.PsyAdminPartnerReq;
 import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.system.service.ISysConfigService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
  * @date 2023-11-07
  */
 @Service
+@Slf4j
 public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService 
 {
 
@@ -68,6 +70,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
 
     @Override
     public int saveItem(PsyConsultPartnerItem item) {
+        log.info("入驻申请单, 维护item子单信息:" + item.toString());
         item.setStatus("0");//未审核
         if (ObjectUtils.isNotEmpty(item.getId())){
             partnerItemService.edit(item);
@@ -114,6 +117,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     {
         PartnerDTO oldPartner = getInfoByConsultId(consultantId);
         if (oldPartner == null) {
+            log.info("咨询师" + consultantId + "生成申请单草稿");
             Long  id = IDhelper.getNextId();
             PsyConsultPartner partner = new PsyConsultPartner();
             partner.setId(id);
@@ -189,6 +193,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult saveByConsultId(PsyConsultPartner entity) {
+        log.info("咨询师" + entity.getConsultId() + "修改申请单主题信息:" + entity.toString());
         //获取申请单id
         Long id = getInfoByConsultId(entity.getConsultId()).getId();
         entity.setId(id);
