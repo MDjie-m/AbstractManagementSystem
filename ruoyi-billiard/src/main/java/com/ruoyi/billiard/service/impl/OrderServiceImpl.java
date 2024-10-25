@@ -904,7 +904,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 SecurityUtils.fillCreateUser(p, order);
                 orderTutorTimeMapper.insert(p);
 
-                tutor.setWorkStatus(TutorWorkStatus.BUSY.getValue());
+                tutor.setWorkStatus(TutorWorkStatus.BUSY );
                 tutor.setCurrentOrderId(p.getOrderId());
                 SecurityUtils.fillCreateUser(tutor, order);
                 storeTutorMapper.updateById(tutor);

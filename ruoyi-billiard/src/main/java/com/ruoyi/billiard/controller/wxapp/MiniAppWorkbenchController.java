@@ -9,6 +9,7 @@ import com.ruoyi.billiard.domain.vo.StockCheckRes;
 import com.ruoyi.billiard.domain.vo.YingShiYunVo;
 import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsume;
 import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsumeDetail;
+import com.ruoyi.billiard.domain.vo.miniappdomain.TutorResVo;
 import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -48,6 +49,8 @@ public class MiniAppWorkbenchController extends BaseController {
 
     @Autowired
     private IStoreService storeService;
+    @Autowired
+    private IStoreTutorService storeTutorService;
     @Resource
     private IGoodsCategoryService goodsCategoryService;
 
@@ -172,5 +175,12 @@ public class MiniAppWorkbenchController extends BaseController {
         YingShiYunVo yingShiYunVo = deviceService.selectDeviceStoreList();
         logger.info("yingShiYunVo:{}", JSON.toJSONString(yingShiYunVo));
         return ResultVo.success(yingShiYunVo);
+    }
+
+    @PreAuthorize("@ss.hasPermi('miniapp:tutor:list')")
+    @GetMapping("/tutor/list")
+    public ResultVo <List<TutorResVo> > getTutorList(@RequestParam Long storeId) {
+
+        return ResultVo.success(storeTutorService.queryByStoreId(storeId));
     }
 }

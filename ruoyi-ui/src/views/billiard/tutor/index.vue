@@ -179,7 +179,7 @@
                   v-for="dict in dict.type.store_tutor"
                   :key="dict.value"
                   :label="dict.label"
-                  :value="dict.value"
+                  :value="parseInt(dict.value)"
                 />
               </el-select>
             </el-form-item>

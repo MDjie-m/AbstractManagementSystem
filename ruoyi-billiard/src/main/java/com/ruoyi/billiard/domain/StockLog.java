@@ -77,9 +77,9 @@ public class StockLog extends MyBaseEntity
     private Long storeId;
 
 
-    @TableField("order_id")
+    @TableField(exist = false)
     private Long orderId;
 
-    @TableField("order_id")
+    @TableField(exist = false)
     private String msg;
 }

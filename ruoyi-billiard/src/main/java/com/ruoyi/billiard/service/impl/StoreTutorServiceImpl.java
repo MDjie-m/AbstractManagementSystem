@@ -6,8 +6,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.ruoyi.billiard.domain.*;
+import com.ruoyi.billiard.domain.vo.miniappdomain.TutorResVo;
 import com.ruoyi.billiard.enums.CalcTimeStatus;
 import com.ruoyi.billiard.enums.DeskStatus;
+import com.ruoyi.billiard.enums.TutorLevel;
 import com.ruoyi.billiard.enums.TutorWorkStatus;
 import com.ruoyi.billiard.mapper.OrderTutorTimeMapper;
 import com.ruoyi.billiard.mapper.StoreDeskMapper;
@@ -15,10 +17,7 @@ import com.ruoyi.billiard.mapper.StoreUserMapper;
 import com.ruoyi.billiard.service.*;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.KeyValueVo;
-import com.ruoyi.common.utils.ArrayUtil;
-import com.ruoyi.common.utils.AssertUtil;
-import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.*;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.system.service.ISysUserService;
 import org.apache.commons.collections4.CollectionUtils;
@@ -367,10 +366,23 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         SecurityUtils.fillUpdateUser(tutorTime);
         orderTutorTimeMapper.updateById(tutorTime);
 
-        tutor.setWorkStatus(TutorWorkStatus.WAIT.getValue());
+        tutor.setWorkStatus(TutorWorkStatus.WAIT );
         tutor.setCurrentOrderId(null);
         SecurityUtils.fillUpdateUser(tutor);
         storeTutorMapper.updateAllWithId(tutor);
+    }
+
+    @Override
+    public List<TutorResVo> queryByStoreId(Long storeId) {
+        Map<Integer, List<StoreTutor>> storeTutors = ArrayUtil.groupBy(selectStoreTutorList(StoreTutor.builder().storeId(storeId).build()), StoreTutor::getLevel);
+
+        return storeTutors.keySet().stream().map(p -> {
+            TutorResVo resVo = new TutorResVo();
+            resVo.setLevel(EnumUtil.getIEnum(TutorLevel.class, p));
+            resVo.setTutors(storeTutors.get(p));
+            return resVo;
+        }).collect(Collectors.toList());
+
     }
 
     private StoreDesk queryEnableDesk(Long deskId, Long storeId) {

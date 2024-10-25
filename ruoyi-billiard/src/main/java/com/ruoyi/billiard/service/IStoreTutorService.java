@@ -3,6 +3,7 @@ package com.ruoyi.billiard.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.ruoyi.billiard.domain.StoreTutor;
+import com.ruoyi.billiard.domain.vo.miniappdomain.TutorResVo;
 
 /**
  * 门店助教Service接口
@@ -68,4 +69,6 @@ public interface IStoreTutorService
     void tutorResume(Long tutorId, Long storeId);
 
     void tutorStop(Long tutorId, Long storeId);
+
+    List<TutorResVo>  queryByStoreId(Long storeId);
 }

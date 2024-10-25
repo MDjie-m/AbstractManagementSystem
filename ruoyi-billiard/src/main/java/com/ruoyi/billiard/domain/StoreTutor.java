@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.ruoyi.billiard.enums.TutorWorkStatus;
 import com.ruoyi.common.core.domain.MyBaseEntity;
 import com.ruoyi.common.utils.StringUtils;
 import lombok.*;
@@ -92,7 +93,7 @@ public class StoreTutor extends MyBaseEntity {
     @Excel(name = "助教等级(1=助教，2=教练，3=总教)")
 
     @TableField("level")
-    private Long level;
+    private Integer level;
 
     /**
      * 门店状态（0正常 1停用）
@@ -103,7 +104,7 @@ public class StoreTutor extends MyBaseEntity {
     private Integer status;
     @Excel(name = "计费状态", readConverterExp = "0=空闲,1=计费中，3=已停止")
     @TableField("work_status")
-    private Integer workStatus;
+    private TutorWorkStatus workStatus;
 
     /**
      * 删除标志（0代表存在 2代表删除）
