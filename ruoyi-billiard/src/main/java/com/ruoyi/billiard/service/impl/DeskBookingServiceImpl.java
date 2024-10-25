@@ -75,6 +75,16 @@ public class DeskBookingServiceImpl extends ServiceImpl<DeskBookingMapper, DeskB
                         .le(DeskBooking::getEndTime, deskBooking.getEndTime())
                         .in(DeskBooking::getStatus, BookingStatus.ACTIVE, BookingStatus.USED)),
                 "当前时间段已存在预约");
+        AssertUtil.isTrue(!baseMapper.exists(baseMapper.query().eq(DeskBooking::getDeskId, deskBooking.getDeskId())
+                        .le(DeskBooking::getStartTime, deskBooking.getStartTime())
+                        .ge(DeskBooking::getEndTime, deskBooking.getEndTime())
+                        .in(DeskBooking::getStatus, BookingStatus.ACTIVE, BookingStatus.USED)),
+                "当前时间段已存在预约");
+        AssertUtil.isTrue(!baseMapper.exists(baseMapper.query().eq(DeskBooking::getDeskId, deskBooking.getDeskId())
+                        .ge(DeskBooking::getStartTime, deskBooking.getStartTime())
+                        .le(DeskBooking::getEndTime, deskBooking.getEndTime())
+                        .in(DeskBooking::getStatus, BookingStatus.ACTIVE, BookingStatus.USED)),
+                "当前时间段与其他预约重合");
         deskBooking.setDeskBookingId(IdUtils.singleNextId());
         deskBooking.setStatus(BookingStatus.ACTIVE);
         baseMapper.insert(deskBooking);

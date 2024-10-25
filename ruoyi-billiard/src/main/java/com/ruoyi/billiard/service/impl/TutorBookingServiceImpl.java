@@ -78,6 +78,16 @@ public class TutorBookingServiceImpl extends ServiceImpl<TutorBookingMapper,Tuto
                         .le(TutorBooking::getEndTime, tutorBooking.getEndTime())
                         .in(TutorBooking::getStatus, BookingStatus.ACTIVE, BookingStatus.USED)),
                 "当前时间段已存在预约");
+        AssertUtil.isTrue(!baseMapper.exists(baseMapper.query().eq(TutorBooking::getTutorId, tutorBooking.getTutorId())
+                        .le(TutorBooking::getStartTime, tutorBooking.getStartTime())
+                        .ge(TutorBooking::getEndTime, tutorBooking.getEndTime())
+                        .in(TutorBooking::getStatus, BookingStatus.ACTIVE, BookingStatus.USED)),
+                "当前时间段已存在预约");
+        AssertUtil.isTrue(!baseMapper.exists(baseMapper.query().eq(TutorBooking::getTutorId, tutorBooking.getTutorId())
+                        .ge(TutorBooking::getStartTime, tutorBooking.getStartTime())
+                        .le(TutorBooking::getEndTime, tutorBooking.getEndTime())
+                        .in(TutorBooking::getStatus, BookingStatus.ACTIVE, BookingStatus.USED)),
+                "当前时间段与其他预约重合");
         tutorBooking.setTutorBookingId(IdUtils.singleNextId());
         tutorBooking.setStatus(BookingStatus.ACTIVE);
         baseMapper.insert(tutorBooking);
