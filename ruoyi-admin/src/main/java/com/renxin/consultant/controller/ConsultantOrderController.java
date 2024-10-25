@@ -182,8 +182,8 @@ public class ConsultantOrderController extends BaseController
         //BigDecimal amount = consultantOrder.getPayAmount(); //单位：元
         String serverName = ""; //服务描述
         BigDecimal originalPrice = new BigDecimal(0); //原价
-        BigDecimal consultantRatio = new BigDecimal(0); //咨询师分成比例
-        BigDecimal consultantPrice = new BigDecimal(0); //咨询师收取费用
+        BigDecimal consultantRatio = null; //咨询师分成比例
+        BigDecimal consultantPrice = null; //咨询师收取费用
 
         //根据不同类型创建订单
         switch (consultantOrder.getServerType()) {

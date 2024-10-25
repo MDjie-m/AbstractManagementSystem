@@ -123,6 +123,9 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
                 value.forEach(it -> {
                     it.setBuyNumStr(StrUtil.format("第{}次", it.getBuyNum()));
                     if (ObjectUtils.isEmpty(it.getBrokerage())){
+                        if (ObjectUtils.isEmpty(it) || ObjectUtils.isEmpty(it.getRatio()) || ObjectUtils.isEmpty(it.getPrice())){
+                            log.error("出现分账异常数据:" + it.toString());
+                        }
                         it.setPrice(it.getOrderTotal().divide(new BigDecimal(it.getOrderNum()), 2, BigDecimal.ROUND_UP));
                         it.setBrokerage(it.getPrice().multiply(it.getRatio().divide(new BigDecimal(100), 2, BigDecimal.ROUND_UP)));
                         //剩余次数 = 总次数 - 已执行次数

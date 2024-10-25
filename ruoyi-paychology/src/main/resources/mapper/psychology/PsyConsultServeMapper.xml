@@ -54,6 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             cf.service_object as serviceObject,
             cf.mode,
             cf.time,
+            cf.consultant_ratio as consultantRatio,
             con.id as consultantId,
             con.nick_name as consultantName,
             con.avatar as consultantAvatar,
