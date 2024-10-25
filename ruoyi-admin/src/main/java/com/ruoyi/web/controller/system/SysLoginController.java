@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.system;
 import java.util.List;
 import java.util.Set;
 
+import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.service.IStoreDeskService;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.constant.LoginSystem;
@@ -26,12 +27,11 @@ import javax.annotation.Resource;
 
 /**
  * 登录验证
- * 
+ *
  * @author ruoyi
  */
 @RestController
-public class SysLoginController
-{
+public class SysLoginController {
     @Autowired
     private SysLoginService loginService;
 
@@ -46,13 +46,12 @@ public class SysLoginController
 
     /**
      * 登录方法
-     * 
+     *
      * @param loginBody 登录信息
      * @return 结果
      */
     @PostMapping("/login")
-    public AjaxResult login(@RequestBody LoginBody loginBody)
-    {
+    public AjaxResult login(@RequestBody LoginBody loginBody) {
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
@@ -60,9 +59,9 @@ public class SysLoginController
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }
+
     @PostMapping("/api/cashier/login")
-    public AjaxResult loginApi(@RequestBody  LoginBody loginBody)
-    {
+    public AjaxResult loginApi(@RequestBody LoginBody loginBody) {
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
@@ -73,8 +72,7 @@ public class SysLoginController
 
     @Anonymous
     @PostMapping("/api/mini-app/login")
-    public AjaxResult miniAppLogin(@RequestBody  LoginBody loginBody)
-    {
+    public AjaxResult miniAppLogin(@RequestBody LoginBody loginBody) {
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
@@ -82,15 +80,15 @@ public class SysLoginController
         ajax.put(Constants.TOKEN, token);
         return ajax;
     }
+
     /**
      * 获取用户信息
-     * 
+     *
      * @return 用户信息
      */
-    @GetMapping({"getInfo","api/mini-app/getInfo"})
+    @GetMapping({"getInfo", "api/mini-app/getInfo"})
 
-    public AjaxResult getInfo()
-    {
+    public AjaxResult getInfo() {
         SysUser user = SecurityUtils.getLoginUser().getUser();
         // 角色集合
         Set<String> roles = permissionService.getRolePermission(user);
@@ -100,37 +98,39 @@ public class SysLoginController
         ajax.put("user", user);
         ajax.put("roles", roles);
         ajax.put("permissions", permissions);
-        ajax.put("stores",storeDeskService.getByLoginUserId(user.getUserId()));
-
+        ajax.put("stores", storeDeskService.getByLoginUserId(user.getUserId()));
+        if (roles.stream().anyMatch(p -> p.startsWith(Constants.ROLE_BOSS))) {
+            ajax.put("stores", storeDeskService.selectStoreDeskList(StoreDesk.builder().enable(true).build()));
+        }
         return ajax;
     }
 
     /**
      * 获取小程序路由
+     *
      * @return
      */
     @GetMapping("api/mini-app/getRouters")
-    public AjaxResult getMiniAppRouters()
-    {
+    public AjaxResult getMiniAppRouters() {
         Long userId = SecurityUtils.getUserId();
         List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId, MenuCategory.MINI_APP);
         return AjaxResult.success(menuService.buildMenus(menus));
     }
+
     /**
      * 获取路由信息
-     * 
+     *
      * @return 路由信息
      */
     @GetMapping("getRouters")
-    public AjaxResult getRouters()
-    {
+    public AjaxResult getRouters() {
         Long userId = SecurityUtils.getUserId();
         List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId, MenuCategory.BACKEND);
         return AjaxResult.success(menuService.buildMenus(menus));
     }
+
     @GetMapping("getCashierRouters")
-    public AjaxResult getCashierRouters()
-    {
+    public AjaxResult getCashierRouters() {
         Long userId = SecurityUtils.getUserId();
         List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId, MenuCategory.CASHIER);
         return AjaxResult.success(menuService.buildMenus(menus));

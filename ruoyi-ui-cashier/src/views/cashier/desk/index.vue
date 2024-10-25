@@ -88,12 +88,12 @@
 
     <div class="right-panel">
       <div class="  section-container">
-        <div>
+        <div   >
           <el-row>
 
             <el-tag
               type="primary"
-              @click="onChooseAll"
+              @click.native.stop="onChooseAll"
               :effect="queryParams.deskType===null &&queryParams.placeType===null?'dark':'plain'"
             >
               全部
@@ -103,7 +103,7 @@
                     :key="dict.value+'deskType'"
                     :label="dict.label"
                     type="primary"
-                    @click="onChooseClick('deskType',dict.value)"
+                    @click.native.stop="onChooseClick('deskType',dict.value)"
                     :effect=" dict.value  ===queryParams.deskType?'dark':'plain'"
                     round>
               {{ dict.label }}
@@ -142,12 +142,12 @@
         </div>
       </div>
 
-      <div class="  section-container desk-box">
+      <div class="  section-container desk-box" @click.stop="onOtherClick">
 
         <template class="box-card" v-for="placeItem in placeTypeList">
           <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
           <div class="desk-container">
-            <div @click="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
+            <div @click.stop="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
                      v-for="desk in placeItem.list" :key="'deskid'+desk.deskId">
               <div class="item-status" :class="`item-status-${desk.status}`"></div>
 
@@ -363,12 +363,18 @@ export default {
 
   },
 
-
   beforeDestroy() {
     this.$eventBus.$off(GlobalEvent.OnRefreshDesk);
     removeMethod(DeviceCallbackMethodName.AddScore)
   },
   methods: {
+    onOtherClick(){
+      this.currentDesk=null;
+      this.deskList.forEach(p=>{
+        p.selected=false
+      })
+    },
+
     onRefreshDeskCallback({deskId, stopOrder}) {
       if (this.currentDesk?.deskId === deskId) {
         this.queryDeskById(deskId)
