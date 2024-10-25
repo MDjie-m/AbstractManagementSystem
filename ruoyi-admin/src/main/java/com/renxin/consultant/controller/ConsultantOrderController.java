@@ -367,9 +367,21 @@ public class ConsultantOrderController extends BaseController
      */
     @PostMapping("/aliPaySuccess/callback")
     public Map<String, String> aliPayCallback(@RequestParam Map<String,Object> map, HttpServletRequest request) {
+        Map<String, String> result = new HashMap<>(2);
         log.info("支付宝, 支付完成回调");
         log.info(map.toString());
-        log.info(request.toString());
+
+        String orderNo = (String)map.get("out_trade_no");
+        String tradeState = (String)map.get("trade_status");
+        if (ObjectUtils.isNotEmpty(orderNo) && tradeState.contains("SUCCESS")){
+            //支付成功
+            psyConsultantOrderService.paySuccessCallback(orderNo, null);
+            result.put("code", "SUCCESS");
+            result.put("message", "OK");
+            return result;
+        }else{
+            log.error("微信支付, 回调结果失败. decryptedData: " + map.toString());
+        }
         
         return null;
     }
@@ -379,7 +391,6 @@ public class ConsultantOrderController extends BaseController
         Map<String, String> result = new HashMap<>(2);
         log.info("微信, 支付完成回调");
         log.info(map.toString());
-        log.info(request.toString());
 
         //回调数据解密
         Map<String,Object> resource = (Map)map.get("resource");
@@ -398,7 +409,6 @@ public class ConsultantOrderController extends BaseController
             psyConsultantOrderService.paySuccessCallback(orderNo, null);
             result.put("code", "SUCCESS");
             result.put("message", "OK");
-            log.info("微信支付, 回调结果成功. decryptedData: " + gson.toJson(decryptedJson));
             return result;
         }else{
             log.error("微信支付, 回调结果失败. decryptedData: " + gson.toJson(decryptedJson));
