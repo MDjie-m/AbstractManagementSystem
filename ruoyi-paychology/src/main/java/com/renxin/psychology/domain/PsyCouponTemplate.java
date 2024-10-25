@@ -60,8 +60,8 @@ public class PsyCouponTemplate extends BaseEntity
     @Excel(name = "有效天数")
     private Integer validityDay;
 
-    /** 模版状态 */
-    @Excel(name = "模版状态")
+    /** 模版状态  0正常  1停用 */
+    @Excel(name = "模版状态  0正常  1停用")
     private Integer templateStatus;
 
     /** 删除标志（0代表存在 1代表删除） */

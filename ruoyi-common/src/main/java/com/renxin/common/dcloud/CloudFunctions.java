@@ -34,11 +34,12 @@ public class CloudFunctions {
         return phoneNumber;
     }
 
-    public static boolean sendSms(String phone, String code)  {
+    public static boolean sendSms(Map<String, Object> params)  {
         try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("phone", phone); // 客户端传到自己服务器的参数
-            params.put("code", code);
+            //Map<String, Object> params = new HashMap<>();
+            //params.put("phone", phone); // 客户端传到自己服务器的参数
+            //params.put("code", code);
+            //params.put("templateId", templateId);
             String url = requestUrl + "/sendsms";
             Map<String, Object> requestParams = SignUtil.signMap(secret, params);
             String res = HttpUtil.get(url, requestParams);

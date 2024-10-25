@@ -19,7 +19,7 @@ export function getTemplate(id) {
   })
 }
 
-// 修改模版状态
+// 修改模版状态  0正常  1停用
 export function switchTemplateStatus(id) {
   return request({
     url: '/system/couponTemplate/switchTemplateStatus/' + id,

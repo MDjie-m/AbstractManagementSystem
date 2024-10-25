@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.constant.CacheConstants;
 import com.renxin.common.constant.Constants;
+import com.renxin.common.constant.NewConstants;
 import com.renxin.common.core.controller.BaseController;
 import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.domain.dto.ConsultDTO;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -83,10 +85,14 @@ public class ConsultantUserController extends BaseController {
     public AjaxResult sendSms(@RequestBody ConsultLoginDTO req) {
         //若旧验证码尚未过期, 拒绝再次发送
         String phone = req.getPhone();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("templateId",NewConstants.SEND_CHECK_SMS_TEMP_ID);
+        map.put("phone",phone);
         
         //特殊处理
         if ("18907177267".equals(phone)){
-            boolean isSend = new CloudFunctions().sendSms(phone,"123456");
+            map.put("code","123456");
+            boolean isSend = new CloudFunctions().sendSms(map);
             redisCache.setCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + phone, "123456");
             return AjaxResult.success("发送成功");
         }
@@ -102,7 +108,8 @@ public class ConsultantUserController extends BaseController {
         int code = 100000 + random.nextInt(999999);
         String smsCode=code+"";
         //String code = UUID.randomUUID().toString().substring(0, 6);
-        boolean isSend = new CloudFunctions().sendSms(phone,smsCode);
+        map.put("code",smsCode);
+        boolean isSend = new CloudFunctions().sendSms(map);
         if(isSend){
             //向redis中写入该手机对应的验证码, 有效期10分钟
             redisCache.setCacheObject(CacheConstants.PHONE_LOGIN_CODE + "::" + phone, smsCode,10, TimeUnit.MINUTES);

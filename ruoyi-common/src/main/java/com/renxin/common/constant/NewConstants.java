@@ -553,4 +553,7 @@ public class NewConstants {
     /** 公共JS配置 */
     // CRMEB chat 统计
     public  static final String JS_CONFIG_CRMEB_CHAT_TONGJI="crmeb_tongji_js";
+
+    //发送验证码temp
+    public static final String SEND_CHECK_SMS_TEMP_ID = "33452";
 }

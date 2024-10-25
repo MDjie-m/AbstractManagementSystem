@@ -380,7 +380,7 @@ export default {
         this.title = "修改优惠券模版";
       });
     },
-    /* 切换模版状态  */
+    /* 切换模版状态  0正常  1停用  */
     handleSwitch(row){
       this.$modal.confirm('确认启动 / 停用？').then(function() {
         return switchTemplateStatus(row.id);
