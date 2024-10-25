@@ -226,14 +226,14 @@ public class PsyConsultantOrderController extends BaseController
         params.put("out_trade_no", out_trade_no); //商户订单号
         params.put("time_expire", sdf.format(calendar.getTime())); //交易结束时间 选填 时间到了之后将不能再支付 遵循rfc3339标准格式
         params.put("attach", attach); //附加数据 选填 在查询API和支付通知中原样返回 可作为自定义参数使用
-        params.put("notify_url", WechatUrlConstants.CONSULTANT_PAY_V3_NOTIFY); //支付结果异步通知接口
+        params.put("notify_url", WxConfig.CONSULTANT_PAY_V3_NOTIFY); //支付结果异步通知接口
         JSONObject amount_json = new JSONObject();
         amount_json.put("total", Integer.parseInt(amount_fee(amount))); //支付金额 单位：分
         params.put("amount", amount_json); //订单金额信息
         JSONObject payer = new JSONObject();
         //payer.put("openid", openid); //用户在小程序侧的openid
         params.put("payer", payer); //支付者信息
-        JSONObject res = wechatPayV3Utils.sendPost(WechatUrlConstants.PAY_V3_JSAPI, params); //发起请求
+        JSONObject res = wechatPayV3Utils.sendPost(WxConfig.PAY_V3_JSAPI, params); //发起请求
         if (res == null || StringUtils.isEmpty(res.getString("prepay_id"))) {
             //@TODO 支付发起失败可以将订单数据回滚
             return error("支付发起失败");

@@ -1,21 +1,15 @@
 package com.renxin.common.wechat.wxPay;
 
-import com.renxin.common.wechat.wxPay.WxV3PayConfig;
 import com.wechat.pay.contrib.apache.httpclient.WechatPayHttpClientBuilder;
 import com.wechat.pay.contrib.apache.httpclient.auth.AutoUpdateCertificatesVerifier;
 import com.wechat.pay.contrib.apache.httpclient.auth.PrivateKeySigner;
 import com.wechat.pay.contrib.apache.httpclient.auth.WechatPay2Credentials;
 import com.wechat.pay.contrib.apache.httpclient.auth.WechatPay2Validator;
-import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
-import lombok.SneakyThrows;
 import org.apache.http.impl.client.CloseableHttpClient;
-import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -38,7 +32,7 @@ public class WXPaySignatureCertificateUtil {
         CloseableHttpClient httpClient = null;
         PrivateKey merchantPrivateKey = WXPaySignatureCertificateUtil.getPrivateKey();
         httpClient = WechatPayHttpClientBuilder.create()
-                .withMerchant(WxV3PayConfig.Mch_ID, WxV3PayConfig.mchSerialNo, merchantPrivateKey)
+                .withMerchant(WxConfig.mchId, WxConfig.mchSerialNo, merchantPrivateKey)
                 .withValidator(new WechatPay2Validator(WXPaySignatureCertificateUtil.getVerifier()))
                 .build();
 
@@ -58,7 +52,7 @@ public class WXPaySignatureCertificateUtil {
      * 注意：这个方法内置了平台证书的获取和返回值解密
      */
     static AutoUpdateCertificatesVerifier getVerifier() throws IOException {
-        String mchSerialNo = WxV3PayConfig.mchSerialNo;
+        String mchSerialNo = WxConfig.mchSerialNo;
         AutoUpdateCertificatesVerifier verifier = null;
         if (verifierMap.isEmpty() || !verifierMap.containsKey(mchSerialNo)) {
             verifierMap.clear();
@@ -67,9 +61,9 @@ public class WXPaySignatureCertificateUtil {
                 PrivateKey privateKey = getPrivateKey();
                 //刷新
                 PrivateKeySigner signer = new PrivateKeySigner(mchSerialNo, privateKey);
-                WechatPay2Credentials credentials = new WechatPay2Credentials(WxV3PayConfig.Mch_ID, signer);
+                WechatPay2Credentials credentials = new WechatPay2Credentials(WxConfig.mchId, signer);
                 verifier = new AutoUpdateCertificatesVerifier(credentials
-                        , WxV3PayConfig.apiV3Key.getBytes("utf-8"));
+                        , WxConfig.apiV3Key.getBytes("utf-8"));
                 verifierMap.put(verifier.getValidCertificate().getSerialNumber()+"", verifier);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -94,7 +88,7 @@ public class WXPaySignatureCertificateUtil {
     public static String appPaySign(String timestamp, String nonceStr, String prepayId) throws Exception {
         //上传私钥
         PrivateKey privateKey = getPrivateKey();
-        String signatureStr = Stream.of(WxV3PayConfig.APP_ID, timestamp, nonceStr, prepayId)
+        String signatureStr = Stream.of(WxConfig.consultantAppId, timestamp, nonceStr, prepayId)
                 .collect(Collectors.joining("\n", "", "\n"));
         Signature sign = Signature.getInstance("SHA256withRSA");
         sign.initSign(privateKey);
@@ -114,7 +108,7 @@ public class WXPaySignatureCertificateUtil {
     public static String jsApiPaySign(String timestamp, String nonceStr, String prepayId) throws Exception {
         //上传私钥
         PrivateKey privateKey = getPrivateKey();
-        String signatureStr = Stream.of(WxV3PayConfig.APP_ID, timestamp, nonceStr, "prepay_id="+prepayId)
+        String signatureStr = Stream.of(WxConfig.consultantAppId, timestamp, nonceStr, "prepay_id="+prepayId)
                 .collect(Collectors.joining("\n", "", "\n"));
         Signature sign = Signature.getInstance("SHA256withRSA");
         sign.initSign(privateKey);
@@ -132,7 +126,7 @@ public class WXPaySignatureCertificateUtil {
      */
     public static PrivateKey getPrivateKey() throws IOException {
         //String content = new String(Files.readAllBytes(Paths.get("D:\\微信平台证书工具\\7.9\\apiclient_key.pem")), "utf-8");
-        String content = WXPayConstants.WECHAT_MCH_PRIVATE_KEY;
+        String content = WxConfig.WECHAT_MCH_PRIVATE_KEY;
         try {
             String privateKey = content.replace("-----BEGIN PRIVATE KEY-----", "")
                     .replace("-----END PRIVATE KEY-----", "")

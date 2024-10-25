@@ -1,9 +1,6 @@
 package com.renxin.consultant.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.renxin.common.aliPay.AlipayPayUtil;
 import com.renxin.common.annotation.RateLimiter;
@@ -15,21 +12,15 @@ import com.renxin.common.enums.LimitType;
 import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.OrderIdUtils;
 import com.renxin.common.wechat.wxPay.WechatPaymentService;
-import com.renxin.common.wechat.wxPay.WxV3PayConfig;
-import com.renxin.course.constant.CourConstant;
+import com.renxin.common.wechat.wxPay.WxConfig;
 import com.renxin.course.domain.CourCourse;
-import com.renxin.course.domain.CourOrder;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.framework.web.service.ConsultantTokenService;
-import com.renxin.gauge.constant.GaugeConstant;
-import com.renxin.gauge.domain.PsyOrder;
 import com.renxin.pocket.controller.wechat.constant.WechatMCHConstants;
 import com.renxin.pocket.controller.wechat.constant.WechatUrlConstants;
 import com.renxin.pocket.controller.wechat.dto.WechatPayDTO;
 import com.renxin.pocket.controller.wechat.utils.WechatPayV3Utils;
-import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.*;
-import com.renxin.psychology.dto.OrderDTO;
 import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultVO;
 import com.renxin.wechat.service.WechatPayV3ApiService;
@@ -45,14 +36,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLDecoder;
@@ -366,8 +353,7 @@ public class ConsultantOrderController extends BaseController
      * @return
      */
     @PostMapping("/aliPaySuccess/callback")
-    public Map<String, String> aliPayCallback(@RequestParam Map<String,Object> map, HttpServletRequest request) {
-        Map<String, String> result = new HashMap<>(2);
+    public String aliPayCallback(@RequestParam Map<String,Object> map, HttpServletRequest request) {
         log.info("支付宝, 支付完成回调");
         log.info(map.toString());
 
@@ -376,9 +362,7 @@ public class ConsultantOrderController extends BaseController
         if (ObjectUtils.isNotEmpty(orderNo) && tradeState.contains("SUCCESS")){
             //支付成功
             psyConsultantOrderService.paySuccessCallback(orderNo, null);
-            result.put("code", "SUCCESS");
-            result.put("message", "OK");
-            return result;
+            return "success";
         }else{
             log.error("微信支付, 回调结果失败. decryptedData: " + map.toString());
         }
@@ -397,7 +381,7 @@ public class ConsultantOrderController extends BaseController
         String associatedData = (String)resource.get("associated_data");
         String nonce = (String)resource.get("nonce"); 
         String ciphertext = (String)resource.get("ciphertext");
-        String decryptedData = decryptWeChatCiphertext(WxV3PayConfig.apiV3Key, associatedData, nonce, ciphertext);
+        String decryptedData = decryptWeChatCiphertext(WxConfig.apiV3Key, associatedData, nonce, ciphertext);
 
         // 将解密后的数据进行JSON解析
         Gson gson = new Gson();
@@ -514,19 +498,19 @@ public class ConsultantOrderController extends BaseController
 
         JSONObject params = new JSONObject();
         params.put("appid", WECHAT_MP_APPID); //小程序appid
-        params.put("mchid", WechatMCHConstants.WECHAT_MCH_ID); //商户号
+        params.put("mchid", WxConfig.mchId); //商户号
         params.put("description", content); //商品描述
         params.put("out_trade_no", req.getOutTradeNo()); //商户订单号
         params.put("time_expire", sdf.format(calendar.getTime())); //交易结束时间 选填 时间到了之后将不能再支付 遵循rfc3339标准格式
         params.put("attach", attach); //附加数据 选填 在查询API和支付通知中原样返回 可作为自定义参数使用
-        params.put("notify_url", WechatUrlConstants.PAY_V3_NOTIFY); //支付结果异步通知接口
+        params.put("notify_url", WxConfig.PAY_V3_NOTIFY); //支付结果异步通知接口
         JSONObject amount_json = new JSONObject();
         amount_json.put("total", Integer.parseInt(amount_fee(amount))); //支付金额 单位：分
         params.put("amount", amount_json); //订单金额信息
         JSONObject payer = new JSONObject();
         payer.put("openid", openid); //用户在小程序侧的openid
         params.put("payer", payer); //支付者信息
-        JSONObject res = wechatPayV3Utils.sendPost(WechatUrlConstants.PAY_V3_JSAPI, params); //发起请求
+        JSONObject res = wechatPayV3Utils.sendPost(WxConfig.PAY_V3_JSAPI, params); //发起请求
         if (res == null || StringUtils.isEmpty(res.getString("prepay_id"))) {
             //@TODO 支付发起失败可以将订单数据回滚
             return error("支付发起失败");

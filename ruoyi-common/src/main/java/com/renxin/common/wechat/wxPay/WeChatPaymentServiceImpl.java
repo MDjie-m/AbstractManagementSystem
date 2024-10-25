@@ -6,10 +6,6 @@ import com.alipay.api.internal.util.file.ByteArrayOutputStream;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.renxin.common.exception.ServiceException;
-import com.renxin.common.wechat.wxPay.WXPayConstants;
-import com.renxin.common.wechat.wxPay.WXPaySignatureCertificateUtil;
-import com.renxin.common.wechat.wxPay.WechatPaymentService;
-import com.renxin.common.wechat.wxPay.WxV3PayConfig;
 import com.wechat.pay.contrib.apache.httpclient.notification.Notification;
 import com.wechat.pay.contrib.apache.httpclient.notification.NotificationHandler;
 import com.wechat.pay.contrib.apache.httpclient.notification.NotificationRequest;
@@ -52,16 +48,16 @@ public class WeChatPaymentServiceImpl implements WechatPaymentService {
             //验证证书
             CloseableHttpClient httpClient = WXPaySignatureCertificateUtil.checkSign();
             //app下单
-            HttpPost httpPost = new HttpPost(WXPayConstants.DOMAIN_API+WXPayConstants.PAY_TRANSACTIONS_APP);
+            HttpPost httpPost = new HttpPost(WxConfig.DOMAIN_API + WxConfig.PAY_TRANSACTIONS_APP);
             httpPost.addHeader("Accept", "application/json");
             httpPost.addHeader("Content-type", "application/json; charset=utf-8");
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectMapper objectMapper = new ObjectMapper();
             ObjectNode rootNode = objectMapper.createObjectNode();
-            rootNode.put("mchid", WxV3PayConfig.Mch_ID)
-                    .put("appid", WxV3PayConfig.APP_ID)
+            rootNode.put("mchid", WxConfig.mchId)
+                    .put("appid", WxConfig.consultantAppId)
                     .put("description",title)
-                    .put("notify_url", WXPayConstants.WECHAT_PAY_NOTIFY_URL)//回调
+                    .put("notify_url", WxConfig.WECHAT_PAY_NOTIFY_URL)//回调
                     .put("out_trade_no", orderNo);
             rootNode.putObject("amount")
                     .put("total",payAmountInt);
@@ -86,8 +82,8 @@ public class WeChatPaymentServiceImpl implements WechatPaymentService {
                 //生成带签名支付信息
                 String paySign = WXPaySignatureCertificateUtil.appPaySign(String.valueOf(timestamp), nonceStr, prepayId);
                 Map<String, String> param = new HashMap<>();
-                param.put("appid", WxV3PayConfig.APP_ID);
-                param.put("partnerid", WxV3PayConfig.Mch_ID);
+                param.put("appid", WxConfig.consultantAppId);
+                param.put("partnerid", WxConfig.mchId);
                 param.put("prepayid", prepayId);
                 param.put("package", "Sign=WXPay");
                 param.put("noncestr", nonceStr);
@@ -132,7 +128,7 @@ public class WeChatPaymentServiceImpl implements WechatPaymentService {
                     .withBody(String.valueOf(sb))
                     .build();
             //验签
-            NotificationHandler handler = new NotificationHandler(WXPaySignatureCertificateUtil.getVerifier(), WxV3PayConfig.apiV3Key.getBytes(StandardCharsets.UTF_8));
+            NotificationHandler handler = new NotificationHandler(WXPaySignatureCertificateUtil.getVerifier(), WxConfig.apiV3Key.getBytes(StandardCharsets.UTF_8));
             //解析请求体
             Notification notification = handler.parse(requests);
             String decryptData = notification.getDecryptData();
@@ -175,7 +171,7 @@ public class WeChatPaymentServiceImpl implements WechatPaymentService {
             //验证证书
             CloseableHttpClient httpClient = WXPaySignatureCertificateUtil.checkSign();
             //关闭订单
-            String url = StrFormatter.format(WXPayConstants.DOMAIN_API+WXPayConstants.PAY_TRANSACTIONS_OUT_TRADE_NO, outTradeNo);
+            String url = StrFormatter.format(WxConfig.DOMAIN_API+WxConfig.PAY_TRANSACTIONS_OUT_TRADE_NO, outTradeNo);
             HttpPost httpPost = new HttpPost(url);
             httpPost.addHeader("Accept", "application/json");
             httpPost.addHeader("Content-type", "application/json; charset=utf-8");
@@ -183,7 +179,7 @@ public class WeChatPaymentServiceImpl implements WechatPaymentService {
             //2.添加商户id
             ObjectMapper objectMapper = new ObjectMapper();
             ObjectNode rootNode = objectMapper.createObjectNode();
-            rootNode.put("mchid", WxV3PayConfig.Mch_ID);
+            rootNode.put("mchid", WxConfig.mchId);
             objectMapper.writeValue(bos, rootNode);
             //3.调起微信关单接口
             httpPost.setEntity(new StringEntity(bos.toString("UTF-8"), "UTF-8"));
@@ -222,7 +218,7 @@ public class WeChatPaymentServiceImpl implements WechatPaymentService {
             //验证证书
             CloseableHttpClient httpClient = WXPaySignatureCertificateUtil.checkSign();
             //申请退款接口
-            HttpPost httpPost = new HttpPost(WXPayConstants.DOMAIN_API + WXPayConstants.REFUND_DOMESTIC_REFUNDS);
+            HttpPost httpPost = new HttpPost(WxConfig.DOMAIN_API + WxConfig.REFUND_DOMESTIC_REFUNDS);
             httpPost.addHeader("Accept", "application/json");
             httpPost.addHeader("Content-type", "application/json; charset=utf-8");
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -284,7 +280,7 @@ public class WeChatPaymentServiceImpl implements WechatPaymentService {
                     .withBody(String.valueOf(sb))
                     .build();
             //验签
-            NotificationHandler handler = new NotificationHandler(WXPaySignatureCertificateUtil.getVerifier(), WxV3PayConfig.apiV3Key.getBytes(StandardCharsets.UTF_8));
+            NotificationHandler handler = new NotificationHandler(WXPaySignatureCertificateUtil.getVerifier(), WxConfig.apiV3Key.getBytes(StandardCharsets.UTF_8));
             //解析请求体
             Notification notification = handler.parse(requests);
             String decryptData = notification.getDecryptData();

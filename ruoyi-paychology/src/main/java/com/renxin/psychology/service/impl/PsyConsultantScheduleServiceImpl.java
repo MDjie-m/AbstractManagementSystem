@@ -206,7 +206,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         //查询该项服务详情
         PsyConsultServeConfig serverDetail = consultServeService.getServerDetailByRelationId(order.getServerId());
         //每次服务耗时
-        Integer timeCost = serverDetail.getTime();
+        Integer timeCost = ObjectUtils.isEmpty(serverDetail.getTime()) ? 50 : serverDetail.getTime();
 
         sortSchedule(consultantScheduleList);//按预约时间排序
         for (PsyConsultantSchedule schedule : consultantScheduleList) {

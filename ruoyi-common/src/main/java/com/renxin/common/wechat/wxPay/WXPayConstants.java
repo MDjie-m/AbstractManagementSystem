@@ -5,7 +5,7 @@ package com.renxin.common.wechat.wxPay;
  */
 public class WXPayConstants {
 
-    public static final String DOMAIN_API = "https://api.mch.weixin.qq.com/v3";
+    /*public static final String DOMAIN_API = "https://api.mch.weixin.qq.com/v3";
 
     //app下单
     public static final String PAY_TRANSACTIONS_APP = "/pay/transactions/app";
@@ -56,7 +56,7 @@ public class WXPayConstants {
             "-----END PRIVATE KEY-----\n";
 
 
-
+*/
 
 }
  

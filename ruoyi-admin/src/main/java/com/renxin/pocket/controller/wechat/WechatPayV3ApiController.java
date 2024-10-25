@@ -3,6 +3,7 @@ package com.renxin.pocket.controller.wechat;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.renxin.common.core.domain.dto.LoginDTO;
+import com.renxin.common.wechat.wxPay.WxConfig;
 import com.renxin.pocket.controller.wechat.constant.WechatMCHConstants;
 import com.renxin.pocket.controller.wechat.constant.WechatUrlConstants;
 import com.renxin.pocket.controller.wechat.dto.WechatPayDTO;
@@ -88,7 +89,7 @@ public class WechatPayV3ApiController extends BaseController {
      * 用于换取openid 正式使用时openid可以直接从用户信息中获取 不需要在此接口中获取
      * @return 小程序支付所需参数
      */
-    @PostMapping("/wechatPay")
+    /*@PostMapping("/wechatPay")
     @RateLimiter(limitType = LimitType.IP)
     public AjaxResult wechatPay(@RequestBody WechatPayDTO wechatPayDTO, HttpServletRequest request) {
         //@TODO demo中先写死的一些参数
@@ -159,14 +160,14 @@ public class WechatPayV3ApiController extends BaseController {
         params.put("out_trade_no", out_trade_no); //商户订单号
         params.put("time_expire", sdf.format(calendar.getTime())); //交易结束时间 选填 时间到了之后将不能再支付 遵循rfc3339标准格式
         params.put("attach", attach); //附加数据 选填 在查询API和支付通知中原样返回 可作为自定义参数使用
-        params.put("notify_url", WechatUrlConstants.PAY_V3_NOTIFY); //支付结果异步通知接口
+        params.put("notify_url", WxConfig.PAY_V3_NOTIFY); //支付结果异步通知接口
         JSONObject amount_json = new JSONObject();
         amount_json.put("total", Integer.parseInt(amount_fee(amount))); //支付金额 单位：分
         params.put("amount", amount_json); //订单金额信息
         JSONObject payer = new JSONObject();
         payer.put("openid", openid); //用户在小程序侧的openid
         params.put("payer", payer); //支付者信息
-        JSONObject res = wechatPayV3Utils.sendPost(WechatUrlConstants.PAY_V3_JSAPI, params); //发起请求
+        JSONObject res = wechatPayV3Utils.sendPost(WxConfig.PAY_V3_JSAPI, params); //发起请求
         if (res == null || StringUtils.isEmpty(res.getString("prepay_id"))) {
             //@TODO 支付发起失败可以将订单数据回滚
             return error("支付发起失败");
@@ -186,7 +187,7 @@ public class WechatPayV3ApiController extends BaseController {
         result.put("signType", "RSA"); //加密方式 固定RSA
         result.put("out_trade_no", out_trade_no); //商户订单号 此参数不是小程序拉起支付所需的参数 因此不参与签名
         return AjaxResult.success(RespMessageConstants.OPERATION_SUCCESS ,result);
-    }
+    }*/
  
     /**
      * 支付成功后查询订单状态
@@ -227,13 +228,13 @@ public class WechatPayV3ApiController extends BaseController {
         params.put("transaction_id", transaction_id); //微信支付订单号 也可以传out_trade_no 即发起支付时创建的商户订单号 二选一 transaction_id>out_trade_no
         params.put("out_refund_no", out_refund_no); //商户退款单号
         params.put("reason", reason); //退款原因 选填 若填写 会在退款消息中显示给用户
-        params.put("notify_url", WechatUrlConstants.PAY_V3_REFUND_NOTIFY); //退款结果异步通知接口
+        params.put("notify_url", WxConfig.PAY_V3_REFUND_NOTIFY); //退款结果异步通知接口
         JSONObject amountJson = new JSONObject();
         amountJson.put("refund", Integer.parseInt(amount_fee(amount))); //退款金额 单位：分
         amountJson.put("total", Integer.parseInt(amount_fee(amount))); //原订单金额 单位：分
         amountJson.put("currency", "CNY"); //退款币种
         params.put("amount", amountJson); //订单金额信息
-        JSONObject res = wechatPayV3Utils.sendPost(WechatUrlConstants.PAY_V3_REFUND, params); //发起请求
+        JSONObject res = wechatPayV3Utils.sendPost(WxConfig.PAY_V3_REFUND, params); //发起请求
         if (res == null) {
             //@TODO 退款失败时回滚订单状态
             return error("退款申请失败");
@@ -297,7 +298,7 @@ public class WechatPayV3ApiController extends BaseController {
      * @return null代表查询失败 SUCCESS-成功 USERPAYING和ACCEPT为中间态 其他为支付失败
      */
     public String orderQueryByOutTradeNo(String out_trade_no) {
-        JSONObject res = wechatPayV3Utils.sendGet(String.format(WechatUrlConstants.PAY_V3_QUERY_OUT, out_trade_no, WechatMCHConstants.WECHAT_MCH_ID));
+        JSONObject res = wechatPayV3Utils.sendGet(String.format(WxConfig.PAY_V3_QUERY_OUT, out_trade_no, WxConfig.mchId));
         return res == null ? null : res.getString("trade_state");
     }
  
@@ -308,7 +309,7 @@ public class WechatPayV3ApiController extends BaseController {
      * @return
      */
     public JSONObject refundQuery(String out_refund_no) {
-        return wechatPayV3Utils.sendGet(String.format(WechatUrlConstants.PAY_V3_QUERY_REFUND, out_refund_no));
+        return wechatPayV3Utils.sendGet(String.format(WxConfig.PAY_V3_QUERY_REFUND, out_refund_no));
     }
  
     /**

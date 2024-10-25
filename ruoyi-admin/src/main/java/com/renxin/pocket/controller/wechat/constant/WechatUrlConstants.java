@@ -6,7 +6,7 @@ package com.renxin.pocket.controller.wechat.constant;
 public class WechatUrlConstants {
  
     //小程序code获取openid
-    public final static String CODE_2_SESSION = "https://api.weixin.qq.com/sns/jscode2session";
+    /*public final static String CODE_2_SESSION = "https://api.weixin.qq.com/sns/jscode2session";
  
     //微信支付v3 jsapi下单
     public final static String PAY_V3_JSAPI = "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi";
@@ -33,5 +33,5 @@ public class WechatUrlConstants {
     public final static String CONSULTANT_PAY_V3_NOTIFY = "https://api.ssgpsy.com/consulted/api/wechatConsultantPay/v3/wechatConsultantPayNotify";
  
     //微信支付v3 退款通知接口地址
-    public final static String PAY_V3_REFUND_NOTIFY = "https://api.ssgpsy.com/consulted/api/wechatPay/v3/wechatRefundNotify";
+    public final static String PAY_V3_REFUND_NOTIFY = "https://api.ssgpsy.com/consulted/api/wechatPay/v3/wechatRefundNotify";*/
 }

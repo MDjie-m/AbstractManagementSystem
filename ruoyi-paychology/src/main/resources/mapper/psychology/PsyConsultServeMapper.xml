@@ -53,6 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             cf.level as level,
             cf.service_object as serviceObject,
             cf.mode,
+            cf.time,
             con.id as consultantId,
             con.nick_name as consultantName,
             con.avatar as consultantAvatar,
