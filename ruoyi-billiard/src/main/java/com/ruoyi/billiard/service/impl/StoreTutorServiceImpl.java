@@ -366,7 +366,7 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
         SecurityUtils.fillUpdateUser(tutorTime);
         orderTutorTimeMapper.updateById(tutorTime);
 
-        tutor.setWorkStatus(TutorWorkStatus.WAIT );
+        tutor.setWorkStatus(TutorWorkStatus.WAIT);
         tutor.setCurrentOrderId(null);
         SecurityUtils.fillUpdateUser(tutor);
         storeTutorMapper.updateAllWithId(tutor);
@@ -375,14 +375,12 @@ public class StoreTutorServiceImpl implements IStoreTutorService {
     @Override
     public List<TutorResVo> queryByStoreId(Long storeId) {
         Map<Integer, List<StoreTutor>> storeTutors = ArrayUtil.groupBy(selectStoreTutorList(StoreTutor.builder().storeId(storeId).build()), StoreTutor::getLevel);
-
-        return storeTutors.keySet().stream().map(p -> {
+        return Arrays.stream(TutorLevel.values()).map(level -> {
             TutorResVo resVo = new TutorResVo();
-            resVo.setLevel(EnumUtil.getIEnum(TutorLevel.class, p));
-            resVo.setTutors(storeTutors.get(p));
+            resVo.setLevel(level);
+            resVo.setTutors(storeTutors.getOrDefault(level.getValue(), Lists.newArrayList()));
             return resVo;
         }).collect(Collectors.toList());
-
     }
 
     private StoreDesk queryEnableDesk(Long deskId, Long storeId) {
