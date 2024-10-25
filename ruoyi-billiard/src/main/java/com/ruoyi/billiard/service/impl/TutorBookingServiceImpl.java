@@ -66,6 +66,7 @@ public class TutorBookingServiceImpl extends ServiceImpl<TutorBookingMapper,Tuto
     @Override
     public TutorBooking insertTutorBooking(TutorBooking tutorBooking)
     {
+        AssertUtil.isTrue(!tutorBooking.getStartTime().equals(tutorBooking.getEndTime()),"开始时间和结束时间不能一样");
         SecurityUtils.fillCreateUser(tutorBooking);
         AssertUtil.isTrue(!baseMapper.exists(baseMapper.query().eq(TutorBooking::getTutorId, tutorBooking.getTutorId())
                         .gt(TutorBooking::getStartTime, tutorBooking.getStartTime())

@@ -63,6 +63,8 @@ public class DeskBookingServiceImpl extends ServiceImpl<DeskBookingMapper, DeskB
      */
     @Override
     public DeskBooking insertDeskBooking(DeskBooking deskBooking) {
+        AssertUtil.isTrue(!deskBooking.getStartTime().equals(deskBooking.getEndTime()),"开始时间和结束时间不能一样");
+
         SecurityUtils.fillCreateUser(deskBooking);
         AssertUtil.isTrue(!baseMapper.exists(baseMapper.query().eq(DeskBooking::getDeskId, deskBooking.getDeskId())
                         .gt(DeskBooking::getStartTime, deskBooking.getStartTime())

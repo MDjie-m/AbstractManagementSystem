@@ -110,6 +110,7 @@ public class TutorWorkPlanServiceImpl extends ServiceImpl<TutorWorkPlanMapper, T
     @Transactional(rollbackFor = Exception.class)
     public TutorWorkPlanDetail addPlan(TutorWorkPlanDetail plan) {
 
+        AssertUtil.isTrue(!plan.getStartTime().equals(plan.getEndTime()),"开始时间和结束时间不能一样");
         AssertUtil.isTrue(!tutorWorkPlanDetailMapper.exists(tutorWorkPlanDetailMapper.query()
                         .eq(TutorWorkPlanDetail::getTutorId, plan.getTutorId())
                         .gt(TutorWorkPlanDetail::getStartTime, plan.getStartTime())
