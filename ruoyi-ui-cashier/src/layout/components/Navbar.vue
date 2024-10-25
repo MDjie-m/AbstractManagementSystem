@@ -43,6 +43,7 @@ import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import RuoYiGit from '@/components/RuoYi/Git'
 import RuoYiDoc from '@/components/RuoYi/Doc'
+import {GlobalEvent} from "@/utils/globalConst";
 
 export default {
   components: {
@@ -80,7 +81,7 @@ export default {
   },
   methods: {
     onRefreshClick(){
-       this.$eventBus.$emit("global.refresh")
+       this.$eventBus.$emit(GlobalEvent.OnGlobalRefresh)
     },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')

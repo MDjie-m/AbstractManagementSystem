@@ -38,6 +38,8 @@ import VueMeta from 'vue-meta'
 // 字典数据组件
 import DictData from '@/components/DictData'
 import  Dayjs from 'dayjs'
+import duration from  'dayjs/plugin/duration'
+Dayjs.extend(duration)
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey

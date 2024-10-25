@@ -13,3 +13,15 @@ Vue.filter('week', function (value) {
   }
   return WeekDays[Vue.prototype.$time(value).day()]
 });
+Vue.filter('hhmm', function (value) {
+  if (!value) {
+    return '';
+  }
+  const duration = Vue.prototype.$time.duration(value,'minutes');
+  const hours = duration.hours();
+  const minutesLeft = duration.minutes();
+  if(hours>0){
+    return  `${hours}小时${minutesLeft}分`
+  }
+  return  `${minutesLeft}分钟`
+});

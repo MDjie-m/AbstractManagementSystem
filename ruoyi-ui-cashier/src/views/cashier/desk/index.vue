@@ -147,20 +147,23 @@
         <template class="box-card" v-for="placeItem in placeTypeList">
           <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
           <div class="desk-container">
-            <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
+            <div @click="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
                      v-for="desk in placeItem.list" :key="'deskid'+desk.deskId">
               <div class="item-status" :class="`item-status-${desk.status}`"></div>
-              <div>
+
                 <div class="desk-item-name"> {{ desk.deskName }}</div>
                 <div class="desk-item-num"> {{ desk.deskNum }}</div>
                 <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
-                <div class="desk-item-booking" v-if="desk.booking">
+                <div class="desk-item-time" v-if="desk.minutes>0">
+                  计费中:{{desk.minutes|hhmm}}
+                </div>
+                <div class="desk-item-booking" v-if="    desk.booking &&!desk.minutes">
                   {{ desk.booking.startTime |timeFormat("HH:mm") }} ~{{ desk.booking.endTime |timeFormat("HH:mm") }}
                 </div>
-              </div>
 
 
-            </el-card>
+
+            </div>
           </div>
         </template>
       </div>
@@ -351,7 +354,7 @@ export default {
     };
   },
   mounted() {
-    this.$eventBus.$on(GlobalEvent.OnRefreshDesk,this.onRefreshDeskCallback)
+    this.$eventBus.$on(GlobalEvent.OnRefreshDesk, this.onRefreshDeskCallback)
     this.getDeskTypeList();
     this.getPlaceTypeList().then(this.getList)
     this.getStoreInfo();
@@ -362,19 +365,19 @@ export default {
 
 
   beforeDestroy() {
-    this.$eventBus.$off(GlobalEvent.OnRefreshDesk );
+    this.$eventBus.$off(GlobalEvent.OnRefreshDesk);
     removeMethod(DeviceCallbackMethodName.AddScore)
   },
   methods: {
-    onRefreshDeskCallback({deskId,stopOrder}){
-      if(this.currentDesk?.deskId ===deskId ){
+    onRefreshDeskCallback({deskId, stopOrder}) {
+      if (this.currentDesk?.deskId === deskId) {
         this.queryDeskById(deskId)
         this.getList();
-      }else {
+      } else {
         this.getList();
       }
-      if(stopOrder){
-        let item =  this.deskList.find(p=>p.deskId===deskId);
+      if (stopOrder) {
+        let item = this.deskList.find(p => p.deskId === deskId);
         this.$modal.msgSuccess(`${item.title}已自动停止计费`)
       }
     },
@@ -383,10 +386,10 @@ export default {
     },
     getPlaceTypeList() {
       return listPlaceTypeAll().then(res => {
-        this.placeTypeList = (res.data || []).map(p=>{
-          return {list:[],...p}
+        this.placeTypeList = (res.data || []).map(p => {
+          return {list: [], ...p}
         });
-         return this.placeTypeList;
+        return this.placeTypeList;
       })
     },
     getDeskTypeList() {
@@ -497,7 +500,7 @@ export default {
           startTime: this.$time().format("YYYY-MM-DD HH:mm:00"),
           endTime: this.$time().add(value, "minute").format("YYYY-MM-DD HH:mm:00"),
         }).then(response => {
-          if(response.data){
+          if (response.data) {
             this.$eventBus.$emit(GlobalEvent.OnAddTimer, response.data)
           }
           if (lightType === LightType.Temp) {
@@ -566,7 +569,7 @@ export default {
       this.queryDeskById(item.deskId);
     },
     queryDeskById(deskId) {
-      this.loading=true;
+      this.loading = true;
       return getDeskBaseInfo(deskId).then(res => {
         this.currentDesk = res.data || [];
         this.deskList.forEach(p => {
@@ -604,6 +607,7 @@ export default {
       this.loading = true;
       let params = JSON.parse(JSON.stringify(this.queryParams));
       params.queryLastBooking = true
+      params.queryTime = true;
       if (params.status === 1) {
         params.statusList = [1, 2]
 
@@ -613,8 +617,8 @@ export default {
           p.selected = this.currentDesk?.deskId === p.deskId;
           return p;
         });
-        this.placeTypeList=  this.placeTypeList.map(type=>{
-          type.list=this.deskList.filter(p=>p.placeType ===type.value )
+        this.placeTypeList = this.placeTypeList.map(type => {
+          type.list = this.deskList.filter(p => p.placeType === type.value)
           return type;
         });
         this.loading = false;
@@ -812,7 +816,8 @@ export default {
               p.status = this.currentDesk.status
             }
           })
-          this.$message.success(`${deskTitle}已开台。`)
+          this.$message.success(`${deskTitle}已开台。`);
+          this.getList()
         }).then(res => {
           this.onSwitchLight(this.currentDesk.deskNum, true);
           callPCMethod(DeviceMethodNames.CallAddScore, {
