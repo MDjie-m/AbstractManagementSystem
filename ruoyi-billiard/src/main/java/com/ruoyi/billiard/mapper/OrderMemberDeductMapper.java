@@ -1,9 +1,12 @@
 package com.ruoyi.billiard.mapper;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import com.ruoyi.billiard.domain.OrderMemberDeduct;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 会员付款记录Mapper接口
@@ -30,21 +33,6 @@ public interface OrderMemberDeductMapper extends MyBaseMapper<OrderMemberDeduct>
      */
     public List<OrderMemberDeduct> selectOrderMemberDeductList(OrderMemberDeduct orderMemberDeduct);
 
-    /**
-     * 新增会员付款记录
-     * 
-     * @param orderMemberDeduct 会员付款记录
-     * @return 结果
-     */
-    public int insertOrderMemberDeduct(OrderMemberDeduct orderMemberDeduct);
-
-    /**
-     * 修改会员付款记录
-     * 
-     * @param orderMemberDeduct 会员付款记录
-     * @return 结果
-     */
-    public int updateOrderMemberDeduct(OrderMemberDeduct orderMemberDeduct);
 
     /**
      * 删除会员付款记录
@@ -61,4 +49,6 @@ public interface OrderMemberDeductMapper extends MyBaseMapper<OrderMemberDeduct>
      * @return 结果
      */
     public int deleteOrderMemberDeductByOrderMemberDeductIds(Long[] orderMemberDeductIds);
+
+    BigDecimal queryTotal(@Param("storeId") Long storeId, @Param("startTime") Date startTime);
 }

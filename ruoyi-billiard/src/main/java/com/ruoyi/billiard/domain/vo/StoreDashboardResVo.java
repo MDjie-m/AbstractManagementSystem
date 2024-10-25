@@ -15,7 +15,7 @@ public class StoreDashboardResVo implements Serializable {
     private Long totalOrderCount;
 
     private BigDecimal totalAmount;
-
+    private BigDecimal totalAmountDue;
     private BigDecimal rechargeAmount;
     private Long rechargeOrderCount;
 

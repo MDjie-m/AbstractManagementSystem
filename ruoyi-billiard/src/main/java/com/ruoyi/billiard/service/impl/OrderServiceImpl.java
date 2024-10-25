@@ -153,8 +153,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public List<Order> selectOrderList(Order order) {
         List<Order> orders = Optional.ofNullable(orderMapper.selectOrderList(order)).orElse(Collections.emptyList());
-        if(CollectionUtils.isEmpty(orders)){
-            return  orders;
+        if (CollectionUtils.isEmpty(orders)) {
+            return orders;
         }
         orders.forEach(p -> p.setStoreName(storeService.selectStoreByStoreId(p.getStoreId()).getStoreName()));
         return orders;
@@ -164,14 +164,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public List<Order> selectOrderListByCashier(Order order) {
 
         List<Order> orders = selectOrderList(order);
-        if(CollectionUtils.isEmpty(orders)){
-            return  orders;
+        if (CollectionUtils.isEmpty(orders)) {
+            return orders;
         }
-        Map<Long,List<StoreDesk>> times = ArrayUtil.groupBy( orderDeskTimeMapper
+        Map<Long, List<StoreDesk>> times = ArrayUtil.groupBy(orderDeskTimeMapper
                 .selectDeskByOrderIds(
-                orders.stream().map(Order::getOrderId).collect(Collectors.toList())),StoreDesk::getCurrentOrderId);
-        orders.forEach(p->{
-            Optional.ofNullable(times.get(p.getOrderId())).ifPresent(list->{
+                        orders.stream().map(Order::getOrderId).collect(Collectors.toList())), StoreDesk::getCurrentOrderId);
+        orders.forEach(p -> {
+            Optional.ofNullable(times.get(p.getOrderId())).ifPresent(list -> {
                 p.setDeskNames(list.stream().map(StoreDesk::getShortTitle).collect(Collectors.joining("、")));
             });
         });
@@ -904,7 +904,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 SecurityUtils.fillCreateUser(p, order);
                 orderTutorTimeMapper.insert(p);
 
-                tutor.setWorkStatus(TutorWorkStatus.BUSY );
+                tutor.setWorkStatus(TutorWorkStatus.BUSY);
                 tutor.setCurrentOrderId(p.getOrderId());
                 SecurityUtils.fillCreateUser(tutor, order);
                 storeTutorMapper.updateById(tutor);
@@ -951,6 +951,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             AssertUtil.equal(goods.getStoreId(), storeId, "商品id不合法");
             AssertUtil.isTrue(goods.getSell(), "商品未上架");
             p.setPrice(goods.getPrice());
+            p.setCost(goods.getCost());
             p.setGoodsName(goods.getGoodsName());
             p.setOrderId(orderId);
             p.setOrderDetailId(IdUtils.singleNextId());

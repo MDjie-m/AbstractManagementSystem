@@ -7,6 +7,7 @@ import com.ruoyi.billiard.domain.dto.OrderTypeDetailDto;
 import com.ruoyi.billiard.domain.vo.HomeReportVo;
 import com.ruoyi.billiard.domain.vo.StockCheckRes;
 import com.ruoyi.billiard.domain.vo.YingShiYunVo;
+import com.ruoyi.billiard.domain.vo.miniappdomain.AppDashboardGroupVo;
 import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsume;
 import com.ruoyi.billiard.domain.vo.miniappdomain.HomeReportVoConsumeDetail;
 import com.ruoyi.billiard.domain.vo.miniappdomain.TutorResVo;
@@ -182,5 +183,11 @@ public class MiniAppWorkbenchController extends BaseController {
     public ResultVo <List<TutorResVo> > getTutorList(@RequestParam Long storeId) {
 
         return ResultVo.success(storeTutorService.queryByStoreId(storeId));
+    }
+    @PreAuthorize("@ss.hasPermi('miniapp:dashboard')")
+    @GetMapping("/dashboard")
+    public ResultVo <List<AppDashboardGroupVo> > getAppDashboard(@RequestParam Long storeId) {
+
+        return ResultVo.success(storeService.queryAppDashboard(storeId));
     }
 }

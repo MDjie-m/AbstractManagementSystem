@@ -38,4 +38,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         ORDER BY b.create_time DESC
     </select>
+    <select id="selectWorkedCount" resultType="java.lang.Long">
+        SELECT count(distinct a.tutor_id)
+        FROM t_order_tutor_time a
+                 INNER JOIN t_order b ON a.order_id = b.order_id
+        where b.status = 2
+          and b.store_id = #{storeId}
+          and b.create_time >= #{startTime}
+
+
+    </select>
 </mapper>

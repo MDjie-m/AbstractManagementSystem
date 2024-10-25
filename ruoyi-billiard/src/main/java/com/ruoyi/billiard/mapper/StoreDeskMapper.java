@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -63,4 +64,6 @@ public interface StoreDeskMapper extends MyBaseMapper<StoreDesk>
     Integer deskInUse(@Param("deskId") Long deskId);
 
     List<StoreDesk> queryBusyDeskByOrderId(@Param("orderId") Long orderId);
+
+    Long selectOpenCount(@Param("storeId") Long storeId, @Param("startTime")Date startTime);
 }

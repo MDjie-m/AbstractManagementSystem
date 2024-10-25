@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.mapper;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,4 +33,6 @@ public interface OrderDeskTimeMapper extends MyBaseMapper<OrderDeskTime>
 
     List<StoreDesk> selectDeskByOrderIds(@Param("orderIds") List<Long> orderIds);
     List<KeyValueVo<Long,Long>> getDeskCalcTimes(@Param("orderIds") List<Long > orderIds);
+
+    Long selectTotalTime(@Param("storeId") Long storeId, @Param("startTime") Date startTime);
 }

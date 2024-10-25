@@ -1,5 +1,6 @@
 package com.ruoyi.billiard.mapper;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,4 +30,6 @@ public interface OrderTutorTimeMapper extends MyBaseMapper<OrderTutorTime>
 
 
     Map<String, Object> selectOrderGoodsStatistics(@Param("status") Integer status, @Param("storeId") Long storeId, @Param("startTime") String startTime, @Param("endTime") String endTime);
+
+    Long selectWorkedCount(@Param("storeId") Long storeId, @Param("startTime") Date startTime);
 }

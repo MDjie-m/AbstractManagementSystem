@@ -2,6 +2,7 @@ package com.ruoyi.billiard.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -11,14 +12,14 @@ import com.ruoyi.billiard.domain.*;
 import com.ruoyi.billiard.domain.vo.PayDetailVo;
 import com.ruoyi.billiard.domain.vo.PreferentialVo;
 import com.ruoyi.billiard.domain.vo.StoreDashboardResVo;
-import com.ruoyi.billiard.enums.OrderPayType;
-import com.ruoyi.billiard.enums.OrderStatus;
-import com.ruoyi.billiard.enums.OrderType;
-import com.ruoyi.billiard.enums.PreferentialType;
-import com.ruoyi.billiard.mapper.StoreDeskMapper;
-import com.ruoyi.billiard.mapper.StoreTutorMapper;
-import com.ruoyi.billiard.mapper.StoreUserMapper;
+import com.ruoyi.billiard.domain.vo.miniappdomain.AppDashboardGroupVo;
+import com.ruoyi.billiard.domain.vo.miniappdomain.AppStoreDashboardResVo;
+import com.ruoyi.billiard.domain.vo.miniappdomain.TutorResVo;
+import com.ruoyi.billiard.enums.*;
+import com.ruoyi.billiard.mapper.*;
 import com.ruoyi.billiard.service.IStoreScheduleService;
+import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.model.Tuple;
@@ -27,7 +28,6 @@ import com.ruoyi.common.utils.*;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.ruoyi.billiard.mapper.StoreMapper;
 import com.ruoyi.billiard.service.IStoreService;
 
 import javax.annotation.Resource;
@@ -54,6 +54,23 @@ public class StoreServiceImpl implements IStoreService {
 
     @Resource
     private IStoreScheduleService storeScheduleService;
+
+    @Resource
+    private OrderGoodsMapper orderGoodsMapper;
+
+    @Resource
+    private OrderMapper orderMapper;
+
+    @Resource
+    private MemberMapper memberMapper;
+
+    @Resource
+    private OrderDeskTimeMapper orderDeskTimeMapper;
+    @Resource
+    private OrderTutorTimeMapper orderTutorTimeMapper;
+
+    @Resource
+    private OrderMemberDeductMapper orderMemberDeductMapper;
 
     @Value("${cashier.aes-key}")
     private String aesKey;
@@ -138,7 +155,7 @@ public class StoreServiceImpl implements IStoreService {
 
     @Override
     public StoreDashboardResVo queryStoreDashboard(Long storeId, Date startTime, Date endTime) {
-        if(Objects.nonNull(storeId)) {
+        if (Objects.nonNull(storeId)) {
             if (StringUtils.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, startTime), (DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, endTime)))) {
                 Tuple3<Date, Date, Date> time = storeScheduleService.getDaySchedule(storeId, startTime);
                 startTime = time.getValue();
@@ -160,10 +177,11 @@ public class StoreServiceImpl implements IStoreService {
         Tuple<BigDecimal, Long> orderInfo = storeMapper.queryOrderTotal("total_amount", queryWrapper);
         resVo.setTotalAmount(orderInfo.getValue());
         resVo.setTotalOrderCount(orderInfo.getValue1());
-
+        orderInfo = storeMapper.queryOrderTotal("total_amount_due", queryWrapper);
+        resVo.setTotalAmountDue(orderInfo.getValue());
         // 退款
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId), Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue()).gt(Order::getRefundAmount, 0);
         orderInfo = storeMapper.queryOrderTotal("refund_amount", queryWrapper);
         resVo.setRefundAmount(orderInfo.getValue());
@@ -172,7 +190,7 @@ public class StoreServiceImpl implements IStoreService {
 
         // 挂单
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId), Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getStatus, OrderStatus.SUSPEND.getValue());
         orderInfo = storeMapper.queryOrderTotal("total_amount", queryWrapper);
         resVo.setSuspendAmount(orderInfo.getValue());
@@ -181,7 +199,7 @@ public class StoreServiceImpl implements IStoreService {
 
         //充值
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId), Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getOrderType, OrderType.MEMBER_RECHARGE)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue());
         orderInfo = storeMapper.queryOrderTotal("total_amount", queryWrapper);
@@ -190,12 +208,12 @@ public class StoreServiceImpl implements IStoreService {
 
         //优惠
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId), Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue()).gt(Order::getTotalWipeZero, 0);
         Tuple<BigDecimal, Long> wipeZeroInfo = storeMapper.queryOrderTotal("total_wipe_zero", queryWrapper);
 
         queryWrapper.clear();
-        queryWrapper.lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
+        queryWrapper.lambda().eq(Objects.nonNull(storeId), Order::getStoreId, storeId).between(Order::getCreateTime, startTime, endTime)
                 .eq(Order::getStatus, OrderStatus.SETTLED.getValue()).gt(Order::getDiscountValue, 0);
         Tuple<BigDecimal, Long> disCountInfo = storeMapper.queryOrderTotal("discount_value", queryWrapper);
 
@@ -208,7 +226,7 @@ public class StoreServiceImpl implements IStoreService {
 
         //支付方式统计
         QueryWrapper<Order> payQueryWrapper = new QueryWrapper<>();
-        payQueryWrapper.eq(Objects.nonNull(storeId),"b.store_id", storeId).between("b.create_time", startTime, endTime)
+        payQueryWrapper.eq(Objects.nonNull(storeId), "b.store_id", storeId).between("b.create_time", startTime, endTime)
                 .groupBy("a.pay_type");
         Map<Integer, Tuple3<BigDecimal, Long, Integer>> payList = ArrayUtil.toMap(
                 storeMapper.queryPayTotal("amount", "pay_type", payQueryWrapper),
@@ -229,7 +247,7 @@ public class StoreServiceImpl implements IStoreService {
         //退款统计
         QueryWrapper<Order> refundQueryWrapper = new QueryWrapper<>();
         refundQueryWrapper.between("b.create_time", startTime, endTime)
-                .eq(Objects.nonNull(storeId),"b.store_id", storeId).groupBy("a.return_pay_type");
+                .eq(Objects.nonNull(storeId), "b.store_id", storeId).groupBy("a.return_pay_type");
         Map<Integer, Tuple3<BigDecimal, Long, Integer>> refundList = ArrayUtil.toMap(
                 storeMapper.queryRefundTotal("amount", "return_pay_type", refundQueryWrapper),
                 Tuple3::getValue2, (Tuple3<BigDecimal, Long, Integer> p) -> p);
@@ -249,7 +267,7 @@ public class StoreServiceImpl implements IStoreService {
         QueryWrapper<Order> subQuery = new QueryWrapper<>();
         subQuery.between("b.create_time", startTime, endTime)
                 .eq("b.status", OrderStatus.SETTLED.getValue())
-                .lambda().eq(Objects.nonNull(storeId),Order::getStoreId, storeId);
+                .lambda().eq(Objects.nonNull(storeId), Order::getStoreId, storeId);
         resVo.getOrderSubItems().add(storeMapper.queryOrderSubItems("t_order_desk_time", subQuery));
         resVo.getOrderSubItems().get(resVo.getOrderSubItems().size() - 1).setType(OrderType.TABLE_CHARGE);
 
@@ -330,5 +348,106 @@ public class StoreServiceImpl implements IStoreService {
                     .orElse(Collections.emptyList());
         }
         return stores;
+    }
+
+    private <T, T1> BigDecimal calcRate(T val, T1 total) {
+        if (Objects.isNull(val) || Objects.isNull(total)) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
+        }
+
+        BigDecimal valA = new BigDecimal(String.valueOf(val));
+        BigDecimal valTotal = new BigDecimal(String.valueOf(total));
+        if (BigDecimal.ZERO.compareTo(valTotal) == 0) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
+        }
+        return valA.multiply(new BigDecimal("100")).divide(valTotal, 2, RoundingMode.HALF_DOWN);
+    }
+
+    private <T, T1> BigDecimal calcAvg(T val, T1 total) {
+        if (Objects.isNull(val) || Objects.isNull(total)) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
+        }
+
+        BigDecimal valA = new BigDecimal(String.valueOf(val));
+        BigDecimal valTotal = new BigDecimal(String.valueOf(total));
+        if (BigDecimal.ZERO.compareTo(valTotal) == 0) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_DOWN);
+        }
+        return valA.divide(valTotal, 2, RoundingMode.HALF_DOWN);
+    }
+
+    @Override
+    public List<AppDashboardGroupVo> queryAppDashboard(Long storeId) {
+        Tuple3<Date, Date, Date> time = storeScheduleService.getDaySchedule(storeId, new Date());
+        StoreDashboardResVo dashboardResVo = queryStoreDashboard(storeId, time.getValue(), time.getValue1());
+        AppStoreDashboardResVo resVo = new AppStoreDashboardResVo();
+        resVo.setTotalAmount(dashboardResVo.getTotalAmount());
+        resVo.setTotalRefundAmount(dashboardResVo.getRefundAmount());
+        resVo.setDeskCount(Optional.ofNullable(storeDeskMapper.selectCount(storeDeskMapper.query().eq(StoreDesk::getStoreId, storeId).eq(StoreDesk::getEnable, true))).orElse(0L));
+        resVo.setDeskOpenCount(Optional.ofNullable(storeDeskMapper.selectOpenCount(storeId, time.getValue())).orElse(0L));
+        resVo.setDeskNotOpenCount(resVo.getDeskCount() - resVo.getDeskOpenCount());
+        resVo.setDeskOpenRate(calcRate(resVo.getDeskOpenCount(), resVo.getDeskCount()));
+        resVo.setDeskOpenRate1(resVo.getDeskOpenRate());
+        resVo.setTutorWaitCount(Optional.ofNullable(storeTutorMapper.selectCount(storeTutorMapper.query()
+                .eq(StoreTutor::getStoreId, storeId).in(StoreTutor::getWorkStatus, TutorWorkStatus.WAIT, TutorWorkStatus.STOP)
+                .eq(StoreTutor::getStatus, EmployeeStatus.WORK.getValue()))).orElse(0L));
+        Long tutorCount = Optional.ofNullable(storeTutorMapper.selectCount(storeTutorMapper.query().eq(StoreTutor::getStoreId, storeId)
+                .eq(StoreTutor::getStatus, EmployeeStatus.WORK.getValue()))).orElse(0L);
+        resVo.setTutorBusyCount(tutorCount - resVo.getTutorWaitCount());
+        resVo.setTutorWorkRate(calcRate(resVo.getTutorBusyCount(), tutorCount));
+
+        resVo.setTotalAmountDue(dashboardResVo.getTotalAmountDue());
+        resVo.setOrderCount(dashboardResVo.getTotalOrderCount());
+        resVo.setOrderAvg(calcRate(resVo.getTotalAmountDue(), dashboardResVo.getTotalOrderCount()));
+        Tuple<Long, BigDecimal> goodsCountAndCost = Optional.ofNullable(orderGoodsMapper.queryGoodsCount(storeId, time.getValue())).orElse(new Tuple<>(0L, new BigDecimal("0.00")));
+
+        resVo.setGoodsCost(goodsCountAndCost.getValue1().setScale(2, RoundingMode.HALF_DOWN));
+        resVo.setOrderGoodsCountAvg(calcAvg(goodsCountAndCost.getValue(), resVo.getOrderCount()));
+        resVo.setGoodsAmount(new BigDecimal("0.00"));
+        resVo.setGoodsOrderCount(0L);
+        dashboardResVo.getOrderSubItems().stream().filter(p -> p.getType() == OrderType.COMMODITY_PURCHASE).findFirst().ifPresent(p -> {
+            resVo.setGoodsAmount(p.getAmount());
+            resVo.setGoodsOrderCount(p.getCount());
+        });
+        resVo.setGoodsOrderAvg(calcAvg(resVo.getGoodsAmount(), resVo.getGoodsOrderCount()));
+        resVo.setGoodsProfit(resVo.getTotalAmount().subtract(resVo.getGoodsCost()));
+        resVo.setGoodsProfitRate(calcRate(resVo.getGoodsProfit(), resVo.getTotalAmount()));
+
+        resVo.setDeskAmount(new BigDecimal("0.00"));
+        resVo.setDeskTotalOrderCount(0L);
+        dashboardResVo.getOrderSubItems().stream().filter(p -> p.getType() == OrderType.TABLE_CHARGE).findFirst().ifPresent(p -> {
+            resVo.setDeskAmount(p.getAmount());
+            resVo.setDeskTotalOrderCount(p.getCount());
+        });
+        Long totalTime = orderDeskTimeMapper.selectTotalTime(storeId, time.getValue());
+
+        resVo.setDeskTimeAvg(calcAvg(totalTime, resVo.getDeskCount()));
+        resVo.setOrderTimeAvg(calcAvg(totalTime, resVo.getDeskTotalOrderCount()));
+
+        resVo.setTutorAmount(new BigDecimal("0.00"));
+        resVo.setTutorTotalOrderCount(0L);
+        dashboardResVo.getOrderSubItems().stream().filter(p -> p.getType() == OrderType.TEACHING_ASSISTANT_FEE).findFirst().ifPresent(p -> {
+            resVo.setTutorAmount(p.getAmount());
+            resVo.setTutorTotalOrderCount(p.getCount());
+
+
+        });
+
+        Long count = Optional.ofNullable(orderTutorTimeMapper.selectWorkedCount(storeId, time.getValue())).orElse(0L);
+        resVo.setTutorWorkedTodayRate(calcRate(count, tutorCount));
+
+        resVo.setMemberRechargeAmount(new BigDecimal("0.00"));
+
+        dashboardResVo.getOrderSubItems().stream().filter(p -> p.getType() == OrderType.MEMBER_RECHARGE).findFirst().ifPresent(p -> {
+            resVo.setMemberRechargeAmount(p.getAmount());
+        });
+        Long memberOrderCount = Optional.ofNullable(orderMapper.selectCount(orderMapper.query().eq(Order::getStoreId, storeId)
+                .gt(BaseEntity::getCreateTime, time.getValue()).gt(Order::getMemberId, 0L).eq(Order::getStatus, OrderStatus.SETTLED.getValue()))).orElse(0L);
+        resVo.setMemberOrderRate(calcRate(memberOrderCount, dashboardResVo.getTotalOrderCount()));
+        resVo.setNewMemberCount(memberMapper.selectCount(memberMapper.query().eq(Member::getStoreId, storeId).gt(BaseEntity::getCreateTime, time.getValue())));
+        BigDecimal totalMemberDeduct =  Optional.ofNullable(orderMemberDeductMapper.queryTotal(storeId, time.getValue())).orElse( new BigDecimal("0.00"));
+        resVo.setMemberAmountRate(calcRate(totalMemberDeduct, resVo.getTotalAmount()));
+        resVo.setMemberUsedAmount(totalMemberDeduct);
+        return resVo.toGouppList();
     }
 }

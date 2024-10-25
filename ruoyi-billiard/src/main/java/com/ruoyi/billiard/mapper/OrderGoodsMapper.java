@@ -1,9 +1,12 @@
 package com.ruoyi.billiard.mapper;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.ruoyi.billiard.domain.OrderGoods;
+import com.ruoyi.common.core.domain.model.Tuple;
 import com.ruoyi.common.core.mapper.MyBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -66,5 +69,8 @@ public interface OrderGoodsMapper extends MyBaseMapper<OrderGoods>
     public int deleteOrderGoodsByOrderDetailIds(Long[] orderDetailIds);
 
     Map<String, Object> selectOrderGoodsStatistics(@Param("status") Integer status, @Param("storeId") Long storeId, @Param("startTime") String startTime, @Param("endTime") String endTime);
+
+    Tuple<Long,BigDecimal> queryGoodsCount(@Param("storeId") Long storeId, @Param("startTime") Date value);
+
 
 }

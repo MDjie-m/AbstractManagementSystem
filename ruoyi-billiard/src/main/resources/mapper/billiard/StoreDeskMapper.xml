@@ -65,6 +65,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectStoreDeskVo"/>
         where a.desk_id = #{deskId} and a.store_id=#{storeId}
     </select>
+    <select id="selectOpenCount" resultType="java.lang.Long">
+
+        select count(distinct b.desk_id)
+        from t_order_desk_time a
+                 join t_store_desk b on a.desk_id = b.desk_id
+        where b.store_id = #{storeId}
+          and a.start_time >= #{startTime};
+    </select>
 
 
     <delete id="deleteStoreDeskByDeskId" parameterType="Long">

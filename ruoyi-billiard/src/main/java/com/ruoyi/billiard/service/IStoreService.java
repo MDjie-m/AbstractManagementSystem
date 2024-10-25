@@ -5,6 +5,7 @@ import java.util.List;
 import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreSwapRecord;
 import com.ruoyi.billiard.domain.vo.StoreDashboardResVo;
+import com.ruoyi.billiard.domain.vo.miniappdomain.AppDashboardGroupVo;
 
 /**
  * 门店Service接口
@@ -72,4 +73,7 @@ public interface IStoreService
     String getApiKey(Long storeId);
 
     List<Store> findAListOfStoresByRole();
+
+    List<AppDashboardGroupVo> queryAppDashboard(Long storeId);
+
 }

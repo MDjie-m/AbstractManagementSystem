@@ -247,6 +247,7 @@ create table t_order_goods
     goods_id              bigint                                not null comment '商品id',
     goods_name            nvarchar(64)                          not null comment '商品名称',
     price                 decimal(10, 2)                        not null comment '单价',
+    cost                 decimal(10, 2)                        not null comment '单价',
     num                   int                                   not null comment '数量',
     total_amount_due      decimal(20, 2)                        null comment '应付总金额 ',
     total_discount_amount decimal(20, 2)                        null comment '折扣金额',

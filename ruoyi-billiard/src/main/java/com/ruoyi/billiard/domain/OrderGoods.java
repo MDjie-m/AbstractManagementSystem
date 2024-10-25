@@ -82,6 +82,12 @@ public class OrderGoods extends MyBaseEntity implements ITotalDueFee {
 
     @TableField("price")
     private BigDecimal price;
+    /**
+     * 成本价
+     */
+    @TableField("cost")
+    private BigDecimal cost;
+
 
     /**
      * 数量

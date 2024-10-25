@@ -67,4 +67,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
         group by  order_id,desk_id
     </select>
+    <select id="selectTotalTime" resultType="java.lang.Long">
+
+        select   sum(a.total_time)
+        from t_order_desk_time a join t_order b on a.order_id=b.order_id
+        where b.store_id = #{storeId} and  b.status=2 and   b.create_time >= #{startTime}
+    </select>
 </mapper>

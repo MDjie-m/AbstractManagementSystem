@@ -57,7 +57,7 @@ public class OrderMemberDeductServiceImpl implements IOrderMemberDeductService
     {
         SecurityUtils.fillCreateUser(orderMemberDeduct);
         orderMemberDeduct.setOrderMemberDeductId(IdUtils.singleNextId());
-        return orderMemberDeductMapper.insertOrderMemberDeduct(orderMemberDeduct);
+        return orderMemberDeductMapper.insert(orderMemberDeduct);
     }
 
     /**
@@ -71,7 +71,7 @@ public class OrderMemberDeductServiceImpl implements IOrderMemberDeductService
     {
         SecurityUtils.fillUpdateUser(orderMemberDeduct);
 
-        return orderMemberDeductMapper.updateOrderMemberDeduct(orderMemberDeduct);
+        return orderMemberDeductMapper.updateById(orderMemberDeduct);
     }
 
     /**

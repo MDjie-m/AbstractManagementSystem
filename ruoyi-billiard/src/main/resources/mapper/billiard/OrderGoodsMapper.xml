@@ -151,4 +151,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         ORDER BY b.create_time DESC
     </select>
+    <select id="queryGoodsCount" resultType="com.ruoyi.common.core.domain.model.Tuple">
+        select sum(a.num) as value, sum(a.num * a.cost) as value1
+        from t_order_goods a
+                 join t_order b on a.order_id = b.order_id
+        where b.store_id = #{storeId}
+           and b.status in (2)
+          and b.create_time >= #{startTime};
+    </select>
 </mapper>
