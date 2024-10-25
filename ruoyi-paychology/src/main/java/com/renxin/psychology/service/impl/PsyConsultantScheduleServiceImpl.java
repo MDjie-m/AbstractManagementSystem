@@ -196,7 +196,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         Integer usedNum = order.getUsedNum();//已用次数
         Integer surplusNum = order.getSurplusNum();//剩余次数
         
-        if (!consultantScheduleList.get(0).getCreateBy().equals(order.getPayConsultantId())){
+        if (!consultantScheduleList.get(0).getCreateBy().equals(order.getPayConsultantId()+"")){
             throw new ServiceException("该订单不属于当前登录人");
         }
         if (surplusNum < consultantScheduleList.size()){
@@ -211,7 +211,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         sortSchedule(consultantScheduleList);//按预约时间排序
         for (PsyConsultantSchedule schedule : consultantScheduleList) {
             PsyConsultWorkVO work = psyConsultWorkService.getOne(schedule.getWorkId());
-            if (!chargeConsultantId.equals(work.getConsultId()+"")){
+            if (!chargeConsultantId.equals(work.getConsultId())){
                 throw new ServiceException("workId与咨询师不相符");
             }
             
