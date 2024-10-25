@@ -27,7 +27,7 @@
           <el-card @click.native="onTutorClick(item)" class="tutor-item" :class="{'selected':item.selected}"
                    v-for="item in tutorList">
             <div class="item-status" :class="`item-status-${item.workStatus}`"></div>
-            <image-preview class="item-img big" :src="item.userImg"/>
+            <image-preview :preview="false"  class="item-img big" :src="item.userImg"/>
             <div>
               <div class="tutor-item-name"> {{ item.realName }}</div>
               <div class="tutor-item-price"> {{ item.price }}元/分钟</div>
@@ -194,7 +194,7 @@ export default {
         bookingUserName: [
           {required: true, message: "姓名不能为空", trigger: "blur"}],
         bookingUserMobile: [
-          {required: true, message: "姓名不能为空", trigger: "blur"},
+          {required: true, message: "手机号不能为空", trigger: "blur"},
           {
             validator: function (rule, value, callback) {
               if (!/^(1)\d{10}$/.test(value)) {

@@ -1,8 +1,8 @@
 <template>
-  <div class="page-container">
+  <div class="page-container"  >
 
     <left-container @onRefreshClick="onRefreshClick">
-      <div class="section-container " style="margin:10px" v-if="current">
+      <div class="section-container " style="margin:10px;margin-bottom: 0" v-if="current">
         <el-form label-width="100px">
           <el-form-item label="姓名:">
             {{ current.realName }}
@@ -24,18 +24,21 @@
           </el-form-item>
 
         </el-form>
-        <div style="display: flex ;justify-content: center">
-          <el-button-group>
-            <el-button type="danger" @click="onPwdClick(MemberDialogTitle.Recharge)" size="mini">充值</el-button>
-            <el-button type="primary" @click="onPwdClick(MemberDialogTitle.ChangePwd)" size="mini">密码</el-button>
-            <el-button type="primary" size="mini" @click="current.showAmount=!current.showAmount">余额</el-button>
-            <el-button type="primary" @click="onPwdClick(MemberDialogTitle.Order)" size="mini">消费记录</el-button>
-            <el-button type="primary" @click="onShowEdit " size="mini">编辑</el-button>
-          </el-button-group>
-        </div>
+
 
       </div>
+      <div style="display: flex ;justify-content: center; margin: 10px">
+        <tool-bar  v-if="current" title="操作" style="width: 100%">
+          <SvgItem     svg-icon="credit_card" class=" icon-blue" label="充值" :btnAble="true" @click.native="onPwdClick(MemberDialogTitle.Recharge)"/>
+          <SvgItem   svg-icon="password" label="修改密码"   class=" icon-red"  :btnAble="true" @click.native="onPwdClick(MemberDialogTitle.ChangePwd)"/>
+          <SvgItem   svg-icon="money" label="查看余额" class=" icon-blue"  :btnAble="true" @click.native="current.showAmount=!current.showAmount"/>
+          <SvgItem   svg-icon="list" label="消费记录" class=" icon-green"  :btnAble="true" @click.native="onPwdClick(MemberDialogTitle.Order)"/>
+          <SvgItem     svg-icon="edit" label="修改会员" class=" icon-yellow"  :btnAble="true" @click.native="onShowEdit"/>
+          <SvgItem     svg-icon="register" label="注册会员" class=" icon-blue"  :btnAble="true" @click.native="onAddUserClick"/>
+        </tool-bar>
 
+        <SvgItem  v-else    svg-icon="register" label="注册会员" class=" icon-blue"  :btnAble="true" @click.native="onAddUserClick"/>
+      </div>
     </left-container>
     <div class="right-panel">
       <div class="section-container" style="flex-direction: row">
@@ -44,10 +47,7 @@
             <el-input  style="width: 500px" @keydown.enter.native="getList" v-model="queryParams.keyword" maxlength="20" autocomplete="off"
                       placeholder="请输入会员姓名或者手机号"></el-input>
           </el-form-item>
-          <el-form-item>      <el-button size="mini" type="primary" circle icon="el-icon-search" @click="getList"/>
-          </el-form-item>
-          <el-form-item>
-            <el-button size="mini" type="primary" circle icon="el-icon-plus" @click="onAddUserClick"/>
+          <el-form-item>      <el-button size="mini" type="primary" circle icon="el-icon-search" @click.stop="getList"/>
           </el-form-item>
         </el-form>
 
@@ -55,7 +55,7 @@
       </div>
       <div class="section-container member-box">
         <div class="table-box">
-          <el-table v-loading="loading" :data="memberList" @change="getList" @row-click="onRowClick"
+          <el-table v-loading="loading" :data="memberList" @change="getList" @row-click ="onRowClick"
                     :row-style="rowStyle">
             <el-table-column label="姓名" align="center" prop="realName" width="210"/>
             <el-table-column label="手机号" align="center" prop="mobile"/>
@@ -117,6 +117,7 @@ import Recharge from "@/views/cashier/member/components/recharge.vue";
 import MoneyRecord from "@/views/cashier/member/components/moneyRecord.vue";
 import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
 import MemberRegister from "@/views/cashier/member/components/memberRegister.vue";
+import ToolBar from "@/views/cashier/desk/components/toolBar.vue";
 
 
 export default {
@@ -125,7 +126,9 @@ export default {
       return MemberDialogTitle
     }
   },
-  components: {MemberRegister, CustomDialog, MoneyRecord, Recharge, ChangePwd, ContentWrapper, LeftContainer, SvgItem},
+  components: {
+    ToolBar,
+    MemberRegister, CustomDialog, MoneyRecord, Recharge, ChangePwd, ContentWrapper, LeftContainer, SvgItem},
   dicts: ['sys_user_sex'],
   data() {
 
@@ -149,6 +152,9 @@ export default {
     this.getList()
   },
   methods: {
+    onOtherClick(){
+      this.current=null;
+    },
     onRechargeOk() {
       this.openNewDialog = false;
       if (this.current) {
@@ -175,6 +181,8 @@ export default {
       this.openNewDialog = true
     },
     onRowClick(item) {
+      window.event.stopImmediatePropagation()
+
       this.current = item;
     },
     rowStyle({row}) {

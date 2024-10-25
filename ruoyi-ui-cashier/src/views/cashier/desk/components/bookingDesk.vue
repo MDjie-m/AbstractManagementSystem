@@ -197,7 +197,7 @@ export default {
         bookingUserName: [
           {required: true, message: "姓名不能为空", trigger: "blur"}],
         bookingUserMobile: [
-          {required: true, message: "姓名不能为空", trigger: "blur"},
+          {required: true, message: "手机号不能为空", trigger: "blur"},
           {
             validator: function (rule, value, callback) {
               if (!/^(1)\d{10}$/.test(value)) {

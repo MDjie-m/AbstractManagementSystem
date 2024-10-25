@@ -24,8 +24,8 @@
       </div>
 
       <ToolBar title="台桌服务" v-if="currentDesk" v-loading="orderLoading">
-        <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
-          <span>{{ currentDesk.deskTotalTimeAmount }}</span>元 <i class="el-icon-info"/>
+        <div slot="titleRight"  v-if="currentDesk.stat ===DeskStatus.Busy " style="color: #8a8a8a;font-weight: 200;font-size: 12px">
+          <span>{{ currentDesk.deskTotalTimeAmount }}</span>元
         </div>
         <SvgItem svg-icon="clock" class="icon-blue" label="开台" @click.native="onStartDeskClick()"
                  v-if="currentDesk.status ===DeskStatus.Wait && !currentDesk.lastActiveOrder" :btnAble="true"/>
@@ -57,8 +57,8 @@
                  @click.native="onSwitchLight(currentDesk.deskNum,false)"/>
       </ToolBar>
       <ToolBar title="订单服务" v-if="currentDesk &&currentDesk.lastActiveOrder" v-loading="orderLoading">
-        <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px">
-          <span>{{ currentDesk.otherTotalAmount }}元</span> <i class="el-icon-info"/>
+        <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px"  v-if="currentDesk.stat ===DeskStatus.Busy " >
+          <span>{{ currentDesk.otherTotalAmount }}元</span>
         </div>
         <SvgItem svg-icon="shop_car" label="选商品" :btnAble="true" @click.native="onNavBuyClick(ChooseType.Goods)"/>
         <SvgItem svg-icon="user_choose" label="选艺人" :btnAble="true" @click.native="onNavBuyClick(ChooseType.Tutor)"/>
