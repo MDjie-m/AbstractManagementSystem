@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.ruoyi.billiard.domain.DeskBooking;
 import com.ruoyi.billiard.domain.TutorBooking;
 import com.ruoyi.billiard.domain.TutorWorkPlanDetail;
 import com.ruoyi.billiard.enums.BookingStatus;
@@ -119,6 +120,16 @@ public class TutorWorkPlanServiceImpl extends ServiceImpl<TutorWorkPlanMapper, T
                         .ge(TutorWorkPlanDetail::getStartTime, plan.getEndTime())
                         .le(TutorWorkPlanDetail::getEndTime, plan.getEndTime())),
                 "当前时间段已存在排课");
+
+        AssertUtil.isTrue(!tutorWorkPlanDetailMapper.exists(tutorWorkPlanDetailMapper.query().eq(TutorWorkPlanDetail::getTutorId, plan.getTutorId())
+                        .le(TutorWorkPlanDetail::getStartTime, plan.getStartTime())
+                        .ge(TutorWorkPlanDetail::getEndTime, plan.getEndTime()) ),
+                "当前时间段已存在排课");
+        AssertUtil.isTrue(!tutorWorkPlanDetailMapper.exists(tutorWorkPlanDetailMapper.query().eq(TutorWorkPlanDetail::getTutorId, plan.getTutorId())
+                        .ge(TutorWorkPlanDetail::getStartTime, plan.getStartTime())
+                        .le(TutorWorkPlanDetail::getEndTime, plan.getEndTime())),
+
+                "当前时间段与其他排课重合");
 
         TutorWorkPlan master = baseMapper.selectOne(baseMapper.query().eq(TutorWorkPlan::getDay, plan.getStartTime().toLocalDate())
                 .eq(TutorWorkPlan::getTutorId, plan.getTutorId()).last(" limit 1"));
