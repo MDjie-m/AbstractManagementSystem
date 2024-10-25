@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 2024-09-19
  */
 @Service
-public class LightTimerServiceImpl extends ServiceImpl<LightTimerMapper,LightTimer> implements ILightTimerService {
+public class LightTimerServiceImpl extends ServiceImpl<LightTimerMapper, LightTimer> implements ILightTimerService {
     @Autowired
     private LightTimerMapper lightTimerMapper;
 
@@ -42,7 +42,7 @@ public class LightTimerServiceImpl extends ServiceImpl<LightTimerMapper,LightTim
      */
     @Override
     public LightTimer selectLightTimerByLightTimerId(Long lightTimerId) {
-        return lightTimerMapper.selectById(lightTimerId);
+        return lightTimerMapper.selectLightTimerByLightTimerId(lightTimerId);
     }
 
     /**
@@ -53,21 +53,7 @@ public class LightTimerServiceImpl extends ServiceImpl<LightTimerMapper,LightTim
      */
     @Override
     public List<LightTimer> selectLightTimerList(LightTimer lightTimer) {
-        Date time = DateUtils.removeSeconds(lightTimer.getEndTime());
-        Date endTime = Objects.nonNull(time) ? DateUtils.addSeconds(time, 59) : null;
-        List<LightTimer> timers = lightTimerMapper.selectList(lightTimerMapper.query()
-                .eq(Objects.nonNull(lightTimer.getDeskId()), LightTimer::getDeskId, lightTimer.getDeskId())
-                .eq(LightTimer::getStoreId, lightTimer.getStoreId())
-                .between(Objects.nonNull(time), LightTimer::getEndTime,
-                        time, endTime));
-        if (CollectionUtils.isNotEmpty(timers)) {
-            Map<Long, Integer> deskMap = ArrayUtil.toMap(storeDeskMapper.selectList(storeDeskMapper.query().in(StoreDesk::getDeskId,
-                    timers.stream().map(LightTimer::getDeskId).collect(Collectors.toList()))), StoreDesk::getDeskId, StoreDesk::getDeskNum);
-            for (LightTimer timer : timers) {
-                timer.setDeskNum(deskMap.get(timer.getDeskId()));
-            }
-        }
-
+        List<LightTimer> timers = lightTimerMapper.selectLightTimerList(lightTimer);
         return timers;
     }
 
@@ -79,8 +65,8 @@ public class LightTimerServiceImpl extends ServiceImpl<LightTimerMapper,LightTim
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insertLightTimer(LightTimer lightTimer) {
-        if (Objects.equals(lightTimer.getLightType(), LightTimerType.CALC_FEE )) {
+    public LightTimer insertLightTimer(LightTimer lightTimer) {
+        if (Objects.equals(lightTimer.getLightType(), LightTimerType.CALC_FEE)) {
             AssertUtil.notNullOrEmpty(lightTimer.getOrderId(), "订单id不能为空");
         }
         lightTimerMapper.delete(lightTimerMapper.query().eq(LightTimer::getDeskId, lightTimer.getDeskId()));
@@ -93,7 +79,8 @@ public class LightTimerServiceImpl extends ServiceImpl<LightTimerMapper,LightTim
 //                        .eq(LightTimer::getEnable, Boolean.TRUE)
 //                        .or().between(LightTimer::getEndTime, lightTimer.getStartTime(), lightTimer.getEndTime()).eq(LightTimer::getDeskId, lightTimer.getDeskId()))
 //                , "该时间段已有灯光定时");
-        return lightTimerMapper.insert(lightTimer);
+        lightTimerMapper.insert(lightTimer);
+        return selectLightTimerByLightTimerId(lightTimer.getLightTimerId());
     }
 
     @Override

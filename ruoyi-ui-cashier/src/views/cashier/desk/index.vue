@@ -24,7 +24,8 @@
       </div>
 
       <ToolBar title="台桌服务" v-if="currentDesk" v-loading="orderLoading">
-        <div slot="titleRight"  v-if="currentDesk.stat ===DeskStatus.Busy " style="color: #8a8a8a;font-weight: 200;font-size: 12px">
+        <div slot="titleRight" v-if="currentDesk.status ===DeskStatus.Busy "
+             style="color: #8a8a8a;font-weight: 200;font-size: 12px">
           <span>{{ currentDesk.deskTotalTimeAmount }}</span>元
         </div>
         <SvgItem svg-icon="clock" class="icon-blue" label="开台" @click.native="onStartDeskClick()"
@@ -57,7 +58,8 @@
                  @click.native="onSwitchLight(currentDesk.deskNum,false)"/>
       </ToolBar>
       <ToolBar title="订单服务" v-if="currentDesk &&currentDesk.lastActiveOrder" v-loading="orderLoading">
-        <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px"  v-if="currentDesk.stat ===DeskStatus.Busy " >
+        <div slot="titleRight" style="color: #8a8a8a;font-weight: 200;font-size: 12px"
+             v-if="currentDesk.status ===DeskStatus.Busy ">
           <span>{{ currentDesk.otherTotalAmount }}元</span>
         </div>
         <SvgItem svg-icon="shop_car" label="选商品" :btnAble="true" @click.native="onNavBuyClick(ChooseType.Goods)"/>
@@ -65,17 +67,22 @@
       </ToolBar>
       <ToolBar title="订单操作" v-if="currentDesk &&currentDesk.lastActiveOrder" v-loading="orderLoading">
         <SvgItem svg-icon="trash" label="作废" :btnAble="true" @click.native="onVoidOrderClick"/>
-        <SvgItem svg-icon="suspend_order"  class="icon-blue" label="挂单" :btnAble="true" @click.native="onSuspendOrderClick"/>
-        <SvgItem svg-icon="stop" label="停止"   class="icon-blue" :btnAble="true" @click.native="onStopOrderClick"/>
+        <SvgItem svg-icon="suspend_order" class="icon-blue" label="挂单" :btnAble="true"
+                 @click.native="onSuspendOrderClick"/>
+        <SvgItem svg-icon="stop" label="停止" class="icon-blue" :btnAble="true" @click.native="onStopOrderClick"/>
         <SvgItem svg-icon="credit_card" label="去结算" :btnAble="true" @click.native="onNavToSettleOrderClick"/>
       </ToolBar>
       <Dashboard ref="dashboard" v-if="!currentDesk" :storeName="storeInfo?storeInfo.storeName:''"/>
 
       <ToolBar title="预约/排队" v-if="!(currentDesk &&currentDesk.lastActiveOrder)">
-        <SvgItem svg-icon="desk" class="icon-blue" label="台桌预约"  @click.native="onOpenLineUpClick(DeskDialogTitle.BookingDesk)"/>
-        <SvgItem svg-icon="tutor"  class="icon-blue"label="教练预约" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingTutor)"/>
-        <SvgItem svg-icon="qrcode"  class="icon-blue"label="预约核销" @click.native="onOpenLineUpClick(DeskDialogTitle.BookingVerify)"/>
-        <SvgItem svg-icon="line_up" class="icon-blue" label="排队叫号" @click.native="onOpenLineUpClick(DeskDialogTitle.LineUp)"/>
+        <SvgItem svg-icon="desk" class="icon-blue" label="台桌预约"
+                 @click.native="onOpenLineUpClick(DeskDialogTitle.BookingDesk)"/>
+        <SvgItem svg-icon="tutor" class="icon-blue" label="教练预约"
+                 @click.native="onOpenLineUpClick(DeskDialogTitle.BookingTutor)"/>
+        <SvgItem svg-icon="qrcode" class="icon-blue" label="预约核销"
+                 @click.native="onOpenLineUpClick(DeskDialogTitle.BookingVerify)"/>
+        <SvgItem svg-icon="line_up" class="icon-blue" label="排队叫号"
+                 @click.native="onOpenLineUpClick(DeskDialogTitle.LineUp)"/>
       </ToolBar>
     </left-container>
 
@@ -141,14 +148,14 @@
           <el-divider content-position="left" :key="'typeDesk'+placeItem.value">{{ placeItem.label }}</el-divider>
           <div class="desk-container">
             <el-card @click.native="onDeskClick(desk)" class="desk-item" :class="{'selected':desk.selected}"
-                     v-for="desk in deskList.filter(p=>  p.placeType === (placeItem.value))">
+                     v-for="desk in placeItem.list" :key="'deskid'+desk.deskId">
               <div class="item-status" :class="`item-status-${desk.status}`"></div>
               <div>
                 <div class="desk-item-name"> {{ desk.deskName }}</div>
                 <div class="desk-item-num"> {{ desk.deskNum }}</div>
                 <div class="desk-item-price"> {{ desk.price }}元/分钟</div>
                 <div class="desk-item-booking" v-if="desk.booking">
-                  {{desk.booking.startTime |timeFormat("HH:mm")}} ~{{desk.booking.endTime |timeFormat("HH:mm")}}
+                  {{ desk.booking.startTime |timeFormat("HH:mm") }} ~{{ desk.booking.endTime |timeFormat("HH:mm") }}
                 </div>
               </div>
 
@@ -279,6 +286,7 @@ import BookingDesk from "@/views/cashier/desk/components/bookingDesk.vue";
 import BookingTutor from "@/views/cashier/desk/components/bookingTutor/index.vue";
 import BookingVerify from "@/views/cashier/desk/components/bookingVerify/index.vue";
 import CustomDialog from "@/views/cashier/components/CustomDialog.vue";
+import {GlobalEvent} from "@/utils/globalConst";
 
 export default {
   name: "Desk",
@@ -297,12 +305,12 @@ export default {
     CustomDialog,
     BookingVerify, BookingDesk, BookingTutor, LeftContainer, SvgItem, ToolBar, LineUp, ContentWrapper, Dashboard
   },
-  dicts: ['store_desk_status',   'order_pay_type'],
+  dicts: ['store_desk_status', 'order_pay_type'],
 
   data() {
     return {
-      placeTypeList:[],
-      deskTypeList:[],
+      placeTypeList: [],
+      deskTypeList: [],
       prePayForm: {
         payType: '0',
         amount: null,
@@ -342,28 +350,48 @@ export default {
 
     };
   },
-  created() {
-    this.getPlaceTypeList();
+  mounted() {
+    this.$eventBus.$on(GlobalEvent.OnRefreshDesk,this.onRefreshDesk)
     this.getDeskTypeList();
-    this.getList();
+    this.getPlaceTypeList().then(this.getList)
     this.getStoreInfo();
     this.initSomePCCallBackMethods();
+    debugger
+
   },
-  beforeDestroy() {
+
+  onRefreshDesk({deskId,stopOrder}){
+    if(this.currentDesk?.deskId ===deskId ){
+      this.queryDeskById(deskId)
+      this.getList();
+    }else {
+      this.getList();
+    }
+    if(stopOrder){
+      let item =  this.deskList.find(p=>p.deskId===deskId);
+      this.$modal.msgSuccess(`${item.title}已自动停止计费`)
+    }
+  },
+  destroyed() {
+   // this.$eventBus.$off(GlobalEvent.OnRefreshDesk,this.onRefreshDesk);
+    debugger
     removeMethod(DeviceCallbackMethodName.AddScore)
   },
   methods: {
-    getStoreName(){
+    getStoreName() {
       return this.$refs?.leftContainer.storeName
     },
-    getPlaceTypeList(){
-      listPlaceTypeAll().then(res=>{
-        this.placeTypeList=res.data||[];
+    getPlaceTypeList() {
+      return listPlaceTypeAll().then(res => {
+        this.placeTypeList = (res.data || []).map(p=>{
+          return {list:[],...p}
+        });
+         return this.placeTypeList;
       })
     },
-    getDeskTypeList(){
-      listDeskTypeAll().then(res=>{
-        this.deskTypeList=res.data||[];
+    getDeskTypeList() {
+      listDeskTypeAll().then(res => {
+        this.deskTypeList = res.data || [];
       })
     },
     initSomePCCallBackMethods() {
@@ -410,11 +438,11 @@ export default {
         this.onSwitchLight(this.currentDesk.deskNum, false);
         this.currentDesk = res.data;
         this.onSwitchLight(this.currentDesk?.deskNum, true);
-        this.$modal.msgSuccess("操作成功");
-        this.openSwapDesk = false;
-        this.getList();
-      }).then().then(n => {
 
+        this.openSwapDesk = false;
+
+        this.getList();
+        this.$modal.msgSuccess("操作成功");
       }).finally(() => this.loading = false)
     },
     onTargetDeskIdChange(val) {
@@ -444,6 +472,7 @@ export default {
       this.title = title
       this.openNewDialog = true;
     },
+
     onTempLight(lightType) {
       let msg = LightType.Temp === lightType ? '请输入灯光持续打开时间(分钟)' : '请输入计费时间(分钟)，订单会在到期后自动停止计费'
       this.$prompt(msg, "确认", {
@@ -468,6 +497,9 @@ export default {
           startTime: this.$time().format("YYYY-MM-DD HH:mm:00"),
           endTime: this.$time().add(value, "minute").format("YYYY-MM-DD HH:mm:00"),
         }).then(response => {
+          if(response.data){
+            this.$eventBus.$emit(GlobalEvent.OnAddTimer, response.data)
+          }
           if (lightType === LightType.Temp) {
             this.$modal.msgSuccess(`灯已打开,将会在${value}分钟后关闭`);
           } else {
@@ -534,8 +566,9 @@ export default {
       this.queryDeskById(item.deskId);
     },
     queryDeskById(deskId) {
+      this.loading=true;
       return getDeskBaseInfo(deskId).then(res => {
-        this.currentDesk = res.data||[];
+        this.currentDesk = res.data || [];
         this.deskList.forEach(p => {
           if (p.deskId === deskId) {
             p.status = this.currentDesk.status;
@@ -557,10 +590,10 @@ export default {
       this.getList();
     },
     onChooseClick(field, val) {
-      if (this.queryParams[field] ===  val ) {
+      if (this.queryParams[field] === val) {
         this.queryParams[field] = null;
       } else {
-        this.queryParams[field] =  val ;
+        this.queryParams[field] = val;
       }
       this.currentDesk = null;
       this.getList()
@@ -568,9 +601,6 @@ export default {
 
     /** 查询球桌列表 */
     getList() {
-      if (this.loading) {
-        return;
-      }
       this.loading = true;
       let params = JSON.parse(JSON.stringify(this.queryParams));
       params.queryLastBooking = true
@@ -580,11 +610,13 @@ export default {
       }
       listDesk(params).then(response => {
         this.deskList = (response.data || []).map(p => {
-
           p.selected = this.currentDesk?.deskId === p.deskId;
           return p;
         });
-
+        this.placeTypeList=  this.placeTypeList.map(type=>{
+          type.list=this.deskList.filter(p=>p.placeType ===type.value )
+          return type;
+        });
         this.loading = false;
       }).finally(() => this.loading = false);
     },
@@ -760,14 +792,14 @@ export default {
         let startTime = this.$time(this.currentDesk.booking.startTime).format('MM-DD HH:mm');
         let endTime = this.$time(this.currentDesk.booking.endTime).format('MM-DD HH:mm');
         msgList.push(h('p', null, `${deskTitle}有预约：`))
-        msgList.push(h('p', {style:{color:'#1890ff'}}, `${startTime}到${endTime},`))
+        msgList.push(h('p', {style: {color: '#1890ff'}}, `${startTime}到${endTime},`))
         msgList.push(h('p', null, "确认开台?"))
       } else {
         msgList = [`${deskTitle}确认开台?`]
       }
 
       this.$confirm('确认', {
-        title:"确认",
+        title: "确认",
         confirmButtonText: '确认',
         message: h('div', null, msgList),
         cancelButtonText: '取消',

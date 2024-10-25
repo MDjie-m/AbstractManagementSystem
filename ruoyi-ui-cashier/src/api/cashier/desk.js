@@ -92,7 +92,12 @@ export function removeLightTimer(time) {
     params: {time}
   })
 }
-
+export function removeLightTimerById(timerId) {
+  return request({
+    url: `/cashier/desk/light-timer/${timerId}`,
+    method: 'delete',
+  })
+}
 export function getDeskBaseInfo(deskId) {
   return request({
     url: `/cashier/desk/${deskId}`,

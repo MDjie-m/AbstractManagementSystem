@@ -11,8 +11,10 @@
 import iframeToggle from "./IframeToggle/index"
 import {callPCMethod, DeviceMethodNames} from "@/utils/pcCommunication";
 import {stopOrder} from "@/api/cashier/order";
-import {listLightTimer, removeLightTimer} from "@/api/cashier/desk";
+import {listLightTimer, removeLightTimer, removeLightTimerById} from "@/api/cashier/desk";
+import {GlobalEvent} from "@/utils/globalConst";
 
+let lightTimerList = []
 export default {
   name: 'AppMain',
   components: {iframeToggle},
@@ -36,36 +38,55 @@ export default {
     }
   },
   created() {
-    this.$eventBus.$on("global.refresh", this.onReload);
-    this.intervalId = setInterval(async () => {
-       this.queryLightTimer()
-    }, 5000);
+    this.queryLightTimer()
+    this.$eventBus.$on(GlobalEvent.OnGlobalRefresh, this.onReload);
+    this.$eventBus.$on(GlobalEvent.OnAddTimer, this.onAddTimer);
     this.queryLightTimer();
+    this.intervalId = setInterval(async () => {
+      await this.runLightTimer();
+    }, 1000);
   },
   beforeDestroy() {
-    this.$eventBus.$off("global.refresh");
+    this.$eventBus.$off(GlobalEvent.OnGlobalRefresh);
+    this.$eventBus.$off(GlobalEvent.OnAddTimer);
     clearInterval(this.intervalId);
   },
   methods: {
-    async queryLightTimer() {
-
+    onAddTimer(timer) {
+      lightTimerList.push(timer)
+    },
+    async runLightTimer() {
       let time = this.$time().format("YYYY-MM-DD HH:mm:ss");
-      let res = await listLightTimer(time);
+      let oldTimers = lightTimerList.filter(p => p.endTime < time);
 
-      let timers = (res.data || []).filter(p => p.enable);
-      timers.forEach(p => {
+      while (oldTimers.length > 0) {
+
+        let p = oldTimers.pop();
         try {
-          console.log("定时关灯",p)
-          callPCMethod(DeviceMethodNames.LightSwitch, {deskNum: p.deskNum, open: false});
+          console.log("定时关灯", p)
+            callPCMethod(DeviceMethodNames.LightSwitch, {deskNum: p.deskNum, open: false});
           if (p.lightType === 1) {
-            stopOrder(p.orderId)
+            await stopOrder(p.orderId)
           }
+          removeLightTimerById(p.lightTimerId);
+
+
         } catch (e) {
         }
-      })
-      if(timers.length){
-        removeLightTimer(time)
+        let idx=lightTimerList.indexOf(p);
+        if(idx>-1) {
+          lightTimerList.splice(idx, 1)
+          this.$eventBus.$emit(GlobalEvent.OnRefreshDesk,  {deskId:p.deskId,stopOrder:p.lightType===1} )
+        }
       }
+
+    },
+    async queryLightTimer() {
+
+      let time = this.$time().add(24,'hours').format("YYYY-MM-DD HH:mm:ss");
+      let res = await listLightTimer(time);
+      lightTimerList = (res.data || []).filter(p => p.enable);
+      console.log("定时器",lightTimerList)
     },
     onReload() {
       this.reload();

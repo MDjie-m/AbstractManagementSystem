@@ -36,7 +36,7 @@ public interface ILightTimerService  extends IService<LightTimer>
      * @param lightTimer 灯光计时器
      * @return 结果
      */
-    public int insertLightTimer(LightTimer lightTimer);
+    public LightTimer insertLightTimer(LightTimer lightTimer);
 
     Boolean removeByTime(Date time, Long storeId);
 

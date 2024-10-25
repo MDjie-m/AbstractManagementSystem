@@ -213,7 +213,7 @@ public class CashierDeskController extends BaseController {
 
     @PreAuthorize("@ss.hasPermi('cashier:desk:list')")
     @PostMapping("/light-timer")
-    public ResultVo<Integer> creatTimer(@RequestBody LightTimer lightTimer) {
+    public ResultVo<LightTimer> creatTimer(@RequestBody LightTimer lightTimer) {
         lightTimer.setStoreId(getStoreIdWithThrow());
         return ResultVo.success(lightTimerService.insertLightTimer(lightTimer));
     }

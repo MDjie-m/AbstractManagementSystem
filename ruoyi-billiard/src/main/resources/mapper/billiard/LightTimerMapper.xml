@@ -6,22 +6,20 @@
 
 
     <sql id="selectLightTimerVo">
-        select *
-        from t_light_timer
+        select a.*,b.desk_num
+        from t_light_timer a left join t_store_desk b on a.desk_id=b.desk_id
     </sql>
 
     <select id="selectLightTimerList" parameterType="LightTimer" resultType="LightTimer">
         <include refid="selectLightTimerVo"/>
         <where>
-            <if test="startTime != null ">and start_time = #{startTime}</if>
-            <if test="endTime != null ">and end_time = #{endTime}</if>
-            <if test="deskId != null ">and desk_id = #{deskId}</if>
-            <if test="orderId != null ">and order_id = #{orderId}</if>
-            <if test="lightType != null ">and light_type = #{lightType}</if>
-            <if test="enable != null ">and enable = #{enable}</if>
-            <if test="createById != null ">and create_by_id = #{createById}</if>
-            <if test="updateById != null ">and update_by_id = #{updateById}</if>
-            <if test="storeId != null ">and store_id = #{storeId}</if>
+            <if test="startTime != null ">and a.start_time >= #{startTime}</if>
+            <if test="endTime != null ">and a.end_time<![CDATA[<=]]> #{endTime}</if>
+            <if test="deskId != null ">and a.desk_id = #{deskId}</if>
+            <if test="orderId != null ">and a.order_id = #{orderId}</if>
+            <if test="lightType != null ">and a.light_type = #{lightType}</if>
+            <if test="enable != null ">and a.enable = #{enable}</if>
+            <if test="storeId != null ">and a.store_id = #{storeId}</if>
         </where>
     </select>
 
