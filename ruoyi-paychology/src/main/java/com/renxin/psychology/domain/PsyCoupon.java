@@ -83,5 +83,9 @@ public class PsyCoupon extends BaseEntity
     @TableField(exist = false)
     private Integer couponType;
 
+    //发放数量
+    @TableField(exist = false)
+    private Integer count;
+
 
 }

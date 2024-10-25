@@ -97,3 +97,12 @@ export function delCoupon(couponNo) {
     method: 'delete'
   })
 }
+
+// 新增用户-优惠券发行
+export function grantCoupon(data) {
+  return request({
+    url: '/system/coupon/grant',
+    method: 'post',
+    data: data
+  })
+}

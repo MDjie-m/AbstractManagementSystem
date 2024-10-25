@@ -197,6 +197,44 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         return psyCouponMapper.insertPsyCoupon(psyCoupon);
     }
 
+    //发放优惠券
+    @Override
+    public void grantCoupon(PsyCoupon coupon){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        PsyCouponTemplate couponTemplate = couponTemplateService.selectPsyCouponTemplateById(coupon.getTemplateId());
+
+        //根据券类型生成券编号
+        Integer serverType = couponTemplate.getServerType();
+        String couponNo = "";
+        switch (serverType){
+            case 12 : //咨询
+                couponNo = OrderIdUtils.createOrderNo(PsyConstants.POCKET_ORDER_CONSULT + PsyConstants.COUPON_NO, null);
+                break;
+            case 13 : //测评
+                couponNo = OrderIdUtils.createOrderNo(PsyConstants.POCKET_ORDER_GAUGE + PsyConstants.COUPON_NO, null);
+                break;
+            case 14 : //来访者课程
+                couponNo = OrderIdUtils.createOrderNo(PsyConstants.POCKET_ORDER_COURSE + PsyConstants.COUPON_NO, null);
+                break;
+            case 21 : //团督
+                couponNo = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_TEAM_SUP + PsyConstants.COUPON_NO, null);
+                break;
+            case 22 : //个督    
+                couponNo = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_SUP + PsyConstants.COUPON_NO, null);
+                break;
+            case 23 : //个人体验
+                couponNo = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_PERSON_EXP + PsyConstants.COUPON_NO, null);
+                break;
+            case 24 : //咨询师课程
+                couponNo = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_COURSE + PsyConstants.COUPON_NO, null);
+                break;
+        }
+        coupon.setExpireDate(LocalDate.now().plusDays(couponTemplate.getValidityDay()).format(formatter));//到期日
+        coupon.setCouponNo(couponNo);
+
+        insertPsyCoupon(coupon);
+
+    }
     /**
      * 修改用户-优惠券发行
      * 

@@ -117,13 +117,13 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['psychology:user:remove']"
           >删除</el-button>
-<!--          <el-button
+          <el-button
             size="mini"
             type="text"
             icon=""
             @click="handleGrant(scope.row)"
             v-hasPermi="['psychology:user:remove']"
-          >发放优惠券</el-button>-->
+          >发放优惠券</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -162,7 +162,7 @@
     <el-dialog :title="title" :visible.sync="openGrant" width="500px" append-to-body>
       <el-form ref="form" :model="grantForm" :rules="grantRules" label-width="80px">
 
-        <el-form-item label="优惠券模版" prop="level">
+        <el-form-item label="券模版" prop="level">
           <el-select v-model="grantForm.templateId" clearable>
             <el-option
               v-for="tem in couponTemList"
@@ -172,28 +172,14 @@
             />
           </el-select>
         </el-form-item>
-
-        <el-form-item label="发放张数" prop="count">
+<!--        <el-form-item label="发放张数" prop="count">
           <el-input-number size="mini" v-model="form.workHours" :min="0" placeholder="请输入从业年限" />
-        </el-form-item>
-
-
-        <el-form-item label="用户名" prop="name">
-          <el-input v-model="form.name" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="手机号码" prop="phone">
-          <el-input v-model="form.phone" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item label="头像地址" prop="avatar">
-          <el-input v-model="form.avatar" placeholder="请输入头像地址" />
-        </el-form-item>
-        <el-form-item label="微信Id" prop="wxOpenid">
-          <el-input v-model="form.wxOpenid" placeholder="请输入" />
-        </el-form-item>
+        </el-form-item>-->
       </el-form>
+
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="submitGrantForm">确 定</el-button>
+        <el-button @click="grantCancel">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -201,7 +187,7 @@
 
 <script>
 import { listUser, getUser, delUser, addUser, updateUser } from "@/api/psychology/user";
-import { listTemplate } from "@/api/marketing/coupon";
+import { listTemplate , grantCoupon } from "@/api/marketing/coupon";
 
 export default {
   name: "User",
@@ -237,6 +223,12 @@ export default {
         status: null,
         wxOpenid: null,
       },
+      queryGrant:{
+        userType:1,
+        pageNum: 1,
+        pageSize: 99999,
+        templateStatus:0
+      },
       // 表单参数
       form: {},
       grantForm: {},
@@ -261,14 +253,20 @@ export default {
     },
     //查询优惠券模版清单
     getPocketCouponList(){
-      listTemplate({userType:1,pageNum: 1,pageSize: 99999, templateStatus:0}).then()(response => {
+      listTemplate(this.queryGrant).then(response => {
         this.couponTemList = response.rows;
+        console.log("===============");
+        console.log(this.couponTemList);
       });
     },
     // 取消按钮
     cancel() {
       this.open = false;
       this.reset();
+    },
+    grantCancel(){
+      this.openGrant = false;
+      this.grantForm = {};
     },
     // 表单重置
     reset() {
@@ -335,6 +333,15 @@ export default {
         }
       });
     },
+    //提交发放
+    submitGrantForm(){
+      grantCoupon(this.grantForm).then(response => {
+        this.$modal.msgSuccess("发放成功");
+        this.openGrant = false;
+        this.getList();
+        this.grantForm = {};
+      });
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
@@ -348,7 +355,7 @@ export default {
     /** [发放优惠券] 按钮操作 */
     handleGrant(row) {
       this.openGrant = true;
-
+      this.grantForm.userId = row.id;
     },
     /** 导出按钮操作 */
     handleExport() {

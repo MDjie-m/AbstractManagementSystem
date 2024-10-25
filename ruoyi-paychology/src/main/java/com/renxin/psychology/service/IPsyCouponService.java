@@ -45,6 +45,7 @@ public interface IPsyCouponService
      * @return 结果
      */
     public int insertPsyCoupon(PsyCoupon psyCoupon);
+    public void  grantCoupon(PsyCoupon psyCoupon);
 
     /**
      * 修改用户-优惠券发行

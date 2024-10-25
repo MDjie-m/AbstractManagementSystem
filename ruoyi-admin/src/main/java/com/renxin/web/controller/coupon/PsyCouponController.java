@@ -72,15 +72,15 @@ public class PsyCouponController extends BaseController
         return toAjax(psyCouponService.insertPsyCoupon(psyCoupon));
     }
 
-//    /**
-//     * 发放优惠券
-//     */
-//    @PreAuthorize("@ss.hasPermi('system:coupon:add')")
-//    @PostMapping
-//    public AjaxResult grant(@RequestBody PsyCoupon psyCoupon)
-//    {
-//        return toAjax(psyCouponService.insertPsyCoupon(psyCoupon));
-//    }
+    /**
+     * 发放优惠券
+     */
+    @PostMapping("/grant")
+    public AjaxResult grantCoupon(@RequestBody PsyCoupon psyCoupon)
+    {
+        psyCouponService.grantCoupon(psyCoupon);
+        return AjaxResult.success();
+    }
 
     /**
      * 修改用户-优惠券发行
