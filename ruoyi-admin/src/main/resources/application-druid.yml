@@ -10,14 +10,14 @@ spring:
 #        url: jdbc:mysql://101.42.12.252:3306/psy-test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #        username: root
 #        password: 123456qwerQWER=
-#      开发
+#     开发
 #      master:
-#        url: jdbc:mysql://rm-uf63m8f5bakdja17rgo.mysql.rds.aliyuncs.com:3306/psy_dev?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+#        url: jdbc:mysql://nj-cynosdbmysql-grp-ozzezcot.sql.tencentcdb.com:29101/pocket-dev?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
 #        username: root
-#        password: Fw72#qb%&iLh247
+#        password: 39SFZ:qEcM27VFD
       #生产
       master:
-        url: jdbc:mysql://nj-cynosdbmysql-grp-ozzezcot.sql.tencentcdb.com:29101/pocket-dev?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        url: jdbc:mysql://nj-cynosdbmysql-grp-ozzezcot.sql.tencentcdb.com:29101/pocket?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
         username: root
         password: 39SFZ:qEcM27VFD
           
