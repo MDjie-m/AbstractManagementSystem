@@ -68,7 +68,6 @@ public class MiniAppShoppingController {
     /**
      * 根据商品分类Id获取和门店id获取商品列表
      */
-    @PreAuthorize("@ss.hasPermi('miniapp:shopping:list')")
     @PostMapping("/goods-list")
     public ResultVo<List<Goods>> getGoodsList(@RequestBody Goods goods) {
         goods.setSell(Boolean.TRUE);
