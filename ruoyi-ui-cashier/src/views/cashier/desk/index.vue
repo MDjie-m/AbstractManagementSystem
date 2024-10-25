@@ -351,33 +351,33 @@ export default {
     };
   },
   mounted() {
-    this.$eventBus.$on(GlobalEvent.OnRefreshDesk,this.onRefreshDesk)
+    this.$eventBus.$on(GlobalEvent.OnRefreshDesk,this.onRefreshDeskCallback)
     this.getDeskTypeList();
     this.getPlaceTypeList().then(this.getList)
     this.getStoreInfo();
     this.initSomePCCallBackMethods();
-    debugger
+
 
   },
 
-  onRefreshDesk({deskId,stopOrder}){
-    if(this.currentDesk?.deskId ===deskId ){
-      this.queryDeskById(deskId)
-      this.getList();
-    }else {
-      this.getList();
-    }
-    if(stopOrder){
-      let item =  this.deskList.find(p=>p.deskId===deskId);
-      this.$modal.msgSuccess(`${item.title}已自动停止计费`)
-    }
-  },
-  destroyed() {
-   // this.$eventBus.$off(GlobalEvent.OnRefreshDesk,this.onRefreshDesk);
-    debugger
+
+  beforeDestroy() {
+    this.$eventBus.$off(GlobalEvent.OnRefreshDesk );
     removeMethod(DeviceCallbackMethodName.AddScore)
   },
   methods: {
+    onRefreshDeskCallback({deskId,stopOrder}){
+      if(this.currentDesk?.deskId ===deskId ){
+        this.queryDeskById(deskId)
+        this.getList();
+      }else {
+        this.getList();
+      }
+      if(stopOrder){
+        let item =  this.deskList.find(p=>p.deskId===deskId);
+        this.$modal.msgSuccess(`${item.title}已自动停止计费`)
+      }
+    },
     getStoreName() {
       return this.$refs?.leftContainer.storeName
     },
