@@ -428,7 +428,7 @@ public class StoreServiceImpl implements IStoreService {
         });
         resVo.setGoodsOrderAvg(calcAvg(resVo.getGoodsAmount(), resVo.getGoodsOrderCount()));
         resVo.setGoodsProfit(resVo.getGoodsAmount().subtract(resVo.getGoodsCost()));
-        resVo.setGoodsProfitRate(calcRate(resVo.getGoodsProfit(), resVo.getTotalAmount()));
+        resVo.setGoodsProfitRate(calcRate(resVo.getGoodsProfit(), resVo.getGoodsAmount()));
 
         resVo.setDeskAmount(new BigDecimal("0.00"));
         resVo.setDeskTotalOrderCount(0L);
