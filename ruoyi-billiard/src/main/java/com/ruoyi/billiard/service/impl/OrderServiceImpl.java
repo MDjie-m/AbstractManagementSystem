@@ -1157,25 +1157,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         AssertUtil.isTrue(Objects.equals(dto.getOrderType(), OrderType.AGGREGATE_CONSUMPTION), OrderErrorMsg.ORDER_TYPE_ERROR);
         if (Objects.equals(dto.getOrderType(), OrderType.AGGREGATE_CONSUMPTION)) {
             // 查询总消费
-            return orderMapper.selectById(orderId);
+            return selectOrderByOrderId(orderId);
         }
-//        if (Objects.equals(dto.getOrderType(), OrderType.TABLE_CHARGE)) {
-//            // 查询球桌计时列表
-//            return orderDeskTimeService.selectOrderDeskTimeListByOrderId(orderId);
-//        }
-//        if (Objects.equals(dto.getOrderType(), OrderType.COMMODITY_PURCHASE)) {
-//            // 查询订单商品列表
-//            return orderGoodsService.selectOrderGoodsListByOrderId(orderId);
-//        }
-//        if (Objects.equals(dto.getOrderType(), OrderType.TEACHING_COST)) {
-//
-//            // 查询订单教练计时列表
-//            return orderTutorTimeService.selectOrderTutorTimeListByOrderId(orderId);
-//        }
-//        if (Objects.equals(dto.getOrderType(), OrderType.MEMBER_RECHARGE)) {
-//            // 查询订单会员充值列表
-//            return orderRechargeService.selectOrderRechargeListByOrderId(orderId);
-//        }
+        if (Objects.equals(dto.getOrderType(), OrderType.TABLE_CHARGE)) {
+            // 查询球桌计时列表
+            return orderDeskTimeService.selectOrderDeskTimeListByOrderId(orderId);
+        }
+        if (Objects.equals(dto.getOrderType(), OrderType.COMMODITY_PURCHASE)) {
+            // 查询订单商品列表
+            return orderGoodsService.selectOrderGoodsListByOrderId(orderId);
+        }
+        if (Objects.equals(dto.getOrderType(), OrderType.TEACHING_COST)) {
+
+            // 查询订单教练计时列表
+            return orderTutorTimeService.selectOrderTutorTimeListByOrderId(orderId);
+        }
+        if (Objects.equals(dto.getOrderType(), OrderType.MEMBER_RECHARGE)) {
+            // 查询订单会员充值列表
+            return orderRechargeService.selectOrderRechargeListByOrderId(orderId);
+        }
         AssertUtil.isTrue(Boolean.FALSE, OrderErrorMsg.ORDER_TYPE_ERROR);
         return null;
     }
