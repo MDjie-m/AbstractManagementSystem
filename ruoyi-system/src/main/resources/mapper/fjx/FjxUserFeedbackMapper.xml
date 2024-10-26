@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FjxUserFeedbackMapper">
+
+    <resultMap type="com.ruoyi.system.domain.FjxUserFeedback" id="FjxUserFeedbackResult">
+        <result property="id"    column="id"    />
+        <result property="feedbackId"    column="feedback_id"    />
+        <result property="content"    column="content"    />
+        <result property="userId"    column="user_id"    />
+        <result property="feedbackTime"    column="feedback_time"    />
+        <result property="status"    column="status"    />
+        <result property="updatedTime"    column="updated_time"    />
+    </resultMap>
+
+    <sql id="selectFjxUserFeedbackVo">
+        select id, feedback_id, content, user_id, feedback_time, status, updated_time from FJX_user_feedback
+    </sql>
+
+    <select id="selectFjxUserFeedbackList" parameterType="com.ruoyi.system.domain.FjxUserFeedback" resultMap="FjxUserFeedbackResult">
+        <include refid="selectFjxUserFeedbackVo"/>
+        <where>  
+            <if test="feedbackId != null "> and feedback_id = #{feedbackId}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="feedbackTime != null "> and feedback_time = #{feedbackTime}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectFjxUserFeedbackById" parameterType="String" resultMap="FjxUserFeedbackResult">
+        <include refid="selectFjxUserFeedbackVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFjxUserFeedback" parameterType="com.ruoyi.system.domain.FjxUserFeedback" useGeneratedKeys="true" keyProperty="id">
+        insert into FJX_user_feedback
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="feedbackId != null">feedback_id,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="feedbackTime != null">feedback_time,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="updatedTime != null">updated_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="feedbackId != null">#{feedbackId},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="feedbackTime != null">#{feedbackTime},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFjxUserFeedback" parameterType="com.ruoyi.system.domain.FjxUserFeedback">
+        update FJX_user_feedback
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="feedbackId != null">feedback_id = #{feedbackId},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="feedbackTime != null">feedback_time = #{feedbackTime},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFjxUserFeedbackById" parameterType="String">
+        delete from FJX_user_feedback where id = #{id}
+    </delete>
+
+    <delete id="deleteFjxUserFeedbackByIds" parameterType="String">
+        delete from FJX_user_feedback where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
