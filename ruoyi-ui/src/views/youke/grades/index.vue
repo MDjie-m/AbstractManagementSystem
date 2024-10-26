@@ -175,7 +175,7 @@
 </template>
 
 <script>
-import { listGrades, getGrades, delGrades, addGrades, updateGrades } from "@/api/grades";
+import { listGrades, getGrades, delGrades, addGrades, updateGrades } from "@/api/youke/grades";
 
 export default {
   name: "Grades",

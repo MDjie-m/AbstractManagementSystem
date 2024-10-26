@@ -175,7 +175,7 @@
 </template>
 
 <script>
-import { listMenu, getMenu, delMenu, addMenu, updateMenu } from "@/api/menu";
+import { listMenu, getMenu, delMenu, addMenu, updateMenu } from "@/api/youke/menu";
 
 export default {
   name: "Menu",

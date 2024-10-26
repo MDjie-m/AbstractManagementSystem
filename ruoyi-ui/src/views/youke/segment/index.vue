@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import { listSegment, getSegment, delSegment, addSegment, updateSegment } from "@/api/segment";
+import { listSegment, getSegment, delSegment, addSegment, updateSegment } from "@/api/youke/segment";
 
 export default {
   name: "Segment",

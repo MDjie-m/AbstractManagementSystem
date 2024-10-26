@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import { listTeachers, getTeachers, delTeachers, addTeachers, updateTeachers } from "@/api/teachers";
+import { listTeachers, getTeachers, delTeachers, addTeachers, updateTeachers } from "@/api/youke/teachers";
 
 export default {
   name: "Teachers",

@@ -209,7 +209,7 @@
 </template>
 
 <script>
-import { listStudents, getStudents, delStudents, addStudents, updateStudents } from "@/api/students";
+import { listStudents, getStudents, delStudents, addStudents, updateStudents } from "@/api/youke/students";
 
 export default {
   name: "Students",

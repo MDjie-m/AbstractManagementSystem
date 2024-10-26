@@ -225,7 +225,7 @@
 </template>
 
 <script>
-import { listFile, getFile, delFile, addFile, updateFile } from "@/api/file";
+import { listFile, getFile, delFile, addFile, updateFile } from "@/api/youke/file";
 
 export default {
   name: "File",

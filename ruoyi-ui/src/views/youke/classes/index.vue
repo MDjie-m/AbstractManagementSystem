@@ -199,7 +199,7 @@
 </template>
 
 <script>
-import { listClasses, getClasses, delClasses, addClasses, updateClasses } from "@/api/classes";
+import { listClasses, getClasses, delClasses, addClasses, updateClasses } from "@/api/youke/classes";
 
 export default {
   name: "Classes",

@@ -17,14 +17,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="课程封面" prop="courseCover">
-        <el-input
-          v-model="queryParams.courseCover"
-          placeholder="请输入课程封面"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="创建时间" prop="createDate">
         <el-date-picker clearable
           v-model="queryParams.createDate"
@@ -98,7 +90,6 @@
       <el-table-column label="课程ID" align="center" prop="id" v-if="true"/>
       <el-table-column label="课程名称" align="center" prop="courseName" />
       <el-table-column label="课程简介" align="center" prop="courseDescription" />
-      <el-table-column label="课程封面" align="center" prop="courseCover" />
       <el-table-column label="创建时间" align="center" prop="createDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createDate, '{y}-{m}-{d}') }}</span>
@@ -149,22 +140,14 @@
         <el-form-item label="课程封面" prop="courseCover">
           <el-input v-model="form.courseCover" placeholder="请输入课程封面" />
         </el-form-item>
-        <el-form-item label="创建时间" prop="createDate">
+<!--        <el-form-item label="创建时间" prop="createDate">
           <el-date-picker clearable
             v-model="form.createDate"
             type="datetime"
             value-format="yyyy-MM-dd HH:mm:ss"
             placeholder="请选择创建时间">
           </el-date-picker>
-        </el-form-item>
-        <el-form-item label="更新时间" prop="updateDate">
-          <el-date-picker clearable
-            v-model="form.updateDate"
-            type="datetime"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            placeholder="请选择更新时间">
-          </el-date-picker>
-        </el-form-item>
+        </el-form-item>-->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button :loading="buttonLoading" type="primary" @click="submitForm">确 定</el-button>
@@ -175,7 +158,7 @@
 </template>
 
 <script>
-import { listCourses, getCourses, delCourses, addCourses, updateCourses } from "@/api/courses";
+import { listCourses, getCourses, delCourses, addCourses, updateCourses } from "@/api/youke/courses";
 
 export default {
   name: "Courses",
@@ -215,23 +198,11 @@ export default {
       form: {},
       // 表单校验
       rules: {
-        id: [
-          { required: true, message: "课程ID不能为空", trigger: "blur" }
-        ],
         courseName: [
           { required: true, message: "课程名称不能为空", trigger: "blur" }
         ],
         courseDescription: [
           { required: true, message: "课程简介不能为空", trigger: "blur" }
-        ],
-        courseCover: [
-          { required: true, message: "课程封面不能为空", trigger: "blur" }
-        ],
-        createDate: [
-          { required: true, message: "创建时间不能为空", trigger: "blur" }
-        ],
-        updateDate: [
-          { required: true, message: "更新时间不能为空", trigger: "blur" }
         ],
       }
     };
