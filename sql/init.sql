@@ -136,8 +136,8 @@ create table t_store_desk
         primary key,
     desk_name        nvarchar(60)                          not null comment '球桌名',
     desk_num         int                                   not null comment '编号',
-    desk_type        bigint                                   not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
-    place_type       bigint                                   not null comment '位置：0=大厅，1=包厢',
+    desk_type        bigint                                not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
+    place_type       bigint                                not null comment '位置：0=大厅，1=包厢',
     store_id         bigint                                not null comment '门店',
     light_device_id  bigint                                null comment '灯光id',
     camera_device_id bigint                                null comment '摄像头设备id',
@@ -247,7 +247,7 @@ create table t_order_goods
     goods_id              bigint                                not null comment '商品id',
     goods_name            nvarchar(64)                          not null comment '商品名称',
     price                 decimal(10, 2)                        not null comment '单价',
-    cost                 decimal(10, 2)                        not null comment '单价',
+    cost                  decimal(10, 2)                        not null comment '单价',
     num                   int                                   not null comment '数量',
     total_amount_due      decimal(20, 2)                        null comment '应付总金额 ',
     total_discount_amount decimal(20, 2)                        null comment '折扣金额',
@@ -636,7 +636,7 @@ create table t_desk_price
     desk_price_id bigint                                not null comment 'ID'
         primary key,
     store_id      bigint                                not null not null comment '抓拍时间',
-    desk_type     bigint                                   not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
+    desk_type     bigint                                not null comment '球桌类型：0=中式，1=美式，2=斯诺克，3=棋牌',
     price         decimal(10, 2)                        null comment '价格',
 
     create_by     varchar(64) default ''                null comment '创建者',
@@ -812,18 +812,18 @@ create unique index t_desk_light_store_id_desk_num_uindex
 DROP TABLE IF EXISTS t_desk_place;
 create table t_desk_place
 (
-    desk_place_id   bigint                                not null comment 'ID'
+    desk_place_id bigint                                not null comment 'ID'
         primary key,
-    name varchar(64) charset utf8mb4           not null comment '区域名称',
-    store_id            bigint                                not null comment '门店',
-    sort                int                                   not null comment '排序',
-    create_by           varchar(64) default ''                null comment '创建者',
-    create_time         timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by           varchar(64) default ''                null comment '更新者',
-    update_time         timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id        bigint                                null comment '创建者Id',
-    update_by_id        bigint                                null comment '更新者Id',
-    remark              nvarchar(500)                         null comment '备注'
+    name          varchar(64) charset utf8mb4           not null comment '区域名称',
+    store_id      bigint                                not null comment '门店',
+    sort          int                                   not null comment '排序',
+    create_by     varchar(64) default ''                null comment '创建者',
+    create_time   timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by     varchar(64) default ''                null comment '更新者',
+    update_time   timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id  bigint                                null comment '创建者Id',
+    update_by_id  bigint                                null comment '更新者Id',
+    remark        nvarchar(500)                         null comment '备注'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
     comment '台桌区域';
@@ -832,18 +832,50 @@ create table t_desk_place
 DROP TABLE IF EXISTS t_desk_type;
 create table t_desk_type
 (
-    desk_type_id   bigint                                not null comment 'ID'
+    desk_type_id bigint                                not null comment 'ID'
         primary key,
-    name varchar(64) charset utf8mb4           not null comment '类型名称',
-    store_id            bigint                                not null comment '门店',
-    sort                int                                   not null comment '排序',
-    create_by           varchar(64) default ''                null comment '创建者',
-    create_time         timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
-    update_by           varchar(64) default ''                null comment '更新者',
-    update_time         timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    create_by_id        bigint                                null comment '创建者Id',
-    update_by_id        bigint                                null comment '更新者Id',
-    remark              nvarchar(500)                         null comment '备注'
+    name         varchar(64) charset utf8mb4           not null comment '类型名称',
+    store_id     bigint                                not null comment '门店',
+    sort         int                                   not null comment '排序',
+    create_by    varchar(64) default ''                null comment '创建者',
+    create_time  timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by    varchar(64) default ''                null comment '更新者',
+    update_time  timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id bigint                                null comment '创建者Id',
+    update_by_id bigint                                null comment '更新者Id',
+    remark       nvarchar(500)                         null comment '备注'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
     comment '台桌类型';
+
+
+
+DROP TABLE IF EXISTS t_order_total;
+create table t_order_total
+(
+    order_total_id   bigint                                not null comment 'ID'
+        primary key,
+    order_id         bigint                                not null comment '订单id',
+    order_no         varchar(64)                           not null comment '订单编号',
+    store_id         bigint                                not null comment '门店',
+    order_type       int                                   not null comment '订单类型(    0=总营业额,1= 台桌费用 ，2=会员充值,3=商品购买，4=陪练费用 ，5=教学费用，6=助教费用)',
+    order_date       datetime                              not null comment '订单日期',
+    total_amount     decimal(20, 2)                        not null comment '收款金额',
+    total_amount_due decimal(20, 2)                        not null comment '应付款收款金额',
+    discount_amount  decimal(20, 2)                        not null comment '折扣金额',
+    pay_type         int                                   null comment '支付方式：0=扫码，1=现金，2=会员',
+    create_by        varchar(64) default ''                null comment '创建者',
+    create_time      timestamp   default CURRENT_TIMESTAMP not null comment '创建时间',
+    update_by        varchar(64) default ''                null comment '更新者',
+    update_time      timestamp   default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    create_by_id     bigint                                null comment '创建者Id',
+    update_by_id     bigint                                null comment '更新者Id',
+    remark           nvarchar(500)                         null comment '备注'
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+    comment '订单结算表';
+
+create index t_order_total_store_id_date_index
+    on t_order_total (store_id, order_date);
+create index t_order_total_order_id
+    on t_order_total (order_id);

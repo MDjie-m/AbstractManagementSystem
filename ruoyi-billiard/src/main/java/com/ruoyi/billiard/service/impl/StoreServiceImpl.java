@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.billiard.domain.*;
@@ -18,14 +19,18 @@ import com.ruoyi.billiard.domain.vo.miniappdomain.TutorResVo;
 import com.ruoyi.billiard.enums.*;
 import com.ruoyi.billiard.mapper.*;
 import com.ruoyi.billiard.service.IStoreScheduleService;
+import com.ruoyi.billiard.task.AppDashboardTask;
+import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.model.Tuple;
 import com.ruoyi.common.core.domain.model.Tuple3;
+import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.*;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.ruoyi.billiard.service.IStoreService;
@@ -39,6 +44,7 @@ import javax.annotation.Resource;
  * @date 2024-09-05
  */
 @Service
+@Slf4j
 public class StoreServiceImpl implements IStoreService {
     @Resource
     private StoreMapper storeMapper;
@@ -71,6 +77,9 @@ public class StoreServiceImpl implements IStoreService {
 
     @Resource
     private OrderMemberDeductMapper orderMemberDeductMapper;
+
+    @Resource
+    private RedisCache redisCache;
 
     @Value("${cashier.aes-key}")
     private String aesKey;
@@ -378,6 +387,14 @@ public class StoreServiceImpl implements IStoreService {
 
     @Override
     public List<AppDashboardGroupVo> queryAppDashboard(Long storeId) {
+        String json = redisCache.getCacheObject(CacheConstants.APP_DASHBOARD_KEY.concat(storeId.toString()));
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(json)) {
+            return JSON.parseArray(json, AppDashboardGroupVo.class);
+        }
+        return new ArrayList<>();
+    }
+
+    public List<AppDashboardGroupVo> queryNowAppDashboard(Long storeId) {
         Tuple3<Date, Date, Date> time = storeScheduleService.getDaySchedule(storeId, new Date());
         StoreDashboardResVo dashboardResVo = queryStoreDashboard(storeId, time.getValue(), time.getValue1());
         AppStoreDashboardResVo resVo = new AppStoreDashboardResVo();
@@ -445,9 +462,23 @@ public class StoreServiceImpl implements IStoreService {
                 .gt(BaseEntity::getCreateTime, time.getValue()).gt(Order::getMemberId, 0L).eq(Order::getStatus, OrderStatus.SETTLED.getValue()))).orElse(0L);
         resVo.setMemberOrderRate(calcRate(memberOrderCount, dashboardResVo.getTotalOrderCount()));
         resVo.setNewMemberCount(memberMapper.selectCount(memberMapper.query().eq(Member::getStoreId, storeId).gt(BaseEntity::getCreateTime, time.getValue())));
-        BigDecimal totalMemberDeduct =  Optional.ofNullable(orderMemberDeductMapper.queryTotal(storeId, time.getValue())).orElse( new BigDecimal("0.00"));
+        BigDecimal totalMemberDeduct = Optional.ofNullable(orderMemberDeductMapper.queryTotal(storeId, time.getValue())).orElse(new BigDecimal("0.00"));
         resVo.setMemberAmountRate(calcRate(totalMemberDeduct, resVo.getTotalAmount()));
         resVo.setMemberUsedAmount(totalMemberDeduct);
         return resVo.toGouppList();
+    }
+
+    @Override
+    public void refreshStoreAppDashboard() {
+        List<Store> stores = storeMapper.selectList(storeMapper.query());
+        stores.forEach(p -> {
+            List<AppDashboardGroupVo> res = new ArrayList<>();
+            try {
+                res = queryNowAppDashboard(p.getStoreId());
+                redisCache.setCacheObject(CacheConstants.APP_DASHBOARD_KEY.concat(p.getStoreId().toString()), JSON.toJSONString(res));
+            } catch (Exception e) {
+                log.error("生成app门店概览失败", e);
+            }
+        });
     }
 }

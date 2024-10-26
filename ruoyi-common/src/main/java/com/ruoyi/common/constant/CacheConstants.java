@@ -11,7 +11,8 @@ public class CacheConstants
      * 登录用户 redis key
      */
     public static final String LOGIN_TOKEN_KEY = "login_tokens:";
-
+    public static final String YINGSHI_DEVICE_PIC_KEY = "yingshi:device:pic:";
+    public static final String APP_DASHBOARD_KEY = "min_app:dashboard:";
     /**
      * 验证码 redis key
      */

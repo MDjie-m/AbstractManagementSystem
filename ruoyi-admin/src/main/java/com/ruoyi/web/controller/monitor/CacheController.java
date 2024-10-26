@@ -44,6 +44,10 @@ public class CacheController
         caches.add(new SysCache(CacheConstants.RATE_LIMIT_KEY, "限流处理"));
         caches.add(new SysCache(CacheConstants.PWD_ERR_CNT_KEY, "密码错误次数"));
         caches.add(new SysCache(CacheConstants.LINE_UP_KEY, "门店排队"));
+        caches.add(new SysCache(CacheConstants.YINGSHI_DEVICE_PIC_KEY, "萤石设备截图"));
+        caches.add(new SysCache(CacheConstants.APP_DASHBOARD_KEY, "门店概览"));
+
+
     }
 
     @PreAuthorize("@ss.hasPermi('monitor:cache:list')")

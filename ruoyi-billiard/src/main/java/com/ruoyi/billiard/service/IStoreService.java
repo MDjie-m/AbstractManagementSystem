@@ -76,4 +76,6 @@ public interface IStoreService
 
     List<AppDashboardGroupVo> queryAppDashboard(Long storeId);
 
+    void refreshStoreAppDashboard();
+
 }

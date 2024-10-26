@@ -164,6 +164,23 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     {
         return Math.abs((int) (( fileSecondsAddOneMinutes(end).getTime() - removeSeconds(start).getTime()) / (1000 * 60)));
     }
+    /**
+     * 时间戳转时间
+     * @param timestamp
+     * @param millSeconds 时间戳格式 0毫秒 1秒
+     * @return
+     */
+    public static Date getDateTime(long timestamp,boolean millSeconds)
+    {
+        if (millSeconds  )
+        {
+            //如果时间戳格式是秒，需要江时间戳变为毫秒
+            timestamp = timestamp * 1000L;
+        }
+        Date dateTime = new Date(timestamp);
+        return  dateTime;
+
+    }
     public  static  Date removeSeconds(Date date) {
         return parseDate(parseDateToStr(YYYY_MM_DD_HH_MM_00, date));
     }
