@@ -201,7 +201,7 @@ export default {
     }
     if (this.stores.length > 1) {
       this.storeId = null
-    }  
+    }
     this.queryData()
   },
   methods: {

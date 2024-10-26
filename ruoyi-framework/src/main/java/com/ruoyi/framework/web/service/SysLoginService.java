@@ -4,11 +4,14 @@ import javax.annotation.Resource;
 
 import com.ruoyi.common.constant.LoginSystem;
 import com.ruoyi.common.core.domain.entity.SysRole;
+import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.framework.web.domain.CustomAuthToken;
+import com.ruoyi.system.mapper.SysMenuMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
@@ -58,6 +61,10 @@ public class SysLoginService {
     @Autowired
     private ISysConfigService configService;
 
+    @Autowired
+    private SysMenuMapper sysMenuMapper;
+
+
 
     /**
      * 登录验证
@@ -80,29 +87,20 @@ public class SysLoginService {
             AuthenticationContextHolder.setContext(authenticationToken);
             // 该方法会去调用UserDetailsServiceImpl.loadUserByUsername
             authentication = authenticationManager.authenticate(authenticationToken);
+            LoginUser loginUser = (LoginUser) authentication.getPrincipal();
             if (Objects.equals(loginSystem, LoginSystem.CASHIER_SYSTEM)) {
-                LoginUser principal = (LoginUser) authentication.getPrincipal();
-                SysUser user = principal.getUser();
-                List<String> roleKeys = user.getRoles().stream().map(SysRole::getRoleKey).collect(Collectors.toList());
-                boolean result = containsRoleKeys(Constants.CASHIER_ROLEKEYS, roleKeys);
-                if (!result) {
-                    AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, "此账号没有权限"));
-                    throw new ServiceException("此账号没有权限.");
+                if (sysMenuMapper.canLogin(username, LoginSystem.CASHIER_SYSTEM.getValue())<1) {
+                    tokenService.delLoginUser(loginUser.getToken());
+                    throw new ServiceException("账号没有权限登录此系统.");
+
                 }
             }
+
             if (Objects.equals(loginSystem, LoginSystem.MINI_APP_SYSTEM)) {
-                LoginUser principal = (LoginUser) authentication.getPrincipal();
-                SysUser user = principal.getUser();
-                List<String> roleKeys = user.getRoles().stream().map(SysRole::getRoleKey).collect(Collectors.toList());
-                String[] miniAppRolekeys = Constants.MINI_APP_ROLEKEYS;
-
-                boolean result = containsRoleKeys(miniAppRolekeys, roleKeys);
-                if (!result) {
-                    AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, "此账号没有权限"));
-                    throw new ServiceException("此账号没有权限.");
+                if (sysMenuMapper.canLogin(username, LoginSystem.MINI_APP_SYSTEM.getValue())<1) {
+                    tokenService.delLoginUser(loginUser.getToken());
+                    throw new ServiceException("账号没有权限登录此系统.");
                 }
-
-
             }
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {
