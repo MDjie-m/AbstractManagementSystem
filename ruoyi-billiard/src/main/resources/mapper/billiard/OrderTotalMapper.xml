@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.billiard.mapper.OrderTotalMapper">
+
+
+    <sql id="selectOrderTotalVo">
+        select * from t_order_total
+    </sql>
+
+    <select id="selectOrderTotalList" parameterType="OrderTotal" resultType="OrderTotal">
+        <include refid="selectOrderTotalVo"/>
+        <where>  
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
+            <if test="storeId != null "> and store_id = #{storeId}</if>
+            <if test="orderType != null "> and order_type = #{orderType}</if>
+            <if test="orderDate != null "> and order_date = #{orderDate}</if>
+            <if test="totalAmount != null "> and total_amount = #{totalAmount}</if>
+            <if test="totalAmountDue != null "> and total_amount_due = #{totalAmountDue}</if>
+            <if test="discountAmount != null "> and discount_amount = #{discountAmount}</if>
+            <if test="payType != null "> and pay_type = #{payType}</if>
+            <if test="createById != null "> and create_by_id = #{createById}</if>
+            <if test="updateById != null "> and update_by_id = #{updateById}</if>
+        </where>
+    </select>
+    
+    <select id="selectOrderTotalByOrderTotalId" parameterType="Long" resultType="OrderTotal">
+        <include refid="selectOrderTotalVo"/>
+        where order_total_id = #{orderTotalId}
+    </select>
+
+
+
+    <delete id="deleteOrderTotalByOrderTotalId" parameterType="Long">
+        delete from t_order_total where order_total_id = #{orderTotalId}
+    </delete>
+
+    <delete id="deleteOrderTotalByOrderTotalIds" parameterType="String">
+        delete from t_order_total where order_total_id in 
+        <foreach item="orderTotalId" collection="array" open="(" separator="," close=")">
+            #{orderTotalId}
+        </foreach>
+    </delete>
+</mapper>

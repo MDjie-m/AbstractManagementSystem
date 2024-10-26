@@ -3,8 +3,10 @@ package com.ruoyi.web.controller.system;
 import java.util.List;
 import java.util.Set;
 
+import com.ruoyi.billiard.domain.Store;
 import com.ruoyi.billiard.domain.StoreDesk;
 import com.ruoyi.billiard.service.IStoreDeskService;
+import com.ruoyi.billiard.service.IStoreService;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.constant.LoginSystem;
 import com.ruoyi.common.enums.MenuCategory;
@@ -43,7 +45,8 @@ public class SysLoginController {
 
     @Resource
     private IStoreDeskService storeDeskService;
-
+    @Resource
+    private IStoreService storeService;
     /**
      * 登录方法
      *
@@ -100,7 +103,7 @@ public class SysLoginController {
         ajax.put("permissions", permissions);
         ajax.put("stores", storeDeskService.getByLoginUserId(user.getUserId()));
         if (roles.stream().anyMatch(p -> p.startsWith(Constants.ROLE_BOSS))) {
-            ajax.put("stores", storeDeskService.selectStoreDeskList(StoreDesk.builder().enable(true).build()));
+            ajax.put("stores", storeService.selectStoreList(Store.builder().build()));
         }
         return ajax;
     }

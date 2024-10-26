@@ -1,6 +1,8 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+
+import com.ruoyi.common.constant.LoginSystem;
 import org.apache.ibatis.annotations.Param;
 import com.ruoyi.common.core.domain.entity.SysMenu;
 
@@ -122,4 +124,6 @@ public interface SysMenuMapper
      * @return 结果
      */
     public SysMenu checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId);
+
+    Integer canLogin(@Param("username") String username,@Param("type") Integer system);
 }

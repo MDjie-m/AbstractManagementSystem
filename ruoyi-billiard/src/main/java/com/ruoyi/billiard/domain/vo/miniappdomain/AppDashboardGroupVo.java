@@ -9,6 +9,7 @@ import java.util.List;
 public class AppDashboardGroupVo {
 
     private String title;
+    private int sort;
 
     private List<AppDashboardItemVo<?>> itemList= Lists.newArrayList();
 }

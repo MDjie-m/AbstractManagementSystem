@@ -860,6 +860,7 @@ create table t_order_total
     store_id         bigint                                not null comment '门店',
     order_type       int                                   not null comment '订单类型(    0=总营业额,1= 台桌费用 ，2=会员充值,3=商品购买，4=陪练费用 ，5=教学费用，6=助教费用)',
     order_date       datetime                              not null comment '订单日期',
+    unit_count bigint default 0 not null comment '单位数量',
     total_amount     decimal(20, 2)                        not null comment '收款金额',
     total_amount_due decimal(20, 2)                        not null comment '应付款收款金额',
     discount_amount  decimal(20, 2)                        not null comment '折扣金额',

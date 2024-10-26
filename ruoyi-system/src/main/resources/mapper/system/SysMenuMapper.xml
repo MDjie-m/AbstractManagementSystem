@@ -200,6 +200,18 @@
         <include refid="selectMenuVo"/>
         where menu_name=#{menuName} and parent_id = #{parentId} limit 1
     </select>
+    <select id="canLogin" resultType="java.lang.Integer">
+
+        select (ifnull((select 1
+                        from sys_menu a
+                                 join sys_role_menu b on a.menu_id = b.menu_id
+                                 join sys_user_role c on b.role_id = c.role_id
+                                 join sys_user d on d.user_id = c.user_id
+                        where a.status = 0
+                          and d.user_name = #{username}
+                          and a.menu_category = #{type}
+                        limit 1), 0))
+    </select>
 
     <update id="updateMenu" parameterType="SysMenu">
         update sys_menu
