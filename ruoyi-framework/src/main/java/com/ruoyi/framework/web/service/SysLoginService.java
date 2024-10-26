@@ -88,11 +88,15 @@ public class SysLoginService {
             authentication = authenticationManager.authenticate(authenticationToken);
             LoginUser loginUser = (LoginUser) authentication.getPrincipal();
 
-            if (sysMenuMapper.canLogin(username, loginSystem.getValue()) < 1) {
-                tokenService.delLoginUser(loginUser.getToken());
-                throw new ServiceException("账号没有权限登录此系统.");
+            //排除admin 登录后台验证，其他要验证菜单权限
+            if(!(Objects.equals(loginSystem,LoginSystem.BACKEND_SYSTEM) &&StringUtils.equals(Constants.SUPER_ADMIN,username))){
+                if (sysMenuMapper.canLogin(username, loginSystem.getValue()) < 1) {
+                    tokenService.delLoginUser(loginUser.getToken());
+                    throw new ServiceException("账号没有权限登录此系统.");
 
+                }
             }
+
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {
                 AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.password.not.match")));
