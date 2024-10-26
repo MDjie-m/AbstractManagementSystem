@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.domain.MyBaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import com.ruoyi.common.annotation.Excel;
 
 import java.util.List;
@@ -19,6 +18,9 @@ import java.util.List;
 @TableName("t_store")
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Store extends MyBaseEntity
 {
     private static final long serialVersionUID = 1L;

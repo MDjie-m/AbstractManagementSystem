@@ -2,10 +2,10 @@
   <div>
 
     <div class="time-container" v-loading="loading">
-      <el-select v-if="storeList.length>1" v-model="storeId" @change="onStoreClick" >
+      <el-select v-if="stores.length>1" v-model="storeId" @change="onStoreClick">
 
-        <el-option  :value="null" label="所有门店"   >    </el-option>
-          <el-option :value="item.storeId" :label="item.storeName" v-for="item in storeList"> </el-option >
+        <el-option :value="null" label="所有门店"></el-option>
+        <el-option :value="item.storeId" :label="item.storeName" v-for="item in stores"></el-option>
 
       </el-select>
       <el-radio-group v-model="activeName" @change="queryData">
@@ -141,13 +141,12 @@ import { listAllStore, queryDashboard } from '@/api/billiard/store'
 export default {
   computed: {
     stores() {
-      return this.$store.getters.stores||[]
+      return this.$store.getters.stores || []
     }
   },
   data() {
     return {
       loading: false,
-      storeList: [],
 
       info: {
         orderSubItems: [],
@@ -162,7 +161,7 @@ export default {
         'refundList': [],
         'preferentialList': []
       },
-      storeId:null,
+      storeId: null,
       customTime: [this.$time().format('YYYY-MM-DD'), this.$time().format('YYYY-MM-DD')],
       pickerOptions: {
         shortcuts: [{
@@ -194,34 +193,31 @@ export default {
       activeName: 'today'
 
     }
-  }, mounted() {
-    this.queryStores();
+  },
+  mounted() {
+    this.storeId = -1
+    if (this.stores.length) {
+      this.storeId = this.stores[0].storeId
+    }
+    if (this.stores.length > 1) {
+      this.storeId = null
+    }  
     this.queryData()
   },
   methods: {
-    onStoreClick(){
-         this.queryData()
+    onStoreClick() {
+      this.queryData()
     },
-    queryStores() {
-      if(this.stores.length){
-        this.storeList=this.stores;
-        this.storeId= this.storeList[0]?.storeId
-        return
-      }
-      return listAllStore().then(response => {
-        this.storeList = (response.data || []).map(p => Object.assign({}, p))
 
-      })
-    },
     queryData() {
 
       let startTime, endTime
       if (this.activeName === 'today') {
         startTime = this.$time().format('YYYY-MM-DD')
         endTime = this.$time().format('YYYY-MM-DD')
-      } else if (this.activeName === "week") {
-        startTime = this.$time().add(-7,'days').format("YYYY-MM-DD");
-        endTime = this.$time().format("YYYY-MM-DD");
+      } else if (this.activeName === 'week') {
+        startTime = this.$time().add(-7, 'days').format('YYYY-MM-DD')
+        endTime = this.$time().format('YYYY-MM-DD')
       } else if (this.activeName === 'month') {
         startTime = this.$time().startOf('month').format('YYYY-MM-DD')
         endTime = this.$time().endOf('month').format('YYYY-MM-DD')
@@ -240,7 +236,7 @@ export default {
       }
       this.loading = true
       queryDashboard({
-        storeId:this.storeId,
+        storeId: this.storeId,
         startTime, endTime
       }).then(res => {
         this.info = res.data

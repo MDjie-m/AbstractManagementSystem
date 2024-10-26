@@ -164,17 +164,17 @@ public class StoreServiceImpl implements IStoreService {
 
     @Override
     public StoreDashboardResVo queryStoreDashboard(Long storeId, Date startTime, Date endTime) {
-        if (Objects.nonNull(storeId)) {
-            if (StringUtils.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, startTime), (DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, endTime)))) {
-                Tuple3<Date, Date, Date> time = storeScheduleService.getDaySchedule(storeId, startTime);
-                startTime = time.getValue();
-                endTime = time.getValue1();
-            } else {
-                Tuple<Date, Date> time = storeScheduleService.getDaySchedule(storeId, startTime, endTime);
-                startTime = time.getValue();
-                endTime = time.getValue1();
-            }
+
+        if (StringUtils.equals(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, startTime), (DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, endTime)))) {
+            Tuple3<Date, Date, Date> time = storeScheduleService.getDaySchedule(storeId, startTime);
+            startTime = time.getValue();
+            endTime = time.getValue1();
+        } else {
+            Tuple<Date, Date> time = storeScheduleService.getDaySchedule(storeId, startTime, endTime);
+            startTime = time.getValue();
+            endTime = time.getValue1();
         }
+
         StoreDashboardResVo resVo = new StoreDashboardResVo();
         resVo.setStarTime(startTime);
         resVo.setEndTime(endTime);
@@ -401,7 +401,7 @@ public class StoreServiceImpl implements IStoreService {
         resVo.setTotalAmount(dashboardResVo.getTotalAmount());
         resVo.setTotalRefundAmount(dashboardResVo.getRefundAmount());
         resVo.setDeskCount(Optional.ofNullable(storeDeskMapper.selectCount(storeDeskMapper.query().eq(StoreDesk::getStoreId, storeId).eq(StoreDesk::getEnable, true))).orElse(0L));
-        resVo.setDeskOpenCount(Optional.ofNullable(storeDeskMapper.selectOpenCount(storeId, time.getValue())).orElse(0L));
+        resVo.setDeskOpenCount(Optional.ofNullable(storeDeskMapper.selectCount(storeDeskMapper.query().eq(StoreDesk::getStoreId, storeId).eq(StoreDesk::getStatus, DeskStatus.BUSY).eq(StoreDesk::getEnable, true))).orElse(0L));
         resVo.setDeskNotOpenCount(resVo.getDeskCount() - resVo.getDeskOpenCount());
         resVo.setDeskOpenRate(calcRate(resVo.getDeskOpenCount(), resVo.getDeskCount()));
         resVo.setDeskOpenRate1(resVo.getDeskOpenRate());
@@ -416,7 +416,7 @@ public class StoreServiceImpl implements IStoreService {
         resVo.setTotalAmountDue(dashboardResVo.getTotalAmountDue());
         resVo.setOrderCount(dashboardResVo.getTotalOrderCount());
         resVo.setOrderAvg(calcRate(resVo.getTotalAmountDue(), dashboardResVo.getTotalOrderCount()));
-        Tuple<BigDecimal, BigDecimal> goodsCountAndCost = Optional.ofNullable(orderGoodsMapper.queryGoodsCount(storeId, time.getValue())).orElse(new Tuple<>( new BigDecimal("0"), new BigDecimal("0.00")));
+        Tuple<BigDecimal, BigDecimal> goodsCountAndCost = Optional.ofNullable(orderGoodsMapper.queryGoodsCount(storeId, time.getValue())).orElse(new Tuple<>(new BigDecimal("0"), new BigDecimal("0.00")));
 
         resVo.setGoodsCost(goodsCountAndCost.getValue1().setScale(2, RoundingMode.HALF_DOWN));
         resVo.setOrderGoodsCountAvg(calcAvg(goodsCountAndCost.getValue(), resVo.getOrderCount()));

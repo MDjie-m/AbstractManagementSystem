@@ -136,11 +136,12 @@ public class StoreScheduleServiceImpl extends ServiceImpl<StoreScheduleMapper, S
 
     @Override
     public Tuple3<Date, Date,Date> getDaySchedule(Long storeId, Date date) {
+
         QueryWrapper<StoreSchedule> queryWrapper = baseMapper.normalQuery();
 
         queryWrapper.eq("day", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, date))
 
-                .lambda().eq(StoreSchedule::getStoreId, storeId).last(" limit 1");
+                .lambda().eq(Objects.nonNull(storeId),StoreSchedule::getStoreId, storeId).last(" limit 1");
 
         StoreSchedule schedule = baseMapper.selectOne(queryWrapper);
         Date start, end;
