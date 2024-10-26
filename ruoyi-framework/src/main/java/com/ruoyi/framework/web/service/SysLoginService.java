@@ -65,7 +65,6 @@ public class SysLoginService {
     private SysMenuMapper sysMenuMapper;
 
 
-
     /**
      * 登录验证
      *
@@ -88,19 +87,11 @@ public class SysLoginService {
             // 该方法会去调用UserDetailsServiceImpl.loadUserByUsername
             authentication = authenticationManager.authenticate(authenticationToken);
             LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-            if (Objects.equals(loginSystem, LoginSystem.CASHIER_SYSTEM)) {
-                if (sysMenuMapper.canLogin(username, LoginSystem.CASHIER_SYSTEM.getValue())<1) {
-                    tokenService.delLoginUser(loginUser.getToken());
-                    throw new ServiceException("账号没有权限登录此系统.");
 
-                }
-            }
+            if (sysMenuMapper.canLogin(username, loginSystem.getValue()) < 1) {
+                tokenService.delLoginUser(loginUser.getToken());
+                throw new ServiceException("账号没有权限登录此系统.");
 
-            if (Objects.equals(loginSystem, LoginSystem.MINI_APP_SYSTEM)) {
-                if (sysMenuMapper.canLogin(username, LoginSystem.MINI_APP_SYSTEM.getValue())<1) {
-                    tokenService.delLoginUser(loginUser.getToken());
-                    throw new ServiceException("账号没有权限登录此系统.");
-                }
             }
         } catch (Exception e) {
             if (e instanceof BadCredentialsException) {

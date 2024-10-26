@@ -19,20 +19,16 @@ import com.ruoyi.system.service.ISysConfigService;
 @RestController
 public class SysRegisterController extends BaseController
 {
-    @Autowired
-    private SysRegisterService registerService;
+//    @Autowired
+//    private SysRegisterService registerService;
+//
+//    @Autowired
+//    private ISysConfigService configService;
 
-    @Autowired
-    private ISysConfigService configService;
-
-    @PostMapping("/register")
-    public AjaxResult register(@RequestBody RegisterBody user)
-    {
-        if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser"))))
-        {
-            return error("当前系统没有开启注册功能！");
-        }
-        String msg = registerService.register(user);
-        return StringUtils.isEmpty(msg) ? success() : error(msg);
-    }
+//    @PostMapping("/register")
+//    public AjaxResult register(@RequestBody RegisterBody user)
+//    {
+//
+//            return error("当前系统没有开启注册功能！");
+//    }
 }
