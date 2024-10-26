@@ -70,7 +70,7 @@ public interface OrderGoodsMapper extends MyBaseMapper<OrderGoods>
 
     Map<String, Object> selectOrderGoodsStatistics(@Param("status") Integer status, @Param("storeId") Long storeId, @Param("startTime") String startTime, @Param("endTime") String endTime);
 
-    Tuple<Long,BigDecimal> queryGoodsCount(@Param("storeId") Long storeId, @Param("startTime") Date value);
+    Tuple<BigDecimal,BigDecimal> queryGoodsCount(@Param("storeId") Long storeId, @Param("startTime") Date value);
 
 
 }

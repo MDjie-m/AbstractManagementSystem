@@ -416,7 +416,7 @@ public class StoreServiceImpl implements IStoreService {
         resVo.setTotalAmountDue(dashboardResVo.getTotalAmountDue());
         resVo.setOrderCount(dashboardResVo.getTotalOrderCount());
         resVo.setOrderAvg(calcRate(resVo.getTotalAmountDue(), dashboardResVo.getTotalOrderCount()));
-        Tuple<Long, BigDecimal> goodsCountAndCost = Optional.ofNullable(orderGoodsMapper.queryGoodsCount(storeId, time.getValue())).orElse(new Tuple<>(0L, new BigDecimal("0.00")));
+        Tuple<BigDecimal, BigDecimal> goodsCountAndCost = Optional.ofNullable(orderGoodsMapper.queryGoodsCount(storeId, time.getValue())).orElse(new Tuple<>( new BigDecimal("0"), new BigDecimal("0.00")));
 
         resVo.setGoodsCost(goodsCountAndCost.getValue1().setScale(2, RoundingMode.HALF_DOWN));
         resVo.setOrderGoodsCountAvg(calcAvg(goodsCountAndCost.getValue(), resVo.getOrderCount()));

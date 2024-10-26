@@ -7,12 +7,13 @@ import lombok.SneakyThrows;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 public class AppStoreDashboardResVo {
     //实时指标概览
     //台桌开台率
-    @Label(value = "台桌开台率", group = "实时指标",suffix = "%")
+    @Label(value = "台桌开台率", group = "实时指标", suffix = "%", groupSort = 0)
     private BigDecimal deskOpenRate;
 
     //台桌开台数量
@@ -20,14 +21,14 @@ public class AppStoreDashboardResVo {
     private Long deskOpenCount;
     //台桌总数
     @Label(value = "台桌总数", group = "实时指标")
-    private Long  deskCount;
+    private Long deskCount;
 
     //未开台台桌
     @Label(value = "台桌空闲数", group = "实时指标")
     private Long deskNotOpenCount;
 
     //助教上课率
-    @Label(value = "助教上课率", group = "实时指标",suffix = "%")
+    @Label(value = "助教上课率", group = "实时指标", suffix = "%")
     private BigDecimal tutorWorkRate;
 
     //助教上课数
@@ -40,7 +41,7 @@ public class AppStoreDashboardResVo {
     //营业额概览
 
     //营业额
-    @Label(value = "营业额", group = "基础概况", tip = "门店订单应收款总额")
+    @Label(value = "营业额", group = "基础概况", tip = "门店订单应收款总额", groupSort = 1)
     private BigDecimal totalAmountDue;
     //总收入
     @Label(value = "总收入", group = "基础概况", tip = "门店实际收入总额")
@@ -62,7 +63,7 @@ public class AppStoreDashboardResVo {
     //商品概览
 
 
-    @Label(value = "商品销售额", group = "商品概览", tip = "商品销售总金额")
+    @Label(value = "商品销售额", group = "商品概览", tip = "商品销售总金额", groupSort = 2)
     private BigDecimal goodsAmount;
     //客单数
     @Label(value = "商品销售成本", group = "商品概览", tip = "商品销售成本")
@@ -71,7 +72,7 @@ public class AppStoreDashboardResVo {
     @Label(value = "商品毛利", group = "商品概览", tip = "商品销售额减去商品成本")
     private BigDecimal goodsProfit;
 
-    @Label(value = "商品毛利率", group = "商品概览", tip = "毛利/商品销售额",suffix = "%")
+    @Label(value = "商品毛利率", group = "商品概览", tip = "毛利/商品销售额", suffix = "%")
     private BigDecimal goodsProfitRate;
 
     @Label(value = "客单价", group = "商品概览", tip = "每单商品平均价格")
@@ -82,7 +83,7 @@ public class AppStoreDashboardResVo {
 
     //台桌概览
 
-    @Label(value = "总台桌费", group = "台桌概览", tip = "台桌费用合计")
+    @Label(value = "总台桌费", group = "台桌概览", tip = "台桌费用合计", groupSort = 3)
     private BigDecimal deskAmount;
 
     @Label(value = "开台率", group = "台桌概览", tip = "发生过计费的台桌占比")
@@ -99,10 +100,10 @@ public class AppStoreDashboardResVo {
 
     //助教概览
 
-    @Label(value = "上课费", group = "助教概览", tip = "台桌费用合计")
+    @Label(value = "上课费", group = "助教概览", tip = "台桌费用合计", groupSort = 4)
     private BigDecimal tutorAmount;
 
-    @Label(value = "助教上课率", group = "助教概览", tip = "上课助教/所有助教数量",suffix = "%")
+    @Label(value = "助教上课率", group = "助教概览", tip = "上课助教/所有助教数量", suffix = "%")
     private BigDecimal tutorWorkedTodayRate;
 
 
@@ -112,7 +113,7 @@ public class AppStoreDashboardResVo {
 
     //会员概览
 
-    @Label(value = "会员充值金额", group = "会员概览")
+    @Label(value = "会员充值金额", group = "会员概览", groupSort = 5)
     private BigDecimal memberRechargeAmount;
 
 
@@ -123,10 +124,10 @@ public class AppStoreDashboardResVo {
     private Long newMemberCount;
 
 
-    @Label(value = "会员客单率", group = "会员概览", tip = "会员消费订单数/总订单数",suffix = "%")
+    @Label(value = "会员客单率", group = "会员概览", tip = "会员消费订单数/总订单数", suffix = "%")
     private BigDecimal memberOrderRate;
 
-    @Label(value = "会员消费占比", group = "会员概览", tip = "会员消费金额/门店总收入",suffix = "%")
+    @Label(value = "会员消费占比", group = "会员概览", tip = "会员消费金额/门店总收入", suffix = "%")
     private BigDecimal memberAmountRate;
 
 
@@ -148,8 +149,11 @@ public class AppStoreDashboardResVo {
             }
 
             Object val = field.get(this);
-            groupVo.getItemList().add(new AppDashboardItemVo<>(label.value(), val, label.tip(),label.suffix()));
+            if (label.groupSort() > 0) {
+                groupVo.setSort(label.groupSort());
+            }
+            groupVo.getItemList().add(new AppDashboardItemVo<>(label.value(), val, label.tip(), label.suffix()));
         }
-        return new ArrayList<>(groupVoMap.values());
+        return groupVoMap.values().stream().sorted(Comparator.comparing(AppDashboardGroupVo::getSort)).collect(Collectors.toList());
     }
 }

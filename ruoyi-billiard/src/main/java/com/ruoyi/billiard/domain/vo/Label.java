@@ -12,11 +12,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @JacksonAnnotation
 public @interface Label {
-     String value();
+    String value();
 
-     String group() default "";
+    String group() default "";
 
     String tip() default "";
 
-    String suffix() default  "";
+    String suffix() default "";
+
+    int groupSort() default -1000;
 }
