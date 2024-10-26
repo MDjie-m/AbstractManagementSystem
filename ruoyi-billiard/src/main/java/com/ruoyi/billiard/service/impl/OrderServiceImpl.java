@@ -103,6 +103,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private IOrderDeskScoreService orderDeskScoreService;
 
+    @Autowired
+    private IOrderTotalService orderTotalService;
+
 
     /**
      * 查询订单
@@ -860,6 +863,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
 
         orderMapper.updateById(order);
+        orderTotalService.calcTotal(order.getOrderId());
         return true;
     }
 
@@ -1030,8 +1034,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderRechargeMapper.insert(recharge);
 
         memberService.recharge(recharge);
-
-
+        orderTotalService.calcTotal(order.getOrderId());
     }
 
     @Override
