@@ -4,6 +4,7 @@
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
+beizhu.txt
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
