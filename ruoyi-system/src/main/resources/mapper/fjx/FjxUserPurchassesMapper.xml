@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FjxUserPurchassesMapper">
+    
+    <resultMap type="FjxUserPurchasses" id="FjxUserPurchassesResult">
+        <result property="id"    column="id"    />
+        <result property="purchaseId"    column="purchase_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="purchaseQuantity"    column="purchase_quantity"    />
+        <result property="purchassesPrice"    column="purchasses_price"    />
+        <result property="purchassesState"    column="purchasses_state"    />
+        <result property="dispatchTime"    column="dispatch_time"    />
+        <result property="receiptTime"    column="receipt_time"    />
+        <result property="productNreceiptame"    column="product_nreceiptame"    />
+        <result property="opderTime"    column="opder_time"    />
+        <result property="turnoverTime"    column="turnover_time"    />
+    </resultMap>
+
+    <sql id="selectFjxUserPurchassesVo">
+        select id, purchase_id, user_id, product_id, purchase_quantity, purchasses_price, purchasses_state, dispatch_time, receipt_time, product_nreceiptame, opder_time, turnover_time from FJX_user_purchasses
+    </sql>
+
+    <select id="selectFjxUserPurchassesList" parameterType="FjxUserPurchasses" resultMap="FjxUserPurchassesResult">
+        <include refid="selectFjxUserPurchassesVo"/>
+        <where>  
+            <if test="purchaseId != null "> and purchase_id = #{purchaseId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="purchaseQuantity != null "> and purchase_quantity = #{purchaseQuantity}</if>
+            <if test="purchassesPrice != null "> and purchasses_price = #{purchassesPrice}</if>
+            <if test="purchassesState != null  and purchassesState != ''"> and purchasses_state = #{purchassesState}</if>
+            <if test="dispatchTime != null "> and dispatch_time = #{dispatchTime}</if>
+            <if test="receiptTime != null "> and receipt_time = #{receiptTime}</if>
+            <if test="productNreceiptame != null "> and product_nreceiptame = #{productNreceiptame}</if>
+            <if test="opderTime != null "> and opder_time = #{opderTime}</if>
+            <if test="turnoverTime != null "> and turnover_time = #{turnoverTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectFjxUserPurchassesById" parameterType="String" resultMap="FjxUserPurchassesResult">
+        <include refid="selectFjxUserPurchassesVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFjxUserPurchasses" parameterType="FjxUserPurchasses" useGeneratedKeys="true" keyProperty="id">
+        insert into FJX_user_purchasses
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="purchaseId != null">purchase_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="purchaseQuantity != null">purchase_quantity,</if>
+            <if test="purchassesPrice != null">purchasses_price,</if>
+            <if test="purchassesState != null">purchasses_state,</if>
+            <if test="dispatchTime != null">dispatch_time,</if>
+            <if test="receiptTime != null">receipt_time,</if>
+            <if test="productNreceiptame != null">product_nreceiptame,</if>
+            <if test="opderTime != null">opder_time,</if>
+            <if test="turnoverTime != null">turnover_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="purchaseId != null">#{purchaseId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="purchaseQuantity != null">#{purchaseQuantity},</if>
+            <if test="purchassesPrice != null">#{purchassesPrice},</if>
+            <if test="purchassesState != null">#{purchassesState},</if>
+            <if test="dispatchTime != null">#{dispatchTime},</if>
+            <if test="receiptTime != null">#{receiptTime},</if>
+            <if test="productNreceiptame != null">#{productNreceiptame},</if>
+            <if test="opderTime != null">#{opderTime},</if>
+            <if test="turnoverTime != null">#{turnoverTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFjxUserPurchasses" parameterType="FjxUserPurchasses">
+        update FJX_user_purchasses
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="purchaseId != null">purchase_id = #{purchaseId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="purchaseQuantity != null">purchase_quantity = #{purchaseQuantity},</if>
+            <if test="purchassesPrice != null">purchasses_price = #{purchassesPrice},</if>
+            <if test="purchassesState != null">purchasses_state = #{purchassesState},</if>
+            <if test="dispatchTime != null">dispatch_time = #{dispatchTime},</if>
+            <if test="receiptTime != null">receipt_time = #{receiptTime},</if>
+            <if test="productNreceiptame != null">product_nreceiptame = #{productNreceiptame},</if>
+            <if test="opderTime != null">opder_time = #{opderTime},</if>
+            <if test="turnoverTime != null">turnover_time = #{turnoverTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFjxUserPurchassesById" parameterType="String">
+        delete from FJX_user_purchasses where id = #{id}
+    </delete>
+
+    <delete id="deleteFjxUserPurchassesByIds" parameterType="String">
+        delete from FJX_user_purchasses where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

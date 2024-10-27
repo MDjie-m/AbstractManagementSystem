@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FjxStorageMapper">
+    
+    <resultMap type="FjxStorage" id="FjxStorageResult">
+        <result property="id"    column="id"    />
+        <result property="storageId"    column="storage_id"    />
+        <result property="cartId"    column="cart_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="quantity"    column="quantity"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+    </resultMap>
+
+    <sql id="selectFjxStorageVo">
+        select id, storage_id, cart_id, product_id, quantity, created_time, updated_time from FJX_storage
+    </sql>
+
+    <select id="selectFjxStorageList" parameterType="FjxStorage" resultMap="FjxStorageResult">
+        <include refid="selectFjxStorageVo"/>
+        <where>  
+            <if test="storageId != null "> and storage_id = #{storageId}</if>
+            <if test="cartId != null "> and cart_id = #{cartId}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="quantity != null "> and quantity = #{quantity}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectFjxStorageById" parameterType="String" resultMap="FjxStorageResult">
+        <include refid="selectFjxStorageVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFjxStorage" parameterType="FjxStorage" useGeneratedKeys="true" keyProperty="id">
+        insert into FJX_storage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="storageId != null">storage_id,</if>
+            <if test="cartId != null">cart_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="updatedTime != null">updated_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="storageId != null">#{storageId},</if>
+            <if test="cartId != null">#{cartId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFjxStorage" parameterType="FjxStorage">
+        update FJX_storage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="storageId != null">storage_id = #{storageId},</if>
+            <if test="cartId != null">cart_id = #{cartId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFjxStorageById" parameterType="String">
+        delete from FJX_storage where id = #{id}
+    </delete>
+
+    <delete id="deleteFjxStorageByIds" parameterType="String">
+        delete from FJX_storage where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

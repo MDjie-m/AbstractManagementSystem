@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FjxShoppingCartMapper">
+    
+    <resultMap type="FjxShoppingCart" id="FjxShoppingCartResult">
+        <result property="id"    column="id"    />
+        <result property="cartId"    column="cart_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="quantity"    column="quantity"    />
+    </resultMap>
+
+    <sql id="selectFjxShoppingCartVo">
+        select id, cart_id, user_id, product_id, quantity from FJX_shopping_cart
+    </sql>
+
+    <select id="selectFjxShoppingCartList" parameterType="FjxShoppingCart" resultMap="FjxShoppingCartResult">
+        <include refid="selectFjxShoppingCartVo"/>
+        <where>  
+            <if test="cartId != null "> and cart_id = #{cartId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="quantity != null "> and quantity = #{quantity}</if>
+        </where>
+    </select>
+    
+    <select id="selectFjxShoppingCartById" parameterType="String" resultMap="FjxShoppingCartResult">
+        <include refid="selectFjxShoppingCartVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFjxShoppingCart" parameterType="FjxShoppingCart" useGeneratedKeys="true" keyProperty="id">
+        insert into FJX_shopping_cart
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cartId != null">cart_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="quantity != null">quantity,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cartId != null">#{cartId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="quantity != null">#{quantity},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFjxShoppingCart" parameterType="FjxShoppingCart">
+        update FJX_shopping_cart
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cartId != null">cart_id = #{cartId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFjxShoppingCartById" parameterType="String">
+        delete from FJX_shopping_cart where id = #{id}
+    </delete>
+
+    <delete id="deleteFjxShoppingCartByIds" parameterType="String">
+        delete from FJX_shopping_cart where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

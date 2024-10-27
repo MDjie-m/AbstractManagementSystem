@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FjxProductMapper">
+    
+    <resultMap type="FjxProduct" id="FjxProductResult">
+        <result property="id"    column="id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="name"    column="name"    />
+        <result property="imageUrl"    column="image_url"    />
+        <result property="stockQuantity"    column="stock_quantity"    />
+        <result property="price"    column="price"    />
+        <result property="description"    column="description"    />
+        <result property="totalQuantity"    column="total_quantity"    />
+        <result property="updatedTime"    column="updated_time"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="shelfTime"    column="shelf_time"    />
+    </resultMap>
+
+    <sql id="selectFjxProductVo">
+        select id, product_id, name, image_url, stock_quantity, price, description, total_quantity, updated_time, created_time, shelf_time from FJX_product
+    </sql>
+
+    <select id="selectFjxProductList" parameterType="FjxProduct" resultMap="FjxProductResult">
+        <include refid="selectFjxProductVo"/>
+        <where>  
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="imageUrl != null  and imageUrl != ''"> and image_url = #{imageUrl}</if>
+            <if test="stockQuantity != null "> and stock_quantity = #{stockQuantity}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="totalQuantity != null "> and total_quantity = #{totalQuantity}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="shelfTime != null  and shelfTime != ''"> and shelf_time = #{shelfTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectFjxProductById" parameterType="String" resultMap="FjxProductResult">
+        <include refid="selectFjxProductVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFjxProduct" parameterType="FjxProduct" useGeneratedKeys="true" keyProperty="id">
+        insert into FJX_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="productId != null">product_id,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="imageUrl != null">image_url,</if>
+            <if test="stockQuantity != null">stock_quantity,</if>
+            <if test="price != null">price,</if>
+            <if test="description != null">description,</if>
+            <if test="totalQuantity != null">total_quantity,</if>
+            <if test="updatedTime != null">updated_time,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="shelfTime != null">shelf_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="productId != null">#{productId},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="imageUrl != null">#{imageUrl},</if>
+            <if test="stockQuantity != null">#{stockQuantity},</if>
+            <if test="price != null">#{price},</if>
+            <if test="description != null">#{description},</if>
+            <if test="totalQuantity != null">#{totalQuantity},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="shelfTime != null">#{shelfTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFjxProduct" parameterType="FjxProduct">
+        update FJX_product
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="imageUrl != null">image_url = #{imageUrl},</if>
+            <if test="stockQuantity != null">stock_quantity = #{stockQuantity},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="totalQuantity != null">total_quantity = #{totalQuantity},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="shelfTime != null">shelf_time = #{shelfTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFjxProductById" parameterType="String">
+        delete from FJX_product where id = #{id}
+    </delete>
+
+    <delete id="deleteFjxProductByIds" parameterType="String">
+        delete from FJX_product where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FjxCollectionMapper">
+    
+    <resultMap type="FjxCollection" id="FjxCollectionResult">
+        <result property="id"    column="id"    />
+        <result property="collectionId"    column="collection_id"    />
+        <result property="productId"    column="product_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="username"    column="username"    />
+        <result property="productName"    column="product_name"    />
+    </resultMap>
+
+    <sql id="selectFjxCollectionVo">
+        select id, collection_id, product_id, user_id, username, product_name from FJX_collection
+    </sql>
+
+    <select id="selectFjxCollectionList" parameterType="FjxCollection" resultMap="FjxCollectionResult">
+        <include refid="selectFjxCollectionVo"/>
+        <where>  
+            <if test="collectionId != null "> and collection_id = #{collectionId}</if>
+            <if test="productId != null "> and product_id = #{productId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectFjxCollectionById" parameterType="String" resultMap="FjxCollectionResult">
+        <include refid="selectFjxCollectionVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFjxCollection" parameterType="FjxCollection" useGeneratedKeys="true" keyProperty="id">
+        insert into FJX_collection
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="collectionId != null">collection_id,</if>
+            <if test="productId != null">product_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="username != null and username != ''">username,</if>
+            <if test="productName != null and productName != ''">product_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="collectionId != null">#{collectionId},</if>
+            <if test="productId != null">#{productId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="username != null and username != ''">#{username},</if>
+            <if test="productName != null and productName != ''">#{productName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFjxCollection" parameterType="FjxCollection">
+        update FJX_collection
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="collectionId != null">collection_id = #{collectionId},</if>
+            <if test="productId != null">product_id = #{productId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="productName != null and productName != ''">product_name = #{productName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFjxCollectionById" parameterType="String">
+        delete from FJX_collection where id = #{id}
+    </delete>
+
+    <delete id="deleteFjxCollectionByIds" parameterType="String">
+        delete from FJX_collection where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
