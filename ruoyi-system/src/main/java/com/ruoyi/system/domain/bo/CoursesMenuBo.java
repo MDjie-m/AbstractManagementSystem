@@ -44,20 +44,20 @@ public class CoursesMenuBo extends BaseEntity {
     /**
      * 排序
      */
-    @NotNull(message = "排序不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Long sort;
+    //@NotNull(message = "排序不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Integer sort;
 
     /**
      * 创建时间
      */
-    @NotNull(message = "创建时间不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Date createDate;
+    //@NotNull(message = "创建时间不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Date createTime;
 
     /**
      * 更新时间
      */
-    @NotNull(message = "更新时间不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Date updateDate;
+    //@NotNull(message = "更新时间不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Date updateTime;
 
 
 }

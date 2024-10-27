@@ -4,6 +4,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.system.domain.bo.CoursesBo;
 import com.ruoyi.system.domain.vo.CoursesVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,7 +35,8 @@ public interface ICoursesService {
     /**
      * 新增课程
      */
-    Boolean insertByBo(CoursesBo bo);
+    Boolean insertByBo(CoursesBo bo, List<MultipartFile> coverfiles, List<MultipartFile> systemFiles,
+                       List<MultipartFile> effectFiles, List<MultipartFile> packageFiles);
 
     /**
      * 修改课程

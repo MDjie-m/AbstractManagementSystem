@@ -45,19 +45,19 @@ public class CoursesMenuVo {
      * 排序
      */
     @ExcelProperty(value = "排序")
-    private Long sort;
+    private Integer sort;
 
     /**
      * 创建时间
      */
     @ExcelProperty(value = "创建时间")
-    private Date createDate;
+    private Date createTime;
 
     /**
      * 更新时间
      */
     @ExcelProperty(value = "更新时间")
-    private Date updateDate;
+    private Date updateTime;
 
 
 }

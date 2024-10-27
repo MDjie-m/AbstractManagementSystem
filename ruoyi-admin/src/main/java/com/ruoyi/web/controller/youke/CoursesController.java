@@ -24,6 +24,7 @@ import com.ruoyi.common.core.validate.QueryGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 课程
@@ -78,8 +79,9 @@ public class CoursesController extends BaseController {
     @Log(title = "课程", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
-    public R<Void> add(@Validated(AddGroup.class) @RequestBody CoursesBo bo) {
-        return toAjax(iCoursesService.insertByBo(bo));
+    public R<Void> add(@Validated(AddGroup.class) @RequestPart CoursesBo bo, List<MultipartFile> coverfiles, List<MultipartFile> systemFiles,
+                       List<MultipartFile> effectFiles, List<MultipartFile> packageFiles) {
+        return toAjax(iCoursesService.insertByBo(bo,coverfiles, systemFiles, effectFiles, packageFiles));
     }
 
     /**

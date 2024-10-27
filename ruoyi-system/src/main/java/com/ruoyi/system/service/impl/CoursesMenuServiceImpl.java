@@ -65,8 +65,8 @@ public class CoursesMenuServiceImpl implements ICoursesMenuService {
         lqw.like(StringUtils.isNotBlank(bo.getMemuName()), CoursesMenu::getMemuName, bo.getMemuName());
         lqw.eq(bo.getCourseId() != null, CoursesMenu::getCourseId, bo.getCourseId());
         lqw.eq(bo.getSort() != null, CoursesMenu::getSort, bo.getSort());
-        lqw.eq(bo.getCreateDate() != null, CoursesMenu::getCreateDate, bo.getCreateDate());
-        lqw.eq(bo.getUpdateDate() != null, CoursesMenu::getUpdateDate, bo.getUpdateDate());
+        lqw.eq(bo.getCreateTime() != null, CoursesMenu::getCreateTime, bo.getCreateTime());
+        lqw.eq(bo.getUpdateTime() != null, CoursesMenu::getUpdateTime, bo.getUpdateTime());
         return lqw;
     }
 

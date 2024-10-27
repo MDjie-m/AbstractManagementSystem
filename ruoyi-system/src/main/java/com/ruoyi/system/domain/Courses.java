@@ -19,7 +19,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("courses")
+@TableName("yk_courses")
 public class Courses extends BaseEntity {
 
     private static final long serialVersionUID=1L;
@@ -44,11 +44,11 @@ public class Courses extends BaseEntity {
     /**
      * 创建时间
      */
-    private Date createDate;
+    private Date createTime;
     /**
      * 更新时间
      */
-    private Date updateDate;
+    private Date updateTime;
     /**
      * 0标识未删除，1表示已删除
      */

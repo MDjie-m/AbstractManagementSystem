@@ -19,7 +19,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("courses_file")
+@TableName("yk_courses_file")
 public class CoursesFile extends BaseEntity {
 
     private static final long serialVersionUID=1L;
@@ -48,7 +48,7 @@ public class CoursesFile extends BaseEntity {
     /**
      * 应用分类  0课程体系 1课程效果 2材料包展示 3课堂总价 4教案 5视频
      */
-    private Long useType;
+    private Integer useType;
     /**
      * 应用分类名
      */
@@ -56,7 +56,7 @@ public class CoursesFile extends BaseEntity {
     /**
      * 排序
      */
-    private Long sort;
+    private Integer sort;
     /**
      * 课程ID
      */
@@ -68,11 +68,11 @@ public class CoursesFile extends BaseEntity {
     /**
      * 创建时间
      */
-    private Date createDate;
+    private Date createTime;
     /**
      * 更新时间
      */
-    private Date updateDate;
+    private Date updateTime;
     /**
      * 0标识未删除，1表示已删除
      */

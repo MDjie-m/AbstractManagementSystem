@@ -71,8 +71,8 @@ public class CoursesFileServiceImpl implements ICoursesFileService {
         lqw.eq(bo.getSort() != null, CoursesFile::getSort, bo.getSort());
         lqw.eq(bo.getCourseId() != null, CoursesFile::getCourseId, bo.getCourseId());
         lqw.eq(bo.getMenuId() != null, CoursesFile::getMenuId, bo.getMenuId());
-        lqw.eq(bo.getCreateDate() != null, CoursesFile::getCreateDate, bo.getCreateDate());
-        lqw.eq(bo.getUpdateDate() != null, CoursesFile::getUpdateDate, bo.getUpdateDate());
+        lqw.eq(bo.getCreateTime() != null, CoursesFile::getCreateTime, bo.getCreateTime());
+        lqw.eq(bo.getUpdateTime() != null, CoursesFile::getCreateTime, bo.getUpdateTime());
         return lqw;
     }
 

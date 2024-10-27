@@ -22,7 +22,10 @@ export function addCourses(data) {
   return request({
     url: '/yk/courses',
     method: 'post',
-    data: data
+    data: data,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
   })
 }
 
