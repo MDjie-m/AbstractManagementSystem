@@ -1,96 +1,227 @@
-<p align="center">
-	<img alt="logo" src="https://oscimg.oschina.net/oscnet/up-d3d0a9303e11d522a06cd263f3079027715.png">
-</p>
-<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">RuoYi v3.8.8</h1>
-<h4 align="center">基于SpringBoot+Vue前后端分离的Java快速开发框架</h4>
-<p align="center">
-	<a href="https://gitee.com/y_project/RuoYi-Vue/stargazers"><img src="https://gitee.com/y_project/RuoYi-Vue/badge/star.svg?theme=dark"></a>
-	<a href="https://gitee.com/y_project/RuoYi-Vue"><img src="https://img.shields.io/badge/RuoYi-v3.8.8-brightgreen.svg"></a>
-	<a href="https://gitee.com/y_project/RuoYi-Vue/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
-</p>
+## Ruoyi-Nbcio V1.0.0 NBCIO亿事达企业管理平台简介
 
-## 平台简介
+[![码云Gitee](https://gitee.com/nbacheng/ruoyi-nbcio/badge/star.svg?theme=blue)](https://gitee.com/nbacheng/ruoyi-nbcio)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://gitee.com/nbacheng/ruoyi-nbcio/blob/master/LICENSE)
+[![](https://img.shields.io/badge/Author-宁波阿成-orange.svg)](http://218.75.87.38:9666/)
+[![](https://img.shields.io/badge/Blog-个人博客-blue.svg)](https://nbacheng.blog.csdn.net)
+[![](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)](https://gitee/nbacheng/ruoyi-nbcio)
+[![使用STS开发维护](https://img.shields.io/badge/STS-提供支持-blue.svg)](https://spring.io/tools)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.7-blue.svg)]()
+[![JDK-8+](https://img.shields.io/badge/JDK-8-green.svg)]()
+[![JDK-11](https://img.shields.io/badge/JDK-11-green.svg)]()
 
-若依是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。
+- 本项目基于 [RuoYi-Flowable-Plus](https://gitee.com/KonBAI-Q/ruoyi-flowable-plus) 进行二次开发，从nbcio-boot(https://gitee.com/nbacheng/nbcio-boot)项目
+  移植过来相关功能，脚手架功能同步更新 [RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus) 项目。
+- 这个是Springboot2+vue2分支，目前初步完成流程相关工作，后续只会维护与修正bug，全部开源，个人与企业可免费使用。
+- 声明一下：现在、未来都不会有商业版本，有商业应用的公司请知会作者(免费使用，以后只做推广开源项目用)
+- 更多技术支持与服务请加入我的知识星球，名称:亿事达nbcio技术交流社区https://t.zsxq.com/iPi8F
+- 需要支持Springboot3和java17请看springboot3分支
+- 需要支持Springboot3和vue3的请看plus分支(以后主要维护的分支...)
 
-* 前端采用Vue、Element UI。
-* 后端采用Spring Boot、Spring Security、Redis & Jwt。
-* 权限认证使用Jwt，支持多终端认证系统。
-* 支持加载动态权限菜单，多方式轻松权限控制。
-* 高效率开发，使用代码生成器可以一键生成前后端代码。
-* 提供了技术栈（[Vue3](https://v3.cn.vuejs.org) [Element Plus](https://element-plus.org/zh-CN) [Vite](https://cn.vitejs.dev)）版本[RuoYi-Vue3](https://github.com/yangzongzhuan/RuoYi-Vue3)，保持同步更新。
-* 提供了单应用版本[RuoYi-Vue-fast](https://github.com/yangzongzhuan/RuoYi-Vue-fast)，Oracle版本[RuoYi-Vue-Oracle](https://github.com/yangzongzhuan/RuoYi-Vue-Oracle)，保持同步更新。
-* 不分离版本，请移步[RuoYi](https://gitee.com/y_project/RuoYi)，微服务版本，请移步[RuoYi-Cloud](https://gitee.com/y_project/RuoYi-Cloud)
-* 阿里云折扣场：[点我进入](http://aly.ruoyi.vip)，腾讯云秒杀场：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
-* 阿里云优惠券：[点我领取](https://www.aliyun.com/minisite/goods?userCode=brki8iof&share_source=copy_link)，腾讯云优惠券：[点我领取](https://cloud.tencent.com/redirect.php?redirect=1025&cps_key=198c8df2ed259157187173bc7f4f32fd&from=console)&nbsp;&nbsp;
+## 在线演示
+演示服务不限制操作，希望大家按需使用，不要恶意添加脏数据或对服务器进行攻击等操作。
 
-## 内置功能
+[RuoYi-Nbcio 在线演示](http://218.75.87.38:9666/)
 
-1.  用户管理：用户是系统操作者，该功能主要完成系统用户配置。
-2.  部门管理：配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。
-3.  岗位管理：配置系统用户所属担任职务。
-4.  菜单管理：配置系统菜单，操作权限，按钮权限标识等。
-5.  角色管理：角色菜单权限分配、设置角色按机构进行数据范围权限划分。
-6.  字典管理：对系统中经常使用的一些较为固定的数据进行维护。
-7.  参数管理：对系统动态配置常用参数。
-8.  通知公告：系统通知公告信息发布维护。
-9.  操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
-10. 登录日志：系统登录日志记录查询包含登录异常。
-11. 在线用户：当前系统中活跃用户状态监控。
-12. 定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。
-13. 代码生成：前后端代码的生成（java、html、xml、sql）支持CRUD下载 。
-14. 系统接口：根据业务代码自动生成相关的api接口文档。
-15. 服务监控：监视当前系统CPU、内存、磁盘、堆栈等相关信息。
-16. 缓存监控：对系统的缓存信息查询，命令统计等。
-17. 在线构建器：拖动表单元素生成相应的HTML代码。
-18. 连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
+|                 | 账号  | 密码      |
+|---------------- | ----- | -------- |
+| 超管账户         目前只能通过gitee授权免密码登录或进群咨询
+| 监控中心（未运行） | ruoyi | 123456   |
+| 任务调度中心      | admin | 123456   |
+| 数据监控中心      | ruoyi | 123456   |
 
-## 在线体验
+## 增加的主要功能
 
-- admin/admin123  
-- 陆陆续续收到一些打赏，为了更好的体验已用于演示服务器升级。谢谢各位小伙伴。
+   1、表单设计修改为formdesigner。
+   
+   2、增加消息提醒功能。
+   
+   3、支持动态角色与用户,流程流转原来的userid方式修改为username的方式。
+   
+   4、全新修改了原先启动流程的过程。
+   
+   5、增加自定义业务表单
+   
+   6、支持本地图片上传
+   
+   7、增加自定义业务表单的流程流转
+   
+   8、支持多实例流程流转和多实例自定义条件
+   
+   9、支持部门经理审批
+   
+   10、增加仿钉钉流程设计（正在开发中）
+   
+   11、流程设计器增加自定义业务表单的绑定
+   
+   12、增加支持定时边界事件和定时捕获事件
+   
+   13、增加我的抄送
+   
+   14、流程审批增加加签、跳转、驳回等功能
+   
+   15、已办任务增加收回功能
+   
+   16、支持节点表单的流程流转
+   
+   17、增加所有任务功能
 
-演示地址：http://vue.ruoyi.vip  
-文档地址：http://doc.ruoyi.vip
+## 支持项目
+-  如果项目对你有帮助，请给项目点个Star，同时也可以请作者喝杯咖啡吧！
+![](https://oscimg.oschina.net/oscnet/up-58088c35672c874bd5a95c2327300d44dca.png)
 
-## 演示图
+## 技术交流群
 
-<table>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/cd1f90be5f2684f4560c9519c0f2a232ee8.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/1cbcf0e6f257c7d3a063c0e3f2ff989e4b3.jpg"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-8074972883b5ba0622e13246738ebba237a.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-9f88719cdfca9af2e58b352a20e23d43b12.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-39bf2584ec3a529b0d5a3b70d15c9b37646.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-936ec82d1f4872e1bc980927654b6007307.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-b2d62ceb95d2dd9b3fbe157bb70d26001e9.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-d67451d308b7a79ad6819723396f7c3d77a.png"/></td>
-    </tr>	 
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/5e8c387724954459291aafd5eb52b456f53.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/644e78da53c2e92a95dfda4f76e6d117c4b.jpg"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-8370a0d02977eebf6dbf854c8450293c937.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-49003ed83f60f633e7153609a53a2b644f7.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-d4fe726319ece268d4746602c39cffc0621.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-c195234bbcd30be6927f037a6755e6ab69c.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/b6115bc8c31de52951982e509930b20684a.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-5e4daac0bb59612c5038448acbcef235e3a.png"/></td>
-    </tr>
+- QQ交流群: 703572701 
+- 微信：![微信](https://oscimg.oschina.net/oscnet/up-b3a9af64dbe74a868a021ea16e1a55317d0.jpg)
+
+## 友情链接
+- [基于jeec-boo3.0的nbcio-boot项目](https://gitee.com/nbacheng/nbcio-boot)： NBCIO 亿事达企业管理平台。
+
+## 后端技术架构
+- 基础框架：Spring Boot 2.7.18
+
+- 持久层框架：Mybatis-plus 3.5.5
+
+- 安全框架：Sa-Token 1.37.0
+
+- 缓存框架：redis
+
+- 日志打印：logback
+
+- 其他：fastjson，poi，Swagger-ui，quartz, lombok（简化代码）等。
+
+## 开发环境
+
+- 语言：Java 8 java 11
+
+- IDE(JAVA)： STS安装lombok插件 或者 IDEA
+
+- 依赖管理：Maven
+
+- 数据库：MySQL5.7+  &  Oracle 11g & SqlServer & postgresql & 国产等更多数据库
+
+- 缓存：Redis
+
+## 前端技术
+
+- 基础框架：ant-design-vue - Ant Design Of Vue 实现
+
+- Element UI JavaScript 框架：Vue
+
+- Webpack node npm eslint @vue/cli 3.2.1
+
+- fullcalendar v-charts echarts luckysheet
+
+- vue-cropper - 头像裁剪组件 @antv/g2 - Alipay AntV 数据可视化图表
+
+- Viser-vue - antv/g2 封装实现
+
+## 参与开源
+- 如遇到问题，欢迎提交到 [issues](https://gitee.com/nbacheng/ruoyi-nbcio/issues)（请按模版进行填写信息）。
+- 欢迎fork项目，同时提交相关功能。
+
+## 参考文档
+- 项目文档：[RuoYi-Nbcio开发文档 目前暂时指向nbcio-boot项目文档 见演示系统里的在线帮助]
+- 脚手架文档：[RuoYi-Vue-Plus文档](https://gitee.com/dromara/RuoYi-Vue-Plus/wikis/pages)
+
+
+## 特别鸣谢
+- [RuoYi-Flowable-Plus](https://gitee.com/KonBAI-Q/ruoyi-flowable-plus) 
+- [bpmn-process-designer](https://gitee.com/MiyueSC/bpmn-process-designer)
+- [formDesigner](https://gitee.com/wurong19870715/formDesigner)
+
+## 演示图例
+<table style="width:100%; text-align:center">
+<tbody>
+
+登录界面
+
+![](https://oscimg.oschina.net/oscnet/up-0a892b45665e14a21a171620847ef33536a.png)
+
+流程分类
+
+![](https://oscimg.oschina.net/oscnet/up-8cec03ba0a44455add3bb4ffac0740d78ca.png)
+
+流程表单
+
+![](https://oscimg.oschina.net/oscnet/up-64febc26bd3f1ba24b8a4066afad42e1f07.png)
+
+流程模型定义
+
+![](https://oscimg.oschina.net/oscnet/up-e21b2262a7e00045eac525bd9d34f314ec6.png)
+
+流程布置管理
+
+![](https://oscimg.oschina.net/oscnet/up-ff34b7eb779ea31fb93c84c6bb3a5ac3b49.png)
+
+自定义业务表单关联创建
+
+![](https://oscimg.oschina.net/oscnet/up-cdd3ec9e312d03389bf9b5b8b975ddfbf85.png)
+
+新建普通的OA流程
+
+![](https://oscimg.oschina.net/oscnet/up-0fc1b0886801a1af4d7fb0d8c4a20d9054a.png)
+
+基于formdesigner的表单设计
+
+![](https://oscimg.oschina.net/oscnet/up-abd87b4f6b5b1552d0e433d8a42dc5cd95c.png)
+
+流程设计
+
+![](https://oscimg.oschina.net/oscnet/up-7a058da9b79a0fcd13bc05bf686cb0e4a97.png)
+
+普通OA流程的发起
+
+![](https://oscimg.oschina.net/oscnet/up-0b8438d0f1d2288f92ab76cc502ecce2386.png)
+
+自定义业务流程的发起，单表案例
+
+![](https://oscimg.oschina.net/oscnet/up-58d242ecc0ffa7c1f8daac1733c26583a94.png)
+
+普通OA流程的审批
+
+![](https://oscimg.oschina.net/oscnet/up-9c55d3b622100acbbf553df1a100ef4e9cb.png)
+
+普通OA流程的任务办理
+
+![](https://oscimg.oschina.net/oscnet/up-6ff18bb82a8e3fee3ad3f5bea0c04162d46.png)
+
+普通OA流程的表单信息
+
+![](https://oscimg.oschina.net/oscnet/up-923af5ee1685d88f53b62314b1a1c53f0bb.png)
+
+普通OA流程的流转记录
+
+![](https://oscimg.oschina.net/oscnet/up-3fb048caafa240aa97acc68d734148a1948.png)
+
+普通OA流程的流程跟踪
+
+![](https://oscimg.oschina.net/oscnet/up-4d93951e9af906cd5bdea044c372a288f6b.png)
+
+自定义业务表单流程的表单信息，其它跟OA流程一样
+
+![](https://oscimg.oschina.net/oscnet/up-b78b5a5145c80745cf3d9591b65ceecaef9.png)
+
+流程结束
+
+![](https://oscimg.oschina.net/oscnet/up-ce19517b7a15664032128d491c7dd1eb780.png)
+
+已办任务
+
+![](https://oscimg.oschina.net/oscnet/up-57ab589dcca8a39d80998039da348f8e2c2.png)
+
+抄送我的
+
+![](https://oscimg.oschina.net/oscnet/up-888868ebeeb36b3dae2a422fb0e0a496733.png)
+
+自定义业务流程相关信息
+
+![](https://oscimg.oschina.net/oscnet/up-b99f34fa23f1056ca8d70baca93ada49558.png)
+
+## 推荐
+大家在使用本项目时，推荐结合贺波老师的书
+[《深入Flowable流程引擎：核心原理与高阶实战》](https://item.jd.com/14804836.html)学习。这本书得到了Flowable创始人Tijs Rademakers亲笔作序推荐，对系统学习和深入掌握Flowable的用法非常有帮助。
+![](script/pic/flowable.jpg)
+</tbody>
 </table>
-
-
-## 若依前后端分离交流群
-
-QQ群： [![加入QQ群](https://img.shields.io/badge/已满-937441-blue.svg)](https://jq.qq.com/?_wv=1027&k=5bVB1og) [![加入QQ群](https://img.shields.io/badge/已满-887144332-blue.svg)](https://jq.qq.com/?_wv=1027&k=5eiA4DH) [![加入QQ群](https://img.shields.io/badge/已满-180251782-blue.svg)](https://jq.qq.com/?_wv=1027&k=5AxMKlC) [![加入QQ群](https://img.shields.io/badge/已满-104180207-blue.svg)](https://jq.qq.com/?_wv=1027&k=51G72yr) [![加入QQ群](https://img.shields.io/badge/已满-186866453-blue.svg)](https://jq.qq.com/?_wv=1027&k=VvjN2nvu) [![加入QQ群](https://img.shields.io/badge/已满-201396349-blue.svg)](https://jq.qq.com/?_wv=1027&k=5vYAqA05) [![加入QQ群](https://img.shields.io/badge/已满-101456076-blue.svg)](https://jq.qq.com/?_wv=1027&k=kOIINEb5) [![加入QQ群](https://img.shields.io/badge/已满-101539465-blue.svg)](https://jq.qq.com/?_wv=1027&k=UKtX5jhs) [![加入QQ群](https://img.shields.io/badge/已满-264312783-blue.svg)](https://jq.qq.com/?_wv=1027&k=EI9an8lJ) [![加入QQ群](https://img.shields.io/badge/已满-167385320-blue.svg)](https://jq.qq.com/?_wv=1027&k=SWCtLnMz) [![加入QQ群](https://img.shields.io/badge/已满-104748341-blue.svg)](https://jq.qq.com/?_wv=1027&k=96Dkdq0k) [![加入QQ群](https://img.shields.io/badge/已满-160110482-blue.svg)](https://jq.qq.com/?_wv=1027&k=0fsNiYZt) [![加入QQ群](https://img.shields.io/badge/已满-170801498-blue.svg)](https://jq.qq.com/?_wv=1027&k=7xw4xUG1) [![加入QQ群](https://img.shields.io/badge/已满-108482800-blue.svg)](https://jq.qq.com/?_wv=1027&k=eCx8eyoJ) [![加入QQ群](https://img.shields.io/badge/已满-101046199-blue.svg)](https://jq.qq.com/?_wv=1027&k=SpyH2875) [![加入QQ群](https://img.shields.io/badge/已满-136919097-blue.svg)](https://jq.qq.com/?_wv=1027&k=tKEt51dz) [![加入QQ群](https://img.shields.io/badge/已满-143961921-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=0vBbSb0ztbBgVtn3kJS-Q4HUNYwip89G&authKey=8irq5PhutrZmWIvsUsklBxhj57l%2F1nOZqjzigkXZVoZE451GG4JHPOqW7AW6cf0T&noverify=0&group_code=143961921) [![加入QQ群](https://img.shields.io/badge/已满-174951577-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=ZFAPAbp09S2ltvwrJzp7wGlbopsc0rwi&authKey=HB2cxpxP2yspk%2Bo3WKTBfktRCccVkU26cgi5B16u0KcAYrVu7sBaE7XSEqmMdFQp&noverify=0&group_code=174951577) [![加入QQ群](https://img.shields.io/badge/已满-161281055-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=Fn2aF5IHpwsy8j6VlalNJK6qbwFLFHat&authKey=uyIT%2B97x2AXj3odyXpsSpVaPMC%2Bidw0LxG5MAtEqlrcBcWJUA%2FeS43rsF1Tg7IRJ&noverify=0&group_code=161281055) [![加入QQ群](https://img.shields.io/badge/已满-138988063-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=XIzkm_mV2xTsUtFxo63bmicYoDBA6Ifm&authKey=dDW%2F4qsmw3x9govoZY9w%2FoWAoC4wbHqGal%2BbqLzoS6VBarU8EBptIgPKN%2FviyC8j&noverify=0&group_code=138988063) [![加入QQ群](https://img.shields.io/badge/151450850-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=DkugnCg68PevlycJSKSwjhFqfIgrWWwR&authKey=pR1Pa5lPIeGF%2FFtIk6d%2FGB5qFi0EdvyErtpQXULzo03zbhopBHLWcuqdpwY241R%2F&noverify=0&group_code=151450850) 点击按钮入群。

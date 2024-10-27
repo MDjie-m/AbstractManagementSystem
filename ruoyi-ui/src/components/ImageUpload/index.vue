@@ -44,7 +44,7 @@
 
 <script>
 import { getToken } from "@/utils/auth";
-import { isExternal } from "@/utils/validate";
+import { listByIds, delOss } from "@/api/system/oss";
 
 export default {
   props: {
@@ -78,7 +78,7 @@ export default {
       dialogVisible: false,
       hideUpload: false,
       baseUrl: process.env.VUE_APP_BASE_API,
-      uploadImgUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传的图片服务器地址
+      uploadImgUrl: process.env.VUE_APP_BASE_API + "/system/oss/upload", // 上传的图片服务器地址
       headers: {
         Authorization: "Bearer " + getToken(),
       },
@@ -87,19 +87,21 @@ export default {
   },
   watch: {
     value: {
-      handler(val) {
+      async handler(val) {
         if (val) {
           // 首先将值转为数组
-          const list = Array.isArray(val) ? val : this.value.split(',');
+          let list;
+          if (Array.isArray(val)) {
+            list = val;
+          } else {
+            await listByIds(val).then(res => {
+              list = res.data;
+            })
+          }
           // 然后将数组转为对象数组
           this.fileList = list.map(item => {
-            if (typeof item === "string") {
-              if (item.indexOf(this.baseUrl) === -1 && !isExternal(item)) {
-                  item = { name: this.baseUrl + item, url: this.baseUrl + item };
-              } else {
-                  item = { name: item, url: item };
-              }
-            }
+            // 此处name使用ossId 防止删除出现重名
+            item = { name: item.ossId, url: item.url, ossId: item.ossId };
             return item;
           });
         } else {
@@ -126,7 +128,7 @@ export default {
         if (file.name.lastIndexOf(".") > -1) {
           fileExtension = file.name.slice(file.name.lastIndexOf(".") + 1);
         }
-        isImg = this.fileType.some(type => {
+        isImg = this.fileType.some((type) => {
           if (file.type.indexOf(type) > -1) return true;
           if (fileExtension && fileExtension.indexOf(type) > -1) return true;
           return false;
@@ -156,7 +158,7 @@ export default {
     // 上传成功回调
     handleUploadSuccess(res, file) {
       if (res.code === 200) {
-        this.uploadList.push({ name: res.fileName, url: res.fileName });
+        this.uploadList.push({ name: res.data.fileName, url: res.data.url, ossId: res.data.ossId });
         this.uploadedSuccessfully();
       } else {
         this.number--;
@@ -169,13 +171,15 @@ export default {
     // 删除图片
     handleDelete(file) {
       const findex = this.fileList.map(f => f.name).indexOf(file.name);
-      if (findex > -1) {
+      if(findex > -1) {
+        let ossId = this.fileList[findex].ossId;
+        delOss(ossId);
         this.fileList.splice(findex, 1);
         this.$emit("input", this.listToString(this.fileList));
       }
     },
     // 上传失败
-    handleUploadError() {
+    handleUploadError(res) {
       this.$modal.msgError("上传图片失败，请重试");
       this.$modal.closeLoading();
     },
@@ -199,11 +203,11 @@ export default {
       let strs = "";
       separator = separator || ",";
       for (let i in list) {
-        if (list[i].url) {
-          strs += list[i].url.replace(this.baseUrl, "") + separator;
+        if (list[i].ossId) {
+          strs += list[i].ossId + separator;
         }
       }
-      return strs != '' ? strs.substr(0, strs.length - 1) : '';
+      return strs != "" ? strs.substr(0, strs.length - 1) : "";
     }
   }
 };

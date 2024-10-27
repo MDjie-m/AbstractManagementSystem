@@ -4,6 +4,7 @@
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
+beizhu.txt
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -32,7 +33,6 @@ rebel.xml
 nbproject/private/
 build/*
 nbbuild/
-dist/
 nbdist/
 .nb-gradle/
 

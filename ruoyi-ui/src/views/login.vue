@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">若依后台管理系统</h3>
+      <h3 class="title">RuoYi-Nbcio亿事达企业管理平台</h3>
       <el-form-item prop="username">
         <el-input
           v-model="loginForm.username"
@@ -56,18 +56,22 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2018-2024 ruoyi.vip All Rights Reserved.</span>
+      <span>Copyright © 2023-2023 nbacheng All Rights Reserved.</span>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import { getCodeImg } from "@/api/login";
+import { authBinding } from "@/api/system/auth";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 
 export default {
   name: "Login",
+  components: {
+  },
   data() {
     return {
       codeUrl: "",
@@ -110,10 +114,10 @@ export default {
   methods: {
     getCode() {
       getCodeImg().then(res => {
-        this.captchaEnabled = res.captchaEnabled === undefined ? true : res.captchaEnabled;
+        this.captchaEnabled = res.data.captchaEnabled === undefined ? true : res.data.captchaEnabled;
         if (this.captchaEnabled) {
-          this.codeUrl = "data:image/gif;base64," + res.img;
-          this.loginForm.uuid = res.uuid;
+          this.codeUrl = "data:image/gif;base64," + res.data.img;
+          this.loginForm.uuid = res.data.uuid;
         }
       });
     },
@@ -150,7 +154,7 @@ export default {
           });
         }
       });
-    }
+    },
   }
 };
 </script>
@@ -161,7 +165,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
+  background-image: url("../assets/images/login-background.png");
   background-size: cover;
 }
 .title {
@@ -215,5 +219,26 @@ export default {
 }
 .login-code-img {
   height: 38px;
+}
+.user-login-other {
+  text-align: left;
+  margin-top: 24px;
+  line-height: 22px;
+
+.item-icon {
+  font-size: 24px;
+  color: rgba(0, 0, 0, .2);
+  margin-left: 16px;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: color .3s;
+
+&  :hover {
+  color: #1890ff;
+  }
+}
+.register {
+  float: right;
+}
 }
 </style>

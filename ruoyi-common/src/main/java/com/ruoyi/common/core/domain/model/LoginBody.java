@@ -1,20 +1,32 @@
 package com.ruoyi.common.core.domain.model;
 
+import com.ruoyi.common.constant.UserConstants;
+import lombok.Data;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+
 /**
  * 用户登录对象
- * 
- * @author ruoyi
+ *
+ * @author Lion Li
  */
-public class LoginBody
-{
+
+@Data
+public class LoginBody {
+
     /**
      * 用户名
      */
+    @NotBlank(message = "{user.username.not.blank}")
+    @Length(min = UserConstants.USERNAME_MIN_LENGTH, max = UserConstants.USERNAME_MAX_LENGTH, message = "{user.username.length.valid}")
     private String username;
 
     /**
      * 用户密码
      */
+    @NotBlank(message = "{user.password.not.blank}")
+    @Length(min = UserConstants.PASSWORD_MIN_LENGTH, max = UserConstants.PASSWORD_MAX_LENGTH, message = "{user.password.length.valid}")
     private String password;
 
     /**
@@ -27,43 +39,4 @@ public class LoginBody
      */
     private String uuid;
 
-    public String getUsername()
-    {
-        return username;
-    }
-
-    public void setUsername(String username)
-    {
-        this.username = username;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    public void setPassword(String password)
-    {
-        this.password = password;
-    }
-
-    public String getCode()
-    {
-        return code;
-    }
-
-    public void setCode(String code)
-    {
-        this.code = code;
-    }
-
-    public String getUuid()
-    {
-        return uuid;
-    }
-
-    public void setUuid(String uuid)
-    {
-        this.uuid = uuid;
-    }
 }

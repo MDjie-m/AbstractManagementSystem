@@ -1,46 +1,37 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.entity.SysMenu;
+import com.ruoyi.common.core.mapper.BaseMapperPlus;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * 菜单表 数据层
  *
- * @author ruoyi
+ * @author Lion Li
  */
-public interface SysMenuMapper
-{
-    /**
-     * 查询系统菜单列表
-     *
-     * @param menu 菜单信息
-     * @return 菜单列表
-     */
-    public List<SysMenu> selectMenuList(SysMenu menu);
+public interface SysMenuMapper extends BaseMapperPlus<SysMenuMapper, SysMenu, SysMenu> {
 
     /**
      * 根据用户所有权限
      *
      * @return 权限列表
      */
-    public List<String> selectMenuPerms();
+    List<String> selectMenuPerms();
 
     /**
      * 根据用户查询系统菜单列表
      *
-     * @param menu 菜单信息
+     * @param queryWrapper 查询条件
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuListByUserId(SysMenu menu);
-
-    /**
-     * 根据角色ID查询权限
-     * 
-     * @param roleId 角色ID
-     * @return 权限列表
-     */
-    public List<String> selectMenuPermsByRoleId(Long roleId);
+    List<SysMenu> selectMenuListByUserId(@Param(Constants.WRAPPER) Wrapper<SysMenu> queryWrapper);
 
     /**
      * 根据用户ID查询权限
@@ -48,14 +39,29 @@ public interface SysMenuMapper
      * @param userId 用户ID
      * @return 权限列表
      */
-    public List<String> selectMenuPermsByUserId(Long userId);
+    List<String> selectMenuPermsByUserId(Long userId);
+
+    /**
+     * 根据角色ID查询权限
+     *
+     * @param roleId 角色ID
+     * @return 权限列表
+     */
+    List<String> selectMenuPermsByRoleId(Long roleId);
 
     /**
      * 根据用户ID查询菜单
      *
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuTreeAll();
+    default List<SysMenu> selectMenuTreeAll() {
+        LambdaQueryWrapper<SysMenu> lqw = new LambdaQueryWrapper<SysMenu>()
+            .in(SysMenu::getMenuType, UserConstants.TYPE_DIR, UserConstants.TYPE_MENU)
+            .eq(SysMenu::getStatus, UserConstants.MENU_NORMAL)
+            .orderByAsc(SysMenu::getParentId)
+            .orderByAsc(SysMenu::getOrderNum);
+        return this.selectList(lqw);
+    }
 
     /**
      * 根据用户ID查询菜单
@@ -63,63 +69,18 @@ public interface SysMenuMapper
      * @param userId 用户ID
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuTreeByUserId(Long userId);
+    List<SysMenu> selectMenuTreeByUserId(Long userId);
 
     /**
      * 根据角色ID查询菜单树信息
-     * 
-     * @param roleId 角色ID
+     *
+     * @param roleId            角色ID
      * @param menuCheckStrictly 菜单树选择项是否关联显示
      * @return 选中菜单列表
      */
-    public List<Long> selectMenuListByRoleId(@Param("roleId") Long roleId, @Param("menuCheckStrictly") boolean menuCheckStrictly);
+    List<Long> selectMenuListByRoleId(@Param("roleId") Long roleId, @Param("menuCheckStrictly") boolean menuCheckStrictly);
 
-    /**
-     * 根据菜单ID查询信息
-     *
-     * @param menuId 菜单ID
-     * @return 菜单信息
-     */
-    public SysMenu selectMenuById(Long menuId);
-
-    /**
-     * 是否存在菜单子节点
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    public int hasChildByMenuId(Long menuId);
-
-    /**
-     * 新增菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    public int insertMenu(SysMenu menu);
-
-    /**
-     * 修改菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    public int updateMenu(SysMenu menu);
-
-    /**
-     * 删除菜单管理信息
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    public int deleteMenuById(Long menuId);
-
-    /**
-     * 校验菜单名称是否唯一
-     *
-     * @param menuName 菜单名称
-     * @param parentId 父菜单ID
-     * @return 结果
-     */
-    public SysMenu checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId);
+    //获取最大id for 生成代码用,目前放弃先不用了 add by nbacheng
+    @Select("select max(menu_id) from sys_menu")
+    Long selectMaxId();
 }

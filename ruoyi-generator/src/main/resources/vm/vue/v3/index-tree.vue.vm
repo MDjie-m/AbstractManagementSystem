@@ -11,7 +11,7 @@
 #else
 #set($comment=$column.columnComment)
 #end
-#if($column.htmlType == "input")
+#if($column.htmlType == "input" || $column.htmlType == "textarea")
       <el-form-item label="${comment}" prop="${column.javaField}">
         <el-input
           v-model="queryParams.${column.javaField}"
@@ -50,11 +50,12 @@
       <el-form-item label="${comment}" style="width: 308px">
         <el-date-picker
           v-model="daterange${AttrName}"
-          value-format="YYYY-MM-DD"
+          value-format="YYYY-MM-DD HH:mm:ss"
           type="daterange"
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
+          :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
         ></el-date-picker>
       </el-form-item>
 #end
@@ -112,11 +113,11 @@
       </el-table-column>
 #elseif($column.list && $column.htmlType == "imageUpload")
       <el-table-column label="${comment}" align="center" prop="${javaField}" width="100">
-        <template #default="scope">
-          <image-preview :src="scope.row.${javaField}" :width="50" :height="50"/>
-        </template>
+          <template #default="scope">
+              <image-preview :src="scope.row.${javaField}" :width="50" :height="50"/>
+          </template>
       </el-table-column>
-#elseif($column.list && "" != $column.dictType)
+#elseif($column.list && $column.dictType && "" != $column.dictType)
       <el-table-column label="${comment}" align="center" prop="${javaField}">
         <template #default="scope">
 #if($column.htmlType == "checkbox")
@@ -135,11 +136,11 @@
 #end
 #end
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['${moduleName}:${businessName}:edit']">修改</el-button>
-          <el-button link type="primary" icon="Plus" @click="handleAdd(scope.row)" v-hasPermi="['${moduleName}:${businessName}:add']">新增</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['${moduleName}:${businessName}:remove']">删除</el-button>
-        </template>
+          <template #default="scope">
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['${moduleName}:${businessName}:edit']">修改</el-button>
+              <el-button link type="primary" icon="Plus" @click="handleAdd(scope.row)" v-hasPermi="['${moduleName}:${businessName}:add']">新增</el-button>
+              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['${moduleName}:${businessName}:remove']">删除</el-button>
+          </template>
       </el-table-column>
     </el-table>
 
@@ -149,7 +150,6 @@
 #foreach($column in $columns)
 #set($field=$column.javaField)
 #if($column.insert && !$column.pk)
-#if(($column.usableColumn) || (!$column.superColumn))
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)
 #set($comment=$column.columnComment.substring(0, $parentheseIndex))
@@ -246,8 +246,8 @@
         <el-form-item label="${comment}" prop="${field}">
           <el-date-picker clearable
             v-model="form.${field}"
-            type="date"
-            value-format="YYYY-MM-DD"
+            type="datetime"
+            value-format="YYYY-MM-DD HH:mm:ss"
             placeholder="选择${comment}">
           </el-date-picker>
         </el-form-item>
@@ -255,7 +255,6 @@
         <el-form-item label="${comment}" prop="${field}">
           <el-input v-model="form.${field}" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-#end
 #end
 #end
 #end
@@ -282,6 +281,7 @@ const { ${dictsNoSymbol} } = proxy.useDict(${dicts});
 const ${businessName}List = ref([]);
 const ${businessName}Options = ref([]);
 const open = ref(false);
+const buttonLoading = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
 const title = ref("");
@@ -297,14 +297,14 @@ const daterange${AttrName} = ref([]);
 const data = reactive({
   form: {},
   queryParams: {
-    #foreach ($column in $columns)
+#foreach ($column in $columns)
 #if($column.query)
-    $column.javaField: null#if($foreach.count != $columns.size()),#end
+    $column.javaField: undefined#if($foreach.count != $columns.size()),#end
 #end
 #end
   },
   rules: {
-    #foreach ($column in $columns)
+#foreach ($column in $columns)
 #if($column.required)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)
@@ -355,7 +355,7 @@ function getTreeselect() {
     ${businessName}Options.value.push(data);
   });
 }
-	
+
 // 取消按钮
 function cancel() {
   open.value = false;
@@ -417,12 +417,14 @@ function toggleExpandAll() {
 
 /** 修改按钮操作 */
 async function handleUpdate(row) {
+  loading.value = true;
   reset();
   await getTreeselect();
   if (row != null) {
-    form.value.${treeParentCode} = row.${treeParentCode};
+    form.value.${treeParentCode} = row.${treeCode};
   }
   get${BusinessName}(row.${pkColumn.javaField}).then(response => {
+    loading.value = false;
     form.value = response.data;
 #foreach ($column in $columns)
 #if($column.htmlType == "checkbox")
@@ -438,6 +440,7 @@ async function handleUpdate(row) {
 function submitForm() {
   proxy.#[[$]]#refs["${businessName}Ref"].validate(valid => {
     if (valid) {
+      buttonLoading.value = true;
 #foreach ($column in $columns)
 #if($column.htmlType == "checkbox")
       form.value.$column.javaField = form.value.${column.javaField}.join(",");
@@ -448,12 +451,16 @@ function submitForm() {
           proxy.#[[$modal]]#.msgSuccess("修改成功");
           open.value = false;
           getList();
+        }).finally(() => {
+          buttonLoading.value = false;
         });
       } else {
         add${BusinessName}(form.value).then(response => {
           proxy.#[[$modal]]#.msgSuccess("新增成功");
           open.value = false;
           getList();
+        }).finally(() => {
+          buttonLoading.value = false;
         });
       }
     }
@@ -463,11 +470,16 @@ function submitForm() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   proxy.#[[$modal]]#.confirm('是否确认删除${functionName}编号为"' + row.${pkColumn.javaField} + '"的数据项？').then(function() {
+    loading.value = true;
     return del${BusinessName}(row.${pkColumn.javaField});
   }).then(() => {
+    loading.value = false;
     getList();
     proxy.#[[$modal]]#.msgSuccess("删除成功");
-  }).catch(() => {});
+  }).catch(() => {
+  }).finally(() => {
+    loading.value = false;
+  });
 }
 
 getList();

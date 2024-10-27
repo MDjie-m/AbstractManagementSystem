@@ -1,6 +1,14 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="数据源" prop="dataName">
+        <el-input
+          v-model="queryParams.dataName"
+          placeholder="请输入数据源名称"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="表名称" prop="tableName">
         <el-input
           v-model="queryParams.tableName"
@@ -41,20 +49,9 @@
           plain
           icon="el-icon-download"
           size="mini"
-          :disabled="multiple"
           @click="handleGenTable"
           v-hasPermi="['tool:gen:code']"
         >生成</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="openCreateTable"
-          v-hasRole="['admin']"
-        >创建</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -183,16 +180,14 @@
       </el-tabs>
     </el-dialog>
     <import-table ref="import" @ok="handleQuery" />
-    <create-table ref="create" @ok="handleQuery" />
   </div>
 </template>
 
 <script>
 import { listTable, previewTable, delTable, genCode, synchDb } from "@/api/tool/gen";
 import importTable from "./importTable";
-import createTable from "./createTable";
-import hljs from "highlight.js/lib/highlight";
 import "highlight.js/styles/github-gist.css";
+const hljs = require("highlight.js/lib/core");
 hljs.registerLanguage("java", require("highlight.js/lib/languages/java"));
 hljs.registerLanguage("xml", require("highlight.js/lib/languages/xml"));
 hljs.registerLanguage("html", require("highlight.js/lib/languages/xml"));
@@ -202,7 +197,7 @@ hljs.registerLanguage("sql", require("highlight.js/lib/languages/sql"));
 
 export default {
   name: "Gen",
-  components: { importTable, createTable },
+  components: { importTable },
   data() {
     return {
       // 遮罩层
@@ -230,7 +225,8 @@ export default {
         pageNum: 1,
         pageSize: 10,
         tableName: undefined,
-        tableComment: undefined
+        tableComment: undefined,
+        dataName: "master"
       },
       // 预览参数
       preview: {
@@ -242,6 +238,7 @@ export default {
     };
   },
   created() {
+    localStorage.setItem("dataName", this.queryParams.dataName);
     this.getList();
   },
   activated() {
@@ -265,6 +262,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
+      localStorage.setItem("dataName", this.queryParams.dataName);
       this.queryParams.pageNum = 1;
       this.getList();
     },
@@ -295,10 +293,6 @@ export default {
     /** 打开导入表弹窗 */
     openImportTable() {
       this.$refs.import.show();
-    },
-    /** 打开创建表弹窗 */
-    openCreateTable() {
-      this.$refs.create.show();
     },
     /** 重置按钮操作 */
     resetQuery() {

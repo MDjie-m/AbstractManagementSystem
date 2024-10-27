@@ -28,7 +28,7 @@
     <!-- 文件列表 -->
     <transition-group class="upload-file-list el-upload-list el-upload-list--text" name="el-fade-in-linear" tag="ul">
       <li :key="file.url" class="el-upload-list__item ele-upload-list__item-content" v-for="(file, index) in fileList">
-        <el-link :href="`${baseUrl}${file.url}`" :underline="false" target="_blank">
+        <el-link :href="`${file.url}`" :underline="false" target="_blank">
           <span class="el-icon-document"> {{ getFileName(file.name) }} </span>
         </el-link>
         <div class="ele-upload-list__item-content-action">
@@ -41,6 +41,7 @@
 
 <script>
 import { getToken } from "@/utils/auth";
+import { listByIds, delOss } from "@/api/system/oss";
 
 export default {
   name: "FileUpload",
@@ -73,7 +74,7 @@ export default {
       number: 0,
       uploadList: [],
       baseUrl: process.env.VUE_APP_BASE_API,
-      uploadFileUrl: process.env.VUE_APP_BASE_API + "/common/upload", // 上传文件服务器地址
+      uploadFileUrl: process.env.VUE_APP_BASE_API + "/system/oss/upload", // 上传文件服务器地址
       headers: {
         Authorization: "Bearer " + getToken(),
       },
@@ -82,16 +83,24 @@ export default {
   },
   watch: {
     value: {
-      handler(val) {
+      async handler(val) {
         if (val) {
           let temp = 1;
           // 首先将值转为数组
-          const list = Array.isArray(val) ? val : this.value.split(',');
+          let list;
+          if (Array.isArray(val)) {
+            list = val;
+          } else {
+            await listByIds(val).then(res => {
+              list = res.data.map(oss => {
+                oss = { name: oss.originalName, url: oss.url, ossId: oss.ossId };
+                return oss;
+              });
+            })
+          }
           // 然后将数组转为对象数组
           this.fileList = list.map(item => {
-            if (typeof item === "string") {
-              item = { name: item, url: item };
-            }
+            item = { name: item.name, url: item.url, ossId: item.ossId };
             item.uid = item.uid || new Date().getTime() + temp++;
             return item;
           });
@@ -147,7 +156,7 @@ export default {
     // 上传成功回调
     handleUploadSuccess(res, file) {
       if (res.code === 200) {
-        this.uploadList.push({ name: res.fileName, url: res.fileName });
+        this.uploadList.push({ name: res.data.fileName, url: res.data.url, ossId: res.data.ossId });
         this.uploadedSuccessfully();
       } else {
         this.number--;
@@ -159,6 +168,8 @@ export default {
     },
     // 删除文件
     handleDelete(index) {
+      let ossId = this.fileList[index].ossId;
+      delOss(ossId);
       this.fileList.splice(index, 1);
       this.$emit("input", this.listToString(this.fileList));
     },
@@ -186,11 +197,11 @@ export default {
       let strs = "";
       separator = separator || ",";
       for (let i in list) {
-        strs += list[i].url + separator;
+        strs += list[i].ossId + separator;
       }
-      return strs != '' ? strs.substr(0, strs.length - 1) : '';
-    }
-  }
+      return strs != "" ? strs.substr(0, strs.length - 1) : "";
+    },
+  },
 };
 </script>
 

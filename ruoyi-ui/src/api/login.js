@@ -11,8 +11,7 @@ export function login(username, password, code, uuid) {
   return request({
     url: '/login',
     headers: {
-      isToken: false,
-      repeatSubmit: false
+      isToken: false
     },
     method: 'post',
     data: data
@@ -51,6 +50,18 @@ export function logout() {
 export function getCodeImg() {
   return request({
     url: '/captchaImage',
+    headers: {
+      isToken: false
+    },
+    method: 'get',
+    timeout: 20000
+  })
+}
+
+// 短信验证码
+export function getCodeSms() {
+  return request({
+    url: '/captchaSms',
     headers: {
       isToken: false
     },
