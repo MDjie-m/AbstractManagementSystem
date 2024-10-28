@@ -458,6 +458,28 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         refreshIdList();
     }
 
+    //账户注销
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#req.id")
+    public AjaxResult logout(PsyConsultVO req){
+        PsyConsult consult = psyConsultMapper.selectById(req.getId());
+        consult.setDelFlag("1");//删除
+        psyConsultMapper.deleteById(consult);
+
+        PsyConsultHistory history = new PsyConsultHistory();
+            history.setConsultantId(consult.getId());
+            history.setUpdateColumn("[delFlag]");
+            history.setUpdateDetail("删除标识：修改前=【0】，修改后=【1】");
+            history.setCreateBy(req.getId()+"");
+            history.setCreateTime(new Date());
+            history.setExecuteStatus(2);//[已完成]
+        //记录日志
+        historyService.insertPsyConsultHistory(history);
+        
+        return AjaxResult.success("已成功注销");
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#req.id")
@@ -544,7 +566,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         if (ObjectUtils.isNotEmpty(dictDataList)){
             return dictDataList.get(0).getDictLabel();
         }
-        log.error("level = " +level + ", 咨询师没有该级别");
+        //log.error("level = " +level + ", 咨询师没有该级别");
         return null;
     }
     
