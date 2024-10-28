@@ -3,6 +3,7 @@ package com.renxin.psychology.domain;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BasePlusEntity;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,8 +16,7 @@ import java.io.Serializable;
  * @author renxin
  * @date 2023-11-07
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @TableName("psy_consult_partner_item")
 public class PsyConsultPartnerItem extends BasePlusEntity implements Serializable

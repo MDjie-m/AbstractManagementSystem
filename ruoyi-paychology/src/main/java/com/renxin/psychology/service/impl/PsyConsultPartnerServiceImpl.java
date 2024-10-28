@@ -193,7 +193,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     @Override
     @Transactional(rollbackFor = Exception.class)
     public AjaxResult saveByConsultId(PsyConsultPartner entity) {
-        log.info("咨询师" + entity.getConsultId() + "修改申请单主题信息:" + entity.toString());
+        log.info("咨询师" + entity.getConsultId() + "修改申请单主体信息:" + entity.toString());
         //获取申请单id
         Long id = getInfoByConsultId(entity.getConsultId()).getId();
         entity.setId(id);

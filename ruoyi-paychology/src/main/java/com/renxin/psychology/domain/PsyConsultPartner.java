@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.renxin.common.core.domain.BasePlusEntity;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,8 +21,7 @@ import java.util.List;
  * @author renxin
  * @date 2023-11-07
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @TableName("psy_consult_partner")
 public class PsyConsultPartner extends BasePlusEntity implements Serializable
