@@ -128,7 +128,7 @@ public class WxAuthorizeController {
         }*/
 
         if (ObjectUtils.isEmpty(openId)){
-            log.error("来访者用户登录失败, 未能获取到openId,  reqMap:" + reqMap);
+            log.error("来访者用户登录失败, 未能获取到openId,  入参reqMap:" + reqMap +  ", 微信返回jsData:" + jsData);
             return AjaxResult.success("请求失败, 未获取到js_code对应的openId, 请刷新后重试");
         }
 

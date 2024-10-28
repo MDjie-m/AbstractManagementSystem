@@ -45,7 +45,7 @@ public interface IPsyConsultService extends IService<PsyConsult> {
 
     AjaxResult add(PsyConsultVO req);
 
-    AjaxResult update(PsyConsultVO req);
+    AjaxResult updateConsult(PsyConsultVO req);
 
     String getAvailableUserName(String name);
 

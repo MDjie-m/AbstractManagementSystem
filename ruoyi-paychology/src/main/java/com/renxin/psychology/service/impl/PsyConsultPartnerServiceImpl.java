@@ -417,8 +417,9 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
         vo.setGenre(partner.getGenre());
         vo.setWorkHours(partner.getWorkHours());
         vo.setSettleStatus(1);//已入驻
+        vo.setIsUpdateByAdmin(true);
         //AjaxResult result = consultService.add(vo);
-        AjaxResult result = consultService.update(vo);
+        AjaxResult result = consultService.updateConsult(vo);
         if ((int) result.get("code") != 200) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return result;

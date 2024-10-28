@@ -461,7 +461,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#req.id")
-    public AjaxResult update(PsyConsultVO req) {
+    public AjaxResult updateConsult(PsyConsultVO req) {
 
 //        SysUser sysUser = userService.selectUserByUserName(req.getUserName());
 //        if (StringUtils.isNotEmpty(req.getPhonenumber()) && !req.getPhonenumber().equals(sysUser.getPhonenumber())) {
@@ -498,11 +498,12 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
             history.setUpdateDetail(cfs.getChangeMsg());
             history.setCreateBy(isUpdateByAdmin ? "admin" : req.getId()+"");
             history.setCreateTime(new Date());
-            Boolean needApproval = isNeedApproval(isUpdateByAdmin, history.getUpdateColumn());
-            history.setExecuteStatus(needApproval ? 1 : 2);//若需要审核, 则状态置为[审核中];否则[已完成]
+            //Boolean needApproval = isNeedApproval(isUpdateByAdmin, history.getUpdateColumn());
+            //history.setExecuteStatus(needApproval ? 1 : 2);//若需要审核, 则状态置为[审核中];否则[已完成]
+            history.setExecuteStatus(2);//[已完成]
             //记录日志
             historyService.insertPsyConsultHistory(history);
-            if (needApproval) return AjaxResult.success("已发起修改申请");
+            //if (needApproval) return AjaxResult.success("已发起修改申请");
         }
         
         int i = psyConsultMapper.updateById(newConsult);

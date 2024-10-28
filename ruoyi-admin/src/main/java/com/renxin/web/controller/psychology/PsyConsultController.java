@@ -154,7 +154,7 @@ public class PsyConsultController extends BaseController
     public AjaxResult edit(@RequestBody PsyConsultVO psyConsult)
     {
         psyConsult.setIsUpdateByAdmin(true);//管理员发起的修改
-        AjaxResult update = psyConsultService.update(psyConsult);
+        AjaxResult update = psyConsultService.updateConsult(psyConsult);
         psyConsultService.getOne(psyConsult.getId());
         return update;
     }

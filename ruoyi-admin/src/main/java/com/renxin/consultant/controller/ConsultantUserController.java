@@ -210,7 +210,7 @@ public class ConsultantUserController extends BaseController {
             consult.setId(consultId);//填充token中的咨询师id
             
             consult.setExperience(null);//该接口不修改受训经历
-            psyConsultService.update(consult);
+            psyConsultService.updateConsult(consult);
             
             return AjaxResult.success();
         } catch (Exception e) {
@@ -227,7 +227,7 @@ public class ConsultantUserController extends BaseController {
             Long consultId = consultantTokenService.getConsultId(request);
             consult.setId(consultId);//填充token中的咨询师id
 
-            AjaxResult update = psyConsultService.update(consult);
+            AjaxResult update = psyConsultService.updateConsult(consult);
             return update;
         } catch (Exception e) {
             log.error("updateSensitiveInfo error", e);
