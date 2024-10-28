@@ -462,7 +462,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     @Override
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict(cacheNames = CacheConstants.CONSULTANT_BY_ID_KEY, key = "#req.id")
-    public AjaxResult logout(PsyConsultVO req){
+    public AjaxResult logOff(PsyConsultVO req){
         PsyConsult consult = psyConsultMapper.selectById(req.getId());
         consult.setDelFlag("1");//删除
         psyConsultMapper.deleteById(consult);

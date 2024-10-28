@@ -220,14 +220,14 @@ public class ConsultantUserController extends BaseController {
     }
 
     //账户注销
-    @PostMapping("/logout")
-    public AjaxResult logout( HttpServletRequest request) {
+    @PostMapping("/logOff")
+    public AjaxResult logOff( HttpServletRequest request) {
         try {
             Long consultId = consultantTokenService.getConsultId(request);
             PsyConsultVO psyConsultVO = new PsyConsultVO();
                 psyConsultVO.setId(consultId);
                 psyConsultVO.setIsUpdateByAdmin(false);
-            psyConsultService.logout(psyConsultVO);
+            psyConsultService.logOff(psyConsultVO);
 
             return AjaxResult.success();
         } catch (Exception e) {
