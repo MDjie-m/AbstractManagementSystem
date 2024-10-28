@@ -117,7 +117,63 @@ public class ConsultantUserController extends BaseController {
         }else {
             return AjaxResult.error("发送失败");
         }
+    }
 
+
+    //获取注销验证码
+    @PostMapping("/sendLogOffSms")
+    public AjaxResult sendLogOffSms(HttpServletRequest request) {
+        Long consultId = consultantTokenService.getConsultId(request);
+        PsyConsultVO one = psyConsultService.getOne(consultId);
+        //查询本人手机号
+        String phone = one.getPhonenumber();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("templateId",NewConstants.SEND_CHECK_SMS_TEMP_ID);
+        map.put("phone",phone);
+
+        String oldCode = redisCache.getCacheObject(CacheConstants.PHONE_LOG_OFF_CODE + "::" + phone);
+        if (ObjectUtils.isNotEmpty(oldCode)){
+            log.info("请勿重复发送:" + phone + "短期内多次调用了/sendLogOffSms获取验证码");
+            return AjaxResult.error("请勿重复发送");
+        }
+
+        Random random = new Random();
+        // 生成一个6位数，范围从100000到999999
+        int code = 100000 + random.nextInt(999999);
+        String smsCode=code+"";
+        map.put("code",smsCode);
+        boolean isSend = new CloudFunctions().sendSms(map);
+        if(isSend){
+            //向redis中写入该手机对应的验证码, 有效期10分钟
+            redisCache.setCacheObject(CacheConstants.PHONE_LOG_OFF_CODE + "::" + phone, smsCode,10, TimeUnit.MINUTES);
+            return AjaxResult.success("发送成功");
+        }else {
+            return AjaxResult.error("发送失败");
+        }
+
+    }
+
+    //账户注销
+    @PostMapping("/logOff")
+    public AjaxResult logOff(@RequestBody ConsultLoginDTO req,  HttpServletRequest request) {
+        Long consultId = consultantTokenService.getConsultId(request);
+        PsyConsultVO one = psyConsultService.getOne(consultId);
+        //查询本人手机号
+        String phone = one.getPhonenumber();
+        
+        String code = redisCache.getCacheObject(CacheConstants.PHONE_LOG_OFF_CODE + "::" + phone);
+        String reqCode = req.getSmsCode();
+        log.info("调用/logOff, req:"+req + ",code:" + code);
+        if (ObjectUtils.isEmpty(reqCode) || !reqCode.equals(code)) {
+            return AjaxResult.error("验证码错误");
+        }
+        
+        PsyConsultVO psyConsultVO = new PsyConsultVO();
+        psyConsultVO.setId(consultId);
+        psyConsultVO.setIsUpdateByAdmin(false);
+        psyConsultService.logOff(psyConsultVO);
+        return AjaxResult.success();
+       
     }
 
     @PostMapping("/loginBySmsCode")
@@ -126,7 +182,7 @@ public class ConsultantUserController extends BaseController {
         String reqCode = req.getSmsCode();
         log.info("调用/loginBySmsCode, req:"+req + ",code:" + code);
         if (ObjectUtils.isEmpty(reqCode) || !reqCode.equals(code)) {
-            throw new ServiceException("验证码与手机号不相符");
+            return AjaxResult.error("验证码错误");
         }
 
        /* PsyConsult consultant = psyConsultService.getByPhone(req.getPhone());
@@ -219,22 +275,7 @@ public class ConsultantUserController extends BaseController {
         }
     }
 
-    //账户注销
-    @PostMapping("/logOff")
-    public AjaxResult logOff( HttpServletRequest request) {
-        try {
-            Long consultId = consultantTokenService.getConsultId(request);
-            PsyConsultVO psyConsultVO = new PsyConsultVO();
-                psyConsultVO.setId(consultId);
-                psyConsultVO.setIsUpdateByAdmin(false);
-            psyConsultService.logOff(psyConsultVO);
-
-            return AjaxResult.success();
-        } catch (Exception e) {
-            log.error("updateUserInfo error", e);
-            return AjaxResult.error("updateUserInfo error");
-        }
-    }
+   
     
 
     //修改我的信息

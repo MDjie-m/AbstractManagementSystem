@@ -118,5 +118,10 @@ public class CacheConstants
      */
     public static final String PHONE_LOGIN_CODE = "phone_login_code";
 
+    /**
+     * 注销验证码 redis key
+     */
+    public static final String PHONE_LOG_OFF_CODE = "phone_log_off_code";
+
     
 }
