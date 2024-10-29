@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 节点寻优
  */
-@Api("节点寻优")
+@Api(tags = "节点寻优")
 @RestController
 @RequestMapping("/node")
 public class NodeFind {
