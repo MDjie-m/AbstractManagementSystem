@@ -68,7 +68,7 @@ public class CourCourseLabelController extends BaseController
         LabelVO labelVO = new LabelVO();
         BeanUtils.copyProperties(label, labelVO);
         // 根据课程ID查询课程名称
-        String courseName = courCourseService.selectCourCourseById(label.getCourseId()).getName();
+        String courseName = courCourseService.getBaseMapper().selectById(label.getCourseId()).getName();
 
         labelVO.setCourseName(courseName);
         return labelVO;
