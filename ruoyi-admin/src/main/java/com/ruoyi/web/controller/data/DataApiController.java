@@ -23,7 +23,7 @@ public class DataApiController {
     }
 
     @ApiModel(value = "DeviceUploadData", description = "设备上报数据")
-    class DeviceUploadData {
+    public class DeviceUploadData {
         //upPacketSN	上行报文序号
         //upDataSN	数据上报报文序号
         //topic	数据上报主题
