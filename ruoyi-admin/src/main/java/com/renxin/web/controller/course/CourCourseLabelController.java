@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.renxin.course.mapper.CourCourseMapper;
 import com.renxin.course.service.ICourCourseService;
 import com.renxin.course.vo.LabelVO;
 import org.springframework.beans.BeanUtils;
@@ -41,6 +42,9 @@ public class CourCourseLabelController extends BaseController
 
     @Autowired
     private ICourCourseService courCourseService;
+
+    @Autowired
+    private CourCourseMapper courCourseMapper;
     /**
      * 查询label列表
      */
@@ -68,7 +72,7 @@ public class CourCourseLabelController extends BaseController
         LabelVO labelVO = new LabelVO();
         BeanUtils.copyProperties(label, labelVO);
         // 根据课程ID查询课程名称
-        String courseName = courCourseService.getBaseMapper().selectById(label.getCourseId()).getName();
+        String courseName = courCourseMapper.selectCourCourseById(label.getCourseId()).getName();
 
         labelVO.setCourseName(courseName);
         return labelVO;
