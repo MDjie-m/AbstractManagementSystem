@@ -36,5 +36,7 @@ public interface IPsyConsultOrderItemService
     List<OrderItemDTO> queryOrderItemList(OrderItemDTO req);    
     
     Integer getTimeNumForConsulted(PsyWorkReq req);    
+    
+    Integer querySumTime(PsyWorkReq req);    
 
 }

@@ -103,4 +103,13 @@ public class PsyConsultPartnerItemServiceImpl extends ServiceImpl<PsyConsultPart
     {
         return psyConsultPartnerItemMapper.deleteById(id);
     }
+
+    /**
+     * 统计经历时长
+     */
+    @Override
+    public int countTime(PsyConsultPartnerItem req)
+    {
+        return psyConsultPartnerItemMapper.countTime(req);
+    }
 }

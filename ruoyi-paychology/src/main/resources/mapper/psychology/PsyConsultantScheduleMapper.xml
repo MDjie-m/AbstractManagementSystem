@@ -246,9 +246,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </if>
     from
         psy_consultant_schedule
-    where
-        consult_id = #{consultId}
-        and schedule_type = #{scheduleType}
+    where 1=1
+        <if test="consultId != null and consultId != ''">
+          and consult_id = #{consultId}
+        </if>
+        <if test="scheduleType != null and scheduleType != ''">
+            and schedule_type = #{scheduleType}
+        </if>
+        and status in (1,4)
     </select>
     
     

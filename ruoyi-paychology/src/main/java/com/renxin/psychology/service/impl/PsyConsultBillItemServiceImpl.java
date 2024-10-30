@@ -161,7 +161,9 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
         //将schedule中的团督任务设为[已分账]
         List<Long> teamScheduleIdList = billList.stream().filter(p -> p.getScheduleType() == 21).map(PsyConsultBillItem::getId).collect(Collectors.toList());
         scheduleService.updateStatusBatch(teamScheduleIdList, "4");//团督已分账
-
+        
+        //咨询师缓存刷新
+        consultService.refreshCacheByIdList(billList.stream().map(p -> p.getConsultId()).collect(Collectors.toList()));
         //todo通知--  咨询师分账已完成
         CloudFunctions cloudFunctions = new CloudFunctions();
         for (PsyConsultantAccountRecord record : acctRecordList) {

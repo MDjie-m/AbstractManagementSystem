@@ -1,5 +1,6 @@
 package com.renxin.psychology.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BasePlusEntity;
@@ -65,5 +66,8 @@ public class PsyConsultPartnerItem extends BasePlusEntity implements Serializabl
     /** 状态（0正常 1停用） */
     @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
     private String status;
+    
+    @TableField(exist = false)
+    private Long consultantId;//咨询师id
 
 }

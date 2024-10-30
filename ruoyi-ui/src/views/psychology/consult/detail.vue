@@ -92,16 +92,30 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="服务时长(小时)" prop="workTime">
-            <el-input-number size="mini" v-model="form.workTime" :min="0" placeholder="请输入服务时长" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
           <el-form-item label="从业年限(年)" prop="workHours">
             <el-input-number size="mini" v-model="form.workHours" :min="0" placeholder="请输入从业年限" />
           </el-form-item>
         </el-col>
       </el-row>
+
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="服务时长(小时)" prop="workTime">
+            <el-input-number size="mini" v-model="form.workTime" :min="0" disabled/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="督导时长(小时)" prop="workNum">
+            <el-input-number size="mini" v-model="form.buySupTime" :min="0" disabled/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="体验时长(小时)" prop="workHours">
+            <el-input-number size="mini" v-model="form.buyExpTime" :min="0"  disabled/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
 <!--      <el-row>-->
 <!--        <el-col :span="12">-->
 <!--          <el-form-item label="状态" prop="status">-->
@@ -451,6 +465,8 @@ export default {
         experience: [],
         workNum: null,
         workTime: null,
+        buyExpTime: null,
+        buySupTime: null,
         workHours: null,
         delFlag: null,
         status: "0",

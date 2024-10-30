@@ -14,10 +14,7 @@ import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.DateUtils;
 import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.psychology.constant.ConsultConstant;
-import com.renxin.psychology.domain.PsyConsultServeConfig;
-import com.renxin.psychology.domain.PsyConsultantOrder;
-import com.renxin.psychology.domain.PsyConsultantSchedule;
-import com.renxin.psychology.domain.PsyConsultantTeamSupervision;
+import com.renxin.psychology.domain.*;
 import com.renxin.psychology.mapper.PsyConsultantScheduleMapper;
 import com.renxin.psychology.request.PsyWorkReq;
 import com.renxin.psychology.request.PsyWorkTimeRes;
@@ -56,6 +53,12 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     
     @Autowired
     private IPsyConsultService consultService;
+    
+    @Resource
+    private IPsyConsultPartnerItemService partnerItemService;
+    
+    @Resource
+    private IPsyConsultOrderItemService orderItemService;
 
     /**
      * 查询咨询师排班任务
@@ -304,21 +307,59 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     @Override
     public PsyWorkTimeRes querySumTime(Long consultId){
         PsyConsultantSchedule req = new PsyConsultantSchedule();
-        req.setConsultId(consultId);
+            req.setConsultId(consultId);
         
         PsyWorkTimeRes workTimeRes = new PsyWorkTimeRes();
         workTimeRes.setConsultId(consultId);
 
-        req.setScheduleType(21);//团督
+            req.setScheduleType(21);//团督
         workTimeRes.setTeamSupTime(psyConsultantScheduleMapper.querySumTime(req));
-        req.setScheduleType(22);//个督
+            req.setScheduleType(22);//个督
         workTimeRes.setPersonSupTime(psyConsultantScheduleMapper.querySumTime(req));
-        req.setScheduleType(23);//体验
+            req.setScheduleType(23);//体验
         workTimeRes.setPersonExpTime(psyConsultantScheduleMapper.querySumTime(req));
-        req.setScheduleType(12);//咨询
-        workTimeRes.setConsultTime(psyConsultantScheduleMapper.querySumTime(req));
-        req.setScheduleType(11);//倾听
-        workTimeRes.setListenTime(psyConsultantScheduleMapper.querySumTime(req));
+        PsyWorkReq psyWorkReq = new PsyWorkReq();//咨询
+            psyWorkReq.setConsultId(consultId);
+        workTimeRes.setConsultTime(orderItemService.getTimeNumForConsulted(psyWorkReq));
+        //req.setScheduleType(11);//倾听
+        //workTimeRes.setListenTime(psyConsultantScheduleMapper.querySumTime(req));
+        
+        req.setConsultId(null);
+        req.setCreateBy(consultId+"");
+        //购买个督
+            req.setScheduleType(22);
+        workTimeRes.setBuyPersonSupTime(psyConsultantScheduleMapper.querySumTime(req));
+        //购买个人体验
+            req.setScheduleType(23);
+        workTimeRes.setBuyPersonExpTime(psyConsultantScheduleMapper.querySumTime(req));
+        
+
+        PsyConsultPartnerItem itemReq = new PsyConsultPartnerItem();
+            itemReq.setConsultantId(consultId);
+        //服务时长: 个案咨询经历 + 本平台[提供]的团督时长 + 个督时长 + 个人体验 + 咨询
+            itemReq.setType(5);//个案咨询经历
+        int partnerWorkTime = partnerItemService.countTime(itemReq);
+        int workTime = partnerWorkTime + workTimeRes.getTeamSupTime() + workTimeRes.getPersonSupTime() + workTimeRes.getPersonExpTime() + workTimeRes.getConsultTime();
+        
+        //督导时长: 接受督导经历 + 本平台[购买]的团督时长]]]]]] + 个督时长
+            itemReq.setType(6);//接受督导经历
+        int partnerSupTime = partnerItemService.countTime(itemReq);
+        int buySupTime = partnerSupTime + workTimeRes.getBuyPersonSupTime();
+        workTimeRes.setBuySupTime(buySupTime);
+        
+        //体验时长: 接受体验经历 + 本平台[购买]的体验时长
+            itemReq.setType(7);//个人体验经历
+        int partnerExpTime = partnerItemService.countTime(itemReq);
+        int buyExpTime = partnerExpTime + workTimeRes.getBuyPersonExpTime();
+        workTimeRes.setBuyExpTime(buyExpTime);
+        
+        // 个案咨询经历  :  在外部平台,  为顾客提供的服务时长
+        //入驻申请单中的记录   是购买别人服务的记录    需要统计时长.     再加上 , 在本平台购买别的人的服务, 且已完成的记录.
+        //  督导:个案 + 团队     体验 : 个人体验
+        // 个案咨询经历  :  在外部平台,  为顾客提供的服务时长
+        // 接收督导经历  : 在外部平台 , 购买的个案督导服务时长
+        // 个人体验经历    同上↑
+        
         
         return workTimeRes;
     }

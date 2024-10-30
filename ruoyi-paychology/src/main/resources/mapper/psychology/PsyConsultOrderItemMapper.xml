@@ -90,6 +90,21 @@ INNER JOIN psy_user c ON c.id = d.user_id
     </select>
 
 
+    <select id="querySumTime" resultType="java.lang.Integer">
+        select
+            count(item.id)
+        from
+        psy_consult_order_item item
+            left join psy_consult con on con.id = item.consult_id
+            left join psy_consult_order orde on orde.id = item.order_id
+        where
+            item.status  = 1
+        <if test="consultId != '' and consultId != null">
+            and item.consult_id =  #{consultId}
+        </if>
+    </select>
+
+
     <select id="queryOrderItemList" parameterType="com.renxin.psychology.dto.OrderItemDTO" resultType="com.renxin.psychology.dto.OrderItemDTO">
         select
             item.id,

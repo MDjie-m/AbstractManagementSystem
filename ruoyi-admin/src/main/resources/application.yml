@@ -121,6 +121,21 @@ spring:
 
 
 wechat:
+  app-consultant:
+    appid: wxfb9220d65402becc
+    secret: 26cd7edcedc80375008a4d6a12df9be0
+  app-pocket:
+  program:
+    appid: wxff96ed0f6fbd6933
+    secret: d8e628314926cc5e1563c6a39f95573d
+  mch:
+    mchid: 1634006526
+    mchSerialNo: 63D29D7E1B71E7BE5B1D85B96C32B9E7D95FA400
+    apiV2Key: MIIEKDCCAxCgAwIBAgIUY9Kdfhtx5722
+    apiV3Key: AkNOMREwDwYDVQQHDAhTaGVuWmhlbjC3
+    
+  
+  
   appid: wxff96ed0f6fbd6933
   secret: d8e628314926cc5e1563c6a39f95573d
   grant_type: authorization_code

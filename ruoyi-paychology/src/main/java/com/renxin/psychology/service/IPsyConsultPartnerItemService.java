@@ -25,4 +25,6 @@ public interface IPsyConsultPartnerItemService
     int deleteAll(Long[] ids);
 
     int delete(Long id);
+    
+    int countTime(PsyConsultPartnerItem req);
 }

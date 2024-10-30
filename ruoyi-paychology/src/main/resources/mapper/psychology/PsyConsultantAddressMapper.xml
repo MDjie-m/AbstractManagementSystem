@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contactName"    column="contact_name"    />
         <result property="contactTelephone"    column="contact_telephone"    />
         <result property="contactAddress"    column="contact_address"    />
+        <result property="region"    column="region"    />
         <result property="delFlag"    column="del_flag"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -19,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPsyConsultantAddressVo">
-        select address_id, consultant_id, status, contact_name, contact_telephone, contact_address, del_flag, create_by, create_time, update_by, update_time from psy_consultant_address
+        select address_id, consultant_id, status, contact_name, contact_telephone, contact_address, region,  del_flag, create_by, create_time, update_by, update_time from psy_consultant_address
     </sql>
 
     <select id="selectPsyConsultantAddressList" parameterType="PsyConsultantAddress" resultMap="PsyConsultantAddressResult">
@@ -47,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contactName != null and contactName != ''">contact_name,</if>
             <if test="contactTelephone != null">contact_telephone,</if>
             <if test="contactAddress != null">contact_address,</if>
+            <if test="region != null">region,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -60,6 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contactName != null and contactName != ''">#{contactName},</if>
             <if test="contactTelephone != null">#{contactTelephone},</if>
             <if test="contactAddress != null">#{contactAddress},</if>
+            <if test="region != null">#{region},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -76,6 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contactName != null and contactName != ''">contact_name = #{contactName},</if>
             <if test="contactTelephone != null">contact_telephone = #{contactTelephone},</if>
             <if test="contactAddress != null">contact_address = #{contactAddress},</if>
+            <if test="region != null">region = #{region},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>

@@ -45,88 +45,12 @@ public class PsyConsultantAddress extends BaseEntity
     /** 联系地址 */
     @Excel(name = "联系地址")
     private String contactAddress;
+    
+    //地区
+    private String region;
 
     /** 0 未删除 1 删除 */
     private String delFlag;
 
-    public void setAddressId(Long addressId) 
-    {
-        this.addressId = addressId;
-    }
 
-    public Long getAddressId() 
-    {
-        return addressId;
-    }
-    public void setConsultantId(Long consultantId) 
-    {
-        this.consultantId = consultantId;
-    }
-
-    public Long getConsultantId() 
-    {
-        return consultantId;
-    }
-    public void setStatus(String status) 
-    {
-        this.status = status;
-    }
-
-    public String getStatus() 
-    {
-        return status;
-    }
-    public void setContactName(String contactName) 
-    {
-        this.contactName = contactName;
-    }
-
-    public String getContactName() 
-    {
-        return contactName;
-    }
-    public void setContactTelephone(String contactTelephone) 
-    {
-        this.contactTelephone = contactTelephone;
-    }
-
-    public String getContactTelephone() 
-    {
-        return contactTelephone;
-    }
-    public void setContactAddress(String contactAddress) 
-    {
-        this.contactAddress = contactAddress;
-    }
-
-    public String getContactAddress() 
-    {
-        return contactAddress;
-    }
-    public void setDelFlag(String delFlag) 
-    {
-        this.delFlag = delFlag;
-    }
-
-    public String getDelFlag() 
-    {
-        return delFlag;
-    }
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("addressId", getAddressId())
-            .append("consultantId", getConsultantId())
-            .append("status", getStatus())
-            .append("contactName", getContactName())
-            .append("contactTelephone", getContactTelephone())
-            .append("contactAddress", getContactAddress())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
 }

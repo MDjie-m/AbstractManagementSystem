@@ -115,4 +115,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             p_id = #{pId}
     </update>
 
+
+    <select id="countTime" resultType="java.lang.Integer" parameterType="PsyConsultPartnerItem">
+        select
+            IFNULL(sum(item.num), 0)
+        from
+            psy_consult_partner_item item 
+        left join psy_consult_partner pt on item.p_id = pt.id
+        where item.status = 1 
+            and pt.consult_id = #{consultantId}
+            and item.type = #{type}
+    </select>
+    
 </mapper>
