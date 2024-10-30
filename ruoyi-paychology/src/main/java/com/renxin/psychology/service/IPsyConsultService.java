@@ -74,4 +74,7 @@ public interface IPsyConsultService extends IService<PsyConsult> {
     //刷新id清单缓存
     void refreshIdList();
     
+    //查询来访者与咨询师的关联信息
+    AjaxResult queryRelationDetail(PsyConsultReq req);
+    
 }

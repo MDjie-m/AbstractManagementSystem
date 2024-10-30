@@ -7,6 +7,7 @@ import com.renxin.common.core.domain.AjaxResult;
 import com.renxin.common.core.page.TableDataInfo;
 import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.utils.PageUtils;
+import com.renxin.framework.web.service.PocketTokenService;
 import com.renxin.psychology.domain.PsyConsult;
 import com.renxin.psychology.request.PsyConsultReq;
 import com.renxin.psychology.request.PsyConsultServeConfigReq;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +52,9 @@ public class PocketConsultantController extends BaseController
 
     @Autowired
     private ISysNoticeService noticeService;
+
+    @Resource
+    private PocketTokenService pocketTokenService;
 
 
     /**
@@ -152,6 +157,19 @@ public class PocketConsultantController extends BaseController
     {
         SysNotice sysNotice=noticeService.selectNoticeById(3L);
         return AjaxResult.success("succ",sysNotice.getNoticeContent());
+    }
+
+
+    /**
+     * 与指定咨询师关系
+     */
+    @PostMapping(value = "/queryRelationDetail")
+    @RateLimiter
+    public AjaxResult queryRelationDetail(@RequestBody PsyConsultReq req, HttpServletRequest request)
+    {
+        Long userId = pocketTokenService.getUserId(request);
+            req.setUserId(userId);
+        return psyConsultService.queryRelationDetail(req);
     }
 
 }

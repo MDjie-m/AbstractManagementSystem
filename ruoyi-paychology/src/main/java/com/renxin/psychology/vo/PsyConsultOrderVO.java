@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 咨询订单对象 psy_consult_order
@@ -106,6 +107,6 @@ public class PsyConsultOrderVO extends BaseValObj implements Serializable
     private String day;
     private String timeStart;
     private String timeEnd;
-    
+    private List<String> statusList;
 
 }

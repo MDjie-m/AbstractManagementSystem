@@ -346,7 +346,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         int workTime = partnerWorkTime + workTimeRes.getTeamSupTime() + workTimeRes.getPersonSupTime() + workTimeRes.getPersonExpTime() + workTimeRes.getConsultTime();
         workTimeRes.setWorkTime(workTime);
         
-        //督导时长: 接受督导经历 + 本平台[购买]的团督时长]]]]]] + 个督时长
+        //督导时长: 接受督导经历 + 本平台[购买]的团督时长 + 个督时长
             itemReq.setType(6);//接受督导经历
         int partnerSupTime = partnerItemService.countTime(itemReq);
         int buySupTime = partnerSupTime + workTimeRes.getBuyTeamSupTime() + workTimeRes.getBuyPersonSupTime();

@@ -85,6 +85,9 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
     @Resource
     private WxMsgUtils wxMsgUtils;
 
+    @Resource
+    private IPsyConsultOrderService orderService;
+
     @Override
     public List<PsyOrderLog> getLogs(String orderNo) {
         PsyOrderLog log = new PsyOrderLog();
@@ -137,6 +140,28 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         }
 
         return false;
+    }
+    
+    //限购校验  true=不可购买
+    @Override
+    public boolean checkNewByConsultantServe(Long consultantId, Long serveId, Long userId){
+        PsyConsultServeConfigVO serve = psyConsultServeConfigService.getOne(serveId);
+        if (serve.getBound() == 0){//不限购
+            return false;
+        }
+        
+        //若限购, 则查询该来访者与咨询师之间, 是否已有交易记录
+        PsyConsultOrderVO orderVO = new PsyConsultOrderVO();
+            orderVO.setUserId(userId);
+            orderVO.setConsultId(consultantId);
+            orderVO.setPayStatus("2");//已支付
+        List<OrderListDTO> orderList = orderService.getOrderList(orderVO);
+        //无交易记录, 可购买
+        if (ObjectUtils.isEmpty(orderList)){
+            return false;
+        }
+        return true;
+        
     }
 
     @Override

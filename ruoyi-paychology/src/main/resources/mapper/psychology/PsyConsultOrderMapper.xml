@@ -98,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             and a.status != '3'
             <if test="orderNo != null  and orderNo != ''"> and a.order_no = #{orderNo}</if>
             <if test="userId != null "> and a.user_id = #{userId}</if>
+            <if test="consultId != null "> and a.consult_id = #{consultId}</if>
             <if test="status != null"> and a.status = #{status}</if>
             <if test="payStatus != null"> and a.pay_status = #{payStatus}</if>
             <if test="source != null and source != ''"> and a.source = #{source}</if>

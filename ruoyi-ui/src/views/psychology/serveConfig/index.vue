@@ -252,7 +252,7 @@
         </el-form-item>
         <el-form-item label="限购人群" prop="bound">
           <el-radio-group v-model="form.bound">
-            <el-radio v-for="item in limitStatus" :label="item.value">{{ item.value === 0 ? '不限制，所有人可购买' : '仅新用户可购买（未在平台成功支付过的用户）' }}</el-radio>
+            <el-radio v-for="item in limitStatus" :label="item.value">{{ item.value === 0 ? '不限制，所有人可购买' : '针对每个咨询师,只能买一次' }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="服务有效期" prop="end">

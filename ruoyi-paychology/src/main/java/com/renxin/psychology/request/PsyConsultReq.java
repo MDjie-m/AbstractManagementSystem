@@ -22,6 +22,11 @@ public class PsyConsultReq extends BaseValObj implements Serializable
 
     private static final long serialVersionUID = 7980447039917688534L;
 
+    //咨询师id
+    private Long consultantId;
+    //来访者id
+    private Long userId;
+    
     /** 登录名 */
     private String userName;
 

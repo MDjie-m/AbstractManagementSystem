@@ -171,8 +171,8 @@ public class WechatProgramPayController extends BaseController {
                     }
                 }
 
-                if (psyConsultOrderService.checkNewByServe(wechatPayDTO.getOrderId(), wechatPayDTO.getServeId(), wechatPayDTO.getUserId())) {
-                    return error("仅新用户可购买");
+                if (psyConsultOrderService.checkNewByConsultantServe(wechatPayDTO.getConsultId(), wechatPayDTO.getServeId(), wechatPayDTO.getUserId())) {
+                    return error("针对每个咨询师, 只能买一次");
                 }
                 break;
         }

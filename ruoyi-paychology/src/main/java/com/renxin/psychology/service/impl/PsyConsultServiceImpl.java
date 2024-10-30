@@ -24,14 +24,12 @@ import com.renxin.gauge.mapper.PsyGaugeMapper;
 import com.renxin.gauge.service.IPsyGaugeService;
 import com.renxin.psychology.constant.ConsultConstant;
 import com.renxin.psychology.domain.*;
+import com.renxin.psychology.dto.OrderListDTO;
 import com.renxin.psychology.dto.PsyConsultInfoDTO;
 import com.renxin.psychology.mapper.PsyConsultMapper;
 import com.renxin.psychology.request.*;
 import com.renxin.psychology.service.*;
-import com.renxin.psychology.vo.PsyConsultOrderVO;
-import com.renxin.psychology.vo.PsyConsultServeConfigVO;
-import com.renxin.psychology.vo.PsyConsultVO;
-import com.renxin.psychology.vo.PsyConsultWorkVO;
+import com.renxin.psychology.vo.*;
 import com.renxin.system.service.ISysConfigService;
 import com.renxin.system.service.ISysDictDataService;
 import com.renxin.system.service.ISysUserService;
@@ -114,6 +112,9 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     
     @Resource
     private ISysDictDataService dictDataService;
+    
+    @Resource
+    private IPsyConsultOrderService orderService;
 
     @Override
     public List<PsyConsultWorkVO> getConsultWorksById(Long id) {
@@ -929,6 +930,25 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
             return null;
         }
         return one.getUserName();
+    }
+
+    //查询来访者与咨询师的关联信息
+    @Override
+    public AjaxResult queryRelationDetail(PsyConsultReq req){
+        ConsultRelationDetail relationDetail = new ConsultRelationDetail();
+        
+        PsyConsultOrderVO orderVO = new PsyConsultOrderVO();
+            orderVO.setUserId(req.getUserId());
+            orderVO.setConsultId(req.getConsultantId());
+            orderVO.setPayStatus("2");//已支付
+        List<OrderListDTO> orderList = orderService.getOrderList(orderVO);
+        if (ObjectUtils.isEmpty(orderList)){
+            relationDetail.setIsExistOrder(false);
+        }else{
+            relationDetail.setIsExistOrder(true);
+        }
+        
+        return AjaxResult.success(relationDetail);
     }
     
 }
