@@ -344,6 +344,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
             itemReq.setType(5);//个案咨询经历
         int partnerWorkTime = partnerItemService.countTime(itemReq);
         int workTime = partnerWorkTime + workTimeRes.getTeamSupTime() + workTimeRes.getPersonSupTime() + workTimeRes.getPersonExpTime() + workTimeRes.getConsultTime();
+        workTimeRes.setWorkTime(workTime);
         
         //督导时长: 接受督导经历 + 本平台[购买]的团督时长]]]]]] + 个督时长
             itemReq.setType(6);//接受督导经历
