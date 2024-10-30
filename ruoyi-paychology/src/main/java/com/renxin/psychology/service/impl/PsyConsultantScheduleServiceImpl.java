@@ -370,9 +370,6 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     
     //计算指定咨询师, 购买的团督时长
     private int calcBuyTeamSupTime(Long consultantId){
-        if (consultantId == 1814135086154330114L){
-            System.out.println(111);
-        }
         //加入的团督清单
         PsyConsultantSupervisionMember memberReq= new PsyConsultantSupervisionMember();
             memberReq.setMemberId(consultantId);
