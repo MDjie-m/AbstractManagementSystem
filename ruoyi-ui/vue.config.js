@@ -114,7 +114,7 @@ module.exports = {
                 name: 'chunk-elementUI', // split elementUI into a single package
                 test: /[\\/]node_modules[\\/]_?element-ui(.*)/, // in order to adapt to cnpm
                 priority: 20 // the weight needs to be larger than libs and app or it will be packaged into libs or app
-             git },
+              },
               commons: {
                 name: 'chunk-commons',
                 test: resolve('src/components'), // can customize your rules
