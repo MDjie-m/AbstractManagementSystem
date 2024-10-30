@@ -172,7 +172,7 @@ public class WechatProgramPayController extends BaseController {
                 }
 
                 if (psyConsultOrderService.checkNewByConsultantServe(wechatPayDTO.getConsultId(), wechatPayDTO.getServeId(), wechatPayDTO.getUserId())) {
-                    return error("针对每个咨询师, 只能买一次");
+                    return error("新人特惠不能重复购买");
                 }
                 break;
         }
