@@ -250,6 +250,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="consultId != null and consultId != ''">
           and consult_id = #{consultId}
         </if>
+        <if test="createBy != null and createBy != ''">
+            and create_by = #{createBy}
+        </if>
         <if test="scheduleType != null and scheduleType != ''">
             and schedule_type = #{scheduleType}
         </if>
