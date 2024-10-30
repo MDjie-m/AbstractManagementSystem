@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>ruoyi</artifactId>
-        <groupId>com.ruoyi</groupId>
+        <artifactId>tianyi</artifactId>
+        <groupId>com.tianyi</groupId>
         <version>3.8.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -45,20 +45,20 @@
 
         <!-- 核心模块-->
         <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-framework</artifactId>
+            <groupId>com.tianyi</groupId>
+            <artifactId>tianyi-framework</artifactId>
         </dependency>
 
         <!-- 定时任务-->
         <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-quartz</artifactId>
+            <groupId>com.tianyi</groupId>
+            <artifactId>tianyi-quartz</artifactId>
         </dependency>
 
         <!-- 代码生成-->
         <dependency>
-            <groupId>com.ruoyi</groupId>
-            <artifactId>ruoyi-generator</artifactId>
+            <groupId>com.tianyi</groupId>
+            <artifactId>tianyi-generator</artifactId>
         </dependency>
 
     </dependencies>
