@@ -28,13 +28,16 @@ public class PsyWorkTimeRes implements Serializable
     //倾听时长
     private int listenTime;
 
+    //购买团督时长
+    private int buyTeamSupTime;
     //购买个督时长
     private int buyPersonSupTime;
     //购买体验时长
     private int buyPersonExpTime;
-    private int workTime;//服务时长: 个案咨询经历 + 本平台[提供]的团督时长 + 个督时长 + 个人体验 + 咨询
-    private int buySupTime;//督导时长: 接受督导经历 + 本平台[购买]的团督时长 + 个督时长
-    private int buyExpTime;//体验时长: 接受体验经历 + 本平台[购买]的体验时长
+    
+    private int workTime;//服务时长: 个案咨询经历(入驻申请) + 本平台[提供]的团督时长 + 个督时长 + 个人体验 + 咨询
+    private int buySupTime;//督导时长: 接受督导经历(入驻申请) + 本平台[购买]的团督时长 + 个督时长
+    private int buyExpTime;//体验时长: 接受体验经历(入驻申请) + 本平台[购买]的体验时长
     
     
 

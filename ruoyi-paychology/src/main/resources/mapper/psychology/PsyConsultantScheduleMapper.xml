@@ -253,6 +253,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="scheduleType != null and scheduleType != ''">
             and schedule_type = #{scheduleType}
         </if>
+        <if test="teamIdList != null and teamIdList.size > 0">
+            and team_id in 
+            <foreach collection="teamIdList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+            
         and status in (1,4)
     </select>
     

@@ -51,6 +51,9 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
     @Resource
     private IPsyConsultantTeamSupervisionService teamService;
     
+    @Resource
+    private IPsyConsultantSupervisionMemberService teamMemberService;
+    
     @Autowired
     private IPsyConsultService consultService;
     
@@ -311,8 +314,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         
         PsyWorkTimeRes workTimeRes = new PsyWorkTimeRes();
         workTimeRes.setConsultId(consultId);
-
-            req.setScheduleType(21);//团督
+            req.setScheduleType(21);//团督(向外提供服务)
         workTimeRes.setTeamSupTime(psyConsultantScheduleMapper.querySumTime(req));
             req.setScheduleType(22);//个督
         workTimeRes.setPersonSupTime(psyConsultantScheduleMapper.querySumTime(req));
@@ -326,6 +328,8 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         
         req.setConsultId(null);
         req.setCreateBy(consultId+"");
+        //购买团督
+        workTimeRes.setBuyTeamSupTime(calcBuyTeamSupTime(consultId));
         //购买个督
             req.setScheduleType(22);
         workTimeRes.setBuyPersonSupTime(psyConsultantScheduleMapper.querySumTime(req));
@@ -344,7 +348,7 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         //督导时长: 接受督导经历 + 本平台[购买]的团督时长]]]]]] + 个督时长
             itemReq.setType(6);//接受督导经历
         int partnerSupTime = partnerItemService.countTime(itemReq);
-        int buySupTime = partnerSupTime + workTimeRes.getBuyPersonSupTime();
+        int buySupTime = partnerSupTime + workTimeRes.getBuyTeamSupTime() + workTimeRes.getBuyPersonSupTime();
         workTimeRes.setBuySupTime(buySupTime);
         
         //体验时长: 接受体验经历 + 本平台[购买]的体验时长
@@ -362,6 +366,28 @@ public class PsyConsultantScheduleServiceImpl implements IPsyConsultantScheduleS
         
         
         return workTimeRes;
+    }
+    
+    //计算指定咨询师, 购买的团督时长
+    private int calcBuyTeamSupTime(Long consultantId){
+        if (consultantId == 1814135086154330114L){
+            System.out.println(111);
+        }
+        //加入的团督清单
+        PsyConsultantSupervisionMember memberReq= new PsyConsultantSupervisionMember();
+            memberReq.setMemberId(consultantId);
+        List<Long> teamIdList = teamMemberService.selectPsyConsultantSupervisionMemberList(memberReq)
+                .stream().map(p -> p.getTeamSupervisionId()).collect(Collectors.toList());
+        if (ObjectUtils.isEmpty(teamIdList)){
+            return 0;
+        }
+        
+        //统计这些团督已完成多少小时的课程
+        PsyConsultantSchedule req = new PsyConsultantSchedule();
+            req.setTeamIdList(teamIdList);
+            req.setScheduleType(21);//团督
+        int buyTeamSupTime = psyConsultantScheduleMapper.querySumTime(req);
+        return buyTeamSupTime;
     }
 
     //查询团督已讲完的课程数

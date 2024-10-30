@@ -169,10 +169,13 @@ public class PsyConsultVO extends BaseValObj implements Serializable
     //入驻状态   0未入驻   1已入驻
     private Integer settleStatus;
 
-    //购买个督时长
+    //本平台购买个督时长
     private int buyPersonSupTime;
-    //购买体验时长
+    //本平台购买体验时长
     private int buyPersonExpTime;
+    //本平台购买团督时长
+    private int buyTeamSupTime;
+    
     private Integer workTime;//服务时长: 个案咨询经历 + 本平台[提供]的团督时长 + 个督时长 + 个人体验 + 咨询
     private int buySupTime;//督导时长: 接受督导经历 + 本平台[购买]的团督时长 + 个督时长
     private int buyExpTime;//体验时长: 接受体验经历 + 本平台[购买]的体验时长

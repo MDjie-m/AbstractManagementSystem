@@ -20,12 +20,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPsyConsultantSupervisionMemberVo">
-        select id, supervision_id, supervision_type, order_no, member_id, remark, del_flag, create_by, create_time, update_by, update_time from psy_consultant_supervision_member
+        select id, supervision_id, team_supervision_id,  supervision_type, order_no, member_id, remark, del_flag, create_by, create_time, update_by, update_time from psy_consultant_supervision_member
     </sql>
 
     <select id="selectPsyConsultantSupervisionMemberList" parameterType="PsyConsultantSupervisionMember" resultMap="PsyConsultantSupervisionMemberResult">
         select
-            mem.id, mem.supervision_id, mem.supervision_type, mem.order_no, mem.member_id, mem.remark, mem.del_flag,
+            mem.id, mem.supervision_id, mem.team_supervision_id,  mem.supervision_type, mem.order_no, mem.member_id, mem.remark, mem.del_flag,
             mem.create_by, mem.create_time, mem.update_by, mem.update_time ,
             con.user_name as memberName,
             con.avatar as memberAvatar,
@@ -35,14 +35,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             con.level as memberLevel
         from psy_consultant_supervision_member mem
         left join psy_consult con on mem.member_id = con.id 
-                                        
-        <where>  
+        where mem.del_flag = 0                                
+       
             <if test="supervisionId != null "> and supervision_id = #{supervisionId}</if>
             <if test="supervisionType != null  and supervisionType != ''"> and supervision_type = #{supervisionType}</if>
             <if test="orderNo != null "> and order_no = #{orderNo}</if>
             <if test="memberId != null  and memberId != ''"> and member_id = #{memberId}</if>
             <if test="teamSupervisionId != null  and teamSupervisionId != ''"> and team_supervision_id = #{teamSupervisionId}</if>
-        </where>
+       
     </select>
     
     <select id="selectPsyConsultantSupervisionMemberById" parameterType="Long" resultMap="PsyConsultantSupervisionMemberResult">
