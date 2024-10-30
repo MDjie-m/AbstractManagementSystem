@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.qcloud.cos.model.UploadResult;
 import com.renxin.common.changeLog.BeanChangeUtil;
 import com.renxin.common.changeLog.ChangePropertyMsg;
 import com.renxin.common.constant.CacheConstants;
@@ -16,7 +17,9 @@ import com.renxin.common.core.domain.entity.SysUser;
 import com.renxin.common.core.redis.RedisCache;
 import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.common.event.publish.ConsultServePublisher;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.*;
+import com.renxin.common.utils.cos.COSClientFactory;
 import com.renxin.common.vo.DateLimitUtilVO;
 import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.gauge.domain.PsyGauge;
@@ -39,12 +42,16 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -505,7 +512,8 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
 //        sysUser.setUpdateBy(SecurityUtils.getUsername());
 //        sysUser.setStatus(req.getStatus());
 //        userService.updateUserProfile(sysUser);
-
+        req.setAvatar(checkBase64AndTransfer(req.getAvatar()));
+        req.setImg(checkBase64AndTransfer(req.getImg()));
         PsyConsult oldConsult = psyConsultMapper.selectById(req.getId());
         converToStr(req);
         PsyConsult newConsult = BeanUtil.toBean(req, PsyConsult.class);
@@ -548,6 +556,54 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
         refreshIdList();
         refreshRelateCache(req.getId());
         return AjaxResult.success(i);
+    }
+    
+    //判断base64 , 并将其转换为图片后上传得到url
+    private String checkBase64AndTransfer(String imgStr){
+        if (ObjectUtils.isNotEmpty(imgStr) && !imgStr.contains("http") && imgStr.length() > 500) {
+            String module = "zx";
+            String type = "avatar";
+            UploadResult upload = null;
+            InputStream inputStream = null;
+            try {
+                MultipartFile file = base64ToMultipartFile(imgStr);
+                String fileName = StrUtil.format("{}_{}_{}", type, IDhelper.getNextId(), new Random().nextInt(999999) + "咨询师图片.jpg");
+                //  调用文件服务器方法，实现文件上传改写
+                inputStream = file.getInputStream();
+                upload = COSClientFactory.upload(inputStream, fileName, module);
+                String key = upload.getKey();
+                String url = COSClientFactory.getObjUrl(key, module);
+                return url;
+            } catch (Exception e){
+                throw new ServiceException("base64转换图片上传异常");
+            }
+        }else {
+            return imgStr;
+        }
+    }
+
+    //将base64字符串  转换为MultipartFile对象
+    private MultipartFile base64ToMultipartFile(String base64) {
+        // 分离base64头部信息
+        //String[] baseStrs = base64.split(",");
+
+        // 解码Base64字符串
+        byte[] decodedBytes = Base64.getDecoder().decode(base64);
+
+        // 创建MultipartFile对象
+        MultipartFile multipartFile = null;
+        try {
+            // 转换为InputStream
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(decodedBytes);
+
+            // 使用MockMultipartFile来创建一个新的MultipartFile对象
+            multipartFile = new MockMultipartFile("file", byteArrayInputStream);
+
+        } catch (Exception e) {
+            throw new ServiceException("base64转换图片异常");
+        }
+
+        return multipartFile;
     }
     
     //判断是否需要审核
