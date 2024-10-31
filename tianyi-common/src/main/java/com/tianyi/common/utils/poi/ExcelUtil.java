@@ -74,7 +74,7 @@ import com.tianyi.common.annotation.Excel;
 import com.tianyi.common.annotation.Excel.ColumnType;
 import com.tianyi.common.annotation.Excel.Type;
 import com.tianyi.common.annotation.Excels;
-import com.tianyi.common.config.RuoYiConfig;
+import com.tianyi.common.config.TianYiConfig;
 import com.tianyi.common.core.domain.AjaxResult;
 import com.tianyi.common.core.text.Convert;
 import com.tianyi.common.exception.UtilException;
@@ -1409,7 +1409,7 @@ public class ExcelUtil<T>
      */
     public String getAbsoluteFile(String filename)
     {
-        String downloadPath = RuoYiConfig.getDownloadPath() + filename;
+        String downloadPath = TianYiConfig.getDownloadPath() + filename;
         File desc = new File(downloadPath);
         if (!desc.getParentFile().exists())
         {
