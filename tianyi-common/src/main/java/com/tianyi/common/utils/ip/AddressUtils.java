@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.tianyi.common.config.RuoYiConfig;
+import com.tianyi.common.config.TianYiConfig;
 import com.tianyi.common.constant.Constants;
 import com.tianyi.common.utils.StringUtils;
 import com.tianyi.common.utils.http.HttpUtils;
@@ -31,7 +31,7 @@ public class AddressUtils
         {
             return "内网IP";
         }
-        if (RuoYiConfig.isAddressEnabled())
+        if (TianYiConfig.isAddressEnabled())
         {
             try
             {
