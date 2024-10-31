@@ -201,6 +201,7 @@ public class PsyCouponServiceImpl implements IPsyCouponService
     @Override
     public void grantCoupon(PsyCoupon coupon){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        //根据模版id查询券模版信息
         PsyCouponTemplate couponTemplate = couponTemplateService.selectPsyCouponTemplateById(coupon.getTemplateId());
 
         //根据券类型生成券编号
@@ -232,8 +233,8 @@ public class PsyCouponServiceImpl implements IPsyCouponService
         coupon.setExpireDate(LocalDate.now().plusDays(couponTemplate.getValidityDay()).format(formatter));//到期日
         coupon.setCouponNo(couponNo);
 
+        //发放优惠券
         insertPsyCoupon(coupon);
-
     }
     /**
      * 修改用户-优惠券发行

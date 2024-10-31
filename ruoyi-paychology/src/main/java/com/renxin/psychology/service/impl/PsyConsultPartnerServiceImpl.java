@@ -532,6 +532,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
             wp.between(PsyConsultPartner::getCreateTime, dateLimit.getStartTime(), dateLimit.getEndTime());
         }
 
+        wp.orderByDesc(PsyConsultPartner::getUpdateTime);
         List<PsyConsultPartner> list = psyConsultPartnerMapper.selectList(wp);
 
 

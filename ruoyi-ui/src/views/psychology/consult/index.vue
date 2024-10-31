@@ -143,6 +143,13 @@
             @click="handleUpdate(scope.row)"
             v-hasPermi="['psychology:consult:edit']"
           >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon=""
+            @click="handleGrant(scope.row)"
+            v-hasPermi="['psychology:consult:edit']"
+          >发放优惠券</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -182,6 +189,31 @@
       <addressRef v-if="openAddressRef" :id="bingConsultId" />
     </el-dialog>
 
+    <!-- 发放优惠券-对话框 -->
+    <el-dialog :title="title" :visible.sync="openGrant" width="500px" append-to-body>
+      <el-form ref="form" :model="grantForm" :rules="grantRules" label-width="80px">
+
+        <el-form-item label="券模版" prop="level">
+          <el-select v-model="grantForm.templateId" clearable>
+            <el-option
+              v-for="tem in couponTemList"
+              :key="tem.id"
+              :label="tem.couponName"
+              :value="tem.id"
+            />
+          </el-select>
+        </el-form-item>
+        <!--        <el-form-item label="发放张数" prop="count">
+                  <el-input-number size="mini" v-model="form.workHours" :min="0" placeholder="请输入从业年限" />
+                </el-form-item>-->
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitGrantForm">确 定</el-button>
+        <el-button @click="grantCancel">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -194,6 +226,7 @@ import accountRef from "../account/index";
 import addressRef from "../address/index";
 import { checkPermi } from "@/utils/permission";
 import {levelList} from "@/utils/constants";
+import { listTemplate , grantCoupon } from "@/api/marketing/coupon";
 
 export default {
   name: "Consult",
@@ -219,6 +252,8 @@ export default {
       total: 0,
       // 心理咨询师表格数据
       consultList: [],
+      openGrant: false,
+      couponTemList: [],
       // 弹出层标题
       title: "",
       titleServe: "",
@@ -240,6 +275,14 @@ export default {
         dateLimit: null
       },
       timeVal: [],
+      queryGrant:{
+        userType:2,
+        pageNum: 1,
+        pageSize: 99999,
+        templateStatus:0
+      },
+      grantRules: {},
+      grantForm: {},
       // 列信息
       columns: [
         { key: 0, label: `分类`, visible: true },
@@ -267,6 +310,7 @@ export default {
     // 获取性别
     // 获取咨询方向
     this.getList();
+    this.getPocketCouponList();
   },
   methods: {
     checkPermi,
@@ -290,6 +334,10 @@ export default {
       this.openServeRef = false;
       this.consultId = ''
       this.cIds = []
+    },
+    grantCancel(){
+      this.openGrant = false;
+      this.grantForm = {};
     },
     cancelFinance() {
       this.openFinanceRef = false;
@@ -340,6 +388,14 @@ export default {
         this.consultList = response.rows;
         this.total = response.total;
         this.loading = false;
+      });
+    },
+    //查询优惠券模版清单
+    getPocketCouponList(){
+      listTemplate(this.queryGrant).then(response => {
+        this.couponTemList = response.rows;
+        console.log("===============");
+        console.log(this.couponTemList);
       });
     },
     /** 查询账户信息列表 */
@@ -435,6 +491,20 @@ export default {
         this.getList();
         this.$modal.msgSuccess("关联成功");
       }).catch(() => {});
+    },
+    /** [发放优惠券] 按钮操作 */
+    handleGrant(row) {
+      this.openGrant = true;
+      this.grantForm.consultantId = row.id;
+    },
+    //提交发放
+    submitGrantForm(){
+      grantCoupon(this.grantForm).then(response => {
+        this.$modal.msgSuccess("发放成功");
+        this.openGrant = false;
+        this.getList();
+        this.grantForm = {};
+      });
     },
 
   }

@@ -164,6 +164,7 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
         
         //咨询师缓存刷新
         consultService.refreshCacheByIdList(billList.stream().map(p -> p.getConsultId()).collect(Collectors.toList()));
+        
         //todo通知--  咨询师分账已完成
         CloudFunctions cloudFunctions = new CloudFunctions();
         for (PsyConsultantAccountRecord record : acctRecordList) {
