@@ -181,6 +181,13 @@
                 <version>${tianyi.version}</version>
             </dependency>
 
+            <!-- sim卡管理模块-->
+            <dependency>
+                <groupId>com.tianyi</groupId>
+                <artifactId>tianyi-sim</artifactId>
+                <version>${tianyi.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -191,6 +198,7 @@
         <module>tianyi-quartz</module>
         <module>tianyi-generator</module>
         <module>tianyi-common</module>
+        <module>tianyi-sim</module>
     </modules>
     <packaging>pom</packaging>
 
