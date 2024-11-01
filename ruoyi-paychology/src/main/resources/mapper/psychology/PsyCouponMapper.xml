@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="consultantId"    column="consultant_id"    />
         <result property="isUsable"    column="is_usable"    />
         <result property="createTime"    column="create_time"    />
+        <result property="useTime"    column="use_time"    />
         <result property="expireDate"    column="expire_date"    />
         <result property="couponName"    column="coupon_name"    />
         <result property="maxDeductionPrice"    column="max_deduction_price"    />
@@ -21,12 +22,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectPsyCouponVo">
-        select coupon_no, template_id, user_id, consultant_id, is_usable, create_time, expire_date from psy_coupon
+        select coupon_no, template_id, user_id, consultant_id, is_usable, create_time, use_time, expire_date from psy_coupon
     </sql>
 
     <select id="selectPsyCouponList" parameterType="PsyCoupon" resultMap="PsyCouponResult">
         select
-            cou.coupon_no, cou.template_id, cou.user_id, cou.consultant_id, cou.is_usable, cou.create_time, cou.expire_date ,
+            cou.coupon_no, cou.template_id, cou.user_id, cou.consultant_id, cou.is_usable, cou.create_time, cou.use_time, cou.expire_date ,
                tem.coupon_name , tem.max_deduction_price , tem.server_type, tem.discount_rate, tem.use_threshold_price , tem.coupon_type,
             CASE
                 WHEN cou.expire_date &lt; CURDATE() THEN 1
@@ -56,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectPsyCouponByCouponNo" parameterType="String" resultMap="PsyCouponResult">
         select
-            cou.coupon_no, cou.template_id, cou.user_id, cou.consultant_id, cou.is_usable, cou.create_time, cou.expire_date ,
+            cou.coupon_no, cou.template_id, cou.user_id, cou.consultant_id, cou.is_usable, cou.create_time,cou.use_time, cou.expire_date ,
             tem.coupon_name , tem.max_deduction_price , tem.server_type, tem.discount_rate, tem.use_threshold_price , tem.coupon_type,
             CASE
                 WHEN cou.expire_date &lt; CURDATE() THEN 1
@@ -77,6 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consultantId != null">consultant_id,</if>
             <if test="isUsable != null">is_usable,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="useTime != null">use_time,</if>
             <if test="expireDate != null">expire_date,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -86,6 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consultantId != null">#{consultantId},</if>
             <if test="isUsable != null">#{isUsable},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="useTime != null">#{useTime},</if>
             <if test="expireDate != null">#{expireDate},</if>
          </trim>
     </insert>
@@ -93,7 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertPsyCouponList">
         insert into psy_coupon
         (
-            coupon_no, template_id, user_id, consultant_id, is_usable, create_time, expire_date
+            coupon_no, template_id, user_id, consultant_id, is_usable, create_time, use_time, expire_date
         )
         values
         <foreach collection="list" item="coupon" separator=",">
@@ -104,6 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{coupon.consultantId},
             0,
             #{coupon.createTime},
+            #{coupon.useTime},
             #{coupon.expireDate}
         )
         </foreach>
@@ -117,6 +121,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consultantId != null">consultant_id = #{consultantId},</if>
             <if test="isUsable != null">is_usable = #{isUsable},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="useTime != null">use_time = #{useTime},</if>
             <if test="expireDate != null">expire_date = #{expireDate},</if>
         </trim>
         where coupon_no = #{couponNo}

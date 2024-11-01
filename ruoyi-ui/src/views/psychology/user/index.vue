@@ -103,13 +103,20 @@
 <!--      <el-table-column label="" align="center" prop="wxOpenid" />-->
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button
+<!--          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['psychology:user:edit']"
-          >修改</el-button>
+          >修改</el-button>-->
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleDetail(scope.row)"
+            v-hasPermi="['psychology:user:edit']"
+          >详情</el-button>
           <el-button
             size="mini"
             type="text"
@@ -158,6 +165,49 @@
       </div>
     </el-dialog>
 
+    <!-- 用户详情对话框 -->
+    <el-dialog :title="title" :visible.sync="openDetail" width="1350px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+        <el-form-item label="用户名" prop="name">
+          <el-input v-model="form.name" placeholder="请输入" disabled/>
+        </el-form-item>
+        <el-form-item label="手机号码" prop="phone">
+          <el-input v-model="form.phone" placeholder="请输入" disabled/>
+        </el-form-item>
+<!--        <el-form-item label="头像地址" prop="avatar">
+          <el-input v-model="form.avatar" placeholder="请输入头像地址" disabled/>
+        </el-form-item>-->
+        <el-form-item label="微信Id" prop="wxOpenid">
+          <el-input v-model="form.wxOpenid" placeholder="请输入" disabled/>
+        </el-form-item>
+
+        <el-form-item label="拥有的券清单">
+          <el-button :type="condition === 1 ? 'primary' : 'info'" size="mini" @click="switchCondition(1)">可用</el-button>
+          <el-button :type="condition === 2 ? 'primary' : 'info'" size="mini" @click="switchCondition(2)">已使用</el-button>
+          <el-button :type="condition === 3 ? 'primary' : 'info'" size="mini" @click="switchCondition(3)">已过期</el-button>
+          <el-table v-loading="loading" :data="couponList" >
+              <el-table-column label="优惠券编号" align="center" prop="couponNo" />
+              <el-table-column label="优惠券名" align="center" prop="couponName" />
+              <el-table-column label="领取时间" align="center" prop="createTime" />
+              <el-table-column label="使用时间" align="center" prop="useTime" />
+              <el-table-column label="过期日" align="center" prop="expireDate" />
+          </el-table>
+
+          <pagination
+            v-show="totalCoupon>0"
+            :total="totalCoupon"
+            :page.sync="queryCoupon.pageNum"
+            :limit.sync="queryCoupon.pageSize"
+            @pagination="getCouponList"
+          />
+        </el-form-item>
+
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelDetail">返 回</el-button>
+      </div>
+    </el-dialog>
+
     <!-- 发放优惠券-对话框 -->
     <el-dialog :title="title" :visible.sync="openGrant" width="500px" append-to-body>
       <el-form ref="form" :model="grantForm" :rules="grantRules" label-width="80px">
@@ -179,7 +229,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitGrantForm">确 定</el-button>
-        <el-button @click="grantCancel">取 消</el-button>
+        <el-button @click="cancelGrant">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -187,7 +237,7 @@
 
 <script>
 import { listUser, getUser, delUser, addUser, updateUser } from "@/api/psychology/user";
-import { listTemplate , grantCoupon } from "@/api/marketing/coupon";
+import { listTemplate , grantCoupon, listCoupon } from "@/api/marketing/coupon";
 
 export default {
   name: "User",
@@ -205,6 +255,7 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
+      totalCoupon: 0,
       // 用户表格数据
       userList: [],
       couponTemList: [],
@@ -213,6 +264,8 @@ export default {
       // 是否显示弹出层
       open: false,
       openGrant: false,
+      openDetail: false,
+      condition: 1,
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -229,8 +282,16 @@ export default {
         pageSize: 99999,
         templateStatus:0
       },
+      queryCoupon:{
+        pageNum: 1,
+        pageSize: 10,
+        isUsable: 0,
+        isExpire: 0,
+        userId: ''
+      },
       // 表单参数
       form: {},
+      couponList: [],
       grantForm: {},
       // 表单校验
       rules: {},
@@ -239,7 +300,7 @@ export default {
   },
   created() {
     this.getList();
-    this.getPocketCouponList();
+    this.getCouponTemList();
   },
   methods: {
     /** 查询用户列表 */
@@ -252,7 +313,7 @@ export default {
       });
     },
     //查询优惠券模版清单
-    getPocketCouponList(){
+    getCouponTemList(){
       listTemplate(this.queryGrant).then(response => {
         this.couponTemList = response.rows;
         console.log("===============");
@@ -264,9 +325,14 @@ export default {
       this.open = false;
       this.reset();
     },
-    grantCancel(){
+    cancelGrant(){
       this.openGrant = false;
-      this.grantForm = {};
+      this.grantForm = {
+      };
+    },
+    cancelDetail(){
+      this.openDetail = false;
+      this.reset();
     },
     // 表单重置
     reset() {
@@ -312,6 +378,44 @@ export default {
         this.open = true;
         this.title = "修改用户";
       });
+    },
+    /** 详情按钮操作 */
+    handleDetail(row) {
+      this.reset();
+      const id = row.id || this.ids
+      getUser(id).then(response => {
+        this.form = response.data;
+        this.openDetail = true;
+        this.title = "用户详情";
+      });
+      this.queryCoupon.userId = id;
+      this.getCouponList();
+    },
+    //查询用户名下的优惠券清单
+    getCouponList(){
+      listCoupon(this.queryCoupon).then(response => {
+        this.couponList = response.rows;
+        this.totalCoupon = response.total;
+      });
+    },
+    //用户详情, 切换券清单的查询条件
+    switchCondition(condition){
+        switch (condition) {
+            case 1://可用
+              this.queryCoupon.isUsable = 0;
+              this.queryCoupon.isExpire = 0;
+              break;
+            case 2://已使用
+              this.queryCoupon.isUsable = 1;
+              this.queryCoupon.isExpire = null;
+              break;
+            case 3://已过期
+              this.queryCoupon.isUsable = 0;
+              this.queryCoupon.isExpire = 1;
+              break;
+        }
+        this.condition = condition;
+        this.getCouponList();
     },
     /** 提交按钮 */
     submitForm() {

@@ -409,7 +409,8 @@ public class PsyCouponServiceImpl implements IPsyCouponService
             return;
         }
         PsyCoupon psyCoupon = psyCouponMapper.selectPsyCouponByCouponNo(couponNo);
-        psyCoupon.setIsUsable(1);//已消耗
+            psyCoupon.setIsUsable(1);//已消耗
+            psyCoupon.setUseTime(new Date());
         psyCouponMapper.updatePsyCoupon(psyCoupon);
     }
 

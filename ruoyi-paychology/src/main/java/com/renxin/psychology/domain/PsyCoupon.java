@@ -1,6 +1,7 @@
 package com.renxin.psychology.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -9,6 +10,7 @@ import com.renxin.common.core.domain.BaseEntity;
 import org.apache.poi.hpsf.Decimal;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 用户-优惠券发行对象 psy_coupon
@@ -46,6 +48,11 @@ public class PsyCoupon extends BaseEntity
     /** 到期日期 */
     @Excel(name = "到期日期")
     private String expireDate;
+
+    /** 使用时间 */
+    @Excel(name = "使用时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date useTime;
     
     /** 优惠券模版名 */
     @TableField(exist = false)

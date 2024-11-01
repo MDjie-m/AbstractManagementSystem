@@ -39,11 +39,11 @@ public class PsyConsultantOrder extends BaseEntity
     @Excel(name = "服务ID :体验ID、个督ID、课程ID 套餐ID")
     private String serverId;
 
-    /** 服务类型  1：体验 2:个督、3:团督、4:课程 5:个人套餐 */
-    @Excel(name = "服务类型  1：体验 2:个督、3:团督、4:课程 5:个人套餐")
+    /** 服务类型  1：团督 2:个督、3:体验、4:课程 5:个人套餐 */
+    @Excel(name = "服务类型  1：团督 2:个督、3:体验、4:课程 5:个人套餐")
     private String serverType;
 
-    /** 服务类型  1：体验 2:个督、3:团督、4:课程 5:个人套餐 */
+    /** 服务类型  1：团督 2:个督、3:体验、4:课程 5:个人套餐 */
     @TableField(exist = false)
     private List<String> serverTypeList;
 
