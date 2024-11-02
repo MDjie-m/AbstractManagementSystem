@@ -19,6 +19,9 @@ public interface FjxProductMapper
      */
     public FjxProduct selectFjxProductById(String id);
 
+
+    public FjxProduct selectFjxProductByProductId(Long productId);
+
     /**
      * 查询商品列表
      * 

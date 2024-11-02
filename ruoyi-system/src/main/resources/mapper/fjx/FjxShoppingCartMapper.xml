@@ -19,10 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectFjxShoppingCartList" parameterType="FjxShoppingCart" resultMap="FjxShoppingCartResult">
         <include refid="selectFjxShoppingCartVo"/>
         <where>  
-            <if test="cartId != null "> and cart_id = #{cartId}</if>
             <if test="userId != null "> and user_id = #{userId}</if>
-            <if test="productId != null "> and product_id = #{productId}</if>
-            <if test="quantity != null "> and quantity = #{quantity}</if>
         </where>
     </select>
     

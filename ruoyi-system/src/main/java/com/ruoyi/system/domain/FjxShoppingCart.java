@@ -34,6 +34,7 @@ public class FjxShoppingCart extends BaseEntity
     @Excel(name = "商品数量")
     private Long quantity;
 
+
     public void setId(String id) 
     {
         this.id = id;

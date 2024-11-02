@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import com.ruoyi.system.domain.FjxShoppingCart;
+import com.ruoyi.system.domain.dto.FjxShopCartDto;
 
 /**
  * 购物车Service接口
@@ -26,6 +27,7 @@ public interface IFjxShoppingCartService
      * @return 购物车集合
      */
     public List<FjxShoppingCart> selectFjxShoppingCartList(FjxShoppingCart fjxShoppingCart);
+    public List<FjxShopCartDto> selectFjxShoppingCartList2(FjxShoppingCart fjxShoppingCart);
 
     /**
      * 新增购物车

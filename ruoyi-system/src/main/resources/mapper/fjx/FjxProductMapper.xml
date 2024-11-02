@@ -43,6 +43,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+
+    <select id="selectFjxProductByProductId" parameterType="Long" resultMap="FjxProductResult">
+        <include refid="selectFjxProductVo"/>
+        where product_id = #{productId}
+    </select>
+
     <insert id="insertFjxProduct" parameterType="FjxProduct" useGeneratedKeys="true" keyProperty="id">
         insert into FJX_product
         <trim prefix="(" suffix=")" suffixOverrides=",">

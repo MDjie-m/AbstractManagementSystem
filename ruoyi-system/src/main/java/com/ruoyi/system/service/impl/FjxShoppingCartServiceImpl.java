@@ -1,6 +1,11 @@
 package com.ruoyi.system.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.ruoyi.system.domain.FjxProduct;
+import com.ruoyi.system.domain.dto.FjxShopCartDto;
+import com.ruoyi.system.mapper.FjxProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.system.mapper.FjxShoppingCartMapper;
@@ -18,6 +23,10 @@ public class FjxShoppingCartServiceImpl implements IFjxShoppingCartService
 {
     @Autowired
     private FjxShoppingCartMapper fjxShoppingCartMapper;
+
+
+    @Autowired
+    private FjxProductMapper fjxProductMapper;
 
     /**
      * 查询购物车
@@ -38,10 +47,33 @@ public class FjxShoppingCartServiceImpl implements IFjxShoppingCartService
      * @return 购物车
      */
     @Override
+    public List<FjxShopCartDto> selectFjxShoppingCartList2(FjxShoppingCart fjxShoppingCart)
+    {
+        List<FjxShoppingCart> fjxShoppingCarts = fjxShoppingCartMapper.selectFjxShoppingCartList(fjxShoppingCart);
+        Long userId = fjxShoppingCart.getUserId();
+        List<FjxShopCartDto> fjxShopCartDtos = new ArrayList<>();
+        for (FjxShoppingCart shoppingCart : fjxShoppingCarts) {
+            Long productId = shoppingCart.getProductId();
+            FjxProduct fjxProduct = fjxProductMapper.selectFjxProductByProductId(productId);
+            FjxShopCartDto fjxShopCartDto = FjxShopCartDto.builder()
+                    .shoppingCart(shoppingCart)
+                    .product(fjxProduct)
+                    .build();
+            fjxShopCartDtos.add(fjxShopCartDto);
+        }
+
+
+        return fjxShopCartDtos;
+    }
+
+
+    @Override
     public List<FjxShoppingCart> selectFjxShoppingCartList(FjxShoppingCart fjxShoppingCart)
     {
+
         return fjxShoppingCartMapper.selectFjxShoppingCartList(fjxShoppingCart);
     }
+
 
     /**
      * 新增购物车

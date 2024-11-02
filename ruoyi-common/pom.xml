@@ -6,7 +6,7 @@
         <artifactId>ruoyi</artifactId>
         <groupId>com.ruoyi</groupId>
         <version>3.8.8</version>
-    </parent>
+    </parent><build><plugins><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><configuration><source>8</source><target>8</target></configuration></plugin></plugins></build>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ruoyi-common</artifactId>
@@ -16,6 +16,13 @@
     </description>
 
     <dependencies>
+
+
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>4.35.79.ALL</version>
+        </dependency>
 
         <!-- Spring框架基本的核心工具 -->
         <dependency>
