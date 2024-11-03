@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.FjxUserAddressMapper">
+    
+    <resultMap type="FjxUserAddress" id="FjxUserAddressResult">
+        <result property="id"    column="id"    />
+        <result property="addressId"    column="address_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="recipientName"    column="recipient_name"    />
+        <result property="phone"    column="phone"    />
+        <result property="addressDetail"    column="address_detail"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="updatedTime"    column="updated_time"    />
+    </resultMap>
+
+    <sql id="selectFjxUserAddressVo">
+        select id, address_id, user_id, recipient_name, phone, address_detail, created_time, updated_time from FJX_user_address
+    </sql>
+
+    <select id="selectFjxUserAddressList" parameterType="FjxUserAddress" resultMap="FjxUserAddressResult">
+        <include refid="selectFjxUserAddressVo"/>
+        <where>  
+            <if test="addressId != null "> and address_id = #{addressId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="recipientName != null  and recipientName != ''"> and recipient_name like concat('%', #{recipientName}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="addressDetail != null  and addressDetail != ''"> and address_detail = #{addressDetail}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="updatedTime != null "> and updated_time = #{updatedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectFjxUserAddressById" parameterType="Long" resultMap="FjxUserAddressResult">
+        <include refid="selectFjxUserAddressVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertFjxUserAddress" parameterType="FjxUserAddress" useGeneratedKeys="true" keyProperty="id">
+        insert into FJX_user_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="addressId != null">address_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="recipientName != null and recipientName != ''">recipient_name,</if>
+            <if test="phone != null and phone != ''">phone,</if>
+            <if test="addressDetail != null and addressDetail != ''">address_detail,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="updatedTime != null">updated_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="addressId != null">#{addressId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="recipientName != null and recipientName != ''">#{recipientName},</if>
+            <if test="phone != null and phone != ''">#{phone},</if>
+            <if test="addressDetail != null and addressDetail != ''">#{addressDetail},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="updatedTime != null">#{updatedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFjxUserAddress" parameterType="FjxUserAddress">
+        update FJX_user_address
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="addressId != null">address_id = #{addressId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="recipientName != null and recipientName != ''">recipient_name = #{recipientName},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="addressDetail != null and addressDetail != ''">address_detail = #{addressDetail},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFjxUserAddressById" parameterType="Long">
+        delete from FJX_user_address where id = #{id}
+    </delete>
+
+    <delete id="deleteFjxUserAddressByIds" parameterType="String">
+        delete from FJX_user_address where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
