@@ -9,11 +9,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="cartId"    column="cart_id"    />
         <result property="userId"    column="user_id"    />
         <result property="productId"    column="product_id"    />
+        <result property="checked"    column="checked"    />
         <result property="quantity"    column="quantity"    />
     </resultMap>
 
     <sql id="selectFjxShoppingCartVo">
-        select id, cart_id, user_id, product_id, quantity from FJX_shopping_cart
+        select id, cart_id, user_id, product_id, checked, quantity from FJX_shopping_cart
     </sql>
 
     <select id="selectFjxShoppingCartList" parameterType="FjxShoppingCart" resultMap="FjxShoppingCartResult">
@@ -34,12 +35,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="cartId != null">cart_id,</if>
             <if test="userId != null">user_id,</if>
             <if test="productId != null">product_id,</if>
+            <if test="checked !=null">checked,</if>
             <if test="quantity != null">quantity,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="cartId != null">#{cartId},</if>
             <if test="userId != null">#{userId},</if>
             <if test="productId != null">#{productId},</if>
+            <if test="checked !=null">checked,</if>
             <if test="quantity != null">#{quantity},</if>
          </trim>
     </insert>

@@ -30,12 +30,24 @@ public class FjxShoppingCart extends BaseEntity
     @Excel(name = "商品的唯一标识")
     private Long productId;
 
+
+    @Excel(name = "是否选中")
+    private Boolean checked = false;
+
     /** 商品数量 */
     @Excel(name = "商品数量")
     private Long quantity;
 
 
-    public void setId(String id) 
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
+    }
+
+    public void setId(String id)
     {
         this.id = id;
     }
