@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.ruoyi.common.config.AliPayProperties;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.uuid.UUID;
 import com.ruoyi.system.service.IFjxShoppingCartService;
@@ -13,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.ruoyi.common.config.AliPyConfig.AliPayProperties.notify_url;
-import static com.ruoyi.common.config.AliPyConfig.AliPayProperties.return_url;
+
 
 /**
  * @author:
@@ -33,11 +33,15 @@ public class FjxPayController {
     @Autowired
     private AlipayClient alipayClient;
 
+    @Autowired
+    private AliPayProperties aliPayProperties;
+
+
     @RequestMapping(value = "/pay",method = RequestMethod.POST)
     public String pay() throws AlipayApiException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();  // 发送请求的 Request类
-        request.setNotifyUrl(notify_url);
-        request.setReturnUrl(return_url);
+        request.setNotifyUrl(aliPayProperties.notifyUrl);
+        request.setReturnUrl(aliPayProperties.returnUrl);
 
         JSONObject bizContent = new JSONObject();
         bizContent.put("out_trade_no", "fjx"+ UUID.randomUUID());  // 我们自己生成的订单编号

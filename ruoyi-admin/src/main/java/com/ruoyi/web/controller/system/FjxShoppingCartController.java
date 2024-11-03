@@ -43,6 +43,11 @@ public class FjxShoppingCartController extends BaseController
     }
 
 
+    /**
+     * 查询订单详情
+     * @param fjxShoppingCart
+     * @return
+     */
     @PreAuthorize("@ss.hasPermi('fjx:cart:list')")
     @PostMapping("/user/list")
     public AjaxResult getShopList(@RequestBody FjxInFjxShopCartDto fjxShoppingCart){
