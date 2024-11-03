@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ruoyi.system.domain.FjxProduct;
+import com.ruoyi.system.domain.dto.FjxInFjxShopCartDto;
 import com.ruoyi.system.domain.dto.FjxShopCartDto;
 import com.ruoyi.system.mapper.FjxProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,5 +122,46 @@ public class FjxShoppingCartServiceImpl implements IFjxShoppingCartService
     public int deleteFjxShoppingCartById(String id)
     {
         return fjxShoppingCartMapper.deleteFjxShoppingCartById(id);
+    }
+
+
+    /**
+     * 查询订单详情
+     * @param fjxInFjxShopCartDto
+     * @return
+     */
+    @Override
+    public  List<FjxShopCartDto> selectOrderShoppingCardList(FjxInFjxShopCartDto fjxInFjxShopCartDto) {
+        Long userId = fjxInFjxShopCartDto.getUserId();
+        if(userId==null) return null;
+        // 通过userId和productId更新选中状态
+        List<Long> shopProductId = fjxInFjxShopCartDto.getProductId();
+        for (Long productId : shopProductId) {
+            FjxShoppingCart shoppingCart = new FjxShoppingCart();
+            shoppingCart.setUserId(userId);
+            shoppingCart.setProductId(productId);
+            shoppingCart.setChecked(true);
+            fjxShoppingCartMapper.updateFjxShoppingCart2(shoppingCart);
+        }
+
+        // 根据userId和选中状态true查询信息
+        FjxShoppingCart shoppingCart=new FjxShoppingCart();
+        shoppingCart.setUserId(userId);
+        shoppingCart.setChecked(true);
+        List<FjxShoppingCart> fjxShoppingCarts = fjxShoppingCartMapper.selectFjxShoppingCartListByUserIdAndChecked(shoppingCart);
+
+        List<FjxShopCartDto> fjxShopCartDtos = new ArrayList<>();
+        for (FjxShoppingCart cart : fjxShoppingCarts) {
+            Long productId = cart.getProductId();
+            // 通过商品id查询商品信息
+            FjxProduct fjxProduct = fjxProductMapper.selectFjxProductByProductId(productId);
+            FjxShopCartDto fjxShopCartDto = FjxShopCartDto.builder()
+                    .shoppingCart(cart)
+                    .product(fjxProduct)
+                    .build();
+            fjxShopCartDtos.add(fjxShopCartDto);
+        }
+        return fjxShopCartDtos;
+
     }
 }

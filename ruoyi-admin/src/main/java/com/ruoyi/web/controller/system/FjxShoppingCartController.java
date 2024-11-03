@@ -7,6 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.FjxShoppingCart;
+import com.ruoyi.system.domain.dto.FjxInFjxShopCartDto;
 import com.ruoyi.system.domain.dto.FjxShopCartDto;
 import com.ruoyi.system.service.IFjxShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,16 @@ public class FjxShoppingCartController extends BaseController
         List<FjxShopCartDto> list = fjxShoppingCartService.selectFjxShoppingCartList2(fjxShoppingCart);
         return getDataTable(list);
     }
+
+
+    @PreAuthorize("@ss.hasPermi('fjx:cart:list')")
+    @PostMapping("/user/list")
+    public AjaxResult getShopList(@RequestBody FjxInFjxShopCartDto fjxShoppingCart){
+        return success(fjxShoppingCartService.selectOrderShoppingCardList(fjxShoppingCart));
+    }
+
+
+
 
     /**
      * 导出购物车列表

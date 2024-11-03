@@ -26,6 +26,7 @@ public interface FjxShoppingCartMapper
      * @return 购物车集合
      */
     public List<FjxShoppingCart> selectFjxShoppingCartList(FjxShoppingCart fjxShoppingCart);
+    public List<FjxShoppingCart> selectFjxShoppingCartListByUserIdAndChecked(FjxShoppingCart fjxShoppingCart);
 
     /**
      * 新增购物车
@@ -42,6 +43,9 @@ public interface FjxShoppingCartMapper
      * @return 结果
      */
     public int updateFjxShoppingCart(FjxShoppingCart fjxShoppingCart);
+
+    public int updateFjxShoppingCart2(FjxShoppingCart fjxShoppingCart);
+
 
     /**
      * 删除购物车

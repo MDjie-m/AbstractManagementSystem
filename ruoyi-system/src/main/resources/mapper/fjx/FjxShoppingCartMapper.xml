@@ -29,6 +29,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectFjxShoppingCartListByUserIdAndChecked" parameterType="FjxShoppingCart" resultMap="FjxShoppingCartResult">
+        <include refid="selectFjxShoppingCartVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="checked != null "> and checked = #{checked}</if>
+        </where>
+    </select>
+
     <insert id="insertFjxShoppingCart" parameterType="FjxShoppingCart" useGeneratedKeys="true" keyProperty="id">
         insert into FJX_shopping_cart
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -56,6 +64,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="quantity != null">quantity = #{quantity},</if>
         </trim>
         where id = #{id}
+    </update>
+
+    <update id="updateFjxShoppingCart2" parameterType="FjxShoppingCart">
+        update FJX_shopping_cart
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="checked != null">checked = #{checked},</if>
+        </trim>
+        where user_id = #{userId} and product_id = #{productId}
     </update>
 
     <delete id="deleteFjxShoppingCartById" parameterType="String">

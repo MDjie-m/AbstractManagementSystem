@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import com.ruoyi.system.domain.FjxShoppingCart;
+import com.ruoyi.system.domain.dto.FjxInFjxShopCartDto;
 import com.ruoyi.system.domain.dto.FjxShopCartDto;
 
 /**
@@ -60,4 +61,6 @@ public interface IFjxShoppingCartService
      * @return 结果
      */
     public int deleteFjxShoppingCartById(String id);
+
+    List<FjxShopCartDto> selectOrderShoppingCardList(FjxInFjxShopCartDto fjxShoppingCart);
 }
