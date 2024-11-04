@@ -1,4 +1,4 @@
 package com.tianyi.terminal.mapper;
 
-public class A {
+public interface TerminalMapper {
 }
