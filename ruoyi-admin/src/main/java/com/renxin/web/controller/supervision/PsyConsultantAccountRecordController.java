@@ -54,10 +54,10 @@ public class PsyConsultantAccountRecordController extends BaseController
     }
 
     /**
-     * 导出月度提现清单
+     * 下载提现申请报表
      */
     @PreAuthorize("@ss.hasPermi('system:record:export')")
-    @Log(title = "导出月度提现清单", businessType = BusinessType.EXPORT)
+    @Log(title = "下载提现申请报表", businessType = BusinessType.EXPORT)
     @PostMapping("/drawExport")
     public void drawExport(HttpServletResponse response, PsyConsultantAccountRecord psyConsultantAccountRecord)
     {

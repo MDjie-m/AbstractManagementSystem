@@ -6,6 +6,7 @@ import com.renxin.common.annotation.RateLimiter;
 import com.renxin.common.config.RuoYiConfig;
 import com.renxin.common.constant.Constants;
 import com.renxin.common.core.domain.AjaxResult;
+import com.renxin.common.exception.ServiceException;
 import com.renxin.common.utils.IDhelper;
 import com.renxin.common.utils.StringUtils;
 import com.renxin.common.utils.cos.COSClientFactory;
@@ -79,7 +80,7 @@ public class ConsultantCommonController
      */
     @PostMapping("/upload")
     @RateLimiter
-    public AjaxResult uploadFile(MultipartFile file, HttpServletRequest request) throws Exception
+    public AjaxResult uploadFile(MultipartFile file, HttpServletRequest request)
     {
         String module = request.getHeader("module");
         String type = request.getHeader("type");
@@ -111,7 +112,8 @@ public class ConsultantCommonController
         }
         catch (Exception e)
         {
-            return AjaxResult.error(e.getMessage());
+            log.error(e.getMessage());
+            throw new ServiceException("上传文件异常, fileName: " + file.getOriginalFilename() + ", module:" + module + ", type:" + type);
         }
     }
 

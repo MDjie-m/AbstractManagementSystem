@@ -74,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT
             main.consultant_id,
             main.payAmount,
+            main.recordIds,
             card.card_number,
             card.bank_name,
             card.branch_name,
@@ -82,7 +83,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             (
             SELECT
                 re.consultant_id,
-                SUM(re.pay_amount) AS payAmount
+                SUM(re.pay_amount) AS payAmount,
+                GROUP_CONCAT(re.record_id SEPARATOR ',') AS recordIds
             FROM psy_consultant_account_record re
             WHERE 1=1
                 <if test="payType != null  and payType != ''">

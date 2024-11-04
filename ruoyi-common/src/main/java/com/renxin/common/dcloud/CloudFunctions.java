@@ -31,6 +31,10 @@ public class CloudFunctions {
         String res = HttpUtil.get(url, requestParams);
         JSONObject jsonObject = new JSONObject(res);
         String phoneNumber = jsonObject.getStr("phoneNumber");
+        if (ObjectUtils.isEmpty(phoneNumber)){
+            log.error("云服务获取手机号失败, access_token:" + consultLoginDTO.getAccess_token() + ", openId:" + consultLoginDTO.getOpenid() 
+            + ", appid: " + appid);
+        }
         return phoneNumber;
     }
 

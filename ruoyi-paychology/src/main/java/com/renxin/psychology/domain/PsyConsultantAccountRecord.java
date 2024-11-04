@@ -65,15 +65,15 @@ public class PsyConsultantAccountRecord extends BaseEntity
     private String createTimeEnd;
     
     @TableField(exist = false)
-    @Excel(name = "银行卡号")
+    @Excel(name = "*账户")
     private String cardNumber;
     
     @TableField(exist = false)
-    @Excel(name = "持卡人姓名")
+    @Excel(name = "*户名")
     private String cardUserName;
     
     /** 金额 */
-    @Excel(name = "金额")
+    @Excel(name = "*金额")
     private BigDecimal payAmount;
 
 
@@ -88,6 +88,10 @@ public class PsyConsultantAccountRecord extends BaseEntity
     @TableField(exist = false)
     @Excel(name = "汇款备注")
     private String remark;
+
+    @TableField(exist = false)
+    @Excel(name = "提现申请单id")
+    private String  recordIds;
 
     @TableField(exist = false)
     //订单任务类型  12.咨询  21.团督  22.个督  23.体验
