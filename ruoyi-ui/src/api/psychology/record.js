@@ -42,3 +42,13 @@ export function delRecord(recordId) {
     method: 'delete'
   })
 }
+
+// 标记提现申请完成
+export function drawFinish(data) {
+  return request({
+    url: '/finance/record/drawFinish',
+    method: 'post',
+    data: data
+  })
+}
+

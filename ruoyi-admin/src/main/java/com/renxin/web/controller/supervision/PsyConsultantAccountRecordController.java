@@ -67,6 +67,19 @@ public class PsyConsultantAccountRecordController extends BaseController
     }
 
     /**
+     * 标记提现完成
+     */
+    @PreAuthorize("@ss.hasPermi('system:record:export')")
+    @Log(title = "标记提现完成", businessType = BusinessType.EXPORT)
+    @PostMapping("/drawFinish")
+    public void drawFinish(HttpServletResponse response, @RequestBody PsyConsultantAccountRecord psyConsultantAccountRecord)
+    {
+       psyConsultantAccountRecordService.drawFinish(psyConsultantAccountRecord);
+    }
+    
+    
+
+    /**
      * 获取账户明细流水详细信息
      */
     @PreAuthorize("@ss.hasPermi('system:record:query')")

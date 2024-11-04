@@ -29,8 +29,10 @@ public interface IPsyConsultantAccountRecordService
      */
     public List<PsyConsultantAccountRecord> selectPsyConsultantAccountRecordList(PsyConsultantAccountRecord psyConsultantAccountRecord);
     
-    //统计支取清单
+    //统计提现申请
     public List<PsyConsultantAccountRecord> calcDrawList(PsyConsultantAccountRecord psyConsultantAccountRecord);
+    //标记提现完成
+    public void drawFinish(PsyConsultantAccountRecord psyConsultantAccountRecord);
 
     /**
      * 新增账户明细流水

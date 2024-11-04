@@ -28,8 +28,9 @@ public interface PsyConsultantAccountRecordMapper
      */
     public List<PsyConsultantAccountRecord> selectPsyConsultantAccountRecordList(PsyConsultantAccountRecord psyConsultantAccountRecord);
 
-    //统计支取清单
+    //统计提现申请
     public List<PsyConsultantAccountRecord> calcDrawList(PsyConsultantAccountRecord psyConsultantAccountRecord);
+    public int drawFinish(PsyConsultantAccountRecord psyConsultantAccountRecord);
 
     /**
      * 新增账户明细流水

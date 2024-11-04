@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 账户明细流水对象 psy_consultant_account_record
@@ -90,8 +91,11 @@ public class PsyConsultantAccountRecord extends BaseEntity
     private String remark;
 
     @TableField(exist = false)
-    @Excel(name = "提现申请单id")
+    @Excel(name = "提现申请单ids")
     private String  recordIds;
+
+    @TableField(exist = false)
+    private List<String> recordIdList;
 
     @TableField(exist = false)
     //订单任务类型  12.咨询  21.团督  22.个督  23.体验

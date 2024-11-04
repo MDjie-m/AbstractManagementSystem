@@ -63,6 +63,7 @@ public class ConsultantAccountController extends BaseController
         Long consultId = consultantTokenService.getConsultId(request);
         psyConsultantAccountRecord.setConsultantId(consultId);
         psyConsultantAccountRecord.setPayType("1");//取款
+        psyConsultantAccountRecord.setStatus("2");//待处理
         psyConsultantAccountRecordService.insertPsyConsultantAccountRecord(psyConsultantAccountRecord);
         return AjaxResult.success("取款申请提交成功");
     }

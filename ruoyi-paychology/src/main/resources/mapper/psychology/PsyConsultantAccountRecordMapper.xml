@@ -95,7 +95,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 </if>
             GROUP BY re.consultant_id
             ) main
-        LEFT JOIN psy_consultant_debitcard card ON card.consultant_id = main.consultant_id AND card.is_default = 0;
+    LEFT JOIN (
+        SELECT cd.*
+        FROM psy_consultant_debitcard cd
+            JOIN (
+                SELECT consultant_id, MIN(card_number) AS card_number 
+                FROM psy_consultant_debitcard
+                WHERE is_default = 0
+                GROUP BY consultant_id
+            ) AS sub
+            ON cd.card_number = sub.card_number
+        ) AS card
+        ON card.consultant_id = main.consultant_id;
     </select>
 
     
@@ -196,6 +207,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="useTime != null">use_time = #{useTime},</if>
         </trim>
         where record_id = #{recordId}
+    </update>
+    
+    <update id="drawFinish" parameterType="PsyConsultantAccountRecord">
+        update
+            psy_consultant_account_record
+        set
+            status = 1
+        where 
+              pay_type = 1
+       and record_id in 
+        <foreach collection="recordIdList" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+
     </update>
 
     <delete id="deletePsyConsultantAccountRecordByRecordId" parameterType="Long">

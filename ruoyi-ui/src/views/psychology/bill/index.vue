@@ -99,6 +99,7 @@
 <script>
 import { getConsultAll } from "@/api/psychology/consult";
 import { listBill, updateBill } from "@/api/psychology/bill";
+import { drawFinish } from "@/api/psychology/record";
 import * as XLSX from "xlsx";
 
 export default {
@@ -199,10 +200,13 @@ export default {
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
         if (jsonData.length > 0) {
-          const firstColumnData = jsonData.slice(1).map(row => row[0]);
+          const firstColumnData = jsonData.slice(1).map(row => row[6]);
           const joinedData = firstColumnData.join(',');
-          console.log(joinedData);
           //todo通知  打款完成
+          drawFinish({recordIds:joinedData}).then(response => {
+            console.log(response);
+            this.$modal.msgSuccess("处理成功")
+          });
         } else {
           this.$modal.msgError('Excel 表格为空或格式不正确');
         }

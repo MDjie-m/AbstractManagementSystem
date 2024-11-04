@@ -1,6 +1,7 @@
 package com.renxin.psychology.service.impl;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import com.renxin.common.exception.ServiceException;
@@ -74,7 +75,7 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
         return "";
     }
 
-    //统计支取清单
+    //统计提现申请
     @Override
     public List<PsyConsultantAccountRecord> calcDrawList(PsyConsultantAccountRecord req){
         List<PsyConsultantAccountRecord> drawList = psyConsultantAccountRecordMapper.calcDrawList(req);
@@ -84,6 +85,13 @@ public class PsyConsultantAccountRecordServiceImpl implements IPsyConsultantAcco
         drawList.forEach(p -> p.setRemark(year + "年" + month + "月咨询费"));
         
         return drawList;
+    }
+
+    //标记提现完成
+    public void drawFinish(PsyConsultantAccountRecord req){
+        String recordIds = req.getRecordIds();
+        req.setRecordIdList(Arrays.asList(recordIds.split(",")));
+        int i = psyConsultantAccountRecordMapper.drawFinish(req);
     }
 
     /**
