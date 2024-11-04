@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Api(tags = "终端管理")
 @RestController
 @RequestMapping("/terminal")
@@ -14,10 +16,12 @@ public class TerminalController {
     @ApiOperation("基站信息查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "rateType", value = "基站类型", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "areaCodes", value = "区域编码", required = true, dataType = "List<String>"),
+            @ApiImplicitParam(name = "custIds", value = "客户ID", required = true, dataType = "List<String>"),
             @ApiImplicitParam(name = "page", value = "页码", required = true, dataType = "String")
     })
     @GetMapping("/queryBSInfo")
-    public R<String> queryBSInfo(String rateType, String page){
+    public R<String> queryBSInfo(String rateType, List<String> areaCodes, List<String> custIds, String page){
 
         return R.ok("查询成功");
     }
