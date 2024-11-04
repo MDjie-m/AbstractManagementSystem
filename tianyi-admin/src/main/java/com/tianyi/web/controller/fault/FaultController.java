@@ -1,8 +1,10 @@
 package com.tianyi.web.controller.fault;
 
 import com.tianyi.common.core.domain.R;
+import com.tianyi.fault.service.IFaultService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/fault")
 public class FaultController {
+
+    @Autowired
+    private IFaultService faultService;
 
     @ApiOperation("终端状态查询")
     @GetMapping("/termStatQuery")

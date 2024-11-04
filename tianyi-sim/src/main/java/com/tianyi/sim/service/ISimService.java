@@ -1,4 +1,4 @@
 package com.tianyi.sim.service;
 
-public class ISimService {
+public interface ISimService {
 }

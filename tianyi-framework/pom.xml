@@ -65,6 +65,18 @@
             <artifactId>tianyi-sim</artifactId>
         </dependency>
 
+        <!-- 终端管理模块 -->
+        <dependency>
+            <groupId>com.tianyi</groupId>
+            <artifactId>tianyi-terminal</artifactId>
+        </dependency>
+
+        <!-- 故障诊断模块 -->
+        <dependency>
+            <groupId>com.tianyi</groupId>
+            <artifactId>tianyi-fault</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -1,4 +1,9 @@
 package com.tianyi.sim.service.impl;
 
-public class ServiceImpl {
+import com.tianyi.sim.service.ISimService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ServiceImpl implements ISimService {
+
 }

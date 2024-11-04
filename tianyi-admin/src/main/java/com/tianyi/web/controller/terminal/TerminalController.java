@@ -1,7 +1,9 @@
 package com.tianyi.web.controller.terminal;
 
 import com.tianyi.common.core.domain.R;
+import com.tianyi.terminal.service.ITerminalService;
 import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +14,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/terminal")
 public class TerminalController {
+
+    @Autowired
+    private ITerminalService terminalService;
 
     @ApiOperation("基站终端统计信息查询")
     @ApiImplicitParams({
