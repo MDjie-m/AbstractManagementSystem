@@ -199,6 +199,7 @@
         <module>tianyi-generator</module>
         <module>tianyi-common</module>
         <module>tianyi-sim</module>
+        <module>tianyi-terminal</module>
     </modules>
     <packaging>pom</packaging>
 
