@@ -188,6 +188,18 @@
                 <version>${tianyi.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.tianyi</groupId>
+                <artifactId>tianyi-terminal</artifactId>
+                <version>${tianyi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.tianyi</groupId>
+                <artifactId>tianyi-fault</artifactId>
+                <version>${tianyi.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -200,6 +212,7 @@
         <module>tianyi-common</module>
         <module>tianyi-sim</module>
         <module>tianyi-terminal</module>
+        <module>tianyi-fault</module>
     </modules>
     <packaging>pom</packaging>
 

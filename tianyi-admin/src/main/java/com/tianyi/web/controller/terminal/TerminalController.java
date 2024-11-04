@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/terminal")
 public class TerminalController {
 
-    @ApiOperation("查询基站信息")
+    @ApiOperation("基站信息查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "rateType", value = "基站类型", required = true, dataType = "String"),
             @ApiImplicitParam(name = "page", value = "页码", required = true, dataType = "String")
@@ -35,6 +35,20 @@ public class TerminalController {
         return R.ok("查询成功");
     }
 
+    @ApiOperation("终端统计")
+    @GetMapping("/terminalStat")
+    public R<String> terminalStat(){
+        return R.ok("查询成功");
+    }
 
+    @ApiOperation("省内流量漫入查询")
+    @GetMapping("/provFlowIn")
+    public R<String> provFlowIn(){
+        return R.ok("查询成功");
+    }
 
+    @ApiOperation("外省流量漫入查询")
+    public R<String> otherProvFlowIn(){
+        return R.ok("查询成功");
+    }
 }
