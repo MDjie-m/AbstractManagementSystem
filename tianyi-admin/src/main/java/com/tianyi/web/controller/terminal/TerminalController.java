@@ -13,16 +13,25 @@ import java.util.List;
 @RequestMapping("/terminal")
 public class TerminalController {
 
-    @ApiOperation("基站信息查询")
+    @ApiOperation("基站终端统计信息查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "rateType", value = "基站类型", required = true, dataType = "String"),
             @ApiImplicitParam(name = "areaCodes", value = "区域编码", required = true, dataType = "List<String>"),
             @ApiImplicitParam(name = "custIds", value = "客户ID", required = true, dataType = "List<String>"),
             @ApiImplicitParam(name = "page", value = "页码", required = true, dataType = "String")
     })
-    @GetMapping("/queryBSInfo")
+    @GetMapping("/queryBSStatInfo")
     public R<String> queryBSInfo(String rateType, List<String> areaCodes, List<String> custIds, String page){
 
+        return R.ok("查询成功");
+    }
+
+    @ApiOperation("查询基站终端信息")
+    @GetMapping("/queryBSTerminalInfo")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "bsId", value = "基站ID", required = true, dataType = "String")
+    })
+    public R<String> queryBSTerminalInfo(String bsId){
         return R.ok("查询成功");
     }
 
@@ -39,20 +48,4 @@ public class TerminalController {
         return R.ok("查询成功");
     }
 
-    @ApiOperation("终端统计")
-    @GetMapping("/terminalStat")
-    public R<String> terminalStat(){
-        return R.ok("查询成功");
-    }
-
-    @ApiOperation("省内流量漫入查询")
-    @GetMapping("/provFlowIn")
-    public R<String> provFlowIn(){
-        return R.ok("查询成功");
-    }
-
-    @ApiOperation("外省流量漫入查询")
-    public R<String> otherProvFlowIn(){
-        return R.ok("查询成功");
-    }
 }
