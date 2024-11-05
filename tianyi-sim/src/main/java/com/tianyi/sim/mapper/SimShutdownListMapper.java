@@ -2,6 +2,7 @@ package com.tianyi.sim.mapper;
 
 import java.util.List;
 import com.tianyi.sim.domain.SimShutdownList;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 停机清单Mapper接口
@@ -9,7 +10,7 @@ import com.tianyi.sim.domain.SimShutdownList;
  * @author tianyi
  * @date 2024-11-05
  */
-public interface SimShutdownListMapper 
+public interface SimShutdownListMapper
 {
     /**
      * 查询停机清单
@@ -25,7 +26,7 @@ public interface SimShutdownListMapper
      * @param simShutdownList 停机清单
      * @return 停机清单集合
      */
-    public List<SimShutdownList> selectSimShutdownListList(SimShutdownList simShutdownList);
+    public List<SimShutdownList> selectSimShutdownList(SimShutdownList simShutdownList);
 
     /**
      * 新增停机清单

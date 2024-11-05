@@ -61,6 +61,12 @@
             <artifactId>tianyi-generator</artifactId>
         </dependency>
 
+        <!-- sim卡管理模块 -->
+        <dependency>
+            <groupId>com.tianyi</groupId>
+            <artifactId>tianyi-sim</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

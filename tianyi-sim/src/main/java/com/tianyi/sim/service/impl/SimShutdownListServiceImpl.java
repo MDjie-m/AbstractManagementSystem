@@ -40,7 +40,7 @@ public class SimShutdownListServiceImpl implements ISimShutdownListService
     @Override
     public List<SimShutdownList> selectSimShutdownListList(SimShutdownList simShutdownList)
     {
-        return simShutdownListMapper.selectSimShutdownListList(simShutdownList);
+        return simShutdownListMapper.selectSimShutdownList(simShutdownList);
     }
 
     /**

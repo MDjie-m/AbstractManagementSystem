@@ -2,6 +2,10 @@ package com.tianyi.web.controller.sim;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.tianyi.common.annotation.Anonymous;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +31,7 @@ import com.tianyi.common.core.page.TableDataInfo;
  * @author tianyi
  * @date 2024-11-05
  */
+@Api(tags = "停机清单管理")
 @RestController
 @RequestMapping("/sim/list")
 public class SimShutdownListController extends BaseController
@@ -37,6 +42,7 @@ public class SimShutdownListController extends BaseController
     /**
      * 查询停机清单列表
      */
+    @ApiOperation("停机清单查询")
     @PreAuthorize("@ss.hasPermi('sim:list:list')")
     @GetMapping("/list")
     public TableDataInfo list(SimShutdownList simShutdownList)
