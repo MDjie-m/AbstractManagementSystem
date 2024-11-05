@@ -106,6 +106,19 @@ public class PsyConsultOrderServiceImpl implements IPsyConsultOrderService
         detail.setPayStatusName(order.getPayStatusName());
 
         List<PsyConsultOrderItem> items = psyConsultOrderItemService.getList(id);
+        
+        //总可约次数
+        int sum = detail.getNum() + detail.getBuyNum();
+        //计算剩余次数
+        if (ObjectUtils.isEmpty(items)){
+            detail.setBuyNum(0);//已约0次
+            detail.setNum(sum);//剩余可用
+        }else{
+            //统计已预约的记录中, "待办"或"已完成"的数量
+            int buyNum = (int)items.stream().filter(p -> "0".equals(p.getStatus()) || "1".equals(p.getStatus()) ).count();
+            detail.setBuyNum(buyNum);
+            detail.setNum(sum - buyNum);
+        }
 
         detail.setServe(psyConsultOrderServeService.getOneByOrder(id, detail.getServeId()));
         detail.setItems(items);
