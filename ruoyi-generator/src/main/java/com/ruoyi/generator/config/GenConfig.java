@@ -1,7 +1,12 @@
 package com.ruoyi.generator.config;
 
+import com.ruoyi.generator.filter.DataFilterChain;
+import com.ruoyi.generator.filter.DateDataFilter;
+import com.ruoyi.generator.filter.DictDataFilter;
+import com.ruoyi.generator.filter.SingleDateFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -69,5 +74,16 @@ public class GenConfig
     public void setTablePrefix(String tablePrefix)
     {
         GenConfig.tablePrefix = tablePrefix;
+    }
+
+
+    @Bean("dataFilterChain")
+    public DataFilterChain dataFilterChain(){
+
+        DataFilterChain dataFilterChain=new DataFilterChain();
+        dataFilterChain.add(new DictDataFilter());
+        dataFilterChain.add(new DateDataFilter());
+        dataFilterChain.add(new SingleDateFilter());
+        return dataFilterChain;
     }
 }
