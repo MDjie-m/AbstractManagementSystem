@@ -1,13 +1,18 @@
 package com.tianyi.web.controller.sim;
 
 import com.tianyi.common.core.domain.R;
+import com.tianyi.sim.domain.vo.DataQueryRes;
 import com.tianyi.sim.service.ISimService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 @Api(tags = "SIM卡管理", description = "SIM卡管理模块描述")
 @RestController
@@ -19,8 +24,9 @@ public class SimController {
 
     @ApiOperation(value = "sim卡停机清单查询")
     @GetMapping("/shutdownQuery")
-    public R<String> shutdownQuery() {
-        return R.ok("停机查询");
+    public R<DataQueryRes> shutdownQuery(@RequestParam Map<String,Object> req) {
+        DataQueryRes data=simService.shutdownQuery(req);
+        return R.ok(data,"停机查询");
     }
 
     @ApiOperation(value = "sim卡断网清单查询")

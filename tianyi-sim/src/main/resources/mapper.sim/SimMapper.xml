@@ -4,4 +4,49 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tianyi.sim.mapper.SimMapper">
 
+    <select id="shutdownQuery"  resultType="java.util.HashMap">
+        select
+        acc_nbr,
+        area_name,
+        cust_name,
+        main_offer_name,
+        net_style,
+        stop_reason,
+        yyyymmdd
+        from sim_shutdown_list
+        where yyyymmdd>=#{req.beginDatePre} and yyyymmdd <![CDATA[<=]]> #{req.endDatePre}
+        <if test="req.acc_nbr != null and req.acc_nbr !=''">
+            and acc_nbr=#{req.acc_nbr}
+        </if>
+        <if test="req.area_name != null and req.area_name !=''">
+            and area_name=#{req.area_name}
+        </if>
+        <if test="req.cust_name != null and req.cust_name !=''">
+            and cust_name=#{req.cust_name}
+        </if>
+        <if test="req.net_style != null and req.net_style !=''">
+            and net_style=#{req.net_style}
+        </if>
+        limit #{req.startPage},#{req.pageSize}
+    </select>
+
+    <select id="shutdownQueryCnt"  resultType="java.lang.Integer">
+        select
+        count(1)cnt
+        from sim_shutdown_list
+        where yyyymmdd>=#{req.beginDate} and yyyymmdd <![CDATA[<=]]> #{req.endDate}
+        <if test="req.acc_nbr != null and req.acc_nbr !=''">
+            and acc_nbr=#{req.acc_nbr}
+        </if>
+        <if test="req.area_name != null and req.area_name !=''">
+            and area_name=#{req.area_name}
+        </if>
+        <if test="req.cust_name != null and req.cust_name !=''">
+            and cust_name=#{req.cust_name}
+        </if>
+        <if test="req.net_style != null and req.net_style !=''">
+            and net_style=#{req.net_style}
+        </if>
+        limit #{req.startPage},#{req.pageSize}
+    </select>
 </mapper>
