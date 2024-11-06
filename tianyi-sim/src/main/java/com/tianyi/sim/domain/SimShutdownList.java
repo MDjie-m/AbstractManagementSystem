@@ -1,5 +1,7 @@
 package com.tianyi.sim.domain;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.tianyi.common.annotation.Excel;
@@ -11,6 +13,7 @@ import com.tianyi.common.core.domain.BaseEntity;
  * @author tianyi
  * @date 2024-11-05
  */
+@ApiModel(value = "SimShutdownList对象")
 public class SimShutdownList extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
