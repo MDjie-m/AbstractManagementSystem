@@ -1,0 +1,19 @@
+生成代码步骤：
+1、根据设计文档表模型建表
+
+2、在系统工具-生成代码页面，选择导入。选择相关表，修改生成信息等。
+
+3、生成代码，代码结构介绍：1、菜单生成sql 2、后端代码main 3、前端代码vue
+
+后端代码的组成部分：
+ 1、代码部分：controller -- 对应的拷贝位置 admin模块的web controller sim
+ 			domain mapper service --对应拷贝位置 tianyi-sim模块下
+ 2、资源部分：resources batis的xml文件拷贝 --对应拷贝位置 tianyi-sim模块下的resources下面
+
+
+前端代码部分：
+ 1、js文件：api目录 --对应拷贝路径 tianyi-ui模块下src/api/sim/xxx.js
+ 2、view文件：views目录 --对应拷贝路径 tianyi-ui模块下src/views/sim/index.vue
+
+
+ 4、页面元素删减
