@@ -19,17 +19,21 @@ import java.util.Map;
 @RequestMapping("/sim")
 public class SimController {
 
-    @ApiOperation(value = "sim卡停机清单查询")
-    @GetMapping("/shutdownQuery")
-    public R<String> shutdownQuery() {
-        return R.ok("停机查询");
-    }
+    @Autowired
+    private ISimService simService;
 
-    @ApiOperation(value = "sim卡断网清单查询")
+//    @ApiOperation(value = "sim卡停机清单查询")
+//    @GetMapping("/shutdownQuery")
+//    public R<String> shutdownQuery() {
+//        return R.ok("停机查询");
+//    }
+
+
+/*    @ApiOperation(value = "sim卡断网清单查询")
     @GetMapping("/disconQuery")
     public R<String> disconQuery() {
         return R.ok("断网查询");
-    }
+    }*/
 
     @ApiOperation(value = "sim卡NB异常清单查询")
     @GetMapping("/NBAbnormalQuery")
@@ -43,11 +47,11 @@ public class SimController {
         return R.ok("套餐到期预警");
     }
 
-    @ApiOperation(value = "长期未使用预警")
+/*    @ApiOperation(value = "长期未使用预警")
     @GetMapping("/longTermNoUseWarning")
     public R<String> longTermNoUseWarning() {
         return R.ok("长期未使用预警");
-    }
+    }*/
 
     @ApiOperation(value = "套餐欠费预警")
     @GetMapping("/upPaidWarning")
