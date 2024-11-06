@@ -240,7 +240,7 @@
 </template>
 
 <script>
-import { listList, getList, delList, addList, updateList } from "@/api/sim/list";
+import { listList, getList, delList, addList, updateList } from "@/api/sim/stop";
 
 export default {
   name: "List",
