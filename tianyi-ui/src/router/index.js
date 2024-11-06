@@ -180,6 +180,20 @@ export const dynamicRoutes = [
       path: '/sim',
       component: Layout,
       hidden: true,
+      permissions: ['sim:nb:list'],
+      children: [
+        {
+          path: 'nb',
+          component: () => import('@/views/sim/nb/index'),
+          name: 'NbEdit',
+          meta: { title: 'NB异常清单', activeMenu: '/sim/nb' }
+        }
+      ]
+    },
+    {
+      path: '/sim',
+      component: Layout,
+      hidden: true,
       permissions: ['sim:disconnect:list'],
       children: [
         {

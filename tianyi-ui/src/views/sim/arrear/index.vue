@@ -17,10 +17,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="接入号码" prop="accNbr">
+      <el-form-item label="用户号码" prop="accNbr">
         <el-input
           v-model="queryParams.accNbr"
-          placeholder="请输入接入号码"
+          placeholder="请输入用户号码"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -47,21 +47,19 @@
       </el-form-item>
     </el-form>
 
-
-
-    <el-table v-loading="loading" :data="nbList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="arrearList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="省份ID" align="center" prop="provId" />
       <el-table-column label="省份名称" align="center" prop="provName" />
-      <el-table-column label="地市ID" align="center" prop="areaId" />
+      <el-table-column label="地市id" align="center" prop="areaId" />
       <el-table-column label="地市名称" align="center" prop="areaName" />
       <el-table-column label="客户ID" align="center" prop="custId" />
       <el-table-column label="客户名称" align="center" prop="custName" />
-      <el-table-column label="产品实例ID" align="center" prop="prodInstId" />
-      <el-table-column label="接入号码" align="center" prop="accNbr" />
+      <el-table-column label="产品实例id" align="center" prop="prodInstId" />
+      <el-table-column label="用户号码" align="center" prop="accNbr" />
       <el-table-column label="主套餐名称" align="center" prop="mainOfferName" />
       <el-table-column label="网络制式" align="center" prop="netStyle" />
-      <el-table-column label="异常原因" align="center" prop="abnormalReason" />
+      <el-table-column label="拟停机时间" align="center" prop="stopTime" />
       <el-table-column label="数据日期" align="center" prop="yyyymmdd" />
     </el-table>
 
@@ -73,7 +71,7 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改NB异常清单对话框 -->
+    <!-- 添加或修改欠费停机预警对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="省份ID" prop="provId">
@@ -82,8 +80,8 @@
         <el-form-item label="省份名称" prop="provName">
           <el-input v-model="form.provName" placeholder="请输入省份名称" />
         </el-form-item>
-        <el-form-item label="地市ID" prop="areaId">
-          <el-input v-model="form.areaId" placeholder="请输入地市ID" />
+        <el-form-item label="地市id" prop="areaId">
+          <el-input v-model="form.areaId" placeholder="请输入地市id" />
         </el-form-item>
         <el-form-item label="地市名称" prop="areaName">
           <el-input v-model="form.areaName" placeholder="请输入地市名称" />
@@ -94,11 +92,11 @@
         <el-form-item label="客户名称" prop="custName">
           <el-input v-model="form.custName" placeholder="请输入客户名称" />
         </el-form-item>
-        <el-form-item label="产品实例ID" prop="prodInstId">
-          <el-input v-model="form.prodInstId" placeholder="请输入产品实例ID" />
+        <el-form-item label="产品实例id" prop="prodInstId">
+          <el-input v-model="form.prodInstId" placeholder="请输入产品实例id" />
         </el-form-item>
-        <el-form-item label="接入号码" prop="accNbr">
-          <el-input v-model="form.accNbr" placeholder="请输入接入号码" />
+        <el-form-item label="用户号码" prop="accNbr">
+          <el-input v-model="form.accNbr" placeholder="请输入用户号码" />
         </el-form-item>
         <el-form-item label="主套餐名称" prop="mainOfferName">
           <el-input v-model="form.mainOfferName" placeholder="请输入主套餐名称" />
@@ -106,8 +104,8 @@
         <el-form-item label="网络制式" prop="netStyle">
           <el-input v-model="form.netStyle" placeholder="请输入网络制式" />
         </el-form-item>
-        <el-form-item label="异常原因" prop="abnormalReason">
-          <el-input v-model="form.abnormalReason" placeholder="请输入异常原因" />
+        <el-form-item label="拟停机时间" prop="stopTime">
+          <el-input v-model="form.stopTime" placeholder="请输入拟停机时间" />
         </el-form-item>
         <el-form-item label="数据日期" prop="yyyymmdd">
           <el-input v-model="form.yyyymmdd" placeholder="请输入数据日期" />
@@ -122,10 +120,10 @@
 </template>
 
 <script>
-import { listNb, getNb, delNb, addNb, updateNb } from "@/api/sim/nb";
+import { listArrear, getArrear, delArrear, addArrear, updateArrear } from "@/api/sim/arrear";
 
 export default {
-  name: "Nb",
+  name: "Arrear",
   data() {
     return {
       // 遮罩层
@@ -140,8 +138,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // NB异常清单表格数据
-      nbList: [],
+      // 欠费停机预警表格数据
+      arrearList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -160,7 +158,7 @@ export default {
         accNbr: null,
         mainOfferName: null,
         netStyle: null,
-        abnormalReason: null,
+        stopTime: null,
         yyyymmdd: null
       },
       // 表单参数
@@ -174,7 +172,7 @@ export default {
           { required: true, message: "省份名称不能为空", trigger: "blur" }
         ],
         areaId: [
-          { required: true, message: "地市ID不能为空", trigger: "blur" }
+          { required: true, message: "地市id不能为空", trigger: "blur" }
         ],
         areaName: [
           { required: true, message: "地市名称不能为空", trigger: "blur" }
@@ -186,10 +184,10 @@ export default {
           { required: true, message: "客户名称不能为空", trigger: "blur" }
         ],
         prodInstId: [
-          { required: true, message: "产品实例ID不能为空", trigger: "blur" }
+          { required: true, message: "产品实例id不能为空", trigger: "blur" }
         ],
         accNbr: [
-          { required: true, message: "接入号码不能为空", trigger: "blur" }
+          { required: true, message: "用户号码不能为空", trigger: "blur" }
         ],
         mainOfferName: [
           { required: true, message: "主套餐名称不能为空", trigger: "blur" }
@@ -197,8 +195,8 @@ export default {
         netStyle: [
           { required: true, message: "网络制式不能为空", trigger: "blur" }
         ],
-        abnormalReason: [
-          { required: true, message: "异常原因不能为空", trigger: "blur" }
+        stopTime: [
+          { required: true, message: "拟停机时间不能为空", trigger: "blur" }
         ],
         yyyymmdd: [
           { required: true, message: "数据日期不能为空", trigger: "blur" }
@@ -210,11 +208,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询NB异常清单列表 */
+    /** 查询欠费停机预警列表 */
     getList() {
       this.loading = true;
-      listNb(this.queryParams).then(response => {
-        this.nbList = response.rows;
+      listArrear(this.queryParams).then(response => {
+        this.arrearList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -237,7 +235,7 @@ export default {
         accNbr: null,
         mainOfferName: null,
         netStyle: null,
-        abnormalReason: null,
+        stopTime: null,
         yyyymmdd: null
       };
       this.resetForm("form");
@@ -262,16 +260,16 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加NB异常清单";
+      this.title = "添加欠费停机预警";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const provId = row.provId || this.ids
-      getNb(provId).then(response => {
+      getArrear(provId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改NB异常清单";
+        this.title = "修改欠费停机预警";
       });
     },
     /** 提交按钮 */
@@ -279,13 +277,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.provId != null) {
-            updateNb(this.form).then(response => {
+            updateArrear(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addNb(this.form).then(response => {
+            addArrear(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -297,8 +295,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const provIds = row.provId || this.ids;
-      this.$modal.confirm('是否确认删除NB异常清单编号为"' + provIds + '"的数据项？').then(function() {
-        return delNb(provIds);
+      this.$modal.confirm('是否确认删除欠费停机预警编号为"' + provIds + '"的数据项？').then(function() {
+        return delArrear(provIds);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
@@ -306,9 +304,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('sim/nb/export', {
+      this.download('sim/arrear/export', {
         ...this.queryParams
-      }, `nb_${new Date().getTime()}.xlsx`)
+      }, `arrear_${new Date().getTime()}.xlsx`)
     }
   }
 };
