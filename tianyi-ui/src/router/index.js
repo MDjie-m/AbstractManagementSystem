@@ -189,6 +189,20 @@ export const dynamicRoutes = [
           meta: { title: '断网分析', activeMenu: '/sim/disconnect' }
         }
       ]
+    },
+    {
+      path: '/sim',
+      component: Layout,
+      hidden: true,
+      permissions: ['sim:pack_exp:list'],
+      children: [
+        {
+          path: 'disconnect',
+          component: () => import('@/views/sim/package/index'),
+          name: 'DisconnectEdit',
+          meta: { title: '断网分析', activeMenu: '/sim/pack_exp' }
+        }
+      ]
     }
 ]
 

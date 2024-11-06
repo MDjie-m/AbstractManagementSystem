@@ -20,3 +20,6 @@
 
  5、Controller中swagger生成：
  定义指定查询条件的查询类，来限制swagger中parameter；
+
+ 6、为页面生成路由：
+ 在tianyi-ui模块下src/router/index.js中添加路由信息，并在views目录下创建对应的页面文件；
