@@ -1,26 +1,19 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="省份id" prop="provId">
+      <el-form-item label="客户名称" prop="custName">
         <el-input
-          v-model="queryParams.provId"
-          placeholder="请输入省份id"
+          v-model="queryParams.custName"
+          placeholder="请输入客户名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="省份名称" prop="provName">
+
+      <el-form-item label="用户号码" prop="accNbr">
         <el-input
-          v-model="queryParams.provName"
-          placeholder="请输入省份名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="地市id" prop="areaId">
-        <el-input
-          v-model="queryParams.areaId"
-          placeholder="请输入地市id"
+          v-model="queryParams.accNbr"
+          placeholder="请输入用户号码"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -33,46 +26,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="客户id" prop="custId">
-        <el-input
-          v-model="queryParams.custId"
-          placeholder="请输入客户id"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="客户名称" prop="custName">
-        <el-input
-          v-model="queryParams.custName"
-          placeholder="请输入客户名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="产品实例id" prop="prodInstId">
-        <el-input
-          v-model="queryParams.prodInstId"
-          placeholder="请输入产品实例id"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="用户号码" prop="accNbr">
-        <el-input
-          v-model="queryParams.accNbr"
-          placeholder="请输入用户号码"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="主套餐名称" prop="mainOfferName">
-        <el-input
-          v-model="queryParams.mainOfferName"
-          placeholder="请输入主套餐名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="制式" prop="netStyle">
         <el-input
           v-model="queryParams.netStyle"
@@ -81,14 +34,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="停机原因" prop="stopReason">
-        <el-input
-          v-model="queryParams.stopReason"
-          placeholder="请输入停机原因"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
+
       <el-form-item label="数据日期" prop="yyyymmdd">
         <el-input
           v-model="queryParams.yyyymmdd"
@@ -104,48 +50,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['sim:list:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['sim:list:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['sim:list:remove']"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['sim:list:export']"
-        >导出</el-button>
-      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -163,24 +67,6 @@
       <el-table-column label="制式" align="center" prop="netStyle" />
       <el-table-column label="停机原因" align="center" prop="stopReason" />
       <el-table-column label="数据日期" align="center" prop="yyyymmdd" />
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['sim:list:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['sim:list:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column>
     </el-table>
 
     <pagination
