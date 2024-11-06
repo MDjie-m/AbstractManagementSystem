@@ -12,23 +12,5 @@ import java.util.Map;
 @Service
 public class SimServiceImpl implements ISimService {
 
-    @Autowired
-    SimMapper simMapper;
 
-    @Override
-    public DataQueryRes shutdownQuery(Map<String, Object> req) {
-        DataQueryRes data=new DataQueryRes();
-        int pageIndex = (int) req.get("pageIndex");
-        int pageSize = (int) req.get("pageSize");
-        req.put("startPage", pageIndex * pageSize);
-        String beginDate=(String)req.get("beginDate");
-        String endDate=(String)req.get("endDate");
-        req.put("beginDatePre", beginDate.replace("-",""));
-        req.put("endDatePre", endDate.replace("-",""));
-        List<Map<String, Object>> dataRows= simMapper.shutdownQuery(req);
-        int total=simMapper.shutdownQueryCnt(req);
-        data.setDataRows(dataRows);
-        data.setTotal(total);
-        return data;
-    }
 }

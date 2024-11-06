@@ -19,14 +19,10 @@ import java.util.Map;
 @RequestMapping("/sim")
 public class SimController {
 
-    @Autowired
-    private ISimService simService;
-
     @ApiOperation(value = "sim卡停机清单查询")
     @GetMapping("/shutdownQuery")
-    public R<DataQueryRes> shutdownQuery(@RequestParam Map<String,Object> req) {
-        DataQueryRes data=simService.shutdownQuery(req);
-        return R.ok(data,"停机查询");
+    public R<String> shutdownQuery() {
+        return R.ok("停机查询");
     }
 
     @ApiOperation(value = "sim卡断网清单查询")
