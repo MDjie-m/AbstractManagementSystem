@@ -236,7 +236,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
     @Transactional(rollbackFor = Exception.class)
     public void saveItemList(PsyConsultPartner req){
         //若为步骤2, 则更新类型为1/2/3的子信息
-        if (req.getStep() == 2){
+        /*if (req.getStep() == 2){
             partnerItemMapper.delete(new LambdaQueryWrapper<PsyConsultPartnerItem>()
                     .in(PsyConsultPartnerItem::getType, Arrays.asList("1", "2", "3")));
 
@@ -248,7 +248,7 @@ public class PsyConsultPartnerServiceImpl implements IPsyConsultPartnerService
                 item.setCreateTime(new Date());
                 partnerItemMapper.insert(item);
             }
-        }
+        }*/
     }
     
     @Override

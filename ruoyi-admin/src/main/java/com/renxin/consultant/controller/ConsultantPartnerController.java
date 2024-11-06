@@ -48,14 +48,13 @@ public class ConsultantPartnerController {
 
     /**
      * 批量保存子信息
-     * @param entity
      * @return
      */
     @PostMapping(value = "/saveItemList")
     @RateLimiter
     public AjaxResult saveItemList(@RequestBody PsyConsultPartner entity)
     {
-        partnerService.saveItemList(entity);
+        //partnerService.saveItemList(entity);
         return AjaxResult.success();
     }
     
