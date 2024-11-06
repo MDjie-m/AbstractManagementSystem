@@ -4,6 +4,6 @@ import com.tianyi.sim.service.ISimService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ServiceImpl implements ISimService {
+public class SimServiceImpl implements ISimService {
 
 }

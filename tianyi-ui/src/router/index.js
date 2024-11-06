@@ -161,7 +161,35 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  }
+  },
+    {
+      path: '/sim',
+      component: Layout,
+      hidden: true,
+      permissions: ['sim:stop:list'],
+      children: [
+        {
+          path: 'stop',
+          component: () => import('@/views/sim/stop/index'),
+          name: 'StopEdit',
+          meta: { title: '停机分析', activeMenu: '/sim/stop' }
+        }
+      ]
+    },
+    {
+      path: '/sim',
+      component: Layout,
+      hidden: true,
+      permissions: ['sim:disconnect:list'],
+      children: [
+        {
+          path: 'disconnect',
+          component: () => import('@/views/tool/gen/editTable'),
+          name: 'DisconnectEdit',
+          meta: { title: '断网分析', activeMenu: '/sim/disconnect' }
+        }
+      ]
+    }
 ]
 
 // 防止连续点击多次路由报错
