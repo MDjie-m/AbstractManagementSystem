@@ -40,70 +40,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="yyyymmdd != null  and yyyymmdd != ''"> and yyyymmdd = #{yyyymmdd}</if>
         </where>
     </select>
-    
-    <select id="selectPackExpListByProvId" parameterType="Long" resultMap="PackExpListResult">
+
+    <select id="selectGhPackExpListList" parameterType="PackExpList" resultMap="PackExpListResult">
         <include refid="selectPackExpListVo"/>
-        where prov_id = #{provId}
+        <where>
+            <if test="provId != null "> and prov_id = #{provId}</if>
+            <if test="provName != null  and provName != ''"> and prov_name like concat('%', #{provName}, '%')</if>
+            <if test="areaId != null "> and area_id = #{areaId}</if>
+            <if test="areaName != null  and areaName != ''"> and area_name like concat('%', #{areaName}, '%')</if>
+            <if test="custId != null "> and cust_id = #{custId}</if>
+            <if test="custName != null  and custName != ''"> and cust_name like concat('%', #{custName}, '%')</if>
+            <if test="prodInstId != null "> and prod_inst_id = #{prodInstId}</if>
+            <if test="accNbr != null "> and acc_nbr = #{accNbr}</if>
+            <if test="mainOfferName != null  and mainOfferName != ''"> and main_offer_name like concat('%', #{mainOfferName}, '%')</if>
+            <if test="netStyle != null  and netStyle != ''"> and net_style = #{netStyle}</if>
+            <if test="mainExpDate != null  and mainExpDate != ''"> and main_exp_date = #{mainExpDate}</if>
+            <if test="yyyymmdd != null  and yyyymmdd != ''"> and yyyymmdd = #{yyyymmdd}</if>
+        </where>
     </select>
 
-    <insert id="insertPackExpList" parameterType="PackExpList">
-        insert into pack_exp_list
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="provId != null">prov_id,</if>
-            <if test="provName != null">prov_name,</if>
-            <if test="areaId != null">area_id,</if>
-            <if test="areaName != null">area_name,</if>
-            <if test="custId != null">cust_id,</if>
-            <if test="custName != null">cust_name,</if>
-            <if test="prodInstId != null">prod_inst_id,</if>
-            <if test="accNbr != null">acc_nbr,</if>
-            <if test="mainOfferName != null">main_offer_name,</if>
-            <if test="netStyle != null">net_style,</if>
-            <if test="mainExpDate != null">main_exp_date,</if>
-            <if test="yyyymmdd != null">yyyymmdd,</if>
-         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="provId != null">#{provId},</if>
-            <if test="provName != null">#{provName},</if>
-            <if test="areaId != null">#{areaId},</if>
-            <if test="areaName != null">#{areaName},</if>
-            <if test="custId != null">#{custId},</if>
-            <if test="custName != null">#{custName},</if>
-            <if test="prodInstId != null">#{prodInstId},</if>
-            <if test="accNbr != null">#{accNbr},</if>
-            <if test="mainOfferName != null">#{mainOfferName},</if>
-            <if test="netStyle != null">#{netStyle},</if>
-            <if test="mainExpDate != null">#{mainExpDate},</if>
-            <if test="yyyymmdd != null">#{yyyymmdd},</if>
-         </trim>
-    </insert>
-
-    <update id="updatePackExpList" parameterType="PackExpList">
-        update pack_exp_list
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="provName != null">prov_name = #{provName},</if>
-            <if test="areaId != null">area_id = #{areaId},</if>
-            <if test="areaName != null">area_name = #{areaName},</if>
-            <if test="custId != null">cust_id = #{custId},</if>
-            <if test="custName != null">cust_name = #{custName},</if>
-            <if test="prodInstId != null">prod_inst_id = #{prodInstId},</if>
-            <if test="accNbr != null">acc_nbr = #{accNbr},</if>
-            <if test="mainOfferName != null">main_offer_name = #{mainOfferName},</if>
-            <if test="netStyle != null">net_style = #{netStyle},</if>
-            <if test="mainExpDate != null">main_exp_date = #{mainExpDate},</if>
-            <if test="yyyymmdd != null">yyyymmdd = #{yyyymmdd},</if>
-        </trim>
-        where prov_id = #{provId}
-    </update>
-
-    <delete id="deletePackExpListByProvId" parameterType="Long">
-        delete from pack_exp_list where prov_id = #{provId}
-    </delete>
-
-    <delete id="deletePackExpListByProvIds" parameterType="String">
-        delete from pack_exp_list where prov_id in 
-        <foreach item="provId" collection="array" open="(" separator="," close=")">
-            #{provId}
-        </foreach>
-    </delete>
 </mapper>

@@ -20,18 +20,6 @@ public class PackExpListServiceImpl implements IPackExpListService
     private PackExpListMapper packExpListMapper;
 
     /**
-     * 查询套餐到期预警
-     * 
-     * @param provId 套餐到期预警主键
-     * @return 套餐到期预警
-     */
-    @Override
-    public PackExpList selectPackExpListByProvId(Long provId)
-    {
-        return packExpListMapper.selectPackExpListByProvId(provId);
-    }
-
-    /**
      * 查询套餐到期预警列表
      * 
      * @param packExpList 套餐到期预警
@@ -43,51 +31,16 @@ public class PackExpListServiceImpl implements IPackExpListService
         return packExpListMapper.selectPackExpListList(packExpList);
     }
 
+
     /**
-     * 新增套餐到期预警
-     * 
+     * 查询港华套餐到期预警列表
+     *
      * @param packExpList 套餐到期预警
-     * @return 结果
+     * @return 套餐到期预警
      */
     @Override
-    public int insertPackExpList(PackExpList packExpList)
+    public List<PackExpList> selectGhPackExpListList(PackExpList packExpList)
     {
-        return packExpListMapper.insertPackExpList(packExpList);
-    }
-
-    /**
-     * 修改套餐到期预警
-     * 
-     * @param packExpList 套餐到期预警
-     * @return 结果
-     */
-    @Override
-    public int updatePackExpList(PackExpList packExpList)
-    {
-        return packExpListMapper.updatePackExpList(packExpList);
-    }
-
-    /**
-     * 批量删除套餐到期预警
-     * 
-     * @param provIds 需要删除的套餐到期预警主键
-     * @return 结果
-     */
-    @Override
-    public int deletePackExpListByProvIds(Long[] provIds)
-    {
-        return packExpListMapper.deletePackExpListByProvIds(provIds);
-    }
-
-    /**
-     * 删除套餐到期预警信息
-     * 
-     * @param provId 套餐到期预警主键
-     * @return 结果
-     */
-    @Override
-    public int deletePackExpListByProvId(Long provId)
-    {
-        return packExpListMapper.deletePackExpListByProvId(provId);
+        return packExpListMapper.selectGhPackExpListList(packExpList);
     }
 }

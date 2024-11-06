@@ -33,7 +33,7 @@ import com.tianyi.common.core.page.TableDataInfo;
  */
 @Api(tags = "SIM卡管理")
 @RestController
-@RequestMapping("/sim/pack_exp")
+@RequestMapping("/sim")
 public class PackExpListController extends BaseController
 {
     @Autowired
@@ -44,13 +44,28 @@ public class PackExpListController extends BaseController
      */
     @ApiOperation("查询套餐到期预警列表")
     @PreAuthorize("@ss.hasPermi('sim:pack_exp:list')")
-    @GetMapping("/list")
+    @GetMapping("/pack_exp/list")
     public TableDataInfo list(SimEntity simEntity)
     {
         startPage();
         PackExpList packExpList = new PackExpList();
         BeanUtils.copyProperties(simEntity, packExpList);
         List<PackExpList> list = packExpListService.selectPackExpListList(packExpList);
+        return getDataTable(list);
+    }
+
+    /**
+     * 查询套餐到期预警列表
+     */
+    @ApiOperation("查询港华套餐到期预警列表")
+    @PreAuthorize("@ss.hasPermi('sim:pack_exp_gh:list')")
+    @GetMapping("/pack_exp_gh/list")
+    public TableDataInfo listGh(SimEntity simEntity)
+    {
+        startPage();
+        PackExpList packExpList = new PackExpList();
+        BeanUtils.copyProperties(simEntity, packExpList);
+        List<PackExpList> list = packExpListService.selectGhPackExpListList(packExpList);
         return getDataTable(list);
     }
 }
