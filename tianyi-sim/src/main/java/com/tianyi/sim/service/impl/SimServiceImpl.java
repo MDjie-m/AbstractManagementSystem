@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ServiceImpl implements ISimService {
+public class SimServiceImpl implements ISimService {
 
     @Autowired
     SimMapper simMapper;
