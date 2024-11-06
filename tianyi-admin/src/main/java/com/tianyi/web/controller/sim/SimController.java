@@ -17,11 +17,11 @@ public class SimController {
     @Autowired
     private ISimService simService;
 
-    @ApiOperation(value = "sim卡停机清单查询")
-    @GetMapping("/shutdownQuery")
-    public R<String> shutdownQuery() {
-        return R.ok("停机查询");
-    }
+//    @ApiOperation(value = "sim卡停机清单查询")
+//    @GetMapping("/shutdownQuery")
+//    public R<String> shutdownQuery() {
+//        return R.ok("停机查询");
+//    }
 
     @ApiOperation(value = "sim卡断网清单查询")
     @GetMapping("/disconQuery")

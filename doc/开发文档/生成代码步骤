@@ -17,3 +17,6 @@
 
 
  4、页面元素删减
+
+ 5、Controller中swagger生成：
+ 定义指定查询条件的查询类，来限制swagger中parameter；

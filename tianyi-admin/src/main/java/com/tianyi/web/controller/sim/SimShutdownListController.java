@@ -4,8 +4,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.tianyi.common.annotation.Anonymous;
+import com.tianyi.common.annotation.Excel;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,15 +31,14 @@ import com.tianyi.common.core.page.TableDataInfo;
 
 /**
  * 停机清单Controller
- * 
+ *
  * @author tianyi
  * @date 2024-11-05
  */
-@Api(tags = "停机清单管理")
+@Api(tags = "SIM卡管理")
 @RestController
 @RequestMapping("/sim/list")
-public class SimShutdownListController extends BaseController
-{
+public class SimShutdownListController extends BaseController {
     @Autowired
     private ISimShutdownListService simShutdownListService;
 
@@ -45,66 +48,83 @@ public class SimShutdownListController extends BaseController
     @ApiOperation("停机清单查询")
     @PreAuthorize("@ss.hasPermi('sim:list:list')")
     @GetMapping("/list")
-    public TableDataInfo list(SimShutdownList simShutdownList)
-    {
+    public TableDataInfo list(SimEntity simEntity) {
         startPage();
+        SimShutdownList simShutdownList = new SimShutdownList();
+        BeanUtils.copyProperties(simEntity, simShutdownList);
         List<SimShutdownList> list = simShutdownListService.selectSimShutdownListList(simShutdownList);
         return getDataTable(list);
     }
 
-    /**
-     * 导出停机清单列表
-     */
-    @PreAuthorize("@ss.hasPermi('sim:list:export')")
-    @Log(title = "停机清单", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, SimShutdownList simShutdownList)
-    {
-        List<SimShutdownList> list = simShutdownListService.selectSimShutdownListList(simShutdownList);
-        ExcelUtil<SimShutdownList> util = new ExcelUtil<SimShutdownList>(SimShutdownList.class);
-        util.exportExcel(response, list, "停机清单数据");
+}
+
+class SimEntity {
+
+    @ApiModelProperty(value = "地市名称")
+    private String areaName;
+
+    @ApiModelProperty(value = "客户名称")
+    private String custName;
+
+    @ApiModelProperty(value = "用户号码")
+    private Long accNbr;
+
+    @ApiModelProperty(value = "停机原因")
+    private String netStyle;
+
+
+    @ApiModelProperty(value = "数据日期")
+    private String yyyymmdd;
+
+    public SimEntity() {
+
     }
 
-    /**
-     * 获取停机清单详细信息
-     */
-    @PreAuthorize("@ss.hasPermi('sim:list:query')")
-    @GetMapping(value = "/{provId}")
-    public AjaxResult getInfo(@PathVariable("provId") Long provId)
-    {
-        return success(simShutdownListService.selectSimShutdownListByProvId(provId));
+    public SimEntity(String areaName, String custName, Long accNbr, String netStyle, String yyyymmdd) {
+        this.areaName = areaName;
+        this.custName = custName;
+        this.accNbr = accNbr;
+        this.netStyle = netStyle;
+        this.yyyymmdd = yyyymmdd;
     }
 
-    /**
-     * 新增停机清单
-     */
-    @PreAuthorize("@ss.hasPermi('sim:list:add')")
-    @Log(title = "停机清单", businessType = BusinessType.INSERT)
-    @PostMapping
-    public AjaxResult add(@RequestBody SimShutdownList simShutdownList)
-    {
-        return toAjax(simShutdownListService.insertSimShutdownList(simShutdownList));
+    public String getAreaName() {
+        return areaName;
     }
 
-    /**
-     * 修改停机清单
-     */
-    @PreAuthorize("@ss.hasPermi('sim:list:edit')")
-    @Log(title = "停机清单", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody SimShutdownList simShutdownList)
-    {
-        return toAjax(simShutdownListService.updateSimShutdownList(simShutdownList));
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
     }
 
-    /**
-     * 删除停机清单
-     */
-    @PreAuthorize("@ss.hasPermi('sim:list:remove')")
-    @Log(title = "停机清单", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{provIds}")
-    public AjaxResult remove(@PathVariable Long[] provIds)
-    {
-        return toAjax(simShutdownListService.deleteSimShutdownListByProvIds(provIds));
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
+    }
+
+    public Long getAccNbr() {
+        return accNbr;
+    }
+
+    public void setAccNbr(Long accNbr) {
+        this.accNbr = accNbr;
+    }
+
+    public String getNetStyle() {
+        return netStyle;
+    }
+
+    public void setNetStyle(String netStyle) {
+        this.netStyle = netStyle;
+    }
+
+    public String getYyyymmdd() {
+        return yyyymmdd;
+    }
+
+    public void setYyyymmdd(String yyyymmdd) {
+        this.yyyymmdd = yyyymmdd;
     }
 }
