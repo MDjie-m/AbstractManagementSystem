@@ -53,7 +53,7 @@ public class SimShutdownList extends BaseEntity
 
     /** 制式 */
     @Excel(name = "制式")
-    private Integer netStyle;
+    private String netStyle;
 
     /** 停机原因 */
     @Excel(name = "停机原因")
@@ -144,12 +144,12 @@ public class SimShutdownList extends BaseEntity
     {
         return mainOfferName;
     }
-    public void setNetStyle(Integer netStyle) 
+    public void setNetStyle(String netStyle)
     {
         this.netStyle = netStyle;
     }
 
-    public Integer getNetStyle() 
+    public String getNetStyle()
     {
         return netStyle;
     }
