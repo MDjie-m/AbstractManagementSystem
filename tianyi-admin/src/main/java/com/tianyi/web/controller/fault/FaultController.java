@@ -17,15 +17,9 @@ public class FaultController {
     @Autowired
     private IFaultService faultService;
 
-    @ApiOperation("终端状态查询")
-    @GetMapping("/termStatQuery")
-    public R<String> termStatQuery(){
-        return R.ok("ok");
-    }
-
-    @ApiOperation("业务状态查询")
-    @GetMapping("/buzStatQuery")
-    public R<String> buzStatQuery(){
+    @ApiOperation("卡停机状态查询")
+    @GetMapping("/cardStopStateQuery")
+    public R<String> cardStopStateQuery(){
         return R.ok("ok");
     }
 
@@ -41,9 +35,5 @@ public class FaultController {
         return R.ok("ok");
     }
 
-    @ApiOperation("平台状态查询")
-    @GetMapping("/platStatQuery")
-    public R<String> platStatQuery(){
-        return R.ok("ok");
-    }
+
 }

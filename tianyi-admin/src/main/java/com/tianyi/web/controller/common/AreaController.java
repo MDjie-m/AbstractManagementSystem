@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Api(tags = "公共接口")
 @RestController
-@RequestMapping("/common/sale")
+@RequestMapping("/common/area")
 public class AreaController {
 
     @Autowired
