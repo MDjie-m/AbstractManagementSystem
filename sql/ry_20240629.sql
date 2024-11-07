@@ -4797,3 +4797,15 @@ create table gen_table_column (
   update_time       datetime                                   comment '更新时间',
   primary key (column_id)
 ) engine=innodb auto_increment=1 comment = '代码生成业务表字段';
+
+
+-- 创建套餐到期预警（港华）两个菜单
+
+-- 菜单 SQL
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('套餐到期预警', '2000', '1', 'pack_exp', 'sim/package/index', 1, 0, 'C', '0', '0', 'sim:pack_exp:list', '#', 'admin', sysdate(), '', null, '套餐到期预警菜单');
+
+-- 菜单 SQL
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('套餐到期预警(港华)', '2000', '1', 'pack_exp_gh', 'sim/package_gh/index', 1, 0, 'C', '0', '0', 'sim:pack_exp_gh:list', '#', 'admin', sysdate(), '', null, '套餐到期预警菜单');
+
