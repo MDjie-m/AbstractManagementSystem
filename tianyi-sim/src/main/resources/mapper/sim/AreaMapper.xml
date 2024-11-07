@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianyi.sim.mapper.AreaMapper">
+
+    <resultMap type="Dept" id="DeptResult">
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+    </resultMap>
+
+    <select id="selectSubArea" parameterType="string" resultMap="DeptResult">
+        select dept_id, dept_name from sys_dept where parent_id = #{areaId} or dept_id = #{areaId}
+    </select>
+</mapper>

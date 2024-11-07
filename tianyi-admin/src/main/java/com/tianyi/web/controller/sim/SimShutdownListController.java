@@ -69,7 +69,7 @@ class SimEntity {
     @ApiModelProperty(value = "用户号码")
     private Long accNbr;
 
-    @ApiModelProperty(value = "停机原因")
+    @ApiModelProperty(value = "网络制式")
     private String netStyle;
 
 
