@@ -194,11 +194,11 @@ export const dynamicRoutes = [
       path: '/sim',
       component: Layout,
       hidden: true,
-      permissions: ['sim:disconnect:list'],
+      permissions: ['sim:simNetStopList:list'],
       children: [
         {
           path: 'disconnect',
-          component: () => import('@/views/tool/gen/editTable'),
+          component: () => import('@/views/sim/disconnect/index'),
           name: 'DisconnectEdit',
           meta: { title: '断网分析', activeMenu: '/sim/disconnect' }
         }
@@ -231,6 +231,20 @@ export const dynamicRoutes = [
           meta: { title: '套餐到期预警（港华）', activeMenu: '/sim/pack_exp_gh' }
         }
       ]
+    },
+    {
+      path: '/sim',
+      component: Layout,
+      hidden: true,
+      permissions: ['sim:nonuse:list'],
+      children: [
+        {
+          path: 'nonuse',
+          component: () => import('@/views/sim/nonuse/index'),
+          name: 'NonuseEdit',
+          meta: { title: '套餐长期不使用预警', activeMenu: '/sim/nonuse' }
+        }
+     ]
     }
 ]
 

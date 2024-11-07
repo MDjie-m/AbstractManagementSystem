@@ -3,10 +3,8 @@ package com.tianyi.web.controller.sim;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
-import com.tianyi.common.annotation.Anonymous;
 import com.tianyi.common.annotation.Excel;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
@@ -24,41 +22,44 @@ import com.tianyi.common.annotation.Log;
 import com.tianyi.common.core.controller.BaseController;
 import com.tianyi.common.core.domain.AjaxResult;
 import com.tianyi.common.enums.BusinessType;
-import com.tianyi.sim.domain.SimShutdownList;
-import com.tianyi.sim.service.ISimShutdownListService;
+import com.tianyi.sim.domain.NonuseWarningList;
+import com.tianyi.sim.service.INonuseWarningListService;
 import com.tianyi.common.utils.poi.ExcelUtil;
 import com.tianyi.common.core.page.TableDataInfo;
 
 /**
- * 停机清单Controller
- *
+ * 套餐长期不使用预警Controller
+ * 
  * @author tianyi
- * @date 2024-11-05
+ * @date 2024-11-06
  */
 @Api(tags = "SIM卡管理")
 @RestController
-@RequestMapping("/sim/list")
-public class SimShutdownListController extends BaseController {
+@RequestMapping("/sim/nonuse")
+public class NonuseWarningListController extends BaseController
+{
     @Autowired
-    private ISimShutdownListService simShutdownListService;
+    private INonuseWarningListService nonuseWarningListService;
 
     /**
-     * 查询停机清单列表
+     * 查询套餐长期不使用预警列表
      */
-    @ApiOperation("停机清单查询")
-    @PreAuthorize("@ss.hasPermi('sim:list:list')")
+    @ApiOperation("套餐长期不使用预警")
+    @PreAuthorize("@ss.hasPermi('sim:nonuse:list')")
     @GetMapping("/list")
-    public TableDataInfo list(SimEntity simEntity) {
+    public TableDataInfo list(SimNonuseEntity simNonuseEntity)
+    {
         startPage();
-        SimShutdownList simShutdownList = new SimShutdownList();
-        BeanUtils.copyProperties(simEntity, simShutdownList);
-        List<SimShutdownList> list = simShutdownListService.selectSimShutdownListList(simShutdownList);
+        NonuseWarningList nonuseWarningList=new NonuseWarningList();
+        BeanUtils.copyProperties(simNonuseEntity, nonuseWarningList);
+        List<NonuseWarningList> list = nonuseWarningListService.selectNonuseWarningListList(nonuseWarningList);
         return getDataTable(list);
     }
 
+
 }
 
-class SimEntity {
+class SimNonuseEntity {
 
     @ApiModelProperty(value = "地市名称")
     private String areaName;
@@ -73,18 +74,22 @@ class SimEntity {
     private String netStyle;
 
 
+    @ApiModelProperty(value = "不使用时长")
+    private String noUseDur;
+
     @ApiModelProperty(value = "数据日期")
     private String yyyymmdd;
 
-    public SimEntity() {
+    public SimNonuseEntity() {
 
     }
 
-    public SimEntity(String areaName, String custName, Long accNbr, String netStyle, String yyyymmdd) {
+    public SimNonuseEntity(String areaName, String custName, Long accNbr, String netStyle, String noUseDur,String yyyymmdd) {
         this.areaName = areaName;
         this.custName = custName;
         this.accNbr = accNbr;
         this.netStyle = netStyle;
+        this.noUseDur=noUseDur;
         this.yyyymmdd = yyyymmdd;
     }
 
@@ -126,5 +131,13 @@ class SimEntity {
 
     public void setYyyymmdd(String yyyymmdd) {
         this.yyyymmdd = yyyymmdd;
+    }
+
+    public String getNoUseDur() {
+        return noUseDur;
+    }
+
+    public void setNoUseDur(String noUseDur) {
+        this.noUseDur = noUseDur;
     }
 }
