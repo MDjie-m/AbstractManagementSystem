@@ -1,11 +1,5 @@
 package com.ruoyi.framework.aspectj;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.springframework.stereotype.Component;
 import com.ruoyi.common.annotation.DataScope;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -16,9 +10,24 @@ import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.security.context.PermissionContextHolder;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 数据过滤处理
+ *
+ * 主要逻辑是增强切入的方法执行前的参数，从而最终增强SQL语句
+ * 1.用户的数据权限由role集合的所有dataScope共同来确定
+ * 2.role负责同时控制permissions和dataScope
+ * 3.permissions是负责controller的访问控制
+ * 4.dataScope是负责隔离数据（类似多租户），其又是如何实现数据隔离呢？
+ *  a.dept_id则是负责隔离数据的最小粒度
+ *  b.通过控制dataScope，就可以控制当前用户的dept_id范围，从而实现数据隔离
  *
  * @author ruoyi
  */
@@ -73,6 +82,7 @@ public class DataScopeAspect
             // 如果是超级管理员，则不过滤数据
             if (StringUtils.isNotNull(currentUser) && !currentUser.isAdmin())
             {
+                // 获取注解上的权限信息
                 String permission = StringUtils.defaultIfEmpty(controllerDataScope.permission(), PermissionContextHolder.getContext());
                 dataScopeFilter(joinPoint, currentUser, controllerDataScope.deptAlias(), controllerDataScope.userAlias(), permission);
             }
@@ -90,8 +100,11 @@ public class DataScopeAspect
      */
     public static void dataScopeFilter(JoinPoint joinPoint, SysUser user, String deptAlias, String userAlias, String permission)
     {
+        // 凭借在SQL语句后的字符串
         StringBuilder sqlString = new StringBuilder();
+        // 记录是否有生效的数据范围
         List<String> conditions = new ArrayList<String>();
+        // 存放是为定制化数据范围的role的ID
         List<String> scopeCustomIds = new ArrayList<String>();
         user.getRoles().forEach(role -> {
             if (DATA_SCOPE_CUSTOM.equals(role.getDataScope()) && StringUtils.equals(role.getStatus(), UserConstants.ROLE_NORMAL) && StringUtils.containsAny(role.getPermissions(), Convert.toStrArray(permission)))
@@ -109,16 +122,19 @@ public class DataScopeAspect
             }
             if (!StringUtils.containsAny(role.getPermissions(), Convert.toStrArray(permission)))
             {
+                // 当前角色的权限不包含注解上的权限，则跳过
                 continue;
             }
             if (DATA_SCOPE_ALL.equals(dataScope))
             {
+                // 无数据隔离限制，不对sql语句增强
                 sqlString = new StringBuilder();
                 conditions.add(dataScope);
                 break;
             }
             else if (DATA_SCOPE_CUSTOM.equals(dataScope))
             {
+                // 当前角色是自定义数据范围，则从sys_role_dept表查询当前角色中所有的部分集合当作当前用户的部门集合
                 if (scopeCustomIds.size() > 1)
                 {
                     // 多个自定数据权限使用in查询，避免多次拼接。
@@ -131,14 +147,17 @@ public class DataScopeAspect
             }
             else if (DATA_SCOPE_DEPT.equals(dataScope))
             {
+                // 数据范围是用户的部门
                 sqlString.append(StringUtils.format(" OR {}.dept_id = {} ", deptAlias, user.getDeptId()));
             }
             else if (DATA_SCOPE_DEPT_AND_CHILD.equals(dataScope))
             {
+                // 数据范围是用户的部分及其子部门
                 sqlString.append(StringUtils.format(" OR {}.dept_id IN ( SELECT dept_id FROM sys_dept WHERE dept_id = {} or find_in_set( {} , ancestors ) )", deptAlias, user.getDeptId(), user.getDeptId()));
             }
             else if (DATA_SCOPE_SELF.equals(dataScope))
             {
+                // 数据范围是仅本人或者0号部门
                 if (StringUtils.isNotBlank(userAlias))
                 {
                     sqlString.append(StringUtils.format(" OR {}.user_id = {} ", userAlias, user.getUserId()));
@@ -160,6 +179,7 @@ public class DataScopeAspect
 
         if (StringUtils.isNotBlank(sqlString.toString()))
         {
+            // 修改切入方法的第一个参数
             Object params = joinPoint.getArgs()[0];
             if (StringUtils.isNotNull(params) && params instanceof BaseEntity)
             {
@@ -171,6 +191,8 @@ public class DataScopeAspect
 
     /**
      * 拼接权限sql前先清空params.dataScope参数防止注入
+     *
+     * 只拦截第一个参数，并且是BaseEntity类型的
      */
     private void clearDataScope(final JoinPoint joinPoint)
     {

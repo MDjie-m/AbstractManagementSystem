@@ -1,16 +1,19 @@
 package com.ruoyi.common.core.domain.entity;
 
-import java.util.Date;
-import java.util.List;
-import javax.validation.constraints.*;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.annotation.Excel.Type;
 import com.ruoyi.common.annotation.Excels;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.xss.Xss;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 用户对象 sys_user
@@ -20,6 +23,9 @@ import com.ruoyi.common.xss.Xss;
 public class SysUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
+
+    /** 用户来源 */
+    private String source;
 
     /** 用户ID */
     @Excel(name = "用户序号", type = Type.EXPORT, cellType = ColumnType.NUMERIC, prompt = "用户编号")
@@ -297,6 +303,13 @@ public class SysUser extends BaseEntity
         this.roleId = roleId;
     }
 
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -319,6 +332,7 @@ public class SysUser extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .append("dept", getDept())
+            .append("source", getSource())
             .toString();
     }
 }

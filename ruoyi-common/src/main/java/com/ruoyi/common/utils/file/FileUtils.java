@@ -1,23 +1,18 @@
 package com.ruoyi.common.utils.file;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.IdUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 文件处理工具类
@@ -146,7 +141,7 @@ public class FileUtils
             return false;
         }
 
-        // 检查允许下载的文件规则
+        // 检查允许下载的文件规则，也就是检查要下载的文件类型是否在允许内
         if (ArrayUtils.contains(MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION, FileTypeUtils.getFileType(resource)))
         {
             return true;
@@ -216,6 +211,11 @@ public class FileUtils
 
     /**
      * 百分号编码工具方法
+     *
+     * URL编码也可以称为百分号编码
+     * 是一种特定的用于浏览器标准化传输的格式或规则，
+     * 它可以将url里的空格、特定的符号或文字以带有百分比符号的十六进制表示，
+     * 每个字符前面都有以后个标识符%，比如空格转的url编码是%20，等于号的url编码是%3D等
      *
      * @param s 需要百分号编码的字符串
      * @return 百分号编码后的字符串

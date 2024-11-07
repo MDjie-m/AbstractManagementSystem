@@ -37,6 +37,13 @@
     <dependencyManagement>
         <dependencies>
 
+            <!--第三方认证-->
+            <dependency>
+                <groupId>me.zhyd.oauth</groupId>
+                <artifactId>JustAuth</artifactId>
+                <version>1.16.6</version>
+            </dependency>
+
             <!-- SpringFramework的依赖配置-->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -182,6 +189,12 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.ruoyi</groupId>
+                <artifactId>ruoyi-zwj</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -192,6 +205,7 @@
         <module>ruoyi-quartz</module>
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
+        <module>ruoyi-zwj</module>
     </modules>
     <packaging>pom</packaging>
 

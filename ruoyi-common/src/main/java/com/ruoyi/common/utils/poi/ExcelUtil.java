@@ -160,12 +160,12 @@ public class ExcelUtil<T>
     private short maxHeight;
 
     /**
-     * 合并后最后行数
+     * 合并后最后行数，仅监测填充的数据
      */
     private int subMergedLastRowNum = 0;
 
     /**
-     * 合并后开始行数
+     * 合并后开始行数，仅监测填充的数据
      */
     private int subMergedFirstRowNum = 1;
 
@@ -246,7 +246,7 @@ public class ExcelUtil<T>
     }
 
     /**
-     * 创建excel第一行标题
+     * 创建sheet页第一行标题
      */
     public void createTitle()
     {
@@ -725,16 +725,20 @@ public class ExcelUtil<T>
     {
         int startNo = index * sheetSize;
         int endNo = Math.min(startNo + sheetSize, list.size());
-        int rowNo = (1 + rownum) - startNo;
+        int rowNo = rownum; // 此时rownum在列头名称的最后一行
         for (int i = startNo; i < endNo; i++)
         {
-            rowNo = isSubList() ? (i > 1 ? rowNo + 1 : rowNo + i) : i + 1 + rownum - startNo;
+            rowNo++;
             row = sheet.createRow(rowNo);
+            // 下面两个属性是监视每一条数据所占用的行数，和needMerge相关
+            subMergedFirstRowNum = rowNo;
+            subMergedLastRowNum = rowNo - 1;
             // 得到导出对象.
             T vo = (T) list.get(i);
             Collection<?> subList = null;
             if (isSubList())
             {
+                // 为纵向合并单元格做预处理
                 if (isSubListValue(vo))
                 {
                     subList = getListCellValue(vo);
@@ -747,6 +751,7 @@ public class ExcelUtil<T>
                 }
             }
             int column = 0;
+            // 填充当前遍历出来的一条数据
             for (Object[] os : fields)
             {
                 Field field = (Field) os[0];
@@ -754,6 +759,7 @@ public class ExcelUtil<T>
                 if (Collection.class.isAssignableFrom(field.getType()) && StringUtils.isNotNull(subList))
                 {
                     boolean subFirst = false;
+                    // 遍历子列表数据
                     for (Object obj : subList)
                     {
                         if (subFirst)
@@ -1120,6 +1126,7 @@ public class ExcelUtil<T>
                 }
                 else if (StringUtils.isNotEmpty(dictType) && StringUtils.isNotNull(value))
                 {
+                    // 通过字典类型，将数据中的值转为标签
                     if (!sysDictMap.containsKey(dictType + value))
                     {
                         String lable = convertDictByExp(Convert.toStr(value), dictType, separator);
@@ -1600,6 +1607,7 @@ public class ExcelUtil<T>
 
     /**
      * 创建一个工作簿
+     * 并且先创建了第一个sheet
      */
     public void createWorkbook()
     {
@@ -1621,7 +1629,11 @@ public class ExcelUtil<T>
         if (sheetNo > 1 && index > 0)
         {
             this.sheet = wb.createSheet();
+            // 创建新的工作页时，rownum需要从0开始计数
+            rownum = 0;
             this.createTitle();
+            // 给新的sheet页创建子表
+            this.createSubHead();
             wb.setSheetName(index, sheetName + index);
         }
     }

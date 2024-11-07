@@ -1,7 +1,8 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
 import com.ruoyi.system.domain.SysLogininfor;
+
+import java.util.List;
 
 /**
  * 系统访问日志情况信息 服务层
@@ -37,4 +38,6 @@ public interface ISysLogininforService
      * 清空系统登录日志
      */
     public void cleanLogininfor();
+
+
 }

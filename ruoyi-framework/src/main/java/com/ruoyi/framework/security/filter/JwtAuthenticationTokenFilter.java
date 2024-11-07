@@ -37,6 +37,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
             tokenService.verifyToken(loginUser);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            // 在上下文中设置认证信息就说明当前线程已经登录了
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
         chain.doFilter(request, response);

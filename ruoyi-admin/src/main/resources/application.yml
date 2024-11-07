@@ -127,3 +127,10 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+# 第三方登录配置
+login:
+  gitee:
+    clientId: f775e3385de07bfc81d685a440aab11ccf4d34920ec05caebca40b0e930ef458
+    clientSecret: 36e36924e85029e474b1ad4d92ea519d29defd699743bd660afc9ee9129e1eda
+    redirectUrl: http://localhost:81/callback

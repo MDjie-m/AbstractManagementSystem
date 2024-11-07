@@ -1,9 +1,12 @@
 package com.ruoyi.web.controller.common;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.ruoyi.common.config.RuoYiConfig;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.file.FileUploadUtils;
+import com.ruoyi.common.utils.file.FileUtils;
+import com.ruoyi.framework.config.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import com.ruoyi.common.config.RuoYiConfig;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.file.FileUploadUtils;
-import com.ruoyi.common.utils.file.FileUtils;
-import com.ruoyi.framework.config.ServerConfig;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 通用请求处理
@@ -56,7 +57,9 @@ public class CommonController
             String filePath = RuoYiConfig.getDownloadPath() + fileName;
 
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            // 设置文件传输的响应头
             FileUtils.setAttachmentResponseHeader(response, realFileName);
+            // 写文件到响应体中
             FileUtils.writeBytes(filePath, response.getOutputStream());
             if (delete)
             {
@@ -148,6 +151,7 @@ public class CommonController
             // 本地资源路径
             String localPath = RuoYiConfig.getProfile();
             // 数据库资源地址
+            // resource路劲地址必须以/profile为开头
             String downloadPath = localPath + StringUtils.substringAfter(resource, Constants.RESOURCE_PREFIX);
             // 下载名称
             String downloadName = StringUtils.substringAfterLast(downloadPath, "/");

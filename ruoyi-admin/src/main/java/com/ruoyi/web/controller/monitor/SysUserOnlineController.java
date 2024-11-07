@@ -64,6 +64,7 @@ public class SysUserOnlineController extends BaseController
                 userOnlineList.add(userOnlineService.loginUserToUserOnline(user));
             }
         }
+        // 这是让新登录的用户排到前面？
         Collections.reverse(userOnlineList);
         userOnlineList.removeAll(Collections.singleton(null));
         return getDataTable(userOnlineList);

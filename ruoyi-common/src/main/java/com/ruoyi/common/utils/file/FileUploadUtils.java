@@ -1,11 +1,5 @@
 package com.ruoyi.common.utils.file;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Objects;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.web.multipart.MultipartFile;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.exception.file.FileNameLengthLimitExceededException;
@@ -14,6 +8,13 @@ import com.ruoyi.common.exception.file.InvalidExtensionException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.Seq;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 /**
  * 文件上传工具类
@@ -103,17 +104,22 @@ public class FileUploadUtils
             InvalidExtensionException
     {
         int fileNamelength = Objects.requireNonNull(file.getOriginalFilename()).length();
+        // 文件大小不能超过上限
         if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH)
         {
             throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
         }
-
+        // 判断文件类型是否可以上传
         assertAllowed(file, allowedExtension);
 
+        // 拓展文件夹以及文件名
         String fileName = extractFilename(file);
 
         String absPath = getAbsoluteFile(baseDir, fileName).getAbsolutePath();
+        // 真正上传文件的位置
         file.transferTo(Paths.get(absPath));
+
+        // 生成以/profile开头的uri地址
         return getPathFileName(baseDir, fileName);
     }
 
@@ -122,6 +128,7 @@ public class FileUploadUtils
      */
     public static final String extractFilename(MultipartFile file)
     {
+        // 用日期来拓展文件夹，原始名字+时间戳等生成的字符串作为文件名
         return StringUtils.format("{}/{}_{}.{}", DateUtils.datePath(),
                 FilenameUtils.getBaseName(file.getOriginalFilename()), Seq.getId(Seq.uploadSeqType), getExtension(file));
     }
@@ -144,6 +151,7 @@ public class FileUploadUtils
     {
         int dirLastIndex = RuoYiConfig.getProfile().length() + 1;
         String currentDir = StringUtils.substring(uploadDir, dirLastIndex);
+        // 这里是为了拼接以profile为上下文的绝对路径
         return Constants.RESOURCE_PREFIX + "/" + currentDir + "/" + fileName;
     }
 

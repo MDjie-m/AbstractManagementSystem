@@ -111,7 +111,7 @@ public class SecurityConfig
             .authorizeHttpRequests((requests) -> {
                 permitAllUrl.getUrls().forEach(url -> requests.antMatchers(url).permitAll());
                 // 对于登录login 注册register 验证码captchaImage 允许匿名访问
-                requests.antMatchers("/login", "/register", "/captchaImage").permitAll()
+                requests.antMatchers("/login", "/register", "/captchaImage", "/PreLoginByGitee", "/loginByGitee").permitAll()
                     // 静态资源，可匿名访问
                     .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
                     .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
@@ -123,7 +123,7 @@ public class SecurityConfig
             // 添加JWT filter
             .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
             // 添加CORS filter
-            .addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class)
+            // .addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class) 这应该算是多出来的过滤器
             .addFilterBefore(corsFilter, LogoutFilter.class)
             .build();
     }
