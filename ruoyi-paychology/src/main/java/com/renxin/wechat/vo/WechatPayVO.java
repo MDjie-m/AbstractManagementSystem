@@ -9,9 +9,10 @@ import java.math.BigDecimal;
 public class WechatPayVO implements Serializable {
     private Long userId;
     private Long courseId;
-
+    private Long teamId;//团队id
     private Long gaugeId;
 
+    private Integer memberType;//成员类型  1:正式成员   2:观摩成员
     private BigDecimal amount;
 
     // 咨询服务

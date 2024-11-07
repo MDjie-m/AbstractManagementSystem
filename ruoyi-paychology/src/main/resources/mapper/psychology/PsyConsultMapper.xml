@@ -221,7 +221,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="getList" parameterType="PsyConsult" resultMap="PsyConsultResult">
-        <include refid="selectPsyConsultVo"/>
+        select id,  user_name, nicK_name, mode, city, province, open_id, lang, genre, avatar, img, email, phonenumber, sex, tabs, way, way_str,
+            wx_card, zx_word, zx_style, notice, experience, info, detail, serve, work_num, work_time, work_hours, del_flag, is_show, status,
+            qualification, index_qualification, create_by, create_time, update_by, update_time, level,service_object,
+            is_new_people , device_id , device_brand, device_model, last_login_ip, concat(nick_name,'#',right(phonenumber,4)) as nameAndPhone
+        from psy_consult
         <where>
             <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
             <if test="id != null  and id != ''"> and id = #{id}</if>

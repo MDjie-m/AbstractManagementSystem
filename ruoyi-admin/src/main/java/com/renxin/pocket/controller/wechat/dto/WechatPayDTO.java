@@ -11,6 +11,7 @@ public class WechatPayDTO implements Serializable {
     private Long courseId;
 
     private Long gaugeId;
+    private Long teamId;//团队id
 
     // 咨询服务
     private Long consultId;
@@ -18,6 +19,7 @@ public class WechatPayDTO implements Serializable {
     private Long workId;
     private Long orderId;
     private Integer time;
+    private Integer memberType;//成员类型  1:正式成员   2:观摩成员
 
     private BigDecimal amount;
     private BigDecimal originalPrice;//原价

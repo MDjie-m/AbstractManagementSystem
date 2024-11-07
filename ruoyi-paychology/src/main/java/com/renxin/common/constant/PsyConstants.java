@@ -7,6 +7,7 @@ public class PsyConstants {
     public static final String ORDER_GAUGE = "CP"; //测评
     public static final String ORDER_CONSULT = "ZX"; //咨询
     public static final String ORDER_REFUND = "TK"; //咨询
+    //
     
     //咨询师订单类型
     public static final String CONSULTANT_ORDER_TEAM_SUP = "TDDD"; //团队督导
@@ -23,11 +24,13 @@ public class PsyConstants {
 
     //来访者订单类型
     //public static final String POCKET_ORDER_SPEAK = "QS"; //倾诉
+    public static final String POCKET_ORDER_TEAM = "TD"; //团队
     public static final String POCKET_ORDER_CONSULT = "ZX"; //咨询
     public static final String POCKET_ORDER_GAUGE = "CP"; //测评
     public static final String POCKET_ORDER_COURSE = "LFZKC"; //课程
 
     //public static final String POCKET_ORDER_SPEAK_NUM = "1"; //倾诉
+    public static final String POCKET_ORDER_TEAM_NUM = "1"; //咨询
     public static final String POCKET_ORDER_CONSULT_NUM = "2"; //咨询
     public static final String POCKET_ORDER_GAUGE_NUM = "3"; //测评
     public static final String POCKET_ORDER_COURSE_NUM = "4"; //课程
@@ -97,4 +100,6 @@ public class PsyConstants {
     public static final String ORDER_LOG_MESSAGE_CLOSED = "订单已关闭"; //关闭
 
 
+
+    public static final String TEAM_MODULE = "team"; //团队模块
 }

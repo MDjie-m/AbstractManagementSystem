@@ -398,20 +398,6 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
     @Override
     @Transactional(rollbackFor = Exception.class)
     public PsyConsultantOrder generatePsyConsultantOrder(PsyConsultantOrder psyConsultantOrder){
-        // TODO 根据课程查询之前未支付的订单，并取消历史的未支付的订单
-        /*CourOrder orderWithCourseId = new CourOrder();
-        orderWithCourseId.setCourseId(courOrder.getCourseId());
-        orderWithCourseId.setUserId(courOrder.getUserId());// 只取消本用户的课程
-        List<CourOrder> historyCreatedOrderList = courOrderService.selectCourOrderList(orderWithCourseId)
-                .stream()
-                .filter(item -> item.getStatus() == CourConstant.COUR_ORDER_STATUE_CREATED)
-                .collect(Collectors.toList());
-        if (historyCreatedOrderList.size() > 0) {
-            historyCreatedOrderList.forEach(item -> {
-                item.setStatus(CourConstant.COUR_ORDER_STATUE_CANCELED);
-                updateCourOrder(item);
-            });
-        }*/
 
         psyConsultantOrder.setCreateTime(DateUtils.getNowDate()); // 下单时间
         psyConsultantOrder.setUpdateTime(DateUtils.getNowDate()); // 下单时间
@@ -456,6 +442,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
         
         boolean isPayed = false;
         PsyConsultantOrder newOrder = new PsyConsultantOrder();
+        //团队订单
         if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(serverType)) {
             //计算券后价格
             if(ObjectUtils.isNotEmpty(couponNo)) {
@@ -475,7 +462,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             orderPay.setAmount(consultantOrder.getPayAmount());
             orderPay.setPayId(payId); // 当前使用随机生成的支付ID，后续使用第三方支付平台返回的
             orderPayService.insertPsyOrderPay(orderPay);*/
-
+        //个督订单
         } else if (PsyConstants.CONSULTANT_ORDER_PERSON_SUP_NUM.equals(serverType)) {
             //计算券后价格
             if(ObjectUtils.isNotEmpty(couponNo)) {
@@ -487,6 +474,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //consultantOrder.setServerName("个案督导服务");
              newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
             couponService.useCoupon(consultantOrder.getCouponNo());//消耗优惠券
+        //个人体验订单
         } else if (PsyConstants.CONSULTANT_ORDER_PERSON_EXP_NUM.equals(serverType)) {
             //计算券后价格
             if(ObjectUtils.isNotEmpty(couponNo)) {
@@ -497,6 +485,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //consultantOrder.setServerName("个人体验服务");
              newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
             couponService.useCoupon(consultantOrder.getCouponNo());//消耗优惠券
+        //课程订单
         } else if (PsyConstants.CONSULTANT_ORDER_COURSE_NUM.equals(serverType)) {
             //计算券后价格
             if(ObjectUtils.isNotEmpty(couponNo)) {
@@ -507,6 +496,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
             //consultantOrder.setServerName("购买课程");
              newOrder = consultantOrderService.generatePsyConsultantOrder(consultantOrder);
             couponService.useCoupon(consultantOrder.getCouponNo());//消耗优惠券
+        //套餐订单
         } else if (PsyConstants.CONSULTANT_ORDER_PACKAGE_NUM.equals(serverType)) {
             if(ObjectUtils.isNotEmpty(couponNo)) {
                 throw new ServiceException("套餐不可使用优惠券购买");
@@ -557,6 +547,7 @@ public class PsyConsultantOrderServiceImpl implements IPsyConsultantOrderService
                 orderPayService.updatePsyOrderPayByOrderId(orderPay);*/
 
                 //将付款咨询师加入团队内
+                consultantOrder.setMemberUserType(2);//咨询师
                 teamSupervisionService.handleOrder(consultantOrder);
             }
         } else if (outTradeNo.startsWith(PsyConstants.CONSULTANT_ORDER_PERSON_SUP)) {

@@ -182,6 +182,7 @@ public class ConsultantOrderController extends BaseController
 
         //BigDecimal amount = consultantOrder.getPayAmount(); //单位：元
         String serverName = ""; //服务描述
+        Integer memberType = null; //成员类型
         BigDecimal originalPrice = new BigDecimal(0); //原价
         BigDecimal consultantRatio = null; //咨询师分成比例
         BigDecimal consultantPrice = null; //咨询师收取费用
@@ -193,14 +194,30 @@ public class ConsultantOrderController extends BaseController
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.CONSULTANT_ORDER_TEAM_SUP, null);
                 PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(consultantOrder.getServerId()));
                 if (ObjectUtils.isEmpty(team)){
-                    throw new ServiceException("未找到该id的团队督导");
+                    return AjaxResult.error("未找到该id的团队:" + consultantOrder.getServerId());
                 }
                 if (team.getConsultantId().equals(consultId)){
-                    throw new ServiceException("不可报名自己开班的团队督导");
+                    return AjaxResult.error("不可报名自己开班的团队");
                 }
-                originalPrice = team.getPrice();
-                consultantPrice = team.getLectureAmount();
+                if (ObjectUtils.isEmpty(team.getServeUserType()) || team.getServeUserType() != 2){
+                    return AjaxResult.error("该团队不面向咨询师服务:" + consultantOrder.getServerId());
+                }
+                if (ObjectUtils.isEmpty(consultantOrder.getMemberType())){
+                    return AjaxResult.error("请指定成员类型");
+                }
+                if (consultantOrder.getMemberType() == 2 && ("N".equals(team.getIsAbleOb()) || ObjectUtils.isEmpty(team.getObPrice()))){
+                    return AjaxResult.error("该团队不支持观摩");
+                }
                 
+                if (consultantOrder.getMemberType() == 2){
+                    originalPrice = team.getObPrice();//观摩成员价格
+                    memberType = 2;
+                }else{
+                    originalPrice = team.getPrice();//正式成员价格
+                    memberType = 1;
+                }
+                
+                consultantPrice = team.getLectureAmount();
                 serverName = team.getTitle() + "-第" + team.getPeriodNo() +"期";
                 //TODO 超卖问题.
                 if (team.getSurplusJoinNum() <= 0){
@@ -284,6 +301,7 @@ public class ConsultantOrderController extends BaseController
         String attach = "订单号: " + out_trade_no; //先写死一个附加数据 这是可选的 可以用来判断支付内容做支付成功后的处理
             consultantOrder.setOrderNo(out_trade_no);
             consultantOrder.setServerName(serverName);
+            consultantOrder.setMemberType(memberType);
             consultantOrder.setOriginalPrice(originalPrice);
             consultantOrder.setConsultantRatio(consultantRatio);
             consultantOrder.setConsultantPrice(consultantPrice);
@@ -365,7 +383,7 @@ public class ConsultantOrderController extends BaseController
             psyConsultantOrderService.paySuccessCallback(orderNo, null);
             return "success";
         }else{
-            log.error("微信支付, 回调结果失败. decryptedData: " + map.toString());
+            log.error("支付宝支付, 回调结果失败. decryptedData: " + map.toString());
         }
         
         return null;

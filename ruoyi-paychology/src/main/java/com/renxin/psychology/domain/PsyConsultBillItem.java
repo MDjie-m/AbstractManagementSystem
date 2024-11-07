@@ -32,7 +32,7 @@ public class PsyConsultBillItem extends BasePlusEntity implements Serializable
     /** 订单id */
     private String orderId;
     //团督id
-    private String teamId;
+    private Long teamId;
     
     //标识id
     @TableField(exist = false)

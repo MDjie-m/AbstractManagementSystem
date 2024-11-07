@@ -254,10 +254,11 @@ export const consultType = [
 
 
 //督导类型
-export const supervisionType = [
-  { label: '团体督导', value: '1' },
-  { label: '个体督导', value: '2' },
-  { label: '个人体验', value: '3' },
+export const teamType = [
+  { label: '团队督导', value: '1' },
+  { label: '1V2督导', value: '2' },
+  { label: '读书会', value: '3' },
+  { label: '活动小组', value: '4' },
 ]
 
 // 星期
@@ -316,4 +317,11 @@ export const scheduleStatus = [
   { label: '付费人请假', value: '2' },
   { label: '收费人请假', value: '3' },
   { label: '已分账', value: '4' },
+];
+
+// 是否
+export const yesOrNO = [
+  { label: '是', value: 'Y' },
+  { label: '否', value: 'N' },
+
 ];

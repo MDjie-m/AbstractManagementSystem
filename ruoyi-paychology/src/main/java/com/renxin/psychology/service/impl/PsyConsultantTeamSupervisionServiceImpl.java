@@ -101,7 +101,8 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
 
         //查询成员信息
         PsyConsultantSupervisionMember memberReq = new PsyConsultantSupervisionMember();
-        memberReq.setTeamSupervisionId(team.getId());
+            memberReq.setTeamSupervisionId(team.getId());
+            memberReq.setMemberType(1);//正式成员
         List<PsyConsultantSupervisionMember> memberList = memberMapper.selectPsyConsultantSupervisionMemberList(memberReq);
         team.setMemberList(memberList);
 
@@ -138,11 +139,11 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
         //剩余讲课次数
         team.setSurplusNum(team.getCycleNumber() - usedNum);
         
-        //团督仍在开课中
+        //若团督仍在进行中, 获取下次活动时间
         if (team.getStatus() == 1){
             PsyConsultantSchedule querySche = new PsyConsultantSchedule();
-            querySche.setTeamId(id);
-            querySche.setRealTimeStart(LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                querySche.setTeamId(id);
+                querySche.setRealTimeStart(LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             List<PsyConsultantSchedule> scheduleList = consultantScheduleService.selectPsyConsultantScheduleList(querySche);
             if (ObjectUtils.isNotEmpty(scheduleList)){
                 team.setNextBeginTime(scheduleList.get(0).getRealTime());
@@ -318,13 +319,14 @@ public class PsyConsultantTeamSupervisionServiceImpl extends ServiceImpl<PsyCons
     @Transactional(rollbackFor = Exception.class)
     public void handleOrder(PsyConsultantOrder consultantOrder){
         Long serverId = Long.valueOf(consultantOrder.getServerId());
-        //购买团督服务
+        //购买团队服务
         if (PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM.equals(consultantOrder.getServerType())){
             PsyConsultantSupervisionMember member = new PsyConsultantSupervisionMember();
                 member.setTeamSupervisionId(serverId);
                 member.setMemberId(consultantOrder.getPayConsultantId());
-                member.setSupervisionType(PsyConstants.CONSULTANT_ORDER_TEAM_SUP_NUM);
                 member.setOrderNo(consultantOrder.getOrderNo());
+                member.setMemberType(consultantOrder.getMemberType());
+                member.setMemberUserType(consultantOrder.getMemberUserType());
             memberService.insertPsyConsultantSupervisionMember(member);
 
             PsyConsultantTeamSupervision team = selectPsyConsultantTeamSupervisionById(Long.valueOf(serverId));

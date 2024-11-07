@@ -207,6 +207,7 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     // 今日可约
     @TableField(exist = false)
     private Integer buy;
+    
 
     @TableField(exist = false)
     private BigDecimal price;
@@ -249,5 +250,8 @@ public class PsyConsult extends BasePlusEntity implements Serializable
     private Integer userOrderCount;
     @TableField(exist = false)
     private List<Long> idList;
-    
+
+    //姓名+手机尾号
+    @TableField(exist = false)
+    private String nameAndPhone;
 }

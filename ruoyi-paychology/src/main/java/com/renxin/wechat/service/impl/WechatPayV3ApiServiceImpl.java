@@ -102,7 +102,37 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
 //        OrderCancelTask orderCancelTask = new OrderCancelTask();
         String nickName = psyUserService.selectPsyUserById(wechatPay.getUserId()).getName();
 
-        if (CourConstant.MODULE_COURSE.equals(wechatPay.getModule())) {
+        if (PsyConstants.TEAM_MODULE.equals(wechatPay.getModule())){
+            PsyOrder psyOrder = PsyOrder.builder()
+                    .orderId(wechatPay.getOutTradeNo())
+                    .amount(wechatPay.getAmount())
+                    .orderStatus(OrderStatus.CREATE.getValue())
+                    .gaugeStatus(GaugeStatus.UNFINISHED.getValue())
+                    .teamId(wechatPay.getTeamId())
+                    .memberType(wechatPay.getMemberType())
+                    .userId(wechatPay.getUserId())
+                    .originalPrice(wechatPay.getOriginalPrice())
+                    .couponNo(wechatPay.getCouponNo())
+                    .build();
+            psyOrder.setCreateBy(nickName);
+            PsyOrder newPsyOrder = psyOrderService.generatePsyOrder(psyOrder);
+            psyCouponService.useCoupon(wechatPay.getCouponNo());
+
+            // TODO: 定时将未支付的订单取消任务
+//            orderCancelTask.setOrderId(newPsyOrder.getId());
+//            orderCancelTask.setModule(wechatPay.getModule());
+
+            // TODO: 内部生成支付对象
+            PsyOrderPay psyOrderPay = PsyOrderPay.builder()
+                    .orderId(newPsyOrder.getId())
+                    .amount(wechatPay.getAmount())
+                    .payStatus(OrderPayStatus.NEED_PAY.getValue())
+                    .payId(UUID.randomUUID().toString())
+                    .build();
+            psyOrderPay.setCreateBy(psyUserService.selectPsyUserById(wechatPay.getUserId()).getName());
+            psyOrderPayService.insertPsyOrderPay(psyOrderPay);
+            
+        } else if (CourConstant.MODULE_COURSE.equals(wechatPay.getModule())) {
 
             // TODO: 内部生成订单
             CourOrder courOrder = new CourOrder();
@@ -324,8 +354,42 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
     public void wechatPayNotify(String outTradeNo, String payId) {
         PsyUserIntegralRecord record = new PsyUserIntegralRecord();
         record.setIntegral(0);
+        //来访者团队订单
+        if (outTradeNo.startsWith(PsyConstants.POCKET_ORDER_TEAM)) {
+            PsyOrder psyOrder = psyOrderService.selectPsyOrderByOrderId(outTradeNo);
+            if (OrderStatus.CREATE.getValue() == psyOrder.getOrderStatus()) {
+                //修改订单状态
+                psyOrder.setOrderStatus(OrderStatus.FINISHED.getValue());
+                psyOrderService.updatePsyOrder(psyOrder);
 
-        if (outTradeNo.startsWith(PsyConstants.ORDER_COURSE)) {
+                //将付款来访者加入团队内
+                PsyConsultantOrder order = new PsyConsultantOrder();
+                    order.setServerType("1");//团队服务
+                    order.setServerId(psyOrder.getTeamId()+"");//团队id
+                    order.setOrderNo(outTradeNo);
+                    order.setMemberType(psyOrder.getMemberType());
+                    order.setPayConsultantId(psyOrder.getUserId());//来访者用户id
+                    order.setMemberUserType(1);//来访者
+                teamSupervisionService.handleOrder(order);
+                
+                //修改支付对象状态为已支付
+                PsyOrderPay orderPay = new PsyOrderPay();
+                orderPay.setOrderId(psyOrder.getId()); // 订单ID
+                orderPay.setPayType(0); 
+                orderPay.setPayStatus(CourConstant.PAY_STATUE_PAID);
+                orderPay.setPayId(payId);
+                orderPayService.updatePsyOrderPayByOrderId(orderPay);
+                
+                //积分处理
+                if (psyOrder.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                    record.setLinkId(String.valueOf(psyOrder.getId()));
+                    record.setLinkType(IntegralRecordConstants.INTEGRAL_RECORD_LINK_TYPE_COURSE);
+                    record.setUid(psyOrder.getUserId());
+                    record.setIntegral(psyUserIntegralRecordService.getIntegral(psyOrder.getAmount(), IntegralRecordConstants.INTEGRAL_RECORD_LINK_TYPE_COURSE));
+                }
+            }
+        }
+       else if (outTradeNo.startsWith(PsyConstants.ORDER_COURSE)) {
             // TODO: 修改订单状态为已完成
             CourOrder courOrder = courOrderService.selectCourOrderByOrderId(outTradeNo);
             // 判断状态，防止重复更新
@@ -334,7 +398,6 @@ public class WechatPayV3ApiServiceImpl implements WechatPayV3ApiService {
                 courOrderService.updateCourOrder(courOrder);
 
                 // TODO: 将用户-课程-章节关系初始化
-
                 userCourseSectionService.initCourUserCourseSection(courOrder.getUserId(), courOrder.getCourseId(),PsyConstants.USER_CONSULTED);
 
                 // TODO: 修改支付对象状态为已支付

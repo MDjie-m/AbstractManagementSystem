@@ -1,8 +1,180 @@
 <template>
-  <el-dialog title="查看督导" :visible.sync="open" width="1000px" append-to-body>
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="督导类型" prop="teamType" v-show="false" disabled>
-        <el-select v-model="form.teamType" placeholder="请选择督导类型" disabled clearable>
+  <el-dialog title="查看团队" :visible.sync="open" width="1200px" append-to-body>
+    <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+
+      <el-form-item label="团队标题" prop="title" >
+        <el-input v-model="form.title" placeholder="请输入团队标题" disabled/>
+      </el-form-item>
+
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="团队类型" prop="teamType" >
+            <el-select v-model="form.teamType" placeholder="请选择团队类型" clearable @change="changeTeamType()" disabled>
+              <el-option
+                v-for="dict in teamType"
+                :key="dict.value"
+                :label="dict.label"
+                :value="parseInt(dict.value)"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="面向用户类型" prop="serveUserType" >
+            <el-select v-model="form.serveUserType" placeholder="请选择面向用户类型" clearable disabled>
+              <el-option
+                v-for="dict in userType"
+                :key="dict.value"
+                :label="dict.label"
+                :value="parseInt(dict.value)"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="标签" prop="label" >
+            <el-select v-model="selectedLabelList" clearable multiple  disabled>
+              <el-option
+                v-for="item in teamSupLabelList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.label"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="第几期" prop="periodNo" >
+            <el-input-number v-model="form.periodNo" :min="0" :step="1" :precision="0" disabled/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="满额人数" prop="maxNumPeople" >
+            <el-input-number v-model="form.maxNumPeople" :min="0" :step="1" :precision="0" disabled/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="活动次数" prop="cycleNumber" >
+            <el-input-number v-model="form.cycleNumber" :min="0" :step="1" :precision="0" disabled/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="周几" prop="weekDay" >
+            <el-select v-model="form.weekDay"  clearable style="width: 200px;" disabled>
+              <el-option
+                v-for="dict in dict.type.week_day"
+                :key="dict.value"
+                :label="dict.label"
+                :value="parseInt(dict.value)"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8">
+          <el-form-item label="开始时间" prop="lectureStartTime" >
+            <el-time-picker
+              v-model="form.lectureStartTime" disabled
+              style="width: 200px;"
+              value-format="HH:mm"
+              format="HH:mm"
+              type="daterange"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="结束时间" prop="lectureEndTime" >
+            <el-time-picker
+              v-model="form.lectureEndTime" disabled
+              style="width: 200px;"
+              value-format="HH:mm"
+              format="HH:mm"
+              type="daterange"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="入团价格" prop="price">
+            <el-input-number v-model="form.price" :min="0"  disabled/> 元
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+        </el-col>
+        <el-col :span="8">
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="是否可观摩" prop="isAbleOb" >
+            <el-select v-model="form.isAbleOb" clearable disabled>
+              <el-option
+                v-for="dict in yesOrNO"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="观摩价格" prop="obPrice" v-if="isAbleOb()">
+            <el-input-number v-model="form.obPrice" :min="0"  disabled/> 元
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="讲师" prop="consultantId">
+            <el-select v-model="form.consultantId" clearable filterable disabled>
+              <el-option
+                v-for="item in consultList"
+                :key="item.id"
+                :label="item.nameAndPhone"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="讲师收入" prop="lectureAmount">
+            <el-input-number v-model="form.lectureAmount" :min="0"  disabled/>元/每次
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-form-item label="团督头像图片" prop="avatarPicUrl">
+        <my-cropper v-model="form.avatarPicUrl"  sizeTip="宽172px 高172px" :extraData="extraData" :width="172" :height="172" disabled/>
+      </el-form-item>
+
+      <el-form-item label="团督head图片" prop="headPicUrl">
+        <my-cropper v-model="form.headPicUrl"  sizeTip="宽375px 高197px" :extraData="extraData" :width="375" :height="197" disabled/>
+      </el-form-item>
+
+      <el-form-item label="小组特色图片" prop="specialPicUrl">
+        <editor v-model="form.specialPicUrl" :min-height="192"  disabled/>
+      </el-form-item>
+
+      <el-form-item label="报名须知图片" prop="registerNoticePicUrl">
+        <editor v-model="form.registerNoticePicUrl" :min-height="192"  disabled/>
+      </el-form-item>
+
+      <el-form-item label="备注" prop="remark">
+        <el-input v-model="form.remark" placeholder="请输入备注"  disabled/>
+      </el-form-item>
+
+<!--      <el-form-item label="团队类型" prop="teamType" v-show="false" disabled>
+        <el-select v-model="form.teamType" placeholder="请选择团队类型" disabled clearable>
           <el-option
             v-for="item in supervisionType"
             :key="item.value"
@@ -12,11 +184,11 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="督导标题" prop="title" v-if="isTeamType()" disabled>
-        <el-input v-model="form.title" placeholder="请输入督导标题" disabled />
+      <el-form-item label="团队标题" prop="title" v-if="isTeamType()" disabled>
+        <el-input v-model="form.title" placeholder="请输入团队标题" disabled />
       </el-form-item>
 
-      <el-form-item label="督导师" prop="consultantId">
+      <el-form-item label="讲师" prop="consultantId">
         <el-select v-model="form.consultantId" disabled clearable filterable>
           <el-option
             v-for="item in consultList"
@@ -71,7 +243,7 @@
       <el-form-item label="入团价格" prop="price">
         <el-input-number v-model="form.price" :min="0"  disabled/> 元
       </el-form-item>
-      <el-form-item label="督导师每堂课收入" prop="lectureAmount">
+      <el-form-item label="讲师每堂课收入" prop="lectureAmount">
         <el-input-number v-model="form.lectureAmount" :min="0" disabled/> 元
       </el-form-item>
 
@@ -84,12 +256,12 @@
       </el-form-item>
 
       <el-form-item label="小组特色图片" prop="specialPicUrl">
-        <!--        <image-upload v-model="form.specialPicUrl" :extraData="extraData" />-->
+        &lt;!&ndash;        <image-upload v-model="form.specialPicUrl" :extraData="extraData" />&ndash;&gt;
         <editor v-model="form.specialPicUrl" :min-height="192" :extraData="extraData"/>
       </el-form-item>
 
       <el-form-item label="报名须知图片" prop="registerNoticePicUrl">
-        <!--        <image-upload  v-model="form.registerNoticePicUrl"  :extraData="extraData" />-->
+        &lt;!&ndash;        <image-upload  v-model="form.registerNoticePicUrl"  :extraData="extraData" />&ndash;&gt;
         <editor v-model="form.registerNoticePicUrl" :min-height="192" :extraData="extraData"/>
       </el-form-item>
 
@@ -110,7 +282,7 @@
           <el-table-column label="加入时间" align="center" prop="createTime"/>
 
         </el-table>
-      </el-form-item>
+      </el-form-item>-->
     </el-form>
 
     <div slot="footer" class="dialog-footer">
@@ -121,6 +293,7 @@
 
 <script>
 import {infoTeam, addTeam, editTeam} from "@/api/supervision/team";
+import { yesOrNO } from "@/utils/constants";
 
 export default {
   name: "infoForm",
@@ -137,24 +310,29 @@ export default {
       type: 'info',// tryAdd
       supervisionType: this.$constants.supervisionType,
       weekDay: this.$constants.weekDay,
+      teamType: this.$constants.teamType,
+      userType: this.$constants.userType,
+      yesOrNO: this.$constants.yesOrNO,
+      teamSupLabelList: this.$constants.teamSupLabel,
       // 上传
       extraData: {
         module: this.$constants['picModules'][2],
         type: this.$constants['picTypes'][2]
       },
+      selectedLabelList:[],
       form: {
         memberList:[]
       },
       // 表单校验
       rules: {
         /*teamType: [
-          { required: true, message: "请选择督导类型", trigger: "change" }
+          { required: true, message: "请选择团队类型", trigger: "change" }
         ],
         title: [
           { required: true, message: "请输入标题", trigger: "blur" }
         ],
         consultantId: [
-          { required: true, message: "请选择督导师", trigger: "change" }
+          { required: true, message: "请选择讲师", trigger: "change" }
         ],
         periodNo: [
           { required: true, message: "请输入期数", trigger: "change" }
@@ -190,25 +368,13 @@ export default {
         console.log(response.data)
         if (response.code == 200){
           let data = response.data;
-          /*this.form.consultantId = data.consultantId;
-          this.form.cycleNumber = data.cycleNumber;
-          this.form.firstLectureDate = data.firstLectureDate;
-          this.form.id = data.id;
-          this.form.lectureEndTime = data.lectureEndTime;
-          this.form.lectureStartTime = data.lectureStartTime;
-          this.form.maxNumPeople = data.maxNumPeople;
-          this.form.periodNo = data.periodNo;
-          this.form.price = data.price;
-          this.form.status = data.status;
-          this.form.teamType = data.teamType;
-          this.form.title = data.title;
-          this.form.weekDay = data.weekDay;
-          this.form.remark = data.remark;
-          this.form.memberList = data.memberList;*/
           data.consultExperience = '';
           data.consultAvatar = '';
           data.consultDetail = '';
           this.form = data;
+          if (this.form.label){
+            this.selectedLabelList = this.form.label.split(",");
+          }
         }
         console.log("================================form-info")
         console.log(this.form)
@@ -248,10 +414,20 @@ export default {
       }
     },
     isTeamType(){
-      if (this.form.teamType == 1){
+      if (this.form.teamType == '1'){
         return true;
       }
       return false;
+    },
+    isAbleOb(){
+      if (this.form.isAbleOb == 'Y'){
+        return true;
+      }
+      return false;
+    },
+    isHasMember(){
+      //剩余名额 != 最大人数, 即已有人报名
+      this.form.surplusJoinNum != this.form.maxNumPeople;
     },
     /** 提交按钮 */
     submitForm() {
@@ -269,7 +445,7 @@ export default {
             return that.$message.error('选择的合同时间段内存在有效合同，请先终止原合同再发起新合同。')
           }*/
 
-          that.$modal.confirm('确认修改督导吗？').then(function() {
+          that.$modal.confirm('确认修改团队吗？').then(function() {
 
 
 
@@ -287,7 +463,15 @@ export default {
     cancel() {
       this.form = {}
       this.open = false
-    }
+    },
+    changeTeamType(){
+      console.log('------------')
+      console.log(this.form.teamType)
+      if (this.form.teamType != '1'){
+        this.form.isAbleOb = 'N';
+      }
+      console.log(this.form.isAbleOb)
+    },
   }
 }
 </script>

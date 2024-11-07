@@ -114,12 +114,13 @@ public class OrderTask {
         List<PsyConsultantSchedule> scheduleList = scheduleService.selectPsyConsultantScheduleList(scheduleReq);
 
         for (PsyConsultantSchedule schedule : scheduleList) {
+            //团队活动
             if (schedule.getScheduleType() == 21){
                 //通知督导师
                 NoticeMessage consultantNotice = new NoticeMessage();
                     consultantNotice.setPush_clientid(consultService.getClientIdByConsultantId(schedule.getConsultId()));
-                    consultantNotice.setTitle("团队督导课即将开始");   
-                    consultantNotice.setContent("您名下的团队督导[" +schedule.getServerName()+  "]将在" + schedule.getTimeStart() + "开课, 请准时上线.");
+                    consultantNotice.setTitle("团队活动即将开始");   
+                    consultantNotice.setContent("您名下的团队[" +schedule.getServerName()+  "]将在" + schedule.getTimeStart() + "开始活动, 请准时上线.");
                 cloudFunctions.sendGeTuiMessage(consultantNotice);
 
                 //查询该团督的成员清单
@@ -127,12 +128,33 @@ public class OrderTask {
                     memberReq.setTeamSupervisionId(schedule.getTeamId());
                 List<PsyConsultantSupervisionMember> memberList = memberService.selectPsyConsultantSupervisionMemberList(memberReq);
                 //通知成员
-                consultantNotice.setContent("您参与的团队督导[" + schedule.getServerName() + "]将在" + schedule.getTimeStart()  + "开课, 请准时上线.");
                 for (PsyConsultantSupervisionMember member : memberList) {
-                    consultantNotice.setPush_clientid(consultService.getClientIdByConsultantId(member.getMemberId()));
-                    cloudFunctions.sendGeTuiMessage(consultantNotice);
+                    if (member.getMemberUserType() == 1){//来访者
+                        NoticeMessage notice = new NoticeMessage();
+                        notice.setMessageType(Constants.MSG_CONSULT_START);//预约咨询将开始
+                        notice.setNoticeMethod(NoticeMethodEnum.WECHAT);
+                        notice.setReceiverId(userService.getOpenId(member.getMemberId()));
+
+                        HashMap<String, TemplateMessageItemVo> msgMap = new HashMap<>();
+                        msgMap.put("time1", new TemplateMessageItemVo(schedule.getTimeStart()));//预约时间
+                        msgMap.put("thing2", new TemplateMessageItemVo());//被咨询人
+                        msgMap.put("thing3", new TemplateMessageItemVo());//咨询人
+                        msgMap.put("thing4", new TemplateMessageItemVo("团队活动即将开始"));//预约服务
+                        msgMap.put("thing5", new TemplateMessageItemVo("您参与的团队[" + schedule.getServerName() + "]将在" + 
+                                schedule.getTimeStart()  + "开始活动, 请准时上线."));//温馨提示
+                        
+                        notice.setMsgMap(msgMap);
+                        wxMsgUtils.send(notice);
+                    }
+                    if (member.getMemberUserType() == 2){//咨询师
+                        consultantNotice.setContent("您参与的团队[" + schedule.getServerName() + "]将在" + schedule.getTimeStart()  + "活动, 请准时上线.");
+                        consultantNotice.setPush_clientid(consultService.getClientIdByConsultantId(member.getMemberId()));
+                        cloudFunctions.sendGeTuiMessage(consultantNotice);
+                    }
+                    
                 }
             }
+            //个督/体验
             if (schedule.getScheduleType() == 22 || schedule.getScheduleType() == 23){
                 //通知收费咨询师
                 NoticeMessage consultantNotice = new NoticeMessage();

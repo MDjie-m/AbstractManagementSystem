@@ -30,11 +30,11 @@ public class PsyConsultantTeamSupervision extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 团督主键 */
+    /** 团队主键 */
     private Long id;
 
-    /** 团督标题 */
-    @Excel(name = "团督标题")
+    /** 团队标题 */
+    @Excel(name = "团队标题")
     private String title;
 
     //头像
@@ -49,13 +49,11 @@ public class PsyConsultantTeamSupervision extends BaseEntity
 
     /** 报名须知(图片) */
     private String registerNoticePicUrl;
-
-    /** 周期 */
-    @Excel(name = "周期")
+    
     private String cycle;
 
     /** 周期次数 */
-    @Excel(name = "周期次数")
+    @Excel(name = "活动次数")
     private Integer cycleNumber;
 
     /** 督导师 */
@@ -70,23 +68,27 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     @TableLogic
     private Integer delFlag;
 
-    /** 当前期数 */
+    
+    /** 服务对象类型 1.来访者  2.咨询师*/
+    private Integer serveUserType;
+    
+    /** 当前期数 / 第几期 */
     private Integer periodNo;
 
-    /** 星期几开课 */
+    /** 星期几活动 */
     private Integer weekDay;
 
-    /** 开课日开始时间 */
+    /** 活动日开始时间 */
     private String lectureStartTime;
 
-    /** 开课日结束时间 */
+    /** 活动日结束时间 */
     private String lectureEndTime;
 
     //课堂时长(小时)
     @TableField(exist = false)
     private Double lectureHour;
 
-    /** 初次开课日期 */
+    /** 初次活动日期 */
     private String firstLectureDate;
 
     /** 最大团队人数 */
@@ -99,9 +101,12 @@ public class PsyConsultantTeamSupervision extends BaseEntity
     //标签
     private String label;
     
-    /** 督导类型  1.团体督导  2.个体督导  3.个人体验 */
-    @TableField(exist = false)
+    /** 团体类型  1.团体督导  2.1V2督导  3.读书会  4.活动小组 */
     private Integer teamType;
+    //是否可观摩
+    private String isAbleOb;
+    //观摩价格
+    private BigDecimal obPrice;
 
 
     /** 督导师 - 登录名 */

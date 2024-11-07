@@ -252,6 +252,7 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
       /*  log.info( java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 + "--------------------------------连接MySQL查询咨询师:" + id);*/
         PsyConsultVO consultVO = BeanUtil.toBean(psyConsultMapper.queryById(id), PsyConsultVO.class);
+        if (ObjectUtils.isEmpty(consultVO)){ return null; }
         //查询工作时长
         PsyWorkTimeRes psyWorkTimeRes = scheduleService.querySumTime(id);
         BeanUtils.copyProperties(psyWorkTimeRes,consultVO);
@@ -877,6 +878,9 @@ public class PsyConsultServiceImpl extends ServiceImpl<PsyConsultMapper, PsyCons
     //刷新缓存
     @Override
     public void refreshCacheByIdList(List<Long> idList){
+        if (ObjectUtils.isEmpty(idList)){
+            return;
+        }
         redisCache.deleteMultiCache(CacheConstants.CONSULTANT_BY_ID_KEY,idList);
         for (Long id : idList) {
             self.getOne(id);

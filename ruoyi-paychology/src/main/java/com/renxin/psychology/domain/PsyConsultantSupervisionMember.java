@@ -9,13 +9,14 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.renxin.common.annotation.Excel;
 import com.renxin.common.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 督导成员对象 psy_consultant_supervision_member
  * 
  * @author renxin
  * @date 2024-06-26
  */
-@NoArgsConstructor
 @TableName("psy_consultant_supervision_member")
 @Data
 public class PsyConsultantSupervisionMember extends BaseEntity
@@ -33,17 +34,25 @@ public class PsyConsultantSupervisionMember extends BaseEntity
     @Excel(name = "团队id")
     private Long teamSupervisionId;
 
-    /** 1:团督  2.个体督导  3个体体验 */
-    @Excel(name = "1:团督  2.个体督导  3个体体验")
-    private String supervisionType;
-
-    /** 订单ID */
-    @Excel(name = "订单ID")
-    private String orderNo;
-
+    /** 团体类型  1.团体督导  2.1V2督导  3.读书会  4.活动小组 */
+    private Integer teamType;
+    private List<Integer> teamTypeList;
+    
     /** 成员ID(咨询师ID） */
     @Excel(name = "成员ID(咨询师ID）")
     private Long memberId;
+
+    /** 成员类型  1:正式成员   2:观摩成员 */
+    @Excel(name = "成员类型  1:正式成员   2:观摩成员")
+    private Integer memberType;
+   
+    
+    //成员用户类型   1来访者   2咨询师
+    private Integer memberUserType;
+    
+    /** 订单ID */
+    @Excel(name = "订单ID")
+    private String orderNo;
 
     /** 备注 */
     @Excel(name = "备注")
@@ -66,20 +75,5 @@ public class PsyConsultantSupervisionMember extends BaseEntity
     /** 成员性别 */
     private String memberSex;
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("supervisionId", getSupervisionId())
-            .append("supervisionType", getSupervisionType())
-            .append("orderNo", getOrderNo())
-            .append("memberId", getMemberId())
-            .append("remark", getRemark())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
-    }
+  
 }

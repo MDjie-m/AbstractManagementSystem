@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="PsyConsultantSupervisionMember" id="PsyConsultantSupervisionMemberResult">
         <result property="id"    column="id"    />
         <result property="supervisionId"    column="supervision_id"    />
-        <result property="supervisionType"    column="supervision_type"    />
+        <result property="memberType"    column="member_type"    />
         <result property="orderNo"    column="order_no"    />
         <result property="memberId"    column="member_id"    />
         <result property="remark"    column="remark"    />
@@ -17,15 +17,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="teamSupervisionId"    column="team_supervision_id"    />
+        <result property="teamType"    column="team_type"    />
+        <result property="memberUserType"    column="member_user_type"    />
     </resultMap>
 
     <sql id="selectPsyConsultantSupervisionMemberVo">
-        select id, supervision_id, team_supervision_id,  supervision_type, order_no, member_id, remark, del_flag, create_by, create_time, update_by, update_time from psy_consultant_supervision_member
+        select id, supervision_id, team_supervision_id,  member_type, order_no, member_id, remark, del_flag, create_by, create_time, update_by, update_time ,
+               team_type, member_user_type
+        from psy_consultant_supervision_member
     </sql>
 
     <select id="selectPsyConsultantSupervisionMemberList" parameterType="PsyConsultantSupervisionMember" resultMap="PsyConsultantSupervisionMemberResult">
         select
-            mem.id, mem.supervision_id, mem.team_supervision_id,  mem.supervision_type, mem.order_no, mem.member_id, mem.remark, mem.del_flag,
+            mem.id, mem.supervision_id, mem.team_supervision_id,  mem.member_type, mem.order_no, mem.member_id, mem.remark, mem.del_flag,
             mem.create_by, mem.create_time, mem.update_by, mem.update_time ,
             con.user_name as memberName,
             con.avatar as memberAvatar,
@@ -37,12 +41,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join psy_consult con on mem.member_id = con.id 
         where mem.del_flag = 0                                
        
-            <if test="supervisionId != null "> and supervision_id = #{supervisionId}</if>
-            <if test="supervisionType != null  and supervisionType != ''"> and supervision_type = #{supervisionType}</if>
-            <if test="orderNo != null "> and order_no = #{orderNo}</if>
-            <if test="memberId != null  and memberId != ''"> and member_id = #{memberId}</if>
-            <if test="teamSupervisionId != null  and teamSupervisionId != ''"> and team_supervision_id = #{teamSupervisionId}</if>
-       
+            <if test="supervisionId != null "> and mem.supervision_id = #{supervisionId}</if>
+            <if test="memberType != null  and memberType != ''"> and mem.member_type = #{memberType}</if>
+            <if test="orderNo != null "> and mem.order_no = #{orderNo}</if>
+            <if test="memberId != null  and memberId != ''"> and mem.member_id = #{memberId}</if>
+            <if test="teamSupervisionId != null  and teamSupervisionId != ''"> and mem.team_supervision_id = #{teamSupervisionId}</if>
+            <if test="teamType != null  and teamType != ''"> and mem.team_type = #{teamType}</if>
+            <if test="memberUserType != null  and memberUserType != ''"> and mem.member_user_type = #{memberUserType}</if>
+            <if test="teamTypeList != null  and teamTypeList.size > 0"> 
+                and mem.team_type in
+                <foreach collection="teamTypeList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
     </select>
     
     <select id="selectPsyConsultantSupervisionMemberById" parameterType="Long" resultMap="PsyConsultantSupervisionMemberResult">
@@ -64,7 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
             <if test="supervisionId != null">supervision_id,</if>
-            <if test="supervisionType != null">supervision_type,</if>
+            <if test="memberType != null">member_type,</if>
             <if test="orderNo != null">order_no,</if>
             <if test="memberId != null">member_id,</if>
             <if test="remark != null">remark,</if>
@@ -74,11 +85,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="teamSupervisionId != null">team_supervision_id,</if>
+            <if test="teamType != null">team_type,</if>
+            <if test="memberUserType != null">member_user_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="supervisionId != null">#{supervisionId},</if>
-            <if test="supervisionType != null">#{supervisionType},</if>
+            <if test="memberType != null">#{memberType},</if>
             <if test="orderNo != null">#{orderNo},</if>
             <if test="memberId != null">#{memberId},</if>
             <if test="remark != null">#{remark},</if>
@@ -88,6 +101,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="teamSupervisionId != null">#{teamSupervisionId},</if>
+            <if test="teamType != null">#{teamType},</if>
+            <if test="memberUserType != null">#{memberUserType},</if>
          </trim>
     </insert>
 
@@ -95,7 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update psy_consultant_supervision_member
         <trim prefix="SET" suffixOverrides=",">
             <if test="supervisionId != null">supervision_id = #{supervisionId},</if>
-            <if test="supervisionType != null">supervision_type = #{supervisionType},</if>
+            <if test="memberType != null">member_type = #{memberType},</if>
             <if test="orderNo != null">order_no = #{orderNo},</if>
             <if test="memberId != null">member_id = #{memberId},</if>
             <if test="remark != null">remark = #{remark},</if>
@@ -105,6 +120,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="teamSupervisionId != null">team_supervision_id = #{teamSupervisionId},</if>
+            <if test="teamType != null">team_type = #{teamType},</if>
+            <if test="memberUserType != null">member_user_type = #{memberUserType},</if>
         </trim>
         where id = #{id}
     </update>

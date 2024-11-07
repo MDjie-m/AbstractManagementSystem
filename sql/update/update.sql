@@ -37,7 +37,7 @@ ALTER TABLE `psy_consultant_team_supervision`
 
 ALTER TABLE `psy_consultant_team_supervision`
     CHANGE COLUMN `consultant_id` `consultant_id` VARCHAR(255) NULL DEFAULT NULL COMMENT '督导师id' COLLATE 'utf8mb4_0900_ai_ci' AFTER `cycle_number`,
-    ADD COLUMN `team_type` INT NULL DEFAULT NULL COMMENT '督导类型  1.团体督导  2.个体督导  3.个人体验' AFTER `consultant_id`;
+    ADD COLUMN `team_type` INT NULL DEFAULT NULL COMMENT '团体类型  1.团体督导  2.1V2督导  3.读书会  4.活动小组' AFTER `consultant_id`;
 
 ALTER TABLE `psy_consult`
     ADD COLUMN `level` INT NULL DEFAULT NULL COMMENT '级别  1.学员咨询师   2.初级咨询师   3.中级咨询师   4.高级咨询师   5.督导师' AFTER `sex`;

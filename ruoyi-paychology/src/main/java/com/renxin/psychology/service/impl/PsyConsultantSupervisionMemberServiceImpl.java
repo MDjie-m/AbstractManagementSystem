@@ -75,7 +75,7 @@ public class PsyConsultantSupervisionMemberServiceImpl  extends ServiceImpl<PsyC
 
         PsyConsultantTeamSupervision team = psyConsultantTeamSupervisionMapper.selectPsyConsultantTeamSupervisionById(req.getTeamSupervisionId());
         req.setSupervisionId(Long.valueOf(team.getConsultantId()));//督导师id
-        req.setSupervisionType("1");
+        req.setTeamType(team.getTeamType());
         int i = psyConsultantSupervisionMemberMapper.insertPsyConsultantSupervisionMember(req);
         
         //刷新团督缓存

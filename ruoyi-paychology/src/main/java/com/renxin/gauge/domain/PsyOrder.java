@@ -63,6 +63,9 @@ public class PsyOrder extends BaseEntity
     @Excel(name = "用户名")
     private String userName;
 
+    private Long teamId;//团队id
+    private Integer memberType;//成员类型  1:正式成员   2:观摩成员
+
     /**
      * 量表标题
      */

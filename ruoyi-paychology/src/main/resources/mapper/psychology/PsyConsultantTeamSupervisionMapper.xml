@@ -32,13 +32,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="teamType" column="team_type" />
         <result property="label" column="label" />
         <result property="lectureAmount" column="lecture_amount" />
+        <result property="isAbleOb" column="is_able_ob" />
+        <result property="obPrice" column="ob_price" />
+        <result property="serveUserType" column="serve_user_type" />
     </resultMap>
 
     <sql id="selectPsyConsultantTeamSupervisionVo">
         team.id, team.title, team.avatar_pic_url, team.head_pic_url, team.special_pic_url, team.register_notice_pic_url, team.cycle, team.cycle_number, team.consultant_id, team.status, team.remark, team.del_flag,
         team.create_by, team.create_time, team.update_by, team.update_time,
         team.period_no,team.week_day,team.lecture_start_time, team.lecture_end_time,team.first_lecture_date,team.max_num_people,team.price,team.team_type  ,team.label  ,
-        team.lecture_amount
+        team.lecture_amount, team.is_able_ob, team.ob_price, team.serve_user_type
         
     </sql>
 
@@ -178,7 +181,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="teamType != null">team_type,</if>
             <if test="label != null">label,</if>
             <if test="lectureAmount != null">lecture_amount,</if>
-         </trim>
+            <if test="isAbleOb != null">is_able_ob,</if>
+            <if test="obPrice != null">ob_price,</if>
+            <if test="serveUserType != null">serve_user_type,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="title != null">#{title},</if>
@@ -207,6 +213,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="teamType != null">#{teamType},</if>
             <if test="label != null">#{label},</if>
             <if test="lectureAmount != null">#{lectureAmount},</if>
+            <if test="isAbleOb != null">#{isAbleOb},</if>
+            <if test="obPrice != null">#{obPrice},</if>
+            <if test="serveUserType != null">#{serveUserType},</if>
          </trim>
     </insert>
 
@@ -239,6 +248,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="teamType != null">team_type = #{teamType},</if>
             <if test="label != null">label = #{label},</if>
             <if test="lectureAmount != null">lecture_amount = #{lectureAmount},</if>
+            <if test="isAbleOb != null">is_able_ob = #{isAbleOb},</if>
+            <if test="obPrice != null">ob_price = #{obPrice},</if>
+            <if test="serveUserType != null">serve_user_type = #{serveUserType},</if>
         </trim>
         where id = #{id}
     </update>

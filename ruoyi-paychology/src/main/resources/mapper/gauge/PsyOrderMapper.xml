@@ -21,6 +21,8 @@
         <result property="couponNo"    column="coupon_no"    />
         <result property="isUseGaugeAnalyse"    column="is_use_gauge_analyse"    />
         <result property="payParam"    column="pay_param"    />
+        <result property="teamId"    column="team_id"    />
+        <result property="memberType"    column="member_type"    />
     </resultMap>
 
     <sql id="selectPsyOrderVo">
@@ -40,7 +42,9 @@
                original_price,
                coupon_no,
                is_use_gauge_analyse,
-               pay_param
+               pay_param, 
+               team_id, 
+               member_type
         from psy_order
     </sql>
 
@@ -94,6 +98,8 @@
             <if test="originalPrice != null">original_price,</if>
             <if test="couponNo != null">coupon_no,</if>
             <if test="isUseGaugeAnalyse != null">is_use_gauge_analyse,</if>
+            <if test="teamId != null">team_id,</if>
+            <if test="memberType != null">member_type,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderId != null and orderId != ''">#{orderId},</if>
@@ -110,6 +116,8 @@
             <if test="originalPrice != null">#{originalPrice},</if>
             <if test="couponNo != null">#{couponNo},</if>
             <if test="isUseGaugeAnalyse != null">#{isUseGaugeAnalyse},</if>
+            <if test="teamId != null">#{teamId},</if>
+            <if test="memberType != null">#{memberType},</if>
         </trim>
     </insert>
 
@@ -133,6 +141,8 @@
             <if test="couponNo != null and couponNo != ''">coupon_no = #{couponNo},</if>
             <if test="isUseGaugeAnalyse != null and isUseGaugeAnalyse != ''">is_use_gauge_analyse = #{isUseGaugeAnalyse},</if>
             <if test="payParam != null and payParam != ''">pay_param = #{payParam},</if>
+            <if test="teamId != null and teamId != ''">team_id = #{teamId},</if>
+            <if test="memberType != null and memberType != ''">member_type = #{memberType},</if>
         </trim>
 
         <trim prefix="where" prefixOverrides="and">

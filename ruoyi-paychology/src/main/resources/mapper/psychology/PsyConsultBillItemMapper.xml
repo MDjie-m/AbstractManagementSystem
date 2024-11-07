@@ -177,7 +177,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             d.order_no  order_no,
             d.create_time  order_time,
             d.server_name  serve_name,
-            CASE WHEN sc.total_num = 1 THEN '单次' ELSE '套餐' END serve_type,
+            CASE WHEN sc.total_num = 1 THEN '单次' ELSE '多次' END serve_type,
             sc.total_num  order_num,
             sc.time_num  buyNum,
             d.pay_consultant_id  payUserId,

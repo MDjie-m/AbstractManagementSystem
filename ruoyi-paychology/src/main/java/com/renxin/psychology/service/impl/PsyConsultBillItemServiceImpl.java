@@ -1,12 +1,14 @@
 package com.renxin.psychology.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.renxin.common.dcloud.CloudFunctions;
 import com.renxin.common.utils.bean.BeanUtils;
 import com.renxin.common.wechat.wxMsg.NoticeMessage;
 import com.renxin.psychology.domain.PsyConsultBillItem;
 import com.renxin.psychology.domain.PsyConsultantAccountRecord;
+import com.renxin.psychology.domain.PsyConsultantSupervisionMember;
 import com.renxin.psychology.dto.BillItemDTO;
 import com.renxin.psychology.mapper.PsyConsultBillItemMapper;
 import com.renxin.psychology.request.PsyAdminBillReq;
@@ -20,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -50,6 +49,12 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
 
     @Autowired
     private IPsyConsultService consultService;
+    
+    @Resource
+    private IPsyConsultantTeamSupervisionService teamService;
+    
+    @Resource
+    private IPsyConsultantSupervisionMemberService memberService;
 
     @Override
     public List<PsyConsultBillItem> getItemListForDetail(PsyAdminBillReq req) {
@@ -122,6 +127,7 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
             collect.forEach((key, value) -> {
                 value.forEach(it -> {
                     it.setBuyNumStr(StrUtil.format("第{}次", it.getBuyNum()));
+                    //固定分账金额为空, 说明此为 个督/体验
                     if (ObjectUtils.isEmpty(it.getBrokerage())){
                         if (ObjectUtils.isEmpty(it) || ObjectUtils.isEmpty(it.getRatio()) || ObjectUtils.isEmpty(it.getPrice())){
                             log.error("出现分账异常数据:" + it.toString());
@@ -131,8 +137,9 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
                         //剩余次数 = 总次数 - 已执行次数
                         it.setNum(it.getOrderNum() - it.getBuyNum());
                     }else{
+                    //已有固定分账金额, 则为团队服务.
                         it.setPayAndChargeNum(it.getTeamTimeNUm());
-                        it.setPayUserId(10000L);
+                        it.setPayUserId(10000L);//系统官方
                     }
                 });
             });
@@ -163,8 +170,22 @@ public class PsyConsultBillItemServiceImpl extends ServiceImpl<PsyConsultBillIte
         scheduleService.updateStatusBatch(teamScheduleIdList, "4");//团督已分账
         
         //咨询师缓存刷新
-        consultService.refreshCacheByIdList(billList.stream().map(p -> p.getConsultId()).collect(Collectors.toList()));
-        
+        consultService.refreshCacheByIdList(billList.stream().map(p -> p.getConsultId()).collect(Collectors.toList()));//收费咨询师
+        consultService.refreshCacheByIdList(billList.stream().filter(p -> p.getPayUserType() == 2 && p.getPayUserId() != 10000L).map(p -> p.getPayUserId()).collect(Collectors.toList()));//付费咨询师
+        //团督成员缓存刷新
+        ////本次分账涉及的团队清单
+        List<Long> teamIdList = billList.stream().filter(p -> p.getScheduleType() == 21).map(PsyConsultBillItem::getTeamId).collect(Collectors.toList());
+        ////这些团队涉及的咨询师成员清单
+        List<PsyConsultantSupervisionMember> memberList = memberService.getBaseMapper().selectList(new LambdaQueryWrapper<PsyConsultantSupervisionMember>()
+                .select(PsyConsultantSupervisionMember::getMemberId)
+                .in(PsyConsultantSupervisionMember::getTeamSupervisionId, teamIdList)
+                .eq(PsyConsultantSupervisionMember::getMemberType, 1)//正式成员
+                .eq(PsyConsultantSupervisionMember::getMemberUserType, 2)//咨询师
+                .in(PsyConsultantSupervisionMember::getTeamType, Arrays.asList("1,2"))//团督或1V2督导
+        );
+        List<Long> consultantMemberIdList = memberList.stream().map(p -> p.getMemberId()).distinct().collect(Collectors.toList());
+        consultService.refreshCacheByIdList(consultantMemberIdList);
+
         //todo通知--  咨询师分账已完成
         CloudFunctions cloudFunctions = new CloudFunctions();
         for (PsyConsultantAccountRecord record : acctRecordList) {

@@ -1,18 +1,18 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="督导类型" prop="teamType">
-        <el-select v-model="queryParams.teamType" placeholder="请选择督导类型" clearable>
+      <el-form-item label="团队类型" prop="teamType">
+        <el-select v-model="queryParams.teamType" placeholder="请选择团队类型" clearable>
           <el-option
-            v-for="dict in dict.type.supervision_type"
+            v-for="dict in teamType"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="督导状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择督导状态" clearable>
+      <el-form-item label="团队状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择团队状态" clearable>
           <el-option
             v-for="dict in dict.type.supervision_status"
             :key="dict.value"
@@ -21,15 +21,15 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="督导标题" prop="title">
+      <el-form-item label="团队标题" prop="title">
         <el-input
           v-model="queryParams.title"
-          placeholder="请输入督导标题"
+          placeholder="请输入团队标题"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="督导师" prop="consultantId">
+      <el-form-item label="讲师" prop="consultantId">
         <el-select v-model="queryParams.consultantId"  clearable filterable>
           <el-option
             v-for="item in consultList"
@@ -40,8 +40,8 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="督导标签" prop="teamType">
-        <el-select v-model="queryParams.label" placeholder="请选择督导标签" clearable>
+      <el-form-item label="团队标签" prop="teamType">
+        <el-select v-model="queryParams.label" placeholder="请选择团队标签" clearable>
           <el-option
             v-for="dict in dict.type.team_sup_label"
             :key="dict.value"
@@ -91,59 +91,54 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:supervision-team:add']"
-        >新建督导</el-button>
+        >新建团队</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <!--  督导清单  -->
+    <!--  团队清单  -->
     <el-table v-loading="loading" :data="teamList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="id" align="center" prop="id" />
-      <!-- <el-table-column label="ID" align="center" prop="id" /> -->
-      <el-table-column label="督导类型" align="center" prop="teamType" >
+      <el-table-column label="团队类型" align="center" prop="teamType" >
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.supervision_type" :value="scope.row.teamType"/>
+          <dict-tag :options="dict.type.team_type" :value="scope.row.teamType"/>
         </template>
       </el-table-column>
-      <el-table-column label="督导标题" align="center" prop="title"/>
-      <el-table-column label="期数" align="center" prop="periodNo"/>
-      <el-table-column label="督导师" align="center" prop="consultantId">
+      <el-table-column label="团队标题" align="center" prop="title"/>
+      <el-table-column label="第几期" align="center" prop="periodNo"/>
+      <el-table-column label="讲师" align="center" prop="consultantId">
         <template slot-scope="scope">
-<!--          <dict-tag :options="consultList" :value="scope.row.consultantId"/>-->
-          <!--            {{ (consultList.find(item => item.id == scope.row.consultantId)).nickName }}-->
           <span>
-
              {{
-              (consultList.find(item => item.id == scope.row.consultantId) || { nickName: '未知督导师' }).nickName
+              (consultList.find(item => item.id == scope.row.consultantId) || { nickName: '未知团队师' }).nickName
             }}
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="督导状态" align="center" prop="status">
+      <el-table-column label="团队状态" align="center" prop="status">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.supervision_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="本期开课次数" align="center" prop="cycleNumber" />
+      <el-table-column label="本期活动次数" align="center" prop="cycleNumber" />
       <el-table-column label="满额人数" align="center" prop="maxNumPeople" />
       <el-table-column label="剩余名额" align="center" prop="surplusJoinNum" />
 
       <el-table-column label="入团价格" align="center" prop="price" sortable=""/>
-      <el-table-column label="每周几开课" align="center" prop="weekDay" >
+      <el-table-column label="每周几活动" align="center" prop="weekDay" >
         <template slot-scope="scope">
           <dict-tag :options="dict.type.week_day" :value="scope.row.weekDay"/>
         </template>
       </el-table-column>
-      <el-table-column label="开课时间" align="center" prop="lectureStartTime" />
+      <el-table-column label="活动时间" align="center" prop="lectureStartTime" />
       <el-table-column label="下课时间" align="center" prop="lectureEndTime" />
       <el-table-column label="标签" align="center" prop="label" />
-      <el-table-column label="首次开课日期" align="center" prop="firstLectureDate" />
+      <el-table-column label="首次活动日期" align="center" prop="firstLectureDate" />
       <el-table-column label="创建时间" align="center" prop="createTime" />
 
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-
           <el-button
             size="mini"
             type="text"
@@ -210,7 +205,7 @@ export default {
     scheduleInfoForm
   },
   name: "team",
-  dicts: ['supervision_type','supervision_status','week_day', 'team_sup_label'],
+  dicts: ['team_type','supervision_status','week_day', 'team_sup_label'],
   data() {
     var validatePrice = (rule, value, callback) => {
       // 保留两位小数
@@ -224,6 +219,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      teamType: this.$constants.teamType,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -246,7 +242,7 @@ export default {
         title: null,
         consultantId: null,
       },
-      // 督导师列表
+      // 团队师列表
       consultList: [],
     };
   },
@@ -255,7 +251,7 @@ export default {
     this.getList();
   },
   methods: {
-    //获取督导师清单
+    //获取团队师清单
     async getConsults() {
       const res = await getConsultAll();//{level:'5'}
       this.consultList = res.data
@@ -314,7 +310,7 @@ export default {
       this.$refs.addForm.init()
     },
 
-    /** 查看督导 */
+    /** 查看团队 */
     view(row) {
       this.$refs.infoForm.init(row.id)
     },
@@ -324,14 +320,14 @@ export default {
       this.$refs.scheduleInfoForm.init(row.id)
     },
 
-    /** 编辑督导 */
+    /** 编辑团队 */
     edit(row) {
       this.$refs.editForm.init(row)
     },
 
-    /** 删除督导 */
+    /** 删除团队 */
     /*del(row) {
-      this.$modal.confirm('确认删除督导吗？').then(function() {
+      this.$modal.confirm('确认删除团队吗？').then(function() {
         console.log(1111111111111)
         deleteTeam(row.id).then(response => {
           console.log(22222222222222)
@@ -343,7 +339,7 @@ export default {
       }).catch(() => {});
     },*/
     del(row) {
-      this.$modal.confirm('确认删除督导吗？')
+      this.$modal.confirm('确认删除团队吗？')
         .then(() => {
           return deleteTeam(row.id);
         })

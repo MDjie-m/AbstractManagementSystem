@@ -42,6 +42,10 @@ public class PsyConsultantOrder extends BaseEntity
     /** 服务类型  1：团督 2:个督、3:体验、4:课程 5:个人套餐 */
     @Excel(name = "服务类型  1：团督 2:个督、3:体验、4:课程 5:个人套餐")
     private String serverType;
+    
+    //成员类型  1.正式成员   2.观摩成员
+    private Integer memberType;
+    private Integer memberUserType;//成员用户类型 1.来访者  2.咨询师
 
     /** 服务类型  1：团督 2:个督、3:体验、4:课程 5:个人套餐 */
     @TableField(exist = false)

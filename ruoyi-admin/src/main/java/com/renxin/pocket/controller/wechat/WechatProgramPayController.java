@@ -31,10 +31,7 @@ import com.renxin.pocket.controller.wechat.constant.WechatUrlConstants;
 import com.renxin.pocket.controller.wechat.dto.WechatPayDTO;
 import com.renxin.pocket.controller.wechat.utils.WechatPayV3Utils;
 import com.renxin.psychology.constant.ConsultConstant;
-import com.renxin.psychology.domain.PsyConsultServeConfig;
-import com.renxin.psychology.domain.PsyConsultantOrder;
-import com.renxin.psychology.domain.PsyCoupon;
-import com.renxin.psychology.domain.PsyUser;
+import com.renxin.psychology.domain.*;
 import com.renxin.psychology.dto.OrderDTO;
 import com.renxin.psychology.service.*;
 import com.renxin.psychology.vo.PsyConsultOrderVO;
@@ -110,6 +107,9 @@ public class WechatProgramPayController extends BaseController {
 
     @Resource
     private IPsyOrderService gaugeOrderService;
+    
+    @Resource
+    private IPsyConsultantTeamSupervisionService teamService;
 
 
     @Value("${wechat.appid}")
@@ -143,6 +143,11 @@ public class WechatProgramPayController extends BaseController {
         String content = "支付demo-课程金"; //先写死一个商品描述
 
         switch (wechatPayDTO.getModule()) {
+            case PsyConstants.TEAM_MODULE:
+                out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.POCKET_ORDER_TEAM, userId); //创建商户订单号
+                PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(wechatPayDTO.getTeamId());
+                content = team.getTitle() + "-第" + team.getPeriodNo() +"期";
+                break;
             case CourConstant.MODULE_COURSE:
                 out_trade_no = OrderIdUtils.createOrderNo(PsyConstants.ORDER_COURSE, userId); //创建商户订单号
                 CourCourse courCourse = courCourseService.selectCourCourseById(wechatPayDTO.getCourseId());
@@ -243,6 +248,10 @@ public class WechatProgramPayController extends BaseController {
         String module = req.getModule();
         String orderServerType = "";
         String orderServerId = "";
+        if (module.equals(PsyConstants.TEAM_MODULE)) {
+            orderServerType = "1" + PsyConstants.POCKET_ORDER_TEAM_NUM;
+            orderServerId = req.getTeamId()+"";
+        }
         if (module.equals(ConsultConstant.MODULE_CONSULT)) {
             orderServerType = "1" + PsyConstants.POCKET_ORDER_CONSULT_NUM;
             orderServerId = req.getOrderServerId();
@@ -262,7 +271,16 @@ public class WechatProgramPayController extends BaseController {
 
         //根据不同[服务类型和id]获取服务原价格
         switch (orderServerType) {
-            // 11.倾诉
+            // 11.来访者团队
+            case "1" + PsyConstants.POCKET_ORDER_TEAM_NUM:
+                PsyConsultantTeamSupervision team = teamService.selectPsyConsultantTeamSupervisionById(Long.valueOf(orderServerId));
+                if (req.getMemberType() == 2){
+                    originalPrice = team.getObPrice();//观摩价格
+                }else{
+                    originalPrice = team.getPrice();//正式成员价格
+                }
+                //consultantRatio = team.getConsultantRatio();
+                break;
             // 12.咨询  
             case "1" + PsyConstants.POCKET_ORDER_CONSULT_NUM:
                 PsyConsultServeConfig serverDetailConsult = consultServeService.getServerDetailByRelationId(orderServerId);

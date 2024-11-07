@@ -30,11 +30,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="wxPayParam"    column="wx_pay_param"    />
         <result property="consultantRatio"    column="consultant_ratio"    />
         <result property="consultantPrice"    column="consultant_price"    />
+        <result property="memberType"    column="member_type"    />
     </resultMap>
 
     <sql id="selectPsyConsultantOrderVo">
         select id, order_no, server_id, server_type, server_name, status, pay_consultant_id, pay_consultant_name, pay_amount, pay_datetime, pay_status, 
-               remark, del_flag, create_by, create_time, update_by, update_time,pay_id, pay_type,original_price,coupon_no, ali_pay_param, wx_pay_param, consultant_ratio, consultant_price
+               remark, del_flag, create_by, create_time, update_by, update_time,pay_id, pay_type,original_price,coupon_no, ali_pay_param, wx_pay_param, 
+               consultant_ratio, consultant_price, member_type
         from psy_consultant_order
     </sql>
 
@@ -96,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="wxPayParam != null">wx_pay_param,</if>
             <if test="consultantRatio != null">consultant_ratio,</if>
             <if test="consultantPrice != null">consultant_price,</if>
+            <if test="memberType != null">member_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
@@ -122,6 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="wxPayParam != null">#{wxPayParam},</if>
             <if test="consultantRatio != null">#{consultantRatio},</if>
             <if test="consultantPrice != null">#{consultantPrice},</if>
+            <if test="memberType != null">#{memberType},</if>
 
          </trim>
     </insert>
@@ -151,6 +155,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="wxPayParam != null">wx_pay_param = #{wxPayParam},</if>
             <if test="consultantRatio != null">consultant_ratio = #{consultantRatio},</if>
             <if test="consultantPrice != null">consultant_price = #{consultantPrice},</if>
+            <if test="memberType != null">member_type = #{memberType},</if>
         </trim>
         where order_no = #{orderNo}
     </update>
