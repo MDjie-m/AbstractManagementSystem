@@ -21,12 +21,10 @@ public class TerminalController {
     @ApiOperation("基站终端统计信息查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "rateType", value = "基站类型", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "areaCodes", value = "区域编码", required = true, dataType = "List<String>"),
-            @ApiImplicitParam(name = "custIds", value = "客户ID", required = true, dataType = "List<String>"),
-            @ApiImplicitParam(name = "page", value = "页码", required = true, dataType = "String")
+            @ApiImplicitParam(name = "coordinates", value = "坐标点", required = true, dataType = "String")
     })
     @GetMapping("/queryBSStatInfo")
-    public R<String> queryBSInfo(String rateType, List<String> areaCodes, List<String> custIds, String page){
+    public R<String> queryBSInfo(String rateType, String coordinates){
 
         return R.ok("查询成功");
     }
