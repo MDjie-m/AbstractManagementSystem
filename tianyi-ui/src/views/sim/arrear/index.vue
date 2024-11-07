@@ -47,6 +47,10 @@
       </el-form-item>
     </el-form>
 
+    <el-row>
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+    </el-row>
+
     <el-table v-loading="loading" :data="arrearList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="省份ID" align="center" prop="provId" />

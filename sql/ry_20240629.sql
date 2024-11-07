@@ -4809,3 +4809,43 @@ values('套餐到期预警', '2000', '1', 'pack_exp', 'sim/package/index', 1, 0,
 insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
 values('套餐到期预警(港华)', '2000', '1', 'pack_exp_gh', 'sim/package_gh/index', 1, 0, 'C', '0', '0', 'sim:pack_exp_gh:list', '#', 'admin', sysdate(), '', null, '套餐到期预警菜单');
 
+-- 菜单 SQL
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('NB异常清单', '2000', '1', 'nb', 'sim/nb/index', 1, 0, 'C', '0', '0', 'sim:nb:list', 'chart', 'admin', sysdate(), '', null, 'NB异常清单菜单');
+
+-- 建表语句
+CREATE TABLE sim_nb_list (
+    prov_id bigint NOT NULL COMMENT '省份ID',
+    prov_name varchar(100) NOT NULL COMMENT '省份名称',
+    area_id int NOT NULL COMMENT '地市ID',
+    area_name varchar(100) NOT NULL COMMENT '地市名称',
+    cust_id bigint NOT NULL COMMENT '客户ID',
+    cust_name varchar(100) NOT NULL COMMENT '客户名称',
+    prod_inst_id bigint NOT NULL COMMENT '产品实例ID',
+    acc_nbr bigint NOT NULL COMMENT '接入号码',
+    main_offer_name varchar(100) NOT NULL COMMENT '主套餐名称',
+    net_style varchar(4) NOT NULL COMMENT '网络制式',
+    abnormal_reason varchar(100) NOT NULL COMMENT '异常原因',
+    yyyymmdd varchar(20) NOT NULL COMMENT '数据日期'
+) COMMENT='NB异常清单表';
+
+
+-- 菜单SQL
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('欠费停机预警', '2000', '1', 'arrear', 'sim/arrear/index', 1, 0, 'C', '0', '0', 'sim:arrear:list', 'data', 'admin', sysdate(), '', null, '欠费停机预警菜单');
+
+-- 建表语句
+CREATE TABLE arrear_list (
+    prov_id bigint NOT NULL COMMENT '省份ID',
+    prov_name varchar(100) NOT NULL COMMENT '省份名称',
+    area_id int NOT NULL COMMENT '地市id',
+    area_name varchar(100) NOT NULL COMMENT '地市名称',
+    cust_id bigint NOT NULL COMMENT '客户ID',
+    cust_name varchar(100) NOT NULL COMMENT '客户名称',
+    prod_inst_id bigint NOT NULL COMMENT '产品实例id',
+    acc_nbr bigint NOT NULL COMMENT '用户号码',
+    main_offer_name varchar(100) NOT NULL COMMENT '主套餐名称',
+    net_style varchar(4) NOT NULL COMMENT '网络制式',
+    stop_time varchar(100) NOT NULL COMMENT '拟停机时间',
+    yyyymmdd varchar(20) NOT NULL COMMENT '数据日期'
+) COMMENT = '欠费停机预警表';
