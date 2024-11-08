@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="178px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
 
       <el-form-item label="地市名称" prop="areaName">
         <el-input
@@ -59,7 +59,9 @@
       </el-form-item>
     </el-form>
 
-
+    <el-row :gutter="10" class="mb8">
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+    </el-row>
 
     <el-table v-loading="loading" :data="nonuseList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />

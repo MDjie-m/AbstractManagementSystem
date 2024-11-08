@@ -4849,3 +4849,11 @@ CREATE TABLE arrear_list (
     stop_time varchar(100) NOT NULL COMMENT '拟停机时间',
     yyyymmdd varchar(20) NOT NULL COMMENT '数据日期'
 ) COMMENT = '欠费停机预警表';
+
+--菜单sql
+INSERT INTO ruoyi.sys_menu
+(menu_id, menu_name, parent_id, order_num, `path`, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+VALUES(2005, '断网分析', 2000, 1, 'disconnect', 'sim/disconnect/index', NULL, '', 1, 0, 'C', '0', '0', 'sim:simNetStopList:list', 'dict', 'admin', '2024-11-05 11:24:14', 'admin', '2024-11-06 14:15:27', '');
+
+insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
+values('套餐长期不使用预警', '2000', '1', 'nonuse', 'sim/nonuse/index', 1, 0, 'C', '0', '0', 'sim:nonuse:list', '#', 'admin', sysdate(), '', null, '套餐长期不使用预警菜单');
