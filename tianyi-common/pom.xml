@@ -119,6 +119,14 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
 
+        <!-- 添加easyes -->
+        <dependency>
+            <groupId>org.dromara.easy-es</groupId>
+            <artifactId>easy-es-boot-starter</artifactId>
+            <!--这里Latest Version是指最新版本的依赖,比如2.0.0,可以通过下面的图片获取-->
+            <version>2.0.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>
