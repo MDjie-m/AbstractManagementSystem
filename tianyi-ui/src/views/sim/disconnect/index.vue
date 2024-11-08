@@ -51,7 +51,9 @@
       </el-form-item>
     </el-form>
 
-
+    <el-row :gutter="10" class="mb8">
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+    </el-row>
 
     <el-table v-loading="loading" :data="simNetStopListList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
