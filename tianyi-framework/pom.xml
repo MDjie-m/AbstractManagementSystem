@@ -33,18 +33,6 @@
             </exclusions>
         </dependency>
 
-        <!-- 添加elasticsearch -->
-        <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>elasticsearch-rest-high-level-client</artifactId>
-            <version>7.14.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <version>7.14.0</version>
-        </dependency>
-
         <!-- SpringBoot 拦截器 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

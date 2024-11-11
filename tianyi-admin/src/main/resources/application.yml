@@ -139,7 +139,7 @@ xss:
 #easy-es配置
 easy-es:
   enable: true #默认为true,若为false则认为不启用本框架
-  address: 172.25.37.140:9200,172.25.37.3:9200,172.25.37.10:9200,172.25.37.227:9200,172.25.37.242:9200,172.25.37.12:9200,172.25.37.110:9200
+  address: 10.251.44.62:9200
   username: bigdata_api
   password: pNZ3CEe0k0bigdata_ap
 
