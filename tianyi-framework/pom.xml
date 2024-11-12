@@ -21,6 +21,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                    <exclusion>
+                            <artifactId>org.elasticsearch.client</artifactId>
+                            <groupId>elasticsearch-rest-high-level-client</groupId>
+                    </exclusion>
+                    <exclusion>
+                            <artifactId>org.elasticsearch.client</artifactId>
+                            <groupId>elasticsearch</groupId>
+                    </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- SpringBoot 拦截器 -->
