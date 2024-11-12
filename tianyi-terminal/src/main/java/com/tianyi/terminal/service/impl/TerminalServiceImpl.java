@@ -12,5 +12,8 @@ public class TerminalServiceImpl implements ITerminalService {
     private EsMapper esMapper;
 
     public void queryTerminalByBsId(){
+
+        esMapper.createIndex();
+
     }
 }
