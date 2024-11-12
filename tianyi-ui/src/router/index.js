@@ -87,7 +87,19 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
-  }
+  },
+  {
+    path: '/terminalMap',
+    component: () => import('@/views/terminal/terminalMap/index'),
+  },
+  {
+    path: '/terminalCloudMap',
+    component: () => import('@/views/terminal/terminalCloudMap/index'),
+  },
+  {
+    path: '/diagnosis',
+    component: () => import('@/views/terminal/diagnosis/index'),
+  },
 ]
 
 // 动态路由，基于用户权限动态去加载
@@ -161,91 +173,7 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  },
-    {
-      path: '/sim',
-      component: Layout,
-      hidden: true,
-      permissions: ['sim:stop:list'],
-      children: [
-        {
-          path: 'stop',
-          component: () => import('@/views/sim/stop/index'),
-          name: 'StopEdit',
-          meta: { title: '停机分析', activeMenu: '/sim/stop' }
-        }
-      ]
-    },
-    {
-      path: '/sim',
-      component: Layout,
-      hidden: true,
-      permissions: ['sim:nb:list'],
-      children: [
-        {
-          path: 'nb',
-          component: () => import('@/views/sim/nb/index'),
-          name: 'NbEdit',
-          meta: { title: 'NB异常清单', activeMenu: '/sim/nb' }
-        }
-      ]
-    },
-    {
-      path: '/sim',
-      component: Layout,
-      hidden: true,
-      permissions: ['sim:simNetStopList:list'],
-      children: [
-        {
-          path: 'disconnect',
-          component: () => import('@/views/sim/disconnect/index'),
-          name: 'DisconnectEdit',
-          meta: { title: '断网分析', activeMenu: '/sim/disconnect' }
-        }
-      ]
-    },
-    {
-      path: '/sim',
-      component: Layout,
-      hidden: true,
-      permissions: ['sim:pack_exp:list'],
-      children: [
-        {
-          path: 'disconnect',
-          component: () => import('@/views/sim/package/index'),
-          name: 'DisconnectEdit',
-          meta: { title: '套餐到期预警', activeMenu: '/sim/pack_exp' }
-        }
-      ]
-    },
-    {
-      path: '/sim',
-      component: Layout,
-      hidden: true,
-      permissions: ['sim:pack_exp_gh:list'],
-      children: [
-        {
-          path: 'disconnect',
-          component: () => import('@/views/sim/package/index'),
-          name: 'DisconnectEdit',
-          meta: { title: '套餐到期预警（港华）', activeMenu: '/sim/pack_exp_gh' }
-        }
-      ]
-    },
-    {
-      path: '/sim',
-      component: Layout,
-      hidden: true,
-      permissions: ['sim:nonuse:list'],
-      children: [
-        {
-          path: 'nonuse',
-          component: () => import('@/views/sim/nonuse/index'),
-          name: 'NonuseEdit',
-          meta: { title: '套餐长期不使用预警', activeMenu: '/sim/nonuse' }
-        }
-     ]
-    }
+  }
 ]
 
 // 防止连续点击多次路由报错
