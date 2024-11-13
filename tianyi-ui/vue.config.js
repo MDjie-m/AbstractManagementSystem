@@ -1,5 +1,9 @@
 'use strict'
 const path = require('path')
+const webpack = require("webpack");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+let cesiumSource = './node_modules/cesium/Source'
+let cesiumWorkers = 'Workers'
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -35,8 +39,8 @@ module.exports = {
     proxy: {
       // detail: https://cli.vuejs.orqg/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://10.251.44.62:8081`,
-//        target: `http://localhost:8081`,
+        // target: `http://10.251.44.62:8081`,
+       target: `http://localhost:8081`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
@@ -56,7 +60,8 @@ module.exports = {
     name: name,
     resolve: {
       alias: {
-        '@': resolve('src')
+        '@': resolve('src'),
+        'cesium': 'cesium'
       }
     },
     plugins: [
@@ -68,6 +73,15 @@ module.exports = {
         algorithm: 'gzip',                             // 使用gzip压缩
         minRatio: 0.8,                                 // 压缩比例，小于 80% 的文件不会被压缩
         deleteOriginalAssets: false                    // 压缩后删除原文件
+      }),
+      new CopyWebpackPlugin([
+        {from: path.join(cesiumSource, cesiumWorkers), to: "Workers"},
+        {from: path.join(cesiumSource, "Assets"), to: "Assets"},
+        {from: path.join(cesiumSource, "Widgets"), to: "Widgets"},
+        {from: path.join(cesiumSource, "ThirdParty/Workers"), to: "ThirdParty/Workers"}
+      ]),
+      new webpack.DefinePlugin({
+        CESIUM_BASE_URL: JSON.stringify('/')
       })
     ],
   },
@@ -90,6 +104,11 @@ module.exports = {
       .options({
         symbolId: 'icon-[name]'
       })
+      .end()
+      config.module
+      .rule('cesium')
+      .test(/\.js$/)
+      .include.add(/cesium/)
       .end()
 
     config.when(process.env.NODE_ENV !== 'development', config => {

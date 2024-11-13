@@ -2,15 +2,17 @@
   <div id="app">
     <router-view />
     <theme-picker />
+    <chat-bot />
   </div>
 </template>
 
 <script>
 import ThemePicker from "@/components/ThemePicker";
+import ChatBot from "@/components/Chatbot";
 
 export default {
   name: "App",
-  components: { ThemePicker },
+  components: { ThemePicker, ChatBot },
   metaInfo() {
     return {
       title: this.$store.state.settings.dynamicTitle && this.$store.state.settings.title,
