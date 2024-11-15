@@ -1,11 +1,9 @@
-package com.tianyi.terminal.domain;
+package com.tianyi.fault.domain;
 
 import org.dromara.easyes.annotation.IndexField;
-
 import org.dromara.easyes.annotation.rely.FieldType;
 
-
-public class Record {
+public class FaultRecord {
     @IndexField(value = "start_time",fieldType = FieldType.KEYWORD)
     String startTime;
 
@@ -171,7 +169,7 @@ public class Record {
 
     @Override
     public String toString() {
-        return "Record{" +
+        return "FaultRecord{" +
                 "startTime='" + startTime + '\'' +
                 ", billingNbr='" + billingNbr + '\'' +
                 ", imsi='" + imsi + '\'' +
