@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select prov_id, prov_name, area_id, area_name, cust_id, cust_name, prod_inst_id, acc_nbr, main_offer_name, net_style, no_use_dur, yyyymmdd
         from nonuse_warning_list
         where
-            area_name='潍坊电信'
+            area_name='潍坊市'
             and cust_name in('金卡智能集团股份有限公司','杭州先锋电子技术股份有限公司','上海真兰仪表科技股份有限公司','浙江威星智能仪表股份有限公司','成都千嘉科技股份有限公司')
             <if test="provId != null "> and prov_id = #{provId}</if>
             <if test="provName != null  and provName != ''"> and prov_name like concat('%', #{provName}, '%')</if>
@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="accNbr != null "> and acc_nbr = #{accNbr}</if>
             <if test="mainOfferName != null  and mainOfferName != ''"> and main_offer_name like concat('%', #{mainOfferName}, '%')</if>
             <if test="netStyle != null  and netStyle != ''"> and net_style = #{netStyle}</if>
-            <if test="noUseDur != null  and noUseDur != ''"> and no_use_dur = #{noUseDur}</if>
+            <if test="noUseDur != null  and noUseDur != ''"> and no_use_dur >= ${noUseDur}</if>
             <if test="yyyymmdd != null  and yyyymmdd != ''"> and yyyymmdd = #{yyyymmdd}</if>
     </select>
 </mapper>

@@ -8,7 +8,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
@@ -23,6 +27,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     public static String YYYY_MM = "yyyy-MM";
 
     public static String YYYY_MM_DD = "yyyy-MM-dd";
+    private static final SimpleDateFormat MY_DAY_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
     public static String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
@@ -188,4 +193,32 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
         ZonedDateTime zdt = localDateTime.atZone(ZoneId.systemDefault());
         return Date.from(zdt.toInstant());
     }
+    private static String localDateFormatToDateFormate(String localDateStr) {
+        return localDateStr.replaceAll("-", "");
+    }
+    public static String getIndexDayStr(int minusDay) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate threeDaysAgo = currentDate.minusDays(minusDay);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        return threeDaysAgo.format(formatter);
+    }
+
+    public static List<String> getIndexDateList(String index,int minusDay) {
+        minusDay=minusDay+1;
+        LocalDate currentDate = LocalDate.now();
+        List<String> listDate=new ArrayList<>();
+        for(int i=1;i<minusDay;i++){
+            // 计算前面三天的日期
+            LocalDate threeDaysAgo = currentDate.minusDays(i);
+
+            // 定义日期格式
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+            // 格式化日期为字符串
+            String formattedDate = threeDaysAgo.format(formatter);
+            listDate.add(index+formattedDate);
+        }
+        return listDate;
+    }
+
 }
