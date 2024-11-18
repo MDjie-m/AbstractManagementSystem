@@ -28,8 +28,8 @@ function initMap(container) {
   // 去除logo
   viewer._cesiumWidget._creditContainer.style.display = 'none';
   // 设置视图等级范围
-  viewer.scene.screenSpaceCameraController.maximumZoomDistance =zoomToAltitude(10);
-  viewer.scene.screenSpaceCameraController.minimumZoomDistance = zoomToAltitude(17);
+  viewer.scene.screenSpaceCameraController.maximumZoomDistance =zoomToAltitude(viewer, 10);
+  viewer.scene.screenSpaceCameraController.minimumZoomDistance = zoomToAltitude(viewer, 17);
   // 抗锯齿
   viewer.scene.fxaa = false;
   viewer.scene.postProcessStages.fxaa.enabled = false;
