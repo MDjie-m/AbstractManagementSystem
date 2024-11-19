@@ -6,11 +6,14 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://10.251.44.62:8921/ruoyi?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-                #服务器版本
-#                url: jdbc:mysql://172.25.37.225:8921/ruoyi?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-                username: ruoyi
-                password: o3EU#q#2Oeye43Q$
+                url: jdbc:mysql://localhost:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                username: root
+                password: Zhanke0211...
+#                url: jdbc:mysql://10.251.44.62:8921/ruoyi?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+##                #服务器版本
+##                url: jdbc:mysql://172.25.37.225:8921/ruoyi?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+#                username: ruoyi
+#                password: o3EU#q#2Oeye43Q$
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
