@@ -6,6 +6,7 @@ function resolve(dir) {
 }
 
 const CompressionPlugin = require('compression-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 const name = process.env.VUE_APP_TITLE || '若依管理系统' // 网页标题
 
@@ -68,6 +69,14 @@ module.exports = {
         algorithm: 'gzip',                             // 使用gzip压缩
         minRatio: 0.8,                                 // 压缩比例，小于 80% 的文件不会被压缩
         deleteOriginalAssets: false                    // 压缩后删除原文件
+      }),
+      //解决打包js里有组件的备注，包含组件地址和作者邮箱，通过配置comments: false，就不会打包进去
+      new TerserPlugin({
+        terserOptions: {
+          output: {
+            comments: false
+          }
+        }
       })
     ],
   },
