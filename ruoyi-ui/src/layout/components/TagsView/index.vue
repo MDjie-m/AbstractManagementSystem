@@ -83,7 +83,7 @@ export default {
       };
     },
     isAffix(tag) {
-      return tag.meta && tag.meta.affix
+      return tag.meta?.affix
     },
     isFirstView() {
       try {
