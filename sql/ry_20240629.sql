@@ -23,16 +23,16 @@ create table sys_dept (
 -- ----------------------------
 -- 初始化-部门表数据
 -- ----------------------------
-insert into sys_dept values(100,  0,   '0',          '若依科技',   0, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(101,  100, '0,100',      '深圳总公司', 1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(102,  100, '0,100',      '长沙分公司', 2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(103,  101, '0,100,101',  '研发部门',   1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(104,  101, '0,100,101',  '市场部门',   2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(105,  101, '0,100,101',  '测试部门',   3, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(106,  101, '0,100,101',  '财务部门',   4, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(107,  101, '0,100,101',  '运维部门',   5, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(108,  102, '0,100,102',  '市场部门',   1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(109,  102, '0,100,102',  '财务部门',   2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(100,  0,   '0',          '若依科技',   0, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(101,  100, '0,100',      '深圳总公司', 1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(102,  100, '0,100',      '长沙分公司', 2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(103,  101, '0,100,101',  '研发部门',   1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(104,  101, '0,100,101',  '市场部门',   2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(105,  101, '0,100,101',  '测试部门',   3, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(106,  101, '0,100,101',  '财务部门',   4, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(107,  101, '0,100,101',  '运维部门',   5, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(108,  102, '0,100,102',  '市场部门',   1, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(109,  102, '0,100,102',  '财务部门',   2, '若依', '15888888888', 'ry@qq.com', '0', '0', 'admin', sysdate(), '', null);
 
 insert into sys_dept values(8110000, 0, '0' , '北京市', 2, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8110100, 8110000, '0,8110000' , '北京市辖区', 2, '', '', '', '0', '0', 'admin', sysdate(), '', null);
@@ -3818,11 +3818,11 @@ insert into sys_dept values(8659190, 8659001, '0,8659001,8650000' , '石河子�
 insert into sys_dept values(8659191, 8659001, '0,8659001,8650000' , '下野地', 3, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8659192, 8659001, '0,8659001,8650000' , '莫索湾', 4, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8659193, 8659001, '0,8659001,8650000' , '北泉', 5, '', '', '', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(8659001, 8659001, '0,8659001,8650000' , '石河子市', 6, '', '', '', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(8659002, 8659001, '0,8659001,8650000' , '阿拉尔市', 7, '', '', '', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(8659003, 8659001, '0,8659001,8650000' , '图木舒克市', 8, '', '', '', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(8659004, 8659001, '0,8659001,8650000' , '五家渠市', 9, '', '', '', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(8659005, 8659001, '0,8659001,8650000' , '北屯市', 10, '', '', '', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(8659001, 8659001, '0,8659001,8650000' , '石河子市', 6, '', '', '', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(8659002, 8659001, '0,8659001,8650000' , '阿拉尔市', 7, '', '', '', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(8659003, 8659001, '0,8659001,8650000' , '图木舒克市', 8, '', '', '', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(8659004, 8659001, '0,8659001,8650000' , '五家渠市', 9, '', '', '', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(8659005, 8659001, '0,8659001,8650000' , '北屯市', 10, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8609902, 0, '0' , '中国电信集团物联网公司', 33, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8609903, 0, '0' , '卫星通信', 34, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8609904, 0, '0' , '卫星公司', 35, '', '', '', '0', '0', 'admin', sysdate(), '', null);
@@ -4088,7 +4088,7 @@ insert into sys_dept values(8310103, 9170200, '0,9170200,9170100' , '卢湾区',
 insert into sys_dept values(8320502, 9170200, '0,9170200,9170100' , '沧浪区', 4, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8320503, 9170200, '0,9170200,9170100' , '平江区', 5, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8320504, 9170200, '0,9170200,9170100' , '金阊区', 6, '', '', '', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(8440399, 9170200, '0,9170200,9170100' , '光明区', 7, '', '', '', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(8440399, 9170200, '0,9170200,9170100' , '光明区', 7, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8440497, 9170200, '0,9170200,9170100' , '拱北区', 8, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8440498, 9170200, '0,9170200,9170100' , '前山区', 9, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8440499, 9170200, '0,9170200,9170100' , '横琴新区', 10, '', '', '', '0', '0', 'admin', sysdate(), '', null);
@@ -4103,7 +4103,7 @@ insert into sys_dept values(8441299, 8341400, '0,8341400,9180000' , '高新区',
 insert into sys_dept values(8441399, 8341400, '0,8341400,9180000' , '仲恺高新区', 9, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8441398, 8341400, '0,8341400,9180000' , '大亚湾', 10, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8441799, 8341400, '0,8341400,9180000' , '高新区', 11, '', '', '', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(8441901, 8341400, '0,8341400,9180000' , '市辖区', 12, '', '', '', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(8441901, 8341400, '0,8341400,9180000' , '市辖区', 12, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8441990, 8341400, '0,8341400,9180000' , '长安镇', 13, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8441991, 8341400, '0,8341400,9180000' , '虎门镇', 14, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8441992, 8341400, '0,8341400,9180000' , '石龙镇', 15, '', '', '', '0', '0', 'admin', sysdate(), '', null);
@@ -4114,7 +4114,7 @@ insert into sys_dept values(8441996, 8341400, '0,8341400,9180000' , '塘厦镇',
 insert into sys_dept values(8441997, 8341400, '0,8341400,9180000' , '厚街镇', 20, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8441998, 8341400, '0,8341400,9180000' , '大朗镇', 21, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8441999, 8341400, '0,8341400,9180000' , '中堂镇', 22, '', '', '', '0', '0', 'admin', sysdate(), '', null);
-insert into sys_dept values(8442001, 8341400, '0,8341400,9180000' , '市辖区', 23, '', '', '', '0', '0', 'admin', sysdate(), '', null);
+-- insert into sys_dept values(8442001, 8341400, '0,8341400,9180000' , '市辖区', 23, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8442093, 8341400, '0,8341400,9180000' , '小榄区', 24, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8442094, 8341400, '0,8341400,9180000' , '火炬开发区', 25, '', '', '', '0', '0', 'admin', sysdate(), '', null);
 insert into sys_dept values(8442095, 8341400, '0,8341400,9180000' , '东凤区', 26, '', '', '', '0', '0', 'admin', sysdate(), '', null);
@@ -4163,7 +4163,7 @@ create table sys_user (
 -- 初始化-用户信息表数据
 -- ----------------------------
 insert into sys_user values(1,  103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', null, '管理员');
-insert into sys_user values(2,  105, 'ry',    '若依', '00', 'ry@qq.com',  '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', null, '测试员');
+insert into sys_user values(2,  8370700, 'ry',    '若依', '00', 'ry@qq.com',  '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', sysdate(), 'admin', sysdate(), '', null, '测试员');
 
 
 -- ----------------------------
@@ -4259,7 +4259,7 @@ create table sys_menu (
 insert into sys_menu values('1', '系统管理', '0', '1', 'system',           null, '', '', 1, 0, 'M', '0', '0', '', 'system',   'admin', sysdate(), '', null, '系统管理目录');
 insert into sys_menu values('2', '系统监控', '0', '2', 'monitor',          null, '', '', 1, 0, 'M', '0', '0', '', 'monitor',  'admin', sysdate(), '', null, '系统监控目录');
 insert into sys_menu values('3', '系统工具', '0', '3', 'tool',             null, '', '', 1, 0, 'M', '0', '0', '', 'tool',     'admin', sysdate(), '', null, '系统工具目录');
-insert into sys_menu values('4', '若依官网', '0', '4', 'http://ruoyi.vip', null, '', '', 0, 0, 'M', '0', '0', '', 'guide',    'admin', sysdate(), '', null, '若依官网地址');
+-- insert into sys_menu values('4', '若依官网', '0', '4', 'http://ruoyi.vip', null, '', '', 0, 0, 'M', '0', '0', '', 'guide',    'admin', sysdate(), '', null, '若依官网地址');
 -- 二级菜单
 insert into sys_menu values('100',  '用户管理', '1',   '1', 'user',       'system/user/index',        '', '', 1, 0, 'C', '0', '0', 'system:user:list',        'user',          'admin', sysdate(), '', null, '用户管理菜单');
 insert into sys_menu values('101',  '角色管理', '1',   '2', 'role',       'system/role/index',        '', '', 1, 0, 'C', '0', '0', 'system:role:list',        'peoples',       'admin', sysdate(), '', null, '角色管理菜单');
@@ -4389,29 +4389,27 @@ create table sys_role_menu (
 -- 初始化-角色和菜单关联表数据
 -- ----------------------------
 insert into sys_role_menu values ('2', '1');
-insert into sys_role_menu values ('2', '2');
-insert into sys_role_menu values ('2', '3');
-insert into sys_role_menu values ('2', '4');
+-- insert into sys_role_menu values ('2', '2');
 insert into sys_role_menu values ('2', '100');
 insert into sys_role_menu values ('2', '101');
-insert into sys_role_menu values ('2', '102');
+-- insert into sys_role_menu values ('2', '102');
 insert into sys_role_menu values ('2', '103');
-insert into sys_role_menu values ('2', '104');
-insert into sys_role_menu values ('2', '105');
-insert into sys_role_menu values ('2', '106');
-insert into sys_role_menu values ('2', '107');
-insert into sys_role_menu values ('2', '108');
-insert into sys_role_menu values ('2', '109');
-insert into sys_role_menu values ('2', '110');
-insert into sys_role_menu values ('2', '111');
-insert into sys_role_menu values ('2', '112');
-insert into sys_role_menu values ('2', '113');
-insert into sys_role_menu values ('2', '114');
-insert into sys_role_menu values ('2', '115');
-insert into sys_role_menu values ('2', '116');
-insert into sys_role_menu values ('2', '117');
-insert into sys_role_menu values ('2', '500');
-insert into sys_role_menu values ('2', '501');
+-- insert into sys_role_menu values ('2', '104');
+-- insert into sys_role_menu values ('2', '105');
+-- insert into sys_role_menu values ('2', '106');
+-- insert into sys_role_menu values ('2', '107');
+-- insert into sys_role_menu values ('2', '108');
+-- insert into sys_role_menu values ('2', '109');
+-- insert into sys_role_menu values ('2', '110');
+-- insert into sys_role_menu values ('2', '111');
+-- insert into sys_role_menu values ('2', '112');
+-- insert into sys_role_menu values ('2', '113');
+-- insert into sys_role_menu values ('2', '114');
+-- insert into sys_role_menu values ('2', '115');
+-- insert into sys_role_menu values ('2', '116');
+-- insert into sys_role_menu values ('2', '117');
+-- insert into sys_role_menu values ('2', '500');
+-- insert into sys_role_menu values ('2', '501');
 insert into sys_role_menu values ('2', '1000');
 insert into sys_role_menu values ('2', '1001');
 insert into sys_role_menu values ('2', '1002');
@@ -4424,56 +4422,68 @@ insert into sys_role_menu values ('2', '1008');
 insert into sys_role_menu values ('2', '1009');
 insert into sys_role_menu values ('2', '1010');
 insert into sys_role_menu values ('2', '1011');
-insert into sys_role_menu values ('2', '1012');
-insert into sys_role_menu values ('2', '1013');
-insert into sys_role_menu values ('2', '1014');
-insert into sys_role_menu values ('2', '1015');
+-- insert into sys_role_menu values ('2', '1012');
+-- insert into sys_role_menu values ('2', '1013');
+-- insert into sys_role_menu values ('2', '1014');
+-- insert into sys_role_menu values ('2', '1015');
 insert into sys_role_menu values ('2', '1016');
 insert into sys_role_menu values ('2', '1017');
 insert into sys_role_menu values ('2', '1018');
 insert into sys_role_menu values ('2', '1019');
-insert into sys_role_menu values ('2', '1020');
-insert into sys_role_menu values ('2', '1021');
-insert into sys_role_menu values ('2', '1022');
-insert into sys_role_menu values ('2', '1023');
-insert into sys_role_menu values ('2', '1024');
-insert into sys_role_menu values ('2', '1025');
-insert into sys_role_menu values ('2', '1026');
-insert into sys_role_menu values ('2', '1027');
-insert into sys_role_menu values ('2', '1028');
-insert into sys_role_menu values ('2', '1029');
-insert into sys_role_menu values ('2', '1030');
-insert into sys_role_menu values ('2', '1031');
-insert into sys_role_menu values ('2', '1032');
-insert into sys_role_menu values ('2', '1033');
-insert into sys_role_menu values ('2', '1034');
-insert into sys_role_menu values ('2', '1035');
-insert into sys_role_menu values ('2', '1036');
-insert into sys_role_menu values ('2', '1037');
-insert into sys_role_menu values ('2', '1038');
-insert into sys_role_menu values ('2', '1039');
-insert into sys_role_menu values ('2', '1040');
-insert into sys_role_menu values ('2', '1041');
-insert into sys_role_menu values ('2', '1042');
-insert into sys_role_menu values ('2', '1043');
-insert into sys_role_menu values ('2', '1044');
-insert into sys_role_menu values ('2', '1045');
-insert into sys_role_menu values ('2', '1046');
-insert into sys_role_menu values ('2', '1047');
-insert into sys_role_menu values ('2', '1048');
-insert into sys_role_menu values ('2', '1049');
-insert into sys_role_menu values ('2', '1050');
-insert into sys_role_menu values ('2', '1051');
-insert into sys_role_menu values ('2', '1052');
-insert into sys_role_menu values ('2', '1053');
-insert into sys_role_menu values ('2', '1054');
-insert into sys_role_menu values ('2', '1055');
-insert into sys_role_menu values ('2', '1056');
-insert into sys_role_menu values ('2', '1057');
-insert into sys_role_menu values ('2', '1058');
-insert into sys_role_menu values ('2', '1059');
-insert into sys_role_menu values ('2', '1060');
-
+-- insert into sys_role_menu values ('2', '1020');
+-- insert into sys_role_menu values ('2', '1021');
+-- insert into sys_role_menu values ('2', '1022');
+-- insert into sys_role_menu values ('2', '1023');
+-- insert into sys_role_menu values ('2', '1024');
+-- insert into sys_role_menu values ('2', '1025');
+-- insert into sys_role_menu values ('2', '1026');
+-- insert into sys_role_menu values ('2', '1027');
+-- insert into sys_role_menu values ('2', '1028');
+-- insert into sys_role_menu values ('2', '1029');
+-- insert into sys_role_menu values ('2', '1030');
+-- insert into sys_role_menu values ('2', '1031');
+-- insert into sys_role_menu values ('2', '1032');
+-- insert into sys_role_menu values ('2', '1033');
+-- insert into sys_role_menu values ('2', '1034');
+-- insert into sys_role_menu values ('2', '1035');
+-- insert into sys_role_menu values ('2', '1036');
+-- insert into sys_role_menu values ('2', '1037');
+-- insert into sys_role_menu values ('2', '1038');
+-- insert into sys_role_menu values ('2', '1039');
+-- insert into sys_role_menu values ('2', '1040');
+-- insert into sys_role_menu values ('2', '1041');
+-- insert into sys_role_menu values ('2', '1042');
+-- insert into sys_role_menu values ('2', '1043');
+-- insert into sys_role_menu values ('2', '1044');
+-- insert into sys_role_menu values ('2', '1045');
+-- insert into sys_role_menu values ('2', '1046');
+-- insert into sys_role_menu values ('2', '1047');
+-- insert into sys_role_menu values ('2', '1048');
+-- insert into sys_role_menu values ('2', '1049');
+-- insert into sys_role_menu values ('2', '1050');
+-- insert into sys_role_menu values ('2', '1051');
+-- insert into sys_role_menu values ('2', '1052');
+-- insert into sys_role_menu values ('2', '1053');
+-- insert into sys_role_menu values ('2', '1054');
+-- insert into sys_role_menu values ('2', '1055');
+-- insert into sys_role_menu values ('2', '1056');
+-- insert into sys_role_menu values ('2', '1057');
+-- insert into sys_role_menu values ('2', '1058');
+-- insert into sys_role_menu values ('2', '1059');
+-- insert into sys_role_menu values ('2', '1060');
+insert into sys_role_menu values ('2', '2000');
+insert into sys_role_menu values ('2', '2001');
+insert into sys_role_menu values ('2', '2002');
+insert into sys_role_menu values ('2', '2003');
+insert into sys_role_menu values ('2', '2004');
+insert into sys_role_menu values ('2', '2005');
+insert into sys_role_menu values ('2', '2006');
+insert into sys_role_menu values ('2', '2007');
+insert into sys_role_menu values ('2', '2008');
+insert into sys_role_menu values ('2', '2009');
+insert into sys_role_menu values ('2', '2010');
+insert into sys_role_menu values ('2', '2011');
+insert into sys_role_menu values ('2', '2012');
 -- ----------------------------
 -- 8、角色和部门关联表  角色1-N部门
 -- ----------------------------
@@ -4487,10 +4497,24 @@ create table sys_role_dept (
 -- ----------------------------
 -- 初始化-角色和部门关联表数据
 -- ----------------------------
-insert into sys_role_dept values ('2', '100');
-insert into sys_role_dept values ('2', '101');
-insert into sys_role_dept values ('2', '105');
-
+insert into sys_role_dept values ('2', '8370700');
+insert into sys_role_dept values ('2', '8370701');
+insert into sys_role_dept values ('2', '8370702');
+insert into sys_role_dept values ('2', '8370703');
+insert into sys_role_dept values ('2', '8370704');
+insert into sys_role_dept values ('2', '8370705');
+insert into sys_role_dept values ('2', '8370724');
+insert into sys_role_dept values ('2', '8370725');
+insert into sys_role_dept values ('2', '8370781');
+insert into sys_role_dept values ('2', '8370782');
+insert into sys_role_dept values ('2', '8370783');
+insert into sys_role_dept values ('2', '8370784');
+insert into sys_role_dept values ('2', '8370785');
+insert into sys_role_dept values ('2', '8370786');
+insert into sys_role_dept values ('2', '8370787');
+insert into sys_role_dept values ('2', '8370788');
+insert into sys_role_dept values ('2', '8370789');
+insert into sys_role_dept values ('2', '8370799');
 
 -- ----------------------------
 -- 9、用户与岗位关联表  用户1-N岗位
@@ -4797,102 +4821,3 @@ create table gen_table_column (
   update_time       datetime                                   comment '更新时间',
   primary key (column_id)
 ) engine=innodb auto_increment=1 comment = '代码生成业务表字段';
-
-
--- 创建套餐到期预警菜单
--- 菜单 SQL
-insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-values('套餐到期预警', '2000', '1', 'pack_exp', 'sim/package/index', 1, 0, 'C', '0', '0', 'sim:pack_exp:list', '#', 'admin', sysdate(), '', null, '套餐到期预警菜单');
-
--- 创建套餐到期预警（港华）菜单
--- 菜单 SQL
-insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-values('套餐到期预警(港华)', '2000', '1', 'pack_exp_gh', 'sim/package_gh/index', 1, 0, 'C', '0', '0', 'sim:pack_exp_gh:list', '#', 'admin', sysdate(), '', null, '套餐到期预警菜单');
-
-
--- 创建停机分析菜单
-insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-values('停机分析', '2000', '0', 'stop', 'sim/stop/index', 1, 0, 'C', '0', '0', 'sim:stop:list', 'dict', 'admin', sysdate(), '', null, '');
-
--- 创建停机清单表
-CREATE TABLE `sim_shutdown_list` (
-  `prov_id` int(11) DEFAULT NULL COMMENT '省份id',
-  `prov_name` varchar(100) DEFAULT NULL COMMENT '省份名称',
-  `area_id` int(11) DEFAULT NULL COMMENT '地市id',
-  `area_name` varchar(100) DEFAULT NULL COMMENT '地市名称',
-  `cust_id` varchar(20) DEFAULT NULL COMMENT '客户id',
-  `cust_name` varchar(100) DEFAULT NULL COMMENT '客户名称',
-  `prod_inst_id` varchar(20) DEFAULT NULL COMMENT '产品实例id',
-  `acc_nbr` varchar(20) DEFAULT NULL COMMENT '用户号码',
-  `main_offer_name` varchar(100) DEFAULT NULL COMMENT '主套餐名称',
-  `net_style` varchar(20) DEFAULT NULL COMMENT '制式',
-  `stop_reason` varchar(100) DEFAULT NULL COMMENT '停机原因',
-  `yyyymmdd` varchar(20) DEFAULT NULL COMMENT '数据日期'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='停机清单表';
-
--- 创建套餐到期预警表
-CREATE TABLE `pack_exp_list` (
-  `prov_id` bigint(20) DEFAULT NULL COMMENT '省份id',
-  `prov_name` varchar(100) DEFAULT NULL COMMENT '省份名称',
-  `area_id` int(11) DEFAULT NULL COMMENT '地市id',
-  `area_name` varchar(100) DEFAULT NULL COMMENT '地市名称',
-  `cust_id` bigint(20) DEFAULT NULL COMMENT '客户id',
-  `cust_name` varchar(100) DEFAULT NULL COMMENT '客户名称',
-  `prod_inst_id` bigint(20) DEFAULT NULL COMMENT '产品实例id',
-  `acc_nbr` bigint(20) DEFAULT NULL COMMENT '用户号码',
-  `main_offer_name` varchar(100) DEFAULT NULL COMMENT '主套餐名称',
-  `net_style` varchar(10) DEFAULT NULL COMMENT '制式',
-  `main_exp_date` varchar(20) DEFAULT NULL COMMENT '到期时间',
-  `yyyymmdd` varchar(20) DEFAULT NULL COMMENT '日期'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='套餐到期预警表';
-
--- 菜单 SQL
-insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-values('NB异常清单', '2000', '1', 'nb', 'sim/nb/index', 1, 0, 'C', '0', '0', 'sim:nb:list', 'chart', 'admin', sysdate(), '', null, 'NB异常清单菜单');
-
--- 建表语句
-CREATE TABLE sim_nb_list (
-    prov_id bigint NOT NULL COMMENT '省份ID',
-    prov_name varchar(100) NOT NULL COMMENT '省份名称',
-    area_id int NOT NULL COMMENT '地市ID',
-    area_name varchar(100) NOT NULL COMMENT '地市名称',
-    cust_id bigint NOT NULL COMMENT '客户ID',
-    cust_name varchar(100) NOT NULL COMMENT '客户名称',
-    prod_inst_id bigint NOT NULL COMMENT '产品实例ID',
-    acc_nbr bigint NOT NULL COMMENT '接入号码',
-    main_offer_name varchar(100) NOT NULL COMMENT '主套餐名称',
-    net_style varchar(4) NOT NULL COMMENT '网络制式',
-    abnormal_reason varchar(100) NOT NULL COMMENT '异常原因',
-    yyyymmdd varchar(20) NOT NULL COMMENT '数据日期'
-) COMMENT='NB异常清单表';
-
-
--- 菜单SQL
-insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-values('欠费停机预警', '2000', '1', 'arrear', 'sim/arrear/index', 1, 0, 'C', '0', '0', 'sim:arrear:list', 'data', 'admin', sysdate(), '', null, '欠费停机预警菜单');
-
--- 建表语句
-CREATE TABLE arrear_list (
-    prov_id bigint NOT NULL COMMENT '省份ID',
-    prov_name varchar(100) NOT NULL COMMENT '省份名称',
-    area_id int NOT NULL COMMENT '地市id',
-    area_name varchar(100) NOT NULL COMMENT '地市名称',
-    cust_id bigint NOT NULL COMMENT '客户ID',
-    cust_name varchar(100) NOT NULL COMMENT '客户名称',
-    prod_inst_id bigint NOT NULL COMMENT '产品实例id',
-    acc_nbr bigint NOT NULL COMMENT '用户号码',
-    main_offer_name varchar(100) NOT NULL COMMENT '主套餐名称',
-    net_style varchar(4) NOT NULL COMMENT '网络制式',
-    stop_time varchar(100) NOT NULL COMMENT '拟停机时间',
-    yyyymmdd varchar(20) NOT NULL COMMENT '数据日期'
-) COMMENT = '欠费停机预警表';
-
-
---菜单sql
-INSERT INTO ruoyi.sys_menu
-(menu_id, menu_name, parent_id, order_num, `path`, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-VALUES(2005, '断网分析', 2000, 1, 'disconnect', 'sim/disconnect/index', NULL, '', 1, 0, 'C', '0', '0', 'sim:simNetStopList:list', 'dict', 'admin', '2024-11-05 11:24:14', 'admin', '2024-11-06 14:15:27', '');
-
-insert into sys_menu (menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark)
-values('套餐长期不使用预警', '2000', '1', 'nonuse', 'sim/nonuse/index', 1, 0, 'C', '0', '0', 'sim:nonuse:list', '#', 'admin', sysdate(), '', null, '套餐长期不使用预警菜单');
-

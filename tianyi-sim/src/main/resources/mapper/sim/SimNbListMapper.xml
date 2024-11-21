@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSimNbListVo">
-        select prov_id, prov_name, area_id, area_name, cust_id, cust_name, prod_inst_id, acc_nbr, main_offer_name, net_style, abnormal_reason, yyyymmdd from sim_nb_list
+        select prov_id, prov_name, area_id, area_name, cust_id, cust_name, prod_inst_id, acc_nbr, main_offer_name, net_style, abnormal_reason, yyyymmdd from sim_nb_ab_list
     </sql>
 
     <select id="selectSimNbListList" parameterType="SimNbList" resultMap="SimNbListResult">
@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <insert id="insertSimNbList" parameterType="SimNbList">
-        insert into sim_nb_list
+        insert into sim_nb_ab_list
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="provId != null">prov_id,</if>
             <if test="provName != null and provName != ''">prov_name,</if>
@@ -79,7 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateSimNbList" parameterType="SimNbList">
-        update sim_nb_list
+        update sim_nb_ab_list
         <trim prefix="SET" suffixOverrides=",">
             <if test="provName != null and provName != ''">prov_name = #{provName},</if>
             <if test="areaId != null">area_id = #{areaId},</if>
@@ -97,11 +97,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteSimNbListByProvId" parameterType="Long">
-        delete from sim_nb_list where prov_id = #{provId}
+        delete from sim_nb_ab_list where prov_id = #{provId}
     </delete>
 
     <delete id="deleteSimNbListByProvIds" parameterType="String">
-        delete from sim_nb_list where prov_id in 
+        delete from sim_nb_ab_list where prov_id in
         <foreach item="provId" collection="array" open="(" separator="," close=")">
             #{provId}
         </foreach>
