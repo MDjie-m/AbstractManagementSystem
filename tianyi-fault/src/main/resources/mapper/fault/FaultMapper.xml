@@ -3,16 +3,4 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tianyi.fault.mapper.FaultMapper">
-
-    <select id="cardStopStateQuery"  resultType="String">
-        select
-        stop_reason
-        from sim_shutdown_list where acc_nbr=#{req} and length(stop_reason)>1
-    </select>
-
-    <select id="cardCutStateQuery"  resultType="String">
-        select
-        cut_reason
-        from sim_net_stop_list where acc_nbr=#{req} and length(cut_reason)>1
-    </select>
 </mapper>

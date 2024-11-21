@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="110px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="100px">
 
       <el-form-item label="地市名称" prop="areaName">
         <el-input
@@ -37,7 +37,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="不使用时长(天)" prop="noUseDur">
+      <el-form-item label="不使用时长" prop="noUseDur">
         <el-input
           v-model="queryParams.noUseDur"
           placeholder="请输入不使用时长"

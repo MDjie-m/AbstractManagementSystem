@@ -1,8 +1,6 @@
 package com.tianyi.web.controller.fault;
 
-import com.tianyi.common.annotation.Anonymous;
 import com.tianyi.common.core.domain.R;
-import com.tianyi.fault.domain.CardNetStateQuery;
 import com.tianyi.fault.service.IFaultService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,10 +19,22 @@ public class FaultController {
     private IFaultService faultService;
 
     @ApiOperation("卡停机状态查询")
-    @GetMapping("/cardNetStopStateQuery")
-    public R<CardNetStateQuery> cardNetStateQuery(@ApiParam("imei") String imei){
-        CardNetStateQuery cardNetStateQuery=new CardNetStateQuery();
-        cardNetStateQuery=faultService.cardNetStateQuery(imei);
-        return R.ok(cardNetStateQuery,"ok");
+    @GetMapping("/cardStopStateQuery")
+    public R<String> cardStopStateQuery(@ApiParam("imei") String imei){
+        return R.ok("ok");
     }
+
+    @ApiOperation("异常断网状态查询")
+    @GetMapping("/abNetDisconQuery")
+    public R<String> abNetDisconQuery(@ApiParam("imei") String imei){
+        return R.ok("ok");
+    }
+
+    @ApiOperation("网络状态查询")
+    @GetMapping("/netStatQuery")
+    public R<String> netStatQuery(@ApiParam("imei") String imei){
+        return R.ok("ok");
+    }
+
+
 }
