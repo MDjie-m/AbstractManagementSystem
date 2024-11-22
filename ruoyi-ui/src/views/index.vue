@@ -1,6 +1,6 @@
 <template>
   <div class="app-container home" >
-    <div ref="chart" style="width: 600px; height: 400px;"></div>
+    <div id="main" style="width: 600px; height: 400px;"></div>
 
   </div>
 </template>
@@ -16,18 +16,18 @@ export default {
       version: "3.8.8"
     };
   },
+
   mounted() {
     this.initChart();
   },
-  beforeDestroy() {
-    if (this.chartInstance) {
-      this.chartInstance.dispose();
-    }
-  },
+
   methods: {
     initChart() {
-      this.chartInstance = echarts.init(this.$refs.chart);
-      const option = {
+      let chartDom = document.getElementById('main');
+      let myChart = echarts.init(chartDom);
+      let option;
+
+      option = {
         title: {
           text: 'Referer of a Website',
           subtext: 'Fake Data',
@@ -62,7 +62,8 @@ export default {
           }
         ]
       };
-      this.chartInstance.setOption(option);
+
+      option && myChart.setOption(option);
     }
   }
 };
