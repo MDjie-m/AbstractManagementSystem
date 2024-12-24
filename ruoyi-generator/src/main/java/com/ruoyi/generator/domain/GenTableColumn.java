@@ -2,7 +2,10 @@ package com.ruoyi.generator.domain;
 
 import javax.validation.constraints.NotBlank;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.utils.StringUtils;
+
+import java.util.List;
 
 /**
  * 代码生成业务字段表 gen_table_column
@@ -67,6 +70,15 @@ public class GenTableColumn extends BaseEntity
 
     /** 排序 */
     private Integer sort;
+
+    /**是否排序*/
+    private String isSort;
+
+    /**排序类型 AES DESC */
+    private String sortType;
+
+
+    private List<SysDictData> dicts;
 
     public void setColumnId(Long columnId)
     {
@@ -369,5 +381,31 @@ public class GenTableColumn extends BaseEntity
         {
             return this.columnComment;
         }
+    }
+
+
+    public List<SysDictData> getDicts() {
+        return dicts;
+    }
+
+    public void setDicts(List<SysDictData> dicts) {
+        this.dicts = dicts;
+    }
+
+
+    public String getIsSort() {
+        return isSort;
+    }
+
+    public void setIsSort(String isSort) {
+        this.isSort = isSort;
+    }
+
+    public String getSortType() {
+        return sortType;
+    }
+
+    public void setSortType(String sortType) {
+        this.sortType = sortType;
     }
 }

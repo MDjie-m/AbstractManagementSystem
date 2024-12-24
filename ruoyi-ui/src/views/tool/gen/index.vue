@@ -140,6 +140,13 @@
           <el-button
             type="text"
             size="small"
+            icon="el-icon-c-scale-to-original"
+            @click="handleLookTable(scope.row)"
+            v-hasPermi="['tool:gen:edit']"
+          >界面查看</el-button>
+          <el-button
+            type="text"
+            size="small"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['tool:gen:remove']"
@@ -291,6 +298,13 @@ export default {
       }).then(() => {
         this.$modal.msgSuccess("同步成功");
       }).catch(() => {});
+    },
+    handleLookTable(row) {
+      const tableId = row.tableId || this.ids[0];
+      const tableName = row.tableName || this.tableNames[0];
+      const tableComment = row.tableComment;
+      const params = { pageNum: this.queryParams.pageNum };
+      this.$tab.openPage("预览 ["+tableComment+"(" + tableName + ")]", '/tool/gen-look/index/' + tableId, params);
     },
     /** 打开导入表弹窗 */
     openImportTable() {

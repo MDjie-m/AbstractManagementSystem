@@ -161,7 +161,20 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  }
+  },{
+       path: '/tool/gen-look',
+       component: Layout,
+       hidden: true,
+       permissions: ['tool:gen:look'],
+       children: [
+         {
+           path: 'index/:tableId(\\d+)',
+           component: () => import('@/views/tool/gen/render/index'),
+           name: 'GenLook',
+           meta: { title: '查看详细', activeMenu: '/tool/gen' }
+         }
+       ]
+     },
 ]
 
 // 防止连续点击多次路由报错

@@ -42,7 +42,11 @@
               <el-input v-model="scope.row.javaField"></el-input>
             </template>
           </el-table-column>
-
+          <el-table-column label="插入" min-width="5%">
+            <template slot-scope="scope">
+              <el-checkbox true-label="1" false-label="0" v-model="scope.row.isInsert"></el-checkbox>
+            </template>
+          </el-table-column>
           <el-table-column label="插入" min-width="5%">
             <template slot-scope="scope">
               <el-checkbox true-label="1" false-label="0" v-model="scope.row.isInsert"></el-checkbox>
