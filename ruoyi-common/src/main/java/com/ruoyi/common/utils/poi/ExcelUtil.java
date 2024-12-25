@@ -297,6 +297,11 @@ public class ExcelUtil<T>
                     Cell cell = subRow.createCell(column++);
                     cell.setCellValue(attr.name());
                     cell.setCellStyle(styles.get(StringUtils.format("header_{}_{}", attr.headerColor(), attr.headerBackgroundColor())));
+                    // 存在子列表时，合并非子列表列标题单元格
+                    if (subFieldSize > 0) {
+                        CellRangeAddress cellAddress = new CellRangeAddress(rownum, rownum + 1, cell.getColumnIndex(), cell.getColumnIndex());
+                        sheet.addMergedRegion(cellAddress);
+                    }
                 }
             }
             rownum++;
