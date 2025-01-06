@@ -41,6 +41,7 @@ public class SysNoticeController extends BaseController
     {
         startPage();
         List<SysNotice> list = noticeService.selectNoticeList(notice);
+        clearPage();
         return getDataTable(list);
     }
 

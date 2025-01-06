@@ -46,6 +46,7 @@ public class SysDictDataController extends BaseController
     {
         startPage();
         List<SysDictData> list = dictDataService.selectDictDataList(dictData);
+        clearPage();
         return getDataTable(list);
     }
 

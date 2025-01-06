@@ -43,6 +43,7 @@ public class SysPostController extends BaseController
     {
         startPage();
         List<SysPost> list = postService.selectPostList(post);
+        clearPage();
         return getDataTable(list);
     }
     

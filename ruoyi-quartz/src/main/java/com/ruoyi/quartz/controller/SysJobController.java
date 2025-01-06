@@ -48,6 +48,7 @@ public class SysJobController extends BaseController
     {
         startPage();
         List<SysJob> list = jobService.selectJobList(sysJob);
+        clearPage();
         return getDataTable(list);
     }
 

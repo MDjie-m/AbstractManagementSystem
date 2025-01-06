@@ -61,6 +61,7 @@ public class SysRoleController extends BaseController
     {
         startPage();
         List<SysRole> list = roleService.selectRoleList(role);
+        clearPage();
         return getDataTable(list);
     }
 
@@ -198,6 +199,7 @@ public class SysRoleController extends BaseController
     {
         startPage();
         List<SysUser> list = userService.selectAllocatedList(user);
+        clearPage();
         return getDataTable(list);
     }
 
@@ -210,6 +212,7 @@ public class SysRoleController extends BaseController
     {
         startPage();
         List<SysUser> list = userService.selectUnallocatedList(user);
+        clearPage();
         return getDataTable(list);
     }
 

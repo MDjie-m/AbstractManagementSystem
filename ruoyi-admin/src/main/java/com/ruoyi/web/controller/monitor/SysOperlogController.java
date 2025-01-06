@@ -37,6 +37,7 @@ public class SysOperlogController extends BaseController
     {
         startPage();
         List<SysOperLog> list = operLogService.selectOperLogList(operLog);
+        clearPage();
         return getDataTable(list);
     }
 

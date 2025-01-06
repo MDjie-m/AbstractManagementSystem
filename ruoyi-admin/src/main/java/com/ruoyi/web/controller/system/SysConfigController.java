@@ -43,6 +43,7 @@ public class SysConfigController extends BaseController
     {
         startPage();
         List<SysConfig> list = configService.selectConfigList(config);
+        clearPage();
         return getDataTable(list);
     }
 

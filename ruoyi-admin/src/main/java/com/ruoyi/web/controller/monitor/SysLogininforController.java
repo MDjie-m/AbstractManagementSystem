@@ -41,6 +41,7 @@ public class SysLogininforController extends BaseController
     {
         startPage();
         List<SysLogininfor> list = logininforService.selectLogininforList(logininfor);
+        clearPage();
         return getDataTable(list);
     }
 

@@ -40,6 +40,7 @@ public class SysJobLogController extends BaseController
     {
         startPage();
         List<SysJobLog> list = jobLogService.selectJobLogList(sysJobLog);
+        clearPage();
         return getDataTable(list);
     }
 
