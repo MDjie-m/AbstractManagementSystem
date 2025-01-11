@@ -89,6 +89,28 @@ public class SysUser extends BaseEntity
     /** 角色ID */
     private Long roleId;
 
+    /** unionId */
+    private String unionId;
+
+    /** openId */
+    private String openId;
+
+    public String getUnionId() {
+        return unionId;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
     public SysUser()
     {
 
