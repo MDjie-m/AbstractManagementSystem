@@ -19,6 +19,14 @@ public interface SysConfigMapper
     public SysConfig selectConfig(SysConfig config);
 
     /**
+     * 模糊查询参数配置信息
+     *
+     * @param searchKey 参数配置信息
+     * @return 参数配置信息
+     */
+    public List<SysConfig> selectConfigLike(String searchKey);
+
+    /**
      * 通过ID查询配置
      * 
      * @param configId 参数ID

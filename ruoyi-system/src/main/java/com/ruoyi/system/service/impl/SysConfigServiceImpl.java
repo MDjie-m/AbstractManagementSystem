@@ -1,11 +1,8 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.Collection;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import cn.hutool.core.collection.CollectionUtil;
 import com.ruoyi.common.annotation.DataSource;
+import com.ruoyi.common.config.weChat.WeChatConfig;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.redis.RedisCache;
@@ -16,6 +13,12 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysConfig;
 import com.ruoyi.system.mapper.SysConfigMapper;
 import com.ruoyi.system.service.ISysConfigService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 参数配置 服务层实现
@@ -30,6 +33,9 @@ public class SysConfigServiceImpl implements ISysConfigService
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    private ISysConfigService configService;
 
     /**
      * 项目启动时，初始化参数到缓存
@@ -78,6 +84,31 @@ public class SysConfigServiceImpl implements ISysConfigService
             return retConfig.getConfigValue();
         }
         return StringUtils.EMPTY;
+    }
+
+    /**
+     * 查询微信登录参数配置信息
+     *
+     * @return 参数键值
+     */
+    @Override
+    public WeChatConfig selectWeChatConfig()
+    {
+        List<SysConfig> weChat = configMapper.selectConfigLike("weChat");
+        if (CollectionUtil.isEmpty(weChat)) {
+            throw new ServiceException("未查询到微信配置信息");
+        }
+        WeChatConfig weChatConfig = new WeChatConfig();
+        weChatConfig.setWxPcLoginEnable(configService.selectConfigByKey("wechat.login.support.pc"));
+        weChatConfig.setWxMpLoginEnable(configService.selectConfigByKey("wechat.login.support.mp"));
+        weChatConfig.setWxMaLoginEnable(configService.selectConfigByKey("wechat.login.support.ma"));
+        weChatConfig.setWxPcLoginAppId(configService.selectConfigByKey("wechat.login.pc.appId"));
+        weChatConfig.setWxPcLoginAppSecret(configService.selectConfigByKey("wechat.login.pc.appSecret"));
+        weChatConfig.setWxMpLoginAppId(configService.selectConfigByKey("wechat.login.mp.appId"));
+        weChatConfig.setWxMpLoginAppSecret(configService.selectConfigByKey("wechat.login.mp.appSecret"));
+        weChatConfig.setWxMaLoginAppId(configService.selectConfigByKey("wechat.login.ma.appId"));
+        weChatConfig.setWxMaLoginAppSecret(configService.selectConfigByKey("wechat.login.ma.appSecret"));
+        return weChatConfig;
     }
 
     /**

@@ -170,4 +170,34 @@ public class Constants
      */
     public static final String[] JOB_ERROR_STR = { "java.net.URL", "javax.naming.InitialContext", "org.yaml.snakeyaml",
             "org.springframework", "org.apache", "com.ruoyi.common.utils.file", "com.ruoyi.common.config", "com.ruoyi.generator" };
+
+    public interface RedisPre {
+        String PRIVATEKEY = "private:key:";
+        String ADMIN_APIS = "admin:apis:";
+        /**
+         * 验证码
+         */
+        String VER_CODE = "ver:code:";
+        /**
+         * 学习进度
+         */
+        String USER_STUDY = "user:study:";
+        /**
+         * 资源
+         */
+        String RESOURCE = "resource:";
+        /**
+         * 学习进度
+         */
+        String PROGRESS = "progress:";
+        /**
+         * 短信验证码
+         */
+        String CODE = "code:";
+        String CODE_STAT = "code:stat:";
+        /**
+         * 微信用户信息
+         */
+        String WX_USER = "wx:user:";
+    }
 }

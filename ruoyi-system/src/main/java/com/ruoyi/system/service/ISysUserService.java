@@ -59,6 +59,22 @@ public interface ISysUserService
     public String selectUserRoleGroup(String userName);
 
     /**
+     * 根据unionId或openId查询用户信息
+     * @param unionId
+     * @param openId
+     * @return
+     */
+    public SysUser getByUnionIdOrOpenId(String unionId, String openId);
+
+
+    /**
+     * 根据phoneNumber查询用户信息
+     * @param phoneNumber
+     * @return
+     */
+    public SysUser getByPhoneNumber(String phoneNumber);
+
+    /**
      * 根据用户ID查询用户所属岗位组
      * 
      * @param userName 用户名

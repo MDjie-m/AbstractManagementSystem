@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+
+import com.ruoyi.common.config.weChat.WeChatConfig;
 import com.ruoyi.system.domain.SysConfig;
 
 /**
@@ -25,6 +27,13 @@ public interface ISysConfigService
      * @return 参数键值
      */
     public String selectConfigByKey(String configKey);
+
+    /**
+     * 查询微信登录参数配置信息
+     *
+     * @return 参数键值
+     */
+    public WeChatConfig selectWeChatConfig();
 
     /**
      * 获取验证码开关
