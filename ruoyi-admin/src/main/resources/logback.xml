@@ -25,7 +25,7 @@
 		<encoder>
 			<pattern>${log.pattern}</pattern>
 		</encoder>
-		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <!-- 过滤的级别 -->
             <level>INFO</level>
             <!-- 匹配时的操作：接收（记录） -->
@@ -47,7 +47,7 @@
         <encoder>
             <pattern>${log.pattern}</pattern>
         </encoder>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <!-- 过滤的级别 -->
             <level>ERROR</level>
 			<!-- 匹配时的操作：接收（记录） -->
