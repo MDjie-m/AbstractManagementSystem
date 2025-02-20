@@ -113,7 +113,7 @@
 
     <el-table ref="tables" v-loading="loading" :data="list" @selection-change="handleSelectionChange" :default-sort="defaultSort" @sort-change="handleSortChange">
       <el-table-column type="selection" width="50" align="center" />
-      <el-table-column label="日志编号" align="center" prop="operId" />
+      <el-table-column label="日志编号" align="center" prop="operId" sortable="custom" :sort-orders="['descending', 'ascending']" />
       <el-table-column label="系统模块" align="center" prop="title" :show-overflow-tooltip="true" />
       <el-table-column label="操作类型" align="center" prop="businessType">
         <template slot-scope="scope">
@@ -242,7 +242,9 @@ export default {
         title: undefined,
         operName: undefined,
         businessType: undefined,
-        status: undefined
+        status: undefined,
+        orderByColumn:[],
+        isAsc:[]
       }
     };
   },
@@ -274,7 +276,9 @@ export default {
       this.dateRange = [];
       this.resetForm("queryForm");
       this.queryParams.pageNum = 1;
-      this.$refs.tables.sort(this.defaultSort.prop, this.defaultSort.order)
+      //   this.$refs.tables.sort(this.defaultSort.prop, this.defaultSort.order)
+      this.queryParams.orderByColumn=[];
+      this.queryParams.isAsc=[];
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
@@ -283,8 +287,29 @@ export default {
     },
     /** 排序触发事件 */
     handleSortChange(column, prop, order) {
-      this.queryParams.orderByColumn = column.prop;
-      this.queryParams.isAsc = column.order;
+
+
+      if( this.queryParams.orderByColumn.indexOf(column.prop)==-1){
+        this.queryParams.orderByColumn.push(column.prop);
+        this.queryParams.isAsc.push(column.order)
+      }else {
+        let orderByColumnArray = [];
+        let isAscArray =[];
+        let currentIsAsc ='';
+        for( let i = 0;i< this.queryParams.orderByColumn.length;i++){
+          if(this.queryParams.orderByColumn[i]==column.prop){
+            currentIsAsc= (this.queryParams.isAsc[i]=="descending"?"ascending":"descending");
+            orderByColumnArray.push(column.prop);
+            isAscArray.push(currentIsAsc);
+          }else {
+            orderByColumnArray.push(this.queryParams.orderByColumn[i]);
+            isAscArray.push(this.queryParams.isAsc[i]);
+          }
+        }
+
+        this.queryParams.orderByColumn = orderByColumnArray;
+        this.queryParams.isAsc = isAscArray;
+      }
       this.getList();
     },
     /** 详细按钮操作 */

@@ -2,9 +2,15 @@ package com.ruoyi.common.core.page;
 
 import com.ruoyi.common.utils.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * 分页数据
- * 
+ *
  * @author ruoyi
  */
 public class PageDomain
@@ -16,21 +22,21 @@ public class PageDomain
     private Integer pageSize;
 
     /** 排序列 */
-    private String orderByColumn;
+    private String []orderByColumn;
 
     /** 排序的方向desc或者asc */
-    private String isAsc = "asc";
+    private String [] isAsc = new String [] {"asc"};
 
     /** 分页参数合理化 */
     private Boolean reasonable = true;
 
     public String getOrderBy()
     {
-        if (StringUtils.isEmpty(orderByColumn))
+        if (orderByColumn==null||orderByColumn.length == 0)
         {
             return "";
         }
-        return StringUtils.toUnderScoreCase(orderByColumn) + " " + isAsc;
+        return StringUtils.toUnderScoreCase(StringUtils.concatenateArrays(orderByColumn,isAsc));
     }
 
     public Integer getPageNum()
@@ -53,33 +59,28 @@ public class PageDomain
         this.pageSize = pageSize;
     }
 
-    public String getOrderByColumn()
+    public String [] getOrderByColumn()
     {
         return orderByColumn;
     }
 
-    public void setOrderByColumn(String orderByColumn)
+    public void setOrderByColumn(String [] orderByColumn)
     {
         this.orderByColumn = orderByColumn;
     }
 
-    public String getIsAsc()
+    public String [] getIsAsc()
     {
         return isAsc;
     }
 
-    public void setIsAsc(String isAsc)
+    public void setIsAsc(String []isAsc)
     {
         if (StringUtils.isNotEmpty(isAsc))
         {
-            // 兼容前端排序类型
-            if ("ascending".equals(isAsc))
-            {
-                isAsc = "asc";
-            }
-            else if ("descending".equals(isAsc))
-            {
-                isAsc = "desc";
+            for (String t : isAsc) {
+                t = t.replaceAll("ascending", "asc")
+                        .replaceAll("descending", "desc");
             }
             this.isAsc = isAsc;
         }
