@@ -202,10 +202,38 @@ export function handleTree(data, id, parentId, children) {
 }
 
 /**
-* 参数处理
-* @param {*} params  参数
-*/
+ * 参数处理
+ * @param {*} params  参数
+ */
 export function tansParams(params) {
+  let result = new URLSearchParams();
+  for (const propName of Object.keys(params)) {
+    const value = params[propName];
+    // var part = encodeURIComponent(propName) + "=";
+    if (value !== null && value !== "" && typeof (value) !== "undefined") {
+      if (typeof value === 'object'&&!Array.isArray(value)) {
+        for (const key of Object.keys(value)) {
+          if (value[key] !== null && value[key] !== "" && typeof (value[key]) !== 'undefined') {
+            let params = propName + '[' + key + ']';
+            result.append(params,value[key]);
+          }
+        }
+      } else if (Array.isArray(value)) {
+        for (const arrayKey of value) {
+          if (arrayKey !== null && arrayKey !== "" && typeof (arrayKey) !== 'undefined') {
+            let params = propName;
+            result.append(params,arrayKey);
+          }
+        }
+      } else{
+        result.append(propName,value);
+      }
+    }
+  }
+  return result.toString()+"&";
+}
+
+export function tansParams1(params) {
   let result = ''
   for (const propName of Object.keys(params)) {
     const value = params[propName];
@@ -226,6 +254,8 @@ export function tansParams(params) {
   }
   return result
 }
+
+
 
 // 验证是否为blob格式
 export function blobValidate(data) {
