@@ -1,5 +1,7 @@
 package com.ruoyi.framework.aspectj;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -107,7 +109,14 @@ public class LogAspect
             if (e != null)
             {
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
-                operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
+                if (e.getMessage() != null){
+                    operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
+                }else {
+                    StringWriter stringWriter= new StringWriter();
+                    e.printStackTrace(new PrintWriter(stringWriter));
+                    StringBuffer buffer= stringWriter.getBuffer();
+                    operLog.setErrorMsg(StringUtils.substring(buffer.toString(), 0, 2000));
+                }
             }
             // 设置方法名称
             String className = joinPoint.getTarget().getClass().getName();
