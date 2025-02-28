@@ -1,6 +1,9 @@
 package com.ruoyi.framework.web.service;
 
 import java.util.concurrent.TimeUnit;
+
+import com.ruoyi.common.exception.user.IpRetryLimitExceedException;
+import com.ruoyi.common.utils.ip.IpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -15,7 +18,7 @@ import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 
 /**
  * 登录密码方法
- * 
+ *
  * @author ruoyi
  */
 @Component
@@ -30,9 +33,15 @@ public class SysPasswordService
     @Value(value = "${user.password.lockTime}")
     private int lockTime;
 
+    @Value(value = "${user.ip.maxRetryCount:15}")
+    public int maxIpRetryCount;
+
+    @Value(value = "${user.ip.lockTime:15}")
+    public int ipLockTime;
+
     /**
      * 登录账户密码错误次数缓存键名
-     * 
+     *
      * @param username 用户名
      * @return 缓存键key
      */
@@ -41,11 +50,25 @@ public class SysPasswordService
         return CacheConstants.PWD_ERR_CNT_KEY + username;
     }
 
+    /**
+     * 登录ip错误次数缓存键名
+     * @param ip
+     * @return
+     */
+    private String getIpCacheKey(String ip)
+    {
+        return CacheConstants.IP_ERR_CNT_KEY + ip;
+    }
+
     public void validate(SysUser user)
     {
         Authentication usernamePasswordAuthenticationToken = AuthenticationContextHolder.getContext();
         String username = usernamePasswordAuthenticationToken.getName();
         String password = usernamePasswordAuthenticationToken.getCredentials().toString();
+
+        String ip = IpUtils.getIpAddr();
+
+        validateIp(ip);
 
         Integer retryCount = redisCache.getCacheObject(getCacheKey(username));
 
@@ -69,6 +92,31 @@ public class SysPasswordService
         {
             clearLoginRecordCache(username);
         }
+    }
+
+    public void validateIp(String ip)
+    {
+        Integer ipRetryCount = redisCache.getCacheObject(getIpCacheKey(ip));
+        if (ipRetryCount == null)
+        {
+            ipRetryCount = 0;
+        }
+
+        if (ipRetryCount >= maxIpRetryCount)
+        {
+            throw new IpRetryLimitExceedException(maxIpRetryCount, ipLockTime);
+        }
+    }
+
+    public void incrementIpFailCount(String ip)
+    {
+        Integer ipRetryCount = redisCache.getCacheObject(getIpCacheKey(ip));
+        if (ipRetryCount == null)
+        {
+            ipRetryCount = 0;
+        }
+        ipRetryCount += 1;
+        redisCache.setCacheObject(getIpCacheKey(ip), ipRetryCount, ipLockTime, TimeUnit.MINUTES);
     }
 
     public boolean matches(SysUser user, String rawPassword)

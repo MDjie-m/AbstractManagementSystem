@@ -31,7 +31,7 @@ import com.ruoyi.system.service.ISysUserService;
 
 /**
  * 登录校验方法
- * 
+ *
  * @author ruoyi
  */
 @Component
@@ -45,16 +45,19 @@ public class SysLoginService
 
     @Autowired
     private RedisCache redisCache;
-    
+
     @Autowired
     private ISysUserService userService;
 
     @Autowired
     private ISysConfigService configService;
 
+    @Autowired
+    private SysPasswordService passwordService;
+
     /**
      * 登录验证
-     * 
+     *
      * @param username 用户名
      * @param password 密码
      * @param code 验证码
@@ -67,6 +70,9 @@ public class SysLoginService
         validateCaptcha(username, code, uuid);
         // 登录前置校验
         loginPreCheck(username, password);
+        String ip = IpUtils.getIpAddr();
+        // 验证 IP 是否被封锁
+        passwordService.validateIp(ip);
         // 用户验证
         Authentication authentication = null;
         try
@@ -85,6 +91,7 @@ public class SysLoginService
             }
             else
             {
+                passwordService.incrementIpFailCount(ip);
                 AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, e.getMessage()));
                 throw new ServiceException(e.getMessage());
             }
@@ -102,7 +109,7 @@ public class SysLoginService
 
     /**
      * 校验验证码
-     * 
+     *
      * @param username 用户名
      * @param code 验证码
      * @param uuid 唯一标识
