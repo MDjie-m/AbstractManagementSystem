@@ -165,40 +165,22 @@ export function handleTree(data, id, parentId, children) {
   };
 
   var childrenListMap = {};
-  var nodeIds = {};
-  var tree = [];
-
+   var tree = [];
   for (let d of data) {
-    let parentId = d[config.parentId];
-    if (childrenListMap[parentId] == null) {
-      childrenListMap[parentId] = [];
-    }
-    nodeIds[d[config.id]] = d;
-    childrenListMap[parentId].push(d);
+    let id = d[config.id];
+    childrenListMap[id] = d;
   }
 
   for (let d of data) {
-    let parentId = d[config.parentId];
-    if (nodeIds[parentId] == null) {
+    let parentId = d[config.parentId]
+    let parentObj = childrenListMap[parentId]
+    if(!parentObj){
       tree.push(d);
+    }else{
+      parentObj[config.childrenList].push(d)
     }
   }
-
-  for (let t of tree) {
-    adaptToChildrenList(t);
-  }
-
-  function adaptToChildrenList(o) {
-    if (childrenListMap[o[config.id]] !== null) {
-      o[config.childrenList] = childrenListMap[o[config.id]];
-    }
-    if (o[config.childrenList]) {
-      for (let c of o[config.childrenList]) {
-        adaptToChildrenList(c);
-      }
-    }
-  }
-  return tree;
+   return tree;
 }
 
 /**
