@@ -67,7 +67,7 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.initTags()
     this.addTags()
   },
