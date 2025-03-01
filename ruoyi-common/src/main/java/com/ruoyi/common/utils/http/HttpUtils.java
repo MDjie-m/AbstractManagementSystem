@@ -81,7 +81,7 @@ public class HttpUtils
             String line;
             while ((line = in.readLine()) != null)
             {
-                result.append(line);
+                result.append(line + "\n");
             }
             log.info("recv - {}", result);
         }
@@ -162,7 +162,7 @@ public class HttpUtils
             String line;
             while ((line = in.readLine()) != null)
             {
-                result.append(line);
+                result.append(line + "\n");
             }
             log.info("recv - {}", result);
         }
