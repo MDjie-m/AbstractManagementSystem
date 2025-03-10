@@ -8,8 +8,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # 设置工作目录
 WORKDIR /app
 
-# 复制您的 Java JAR 文件到容器中
-COPY ruoyi-admin.jar arthas-boot.jar /app/
+# 复制您的 Java JAR 文件到容器中(arthas-boot.jar)
+COPY ruoyi-admin.jar  /app/
 
 # 创建多个目录，使用 && 运算符来组合多个命令
 RUN mkdir /app/upload && \
