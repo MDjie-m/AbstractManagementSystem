@@ -40,7 +40,13 @@ services:
       - /data/ruoyi/admin/logs:/app/logs
       - /data/ruoyi/admin/conf:/app/conf
     environment:
-      - JAVA_OPTS=-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/app/data/heapdump.hprof -Xmx512m -Xms512m -XX:+PrintCommandLineFlags  -Dspring.config.location=file:/app/conf/ -Dlogback.configurationFile=file:/app/conf/logback.xml
+      # 可以完全覆盖配置文件 -Dspring.config.location=file:/app/conf/
+      - JAVA_OPTS=-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/app/data/heapdump.hprof -Xmx512m -Xms512m -XX:+PrintCommandLineFlags -Dlogback.configurationFile=file:/app/conf/logback.xml
+      # 也可以通过环境变量覆盖个别配置
+      - RUOYI_PROFILE=/app/upload
+      - SPRING_REDIS_HOST=ruoyi-redis
+      - spring_datasource_druid_master_url=jdbc:mysql://ruoyi-mysql:3306/ry_vue?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      - spring_datasource_druid_master_password=RuoYiDev
     extra_hosts:
       - "ruoyi-node:127.0.0.1"
   dashboard:
