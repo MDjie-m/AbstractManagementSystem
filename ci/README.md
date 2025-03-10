@@ -8,6 +8,9 @@
 >
 > 将最新的前端文件放在 /ci/dashboard/ 下，名称为dist
 > 
+> 查看配置文件，按需修改：    
+> 1) /ci/dashboard/nginx.conf   
+> 2) /ci.ruoyi/conf/   
 
 ## 使用脚本打docker镜像&启动
 ``` 
