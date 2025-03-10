@@ -11,11 +11,12 @@
 > 查看配置文件，按需修改：    
 > 1) /ci/dashboard/nginx.conf   
 > 2) /ci.ruoyi/conf/   
+> 3) docker-compose中ruoyi-admin的环境变量   
 
 ## 使用脚本打docker镜像&启动
 ``` 
 -- 打镜像&启动容器
-docker-compose up -d ruoyi-mysql
+docker-compose up -d
 ```
 
 ## 后续启动&停止容器

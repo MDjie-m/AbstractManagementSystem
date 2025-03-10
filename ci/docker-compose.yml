@@ -26,7 +26,7 @@ services:
     volumes:
       - /data/ruoyi/redis/data:/data
       - /data/ruoyi/redis/log:/var/log/redis
-  ruoyi:
+  ruoyi-admin:
     build:
       context: ./ruoyi
       dockerfile: Dockerfile
@@ -40,7 +40,8 @@ services:
       - /data/ruoyi/admin/logs:/app/logs
       - /data/ruoyi/admin/conf:/app/conf
     environment:
-      # 可以完全覆盖配置文件 -Dspring.config.location=file:/app/conf/
+      # 可以完全覆盖配置文件application.yml和application-druid.yml
+      # 配置文件复制到该目录，并加上配置 -Dspring.config.location=file:/app/conf/
       - JAVA_OPTS=-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/app/data/heapdump.hprof -Xmx512m -Xms512m -XX:+PrintCommandLineFlags -Dlogback.configurationFile=file:/app/conf/logback.xml
       # 也可以通过环境变量覆盖个别配置
       - RUOYI_PROFILE=/app/upload
@@ -49,7 +50,7 @@ services:
       - spring_datasource_druid_master_password=RuoYiDev
     extra_hosts:
       - "ruoyi-node:127.0.0.1"
-  dashboard:
+  ruoyi-dashboard:
     build:
       context: ./dashboard
       dockerfile: Dockerfile
