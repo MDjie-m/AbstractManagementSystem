@@ -13,5 +13,5 @@ mkdir -p /data/ruoyi/admin/conf
 
 mkdir -p /data/ruoyi/dashboard/logs
 
-cp ../../sql/* ./mysql/sql/
+cp ../sql/* ./mysql/sql/
 cp ./ruoyi/conf/* /data/ruoyi/admin/conf

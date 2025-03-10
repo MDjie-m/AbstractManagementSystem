@@ -2,14 +2,11 @@
 > 需要安装docker 和 docker-compose。自行百度安装
 
 ## 准备工作
-> 执行init.sh脚本，初始化目录及配置
+> 在ci目录下，执行init.sh脚本，初始化目录及配置（使用项目下的sql文件初始化数据库）
 > 
 > 将最新的jar文件放在 /ci/ruoyi/ 下，名称为 ruoyi-admin.jar
 >
 > 将最新的前端文件放在 /ci/dashboard/ 下，名称为dist
-> 
-> 初始mysql脚本放在 /ci/mysql/sql/ 下，名称任意   
-> 
 > 
 
 ## 使用脚本打docker镜像&启动
