@@ -2,9 +2,13 @@
 > 需要安装docker 和 docker-compose。自行百度安装
 
 ## 准备工作
-> 将最新的jar文件放在 /docker/ruoyi/ 下，名称为 ruoyi-admin.jar
+> 将最新的jar文件放在 /ci/ruoyi/ 下，名称为 ruoyi-admin.jar
 >
-> 将最新的前端文件放在 /docker/dashboard/ 下，名称为dist
+> 将最新的前端文件放在 /ci/dashboard/ 下，名称为dist
+> 
+> 初始mysql脚本放在 /ci/mysql/sql/ 下，名称任意   
+> 
+> 
 
 ## 使用脚本打docker镜像&启动
 ``` 

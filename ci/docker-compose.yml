@@ -30,7 +30,7 @@ services:
     build:
       context: ./ruoyi
       dockerfile: Dockerfile
-    container_name: ruoyi
+    container_name: ruoyi-admin
     ports:
       - "8080:8080"
       - "5005:5005"
@@ -47,7 +47,7 @@ services:
     build:
       context: ./dashboard
       dockerfile: Dockerfile
-    container_name: dashboard
+    container_name: ruoyi-dashboard
     ports:
       - "88:80"
     volumes:
