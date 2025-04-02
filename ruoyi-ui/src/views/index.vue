@@ -15,15 +15,13 @@
         <p>
           <el-button
             type="primary"
-            size="mini"
-            icon="el-icon-cloudy"
+            icon="Cloudy"
             plain
             @click="goTarget('https://gitee.com/y_project/RuoYi-Vue')"
             >访问码云</el-button
           >
           <el-button
-            size="mini"
-            icon="el-icon-s-home"
+            icon="HomeFilled"
             plain
             @click="goTarget('http://ruoyi.vip')"
             >访问主页</el-button
@@ -69,9 +67,11 @@
     <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
         <el-card class="update-log">
-          <div slot="header" class="clearfix">
-            <span>联系信息</span>
-          </div>
+          <template v-slot:header>
+            <div class="clearfix">
+              <span>联系信息</span>
+            </div>
+          </template>
           <div class="body">
             <p>
               <i class="el-icon-s-promotion"></i> 官网：<el-link
@@ -87,7 +87,7 @@
               <s> 满104748341 </s> <s> 满160110482 </s> <s> 满170801498 </s> <s> 满108482800 </s> 
               <s> 满101046199 </s> <s> 满136919097 </s> <s> 满143961921 </s> <s> 满174951577 </s> 
               <s> 满161281055 </s> <s> 满138988063 </s> <s> 满151450850 </s> <s> 满224622315 </s>
-              <s> 满287842588 </s> <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=HKz42pk2zQ1WUMbbRo50-N7tY4IDKKrj&authKey=ukBg3edmUbnmoo40xZCo6R1tYdTglYJ1nBFRW9gTHuZwLI1r8wgFT6cWUrAldwcr&noverify=0&group_code=187944233" target="_blank">187944233</a>
+              <s> 满287842588 </s> <s> 满187944233 </s> <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=G6r5KGCaa3pqdbUSXNIgYloyb8e0_L0D&authKey=4w8tF1eGW7%2FedWn%2FHAypQksdrML%2BDHolQSx7094Agm7Luakj9EbfPnSTxSi2T1LQ&noverify=0&group_code=228578329" target="_blank">228578329</a>
             </p>
             <p>
               <i class="el-icon-chat-dot-round"></i> 微信：<a
@@ -107,9 +107,11 @@
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
         <el-card class="update-log">
-          <div slot="header" class="clearfix">
-            <span>更新日志</span>
-          </div>
+          <template v-slot:header>
+            <div class="clearfix">
+              <span>更新日志</span>
+            </div>
+          </template>
           <el-collapse accordion>
             <el-collapse-item title="v3.8.9 - 2024-12-30">
               <ol>
@@ -998,14 +1000,16 @@
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
         <el-card class="update-log">
-          <div slot="header" class="clearfix">
-            <span>捐赠支持</span>
-          </div>
+          <template v-slot:header>
+            <div class="clearfix">
+              <span>捐赠支持</span>
+            </div>
+          </template>
           <div class="body">
             <img
               src="@/assets/images/pay.png"
               alt="donate"
-              width="100%"
+              style="width:100%"
             />
             <span style="display: inline-block; height: 30px; line-height: 30px"
               >你可以请作者喝杯咖啡表示鼓励</span
@@ -1017,21 +1021,12 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Index",
-  data() {
-    return {
-      // 版本号
-      version: "3.8.9"
-    };
-  },
-  methods: {
-    goTarget(href) {
-      window.open(href, "_blank");
-    }
-  }
-};
+<script setup name="Index">
+const version = ref('3.8.9')
+
+function goTarget(url) {
+  window.open(url, '__blank')
+}
 </script>
 
 <style scoped lang="scss">
